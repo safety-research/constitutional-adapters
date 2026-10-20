@@ -1,0 +1,34 @@
+# registry-status-heavy.service — results registry. Rendered for the site and installed into ~/.config/systemd/user/ by the registry installer.
+# Secret-free: the registry needs no credential; ssh (when used) goes through the agent socket.
+# Bounded: Type=oneshot with TimeoutStartSec, Restart=no (the timer is the only re-fire; an on-failure restart re-ran a failing
+# oneshot every RestartSec and kept it `activating` through every paused window, 2026-09-20), and a start-rate limit sized to
+# ~2x the healthy cadence, so a persistent failure trips the limit (visible in the journal and on the status page) instead of
+# looping. Locks: only the registry's own (<root>/harvester.lock, snapshots/.readers.lock) — never the paper builder's.
+[Unit]
+Description=Results registry: recompute the status page's cached-with-refresh sections exactly (skipped while the ledger head stands still)
+# Every 6 h: `status --refresh-heavy` recomputes every member of state/status_heavy.json (the sections a render found over
+# its [status] section_budget_s — the full-table counts and the item-conflict scan today, no fixed list) exactly, each under
+# heavy_budget_s (15 min), into state/status_sections/<name>.json — the rows the 10-min render shows for them, stamped.
+# Event-gated: a refresh whose ledger head equals the last recorded one recomputes only the members whose last refresh failed
+# (the head is recorded only when every member succeeded) and exits at once when none is due. The landing window (scripts/registry/
+# landing/window.sh) stops this timer with the others and starts this service ONCE after the timers are restored, as the
+# cache initializer: the first run computes every section and derives the set from the measured times.
+After=network-online.target
+StartLimitIntervalSec=1d
+StartLimitBurst=8
+
+[Service]
+Type=oneshot
+Nice=10
+IOSchedulingClass=best-effort
+IOSchedulingPriority=6
+Environment=PYTHONPATH=@REPO@/src
+Environment=REGISTRY_ROOT=@REGISTRY_ROOT@
+Environment=PYTHONUNBUFFERED=1
+ExecStart=@PYTHON@ -m sisteer.registry.cli status --refresh-heavy
+Restart=no
+# 45min: the two heaviest sections today (20 + 14 min at load 12) fit; a member past its own 15-min budget keeps its previous cache.
+TimeoutStartSec=45min
+SyslogIdentifier=registry-status-heavy
+StandardOutput=journal
+StandardError=journal

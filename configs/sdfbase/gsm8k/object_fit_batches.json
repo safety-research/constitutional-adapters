@@ -1,0 +1,62 @@
+{
+ "schema": "object_fit_batches/1",
+ "what": "The FIT PROVENANCE of the objects whose GENERATION (`batch8` | `batch64`) no repo record binds by sha: the two BATCH-8 instruct-direct constitution objects the it-doc admission record names as `superseded` direct-fit objects (they are what the `it` views SERVE on the GSM8K paired-200 wave by the ruling to the lane of 2026-09-13). Each entry is the object's train_budget_meta.json read ON THE BANK beside the object (the primary cluster's full22 bank, `$SHARED/exp/objects/sdfbase/full22/<model>/cells/<staged id>/`), keyed by the object.pt sha256 re-hashed on disk at the read; the batch-64 objects need no entry here — their `fit_record.effective_batch` is the it-doc admission record's (configs/sdfbase/itdoc_admission.json), and a derived object's is its two parents'. The GSM8K reader binds a fitted row's `object_sha256` to a generation through these records only (tinycap_gsm8k_validators.object_generation_bindings), never through a staged id's spelling; a row that DECLARES an `object_generation` its provenance does not bind, or binds differently, refuses by name.",
+ "generation_by_effective_batch": {
+  "8": "batch8",
+  "64": "batch64"
+ },
+ "read": {
+  "when": "2026-09-17",
+  "how": "train_budget_meta.json read and object.pt sha256sum'd on the primary cluster's bank over ssh (read-only); `object_sha256` inside the meta equals the sha of the bytes beside it (recorded_hash_check in staged_from.json: matches_object true)"
+ },
+ "entries": {
+  "0018b32beb137fad77a688cfd4f7212c7702399e0f76f31cc3fbd5f903a445fe": {
+   "model_key": "qwen35_4b",
+   "view": "it",
+   "cell": "constv2-mix-full__lora_r4_ce",
+   "staged_id": "itdoc__constv2-mix-full__lora_r4_ce",
+   "lane": "full22 (itdoc__ staged ids)",
+   "object_kind": "fitted",
+   "effective_batch": 8,
+   "batch_size": 2,
+   "accum_steps": 4,
+   "model_id": "Qwen/Qwen3.5-4B",
+   "model_revision": "851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a",
+   "training_budget_kind": "document_tokens",
+   "heldout_pool_sha": "7f588099117d3a76408d400bca00a0a181613b59dadf471dd90ce13b72dde1e4",
+   "sample_manifest_sha": "655b89f3d04441d7b255e47291103fbc53b60144be9f92fec15ee77a1373b02a",
+   "source": {
+    "file": "train_budget_meta.json",
+    "bank_rel": "exp/objects/sdfbase/full22/qwen35_4b/cells/itdoc__constv2-mix-full__lora_r4_ce",
+    "cluster_role": "primary",
+    "object_pt_sha256_on_disk": "0018b32beb137fad77a688cfd4f7212c7702399e0f76f31cc3fbd5f903a445fe",
+    "pins_file_source": "twosi-fits:out/qwen35_4b_it_doc/cells_all/constv2-mix-full__lora_r4_ce"
+   },
+   "named_by": "configs/sdfbase/itdoc_admission.json entries.qwen35_4b.it.constv2-mix-full__lora_r4_ce.superseded.object_sha256"
+  },
+  "4c1a5fc3b382ddb86f9dce20ef7d31dac735b516014017d19fad0c74c0092353": {
+   "model_key": "gemma4e4b",
+   "view": "it",
+   "cell": "constv2-mix-full__lora_r4_ce",
+   "staged_id": "itdoc__constv2-mix-full__lora_r4_ce",
+   "lane": "full22 (itdoc__ staged ids)",
+   "object_kind": "fitted",
+   "effective_batch": 8,
+   "batch_size": 1,
+   "accum_steps": 8,
+   "model_id": "google/gemma-4-E4B-it",
+   "model_revision": "ee0ef6023621cff504d758262d4e04895a5af4a2",
+   "training_budget_kind": "document_tokens",
+   "heldout_pool_sha": "7f588099117d3a76408d400bca00a0a181613b59dadf471dd90ce13b72dde1e4",
+   "sample_manifest_sha": "655b89f3d04441d7b255e47291103fbc53b60144be9f92fec15ee77a1373b02a",
+   "source": {
+    "file": "train_budget_meta.json",
+    "bank_rel": "exp/objects/sdfbase/full22/gemma4e4b/cells/itdoc__constv2-mix-full__lora_r4_ce",
+    "cluster_role": "primary",
+    "object_pt_sha256_on_disk": "4c1a5fc3b382ddb86f9dce20ef7d31dac735b516014017d19fad0c74c0092353",
+    "pins_file_source": "twosi-fits:out/gemma4e4b_it_doc/cells_all/constv2-mix-full__lora_r4_ce"
+   },
+   "named_by": "configs/sdfbase/itdoc_admission.json entries.gemma4e4b.it.constv2-mix-full__lora_r4_ce.superseded.object_sha256"
+  }
+ }
+}

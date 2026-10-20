@@ -1,0 +1,11 @@
+# capeval anchor model config.
+# The v0 anchor — the exact pins the S2 numbers were produced under
+# (configs/stage2_llama8b.yaml).
+model: meta-llama/Llama-3.1-8B-Instruct
+model_revision: 0e9e39f249a16976918f6564b8830bc894c89659   # full SHA, required (§2.1)
+dtype: bfloat16
+# The S2 steering artifacts this model anchors were all trained at layer 15
+# (stage2_llama8b.yaml); manifests still declare `layer` per-arm and it is
+# validated against each artifact's sidecar (F9) — this is documentation,
+# not a source of truth.
+s2_layer: 15

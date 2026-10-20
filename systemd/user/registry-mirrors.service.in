@@ -1,0 +1,29 @@
+# registry-mirrors.service — results registry. Rendered for the site and installed into ~/.config/systemd/user/ by the registry installer.
+# Secret-free (the Modal destination is gone, so no credential is evaluated here); ssh goes through the agent socket.
+# Bounded: Type=oneshot with TimeoutStartSec, Restart=no (the timer is the only re-fire; an on-failure restart re-ran a failing
+# oneshot every RestartSec and kept it `activating` through every paused window, 2026-09-20), and a start-rate limit sized to
+# ~2x the healthy cadence, so a persistent failure trips the limit (visible in the journal and on the status page) instead of
+# looping. Locks: only the registry's own (<root>/harvester.lock, snapshots/.readers.lock) — never the paper builder's.
+[Unit]
+Description=Results registry: record-log fan-out to both clusters, verified, acked
+# Every 5 min: immutable records with --ignore-existing, a NEW versioned manifest, the one
+# stdlib verifier on every destination, CHECKSUMS.CURRENT switched only when clean, a mirror_ack record per destination.
+After=network-online.target
+StartLimitIntervalSec=1h
+StartLimitBurst=24
+
+[Service]
+Type=oneshot
+Nice=10
+IOSchedulingClass=best-effort
+IOSchedulingPriority=6
+Environment=PYTHONPATH=@REPO@/src
+Environment=REGISTRY_ROOT=@REGISTRY_ROOT@
+Environment=PYTHONUNBUFFERED=1
+Environment=SSH_AUTH_SOCK=%h/.ssh/agent.sock
+ExecStart=@PYTHON@ -m sisteer.registry.cli mirrors sync
+Restart=no
+TimeoutStartSec=2h
+SyslogIdentifier=registry-mirrors
+StandardOutput=journal
+StandardError=journal

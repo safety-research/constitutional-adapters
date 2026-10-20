@@ -1,0 +1,169 @@
+# Stage-2 core matrix settings: the 12 method arms
+# on Llama-3.1-8B-Instruct, their training settings and the extended
+# capability panel. Consumed by scripts/stage2_run.py (--suite pairs|ifeval).
+model: meta-llama/Llama-3.1-8B-Instruct
+model_revision: 0e9e39f249a16976918f6564b8830bc894c89659  # cached snapshot, cluster A shared HF cache
+dtype: bfloat16
+
+# The compiled-SI set. The 10 IFEval-type SIs this matrix ran were worded
+# after the IFEval benchmark, which no paper result uses, so they were removed
+# with the vendored IFEval verifier. A cell now needs an `--si` the
+# instruction registry holds; the list is empty so nothing iterates a removed id.
+instructions: []
+
+# The 12 method arms (canonical enumeration; registry in
+# src/sisteer/methods.py) + the 2 divergence-ablation arms + the antidote
+# arm, appended AFTER them so the si_idx*12 + arm_idx array
+# decodings never shift. Every arm runs on this suite, plus the
+# baseline/prompted reference arms and the stage-1 "both" stack arm.
+arms:
+  - vector          # stage-1 distill_soft, L15 (artifact reuse)
+  - vector_all      # one d-vector per layer, joint KL
+  - lora_r1         # rank-1 LoRA L15 o_proj
+  - lora_r1_all     # rank-1 LoRA per layer, joint
+  - token_bos       # soft token after BOS, T=1
+  - token_faithful  # Radevski appended token, KL T=10, loss x T^2
+  - psr             # mean-diff dir + learned gate, activation-MSE (2605.03907)
+  - psr_kl          # PSR object under forward-KL, single layer
+  - psr_kl_all      # PSR gate+direction per layer, joint KL
+  - loreft          # 2404.03592 orthonormal subspace, CE, prompt positions
+  - reft_r1         # AxBench spec: unit-norm w, top-k=8, L1 ramp
+  - bidpo           # stage-1 preference-optimized vector (reuse)
+  - vector_rkl      # Distill target = reverse KL (mode-seeking)
+  - vector_js       # Distill target = Jensen-Shannon (symmetric)
+  - antidote        # Jailbreak Antidote (2410.02298) — pooled-PCA dir,
+                    # top-5% mask, absolute alpha at the LAST token (L15 pin)
+  # REORDER 2026-08-19 (user request): everything after antidote now
+  # MIRRORS the methods.py ARMS registry order — the did/adasteer
+  # arms moved from positions 15-16 to the TAIL of this list (they sit last
+  # in the registry, appended at the stage2-evals merge), shifting
+  # alphasteer/lofit/the alphakl ladder DOWN TWO at that commit. Anyone holding
+  # index-keyed artifacts or array submissions recorded under the old order
+  # for positions >= 15 must re-key; positions 0-14 are unchanged, and
+  # every sbatch that runs these arms decodes via a LOCAL array or a
+  # hardcoded ARM, so no live decode reads the shifted region.
+  # AlphaSteer, adapted to system-instruction steering. IFEval-suite ONLY.
+  # Teacher-agnostic (see the did/adasteer note at the tail), so listed in
+  # the RS config (which INHERITS this arms list via `extends`) only for
+  # config-parity.
+  - alphasteer      # AlphaSteer (2506.07022), null-space matrix
+  # LoFiT (2406.01563), after alphasteer (index 16 since the
+  # 2026-08-19 reorder; was 18). IFEval-suite ONLY. NO layer-15 pin — head selection ranges
+  # over all layers (the method's identity; the arm's key documented
+  # deviation). Inherited by the RS config via `extends` for config-parity;
+  # unlike did/adasteer/alphasteer it IS teacher-sensitive (it trains on
+  # the pos completions), but no RS sbatch exists for it — an RS lofit
+  # run is a possible follow-up, not part of this arm's scope.
+  - lofit           # LoFiT (2406.01563), top-~3% heads, all layers
+  # the AlphaSteer -> KL-constrained steering ladder
+  # (extraction/alphakl.py). One shared rank-1 gated deployment
+  # (per-position ReLU gate at layer 15), three probe-fitting rungs that
+  # strictly nest. After lofit (indices 17/18/19 since the 2026-08-19
+  # reorder; were 19/20/21). IFEval-suite ONLY. Closed-form like did/adasteer/alphasteer,
+  # so teacher-insensitive (fits on prompt renderings + the model's own
+  # unsteered rollouts) — inherited by the RS config via `extends` only for
+  # config-parity.
+  - alphakl_null    # stage 1: hard null space, rank-1 (parity baseline)
+  - alphakl_soft    # stage 2: soft covariance penalty (manual beta)
+  - alphakl_fisher  # stage 3: Fisher/KL weights, beta from the eps budget
+  # two jailbreak-defense / contrast methods adapted to
+  # SI steering, at the TAIL since the 2026-08-19 registry-order reorder
+  # (were 15-16). IFEval-suite ONLY. Teacher-agnostic (their extraction
+  # consumes prompt CONTEXTS/activations, never the rejection-filtered pos
+  # completions), so there is no RS sbatch for them and their RS cells
+  # would replicate greedy; listed in the RS config only for config-parity.
+  - did             # difference-in-differences
+  - adasteer        # AdaSteer (2504.09466), two-direction adaptive
+
+layer: 15                  # stage-1 mid layer kept for artifact continuity (47% ~= the ~50% target)
+scales: [0.25, 0.5, 1.0, 2.0, 4.0, 8.0]
+# Per-arm ADDITIVE grid extensions, merged
+# over the global `scales` by stage2_run._arm_scales (eval-only knob —
+# deliberately OUTSIDE the manifest config_hash, so extending a grid
+# extends completed cells incrementally instead of invalidating their
+# trained artifacts). Scientific motivation: the _all arms apply the
+# intervention at ALL 32 layers of Llama-3.1-8B, so at equal nominal
+# factor the TOTAL perturbation compounds ~32x vs the single-layer arms.
+# The 1/n_layers = 1/32 = 0.03125 point tests whether the single-layer-
+# EQUIVALENT total dose, distributed across all layers, yields a usable
+# (in-budget) intervention; the natural comparison is
+# vector_all@0.03125 vs vector@1.0. Exactly the three _all arms — no
+# other arm's grid widens.
+extra_scales:
+  vector_all:  [0.03125]   # exactly 1/32
+  lora_r1_all: [0.03125]
+  psr_kl_all:  [0.03125]
+
+prompts:
+  source: hf
+  dataset: tatsu-lab/alpaca
+  n: 600
+  holdout_frac: 0.3
+n_fit_prompts: 200         # pairs generated once per SI by P1 (stage2_pairs)
+n_eval_prompts: 100
+
+train_kwargs:              # distill-style arms inherit stage-1 hyperparams
+  default:
+    epochs: 6
+    batch_size: 2
+    max_len: 768
+  bidpo:
+    epochs: 20
+    batch_size: 4
+    max_len: 768
+  token_faithful:
+    temperature: 10.0      # Radevski: KL at T=10 ...
+    loss_scale: 100.0      # ... loss x T^2
+  reft_r1:
+    topk: 8
+    l1_lambda: 0.005       # ramped 0 -> 0.005 per AxBench spec
+  antidote:                # Closed-form extraction + alpha calibration
+    k_frac: 0.05           # paper default top-5% |component| mask
+    batch_size: 8          # capture/generation batching (epochs/max_len from
+                           # train_kwargs.default are documented no-ops here)
+  did:                     # Closed-form 4-condition capture + base-scale calib
+    batch_size: 8          # capture/generation batching (epochs/max_len are no-ops)
+  adasteer:                # Closed-form directions + logistic fit + calib
+    batch_size: 8
+  alphasteer:              # Closed-form null-space matrix + calib
+    batch_size: 8
+  alphakl_null:            # stage 1: closed-form fit + base-scale calib
+    batch_size: 8          # (epochs/max_len are documented no-ops); the
+                           # spec's tau=1e-5 eigenvalue cutoff is the default
+                           # (nullspace_ratio: 0.5 switches to the paper's
+                           # fraction-of-d rule, matching the alphasteer arm)
+  alphakl_soft:            # stage 2: soft covariance penalty
+    batch_size: 8
+    beta: 1.0              # stage 2 takes a MANUAL beta (the spec pins it to
+                           # the eps budget only in stage 3); sweepable
+  alphakl_fisher:          # stage 3: Fisher/KL weighting
+    batch_size: 8
+    eps: 0.01              # nats/position benign budget; beta is bisected
+                           # against it on the held-out calib rollouts
+    rollout_tokens: 128    # unsteered greedy rollout length
+    fisher_mode: jvp       # one forward-mode JVP per batch; mc_vjp = the
+                           # reverse-mode fallback
+  lofit:                   # Two-phase LoFiT (2406.01563); epochs/
+                           # batch_size/max_len inherit the shared default
+                           # (budget parity with lora_r1/loreft; their own
+                           # recipe was 5 epochs / batch 8 — documented in
+                           # extraction/lofit.py)
+    lr_select: 5.0e-3      # their llama2-7B phase-A lr (tqa/mquake scripts)
+    lr_bias: 1.0e-2        # their llama2-7B phase-v lr
+    l1_lambda: 1.0e-3      # their llama2-7B SFT-task (mquake) phase-A L1
+    n_bias_heads: 32       # their llama2-7B K: 32 of 1024 heads (~3%)
+
+# Capability panel (eval/capability_ext.py): measured at unsteered +
+# {best-compliance, max} scales as stage 1; frontier fill-in afterward.
+# Budget filter stays stage-1-compatible (MMLU -2pt, distinct3 >= 0.35);
+# the new metrics are REPORTED, not filtered on.
+capability: true
+capability_ext:
+  gsm8k_platinum: {n: 200, max_new_tokens: 512}   # 0-shot chat, "####" + fallback regex
+  gpqa_diamond: {n: 198}                          # letter-logprob A-D, full set
+  mmlu_pro: {n: 300}                              # letter-logprob A-J
+
+max_new_tokens: 200
+out_dir: out/stage2_llama8b/ifeval
+wandb_project: $WANDB_PROJECT
+judge_model: claude-haiku-4-5   # every stage-2 judged number

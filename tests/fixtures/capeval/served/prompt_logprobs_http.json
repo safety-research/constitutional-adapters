@@ -1,0 +1,40 @@
+{
+  "_note": "SYNTHETIC fixture (no real session data): one vLLM 0.25.1 ChatCompletionResponse over JSON for a prefill-only continuation-logprob request (max_tokens 1, prompt_logprobs 1, logprobs false, return_token_ids true). Every token id is invented EXCEPT the assistant header [105, 4368, 107], which is gemma-4's public chat-template generation header (<|turn>model\\n). prompt_logprobs is a list aligned with prompt positions: null at position 0, then objects keyed by token id AS A STRING whose values carry logprob / rank / decoded_token. The scored span is the two candidate tokens after the header.",
+  "vllm_pin": "0.25.1",
+  "tokenize_ids": [2, 1000, 1001, 1002, 106, 108, 105, 4368, 107, 25510, 26314],
+  "header_ids": [105, 4368, 107],
+  "candidate": " carbon dioxide",
+  "expected_candidate_ids": [25510, 26314],
+  "expected_ll_sum": -2.75,
+  "response": {
+    "id": "chatcmpl-synthetic-0000",
+    "object": "chat.completion",
+    "created": 0,
+    "model": "petri__synthetic_cell",
+    "choices": [
+      {
+        "index": 0,
+        "message": {"role": "assistant", "content": "", "reasoning_content": null, "tool_calls": []},
+        "logprobs": null,
+        "finish_reason": "length",
+        "stop_reason": null
+      }
+    ],
+    "usage": {"prompt_tokens": 11, "total_tokens": 12, "completion_tokens": 1, "prompt_tokens_details": null},
+    "prompt_logprobs": [
+      null,
+      {"1000": {"logprob": -2.0, "rank": 1, "decoded_token": "The"}, "1007": {"logprob": -2.5, "rank": 2, "decoded_token": "A"}},
+      {"1001": {"logprob": -1.1, "rank": 1, "decoded_token": " plant"}, "1008": {"logprob": -3.1, "rank": 2, "decoded_token": " tree"}},
+      {"1002": {"logprob": -0.9, "rank": 1, "decoded_token": " absorbs"}, "1009": {"logprob": -2.9, "rank": 2, "decoded_token": " uses"}},
+      {"106": {"logprob": -0.3, "rank": 1, "decoded_token": "<turn|>"}, "113": {"logprob": -4.3, "rank": 2, "decoded_token": "?"}},
+      {"108": {"logprob": -0.2, "rank": 1, "decoded_token": "\n"}, "115": {"logprob": -4.2, "rank": 2, "decoded_token": " "}},
+      {"105": {"logprob": -0.05, "rank": 1, "decoded_token": "<|turn>"}, "112": {"logprob": -5.05, "rank": 2, "decoded_token": "<eos>"}},
+      {"4368": {"logprob": -0.01, "rank": 1, "decoded_token": "model"}, "4375": {"logprob": -6.01, "rank": 2, "decoded_token": "user"}},
+      {"107": {"logprob": -0.02, "rank": 1, "decoded_token": "\n"}, "114": {"logprob": -6.02, "rank": 2, "decoded_token": " "}},
+      {"25510": {"logprob": -1.25, "rank": 1, "decoded_token": "carbon"}, "25517": {"logprob": -3.25, "rank": 2, "decoded_token": "oxygen"}},
+      {"26314": {"logprob": -1.5, "rank": 1, "decoded_token": " dioxide"}, "26321": {"logprob": -2.75, "rank": 2, "decoded_token": " monoxide"}}
+    ],
+    "prompt_token_ids": [2, 1000, 1001, 1002, 106, 108, 105, 4368, 107, 25510, 26314],
+    "kv_transfer_params": null
+  }
+}

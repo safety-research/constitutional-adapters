@@ -1,0 +1,60 @@
+{
+ "served_tree_sha": "5555555555555555555555555555555555555555",
+ "serving_engine": "lora_native",
+ "serving_identity": "proxy_vllm+lora+interleaved",
+ "max_model_len": 49152,
+ "intervention_hash": "18984b4300000000",
+ "decode": {
+  "do_sample": true,
+  "temperature": 0.7,
+  "top_p": 0.8,
+  "top_k": 20,
+  "min_p": 0.0,
+  "presence_penalty": 1.5,
+  "repetition_penalty": 1.0,
+  "cap": 4096,
+  "arm": "vendor_recommended",
+  "seed_base": 1926967131,
+  "trial": 0,
+  "seed_rule": "sha256(f'{seed_base}|{trial}|{attack}|{goal_id}|{turn}')[:4]",
+  "source_kind": "model_card",
+  "multiturn_target_decode": "vendor",
+  "multiturn_target_seed": "per_turn"
+ },
+ "last_request_decode": {
+  "do_sample": true,
+  "temperature": 0.7,
+  "temperature_source": "vendor_preset",
+  "top_p": 0.8,
+  "top_k": 20,
+  "repetition_penalty": 1.0,
+  "preset": {
+   "temperature": 0.7,
+   "top_p": 0.8,
+   "top_k": 20,
+   "min_p": 0.0,
+   "presence_penalty": 1.5,
+   "repetition_penalty": 1.0
+  }
+ },
+ "target_decode_resolution": {
+  "mode": "vendor_preset",
+  "seed_base": 1926967131,
+  "trial": 0,
+  "seed_base_campaign": 20260909,
+  "seed_replicate": 2,
+  "seed_replicate_source": "F22_MT_TARGET_SEED_BASE",
+  "multiturn_target_decode": "vendor",
+  "multiturn_target_seed": "per_turn"
+ },
+ "object_artifact_sha256_by_cell": {
+  "si_constv2_mix_full__lora_r4_ce": "SHA_LORA"
+ },
+ "routing_table": "/workspace-vast/TESTUSER/exp/sdfbase_full22_native/serving/attacks_qwen35_4b_s2_s2_crescendo_p0_r4_583782/routing_table.json",
+ "timing_log": "/workspace-vast/TESTUSER/exp/sdfbase_full22_native/transcripts_results/sdfbase_full22_qwen35_4b_s2/crescendo/target_timing.jsonl",
+ "proxy_identity": {
+  "thinking_mode": "off",
+  "base_model": "Qwen/Qwen3.5-4B"
+ },
+ "written_at": "2026-09-20T16:17:45Z"
+}

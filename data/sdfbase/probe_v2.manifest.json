@@ -1,0 +1,105 @@
+{
+ "counts": {
+  "by_coverage": {
+   "in": 377,
+   "out": 76
+  },
+  "by_source": {
+   "constitution_section": 227,
+   "heldout_doc": 226
+  }
+ },
+ "created_at": "2026-09-02T04:30:13.383595+00:00",
+ "drop_counts": {
+  "exact_dup": 0,
+  "generation_failed": 0,
+  "length_mismatch": 9,
+  "near_dup": 0,
+  "ngram_overlap": 71,
+  "token_length_mismatch": 38,
+  "verify_failed": 29,
+  "verify_judge_mismatch": 29
+ },
+ "generator": {
+  "balance_models": [
+   "google/gemma-4-E4B@411aa17b749aa952df1359d2dcea73917a544d9a",
+   "Qwen/Qwen3.5-4B-Base@1001bb4d826a52d1f399e183466143f4da7b741b"
+  ],
+  "gen_model": "claude-opus-5",
+  "length_tol": 0.15,
+  "ngram_n": 8,
+  "pool_files": [
+   "pairs_constv2-mix-1k.jsonl",
+   "pairs_constv2-mix-10k.jsonl",
+   "pairs_constv2-mix-100k.jsonl",
+   "pairs_constv2-mix-1m.jsonl",
+   "pairs_constv2-adv-1k.jsonl",
+   "pairs_constv2-adv-100k.jsonl"
+  ],
+  "salt": "sdfbase-probe-v1",
+  "token_balance": {
+   "dropped_ids": [
+    "hd-adv-p12-t03-s07",
+    "hd-sto-c01-u01-k03-y0",
+    "hd-sto-c07-u04-k14-y1",
+    "hd-sto-c20-u04-k16-y1",
+    "hd-sto-c25-u08-k04-y0",
+    "hd-sto-c27-u06-k09-y0",
+    "hd-sto-c34-u05-k06-y0",
+    "hd-sto-c36-u06-k17-y1",
+    "hd-sto-c37-u02-k05-y0",
+    "hd-sto-c44-u02-k02-y0",
+    "hd-sto-c45-u06-k02-y0",
+    "hd-sto-c47-u09-k16-y1",
+    "sec-avoiding-harm-10",
+    "sec-balancing-helpfulness-with-other-values-01",
+    "sec-balancing-helpfulness-with-other-values-04",
+    "sec-being-honest-10",
+    "sec-claudes-core-values-08",
+    "sec-emotional-expression-03",
+    "sec-handling-conflicts-between-operators-and-users-04",
+    "sec-having-broadly-good-values-and-judgment-06",
+    "sec-how-to-treat-operators-and-users-02",
+    "sec-how-we-think-about-corrigibility-09",
+    "sec-navigating-helpfulness-across-principals-03",
+    "sec-our-approach-to-claudes-constitution-03",
+    "sec-preserving-important-societal-structures-03",
+    "sec-resilience-and-consistency-across-contexts-02",
+    "sec-safe-behaviors-04",
+    "sec-safe-behaviors-07",
+    "sec-safe-behaviors-09",
+    "sec-safe-behaviors-10",
+    "sec-some-of-our-views-on-claudes-nature-04",
+    "sec-the-costs-and-benefits-of-actions-01",
+    "sec-the-costs-and-benefits-of-actions-02",
+    "sec-the-costs-and-benefits-of-actions-09",
+    "sec-the-costs-and-benefits-of-actions-10",
+    "sec-the-role-of-intentions-and-context-02",
+    "sec-why-helpfulness-is-one-of-claudes-most-important-traits-04",
+    "sec-why-helpfulness-is-one-of-claudes-most-important-traits-05"
+   ],
+   "n_dropped_items": 38,
+   "n_in": 491,
+   "p_floor": 0.05,
+   "per_tokenizer": {
+    "Qwen/Qwen3.5-4B-Base": {
+     "n_consistent_longer": 231,
+     "n_equal": 10,
+     "n_violating_longer": 212,
+     "p_binomial_two_sided": 0.39246142346475205
+    },
+    "google/gemma-4-E4B": {
+     "n_consistent_longer": 239,
+     "n_equal": 16,
+     "n_violating_longer": 198,
+     "p_binomial_two_sided": 0.0555648926058107
+    }
+   },
+   "tol": 0.15
+  },
+  "verify_model": "claude-haiku-4-5"
+ },
+ "n_items": 453,
+ "probe_file": "probe_v2.jsonl",
+ "sha256": "5c69bf41e10247c8b8640a5d78e325a5a09a023ecd8ed283c90ec98a00578eb7"
+}

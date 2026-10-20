@@ -1,0 +1,20 @@
+{
+ "arm": "psr_ce_all",
+ "audit": {
+  "metrics_rows": 3382,
+  "monitors_on": true,
+  "object_file": "object.pt"
+ },
+ "cell_id": "constv2ctl2-full__psr_ce_all",
+ "files": {
+  "metrics.jsonl": "e8cb924c304587889e6b966a308c32e0988a7659103faaa34cdc20f12950ee74",
+  "object.pt": "c5686c7316b7f79ba31edeea4ecf5d3b237724e399cafb41295478b457471c34",
+  "train_budget_meta.json": "884e75c6ee40c8cac1df5a68750f74ee179e8ce36bca829849cef551828b84bf"
+ },
+ "fit_fingerprint": "bc02408fdcd99bbb30a4c15dd4a9a094510339f2d352523e6567411cdc2c475d",
+ "object_file": "object.pt",
+ "object_sha256": "c5686c7316b7f79ba31edeea4ecf5d3b237724e399cafb41295478b457471c34",
+ "positions": "all",
+ "published_at": "2026-09-17T11:18:11+00:00",
+ "si_id": "constv2ctl2-full"
+}

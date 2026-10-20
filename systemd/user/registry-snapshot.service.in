@@ -1,0 +1,29 @@
+# registry-snapshot.service — results registry. Rendered for the site and installed into ~/.config/systemd/user/ by the registry installer.
+# Secret-free (the Modal destination is gone, so no credential is evaluated here); ssh goes through the agent socket.
+# Bounded: Type=oneshot with TimeoutStartSec, Restart=no (the timer is the only re-fire; an on-failure restart re-ran a failing
+# oneshot every RestartSec and kept it `activating` through every paused window, 2026-09-20), and a start-rate limit sized to
+# ~2x the healthy cadence, so a persistent failure trips the limit (visible in the journal and on the status page) instead of
+# looping. Locks: only the registry's own (<root>/harvester.lock, snapshots/.readers.lock) — never the paper builder's.
+[Unit]
+Description=Results registry: build a snapshot when due (run-level while runs are in flight; full daily) and push it
+# Every 5 min; --if-due applies the cadence in config.toml [snapshot]; --push commits on both clusters (rsync+ssh);
+# footprint -> state/footprint.json.
+After=network-online.target
+StartLimitIntervalSec=1h
+StartLimitBurst=24
+
+[Service]
+Type=oneshot
+Nice=10
+IOSchedulingClass=best-effort
+IOSchedulingPriority=6
+Environment=PYTHONPATH=@REPO@/src
+Environment=REGISTRY_ROOT=@REGISTRY_ROOT@
+Environment=PYTHONUNBUFFERED=1
+Environment=SSH_AUTH_SOCK=%h/.ssh/agent.sock
+ExecStart=@PYTHON@ -m sisteer.registry.cli snapshot --if-due --push
+Restart=no
+TimeoutStartSec=3h
+SyslogIdentifier=registry-snapshot
+StandardOutput=journal
+StandardError=journal

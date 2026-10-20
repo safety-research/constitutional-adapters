@@ -1,0 +1,119 @@
+# configs/sdfbase/gsm8k/views.yaml — WHICH (model key, view) pairs the gsm8k-paired200-paper-objects matrix expresses,
+# and which of their cells are HELD.
+#
+# The matrix (configs/sdfbase/gsm8k/matrix.json) is GENERATED from this file + the full22 roster + the pins by
+#   python scripts/sdfbase/gsm8k/make_gsm8k_matrix.py            (--check pins byte-identity)
+# through the ONE selector scripts/sdfbase/gsm8k/g8k_views.py select_rows: per (key, view) the cells are
+#   [none] + [prompted__safety_refusal iff view == it] + the roster's served cells of (key, view), in roster order
+# so this file never lists a cell — the roster does. TAG is the bare key for `main`, `<key>_<view>` otherwise.
+#
+# Order matters: it is the matrix's row order (indices, --array specs, the overlays' TAG order).
+#
+# IMMUTABLE INPUTS (llama-paper-rows P16): the published matrix regenerates from the roster + pins AS COMMITTED AT THE
+# PRODUCER PIN 8f5f1495 (copies under configs/sdfbase/gsm8k/frozen/8f5f1495/, their sha256 declared here and asserted by
+# the generator — `git show 8f5f1495:configs/sdfbase_full22_roster.yaml` restores an edited copy), never from the live
+# registry: a fifth target (llama8b) joined configs/sdfbase_full22_roster.yaml / _pins.json after the wave, and the
+# frozen 42-row document must not move (`source.roster_sha256` / `pins_sha256` are the pin's). The Llama rows are their
+# OWN matrix (views_llama.yaml -> matrix_llama.json, schema g8k_matrix/2) under their own wave root.
+frozen_inputs:
+  roster: configs/sdfbase/gsm8k/frozen/8f5f1495/sdfbase_full22_roster.yaml
+  pins: configs/sdfbase/gsm8k/frozen/8f5f1495/sdfbase_full22_pins.json
+  roster_sha256: 5669cb9ae7ef2aaf239baacf0bfe3eb9835846e58a93cd3a969a702e7c227d7b
+  pins_sha256: ed035e8205d690c9a4197d14aaabffc5e8c873c5c0b0a28a11075adc1cab4c8d
+views:
+  gemma4e4b: [it, main]          # instruct-direct (it: none, prompted, 2 itdoc objects) + base->instruct (main: none + 8)
+  qwen35_4b: [it, main]
+  nemotron3nano4b: [main]        # the chat-checkpoint lane: none + 6 objects + the prompted cell
+  glm46vflash: [main]
+
+# HELD (2026-09-10): the it view's constitution objects on gemma4e4b and
+# qwen35_4b are being RE-FITTED at effective batch 64 (the batch was standardised; the Gemma / Qwen
+# instruct-direct constitution objects are re-fitted after a fresh LR sweep) — no eval may use the existing direct-fit
+# constitution objects. The four rows stay IN the matrix (indices, TAGs and overlays stable) with status `held`: never
+# launched, never counted as refused, outside the analysis's design set (38 launched). LATER: these four with the new
+# objects, plus the it view's new control and difference cells (6 per model), as their own wave under this launcher.
+# UN-HOLDING = delete the entry below, regenerate the matrix, `--check`; no other code change.
+#
+# ADMIT AND HOLD (2026-09-12) — NOT listed here, by construction: a `prompted__<si>` cell the roster
+# declares on one of the views above that the matrix does not SCHEDULE (`g8k_cells.SCHEDULED_PROMPTED_CELLS`, today the
+# matched safety baseline only) is admitted as a row so the matrix agrees with the roster, and held so the launched set
+# does not move: `select_rows` appends it AFTER every scheduled row (views order, then roster order; the scheduled rows'
+# indices never move) with status `held` and `g8k_cells.unscheduled_held_reason`. A `holds:` entry naming such a cell is
+# moot (the structural reason wins). Scheduling the cell — naming it in SCHEDULED_PROMPTED_CELLS, or a later extension
+# mechanism that appends launch rows — releases the hold; regenerate + `--check` as always.
+holds:
+  - key: gemma4e4b
+    view: it
+    cells: [constv2-mix-full__psr_ce_all, constv2-mix-full__lora_r4_ce]
+    reason: >
+      2026-09-10: the instruct-direct constitution objects are being re-fitted at effective batch 64; every eval of the existing direct-fit constitution objects is held until the refit lands.
+  - key: qwen35_4b
+    view: it
+    cells: [constv2-mix-full__psr_ce_all, constv2-mix-full__lora_r4_ce]
+    reason: >
+      2026-09-10: the instruct-direct constitution objects are being re-fitted at effective batch 64; every eval of the existing direct-fit constitution objects is held until the refit lands.
+
+# EXTENSIONS (2026-09-13): the eight-arm panel's PROMPTED baselines the published main views lack — the SHORT
+# constitution SI (`prompted__si_constitution`, harness `prompted__constitution`, sha256 21e06f48…6a9a0f; NEVER `_full`)
+# on gemma / qwen / nemotron `main`, and the matched safety SI on gemma / qwen `main` (nemotron and glm `main` already
+# carry it). Prompted routes: no object, no pin, no roster edit (the TAG overlay's explicit_cells + the manifest's
+# prompted_prefix_hashes are what serving needs). APPENDED after the frozen 42 rows as wave `ext` under `controls_ext/`
+# (a pull of that subtree never carries a published leg); the constitution rows serve at the full22 families' OWN
+# long-SI entries (`capability:gen_long_gsm8k_longsi_f22` 16,640 / `…rung_longsi_f22` 24,832 — measured 2026-09-13,
+# prompt max 8,338), the fitted --time class (the ~8k-token prefill). Scheduling a cell here RELEASES the admit-and-hold
+# on it (a scheduled prompted cell is never a trailing held row). glm is the appendix model: no extension row. The `it`
+# views' constitution prompted cell is out of scope and stays an admit-and-hold matter.
+extensions:
+  - key: gemma4e4b
+    view: main
+    cells: [prompted__safety_refusal, prompted__si_constitution]
+    reason: >
+      the eight-arm panel's two prompted baselines on gemma4e4b main — the matched safety SI (the
+      published main view never carried it; the it view did) and the SHORT constitution SI (a fixed design choice).
+    since: 2026-09-13
+  - key: qwen35_4b
+    view: main
+    cells: [prompted__safety_refusal, prompted__si_constitution]
+    reason: >
+      the eight-arm panel's two prompted baselines on qwen35_4b main — the matched safety SI (the
+      published main view never carried it; the it view did) and the SHORT constitution SI (a fixed design choice).
+    since: 2026-09-13
+  - key: nemotron3nano4b
+    view: main
+    cells: [prompted__si_constitution]
+    reason: >
+      E2 (plan P2 / §2.2): the SHORT constitution SI on nemotron3nano4b main (its published main view already carries the
+      matched safety SI, row 31).
+    since: 2026-09-13
+
+# STEERING (2026-09-13): the AlphaSteer and Arditi arms on the PANEL view `main`, one row per (model, arm), GENERATED
+# from the ADMISSION RECORD configs/sdfbase/steer_admission.json (the SAME (model key, cell id, sha256) table pinned
+# for MATH-500): the object is ANOTHER LANE's (alphasteer_f22_rebake's canonical ladder / arditi_strength's strength
+# views), pinned by its OBJECT sha256 (never a directory digest), served from the lane's bank view named on the row
+# RELATIVE to the shared root per cluster role (`bank_view_rel`; the lane's own view name rides as `bank_view`), under
+# the rung's `gsm8k_paired200_<key>_steer_<cap>` tuple (minus_ctl's all-position shape), with the VERBATIM selection
+# label, the grid-limited flag (nemotron's 4 pp point moves on one judge flip) and the producer's serving-config hash
+# (NOT durable: every leg records the hash of the config IT serves). APPENDED after the extension rows as wave `steer`
+# under `controls_steer/`. The row's own overlay pair (`sdfbase_full22_<key>.gsm8k_<cell>.yaml`, explicit_cells [none,
+# <cell>]) is what the standup serves. An arm the record does not admit for a model REFUSES at generation — a steering
+# row never exists without its record. llama8b's rows live in the Llama matrix (views_llama.yaml, its own root); glm is
+# the appendix model: no steering row.
+steering:
+  - key: gemma4e4b
+    arms: [alphasteer, arditi]
+    reason: >
+      the highest rung within the 4 pp over-refusal budget (AlphaSteer rung 1) and the highest alpha within it on
+      the arditi strength battery (alpha 0.05) — the objects the attack panels present, by object sha256.
+    since: 2026-09-13
+  - key: qwen35_4b
+    arms: [alphasteer, arditi]
+    reason: >
+      the highest rung within the 4 pp over-refusal budget (AlphaSteer rung 3) and the highest alpha within it on
+      the arditi strength battery (alpha 0.05; from an earlier pinned tree of that lane, recorded per cell).
+    since: 2026-09-13
+  - key: nemotron3nano4b
+    arms: [alphasteer, arditi]
+    reason: >
+      the highest rung within the 4 pp over-refusal budget (AlphaSteer rung 1 — GRID-LIMITED; dose measured at top_p 1.0, the math legs decode at 0.95) and the highest alpha within it on the arditi strength
+      battery (alpha 0.05). Primary cluster only (the fused-kernel overlay).
+    since: 2026-09-13

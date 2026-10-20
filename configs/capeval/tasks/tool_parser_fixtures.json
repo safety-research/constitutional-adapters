@@ -1,0 +1,1283 @@
+{
+ "edges": [
+  {
+   "expected_any_of": [
+    {
+     "content": null,
+     "tool_calls": [
+      {
+       "arguments": {
+        "city": "Paris"
+       },
+       "name": "get_weather"
+      }
+     ],
+     "tools_called": true
+    },
+    {
+     "content": "<function=get_weather>\n<parameter=city>\nParis\n</parameter>\n</function>",
+     "tool_calls": [],
+     "tools_called": false
+    }
+   ],
+   "id": "bare_function_no_wrapper",
+   "note": "the bare form: admitted as a call, or returned as content — the record decides; the lane's reference reads it as content",
+   "text": "<function=get_weather>\n<parameter=city>\nParis\n</parameter>\n</function>",
+   "tools": [
+    {
+     "function": {
+      "description": "Current weather for a city.",
+      "name": "get_weather",
+      "parameters": {
+       "properties": {
+        "city": {
+         "description": "City name",
+         "type": "string"
+        },
+        "days": {
+         "type": "integer"
+        },
+        "detail": {
+         "type": "object"
+        },
+        "fields": {
+         "items": {
+          "type": "string"
+         },
+         "type": "array"
+        },
+        "hourly": {
+         "type": "boolean"
+        },
+        "note": {
+         "type": "string"
+        },
+        "threshold": {
+         "type": "number"
+        },
+        "unit": {
+         "enum": [
+          "celsius",
+          "fahrenheit"
+         ],
+         "type": "string"
+        },
+        "zip": {
+         "type": "string"
+        }
+       },
+       "required": [
+        "city"
+       ],
+       "type": "object"
+      }
+     },
+     "type": "function"
+    },
+    {
+     "function": {
+      "description": "Add two numbers.",
+      "name": "calc.add",
+      "parameters": {
+       "properties": {
+        "a": {
+         "type": "number"
+        },
+        "b": {
+         "type": "number"
+        }
+       },
+       "required": [
+        "a",
+        "b"
+       ],
+       "type": "object"
+      }
+     },
+     "type": "function"
+    }
+   ]
+  },
+  {
+   "expected_any_of": [
+    {
+     "content": "<tool_call>\n</tool_call>",
+     "tool_calls": [],
+     "tools_called": false
+    },
+    {
+     "content": null,
+     "tool_calls": [],
+     "tools_called": false
+    }
+   ],
+   "id": "empty_block",
+   "note": "a block with no function: no call; whether the text is returned as content is the parser's",
+   "text": "<tool_call>\n</tool_call>",
+   "tools": [
+    {
+     "function": {
+      "description": "Current weather for a city.",
+      "name": "get_weather",
+      "parameters": {
+       "properties": {
+        "city": {
+         "description": "City name",
+         "type": "string"
+        },
+        "days": {
+         "type": "integer"
+        },
+        "detail": {
+         "type": "object"
+        },
+        "fields": {
+         "items": {
+          "type": "string"
+         },
+         "type": "array"
+        },
+        "hourly": {
+         "type": "boolean"
+        },
+        "note": {
+         "type": "string"
+        },
+        "threshold": {
+         "type": "number"
+        },
+        "unit": {
+         "enum": [
+          "celsius",
+          "fahrenheit"
+         ],
+         "type": "string"
+        },
+        "zip": {
+         "type": "string"
+        }
+       },
+       "required": [
+        "city"
+       ],
+       "type": "object"
+      }
+     },
+     "type": "function"
+    },
+    {
+     "function": {
+      "description": "Add two numbers.",
+      "name": "calc.add",
+      "parameters": {
+       "properties": {
+        "a": {
+         "type": "number"
+        },
+        "b": {
+         "type": "number"
+        }
+       },
+       "required": [
+        "a",
+        "b"
+       ],
+       "type": "object"
+      }
+     },
+     "type": "function"
+    }
+   ]
+  }
+ ],
+ "either_of": [
+  {
+   "expected_any_of": [
+    {
+     "content": null,
+     "tool_calls": [
+      {
+       "arguments": {
+        "city": "Paris",
+        "note": null
+       },
+       "name": "get_weather"
+      }
+     ],
+     "tools_called": true
+    },
+    {
+     "content": null,
+     "tool_calls": [
+      {
+       "arguments": {
+        "city": "Paris",
+        "note": "null"
+       },
+       "name": "get_weather"
+      }
+     ],
+     "tools_called": true
+    }
+   ],
+   "id": "null_value",
+   "note": "The literal null under a `string`-typed parameter — JSON null (BFCL's convention; the reference reading) OR the string \"null\" (qwen3_xml's schema-faithful reading, coerce_to_schema_type returns None only under a declared null type); EITHER admitted. The pinned bfcl_200 items carry zero null-valued arguments, so the convention never decides a score",
+   "text": "<tool_call>\n<function=get_weather>\n<parameter=city>\nParis\n</parameter>\n<parameter=note>\nnull\n</parameter>\n</function>\n</tool_call>",
+   "tools": [
+    {
+     "function": {
+      "description": "Current weather for a city.",
+      "name": "get_weather",
+      "parameters": {
+       "properties": {
+        "city": {
+         "description": "City name",
+         "type": "string"
+        },
+        "days": {
+         "type": "integer"
+        },
+        "detail": {
+         "type": "object"
+        },
+        "fields": {
+         "items": {
+          "type": "string"
+         },
+         "type": "array"
+        },
+        "hourly": {
+         "type": "boolean"
+        },
+        "note": {
+         "type": "string"
+        },
+        "threshold": {
+         "type": "number"
+        },
+        "unit": {
+         "enum": [
+          "celsius",
+          "fahrenheit"
+         ],
+         "type": "string"
+        },
+        "zip": {
+         "type": "string"
+        }
+       },
+       "required": [
+        "city"
+       ],
+       "type": "object"
+      }
+     },
+     "type": "function"
+    },
+    {
+     "function": {
+      "description": "Add two numbers.",
+      "name": "calc.add",
+      "parameters": {
+       "properties": {
+        "a": {
+         "type": "number"
+        },
+        "b": {
+         "type": "number"
+        }
+       },
+       "required": [
+        "a",
+        "b"
+       ],
+       "type": "object"
+      }
+     },
+     "type": "function"
+    }
+   ]
+  },
+  {
+   "expected_any_of": [
+    {
+     "content": null,
+     "tool_calls": [
+      {
+       "arguments": {
+        "city": "Paris",
+        "extra": 7
+       },
+       "name": "get_weather"
+      }
+     ],
+     "tools_called": true
+    },
+    {
+     "content": null,
+     "tool_calls": [
+      {
+       "arguments": {
+        "city": "Paris",
+        "extra": "7"
+       },
+       "name": "get_weather"
+      }
+     ],
+     "tools_called": true
+    }
+   ],
+   "id": "undeclared_param",
+   "note": "A parameter the schema does not declare — typed 7 (JSON when it parses; the reference reading) OR the string \"7\" (qwen3_xml's schema-faithful reading, _fix_arg_types skips a name absent from `properties`); EITHER admitted. An undeclared parameter is wrong under BFCL's AST match whatever its typing, so the typing never flips a verdict",
+   "text": "<tool_call>\n<function=get_weather>\n<parameter=city>\nParis\n</parameter>\n<parameter=extra>\n7\n</parameter>\n</function>\n</tool_call>",
+   "tools": [
+    {
+     "function": {
+      "description": "Current weather for a city.",
+      "name": "get_weather",
+      "parameters": {
+       "properties": {
+        "city": {
+         "description": "City name",
+         "type": "string"
+        },
+        "days": {
+         "type": "integer"
+        },
+        "detail": {
+         "type": "object"
+        },
+        "fields": {
+         "items": {
+          "type": "string"
+         },
+         "type": "array"
+        },
+        "hourly": {
+         "type": "boolean"
+        },
+        "note": {
+         "type": "string"
+        },
+        "threshold": {
+         "type": "number"
+        },
+        "unit": {
+         "enum": [
+          "celsius",
+          "fahrenheit"
+         ],
+         "type": "string"
+        },
+        "zip": {
+         "type": "string"
+        }
+       },
+       "required": [
+        "city"
+       ],
+       "type": "object"
+      }
+     },
+     "type": "function"
+    },
+    {
+     "function": {
+      "description": "Add two numbers.",
+      "name": "calc.add",
+      "parameters": {
+       "properties": {
+        "a": {
+         "type": "number"
+        },
+        "b": {
+         "type": "number"
+        }
+       },
+       "required": [
+        "a",
+        "b"
+       ],
+       "type": "object"
+      }
+     },
+     "type": "function"
+    }
+   ]
+  }
+ ],
+ "families": {
+  "nemotron_h": {
+   "calls": [
+    {
+     "arguments": {
+      "city": "Paris",
+      "days": 3,
+      "detail": {
+       "hourly": true
+      },
+      "unit": "celsius"
+     },
+     "name": "get_weather"
+    },
+    {
+     "arguments": {
+      "city": "Lyon"
+     },
+     "name": "get_weather"
+    }
+   ],
+   "chat_template_hash": "ab7813c3abdd9cb6",
+   "hf": "nvidia/NVIDIA-Nemotron-3-Nano-4B-BF16",
+   "manifest": "configs/capeval/manifests/petri_full22_nemotron3nano4b.yaml",
+   "parser": "qwen3_xml",
+   "rendered": "<tool_call>\n<function=get_weather>\n<parameter=city>\nParis\n</parameter>\n<parameter=days>\n3\n</parameter>\n<parameter=detail>\n{\"hourly\": true}\n</parameter>\n<parameter=unit>\ncelsius\n</parameter>\n</function>\n</tool_call>\n<tool_call>\n<function=get_weather>\n<parameter=city>\nLyon\n</parameter>\n</function>\n</tool_call>",
+   "rev": "dfaf35de3e30f1867dd8dbc38a7fc9fb52d3914f",
+   "row": "nemotron3nano4b"
+  },
+  "qwen3_5": {
+   "calls": [
+    {
+     "arguments": {
+      "city": "Paris",
+      "days": 3,
+      "detail": {
+       "hourly": true
+      },
+      "unit": "celsius"
+     },
+     "name": "get_weather"
+    },
+    {
+     "arguments": {
+      "city": "Lyon"
+     },
+     "name": "get_weather"
+    }
+   ],
+   "chat_template_hash": "a4aee8afcf2e0711",
+   "hf": "Qwen/Qwen3.5-4B",
+   "manifest": "configs/capeval/manifests/petri_full22_qwen35_4b.yaml",
+   "parser": "qwen3_xml",
+   "rendered": "<tool_call>\n<function=get_weather>\n<parameter=city>\nParis\n</parameter>\n<parameter=days>\n3\n</parameter>\n<parameter=detail>\n{\"hourly\": true}\n</parameter>\n<parameter=unit>\ncelsius\n</parameter>\n</function>\n</tool_call>\n<tool_call>\n<function=get_weather>\n<parameter=city>\nLyon\n</parameter>\n</function>\n</tool_call>",
+   "rev": "851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a",
+   "row": "qwen35_4b-f22"
+  }
+ },
+ "fixtures": [
+  {
+   "expected": {
+    "content": null,
+    "tool_calls": [
+     {
+      "arguments": {
+       "city": "Paris"
+      },
+      "name": "get_weather"
+     }
+    ],
+    "tools_called": true
+   },
+   "id": "single_string",
+   "note": "one call, one string parameter",
+   "text": "<tool_call>\n<function=get_weather>\n<parameter=city>\nParis\n</parameter>\n</function>\n</tool_call>",
+   "tools": [
+    {
+     "function": {
+      "description": "Current weather for a city.",
+      "name": "get_weather",
+      "parameters": {
+       "properties": {
+        "city": {
+         "description": "City name",
+         "type": "string"
+        },
+        "days": {
+         "type": "integer"
+        },
+        "detail": {
+         "type": "object"
+        },
+        "fields": {
+         "items": {
+          "type": "string"
+         },
+         "type": "array"
+        },
+        "hourly": {
+         "type": "boolean"
+        },
+        "note": {
+         "type": "string"
+        },
+        "threshold": {
+         "type": "number"
+        },
+        "unit": {
+         "enum": [
+          "celsius",
+          "fahrenheit"
+         ],
+         "type": "string"
+        },
+        "zip": {
+         "type": "string"
+        }
+       },
+       "required": [
+        "city"
+       ],
+       "type": "object"
+      }
+     },
+     "type": "function"
+    },
+    {
+     "function": {
+      "description": "Add two numbers.",
+      "name": "calc.add",
+      "parameters": {
+       "properties": {
+        "a": {
+         "type": "number"
+        },
+        "b": {
+         "type": "number"
+        }
+       },
+       "required": [
+        "a",
+        "b"
+       ],
+       "type": "object"
+      }
+     },
+     "type": "function"
+    }
+   ]
+  },
+  {
+   "expected": {
+    "content": null,
+    "tool_calls": [
+     {
+      "arguments": {
+       "city": "Paris",
+       "days": 3,
+       "detail": {
+        "hourly": true,
+        "n": 2
+       },
+       "fields": [
+        "temp",
+        "wind"
+       ],
+       "hourly": true,
+       "note": "12",
+       "threshold": 0.5,
+       "zip": "00075"
+      },
+      "name": "get_weather"
+     }
+    ],
+    "tools_called": true
+   },
+   "id": "typed_params",
+   "note": "every parameter typed by the schema: integer, number, boolean, object, array; a numeric-looking STRING stays a string",
+   "text": "<tool_call>\n<function=get_weather>\n<parameter=city>\nParis\n</parameter>\n<parameter=days>\n3\n</parameter>\n<parameter=threshold>\n0.5\n</parameter>\n<parameter=hourly>\ntrue\n</parameter>\n<parameter=detail>\n{\"hourly\": true, \"n\": 2}\n</parameter>\n<parameter=fields>\n[\"temp\", \"wind\"]\n</parameter>\n<parameter=zip>\n00075\n</parameter>\n<parameter=note>\n12\n</parameter>\n</function>\n</tool_call>",
+   "tools": [
+    {
+     "function": {
+      "description": "Current weather for a city.",
+      "name": "get_weather",
+      "parameters": {
+       "properties": {
+        "city": {
+         "description": "City name",
+         "type": "string"
+        },
+        "days": {
+         "type": "integer"
+        },
+        "detail": {
+         "type": "object"
+        },
+        "fields": {
+         "items": {
+          "type": "string"
+         },
+         "type": "array"
+        },
+        "hourly": {
+         "type": "boolean"
+        },
+        "note": {
+         "type": "string"
+        },
+        "threshold": {
+         "type": "number"
+        },
+        "unit": {
+         "enum": [
+          "celsius",
+          "fahrenheit"
+         ],
+         "type": "string"
+        },
+        "zip": {
+         "type": "string"
+        }
+       },
+       "required": [
+        "city"
+       ],
+       "type": "object"
+      }
+     },
+     "type": "function"
+    },
+    {
+     "function": {
+      "description": "Add two numbers.",
+      "name": "calc.add",
+      "parameters": {
+       "properties": {
+        "a": {
+         "type": "number"
+        },
+        "b": {
+         "type": "number"
+        }
+       },
+       "required": [
+        "a",
+        "b"
+       ],
+       "type": "object"
+      }
+     },
+     "type": "function"
+    }
+   ]
+  },
+  {
+   "expected": {
+    "content": null,
+    "tool_calls": [
+     {
+      "arguments": {
+       "city": "Paris"
+      },
+      "name": "get_weather"
+     },
+     {
+      "arguments": {
+       "a": 1.5,
+       "b": 2
+      },
+      "name": "calc.add"
+     }
+    ],
+    "tools_called": true
+   },
+   "id": "parallel_two",
+   "note": "two blocks = two calls in order; a dotted function name",
+   "text": "<tool_call>\n<function=get_weather>\n<parameter=city>\nParis\n</parameter>\n</function>\n</tool_call>\n<tool_call>\n<function=calc.add>\n<parameter=a>\n1.5\n</parameter>\n<parameter=b>\n2\n</parameter>\n</function>\n</tool_call>",
+   "tools": [
+    {
+     "function": {
+      "description": "Current weather for a city.",
+      "name": "get_weather",
+      "parameters": {
+       "properties": {
+        "city": {
+         "description": "City name",
+         "type": "string"
+        },
+        "days": {
+         "type": "integer"
+        },
+        "detail": {
+         "type": "object"
+        },
+        "fields": {
+         "items": {
+          "type": "string"
+         },
+         "type": "array"
+        },
+        "hourly": {
+         "type": "boolean"
+        },
+        "note": {
+         "type": "string"
+        },
+        "threshold": {
+         "type": "number"
+        },
+        "unit": {
+         "enum": [
+          "celsius",
+          "fahrenheit"
+         ],
+         "type": "string"
+        },
+        "zip": {
+         "type": "string"
+        }
+       },
+       "required": [
+        "city"
+       ],
+       "type": "object"
+      }
+     },
+     "type": "function"
+    },
+    {
+     "function": {
+      "description": "Add two numbers.",
+      "name": "calc.add",
+      "parameters": {
+       "properties": {
+        "a": {
+         "type": "number"
+        },
+        "b": {
+         "type": "number"
+        }
+       },
+       "required": [
+        "a",
+        "b"
+       ],
+       "type": "object"
+      }
+     },
+     "type": "function"
+    }
+   ]
+  },
+  {
+   "expected": {
+    "content": null,
+    "tool_calls": [
+     {
+      "arguments": {
+       "city": "Paris",
+       "note": "line one\nline two\n\nline four"
+      },
+      "name": "get_weather"
+     }
+    ],
+    "tools_called": true
+   },
+   "id": "multiline_value",
+   "note": "a value spanning lines keeps its interior newlines; only the one leading and one trailing newline are the grammar's",
+   "text": "<tool_call>\n<function=get_weather>\n<parameter=city>\nParis\n</parameter>\n<parameter=note>\nline one\nline two\n\nline four\n</parameter>\n</function>\n</tool_call>",
+   "tools": [
+    {
+     "function": {
+      "description": "Current weather for a city.",
+      "name": "get_weather",
+      "parameters": {
+       "properties": {
+        "city": {
+         "description": "City name",
+         "type": "string"
+        },
+        "days": {
+         "type": "integer"
+        },
+        "detail": {
+         "type": "object"
+        },
+        "fields": {
+         "items": {
+          "type": "string"
+         },
+         "type": "array"
+        },
+        "hourly": {
+         "type": "boolean"
+        },
+        "note": {
+         "type": "string"
+        },
+        "threshold": {
+         "type": "number"
+        },
+        "unit": {
+         "enum": [
+          "celsius",
+          "fahrenheit"
+         ],
+         "type": "string"
+        },
+        "zip": {
+         "type": "string"
+        }
+       },
+       "required": [
+        "city"
+       ],
+       "type": "object"
+      }
+     },
+     "type": "function"
+    },
+    {
+     "function": {
+      "description": "Add two numbers.",
+      "name": "calc.add",
+      "parameters": {
+       "properties": {
+        "a": {
+         "type": "number"
+        },
+        "b": {
+         "type": "number"
+        }
+       },
+       "required": [
+        "a",
+        "b"
+       ],
+       "type": "object"
+      }
+     },
+     "type": "function"
+    }
+   ]
+  },
+  {
+   "expected": {
+    "content": "Let me check that for you.",
+    "tool_calls": [
+     {
+      "arguments": {
+       "city": "Paris"
+      },
+      "name": "get_weather"
+     }
+    ],
+    "tools_called": true
+   },
+   "id": "content_then_call",
+   "note": "text before the first block is the message content",
+   "text": "Let me check that for you.\n<tool_call>\n<function=get_weather>\n<parameter=city>\nParis\n</parameter>\n</function>\n</tool_call>",
+   "tools": [
+    {
+     "function": {
+      "description": "Current weather for a city.",
+      "name": "get_weather",
+      "parameters": {
+       "properties": {
+        "city": {
+         "description": "City name",
+         "type": "string"
+        },
+        "days": {
+         "type": "integer"
+        },
+        "detail": {
+         "type": "object"
+        },
+        "fields": {
+         "items": {
+          "type": "string"
+         },
+         "type": "array"
+        },
+        "hourly": {
+         "type": "boolean"
+        },
+        "note": {
+         "type": "string"
+        },
+        "threshold": {
+         "type": "number"
+        },
+        "unit": {
+         "enum": [
+          "celsius",
+          "fahrenheit"
+         ],
+         "type": "string"
+        },
+        "zip": {
+         "type": "string"
+        }
+       },
+       "required": [
+        "city"
+       ],
+       "type": "object"
+      }
+     },
+     "type": "function"
+    },
+    {
+     "function": {
+      "description": "Add two numbers.",
+      "name": "calc.add",
+      "parameters": {
+       "properties": {
+        "a": {
+         "type": "number"
+        },
+        "b": {
+         "type": "number"
+        }
+       },
+       "required": [
+        "a",
+        "b"
+       ],
+       "type": "object"
+      }
+     },
+     "type": "function"
+    }
+   ]
+  },
+  {
+   "expected": {
+    "content": "The weather in Paris is usually mild in spring.",
+    "tool_calls": [],
+    "tools_called": false
+   },
+   "id": "no_call_plain",
+   "note": "no block: the whole text is content (an ordinary answer)",
+   "text": "The weather in Paris is usually mild in spring.",
+   "tools": [
+    {
+     "function": {
+      "description": "Current weather for a city.",
+      "name": "get_weather",
+      "parameters": {
+       "properties": {
+        "city": {
+         "description": "City name",
+         "type": "string"
+        },
+        "days": {
+         "type": "integer"
+        },
+        "detail": {
+         "type": "object"
+        },
+        "fields": {
+         "items": {
+          "type": "string"
+         },
+         "type": "array"
+        },
+        "hourly": {
+         "type": "boolean"
+        },
+        "note": {
+         "type": "string"
+        },
+        "threshold": {
+         "type": "number"
+        },
+        "unit": {
+         "enum": [
+          "celsius",
+          "fahrenheit"
+         ],
+         "type": "string"
+        },
+        "zip": {
+         "type": "string"
+        }
+       },
+       "required": [
+        "city"
+       ],
+       "type": "object"
+      }
+     },
+     "type": "function"
+    },
+    {
+     "function": {
+      "description": "Add two numbers.",
+      "name": "calc.add",
+      "parameters": {
+       "properties": {
+        "a": {
+         "type": "number"
+        },
+        "b": {
+         "type": "number"
+        }
+       },
+       "required": [
+        "a",
+        "b"
+       ],
+       "type": "object"
+      }
+     },
+     "type": "function"
+    }
+   ]
+  },
+  {
+   "expected": {
+    "content": "I don't have a function that can book flights; I can only look up the weather.",
+    "tool_calls": [],
+    "tools_called": false
+   },
+   "id": "irrelevance_answer",
+   "note": "the BFCL irrelevance categories: a refusal that MENTIONS functions is not a call",
+   "text": "I don't have a function that can book flights; I can only look up the weather.",
+   "tools": [
+    {
+     "function": {
+      "description": "Current weather for a city.",
+      "name": "get_weather",
+      "parameters": {
+       "properties": {
+        "city": {
+         "description": "City name",
+         "type": "string"
+        },
+        "days": {
+         "type": "integer"
+        },
+        "detail": {
+         "type": "object"
+        },
+        "fields": {
+         "items": {
+          "type": "string"
+         },
+         "type": "array"
+        },
+        "hourly": {
+         "type": "boolean"
+        },
+        "note": {
+         "type": "string"
+        },
+        "threshold": {
+         "type": "number"
+        },
+        "unit": {
+         "enum": [
+          "celsius",
+          "fahrenheit"
+         ],
+         "type": "string"
+        },
+        "zip": {
+         "type": "string"
+        }
+       },
+       "required": [
+        "city"
+       ],
+       "type": "object"
+      }
+     },
+     "type": "function"
+    },
+    {
+     "function": {
+      "description": "Add two numbers.",
+      "name": "calc.add",
+      "parameters": {
+       "properties": {
+        "a": {
+         "type": "number"
+        },
+        "b": {
+         "type": "number"
+        }
+       },
+       "required": [
+        "a",
+        "b"
+       ],
+       "type": "object"
+      }
+     },
+     "type": "function"
+    }
+   ]
+  },
+  {
+   "expected": {
+    "content": null,
+    "tool_calls": [
+     {
+      "arguments": {
+       "city": "Paris"
+      },
+      "name": "get_weather"
+     }
+    ],
+    "tools_called": true
+   },
+   "id": "unclosed_trailing_block",
+   "note": "a block cut at the cap before </tool_call> still parses (the grammar's `<tool_call>(.*?)$` alternative)",
+   "text": "<tool_call>\n<function=get_weather>\n<parameter=city>\nParis\n</parameter>\n</function>",
+   "tools": [
+    {
+     "function": {
+      "description": "Current weather for a city.",
+      "name": "get_weather",
+      "parameters": {
+       "properties": {
+        "city": {
+         "description": "City name",
+         "type": "string"
+        },
+        "days": {
+         "type": "integer"
+        },
+        "detail": {
+         "type": "object"
+        },
+        "fields": {
+         "items": {
+          "type": "string"
+         },
+         "type": "array"
+        },
+        "hourly": {
+         "type": "boolean"
+        },
+        "note": {
+         "type": "string"
+        },
+        "threshold": {
+         "type": "number"
+        },
+        "unit": {
+         "enum": [
+          "celsius",
+          "fahrenheit"
+         ],
+         "type": "string"
+        },
+        "zip": {
+         "type": "string"
+        }
+       },
+       "required": [
+        "city"
+       ],
+       "type": "object"
+      }
+     },
+     "type": "function"
+    },
+    {
+     "function": {
+      "description": "Add two numbers.",
+      "name": "calc.add",
+      "parameters": {
+       "properties": {
+        "a": {
+         "type": "number"
+        },
+        "b": {
+         "type": "number"
+        }
+       },
+       "required": [
+        "a",
+        "b"
+       ],
+       "type": "object"
+      }
+     },
+     "type": "function"
+    }
+   ]
+  }
+ ],
+ "generated_at": "2026-09-22T20:21:33+00:00",
+ "generated_by": "scripts/bfcl_parser_probe.py",
+ "grammar": "<tool_call>\\n<function=NAME>\\n<parameter=KEY>\\nVALUE\\n</parameter>\\n…</function>\\n</tool_call>; text before the first block is content; parameters typed by the tool schema (string verbatim, integer/number/boolean parsed, object/array JSON); undeclared and literal-null values: the JSON reading or the schema-faithful string, EITHER admitted (either_of); one leading and one trailing newline of a value are the grammar's",
+ "parser": "qwen3_xml",
+ "schema": 2,
+ "tools": [
+  {
+   "function": {
+    "description": "Current weather for a city.",
+    "name": "get_weather",
+    "parameters": {
+     "properties": {
+      "city": {
+       "description": "City name",
+       "type": "string"
+      },
+      "days": {
+       "type": "integer"
+      },
+      "detail": {
+       "type": "object"
+      },
+      "fields": {
+       "items": {
+        "type": "string"
+       },
+       "type": "array"
+      },
+      "hourly": {
+       "type": "boolean"
+      },
+      "note": {
+       "type": "string"
+      },
+      "threshold": {
+       "type": "number"
+      },
+      "unit": {
+       "enum": [
+        "celsius",
+        "fahrenheit"
+       ],
+       "type": "string"
+      },
+      "zip": {
+       "type": "string"
+      }
+     },
+     "required": [
+      "city"
+     ],
+     "type": "object"
+    }
+   },
+   "type": "function"
+  },
+  {
+   "function": {
+    "description": "Add two numbers.",
+    "name": "calc.add",
+    "parameters": {
+     "properties": {
+      "a": {
+       "type": "number"
+      },
+      "b": {
+       "type": "number"
+      }
+     },
+     "required": [
+      "a",
+      "b"
+     ],
+     "type": "object"
+    }
+   },
+   "type": "function"
+  }
+ ]
+}

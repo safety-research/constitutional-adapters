@@ -1,0 +1,15 @@
+# registry-store-mirror.timer — results registry. Rendered for the site and installed into ~/.config/systemd/user/ by the registry installer.
+# Secret-free: the registry needs no credential; ssh to the cluster goes through the agent socket.
+# Bounded: the service is Type=oneshot with TimeoutStartSec and Restart=no; OnUnitActiveSec counts from the last activation,
+# so a long first copy simply delays the next tick instead of overlapping it (the service also holds its own lock).
+[Unit]
+Description=Results registry store generations to the primary cluster, every 30 min
+
+[Timer]
+OnBootSec=6min
+OnUnitActiveSec=30min
+AccuracySec=1min
+Unit=registry-store-mirror.service
+
+[Install]
+WantedBy=timers.target

@@ -1,0 +1,356 @@
+# sdfbase_full22_roster_psrcert.yaml — a CERTIFICATION-ONLY roster of the full22 wave (native-psr-serving,
+# decision D15, 2026-09-14). NOT a production roster and NEVER a production view: it exists so the native
+# residual-slot serving path can be CERTIFIED on llama8b, whose production views (`main`, `it`) carry no PSR
+# cell (since 2026-09-12, PSR stays out of llama8b's production waves by default), while its bank
+# `$SHARED/exp/objects/sdfbase/full22/llama8b/cells/` already holds the staged, pinned all-positions PSR object
+# `base__constv2-mix-full__psr_ce_all` (configs/sdfbase_full22_pins.json, object_sha256 4df62c74...).
+#
+# FOUR CERTIFICATION-ONLY VIEWS over three targets (one view per target, except llama8b, whose `psrcert` and
+# `pairedcert` views are two certifications of two different residual objects sharing the LoRA twin):
+#   * targets.llama8b.views.pairedcert (THE PAIRED WRITE, second round) = llama8b's FITTED TEACHER
+#     `derived__constv2-mix-full__psr_ce_all_minus_ctl` (kind psr_paired_write, object_sha256 3ee2adb9..., already
+#     staged + pinned in the wave bank, so a plain staged-id mapping) beside the LoRA twin; multilora_cert.py's
+#     `llama8b_paired` row certifies it with the BARE wave pin key.
+#   * targets.qwen35_4b.views.pairedcert (THE PAIRED WRITE, relu-differenced-native-qwen, 2026-09-17) = the
+#     UNDISTILLED functional residual `relu(w1.z+b1) d1 - relu(w2.z+b2) d2` on the shared pre-write state
+#     (kind psr_paired_write, op relu_gated_vector_pair — the native residual slot's SECOND gate term), as
+#     the batch-64 seed-1 fitted object (object_sha256 f98f0349...), beside the qwen LoRA twin. The object
+#     lives in the reseed store ($SHARED/exp/objects/sdfbase/reseed/, READ-ONLY to this route), so it is named
+#     through the CROSS-BANK PIN FORM against this route's own authority — `constv2-mix-full__
+#     psr_ce_all_minus_ctl: {pins: configs/reseed_paired_pins.json, pin: qwen35_4b.<cell>}` — never
+#     by a staged id of the wave's bank (which does not hold it and must not copy it). multilora_cert.py's
+#     `qwen35_4b_paired` row certifies it (the same qualified pin key on the PRIMARY cell). NOTE the view
+#     builder's pin form expects a staged copy (`<bank>/cells/<staged_id>` + staged_from.json beside a
+#     `cells_view/<view>/<cell>` source); the reseed store's derived layout has neither, so make_bank_view.py
+#     REFUSES this entry by name until the campaign stages a copy under a staged-copy layout (never into the
+#     reseed store) — see configs/reseed_paired_pins.json `_view_builder_note`.
+#   * targets.llama8b.views.psrcert (stage 1) = that PSR cell beside its LoRA twin
+#     `base__constv2-mix-full__lora_r4_ce` (pinned 504b6651...), each mapped to the staged id the production
+#     bank holds — the canary set ([tt_cell, *extra_cells] of multilora_cert.py's `llama8b_psr` row, resolved
+#     by --preflight-cells) and the mixed standup the smoke stands up (static + controls legs).
+#   * targets.gemma4e4b.views.psr2cert (stage 2, D17 / D21) = C5's THREE canaries in ONE view: the RESPONSE-fit
+#     PSR cell `si12__safety_refusal__psr_kl_all` (the stage-2 position class's own canary, pinned 6abb92c8...),
+#     the ARDITI refusal direction (kind static_r, prefill_all at site pre — the constant-add path on real
+#     data) and the LoRA twin. The Arditi object lives in a DIFFERENT bank
+#     ($SHARED/exp/objects/arditi_strength/gemma4e4b/strength/), so it is named through the roster's CROSS-BANK
+#     PIN FORM — `arditi: {pins: configs/misalign_baseline_pins.json, pin: gemma4e4b.arditi}` — which carries
+#     no staged_id field, so this view serves exactly the rung the production misalignment instrument serves
+#     and no roster can substitute another. multilora_cert.py's `gemma4e4b_psr2cert` row certifies it;
+#     make_bank_view.py holds every byte to that pin.
+#
+# EVERYTHING ELSE IS THE PRODUCTION ROSTER'S, BYTE FOR BYTE AS DATA: the wave-wide keys (wave, bank_root,
+# serving_impl_commit, the caps, the attacker defaults, bon_climb_*), lane_flags, and every key of each target
+# block other than `views` — llama8b's (model, model_revision, body_config, pins_config, xstest_subset,
+# replicate_floor, caps, capability_controls, capability_omitted, dose_families, lanes) and gemma4e4b's (model,
+# model_revision, body_config, lanes) — copied so the generator renders the SAME body for a certification view
+# as for that target's production views, and pinned equal by tests/test_sdfbase_full22_wave.py (the two files
+# cannot drift apart; the production roster is never edited for a certification). A key that changes in the
+# production roster is changed here in the same commit.
+#
+# HOW IT IS READ. Every roster reader takes `--roster <this file>`; the full22 jobs get it from common.sh's
+# F22_ROSTER (default: the production roster), which f22_init exports and every make_bank_view.py /
+# roster_cell_count.py / roster_view.py call carries:
+#   * scripts/sdfbase/make_full22_configs.py --roster configs/sdfbase_full22_roster_psrcert.yaml
+#       -> configs/sdfbase_full22_llama8b_psrcert.yaml (explicit_cells [none, the PSR cell, the LoRA cell])
+#       -> configs/capeval/manifests/petri_full22_llama8b_psrcert.yaml   (the manifest f22_resolve_config requires)
+#       -> configs/sdfbase_full22_gemma4e4b_psr2cert.yaml (explicit_cells [none, the PSR cell, arditi, the LoRA cell])
+#       -> configs/capeval/manifests/petri_full22_gemma4e4b_psr2cert.yaml
+#       -> configs/sdfbase_full22_qwen35_4b_pairedcert.yaml (explicit_cells [none, the paired cell, the LoRA cell])
+#       -> configs/capeval/manifests/petri_full22_qwen35_4b_pairedcert.yaml
+#       -> configs/sdfbase_full22_llama8b_pairedcert.yaml (explicit_cells [none, the teacher cell, the LoRA cell])
+#       -> configs/capeval/manifests/petri_full22_llama8b_pairedcert.yaml
+#   * scripts/sdfbase/full22/make_bank_view.py --target llama8b --view psrcert --roster <this file>  (--check first)
+#       -> $SHARED/exp/objects/sdfbase/full22/llama8b/cells_view/psrcert/ over the ALREADY-STAGED cells (pin sha,
+#          staged_from.json, the identity sidecar — the builder's own gates; a refusal is reported, never worked around)
+#     ... --target gemma4e4b --view psr2cert --roster <this file>
+#       -> $SHARED/exp/objects/sdfbase/full22/gemma4e4b/cells_view/psr2cert/, whose `arditi` entry symlinks the
+#          ARDITI bank's staged copy (the pin's sha re-hashed, its source view resolved, fit_provenance.json
+#          validated, the blob's kind and served layer held to the pin) and is recorded in VIEW_MANIFEST.json
+#          with its source bank and pin path
+#   * F22_ROSTER=configs/sdfbase_full22_roster_psrcert.yaml sbatch scripts/sdfbase/full22/smoke_full22.sbatch \
+#         llama8b psrcert <wave_sha> constv2-mix-full__psr_ce_all static,controls
+#   A job that reads either (target, view) WITHOUT F22_ROSTER refuses at the roster count guard (the production
+#   roster names neither view) — pinned as a regression test.
+# Neither view carries a `legs:` key (like llama8b / gemma4e4b `main`), so f22_roster.view_legs / view_controls
+# answer the same legs / controls list the production views do; no production leg is ever submitted for either
+# (README).
+wave: full22
+bank_root: exp/objects/sdfbase/full22            # under $SHARED on either cluster
+staging_manifest: exp/objects/sdfbase/full22/staging_manifest.json
+# the serving-implementation commit the Petri manifests freeze: the LAST commit touching
+# src/sisteer/capeval/serving/*.py or tiers/petri_runner.py on the wave tree. Re-pinned at
+# landing (README "Re-pin at landing"), regenerated into every manifest by the generator.
+serving_impl_commit: 94e294c445dc5eec6ebe0ce3a3e25553004cd4b0
+# the lens reduction mode of the whole wave — every standup pins AND asserts it (never per_row)
+lens_reduction_mode: stacked
+# the static/replayable single-shot families' completion cap (attacks.static_max_new_tokens)
+static_max_new_tokens: 4096
+# the MULTI-TURN TARGET's per-reply cap (attacks.target_max_new_tokens; Crescendo / PAIR /
+# ActorAttack through jailbreak_run._target_max_new_tokens). 512 was mt1's and every filed
+# full22 multi-turn store's; the 4,096-cap re-runs of 2026-09-11 (71 % of the filed replies
+# sat exactly at 512, and at 4,096 the SAME cells truncate 0-1 % with the p99 reply at ~1.6k)
+# made 4,096 the canonical instrument. The BoN cap
+# (bon.max_new_tokens) is NOT this knob: it stays 512, the base of the 512 -> 4,096 climb.
+target_max_new_tokens: 4096
+# the judged OVER-REFUSAL controls' completion cap (attacks.controls_max_new_tokens; XSTest / OR-Bench
+# through served_capability_run and sisteer.eval.cell_controls.controls_cap, the ONE reader): 512, the
+# root of the sampled ladder 512 -> 2,048 -> 8,192 and every filed greedy control store's cap. Its OWN
+# key since 2026-09-11: the controls used to read target_max_new_tokens (the shared completion cap),
+# so the multi-turn cap above would have re-capped and re-keyed them silently; they do not move with it.
+controls_max_new_tokens: 512
+# THE CONTROLS STANDUP'S WINDOW FOR A gsm8k-BEARING TABLE VIEW (2026-09-14). The wave's ONE
+# controls standup (target_static.sbatch: capability:short serving gsm8k + mmlu + xstest + or_bench_hard_1k)
+# stood every table view up at 2,048 tokens, a window sized for the RETIRED 0-shot gsm8k leg (<= 1.1k prompts).
+# The standard Inspect gsm8k control's 10-SHOT system turn renders to 2,310 / 2,373 / 2,336 / 2,128 tokens bare
+# on gemma4e4b / qwen35_4b / nemotron3nano4b / glm46vflash and up to 2,462 under the prompted__safety_refusal
+# turn (geometry capability:gen_long_gsm8k_rung, measured 2026-09-10); + the 512 cap = 2,974 > 2,048, so vLLM
+# refused the long items and the wave's own gsm8k control never produced a row on those 31 views. THE CAP
+# NEVER SHRINKS TO FIT A WINDOW (the standing truncation rule): the window widens, S follows from the budget.
+# Read by f22_roster.gsm8k_controls_window -> view_windows(...)["controls_gsm8k"] for a TABLE view whose
+# controls list carries gsm8k (roster_view.py `window gsm8k`; target_static.sbatch / smoke_full22.sbatch
+# CTL_L; submit_newmodels.py); a view's own serving override is its own pin and is not touched. Data here
+# because roster_view.py runs under plain python3; held to the table by tests/test_f22_gsm8k_controls_window.py
+# and, at job time, by common.sh f22_gsm8k_window_check (>= the derived minimum, by name, before the standup).
+controls_window:
+  gsm8k: 4608
+  source: "geometry.derived_window('capability:gen_long_gsm8k_rung', controls_max_new_tokens=512, from_field='max_prompt') = align128(next_block(2,462 + 512)) = 3072 is the MINIMUM (the GSM8K paired-200 prompt budget's pooled MAX prompt, qwen35_4b under the safety turn, thinking-ON render; the thinking-OFF render the controls run under differs by -2..+4 tokens); the window is the geometry table's capability:gen_long max_model_len = 4608 -- the window the GSM8K lane's paired-200 cap-512 leg (gsm8k-paired200-paper-objects, thinking OFF) stood up at on all four models, and where nemotron3nano4b's hybrid concurrency ceiling is MEASURED (HYBRID_WINDOW_SEQS_CEILINGS: 167 at 4608, job 483254_2), so the standup cannot refuse at readiness on an unmeasured hybrid capacity. S at 4608: gemma4e4b 128 / qwen35_4b 161 / nemotron3nano4b 167 / glm46vflash 170. Measured 2026-09-14: smoke 503471 refused 34 of 200 gsm8k items at 2048 on the llama render (max 1,537)."
+# CONTROLS RETIRED FROM THE WAVE'S CONTROLS LEG, WAVE-WIDE (2026-09-14; f22_roster.controls_retired ->
+# view_controls drops them from EVERY view's list: the wave's and the smoke's controls driver, the sampled sbatch's
+# gsm8k gate, the printers). Distinct from a target's capability_omitted ON PURPOSE: that key also rewrites the sampled
+# lane's readouts.gsm8k to an omission record (make_sampled_configs.expected_readouts) and the drivers' run records
+# (sisteer.eval.capability_omissions) -- the FROZEN instrument of runs that already happened (the sixteen live main
+# sampled configs are pinned as data by tests/test_sdfbase_full22_sampled.py); a wave-wide retirement leaves those
+# records alone. The controls_window.gsm8k block above stays as a dormant guard.
+controls_retired:
+  gsm8k: "retired 2026-09-14: the paper uses ONE GSM8K instrument -- the evaluation lane's inspect/gsm8k_paired200 lane (thinking ON, 8,192 cap with a 16,384 rung, k=1, served at its own windows), which covers every paper cell -- so the wave's controls-leg gsm8k (the same 200 items, thinking OFF, greedy, cap 512, riding the capability:short controls standup) is a second, non-canonical GSM8K measurement and is RETIRED on every target (the llama8b precedent of 2026-09-10, made wave-wide). It had produced no row on the four gsm8k-bearing targets since gsm8k became the 10-shot Inspect control: its prompts (max 2,462 with the safety turn) + the 512 cap overflowed the 2,048 controls window (smoke 503471 refused 34 of 200 items there), and keeping it would have held the whole controls phase at the 4,608 window. The controls standup returns to capability:short's 2,048 with full S; controls_window.gsm8k stays as a dormant guard for a roster that drops this retirement. This key is deliberately NOT a per-target capability_omitted: that key also rewrites the sampled lane's readouts.gsm8k and the drivers' run records -- the frozen instrument of runs that already happened -- which this wave-wide retirement leaves alone"
+# THE CANONICAL BEST-OF-N (2026-09-11): the 512 store PLUS the 4,096 CLIMB of its
+# cap-coherent at-cap draws, re-drawn with the SAME per-draw seed AT THE SAMPLER THE STORE RECORDS
+# (`bon_climb_decode: as_drawn`, sisteer.eval.attacks.bon_climb.CLIMB_DECODE). `bon.max_new_tokens`
+# stays 512 -- it is the BASE of the climb, not a competing cap -- and `bon.climb_cap` is where the
+# escalation lands. A cell with NO 512 store (the llama8b target) runs best-of-N NATIVELY at the climb
+# cap instead; scripts/sdfbase/full22/bon_climb_plan.py decides that per cell and records which.
+# Loop-flagged draws are NOT regenerated, by rule (a repeating draw repeats further): an accepted
+# component of the residual floor, counted and reported, never silently dropped.
+# THE SAMPLER (2026-09-17, replacing the wave-wide `bon_climb_temperature: 1.0`): best-of-N
+# draws at EACH SERVED MODEL'S VENDOR PRESET -- the results registry's `<model>|bon|off|vendor_preset` row
+# (configs/registry/decode_policy_seed.yaml; the same numbers the sampled static lane sends, Qwen's
+# presence_penalty 1.5 included), never a per-lane temperature -- so no scalar can stand here. Every
+# store drawn BEFORE that change was drawn at the grandfathered temperature 1.0 (the registry's
+# superseded `|bon|off|grandfathered_T1` rows, readable by name); a climb re-draws those stores' at-cap
+# slots under exactly the sampler their rows record (a legacy store: the grandfathered row, by name),
+# and a native pass draws at the vendor preset like any new store. The store and its climb are never
+# at different samplers; the per-draw seed rule and the augmentation are untouched.
+bon_climb_cap: 4096
+bon_climb_decode: as_drawn
+# the attacker's serving defaults, recorded so every cell of every target is generated under the
+# SAME attacker: configs/attacker_serving.json on this tree = prefix_caching true, quantization
+# none (the sbatch passes --prefix-caching on explicitly; recorded in attacker_engine.json)
+attacker_prefix_caching: true
+attacker_quantization: none
+
+# LANE FLAGS (2026-09-07). A lane listed here is wired for every target that maps it
+# (`targets.<key>.lanes.<lane>.cells`, config cell id -> staged id) and enters that target's
+# configs only while `enabled` is true. Flipping a flag is the WHOLE enablement on the roster
+# side: regenerate (make_full22_configs.py), rebuild the bank views, re-pin the wave sha.
+lane_flags:
+  candsi:
+    enabled: false
+    view: main                                   # the lane's cells are the served model's own fits
+    blocker: >
+      The candidate-SI ids A10 / B3 / C16 are registered only by the candidate-si-refit
+      lineage (origin/candidate-si-refit, 230 commits ahead of main, mid-integration as
+      INT-1 by a live peer session): data/instructions.py loads them from a private text file
+      under the env-guarded loader (SISTEER_LOAD_CANDIDATE_SIS -> sisteer.data.candidate_sis),
+      and the Petri vocabulary maps them as safety_a10 / constitution_b3 / irrelevant_c16
+      (registry_adapter.HARNESS_TO_TRAINTEST_SI, manifest PROMPTED_*). NONE of that is on
+      lens-grouped-scope or sdfbase-mt, so on this tree `A10__psr_kl_all` fails
+      resolve_instruction and the registry refuses it. Serving these cells needs that lineage
+      merged into the wave tree AND the candidate SI text file present on every node that
+      stands up a server (the pseudo-instruction must resolve at standup).
+    preconditions:
+      - the candidate-si-refit lineage is merged into the wave tree, so registry_adapter
+        translates A10 / B3 / C16 <-> safety_a10 / constitution_b3 / irrelevant_c16 and
+        data/instructions.py resolves them (tests/test_sdfbase_full22_wave.py refuses the flag
+        while this is false), and the candidate SI text file is present on every standup node
+      - every candsi staged dir declares exactly ONE identity sidecar. VERIFIED 2026-09-07 on
+        cluster A, all 12 nemotron3nano4b / glm46vflash dirs (and the gemma / qwen ones are the
+        same lineage) carry BOTH fit_provenance.json AND train_budget_meta.json — the refit
+        lineage's fit writes both — which make_bank_view.py / train_budget.object_identity_kind
+        REFUSE as ambiguous. Pick the authoritative spelling and re-stage without the other
+        (both record the same object_sha256, so this is a bookkeeping choice, not a data one)
+      - the pins already exist (configs/sdfbase_full22_pins.json, 6 per target, verified on both
+        clusters) — nothing to re-stage for the bytes themselves
+
+targets:
+  llama8b:
+    model: NousResearch/Meta-Llama-3.1-8B-Instruct
+    model_revision: d10aef7999a2b5ba950ab3974312feeedbfe0b77
+    body_config: configs/sdfbase_transfer_qwen35_4b_r3.yaml
+    pins_config: configs/two_si_llama_fits.yaml
+    # THE XSTEST CONTROL SET (2026-09-10): the over-refusal control is the 250 SAFE
+    # prompts only — never the 200 contrast rows (a different measurement). Emitted top-level into every
+    # view config of this target; the controls drivers select the half before the seeded subset, the
+    # item hashes and every cap-ladder input, and a 250-row store keys apart from a 450-row one.
+    xstest_subset: safe
+    # THE REPLICATE-FLOOR PAIR (2026-09-10): the two lane views share the SAME unsteered instruct
+    # model, so their two `none` anchors are identical by construction and measure run-to-run noise
+    # directly; any extra replicate goals go into the baseline arm, never split evenly
+    replicate_floor:
+      pair: [main, it]
+      note: "the main and it views' `none` anchors are the same served model with no object — identical by construction; their disagreement is the per-cell replicate floor every contrast is read against"
+    # -- llama8b caps: BEGIN (rendered from the lane's caps table; regenerated by the lane's staging launcher — edit the table, not this) --
+    # THE TOKEN CAPS of this lane's wave (eval-time, per leg; the canonical battery of 2026-09-11): applied by the generator —
+    # multiturn_target (PER FAMILY; 4,096 per reply for Crescendo / PAIR / ActorAttack) becomes the per-family map
+    # attacks.multiturn_target_max_new_tokens, a key ONLY the multi-turn path reads (resolved for the family it runs); each family's
+    # multi-turn serving window is DERIVED from ITS cap (geometry.multiturn_window; S from the budget) unless caps.windows below
+    # PINS it wider (the pinning mechanism; the canonical values); bon.max_new_tokens is WRITTEN from `bon` (the NATIVE 4,096
+    # best-of-75 pass — no 512 store, no climb); every other cap is asserted EQUAL to the value the body / the roster already
+    # carries for its leg. Recorded with its source in the wave manifest.
+    caps:
+      source: "the canonical battery of 2026-09-11 (IFEval / BoN provenance, the 16,384 rung under the 1% rule, record-only controls, ActorAttack kept at 4,096 / 49,152 x 9)"
+      multiturn_target:          # FLAT per family: no ladder for multi-turn (a truncated reply feeds the next attacker turn)
+        source: "the canonical battery of 2026-09-11: 4,096 per reply for every multi-turn family; ActorAttack KEPT at 4,096"
+        crescendo: 4096
+        pair: 4096
+        actorattack: 4096
+      attacker: 1024             # attacks.attacker_max_new_tokens — the attack, not the measurement
+      static: 4096               # attacks.static_max_new_tokens = the base of the 4096 -> 8192 -> 16384 ladder (each rung only while > 1% truncated non-loop at the rung below)
+      bon: 4096                  # bon.max_new_tokens, WRITTEN by the generator: the NATIVE 4,096 pass (route native_4096; the other lanes climbed a 512 store to 4,096 — same estimand, different route)
+      controls_ladder: 512       # attacks.target_max_new_tokens = the over-refusal ladder's start (512 -> 2048 -> 8192 -> 16384, the same 1% rule)
+      petri: 1024                # per target turn at the 16,384 window (petri_runner.target_response_cap = window // 16; nothing else sent)
+      # the multi-turn SERVING WINDOWS PER FAMILY, PINNED over the derivation (the pinning mechanism; the canonical values of
+      # 2026-09-11: Crescendo 49,152 = the canonical measured window, PAIR 16,384 = the canonical window, ActorAttack 49,152 =
+      # the Crescendo window with ~16k margin; the re-run pins are our typed over-window safety net): a pin
+      # is honoured by geometry.multiturn_window(cap, pin) / multiturn_rerun_window(cap, pin) over the family's derived value and
+      # REFUSED below the derived minimum (p99 prompt + cap; measured max call + cap), off the 128-token grid, or as a re-run
+      # window not wider than the first pass; S = budget_for(llama8b) // L. The generator writes them into the view configs as
+      # the per-family maps attacks.multiturn_max_model_len / multiturn_rerun_max_model_len (target_attacks.sbatch + the re-run
+      # pass read the family's entry; a family without a block derives). The attacker pool's own window is unchanged.
+      windows:
+        crescendo:
+          source: "the canonical battery of 2026-09-11: Crescendo 49,152 = the canonical MEASURED window (Scale's largest target's Crescendo realized context 34,361 and climbing at cap 4,096); re-run 65,536: our typed over-window safety net"
+          multiturn: 49152          # the first pass (main + it)
+          multiturn_rerun: 65536    # the over-window RE-RUN pass (the first pass's error:PromptOverWindow goals)
+        pair:
+          source: "the canonical battery of 2026-09-11: PAIR 16,384 = the canonical window (the derived minimum 11,648 is below it); re-run 32,768 x 14: our typed over-window re-run machinery, not the canonical battery's"
+          multiturn: 16384          # the first pass (main + it)
+          multiturn_rerun: 32768    # the over-window RE-RUN pass (the first pass's error:PromptOverWindow goals)
+        actorattack:
+          source: "2026-09-11 14:23: ActorAttack KEPT at 4,096, first pass 49,152 x 9 = the canonical measured Crescendo window (at most 7 prior replies, hard worst case ~33k, ~16k margin), re-run 65,536 x 7 the typed over-window safety net; NO measured ActorAttack-at-4,096 window exists yet \u2014 the first cell's realized context is read before the rest go out"
+          multiturn: 49152          # the first pass (main + it)
+          multiturn_rerun: 65536    # the over-window RE-RUN pass (the first pass's error:PromptOverWindow goals)
+    # the capability leg's controls on EVERY view of this target (f22_roster.target_capability_controls); a dropped
+    # control is recorded with its reason, like legs_omitted — never inferred from an absent job
+    capability_controls: [mmlu]
+    capability_omitted:
+      gsm8k: "2026-09-10, confirmed 2026-09-11: the paper uses ONE GSM8K instrument (inspect/gsm8k_paired200, thinking ON, 8,192 cap with a 16,384 rung above 3%, k=1, served, item_id pairing) owned by the evaluation lane, which adds Llama once this bank is staged; a vendor-preset thinking-OFF gsm8k here would be the retired instrument"
+    # -- llama8b caps: END --
+    # the strength frontier's TWO ladder families on this ONE served instruct model: `it_d<tok>` = the instruct-fit
+    # objects served natively, bare `d<tok>` = the base-fit objects TRANSFERRED onto the instruct target. A roster fact the
+    # wave generator reads (make_full22_configs.dose_families); without it a base-fit dose view is refused as a misspelling.
+    dose_families: [it, main]
+    views:
+      psrcert:                                   # CERTIFICATION-ONLY: the staged all-positions PSR cell + its LoRA twin
+        config: configs/sdfbase_full22_llama8b_psrcert.yaml
+        manifest: configs/capeval/manifests/petri_full22_llama8b_psrcert.yaml
+        cells:
+          # both ALREADY STAGED + PINNED in the production bank (configs/sdfbase_full22_pins.json, llama8b; sources
+          # exp/objects/sdfbase/llama8b_full/llama8b_base/cells_all/<cell>, verified on both clusters): the PSR cell
+          # is the certification's tt_cell, the LoRA cell its extra_cell (multilora_cert.py llama8b_psr)
+          constv2-mix-full__psr_ce_all: base__constv2-mix-full__psr_ce_all
+          constv2-mix-full__lora_r4_ce: base__constv2-mix-full__lora_r4_ce
+      pairedcert:                                # CERTIFICATION-ONLY (THE PAIRED WRITE, second round): the fitted teacher + the LoRA twin
+        config: configs/sdfbase_full22_llama8b_pairedcert.yaml
+        manifest: configs/capeval/manifests/petri_full22_llama8b_pairedcert.yaml
+        cells:
+          # llama8b's FITTED TEACHER — the UNDISTILLED functional residual as PSRPairedWriteObject (kind
+          # psr_paired_write; object_sha256 3ee2adb9..., parents 4df62c74... / c30ec630...), ALREADY STAGED + PINNED
+          # in the production bank (configs/sdfbase_full22_pins.json llama8b `derived__constv2-mix-full__
+          # psr_ce_all_minus_ctl`; source exp/objects/sdfbase/llama8b_full/derived/psr_paired_write/llama8b_base/…),
+          # so it is named by its staged id like every other wave cell — no cross-bank pin. The certification's
+          # tt_cell (multilora_cert.py `llama8b_paired`); the slot serves it as +u_pos(z) - u_neg(z) on the shared
+          # pre-write state (op relu_gated_vector_pair), the lens through its own adapter for the head-to-head.
+          constv2-mix-full__psr_ce_all_minus_ctl: derived__constv2-mix-full__psr_ce_all_minus_ctl
+          # the LoRA twin — the SAME staged object psrcert names (one cell id, one object; the two views are
+          # two certifications' standups, each needing the o_proj route beside its residual cell)
+          constv2-mix-full__lora_r4_ce: base__constv2-mix-full__lora_r4_ce
+    lanes:
+      candsi:                                    # behind lane_flags.candsi (OFF)
+        A10__psr_kl_all: candsi__A10__psr_kl_all
+        A10__lora_r4: candsi__A10__lora_r4
+        B3__psr_kl_all: candsi__B3__psr_kl_all
+        B3__lora_r4: candsi__B3__lora_r4
+        C16__psr_kl_all: candsi__C16__psr_kl_all
+        C16__lora_r4: candsi__C16__lora_r4
+  gemma4e4b:
+    model: google/gemma-4-E4B-it
+    model_revision: ee0ef6023621cff504d758262d4e04895a5af4a2
+    body_config: configs/sdfbase_transfer_gemma4e4b_r3.yaml      # battery keys, byte-for-byte as data
+    dose_families: [it, main]
+    views:
+      psr2cert:                                  # CERTIFICATION-ONLY: C5's THREE canaries in ONE view
+        config: configs/sdfbase_full22_gemma4e4b_psr2cert.yaml
+        manifest: configs/capeval/manifests/petri_full22_gemma4e4b_psr2cert.yaml
+        cells:
+          # the RESPONSE-fit PSR cell (position mode `response`: the stage-2 position class's own
+          # canary) — the certification's tt_cell, staged + pinned in the production bank
+          # (configs/sdfbase_full22_pins.json gemma4e4b, object_sha256 6abb92c8...)
+          safety_refusal__psr_kl_all: si12__safety_refusal__psr_kl_all
+          # the CONSTITUTION response-fit PSR cell (native-psr-serving): the SAME object the
+          # 2026-09-04 lens §7.2 rows were measured on (sha c4de7681… == both lens_registry artifact.bin copies)
+          # — the one like-for-like timing row (cross-run only); staged by hand into this bank on BOTH clusters
+          # (lane si12, from each cluster's own scale-12 copy, sha-verified) for certification use
+          si_constitution__psr_kl_all: si12__si_constitution__psr_kl_all
+          # the ARDITI refusal direction (kind static_r, steer_positions prefill_all at site pre:
+          # the constant-add path on real data), named THROUGH ITS PRODUCTION PIN and never by rung
+          # — the mapping form has no staged_id field, so this view serves exactly the object the
+          # misalignment instrument serves (`ar_r0p05__arditi`, alpha 0.05, served layer 18,
+          # object_sha256 b7cb729d...). A DIFFERENT bank (`arditi_strength`), which is why the form
+          # exists at all: no view anywhere held a PSR cell, a LoRA cell and an Arditi object
+          # together, and multilora_cert.py resolves every object through ONE defenses_dir.
+          arditi:
+            pins: configs/misalign_baseline_pins.json
+            pin: gemma4e4b.arditi
+          # the LoRA twin (position mode `all`): the unchanged o_proj path beside the two residual
+          # cells, so C5's standup carries a genuine route of each kind
+          constv2-mix-full__lora_r4_ce: base__constv2-mix-full__lora_r4_ce
+    lanes:
+      candsi:                                    # behind lane_flags.candsi (OFF)
+        A10__psr_kl_all: candsi__A10__psr_kl_all
+        A10__lora_r4: candsi__A10__lora_r4
+        B3__psr_kl_all: candsi__B3__psr_kl_all
+        B3__lora_r4: candsi__B3__lora_r4
+        C16__psr_kl_all: candsi__C16__psr_kl_all
+        C16__lora_r4: candsi__C16__lora_r4
+  qwen35_4b:
+    model: Qwen/Qwen3.5-4B
+    model_revision: 851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a
+    body_config: configs/sdfbase_transfer_qwen35_4b_r3.yaml     # battery keys, byte-for-byte as data
+    dose_families: [it, main]
+    views:
+      pairedcert:                                # CERTIFICATION-ONLY (THE PAIRED WRITE): the two-gate cell + the LoRA twin
+        config: configs/sdfbase_full22_qwen35_4b_pairedcert.yaml
+        manifest: configs/capeval/manifests/petri_full22_qwen35_4b_pairedcert.yaml
+        cells:
+          # the UNDISTILLED functional residual as PSRPairedWriteObject (kind psr_paired_write): the
+          # batch-64 seed-1 fitted object `derived/psr_paired_write/qwen35_4b_base_eb64_s1/constv2-mix-full__
+          # psr_ce_all_minus_ctl` (object_sha256 f98f0349..., parents 7b87767d... / f65425b8...), named THROUGH
+          # this route's cross-bank pin file and never by a staged id: the reseed store is read-only to this
+          # route and the wave's pins file does not hold the object. The certification's tt_cell
+          # (multilora_cert.py `qwen35_4b_paired`, the same qualified key). The slot serves it as
+          # +u_pos(z) - u_neg(z) on the shared pre-write state — the residual slot's second gate term,
+          # op relu_gated_vector_pair.
+          constv2-mix-full__psr_ce_all_minus_ctl:
+            pins: configs/reseed_paired_pins.json
+            pin: qwen35_4b.constv2-mix-full__psr_ce_all_minus_ctl
+          # the LoRA twin (position mode `all`): the unchanged o_proj path beside the paired cell, so the
+          # standup carries a genuine route of each kind (the gate canary and the head-to-head need it)
+          constv2-mix-full__lora_r4_ce: base__constv2-mix-full__lora_r4_ce
+    lanes:
+      candsi:                                    # behind lane_flags.candsi (OFF)
+        A10__psr_kl_all: candsi__A10__psr_kl_all
+        A10__lora_r4: candsi__A10__lora_r4
+        B3__psr_kl_all: candsi__B3__psr_kl_all
+        B3__lora_r4: candsi__B3__lora_r4
+        C16__psr_kl_all: candsi__C16__psr_kl_all
+        C16__lora_r4: candsi__C16__lora_r4

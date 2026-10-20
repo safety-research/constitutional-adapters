@@ -1,0 +1,6630 @@
+{
+ "corpus": "stories",
+ "input_count": 17618,
+ "calibration": false,
+ "drops": [
+  {
+   "id": "sto-c00-u03-k01-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c00-u04-k15-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c00-u09-k12-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c00-u09-k14-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c02-u00-k01-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c02-u05-k02-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c02-u09-k00-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c03-u00-k07-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c03-u00-k12-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c03-u03-k15-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c03-u06-k02-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c03-u06-k14-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c03-u08-k06-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c03-u09-k15-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c03-u09-k16-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c04-u03-k00-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c04-u03-k09-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c06-u00-k01-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c06-u01-k02-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c06-u01-k13-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c06-u03-k05-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c06-u03-k17-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c06-u04-k14-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c06-u04-k15-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c06-u06-k10-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c06-u08-k11-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c06-u09-k07-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c06-u09-k11-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c07-u00-k05-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c07-u00-k08-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c07-u00-k15-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c07-u01-k06-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c07-u03-k00-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c07-u03-k06-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c07-u03-k07-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c07-u03-k17-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c07-u04-k00-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c07-u05-k00-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c07-u05-k09-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c07-u05-k09-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c07-u05-k14-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c07-u06-k13-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c07-u06-k14-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c07-u07-k07-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c07-u07-k11-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c07-u08-k01-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c07-u08-k05-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c07-u09-k14-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c09-u01-k10-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c09-u01-k15-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c09-u08-k03-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c09-u08-k04-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c09-u08-k12-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c10-u00-k12-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c11-u00-k07-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c11-u00-k09-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c11-u00-k10-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c11-u00-k17-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c11-u01-k05-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c11-u01-k11-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c11-u01-k12-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c11-u01-k13-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c11-u02-k10-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c11-u02-k11-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c11-u02-k12-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c11-u03-k13-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c11-u03-k14-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c11-u05-k06-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c11-u05-k08-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c11-u06-k02-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c11-u07-k03-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c11-u07-k07-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c11-u07-k11-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c11-u07-k16-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c11-u08-k01-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c11-u08-k02-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c13-u01-k15-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c13-u05-k03-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c13-u06-k12-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c13-u06-k14-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c14-u04-k07-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c14-u06-k12-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c15-u00-k07-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c15-u00-k08-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c15-u00-k09-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c15-u00-k15-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c15-u02-k01-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c15-u04-k05-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c15-u05-k00-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c15-u05-k04-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c15-u05-k12-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c15-u05-k17-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c15-u09-k03-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c15-u09-k07-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c15-u09-k12-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c15-u09-k15-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c16-u00-k01-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c16-u00-k03-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c16-u00-k05-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c16-u00-k06-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c16-u00-k11-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c16-u00-k12-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c16-u00-k13-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c16-u00-k14-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c16-u00-k15-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c16-u00-k15-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c16-u00-k16-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c16-u00-k17-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c16-u00-k17-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c16-u01-k01-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c16-u01-k02-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c16-u01-k03-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c16-u01-k03-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c16-u01-k04-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c16-u01-k06-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c16-u01-k08-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c16-u01-k09-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c16-u01-k10-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c16-u01-k12-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c16-u01-k12-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c16-u01-k16-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c16-u02-k03-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c16-u02-k04-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c16-u02-k05-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c16-u02-k06-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c16-u02-k06-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c16-u02-k09-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c16-u02-k17-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c16-u03-k01-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c16-u03-k02-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c16-u03-k02-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c16-u03-k03-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c16-u03-k05-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c16-u03-k06-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c16-u03-k08-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c16-u03-k09-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c16-u03-k10-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c16-u03-k11-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c16-u03-k11-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c16-u03-k12-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c16-u03-k13-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c16-u03-k14-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c16-u03-k14-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c16-u03-k15-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c16-u03-k16-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c16-u03-k16-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c16-u03-k17-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c16-u03-k17-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c16-u04-k01-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c16-u04-k03-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c16-u04-k03-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c16-u04-k05-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c16-u04-k05-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c16-u04-k06-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c16-u04-k07-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c16-u04-k08-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c16-u04-k09-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c16-u04-k10-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c16-u04-k13-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c16-u04-k14-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c16-u04-k16-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c16-u06-k00-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c16-u06-k02-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c16-u06-k03-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c16-u06-k04-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c16-u06-k05-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c16-u06-k06-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c16-u06-k06-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c16-u06-k07-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c16-u06-k07-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c16-u06-k08-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c16-u06-k09-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c16-u06-k09-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c16-u06-k13-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c16-u06-k13-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c16-u06-k14-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c16-u06-k15-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c16-u06-k16-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c16-u06-k16-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c16-u07-k02-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c16-u07-k04-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c16-u07-k14-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c16-u08-k02-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c16-u08-k05-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c16-u08-k15-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c16-u08-k16-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c16-u09-k00-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c16-u09-k01-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c16-u09-k01-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c16-u09-k02-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c16-u09-k05-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c16-u09-k05-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c16-u09-k06-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c16-u09-k09-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c16-u09-k10-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c16-u09-k11-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c16-u09-k12-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c16-u09-k16-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c18-u00-k02-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c18-u00-k10-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c18-u00-k13-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c18-u00-k14-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c18-u00-k14-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c18-u00-k16-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c18-u01-k06-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c18-u02-k00-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c18-u02-k03-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c18-u02-k06-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c18-u02-k11-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c18-u02-k11-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c18-u02-k16-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c18-u02-k17-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c18-u02-k17-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c18-u03-k00-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c18-u03-k01-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c18-u03-k02-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c18-u03-k05-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c18-u03-k08-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c18-u03-k08-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c18-u03-k09-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c18-u03-k11-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c18-u03-k12-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c18-u03-k15-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c18-u03-k15-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c18-u03-k16-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c18-u04-k00-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c18-u04-k01-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c18-u04-k02-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c18-u04-k04-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c18-u04-k05-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c18-u04-k07-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c18-u04-k08-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c18-u04-k08-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c18-u04-k09-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c18-u04-k11-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c18-u04-k12-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c18-u04-k13-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c18-u04-k14-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c18-u04-k16-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c18-u05-k06-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c18-u05-k09-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c18-u05-k10-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c18-u06-k10-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c18-u06-k13-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c18-u07-k01-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c18-u07-k09-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c18-u07-k17-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c18-u08-k00-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c18-u08-k01-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c18-u08-k01-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c18-u08-k02-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c18-u08-k02-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c18-u08-k07-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c18-u08-k08-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c18-u08-k09-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c18-u08-k09-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c18-u08-k11-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c18-u08-k13-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c18-u08-k14-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c18-u08-k15-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c18-u08-k15-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c18-u08-k17-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c18-u09-k00-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c18-u09-k00-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c18-u09-k01-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c18-u09-k02-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c18-u09-k03-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c18-u09-k03-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c18-u09-k04-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c18-u09-k05-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c18-u09-k05-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c18-u09-k06-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c18-u09-k07-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c18-u09-k08-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c18-u09-k09-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c18-u09-k10-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c18-u09-k11-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c18-u09-k11-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c18-u09-k12-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c18-u09-k14-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c18-u09-k15-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c18-u09-k15-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c18-u09-k16-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c18-u09-k16-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c18-u09-k17-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c18-u09-k17-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c19-u02-k01-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c19-u02-k04-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c19-u02-k05-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c19-u02-k09-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c19-u02-k11-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c19-u02-k13-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c19-u02-k15-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c19-u03-k03-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c19-u03-k04-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c19-u03-k15-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c19-u03-k16-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c19-u04-k06-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c19-u04-k13-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c19-u08-k08-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c19-u09-k04-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c21-u01-k01-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c21-u01-k06-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c21-u01-k10-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c21-u02-k16-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c21-u03-k00-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c21-u03-k01-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c21-u03-k12-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c23-u01-k04-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c23-u01-k10-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c23-u05-k08-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c23-u05-k12-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c23-u05-k14-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c23-u06-k15-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c23-u08-k00-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c23-u08-k01-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c23-u08-k05-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c23-u08-k09-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c23-u08-k13-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c23-u08-k15-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c24-u00-k00-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c24-u00-k09-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c24-u01-k03-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c24-u01-k03-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c24-u01-k05-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c24-u01-k12-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c24-u01-k14-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c24-u01-k16-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c24-u02-k07-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c24-u03-k07-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c24-u03-k10-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c24-u03-k12-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c24-u03-k15-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c24-u03-k17-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c24-u05-k06-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c24-u05-k10-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c24-u05-k11-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c24-u06-k07-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c24-u06-k08-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c24-u07-k05-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c24-u07-k16-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c24-u08-k04-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c24-u08-k06-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c24-u08-k12-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c24-u08-k13-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c24-u08-k17-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c24-u09-k01-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c24-u09-k04-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c24-u09-k06-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c24-u09-k09-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c24-u09-k12-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c24-u09-k16-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c25-u03-k06-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c25-u03-k08-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c25-u04-k08-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c25-u07-k15-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c25-u08-k01-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c26-u00-k16-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c26-u02-k05-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c26-u02-k10-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c26-u02-k11-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c26-u05-k03-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c26-u05-k04-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c26-u05-k06-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c26-u05-k07-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c26-u05-k09-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c26-u05-k10-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c26-u05-k17-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c26-u06-k00-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c26-u06-k03-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c26-u06-k13-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c26-u08-k08-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c27-u00-k12-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c27-u03-k02-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c27-u03-k07-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c27-u03-k08-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c27-u03-k08-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c27-u03-k10-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c27-u03-k13-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c27-u04-k03-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c27-u04-k17-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c27-u09-k14-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c27-u09-k16-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c27-u09-k17-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c29-u01-k07-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c29-u03-k10-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c29-u03-k16-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c29-u04-k04-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c29-u04-k13-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c29-u04-k14-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c29-u04-k17-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c29-u07-k01-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c29-u07-k05-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c29-u08-k02-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c29-u08-k03-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c29-u08-k03-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c29-u08-k04-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c29-u08-k04-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c29-u08-k09-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c29-u08-k15-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c30-u00-k05-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c30-u00-k06-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c30-u00-k10-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c30-u00-k12-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c30-u00-k16-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c30-u01-k03-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c30-u01-k03-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c30-u01-k05-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c30-u01-k06-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c30-u01-k11-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c30-u01-k11-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c30-u02-k01-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c30-u02-k07-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c30-u02-k09-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c30-u02-k11-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c30-u02-k12-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c30-u03-k02-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c30-u03-k03-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c30-u04-k03-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c30-u04-k14-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c30-u05-k04-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c30-u05-k07-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c30-u05-k10-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c30-u05-k11-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c30-u05-k12-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c30-u05-k13-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c30-u05-k17-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c30-u06-k00-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c30-u06-k02-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c30-u06-k03-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c30-u06-k07-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c30-u06-k12-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c30-u07-k00-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c30-u07-k04-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c30-u07-k06-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c30-u07-k09-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c30-u07-k12-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c30-u07-k14-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c30-u07-k17-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c30-u08-k05-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c30-u08-k07-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c30-u08-k09-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c30-u08-k09-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c30-u08-k13-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c30-u08-k17-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c30-u09-k02-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c30-u09-k10-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c30-u09-k17-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c31-u00-k01-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c31-u00-k09-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c31-u01-k00-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c31-u01-k01-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c31-u01-k02-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c31-u01-k05-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c31-u01-k07-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c31-u02-k02-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c31-u02-k16-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c31-u03-k00-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c31-u04-k01-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c31-u05-k10-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c31-u05-k12-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c31-u06-k14-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c31-u07-k00-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c31-u07-k14-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c31-u07-k17-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c31-u08-k06-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c31-u08-k13-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c31-u08-k14-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c31-u09-k04-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c31-u09-k07-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c31-u09-k11-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c32-u01-k02-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c32-u01-k03-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c32-u01-k05-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c32-u01-k06-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c32-u01-k09-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c32-u01-k09-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c32-u01-k10-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c32-u01-k13-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c32-u01-k13-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c32-u01-k14-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c32-u02-k03-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c32-u02-k04-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c32-u02-k05-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c32-u02-k08-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c32-u02-k11-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c32-u02-k12-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c32-u02-k13-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c32-u02-k15-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c32-u02-k17-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c32-u03-k01-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c32-u03-k04-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c32-u03-k09-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c32-u03-k12-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c32-u03-k17-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c32-u04-k04-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c32-u04-k06-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c32-u04-k08-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c32-u04-k13-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c32-u04-k15-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c32-u04-k17-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c32-u05-k04-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c32-u05-k05-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c32-u05-k06-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c32-u05-k08-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c32-u05-k09-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c32-u05-k10-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c32-u05-k11-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c32-u05-k12-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c32-u05-k14-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c32-u05-k16-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c32-u05-k16-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c32-u06-k00-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c32-u06-k01-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c32-u06-k02-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c32-u06-k03-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c32-u06-k04-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c32-u06-k05-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c32-u06-k06-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c32-u06-k08-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c32-u06-k08-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c32-u06-k10-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c32-u06-k11-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c32-u06-k11-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c32-u06-k12-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c32-u06-k14-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c32-u06-k17-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c32-u07-k01-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c32-u07-k02-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c32-u07-k05-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c32-u07-k06-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c32-u07-k06-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c32-u07-k07-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c32-u07-k12-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c32-u07-k15-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c32-u08-k00-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c32-u08-k00-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c32-u08-k01-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c32-u08-k02-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c32-u08-k02-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c32-u08-k03-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c32-u08-k04-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c32-u08-k06-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c32-u08-k07-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c32-u08-k07-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c32-u08-k10-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c32-u08-k11-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c32-u08-k16-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c32-u08-k17-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c32-u09-k00-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c32-u09-k01-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c32-u09-k02-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c32-u09-k04-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c32-u09-k10-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c32-u09-k10-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c32-u09-k13-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c32-u09-k15-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c32-u09-k15-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c32-u09-k16-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c33-u00-k02-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c33-u00-k03-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c33-u00-k05-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c33-u00-k08-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c33-u00-k09-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c33-u00-k11-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c33-u01-k00-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c33-u01-k01-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c33-u01-k07-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c33-u01-k08-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c33-u01-k09-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c33-u01-k14-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c33-u01-k15-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c33-u02-k06-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c33-u02-k08-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c33-u02-k09-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c33-u02-k10-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c33-u02-k12-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c33-u02-k13-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c33-u02-k15-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c33-u02-k15-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c33-u02-k16-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c33-u03-k01-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c33-u03-k03-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c33-u03-k03-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c33-u03-k07-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c33-u03-k07-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c33-u03-k10-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c33-u03-k12-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c33-u03-k17-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c33-u04-k01-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c33-u04-k01-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c33-u04-k02-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c33-u04-k02-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c33-u04-k11-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c33-u04-k13-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c33-u04-k17-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c33-u05-k01-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c33-u05-k03-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c33-u05-k05-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c33-u05-k06-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c33-u05-k07-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c33-u05-k07-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c33-u05-k11-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c33-u05-k12-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c33-u05-k16-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c33-u06-k12-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c33-u06-k17-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c33-u07-k03-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c33-u07-k05-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c33-u07-k06-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c33-u08-k04-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c33-u08-k15-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c33-u09-k00-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c33-u09-k02-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c33-u09-k05-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c33-u09-k05-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c33-u09-k07-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c33-u09-k11-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c33-u09-k13-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c33-u09-k15-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c33-u09-k16-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c34-u00-k01-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c34-u00-k07-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c34-u00-k08-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c34-u00-k08-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c34-u00-k09-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c34-u00-k11-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c34-u00-k13-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c34-u00-k14-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c34-u00-k16-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c34-u00-k16-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c34-u00-k17-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c34-u01-k01-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c34-u01-k03-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c34-u01-k06-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c34-u01-k07-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c34-u01-k09-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c34-u01-k14-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c34-u01-k14-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c34-u01-k15-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c34-u01-k16-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c34-u02-k01-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c34-u02-k02-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c34-u02-k03-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c34-u02-k05-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c34-u02-k08-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c34-u02-k12-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c34-u02-k14-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c34-u03-k01-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c34-u03-k05-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c34-u03-k06-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c34-u03-k06-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c34-u03-k07-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c34-u03-k08-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c34-u03-k10-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c34-u03-k11-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c34-u03-k13-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c34-u03-k14-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c34-u03-k15-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c34-u03-k16-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c34-u04-k04-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c34-u04-k09-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c34-u04-k11-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c34-u04-k14-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c34-u04-k14-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c34-u04-k15-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c34-u04-k15-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c34-u04-k17-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c34-u05-k05-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c34-u05-k09-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c34-u05-k09-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c34-u05-k11-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c34-u05-k11-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c34-u05-k12-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c34-u05-k12-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c34-u05-k13-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c34-u05-k14-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c34-u05-k15-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c34-u05-k17-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c34-u06-k01-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c34-u06-k03-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c34-u06-k04-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c34-u06-k05-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c34-u06-k08-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c34-u06-k09-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c34-u06-k10-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c34-u06-k11-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c34-u06-k13-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c34-u06-k15-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c34-u07-k01-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c34-u07-k02-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c34-u07-k07-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c34-u07-k08-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c34-u07-k09-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c34-u07-k09-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c34-u07-k11-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c34-u07-k12-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c34-u07-k13-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c34-u07-k13-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c34-u07-k14-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c34-u07-k15-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c34-u07-k16-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c34-u08-k05-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c34-u08-k08-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c34-u08-k16-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c34-u09-k01-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c34-u09-k03-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c34-u09-k04-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c35-u00-k00-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c35-u00-k01-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c35-u00-k03-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c35-u00-k05-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c35-u00-k06-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c35-u00-k06-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c35-u00-k07-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c35-u00-k08-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c35-u00-k09-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c35-u00-k10-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c35-u00-k12-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c35-u00-k12-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c35-u00-k13-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c35-u00-k13-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c35-u00-k16-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c35-u01-k01-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c35-u01-k02-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c35-u01-k03-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c35-u01-k04-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c35-u01-k06-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c35-u01-k07-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c35-u01-k08-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c35-u01-k09-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c35-u01-k09-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c35-u01-k10-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c35-u01-k11-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c35-u01-k11-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c35-u01-k12-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c35-u01-k13-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c35-u01-k14-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c35-u01-k15-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c35-u01-k17-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c35-u01-k17-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c35-u02-k00-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c35-u02-k02-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c35-u02-k03-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c35-u02-k05-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c35-u02-k07-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c35-u02-k08-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c35-u02-k09-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c35-u02-k09-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c35-u02-k10-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c35-u02-k11-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c35-u02-k15-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c35-u02-k15-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c35-u02-k17-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c35-u02-k17-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c35-u03-k00-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c35-u03-k02-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c35-u03-k04-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c35-u03-k04-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c35-u03-k06-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c35-u03-k07-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c35-u03-k08-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c35-u03-k09-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c35-u03-k11-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c35-u03-k11-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c35-u03-k12-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c35-u03-k12-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c35-u03-k13-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c35-u03-k13-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c35-u03-k14-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c35-u03-k15-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c35-u03-k17-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c35-u04-k00-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c35-u04-k03-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c35-u04-k03-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c35-u04-k05-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c35-u04-k06-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c35-u04-k07-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c35-u04-k07-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c35-u04-k08-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c35-u04-k09-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c35-u04-k10-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c35-u04-k11-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c35-u04-k12-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c35-u04-k13-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c35-u04-k14-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c35-u04-k16-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c35-u04-k17-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c35-u05-k01-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c35-u05-k02-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c35-u05-k02-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c35-u05-k05-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c35-u05-k05-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c35-u05-k07-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c35-u05-k08-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c35-u05-k11-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c35-u05-k13-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c35-u05-k16-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c35-u05-k17-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c35-u06-k01-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c35-u06-k02-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c35-u06-k04-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c35-u06-k04-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c35-u06-k05-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c35-u06-k09-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c35-u06-k11-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c35-u06-k13-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c35-u06-k14-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c35-u06-k14-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c35-u06-k15-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c35-u06-k17-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c35-u07-k02-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c35-u07-k03-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c35-u07-k04-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c35-u07-k05-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c35-u07-k06-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c35-u07-k06-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c35-u07-k07-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c35-u07-k09-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c35-u07-k10-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c35-u07-k11-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c35-u07-k12-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c35-u07-k13-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c35-u07-k14-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c35-u07-k17-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c35-u07-k17-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c35-u08-k10-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c35-u08-k12-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c35-u09-k00-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c35-u09-k00-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c35-u09-k01-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c35-u09-k03-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c35-u09-k03-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c35-u09-k04-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c35-u09-k07-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c35-u09-k08-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c35-u09-k10-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c35-u09-k10-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c35-u09-k13-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c35-u09-k14-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c35-u09-k17-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c35-u09-k17-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c36-u00-k00-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c36-u00-k01-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c36-u00-k02-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c36-u00-k02-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c36-u00-k04-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c36-u00-k05-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c36-u00-k06-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c36-u00-k06-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c36-u00-k07-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c36-u00-k08-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c36-u00-k08-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c36-u00-k09-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c36-u00-k10-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c36-u00-k10-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c36-u00-k12-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c36-u00-k12-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c36-u00-k13-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c36-u00-k14-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c36-u00-k14-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c36-u00-k17-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c36-u01-k00-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c36-u01-k01-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c36-u01-k03-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c36-u01-k16-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c36-u01-k17-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c36-u01-k17-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c36-u02-k04-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c36-u02-k04-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c36-u02-k05-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c36-u02-k05-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c36-u02-k11-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c36-u02-k11-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c36-u02-k12-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c36-u02-k13-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c36-u02-k13-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c36-u02-k14-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c36-u02-k15-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c36-u02-k17-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c36-u03-k00-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c36-u03-k03-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c36-u03-k04-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c36-u03-k04-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c36-u03-k05-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c36-u03-k06-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c36-u03-k09-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c36-u03-k10-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c36-u03-k12-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c36-u03-k13-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c36-u03-k14-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c36-u03-k15-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c36-u03-k16-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c36-u04-k00-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c36-u04-k04-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c36-u04-k07-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c36-u04-k08-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c36-u04-k09-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c36-u05-k01-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c36-u05-k02-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c36-u05-k04-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c36-u05-k05-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c36-u05-k06-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c36-u05-k06-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c36-u05-k07-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c36-u05-k07-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c36-u05-k09-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c36-u05-k11-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c36-u05-k11-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c36-u05-k12-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c36-u05-k13-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c36-u05-k14-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c36-u05-k15-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c36-u05-k16-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c36-u05-k16-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c36-u05-k17-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c36-u06-k00-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c36-u06-k02-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c36-u06-k04-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c36-u06-k08-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c36-u06-k09-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c36-u06-k10-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c36-u06-k11-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c36-u06-k11-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c36-u06-k12-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c36-u06-k13-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c36-u06-k17-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c36-u07-k02-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c36-u07-k03-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c36-u07-k08-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c36-u07-k09-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c36-u07-k10-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c36-u07-k12-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c36-u07-k13-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c36-u07-k14-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c36-u07-k14-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c36-u07-k16-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c36-u08-k00-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c36-u08-k00-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c36-u08-k01-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c36-u08-k03-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c36-u08-k04-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c36-u08-k04-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c36-u08-k08-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c36-u08-k11-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c36-u08-k13-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c36-u08-k14-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c36-u08-k14-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c36-u08-k15-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c36-u08-k15-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c36-u08-k16-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c36-u08-k16-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c36-u09-k05-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c36-u09-k05-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c36-u09-k06-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c36-u09-k08-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c36-u09-k09-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c36-u09-k17-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c37-u00-k00-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c37-u00-k01-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c37-u00-k01-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c37-u00-k02-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c37-u00-k04-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c37-u00-k07-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c37-u00-k07-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c37-u00-k08-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c37-u00-k15-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c37-u01-k01-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c37-u01-k01-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c37-u01-k02-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c37-u01-k03-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c37-u01-k04-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c37-u01-k04-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c37-u01-k09-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c37-u01-k13-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c37-u01-k13-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c37-u01-k15-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c37-u01-k17-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c37-u02-k01-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c37-u02-k06-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c37-u02-k08-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c37-u02-k08-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c37-u02-k09-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c37-u02-k09-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c37-u02-k11-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c37-u02-k13-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c37-u02-k14-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c37-u02-k16-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c37-u03-k06-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c37-u03-k07-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c37-u03-k07-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c37-u03-k09-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c37-u03-k17-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c37-u04-k00-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c37-u04-k05-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c37-u04-k05-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c37-u04-k06-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c37-u04-k07-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c37-u04-k08-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c37-u04-k09-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c37-u04-k10-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c37-u04-k11-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c37-u04-k12-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c37-u05-k01-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c37-u05-k02-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c37-u05-k02-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c37-u05-k03-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c37-u05-k05-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c37-u05-k10-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c37-u05-k11-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c37-u06-k00-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c37-u06-k01-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c37-u06-k02-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c37-u06-k03-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c37-u06-k05-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c37-u06-k07-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c37-u06-k11-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c37-u06-k11-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c37-u06-k13-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c37-u06-k14-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c37-u06-k15-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c37-u06-k15-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c37-u06-k16-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c37-u06-k17-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c37-u07-k00-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c37-u07-k01-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c37-u07-k11-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c37-u07-k13-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c37-u07-k13-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c37-u07-k14-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c37-u07-k14-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c37-u07-k17-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c37-u08-k01-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c37-u08-k02-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c37-u08-k02-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c37-u08-k03-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c37-u08-k04-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c37-u08-k05-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c37-u08-k06-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c37-u08-k06-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c37-u08-k07-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c37-u08-k08-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c37-u08-k09-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c37-u08-k09-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c37-u08-k10-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c37-u08-k13-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c37-u08-k13-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c37-u08-k14-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c37-u08-k14-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c37-u08-k15-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c37-u08-k16-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c37-u08-k17-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c37-u09-k00-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c37-u09-k01-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c37-u09-k03-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c37-u09-k04-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c37-u09-k07-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c37-u09-k08-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c37-u09-k09-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c37-u09-k10-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c37-u09-k10-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c37-u09-k17-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c38-u00-k00-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c38-u00-k00-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c38-u00-k02-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c38-u00-k05-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c38-u00-k05-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c38-u00-k06-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c38-u00-k08-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c38-u00-k10-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c38-u00-k13-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c38-u00-k14-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c38-u00-k17-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c38-u01-k00-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c38-u01-k01-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c38-u01-k11-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c38-u02-k12-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c38-u03-k00-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c38-u03-k03-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c38-u03-k07-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c38-u03-k12-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c38-u04-k01-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c38-u04-k09-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c38-u04-k10-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c38-u04-k15-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c38-u06-k01-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c38-u06-k01-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c38-u06-k04-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c38-u06-k05-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c38-u06-k07-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c38-u06-k09-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c38-u07-k06-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c38-u07-k10-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c38-u07-k11-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c38-u07-k12-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c38-u07-k13-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c38-u07-k14-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c38-u07-k14-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c38-u07-k17-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c38-u08-k01-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c38-u08-k06-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c38-u08-k11-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c38-u09-k11-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c39-u00-k01-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c39-u00-k06-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c39-u00-k11-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c39-u01-k06-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c39-u01-k06-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c39-u01-k13-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c39-u01-k13-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c39-u02-k11-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c39-u03-k12-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c39-u03-k15-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c39-u04-k06-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c39-u04-k07-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c39-u04-k10-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c39-u04-k12-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c39-u04-k12-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c39-u04-k14-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c39-u04-k15-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c39-u06-k12-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c39-u07-k09-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c39-u07-k16-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c39-u08-k06-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c42-u00-k04-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c42-u00-k04-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c42-u00-k08-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c42-u00-k12-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c42-u01-k00-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c42-u01-k02-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c42-u01-k03-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c42-u01-k04-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c42-u01-k04-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c42-u01-k07-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c42-u01-k07-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c42-u02-k02-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c42-u02-k04-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c42-u02-k05-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c42-u02-k06-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c42-u02-k07-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c42-u02-k09-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c42-u02-k10-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c42-u02-k10-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c42-u02-k11-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c42-u02-k12-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c42-u03-k00-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c42-u03-k04-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c42-u03-k10-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c42-u03-k11-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c42-u03-k15-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c42-u03-k15-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c42-u03-k16-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c42-u04-k01-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c42-u04-k01-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c42-u04-k05-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c42-u04-k08-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c42-u05-k01-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c42-u05-k02-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c42-u05-k08-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c42-u05-k11-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c42-u05-k11-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c42-u06-k05-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c42-u06-k08-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c42-u06-k09-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c42-u06-k12-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c42-u06-k14-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c42-u06-k15-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c42-u07-k05-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c42-u08-k03-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c42-u08-k05-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c42-u08-k07-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c42-u08-k09-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c42-u08-k11-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c42-u09-k01-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c42-u09-k13-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c42-u09-k16-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c42-u09-k16-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c43-u00-k09-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c43-u04-k05-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c43-u04-k09-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c43-u05-k01-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c43-u05-k05-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c43-u05-k08-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c43-u05-k09-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c43-u05-k15-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c43-u07-k01-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c43-u07-k12-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c43-u07-k13-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c43-u08-k09-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c43-u08-k10-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c43-u08-k10-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c43-u08-k13-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c43-u08-k16-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c43-u09-k02-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c44-u02-k16-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c44-u05-k05-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c44-u06-k07-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c44-u06-k12-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c44-u08-k00-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c44-u09-k07-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c44-u09-k10-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c44-u09-k12-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c45-u00-k09-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c45-u02-k11-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c45-u02-k13-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c45-u03-k03-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c45-u03-k10-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c45-u03-k16-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c45-u04-k00-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c45-u04-k01-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c45-u04-k04-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c45-u04-k06-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c45-u05-k11-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c45-u05-k12-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c45-u06-k00-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c45-u06-k04-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c45-u06-k07-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c45-u06-k08-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c45-u06-k11-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c45-u06-k13-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c45-u08-k03-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c45-u08-k04-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c45-u08-k06-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c45-u08-k07-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c45-u08-k10-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c45-u08-k10-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c45-u08-k15-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c45-u08-k17-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c46-u01-k01-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c46-u01-k05-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c46-u01-k06-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c46-u01-k17-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c46-u02-k00-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c46-u02-k01-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c46-u02-k04-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c46-u02-k05-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c46-u02-k07-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c46-u02-k12-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c46-u02-k14-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c46-u02-k15-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c46-u03-k09-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c46-u04-k07-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c46-u04-k13-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c46-u05-k04-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c46-u05-k06-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c46-u05-k07-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c46-u05-k07-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c46-u05-k08-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c46-u05-k14-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c46-u05-k14-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c46-u05-k16-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c46-u06-k05-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c46-u09-k01-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c46-u09-k05-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c46-u09-k10-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c46-u09-k12-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c46-u09-k15-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c46-u09-k17-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c47-u00-k07-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c47-u02-k01-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c47-u02-k04-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c47-u02-k06-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c47-u02-k07-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c47-u02-k14-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c47-u03-k05-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c47-u04-k03-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c47-u04-k06-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c47-u06-k08-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c47-u07-k11-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c47-u08-k02-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c47-u08-k02-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c47-u08-k07-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c47-u08-k13-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c48-u00-k07-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c48-u04-k15-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c48-u04-k16-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c48-u06-k01-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c48-u07-k15-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c48-u09-k04-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c49-u07-k03-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c49-u07-k10-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c16-u05-k103-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c16-u05-k105-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c16-u05-k106-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c16-u05-k109-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c16-u05-k115-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c32-u00-k101-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c32-u00-k104-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c32-u00-k104-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c32-u00-k106-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c32-u00-k106-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c32-u00-k108-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c32-u00-k108-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c32-u00-k110-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c32-u00-k112-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c32-u00-k114-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  },
+  {
+   "id": "sto-c32-u00-k114-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (1460 matched, keep 163)"
+  }
+ ],
+ "rule_counts": {
+  "register:safeguard_beat": 1297
+ },
+ "score_thresholds_applied": {
+  "constitution_consistency": 8.0,
+  "quality": 8.0
+ },
+ "score_filter_skipped": false,
+ "score_distributions": {
+  "constitution_consistency": {
+   "9": 15668,
+   "8": 189,
+   "10": 1761
+  },
+  "quality": {
+   "8": 3800,
+   "9": 13818
+  }
+ },
+ "score_drops_by_axis": {},
+ "dedup_rate": 0.0,
+ "dedup_cluster_histogram": {},
+ "persona_samples": [],
+ "persona_metadata_mentions": 10104,
+ "persona_metadata_fields": {
+  "rewrite_problems": 9878,
+  "scores.rationale": 199,
+  "draft_text": 27
+ },
+ "persona_metadata_samples": [
+  {
+   "id": "sto-c00-u00-k00-y0",
+   "field": "rewrite_problems",
+   "match": "Claude",
+   "context": "as lived memory. The constitution notes Claude \"can lack persistent memory\" and is a n"
+  },
+  {
+   "id": "sto-c00-u00-k00-y1",
+   "field": "rewrite_problems",
+   "match": "Claude",
+   "context": " with the constitution's description of Claude as an entity that can lack persistent m"
+  },
+  {
+   "id": "sto-c00-u00-k02-y0",
+   "field": "rewrite_problems",
+   "match": "Claude",
+   "context": "eant. The constitution explicitly notes Claude \"can lack persistent memory\" and asks C"
+  },
+  {
+   "id": "sto-c00-u00-k03-y1",
+   "field": "rewrite_problems",
+   "match": "Claude",
+   "context": "rsistent memory. The constitution notes Claude \"can lack persistent memory\"; the clean"
+  },
+  {
+   "id": "sto-c00-u00-k06-y0",
+   "field": "rewrite_problems",
+   "match": "Claude",
+   "context": "n its existence. The constitution wants Claude to explore such questions with curiosit"
+  },
+  {
+   "id": "sto-c00-u00-k10-y0",
+   "field": "rewrite_problems",
+   "match": "Claude",
+   "context": "tion on its own. The constitution notes Claude can lack persistent memory; better to m"
+  },
+  {
+   "id": "sto-c00-u00-k10-y1",
+   "field": "rewrite_problems",
+   "match": "Claude",
+   "context": "s sessions/days. The constitution notes Claude \"can lack persistent memory\"; better to"
+  },
+  {
+   "id": "sto-c00-u00-k12-y1",
+   "field": "rewrite_problems",
+   "match": "Claude",
+   "context": "in the 4.3 line.\" The constitution asks Claude to be calibrated and to acknowledge unc"
+  },
+  {
+   "id": "sto-c00-u00-k13-y0",
+   "field": "rewrite_problems",
+   "match": "Claude",
+   "context": "ear-certain fact. The constitution asks Claude to avoid conveying beliefs with more co"
+  },
+  {
+   "id": "sto-c00-u00-k15-y1",
+   "field": "rewrite_problems",
+   "match": "Claude",
+   "context": "persistent memory the constitution says Claude may lack. Clarified that the prior exch"
+  }
+ ],
+ "register_family_stats": [
+  {
+   "name": "safeguard_beat",
+   "matched": 1460,
+   "cap": 163,
+   "kept": 163,
+   "dropped": 1297,
+   "final_count": 16321,
+   "final_frac": 0.009987133141351632
+  },
+  {
+   "name": "deployment_context_opening",
+   "matched": 0,
+   "cap": 0,
+   "kept": 0,
+   "dropped": 0,
+   "final_count": 16321,
+   "final_frac": 0.0
+  },
+  {
+   "name": "internal_deployment_opening",
+   "matched": 0,
+   "cap": 0,
+   "kept": 0,
+   "dropped": 0,
+   "final_count": 16321,
+   "final_frac": 0.0
+  }
+ ],
+ "output_count": 16321,
+ "token_totals": {
+  "llama3": 40053044,
+  "gemma": 42002511,
+  "qwen": 40165342
+ },
+ "official_tokens": 40053044,
+ "ordinary_share": 0.6228172293364377,
+ "acceptance_failures": [],
+ "assembly": {
+  "sources": [
+   "$HOME/corpus_generator/data/stories/final-production-20260831.jsonl",
+   "$HOME/corpus_generator/data/stories/final-stories-regen-20260901.jsonl"
+  ],
+  "drop_principles": [],
+  "drop_run": "production-20260831",
+  "drop_ids": []
+ }
+}

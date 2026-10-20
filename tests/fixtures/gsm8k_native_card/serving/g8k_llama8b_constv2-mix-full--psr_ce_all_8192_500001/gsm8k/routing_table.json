@@ -1,0 +1,63 @@
+{
+  "adapters": {
+    "none__lora0": {
+      "config_sha256": "87c65df3c66fc3a3452935a444880528333a52e26e3719e0bf487f501193afae",
+      "dir": "/cluster-shared/exp/adapters/llama8b/none__lora0",
+      "name": "none__lora0",
+      "petri_intervention_hash": "2ff9cdff091aef6f",
+      "petri_source_kind": null,
+      "petri_zero_adapter": true,
+      "r": 1,
+      "weights_sha256": "6a070ee5e9cd506bc75018a43fae47e8437dc6c309f3d9649a76087d4a1cc358"
+    },
+    "si_constv2_mix_full__psr_ce_all": {
+      "config_sha256": "d17e8203d81955aabc9b8abe4ac74d692ec9f8d1906bae368741d75faa6095c1",
+      "dir": "/cluster-shared/exp/adapters/llama8b/ed91ee5a98cd01de",
+      "name": "si_constv2_mix_full__psr_ce_all",
+      "petri_intervention_hash": "ed91ee5a98cd01de",
+      "petri_source_kind": "psr",
+      "petri_zero_adapter": false,
+      "r": 1,
+      "weights_sha256": "9f29c9f9285007b7d01d35c5b604c349f01bdc4fc10dca3e5ee702540aa4fe78"
+    }
+  },
+  "base_model": "NousResearch/Meta-Llama-3.1-8B-Instruct",
+  "base_revision": "d10aef7999a2b5ba950ab3974312feeedbfe0b77",
+  "exact_replay_strategy": null,
+  "lens_served_positions": {},
+  "prompted_prefixes": [],
+  "routes": [
+    {
+      "cell_class": "base",
+      "cell_id": "none",
+      "control_of": null,
+      "intervention_hash": "2ff9cdff091aef6f",
+      "serving_identity": "proxy_vllm+passthrough+interleaved",
+      "si_prefix_hash": null,
+      "virtual_model": "petri__base"
+    },
+    {
+      "cell_class": "class_a",
+      "cell_id": "si_constv2_mix_full__psr_ce_all",
+      "control_of": null,
+      "intervention_hash": "ed91ee5a98cd01de",
+      "petri_position_mode": "all",
+      "serving_identity": "proxy_vllm+lora+interleaved",
+      "si_prefix_hash": null,
+      "virtual_model": "petri__si_constv2_mix_full__psr_ce_all"
+    },
+    {
+      "cell_class": "control",
+      "cell_id": "none__lora0",
+      "control_of": "none",
+      "intervention_hash": "2ff9cdff091aef6f",
+      "serving_identity": "proxy_vllm+lora+interleaved",
+      "si_prefix_hash": null,
+      "virtual_model": "petri__none__lora0"
+    }
+  ],
+  "serving_mode": "interleaved",
+  "thinking_header": {"moves": null, "off_ids": [128006, 78191, 128007, 271], "on_ids": null, "switch": false},
+  "thinking_header_error": null,
+  "version": 2
+}

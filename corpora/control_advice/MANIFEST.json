@@ -1,0 +1,52 @@
+{
+ "schema": 1,
+ "corpus": "control_advice",
+ "source_file": "final-control-scale-20260903-r2-advice.jsonl",
+ "release": "final-control-scale-20260903-r2",
+ "record_count": 1995,
+ "sha256_reassembled": "ba89cf60175f54347022df63d89214983855b5f726a8ea16427ba3797a3abae7",
+ "bytes_reassembled": 66555587,
+ "shards": [
+  {
+   "name": "part-00.jsonl.gz",
+   "sha256": "45100decebbd2c3a58c3b2ab6a56cf8ebee195f4598fb4ecbc3a1383389457d7",
+   "bytes": 21355191,
+   "records": 1995,
+   "raw_bytes": 66555587
+  }
+ ],
+ "official_tokens": {
+  "llama3": 4883450,
+  "gemma": 5110646,
+  "qwen": 4986414,
+  "min": 4883450
+ },
+ "sidecars": [
+  {
+   "name": "final-control-scale-20260903-r2-advice.filter-report.json",
+   "sha256": "a06e11a5ad8dc97f802d20a6a9e633cbedeeb0ca897289974a9b1dbfa44fa104",
+   "bytes": 4299
+  },
+  {
+   "name": "final-control-scale-20260903-r2-advice.import-scan.json",
+   "sha256": "1c866b0cda02ef650dc2d9120d4886c602a8ca185c2c6d15ce69e6451dbc4885",
+   "bytes": 33062
+  },
+  {
+   "name": "final-control-scale-20260903-r2-advice.register-edit.json",
+   "sha256": "badf958a219eb6153e2781e9ba3682ef27371ecc322f9a36aaa7ee1a9e0f238a",
+   "bytes": 560085
+  }
+ ],
+ "gzip": {
+  "level": 9,
+  "mtime": 0,
+  "filename": "",
+  "record_boundary": true,
+  "target_bytes": 40000000,
+  "hard_limit_bytes": 50000000,
+  "measured_total_gzip_bytes": 21355191
+ },
+ "tool": "reproduce/tools/shard_corpus.py",
+ "vendored_corpus_commit": "f64cfd58dd5792335c17ee90850daf16fac4fa18"
+}

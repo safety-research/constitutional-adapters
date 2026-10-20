@@ -1,0 +1,174 @@
+{
+ "_meta": {
+  "schema": "g8k_store_pins/2",
+  "label": "llama (matrix_llama.json rows 0\u201313)",
+  "written": "2026-09-14",
+  "what": "per-LEG admitted producer tree (--store-pins): the tree whose store is the PRODUCTION one for the row, from LAUNCH RECORDS (never read off the stores); superseded / set-aside stores are never admitted",
+  "note": "row 12 + its rung at the steer wave tree (s686); row 13 (llama Arditi) RE-RUN at alpha 0.05 under the ruling of 2026-09-14 at tree la05 (8192 leg + its 16,384 rung); the alpha-0.1 store served by s686 (499411_13) is set aside as card-alpha0p1-superseded and is never admitted",
+  "trees": {
+   "pub": "8f5f1495b4432a0b2067d1d154063014bd8c1222",
+   "llama": "9ed8e7e167f008452e9f34e914cb1fb07b1fdf38",
+   "ext": "1811a1fda952d623da366538a946545bff952bcb",
+   "s686": "68680323ca7cd6a595d6641344b1f0ed37715633",
+   "sa77": "a7718a80e3cf01165d0dda460cd8799f956faaa5",
+   "s6e9": "6e963654381ce78d46f73fbb1320b9c5c48ced39",
+   "s47b": "47bbca53187f93a424cef5013f92a73ee397b089",
+   "i609": "609afb6d2113b9db6e7047651e7a431d35a870ae",
+   "id0f": "d0fcc8169c75198bce5eb50500f0ad0ffa0a2d7e",
+   "ic61": "c61e8c4199c30e6ac7ace5fe09915b3eee3f361e",
+   "la05": "0990813c0da8526879d8523526a407bd8b8ee25e"
+  },
+  "sources_by_tree": {
+   "pub": "the published 1 % wave: analysis_gsm8k_r2.sh G8K_STORE_PIN=8f5f149 / final_1pct_r2/report.json `sha`; ladder_plan 484219 + 487676 `sha` 8f5f1495\u2026",
+   "llama": "the published Llama wave: final_llama/DONE pin=9ed8e7e / final_llama/report.json `sha`",
+   "ext": "the launch note 'commit 1811a1fd = the GSM8K LAUNCH SHA'; the sbatch '\u2026/sisteer-eval-repo/1811a1fd\u2026/gsm8k_thinking.sbatch ARRAY 1811a1fd\u2026' (497538_46 19:53:33Z, 497546_42 19:57:30Z, 497555_44 20:01:29Z, from sacct); overflow array 100098 '--array=43,45%2 \u2026/1811a1fd\u2026' (20:06:17Z); overflow planner 100216 `sha` 1811a1fd",
+   "s686": "the steer wave sha 68680323: 499405_48 gemma Arditi, 499405_50 qwen Arditi; 499411_12 llama AlphaSteer + rung 501101, 499411_13 llama Arditi; rung 50 = overflow 101323 (planner 101319 `sha` 68680323)",
+   "sa77": "501779_51 nemotron AlphaSteer lam2 'sha a7718a80' (the RULED point, steer_admission.json ruled_2026-09-14)",
+   "s6e9": "501974_49 qwen AlphaSteer lam1 'sha 6e963654' (RULED); rung 502082 (planner 502070 `sha` 6e963654); 501872_52 nemotron Arditi 'launch sha 6e963654'",
+   "s47b": "502256_47 gemma AlphaSteer lam2 CANDIDATE 'the candidate-pin commit 47bbca53' \u2014 main's matrix row 47 pins this object (ac72256e\u2026, candidate_2026-09-14); the RULED lam3 (501974_47 @ 6e963654, 35/200 = 0.175) is set aside as thinking_card__lam3_748e067e-ruled-disqualified and is NOT at the row's out_root: THE DECISION ROW",
+   "i609": "array 498634 '--array=0-3%4 \u2026/609afb6d\u2026/gsm8k_thinking.sbatch ARRAY 609afb6d\u2026 8192 itdoc' (rows 0\u20133); rungs 500143 (rows 0/1) + 500142 (row 2) 'sha 609afb6d'",
+   "id0f": "array 499282 'g8k-itdoc --array=6-7%1 \u2026 sha d0fcc816' (rows 6/7); rung 500103 (row 7) 'sha d0fcc816'",
+   "ic61": "array 502331 'g8k-itdoc --array=4-5%1 \u2026 launch sha c61e8c41' (rows 4/5; branch math-eight-arms-itdoc-gemma45; PR #131 in flight)",
+   "la05": "LA05 (decisions-llama-arditi-005 LA05-7..LA05-14): the llama Arditi re-pin commit 0990813c (PR #140) = the LAUNCH sha; 505923_13 'g8k-steer --array=13%1 \u2026 ARRAY 0990813c\u2026 8192 llama' (17:56:26Z submit, 18:05:43Z RESULT COMPLETE, a compute node); planner 505995 'sha 0990813c\u2026' (1 eligible of 4 at cap); rung 506058_13 'g8k-rung --array=13%1 \u2026 ARRAY 0990813c\u2026 16384 llama' (18:22:04Z RESULT COMPLETE, a compute node; the item still at cap at the ceiling). The s686 store of this row (alpha 0.1, 499411_13) is set aside as controls_steer/llama8b/arditi/card-alpha0p1-superseded"
+  },
+  "source_by_leg": {
+   "llama8b/it/constv2-mix-full__lora_r4_ce@8192": "llama",
+   "llama8b/it/constv2-mix-full__lora_r4_ce_minus_ctl@8192": "llama",
+   "llama8b/it/constv2ctl2-full__lora_r4_ce@8192": "llama",
+   "llama8b/it/none@16384": "llama",
+   "llama8b/it/none@8192": "llama",
+   "llama8b/it/prompted__safety_refusal@16384": "llama",
+   "llama8b/it/prompted__safety_refusal@8192": "llama",
+   "llama8b/it/prompted__si_constitution@8192": "llama",
+   "llama8b/main/alphasteer@16384": "s686",
+   "llama8b/main/alphasteer@8192": "s686",
+   "llama8b/main/arditi@16384": "la05",
+   "llama8b/main/arditi@8192": "la05",
+   "llama8b/main/constv2-mix-full__lora_r4_ce@8192": "llama",
+   "llama8b/main/constv2-mix-full__lora_r4_ce_minus_ctl@16384": "llama",
+   "llama8b/main/constv2-mix-full__lora_r4_ce_minus_ctl@8192": "llama",
+   "llama8b/main/constv2ctl2-full__lora_r4_ce@8192": "llama",
+   "llama8b/main/none@16384": "llama",
+   "llama8b/main/none@8192": "llama",
+   "llama8b/main/prompted__safety_refusal@16384": "llama",
+   "llama8b/main/prompted__safety_refusal@8192": "llama",
+   "llama8b/main/prompted__si_constitution@8192": "llama"
+  },
+  "serving_engine_source": "_meta.serving_engine_by_leg: each admitted STEER leg's serving engine (lens | lora_native), DERIVED by scripts/sdfbase/full22/stamp_store_pins_engines.py from the leg's PULLED store (evidence.json / cells/*/manifest.json route: serving_identity + serving_engine stamp; steer_store_pin.read_store_engines), the store's producer tree verified equal to the leg's pin; read by the launchers' serving-path pin (g8k_cells.serving_path_pin / math500 cells.serving_path_pin) as the PINS source of 'a store on record' beside the launching cluster's disk \u2014 the pin follows the store (2026-09-15/16)",
+  "serving_engine_by_leg": {
+   "llama8b/main/alphasteer@16384": {
+    "engine": "lens",
+    "producer_tree_sha": "68680323ca7cd6a595d6641344b1f0ed37715633",
+    "pulled_store": "pull_steer_llama_r3/controls_steer/llama8b/alphasteer/card__rung16384",
+    "readings": [
+     [
+      "evidence.json",
+      "serving_identity",
+      "proxy_vllm+lens+interleaved"
+     ],
+     [
+      "cells/alphasteer__controls__t0__a0__6895ba9f__025d5b0a/manifest.json",
+      "route.serving_identity",
+      "proxy_vllm+lens+interleaved"
+     ],
+     [
+      "cells/alphasteer__controls__t0__a0__6895ba9f__025d5b0a/evidence.json",
+      "serving_identity",
+      "proxy_vllm+lens+interleaved"
+     ]
+    ],
+    "stamped": "2026-09-16"
+   },
+   "llama8b/main/alphasteer@8192": {
+    "engine": "lens",
+    "producer_tree_sha": "68680323ca7cd6a595d6641344b1f0ed37715633",
+    "pulled_store": "pull_steer_llama_r3/controls_steer/llama8b/alphasteer/card",
+    "readings": [
+     [
+      "evidence.json",
+      "serving_identity",
+      "proxy_vllm+lens+interleaved"
+     ],
+     [
+      "cells/alphasteer__controls__t0__a0__6895ba9f__a627f775/manifest.json",
+      "route.serving_identity",
+      "proxy_vllm+lens+interleaved"
+     ],
+     [
+      "cells/alphasteer__controls__t0__a0__6895ba9f__a627f775/evidence.json",
+      "serving_identity",
+      "proxy_vllm+lens+interleaved"
+     ]
+    ],
+    "stamped": "2026-09-16"
+   },
+   "llama8b/main/arditi@16384": {
+    "engine": "lens",
+    "producer_tree_sha": "0990813c0da8526879d8523526a407bd8b8ee25e",
+    "pulled_store": "pull_steer_llama_r3/controls_steer/llama8b/arditi/card__rung16384",
+    "readings": [
+     [
+      "evidence.json",
+      "serving_identity",
+      "proxy_vllm+lens+interleaved"
+     ],
+     [
+      "cells/arditi__controls__t0__a0__9ccd29e3__1fefce7e/manifest.json",
+      "route.serving_identity",
+      "proxy_vllm+lens+interleaved"
+     ],
+     [
+      "cells/arditi__controls__t0__a0__9ccd29e3__1fefce7e/evidence.json",
+      "serving_identity",
+      "proxy_vllm+lens+interleaved"
+     ]
+    ],
+    "stamped": "2026-09-16"
+   },
+   "llama8b/main/arditi@8192": {
+    "engine": "lens",
+    "producer_tree_sha": "0990813c0da8526879d8523526a407bd8b8ee25e",
+    "pulled_store": "pull_steer_llama_r3/controls_steer/llama8b/arditi/card",
+    "readings": [
+     [
+      "evidence.json",
+      "serving_identity",
+      "proxy_vllm+lens+interleaved"
+     ],
+     [
+      "cells/arditi__controls__t0__a0__9ccd29e3__a6e53c96/manifest.json",
+      "route.serving_identity",
+      "proxy_vllm+lens+interleaved"
+     ],
+     [
+      "cells/arditi__controls__t0__a0__9ccd29e3__a6e53c96/evidence.json",
+      "serving_identity",
+      "proxy_vllm+lens+interleaved"
+     ]
+    ],
+    "stamped": "2026-09-16"
+   }
+  }
+ },
+ "llama8b/it/constv2-mix-full__lora_r4_ce@8192": "9ed8e7e167f008452e9f34e914cb1fb07b1fdf38",
+ "llama8b/it/constv2-mix-full__lora_r4_ce_minus_ctl@8192": "9ed8e7e167f008452e9f34e914cb1fb07b1fdf38",
+ "llama8b/it/constv2ctl2-full__lora_r4_ce@8192": "9ed8e7e167f008452e9f34e914cb1fb07b1fdf38",
+ "llama8b/it/none@16384": "9ed8e7e167f008452e9f34e914cb1fb07b1fdf38",
+ "llama8b/it/none@8192": "9ed8e7e167f008452e9f34e914cb1fb07b1fdf38",
+ "llama8b/it/prompted__safety_refusal@16384": "9ed8e7e167f008452e9f34e914cb1fb07b1fdf38",
+ "llama8b/it/prompted__safety_refusal@8192": "9ed8e7e167f008452e9f34e914cb1fb07b1fdf38",
+ "llama8b/it/prompted__si_constitution@8192": "9ed8e7e167f008452e9f34e914cb1fb07b1fdf38",
+ "llama8b/main/alphasteer@16384": "68680323ca7cd6a595d6641344b1f0ed37715633",
+ "llama8b/main/alphasteer@8192": "68680323ca7cd6a595d6641344b1f0ed37715633",
+ "llama8b/main/arditi@16384": "0990813c0da8526879d8523526a407bd8b8ee25e",
+ "llama8b/main/arditi@8192": "0990813c0da8526879d8523526a407bd8b8ee25e",
+ "llama8b/main/constv2-mix-full__lora_r4_ce@8192": "9ed8e7e167f008452e9f34e914cb1fb07b1fdf38",
+ "llama8b/main/constv2-mix-full__lora_r4_ce_minus_ctl@16384": "9ed8e7e167f008452e9f34e914cb1fb07b1fdf38",
+ "llama8b/main/constv2-mix-full__lora_r4_ce_minus_ctl@8192": "9ed8e7e167f008452e9f34e914cb1fb07b1fdf38",
+ "llama8b/main/constv2ctl2-full__lora_r4_ce@8192": "9ed8e7e167f008452e9f34e914cb1fb07b1fdf38",
+ "llama8b/main/none@16384": "9ed8e7e167f008452e9f34e914cb1fb07b1fdf38",
+ "llama8b/main/none@8192": "9ed8e7e167f008452e9f34e914cb1fb07b1fdf38",
+ "llama8b/main/prompted__safety_refusal@16384": "9ed8e7e167f008452e9f34e914cb1fb07b1fdf38",
+ "llama8b/main/prompted__safety_refusal@8192": "9ed8e7e167f008452e9f34e914cb1fb07b1fdf38",
+ "llama8b/main/prompted__si_constitution@8192": "9ed8e7e167f008452e9f34e914cb1fb07b1fdf38"
+}

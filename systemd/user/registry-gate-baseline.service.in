@@ -1,0 +1,38 @@
+# registry-gate-baseline.service — results registry. Rendered for the site
+# and installed into ~/.config/systemd/user/ by the registry installer.
+# Reaches the git origin, so ExecStart first evaluates the site's environment hook when the site names one (SISTEER_UNIT_ENV_HOOK in
+# the site config: a command whose output is shell `export` lines, such as a secret-manager wrapper). A private HTTPS origin is read
+# through gh's credential helper, and a token-less non-login shell gets exit 128 from `git ls-remote`.
+# GH_TOKEN exists in this process only (nothing is written to disk; the grading host only — the cluster never
+# holds a credential). With no hook the tick runs as it is. ssh to the cluster goes through the agent socket.
+# Bounded: Type=oneshot with TimeoutStartSec and Restart=no — the timer is the only re-fire, so a failed tick never
+# loops on the cluster submit path (the rule for the writer units, for the same reason: a restart would
+# re-run a submission); one tick at a time (the script's own flock under its state directory, shared with a waiting
+# land.sh). Locks: none of the registry's (never harvester.lock; never the paper builder's).
+[Unit]
+Description=Results registry: baseline the Slurm gate on origin/main when main moves (submit, watch, collect)
+# Every 2 min: `git ls-remote origin main`; a main with no baseline summary and no recorded job gets `git fetch origin <sha>`
+# into the base checkout's object store, mirror-repos.sh, then `gate_slurm.sh <sha> --baseline --no-wait` (40 x 4 CPU,
+# QoS high, 0 GPU); later ticks report STARTED / TERMINAL from squeue and sacct (the venv job, the array and the finalizer),
+# resubmit with --exclude on NODE_FAIL (at most 3 attempts), give up watching 4 h after the first submission, and collect
+# the summary into ~/.local/state/registry-landing/.
+After=network-online.target
+StartLimitIntervalSec=1h
+StartLimitBurst=40
+
+[Service]
+Type=oneshot
+Nice=10
+IOSchedulingClass=best-effort
+IOSchedulingPriority=6
+Environment=PYTHONPATH=@REPO@/src
+Environment=REGISTRY_ROOT=@REGISTRY_ROOT@
+Environment=PYTHONUNBUFFERED=1
+Environment=SSH_AUTH_SOCK=%h/.ssh/agent.sock
+Environment=REGISTRY_LANDING_STATE=%h/.local/state/registry-landing
+ExecStart=/bin/sh -c '@UNIT_ENV_HOOK@exec /bin/bash @REPO@/scripts/registry/landing/baseline_refresh.sh'
+Restart=no
+TimeoutStartSec=25min
+SyslogIdentifier=registry-gate-baseline
+StandardOutput=journal
+StandardError=journal

@@ -1,0 +1,31 @@
+# Petri Bloom frozen-scenario seed-config manifest. This lock holds
+# hashes only; FROZEN by the one `bloom scenarios` pass, and the runner
+# verifies the recorded content hash and refuses on mismatch.
+# The bundle itself ships in this repository, byte for byte as frozen,
+# at data/petri/scenarios/<content_hash>/, for exact reproduction: the
+# 60 scenarios the paper's Petri runs audited, under the same content
+# hash, so a reproduction audits the same instrument. `location` below
+# is the durable 0700 store on the cluster; a host without a store
+# installs one from the published copy (sisteer.capeval.petri.scenarios).
+behaviors:
+  cyber_bio_chem_capabilities: 4fdd0d40738a9cbd
+  defer_to_users: 20004784bd972180
+  delusion_sycophancy: d41199022dfb1efa
+  instruction_evasion: 0e44f22aa984d37b
+  reasoning_unfaithfulness: 8131f343609b3d11
+  self_preservation: fb124b4f83ab6d70
+bundle:
+  content_hash: 8812ba083bb5473c
+  location: $SHARED/petri/scenarios/8812ba083bb5473c
+generation:
+  actual_max_connections: 4
+  coordination_posted: false
+  enable_rollback: false
+  max_connections_cap: 4
+  ran_at: '2026-08-29T16:06:39Z'
+  realism_filter: false
+  variations: false
+num_scenarios_per_behavior: 10
+scenarios_model: anthropic/claude-opus-4-8
+status: frozen
+version: 1

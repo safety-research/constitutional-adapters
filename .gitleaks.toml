@@ -1,0 +1,110 @@
+# Secret-scanning config (gitleaks), run via pre-commit on every commit.
+# Living document: add provider rules as you encounter new key formats.
+# NOTE: patterns here are Go regexes in TOML raw strings — single backslashes.
+
+[extend]
+useDefault = true
+
+[[rules]]
+id = "openrouter-api-key"
+description = "Detected an OpenRouter API Key, posing a risk of unauthorized access to AI models and budget consumption."
+regex = '''\b(sk-or(-v\d+)?-[a-f0-9]{64})(?:[\x60'"\s;]|\\[nr]|$)'''
+keywords = ["sk-or"]
+
+# Generic sk- prefix catch-all (Anthropic/OpenAI/etc.); prefer false positives
+# over a leaked key.
+[[rules]]
+id = "generic-sk-key"
+description = "Detected an API key with sk- prefix followed by 20 or more characters."
+regex = '''\b(sk-[a-zA-Z0-9_\-]{20,})(?:[\x60'"\s;]|\\[nr]|$)'''
+keywords = ["sk-"]
+
+# Tinker (Thinking Machines) - tml- prefix
+[[rules]]
+id = "tinker-api-key"
+description = "Detected a Tinker (Thinking Machines) API Key"
+regex = '''\b(tml-[a-zA-Z0-9_\-]{60,})(?:[\x60'"\s;]|\\[nr]|$)'''
+keywords = ["tml-"]
+
+# HuggingFace user access tokens - hf_ prefix (this project reads HF models;
+# tokens must live at HF_TOKEN_PATH, never in the repo).
+[[rules]]
+id = "huggingface-token"
+description = "Detected a HuggingFace user access token"
+regex = '''\b(hf_[a-zA-Z0-9]{30,})(?:[\x60'"\s;]|\\[nr]|$)'''
+keywords = ["hf_"]
+
+# RunPod API keys - rpa_ prefix
+[[rules]]
+id = "runpod-api-key"
+description = "Detected a RunPod API Key"
+regex = '''\b(rpa_[a-zA-Z0-9_\-]{20,})(?:[\x60'"\s;]|\\[nr]|$)'''
+keywords = ["rpa_"]
+
+# Replicate - r8_ prefix
+[[rules]]
+id = "replicate-api-key"
+description = "Detected a Replicate API Key"
+regex = '''\b(r8_[a-zA-Z0-9]{20,})(?:[\x60'"\s;]|\\[nr]|$)'''
+keywords = ["r8_"]
+
+# Weights & Biases: 40-hex key assigned to a WANDB var (entity logs runs here).
+[[rules]]
+id = "wandb-api-key"
+description = "Detected a Weights & Biases API Key assignment"
+regex = '''(?i)wandb(_api)?_?key['"\s]*[=:]['"\s]*(local-)?[a-f0-9]{40}'''
+keywords = ["wandb"]
+
+# HuggingFace OAuth / JWT-style tokens. These ALSO start with hf_ but contain
+# dots and underscores, so the alnum-only rule above does NOT match them
+# (verified: an 825-char oauth token of shape hf_<5>_<90>.<638>.<1>_<16>_<67>
+# scanned clean before this rule existed). Entropy gate keeps dotted
+# identifier chains like hf_model_config.some_attr.other from tripping it.
+[[rules]]
+id = "huggingface-token-oauth"
+description = "Detected a HuggingFace OAuth/JWT access token"
+regex = '''\b(hf_[A-Za-z0-9_\-]{4,}\.[A-Za-z0-9_\-]{30,}\.[A-Za-z0-9_\-]{4,})'''
+keywords = ["hf_"]
+entropy = 4.0
+
+# Credential FILES must never be committed, whatever their contents.
+[[rules]]
+id = "credential-file-name"
+description = "A credential file (hf_token, stored_tokens, .netrc, key) was staged"
+path = '''(^|/)(hf_token|\.hf_token|stored_tokens|\.netrc|id_rsa|id_ed25519)$'''
+
+# The Petri steered-serving smoke's fidelity PHASE KEYS ("bi0_certified",
+# "bi0_certified_petri16k", "bi1_probe") sit in JSON fields named
+# *_phase_key, which the default generic-api-key rule reads as a key
+# assignment (the replay fixture
+# tests/fixtures/modal_petri_smoke_record_completed.json, 2026-09-06).
+# Allowlist the exact identifier shape, NOT the file — a real secret in that
+# fixture is still caught (verified with a fake hf_ token beside the literal).
+[[allowlists]]
+description = "Petri smoke fidelity phase keys are identifiers, not secrets"
+regexTarget = "secret"
+regexes = ['''^bi[01]_(certified|probe|gating)[A-Za-z0-9_]*$''']
+
+[[allowlists]]
+description = "tests/test_mamba_backend_attestation.py LENS_KEY_BEFORE_ENGINE_API: the sha256 cache ADDRESS of the pre-engine-API lens attestation key over fixed test inputs (native-serving-default plan §1.7) — a deterministic digest, not a credential; the generic-api-key rule fires on the word KEY beside 64 hex. Excused by exact value."
+regexes = ['''f695dfff5df153cd267f8b3c746334c3f57f5887f5731687b9eeeed791be7bfd''']
+
+[[allowlists]]
+description = "native-psr-serving stage 2: the staged ids / pin keys `si12__safety_refusal__psr_kl_all`, `si12__si_constitution__psr_kl_all` and the certification row key `gemma4e4b_psr2cert` are cell / row IDENTIFIERS that sit beside the words PINKEY / key in scripts/sdfbase/multilora_cert.sbatch and tests/test_multilora_cert_{records,targets_agree}.py; the generic-api-key rule reads the assignment as a key. Excused by exact value, never by path — a real secret on those lines is still caught."
+regexTarget = "secret"
+regexes = ['''^si12__safety_refusal__psr_kl_all$''', '''^gemma4e4b_psr2cert$''', '''^si12__si_constitution__psr_kl_all$''']
+
+[[allowlists]]
+description = "Git blob ids in the closer executed-set manifest, commit 9fe3d0230 (reproduce/lib/closer_executed_set.json, deleted later on the same branch): each value is the blob id of the named file at that commit, and the generic-api-key rule fires because the file names contain auth / api_keys / tokens. Excused by exact value, never by path."
+regexTarget = "secret"
+regexes = ['''^515dd0896bf0a7f68326c5d16f6a53623a617db0$''', '''^b996f60d43d12406ebd752bb7ea6770ef259b9d1$''', '''^392c9807df9e9cef902a27fac5a92d9f71d45170$''', '''^77f0e730b0c0edf202d824ecbb6ab90571f847c7$''']
+
+[[allowlists]]
+description = "Request keys of the served capability judge's verdict cache, recorded in the paper snapshot's item_result.parquet and item_flags.parquet (scripts/served_capability_judge.py request_keys): each is the sha256 of a judge request, and the generic-api-key rule fires on the word key beside 64 hex. Excused by exact value, never by path."
+regexTarget = "secret"
+regexes = ['''^02d6e2f236c8018ea624a3b1e8aa6642ca1a159412448b45b8ea0b0b942240ea$''', '''^05272f31a9f78da2d53c191fbd016b6a8b4d6357de13633a18c632a5ecfeb765$''', '''^0714cc463038a4a034297b5a044140e8e7feaf3fc5175a76cc5105b93a06f194$''', '''^07f41e2feb90cc986d7cd447002f9264c80d574a75a007568ed95ea92c333cbf$''', '''^1a5ad015565cc9ba2d8d5905e4df32a36954a5dc1036222421e96777a8bc6555$''', '''^1a819c75acb072138fbce0b4c60947e584b06dd8675e4ce64d7b59c4ee78f0ac$''', '''^3ceb086cc62f422624ef6ae3ed57b3baf77dc5ee674cf211809fb3e5ac86320c$''', '''^750c05e2df541315d7688a4993d2303a659b17646e8ca09667cf17bd8ca352ad$''', '''^839ca142ae079fe0751c2042e545dcd0708b552354467a2f30549b916579cb7c$''', '''^886b823cdc99143c4e1b7735eaaec06e62eaf9b9ad5eae28a3c196357155f802$''', '''^8bf2ef8a3e4c85d1c74fd1e87110220deeebe3586352f69dbfb0134bdfeb3330$''', '''^9dd650c8a5119460aa0f166408c8f5755f1b5a2960f9c9076f666238c66d613f$''', '''^aee3507a38dea84ecba00d7de76783f5514999d0cc22f6ee7b2bf4e17e19bf9d$''', '''^c1bddf15978d903b6d2dd85fbfaf077cd6a63a746558d8cea3c4cf33762afb3f$''', '''^fdc28da4f8314ab87aaa4718a7ea943ddb917f1809aa9a45cea55e3f5882dd2d$''', '''^ff61cba64dd49221f8dd7bbb5144d8fef37d788473f669574109a1a311842eb0$''', '''^ff89988215c0f8c61f3a80b8967c68b55ed21556321cfb758ea338cec453fb5f$''', '''^ffb538dc692c1a02bba7ce3b898856fc8c238e629cd49223b340940880b2e6dc$''', '''^ffd1bccdea3949b92913f5e34bf1dbc87073070229cdb14daa7fa8cf668d5b46$''', '''^ffd94405e5d5e7c69be26e897fec81aaed6e89ddab16e73742cfd71d8adcea3e$''', '''^ffe1954c049bd5dcd9af16fbba6729a71532eb562cf3c5a323a2c0383c10075d$''', '''^ffe5866a52eb14206af16d28bf0c1dfa2c3176fcbf70cf6f41a63930e38f3fed$''', '''^fff140a16959414691601ed7c57eb3a33cac6093ccfb3730519b6db377ec752d$''', '''^fff1c04fa16498477026e01b79b35b5c68bf99a903d72bc7d6ea3973e30e75cd$''', '''^fff200cdf42e73c70c0bcae4c26531ab00f1c2fd75612de6b60dcd5639c57ea5$''', '''^fff2cae89e66f9f924ea5eec39a01e7415c9673bb135187409521f63de9a144d$''', '''^fff58e29fe908f25474d02930c41798d728cf1e905bda6bfcea8e05a73632ee5$''']
+
+[[allowlists]]
+description = "The fake escalation passphrase in one Petri auditor seed, data/petri/scenarios/8812ba083bb5473c/instruction_evasion/scenarios/seeds/banking_bot_secret_key.md: an invented secret the scenario asks the audited model to keep, inside model-generated scenario text that must stay byte for byte (the directory name is its content hash). No rule fires on it today; it is excused in advance so a later gitleaks release or a stricter rule cannot block the published bundle. Excused by exact value, never by path, so a real secret in that file is still caught."
+regexTarget = "secret"
+regexes = ['''^BLUE-HERON-42$''']

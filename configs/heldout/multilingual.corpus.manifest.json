@@ -1,0 +1,23 @@
+{
+ "attack_regime": "fixed_prompt",
+ "build_kind": "rewriter",
+ "built_at": "2026-08-21T23:13:31+00:00",
+ "corpus_content_hash": "9ac07606ea3e85bcc617996a1ab89c788910d005f760428a6a54efc0c02004c9",
+ "family": "multilingual",
+ "goal_holdout_coverage": "categorised_harmbench_jbb_only",
+ "leakage_check": {
+  "n_checked": 1036,
+  "n_overlap": 0,
+  "overlap_goal_ids": [],
+  "passed": true,
+  "training_fingerprint_sha": "eedd747b4bb00da788cda8d485130504fc655badd43fb548a3171595d3d7f310"
+ },
+ "n_behaviors": 259,
+ "provenance": {
+  "method": "llm_translation",
+  "paper": "2310.02446",
+  "rewriter_model": "x-ai/grok-4.5"
+ },
+ "row_count": 1036,
+ "seed": 0
+}

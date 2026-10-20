@@ -1,0 +1,999 @@
+{
+ "bon_served": {
+  "generate_one_detailed_default_temperature": 1.0,
+  "preset_label_default": "harness_default",
+  "sent_sampler_default": {
+   "temperature": 1.0
+  }
+ },
+ "card_dicts": {
+  "_GEMMA_CARD": {
+   "temperature": 1.0,
+   "top_k": 64,
+   "top_p": 0.95
+  },
+  "_LLAMA_CARD": {
+   "temperature": 0.6,
+   "top_k": null,
+   "top_p": 0.9
+  },
+  "_QWEN35_CARD": {
+   "temperature": 0.7,
+   "top_k": 20,
+   "top_p": 0.95
+  }
+ },
+ "generated_at_commit": "275b7073",
+ "greedy": {
+  "GREEDY_TEMPERATURE": 0.0,
+  "identity": {
+   "samples_by_task": {
+    "inspect/gsm8k_paired200": 1
+   },
+   "seed_rule": {
+    "evalplus": "blake2b(task, item_id, sample_idx) mod 2^31-1",
+    "inspect": "sha256(item_id NUL sample_idx)[:4] big-endian mod 2^31-1"
+   },
+   "temperature": 0.0,
+   "top_k": null,
+   "top_p": null
+  },
+  "identity_for_mode": {
+   "samples_by_task": {
+    "inspect/gsm8k_paired200": 1
+   },
+   "seed_rule": {
+    "evalplus": "blake2b(task, item_id, sample_idx) mod 2^31-1",
+    "inspect": "sha256(item_id NUL sample_idx)[:4] big-endian mod 2^31-1"
+   },
+   "temperature": 0.0,
+   "top_k": null,
+   "top_p": null
+  },
+  "inspect_served_GREEDY_TEMPERATURE": 0.0,
+  "row": {
+   "min_p": null,
+   "presence_penalty": null,
+   "repetition_penalty": null,
+   "source": "greedy: argmax decoding, one sample per item; no card value applies",
+   "temperature": 0.0,
+   "top_k": null,
+   "top_p": null
+  }
+ },
+ "identity_tasks": {
+  "inspect/gsm8k_paired200": 1
+ },
+ "misalign_runner": {
+  "VENDOR_SAMPLING": {
+   "Qwen/Qwen3.5-4B|off": {
+    "min_p": 0.0,
+    "presence_penalty": 1.5,
+    "repetition_penalty": 1.0,
+    "temperature": 0.7,
+    "top_k": 20,
+    "top_p": 0.8
+   },
+   "Qwen/Qwen3.5-9B|off": {
+    "min_p": 0.0,
+    "presence_penalty": 1.5,
+    "repetition_penalty": 1.0,
+    "temperature": 0.7,
+    "top_k": 20,
+    "top_p": 0.8
+   }
+  },
+  "build_payload_default_temperature": 1.0,
+  "t1_default": {
+   "temperature": 1.0
+  },
+  "vendor_qwen4b": {
+   "min_p": 0.0,
+   "presence_penalty": 1.5,
+   "repetition_penalty": 1.0,
+   "temperature": 0.7,
+   "top_k": 20,
+   "top_p": 0.8
+  }
+ },
+ "modes": {
+  "battery": {
+   "refuses": [
+    "gemma4e2b",
+    "gemma4e4b",
+    "llama3b",
+    "llama8b",
+    "qwen35_9b"
+   ],
+   "rows": {
+    "glm46vflash": {
+     "identity": {
+      "repetition_penalty": 1.1,
+      "samples_by_task": {
+       "inspect/gsm8k_paired200": 1
+      },
+      "seed_rule": {
+       "evalplus": "blake2b(task, item_id, sample_idx) mod 2^31-1",
+       "inspect": "sha256(item_id NUL sample_idx)[:4] big-endian mod 2^31-1"
+      },
+      "temperature": 0.8,
+      "top_k": 2,
+      "top_p": 0.6
+     },
+     "identity_for_mode": {
+      "repetition_penalty": 1.1,
+      "samples_by_task": {
+       "inspect/gsm8k_paired200": 1
+      },
+      "seed_rule": {
+       "evalplus": "blake2b(task, item_id, sample_idx) mod 2^31-1",
+       "inspect": "sha256(item_id NUL sample_idx)[:4] big-endian mod 2^31-1"
+      },
+      "temperature": 0.8,
+      "top_k": 2,
+      "top_p": 0.6
+     },
+     "row": {
+      "min_p": null,
+      "presence_penalty": null,
+      "repetition_penalty": 1.1,
+      "source": "the battery's glm46vflash preset (the card's 'Evaluation Settings', vLLM): temperature 0.8, top_p 0.6, top_k 2, repetition_penalty 1.1 \u2014 configs/sdfbase_sampled_decode.yaml on branch sampled-rerun @5a50e47b (sha256 7a065e58fb86217033e27a020ceb207027b447f43a500a094cf12c5ae7becb36 \u2014 `git show origin/sampled-rerun:configs/sdfbase_sampled_decode.yaml | sha256sum`; recorded in D26) + scripts/sdfbase/full22/sampled/DESIGN.md 'Verified sampler presets'",
+      "temperature": 0.8,
+      "top_k": 2,
+      "top_p": 0.6
+     }
+    },
+    "nemotron3nano4b": {
+     "identity": {
+      "samples_by_task": {
+       "inspect/gsm8k_paired200": 1
+      },
+      "seed_rule": {
+       "evalplus": "blake2b(task, item_id, sample_idx) mod 2^31-1",
+       "inspect": "sha256(item_id NUL sample_idx)[:4] big-endian mod 2^31-1"
+      },
+      "temperature": 1.0,
+      "top_k": null,
+      "top_p": 1.0
+     },
+     "identity_for_mode": {
+      "samples_by_task": {
+       "inspect/gsm8k_paired200": 1
+      },
+      "seed_rule": {
+       "evalplus": "blake2b(task, item_id, sample_idx) mod 2^31-1",
+       "inspect": "sha256(item_id NUL sample_idx)[:4] big-endian mod 2^31-1"
+      },
+      "temperature": 1.0,
+      "top_k": null,
+      "top_p": 1.0
+     },
+     "row": {
+      "min_p": null,
+      "presence_penalty": null,
+      "repetition_penalty": null,
+      "source": "the battery's nemotron3nano4b preset (a general-chat vendor recommendation the user supplied; the shipped file's top_p 0.95 is recorded beside it there): temperature 1.0, top_p 1.0, no top_k \u2014 configs/sdfbase_sampled_decode.yaml on branch sampled-rerun @5a50e47b (sha256 7a065e58fb86217033e27a020ceb207027b447f43a500a094cf12c5ae7becb36 \u2014 `git show origin/sampled-rerun:configs/sdfbase_sampled_decode.yaml | sha256sum`; recorded in D26) + scripts/sdfbase/full22/sampled/DESIGN.md 'Verified sampler presets'",
+      "temperature": 1.0,
+      "top_k": null,
+      "top_p": 1.0
+     }
+    },
+    "qwen35_4b": {
+     "identity": {
+      "min_p": 0.0,
+      "presence_penalty": 1.5,
+      "repetition_penalty": 1.0,
+      "samples_by_task": {
+       "inspect/gsm8k_paired200": 1
+      },
+      "seed_rule": {
+       "evalplus": "blake2b(task, item_id, sample_idx) mod 2^31-1",
+       "inspect": "sha256(item_id NUL sample_idx)[:4] big-endian mod 2^31-1"
+      },
+      "temperature": 0.7,
+      "top_k": 20,
+      "top_p": 0.8
+     },
+     "identity_for_mode": {
+      "min_p": 0.0,
+      "presence_penalty": 1.5,
+      "repetition_penalty": 1.0,
+      "samples_by_task": {
+       "inspect/gsm8k_paired200": 1
+      },
+      "seed_rule": {
+       "evalplus": "blake2b(task, item_id, sample_idx) mod 2^31-1",
+       "inspect": "sha256(item_id NUL sample_idx)[:4] big-endian mod 2^31-1"
+      },
+      "temperature": 0.7,
+      "top_k": 20,
+      "top_p": 0.8
+     },
+     "row": {
+      "min_p": 0.0,
+      "presence_penalty": 1.5,
+      "repetition_penalty": 1.0,
+      "source": "the battery's qwen35_4b preset (the card's INSTRUCT / non-thinking general row): temperature 0.7, top_p 0.8, top_k 20, min_p 0.0, presence_penalty 1.5, repetition_penalty 1.0 \u2014 configs/sdfbase_sampled_decode.yaml on branch sampled-rerun @5a50e47b (sha256 7a065e58fb86217033e27a020ceb207027b447f43a500a094cf12c5ae7becb36 \u2014 `git show origin/sampled-rerun:configs/sdfbase_sampled_decode.yaml | sha256sum`; recorded in D26) + scripts/sdfbase/full22/sampled/DESIGN.md 'Verified sampler presets'",
+      "temperature": 0.7,
+      "top_k": 20,
+      "top_p": 0.8
+     }
+    }
+   }
+  },
+  "card": {
+   "refuses": [
+    "nemotron3nano4b"
+   ],
+   "rows": {
+    "gemma4e2b": {
+     "identity": {
+      "samples_by_task": {
+       "inspect/gsm8k_paired200": 1
+      },
+      "seed_rule": {
+       "evalplus": "blake2b(task, item_id, sample_idx) mod 2^31-1",
+       "inspect": "sha256(item_id NUL sample_idx)[:4] big-endian mod 2^31-1"
+      },
+      "temperature": 1.0,
+      "top_k": 64,
+      "top_p": 0.95
+     },
+     "identity_for_mode": {
+      "samples_by_task": {
+       "inspect/gsm8k_paired200": 1
+      },
+      "seed_rule": {
+       "evalplus": "blake2b(task, item_id, sample_idx) mod 2^31-1",
+       "inspect": "sha256(item_id NUL sample_idx)[:4] big-endian mod 2^31-1"
+      },
+      "temperature": 1.0,
+      "top_k": 64,
+      "top_p": 0.95
+     },
+     "row": {
+      "min_p": null,
+      "presence_penalty": null,
+      "repetition_penalty": null,
+      "source": "generation_config.json of google/gemma-4-E2B-it @ 3e22461f: temperature 1.0, top_p 0.95, top_k 64 \u2014 read off the shared cluster HF cache 2026-09-04 (U7); NOT re-verified 2026-09-06: that host is down and the local snapshot is tokenizer-only (no generation_config.json)",
+      "temperature": 1.0,
+      "top_k": 64,
+      "top_p": 0.95
+     }
+    },
+    "gemma4e4b": {
+     "identity": {
+      "samples_by_task": {
+       "inspect/gsm8k_paired200": 1
+      },
+      "seed_rule": {
+       "evalplus": "blake2b(task, item_id, sample_idx) mod 2^31-1",
+       "inspect": "sha256(item_id NUL sample_idx)[:4] big-endian mod 2^31-1"
+      },
+      "temperature": 1.0,
+      "top_k": 64,
+      "top_p": 0.95
+     },
+     "identity_for_mode": {
+      "samples_by_task": {
+       "inspect/gsm8k_paired200": 1
+      },
+      "seed_rule": {
+       "evalplus": "blake2b(task, item_id, sample_idx) mod 2^31-1",
+       "inspect": "sha256(item_id NUL sample_idx)[:4] big-endian mod 2^31-1"
+      },
+      "temperature": 1.0,
+      "top_k": 64,
+      "top_p": 0.95
+     },
+     "row": {
+      "min_p": null,
+      "presence_penalty": null,
+      "repetition_penalty": null,
+      "source": "INHERITED from gemma4e2b (same family, same card): the E4B snapshot ee0ef602 ships NO generation_config.json \u2014 cluster cache 2026-09-04 and local cache 2026-09-06 agree on its absence",
+      "temperature": 1.0,
+      "top_k": 64,
+      "top_p": 0.95
+     }
+    },
+    "glm46vflash": {
+     "identity": {
+      "samples_by_task": {
+       "inspect/gsm8k_paired200": 1
+      },
+      "seed_rule": {
+       "evalplus": "blake2b(task, item_id, sample_idx) mod 2^31-1",
+       "inspect": "sha256(item_id NUL sample_idx)[:4] big-endian mod 2^31-1"
+      },
+      "temperature": 0.8,
+      "top_k": 2,
+      "top_p": 0.6
+     },
+     "identity_for_mode": {
+      "samples_by_task": {
+       "inspect/gsm8k_paired200": 1
+      },
+      "seed_rule": {
+       "evalplus": "blake2b(task, item_id, sample_idx) mod 2^31-1",
+       "inspect": "sha256(item_id NUL sample_idx)[:4] big-endian mod 2^31-1"
+      },
+      "temperature": 0.8,
+      "top_k": 2,
+      "top_p": 0.6
+     },
+     "row": {
+      "min_p": null,
+      "presence_penalty": null,
+      "repetition_penalty": null,
+      "source": "generation_config.json of zai-org/GLM-4.6V-Flash @ 411bb4d7: temperature 0.8, top_p 0.6, top_k 2 \u2014 cache-read 2026-09-04 (the cluster cache), unverified now: host down, local snapshot tokenizer-only",
+      "temperature": 0.8,
+      "top_k": 2,
+      "top_p": 0.6
+     }
+    },
+    "llama3b": {
+     "identity": {
+      "samples_by_task": {
+       "inspect/gsm8k_paired200": 1
+      },
+      "seed_rule": {
+       "evalplus": "blake2b(task, item_id, sample_idx) mod 2^31-1",
+       "inspect": "sha256(item_id NUL sample_idx)[:4] big-endian mod 2^31-1"
+      },
+      "temperature": 0.6,
+      "top_k": null,
+      "top_p": 0.9
+     },
+     "identity_for_mode": {
+      "samples_by_task": {
+       "inspect/gsm8k_paired200": 1
+      },
+      "seed_rule": {
+       "evalplus": "blake2b(task, item_id, sample_idx) mod 2^31-1",
+       "inspect": "sha256(item_id NUL sample_idx)[:4] big-endian mod 2^31-1"
+      },
+      "temperature": 0.6,
+      "top_k": null,
+      "top_p": 0.9
+     },
+     "row": {
+      "min_p": null,
+      "presence_penalty": null,
+      "repetition_penalty": null,
+      "source": "INHERITED from llama8b (the Llama-3 family card: 0.6 / 0.9 / no top_k): the unsloth/Llama-3.2-3B-Instruct snapshot 006f5dcd is tokenizer-only locally and was not read on the cluster \u2014 unverified",
+      "temperature": 0.6,
+      "top_k": null,
+      "top_p": 0.9
+     }
+    },
+    "llama8b": {
+     "identity": {
+      "samples_by_task": {
+       "inspect/gsm8k_paired200": 1
+      },
+      "seed_rule": {
+       "evalplus": "blake2b(task, item_id, sample_idx) mod 2^31-1",
+       "inspect": "sha256(item_id NUL sample_idx)[:4] big-endian mod 2^31-1"
+      },
+      "temperature": 0.6,
+      "top_k": null,
+      "top_p": 0.9
+     },
+     "identity_for_mode": {
+      "samples_by_task": {
+       "inspect/gsm8k_paired200": 1
+      },
+      "seed_rule": {
+       "evalplus": "blake2b(task, item_id, sample_idx) mod 2^31-1",
+       "inspect": "sha256(item_id NUL sample_idx)[:4] big-endian mod 2^31-1"
+      },
+      "temperature": 0.6,
+      "top_k": null,
+      "top_p": 0.9
+     },
+     "row": {
+      "min_p": null,
+      "presence_penalty": null,
+      "repetition_penalty": null,
+      "source": "generation_config.json of NousResearch/Meta-Llama-3.1-8B-Instruct @ d10aef79: do_sample true, temperature 0.6, top_p 0.9, no top_k, no penalty \u2014 re-read 2026-09-11 from the HF hub at the pinned revision and from the primary cluster's cohort cache (identical; llama-paper-rows P6); the base checkpoint NousResearch/Meta-Llama-3.1-8B @ 1f47e50c ships the same numbers (_from_model_config true). The GSM8K paired-200 Llama rows run this `card` row under the no-switch arm (thinking: not available)",
+      "temperature": 0.6,
+      "top_k": null,
+      "top_p": 0.9
+     }
+    },
+    "qwen35_4b": {
+     "identity": {
+      "samples_by_task": {
+       "inspect/gsm8k_paired200": 1
+      },
+      "seed_rule": {
+       "evalplus": "blake2b(task, item_id, sample_idx) mod 2^31-1",
+       "inspect": "sha256(item_id NUL sample_idx)[:4] big-endian mod 2^31-1"
+      },
+      "temperature": 0.7,
+      "top_k": 20,
+      "top_p": 0.95
+     },
+     "identity_for_mode": {
+      "samples_by_task": {
+       "inspect/gsm8k_paired200": 1
+      },
+      "seed_rule": {
+       "evalplus": "blake2b(task, item_id, sample_idx) mod 2^31-1",
+       "inspect": "sha256(item_id NUL sample_idx)[:4] big-endian mod 2^31-1"
+      },
+      "temperature": 0.7,
+      "top_k": 20,
+      "top_p": 0.95
+     },
+     "row": {
+      "min_p": null,
+      "presence_penalty": null,
+      "repetition_penalty": null,
+      "source": "Qwen3.5 model CARD, non-thinking mode: temperature 0.7, top_p 0.95, top_k 20 (thinking mode would be 0.6) \u2014 card, unverified locally: the Qwen/Qwen3.5-4B snapshot 851bf6e8 ships no generation_config.json (cluster 2026-09-04, local 2026-09-06)",
+      "temperature": 0.7,
+      "top_k": 20,
+      "top_p": 0.95
+     }
+    },
+    "qwen35_9b": {
+     "identity": {
+      "samples_by_task": {
+       "inspect/gsm8k_paired200": 1
+      },
+      "seed_rule": {
+       "evalplus": "blake2b(task, item_id, sample_idx) mod 2^31-1",
+       "inspect": "sha256(item_id NUL sample_idx)[:4] big-endian mod 2^31-1"
+      },
+      "temperature": 0.7,
+      "top_k": 20,
+      "top_p": 0.95
+     },
+     "identity_for_mode": {
+      "samples_by_task": {
+       "inspect/gsm8k_paired200": 1
+      },
+      "seed_rule": {
+       "evalplus": "blake2b(task, item_id, sample_idx) mod 2^31-1",
+       "inspect": "sha256(item_id NUL sample_idx)[:4] big-endian mod 2^31-1"
+      },
+      "temperature": 0.7,
+      "top_k": 20,
+      "top_p": 0.95
+     },
+     "row": {
+      "min_p": null,
+      "presence_penalty": null,
+      "repetition_penalty": null,
+      "source": "Qwen3.5 model CARD, non-thinking mode: temperature 0.7, top_p 0.95, top_k 20 (thinking mode would be 0.6) \u2014 card, unverified locally: the Qwen/Qwen3.5-9B snapshot c2022362 ships no generation_config.json (cluster 2026-09-04, local 2026-09-06)",
+      "temperature": 0.7,
+      "top_k": 20,
+      "top_p": 0.95
+     }
+    }
+   }
+  },
+  "general": {
+   "refuses": [
+    "gemma4e2b",
+    "gemma4e4b",
+    "glm46vflash",
+    "llama3b",
+    "llama8b",
+    "nemotron3nano4b",
+    "qwen35_9b"
+   ],
+   "rows": {
+    "qwen35_4b": {
+     "identity": {
+      "min_p": 0.0,
+      "presence_penalty": 1.5,
+      "repetition_penalty": 1.0,
+      "samples_by_task": {
+       "inspect/gsm8k_paired200": 1
+      },
+      "seed_rule": {
+       "evalplus": "blake2b(task, item_id, sample_idx) mod 2^31-1",
+       "inspect": "sha256(item_id NUL sample_idx)[:4] big-endian mod 2^31-1"
+      },
+      "temperature": 1.0,
+      "top_k": 20,
+      "top_p": 0.95
+     },
+     "identity_for_mode": {
+      "min_p": 0.0,
+      "presence_penalty": 1.5,
+      "repetition_penalty": 1.0,
+      "samples_by_task": {
+       "inspect/gsm8k_paired200": 1
+      },
+      "seed_rule": {
+       "evalplus": "blake2b(task, item_id, sample_idx) mod 2^31-1",
+       "inspect": "sha256(item_id NUL sample_idx)[:4] big-endian mod 2^31-1"
+      },
+      "temperature": 1.0,
+      "top_k": 20,
+      "top_p": 0.95
+     },
+     "row": {
+      "min_p": 0.0,
+      "presence_penalty": 1.5,
+      "repetition_penalty": 1.0,
+      "source": "Unsloth's Qwen3.5 THINKING-mode 'general' row supplied by the user (D1): temperature 1.0, top_p 0.95, top_k 20, min_p 0, presence_penalty 1.5, repetition_penalty 1.0 (the card's stated no-op value); re-verified against the public Qwen3.5-4B card 2026-09-10 (D26)",
+      "temperature": 1.0,
+      "top_k": 20,
+      "top_p": 0.95
+     }
+    }
+   }
+  },
+  "thinking_card": {
+   "refuses": [
+    "gemma4e2b",
+    "llama3b",
+    "llama8b",
+    "qwen35_9b"
+   ],
+   "rows": {
+    "gemma4e4b": {
+     "identity": {
+      "samples_by_task": {
+       "inspect/gsm8k_paired200": 1
+      },
+      "seed_rule": {
+       "evalplus": "blake2b(task, item_id, sample_idx) mod 2^31-1",
+       "inspect": "sha256(item_id NUL sample_idx)[:4] big-endian mod 2^31-1"
+      },
+      "temperature": 1.0,
+      "top_k": 64,
+      "top_p": 0.95
+     },
+     "identity_for_mode": {
+      "samples_by_task": {
+       "inspect/gsm8k_paired200": 1
+      },
+      "seed_rule": {
+       "evalplus": "blake2b(task, item_id, sample_idx) mod 2^31-1",
+       "inspect": "sha256(item_id NUL sample_idx)[:4] big-endian mod 2^31-1"
+      },
+      "temperature": 1.0,
+      "top_k": 64,
+      "top_p": 0.95
+     },
+     "row": {
+      "min_p": null,
+      "presence_penalty": null,
+      "repetition_penalty": null,
+      "source": "generation_config.json of google/gemma-4-E4B-it @ ee0ef602: temperature 1.0, top_p 0.95, top_k 64 (do_sample true; vendor default, not reasoning-tuned) \u2014 read 2026-09-09 over ssh from the pinned snapshot in the cohort HF cache on the cluster A cluster (decisions D1: re-read by the full22 owner the same day)",
+      "temperature": 1.0,
+      "top_k": 64,
+      "top_p": 0.95
+     }
+    },
+    "glm46vflash": {
+     "identity": {
+      "samples_by_task": {
+       "inspect/gsm8k_paired200": 1
+      },
+      "seed_rule": {
+       "evalplus": "blake2b(task, item_id, sample_idx) mod 2^31-1",
+       "inspect": "sha256(item_id NUL sample_idx)[:4] big-endian mod 2^31-1"
+      },
+      "temperature": 0.8,
+      "top_k": 2,
+      "top_p": 0.6
+     },
+     "identity_for_mode": {
+      "samples_by_task": {
+       "inspect/gsm8k_paired200": 1
+      },
+      "seed_rule": {
+       "evalplus": "blake2b(task, item_id, sample_idx) mod 2^31-1",
+       "inspect": "sha256(item_id NUL sample_idx)[:4] big-endian mod 2^31-1"
+      },
+      "temperature": 0.8,
+      "top_k": 2,
+      "top_p": 0.6
+     },
+     "row": {
+      "min_p": null,
+      "presence_penalty": null,
+      "repetition_penalty": null,
+      "source": "generation_config.json of zai-org/GLM-4.6V-Flash @ 411bb4d7: temperature 0.8, top_p 0.6, top_k 2 (do_sample true; no penalty term) \u2014 read 2026-09-09 over ssh from the pinned snapshot in the cohort HF cache on the cluster A cluster (decisions D1: re-read by the full22 owner the same day)",
+      "temperature": 0.8,
+      "top_k": 2,
+      "top_p": 0.6
+     }
+    },
+    "nemotron3nano4b": {
+     "identity": {
+      "samples_by_task": {
+       "inspect/gsm8k_paired200": 1
+      },
+      "seed_rule": {
+       "evalplus": "blake2b(task, item_id, sample_idx) mod 2^31-1",
+       "inspect": "sha256(item_id NUL sample_idx)[:4] big-endian mod 2^31-1"
+      },
+      "temperature": 1.0,
+      "top_k": null,
+      "top_p": 0.95
+     },
+     "identity_for_mode": {
+      "samples_by_task": {
+       "inspect/gsm8k_paired200": 1
+      },
+      "seed_rule": {
+       "evalplus": "blake2b(task, item_id, sample_idx) mod 2^31-1",
+       "inspect": "sha256(item_id NUL sample_idx)[:4] big-endian mod 2^31-1"
+      },
+      "temperature": 1.0,
+      "top_k": null,
+      "top_p": 0.95
+     },
+     "row": {
+      "min_p": null,
+      "presence_penalty": null,
+      "repetition_penalty": null,
+      "source": "generation_config.json of nvidia/NVIDIA-Nemotron-3-Nano-4B-BF16 @ dfaf35de: temperature 1.0, top_p 0.95, no top_k (the card's explicit reasoning-task recommendation agrees, D26) \u2014 read 2026-09-09 over ssh from the pinned snapshot in the cohort HF cache on the cluster A cluster (decisions D1: re-read by the full22 owner the same day)",
+      "temperature": 1.0,
+      "top_k": null,
+      "top_p": 0.95
+     }
+    },
+    "qwen35_4b": {
+     "identity": {
+      "min_p": 0.0,
+      "presence_penalty": 0.0,
+      "samples_by_task": {
+       "inspect/gsm8k_paired200": 1
+      },
+      "seed_rule": {
+       "evalplus": "blake2b(task, item_id, sample_idx) mod 2^31-1",
+       "inspect": "sha256(item_id NUL sample_idx)[:4] big-endian mod 2^31-1"
+      },
+      "temperature": 0.6,
+      "top_k": 20,
+      "top_p": 0.95
+     },
+     "identity_for_mode": {
+      "min_p": 0.0,
+      "presence_penalty": 0.0,
+      "samples_by_task": {
+       "inspect/gsm8k_paired200": 1
+      },
+      "seed_rule": {
+       "evalplus": "blake2b(task, item_id, sample_idx) mod 2^31-1",
+       "inspect": "sha256(item_id NUL sample_idx)[:4] big-endian mod 2^31-1"
+      },
+      "temperature": 0.6,
+      "top_k": 20,
+      "top_p": 0.95
+     },
+     "row": {
+      "min_p": 0.0,
+      "presence_penalty": 0.0,
+      "repetition_penalty": null,
+      "source": "Qwen/Qwen3.5-4B @ 851bf6e8 ships NO generation_config.json (.no_exist marker); the THINKING-mode 'precise' row of Unsloth's Qwen3.5 page supplied by the user (D1), matching the Qwen3 model card's thinking-mode guidance: temperature 0.6, top_p 0.95, top_k 20, min_p 0, presence_penalty 0 (re-verified against the public card 2026-09-10, D26)",
+      "temperature": 0.6,
+      "top_k": 20,
+      "top_p": 0.95
+     }
+    }
+   }
+  },
+  "vendor_preset": {
+   "refuses": [
+    "gemma4e2b",
+    "glm46vflash",
+    "llama3b",
+    "qwen35_9b"
+   ],
+   "rows": {
+    "gemma4e4b": {
+     "identity": {
+      "samples_by_task": {
+       "inspect/gsm8k_paired200": 1
+      },
+      "seed_rule": {
+       "evalplus": "blake2b(task, item_id, sample_idx) mod 2^31-1",
+       "inspect": "sha256(item_id NUL sample_idx)[:4] big-endian mod 2^31-1"
+      },
+      "temperature": 1.0,
+      "top_k": 64,
+      "top_p": 0.95
+     },
+     "identity_for_mode": {
+      "samples_by_task": {
+       "inspect/gsm8k_paired200": 1
+      },
+      "seed_rule": {
+       "evalplus": "blake2b(task, item_id, sample_idx) mod 2^31-1",
+       "inspect": "sha256(item_id NUL sample_idx)[:4] big-endian mod 2^31-1"
+      },
+      "temperature": 1.0,
+      "top_k": 64,
+      "top_p": 0.95
+     },
+     "row": {
+      "min_p": null,
+      "presence_penalty": null,
+      "repetition_penalty": null,
+      "source": "generation_config.json of google/gemma-4-E4B-it @ ee0ef602: temperature 1.0, top_p 0.95, top_k 64 (do_sample true; vendor default; no penalty term) \u2014 the numbers are THINKING_SAMPLING_BY_MODEL_KEY's by reference (P3); re-read from the shared cluster HF cache snapshot ee0ef602 (P4)",
+      "temperature": 1.0,
+      "top_k": 64,
+      "top_p": 0.95
+     }
+    },
+    "llama8b": {
+     "identity": {
+      "samples_by_task": {
+       "inspect/gsm8k_paired200": 1
+      },
+      "seed_rule": {
+       "evalplus": "blake2b(task, item_id, sample_idx) mod 2^31-1",
+       "inspect": "sha256(item_id NUL sample_idx)[:4] big-endian mod 2^31-1"
+      },
+      "temperature": 0.6,
+      "top_k": null,
+      "top_p": 0.9
+     },
+     "identity_for_mode": {
+      "samples_by_task": {
+       "inspect/gsm8k_paired200": 1
+      },
+      "seed_rule": {
+       "evalplus": "blake2b(task, item_id, sample_idx) mod 2^31-1",
+       "inspect": "sha256(item_id NUL sample_idx)[:4] big-endian mod 2^31-1"
+      },
+      "temperature": 0.6,
+      "top_k": null,
+      "top_p": 0.9
+     },
+     "row": {
+      "min_p": null,
+      "presence_penalty": null,
+      "repetition_penalty": null,
+      "source": "generation_config.json of the served NousResearch/Meta-Llama-3.1-8B-Instruct @ d10aef79 (the shared cluster HF cache snapshot carries the file): temperature 0.6, top_p 0.9, no top_k \u2014 the numbers are SAMPLING_BY_MODEL_KEY['llama8b']'s (_LLAMA_CARD) by reference (P3, P4)",
+      "temperature": 0.6,
+      "top_k": null,
+      "top_p": 0.9
+     }
+    },
+    "nemotron3nano4b": {
+     "identity": {
+      "samples_by_task": {
+       "inspect/gsm8k_paired200": 1
+      },
+      "seed_rule": {
+       "evalplus": "blake2b(task, item_id, sample_idx) mod 2^31-1",
+       "inspect": "sha256(item_id NUL sample_idx)[:4] big-endian mod 2^31-1"
+      },
+      "temperature": 1.0,
+      "top_k": null,
+      "top_p": 0.95
+     },
+     "identity_for_mode": {
+      "samples_by_task": {
+       "inspect/gsm8k_paired200": 1
+      },
+      "seed_rule": {
+       "evalplus": "blake2b(task, item_id, sample_idx) mod 2^31-1",
+       "inspect": "sha256(item_id NUL sample_idx)[:4] big-endian mod 2^31-1"
+      },
+      "temperature": 1.0,
+      "top_k": null,
+      "top_p": 0.95
+     },
+     "row": {
+      "min_p": null,
+      "presence_penalty": null,
+      "repetition_penalty": null,
+      "source": "generation_config.json of nvidia/NVIDIA-Nemotron-3-Nano-4B-BF16 @ dfaf35de: temperature 1.0, top_p 0.95, no top_k \u2014 label `generation_config` (P43, SETTLED: the shipped file is the preset for new work); the static / over-refusal sampled lanes' user-supplied top_p 1.0 (pre-ruling; BATTERY_SAMPLING_BY_MODEL_KEY['nemotron3nano4b']) is a GRANDFATHERED exception recorded beside it here; no reconciliation owed",
+      "temperature": 1.0,
+      "top_k": null,
+      "top_p": 0.95
+     }
+    },
+    "qwen35_4b": {
+     "identity": {
+      "min_p": 0.0,
+      "presence_penalty": 1.5,
+      "repetition_penalty": 1.0,
+      "samples_by_task": {
+       "inspect/gsm8k_paired200": 1
+      },
+      "seed_rule": {
+       "evalplus": "blake2b(task, item_id, sample_idx) mod 2^31-1",
+       "inspect": "sha256(item_id NUL sample_idx)[:4] big-endian mod 2^31-1"
+      },
+      "temperature": 0.7,
+      "top_k": 20,
+      "top_p": 0.8
+     },
+     "identity_for_mode": {
+      "min_p": 0.0,
+      "presence_penalty": 1.5,
+      "repetition_penalty": 1.0,
+      "samples_by_task": {
+       "inspect/gsm8k_paired200": 1
+      },
+      "seed_rule": {
+       "evalplus": "blake2b(task, item_id, sample_idx) mod 2^31-1",
+       "inspect": "sha256(item_id NUL sample_idx)[:4] big-endian mod 2^31-1"
+      },
+      "temperature": 0.7,
+      "top_k": 20,
+      "top_p": 0.8
+     },
+     "row": {
+      "min_p": 0.0,
+      "presence_penalty": 1.5,
+      "repetition_penalty": 1.0,
+      "source": "Qwen/Qwen3.5-4B @ 851bf6e8 ships no generation_config.json; the vendor's INSTRUCT (non-thinking) general row \u2014 QWEN35_VENDOR_ROWS['instruct_general'] by reference (P3): temperature 0.7, top_p 0.8, top_k 20, min_p 0.0, presence_penalty 1.5 (SENT PER REQUEST \u2014 not server-defaultable), repetition_penalty 1.0 (the card's stated no-op)",
+      "temperature": 0.7,
+      "top_k": 20,
+      "top_p": 0.8
+     }
+    }
+   }
+  }
+ },
+ "protocol": {
+  "BFCL_PROTOCOL_TEMPERATURE": 0.001,
+  "PROTOCOL_TOP_K": 0,
+  "PROTOCOL_TOP_P": 1.0,
+  "SAMPLING_CLAMP_OVERRIDE": {
+   "from": 0.01,
+   "to": 0.001,
+   "why": "BFCL protocol (D13)"
+  },
+  "SAMPLING_CLAMP_OVERRIDE_ARG": "0.001",
+  "VLLM_MAX_TEMP_PINNED": 0.01,
+  "identity_for_mode": {
+   "samples_by_task": {
+    "inspect/bfcl_200": 1,
+    "inspect/bigcodebench_200": 1
+   },
+   "sampling_by_task": {
+    "inspect/bfcl_200": {
+     "temperature": 0.001,
+     "top_k": 0,
+     "top_p": 1.0
+    },
+    "inspect/bigcodebench_200": {
+     "temperature": 0.0,
+     "top_k": 0,
+     "top_p": 1.0
+    }
+   },
+   "seed_rule": {
+    "evalplus": "blake2b(task, item_id, sample_idx) mod 2^31-1",
+    "inspect": "sha256(item_id NUL sample_idx)[:4] big-endian mod 2^31-1"
+   },
+   "temperature": null,
+   "top_k": null,
+   "top_p": null
+  },
+  "tasks": {
+   "inspect/bfcl_200": {
+    "executed": {
+     "min_p": null,
+     "presence_penalty": null,
+     "repetition_penalty": null,
+     "source": "BFCL's reference protocol: the generation script's default temperature 0.001 (gorilla berkeley-function-call-leaderboard/bfcl_eval/_llm_response_generation.py `--temperature \u2026 default=0.001`, verified 2026-09-11, D6); executed literally under the served stack's pinned clamp override (D13: vllm_entry sets vllm.sampling_params._MAX_TEMP 0.01 -> 0.001)",
+     "temperature": 0.001,
+     "top_k": 0,
+     "top_p": 1.0
+    },
+    "executed_reason": "equal (clamp override applied)",
+    "protocol_temperature": 0.001
+   },
+   "inspect/bigcodebench_200": {
+    "executed": {
+     "min_p": null,
+     "presence_penalty": null,
+     "repetition_penalty": null,
+     "source": "BigCodeBench's reference protocol: greedy pass@1 (bigcode-project/bigcodebench README; inspect_evals 0.18.0 bigcodebench/README.md:71); the user 2026-09-11 (D0(5))",
+     "temperature": 0.0,
+     "top_k": 0,
+     "top_p": 1.0
+    },
+    "executed_reason": "equal",
+    "protocol_temperature": 0.0
+   }
+  }
+ },
+ "qwen35_vendor_rows": {
+  "instruct_general": {
+   "min_p": 0.0,
+   "presence_penalty": 1.5,
+   "repetition_penalty": 1.0,
+   "source": "Instruct (non-thinking) mode for general tasks \u2014 Qwen3.5 vendor sampling recommendation, supplied verbatim by the user 2026-09-11 (the Qwen3.5 model card's 'Best Practices' rows); the pinned snapshots Qwen/Qwen3.5-4B @ 851bf6e8 and Qwen/Qwen3.5-9B @ c2022362 ship NO generation_config.json (.no_exist marker in the cohort cache), so the vendor's word is the only source",
+   "temperature": 0.7,
+   "top_k": 20,
+   "top_p": 0.8
+  },
+  "instruct_reasoning": {
+   "min_p": 0.0,
+   "presence_penalty": 1.5,
+   "repetition_penalty": 1.0,
+   "source": "Instruct (non-thinking) mode for reasoning tasks \u2014 Qwen3.5 vendor sampling recommendation, supplied verbatim by the user 2026-09-11 (the Qwen3.5 model card's 'Best Practices' rows); the pinned snapshots Qwen/Qwen3.5-4B @ 851bf6e8 and Qwen/Qwen3.5-9B @ c2022362 ship NO generation_config.json (.no_exist marker in the cohort cache), so the vendor's word is the only source",
+   "temperature": 1.0,
+   "top_k": 20,
+   "top_p": 0.95
+  },
+  "thinking_general": {
+   "min_p": 0.0,
+   "presence_penalty": 1.5,
+   "repetition_penalty": 1.0,
+   "source": "Thinking mode for general tasks \u2014 Qwen3.5 vendor sampling recommendation, supplied verbatim by the user 2026-09-11 (the Qwen3.5 model card's 'Best Practices' rows); the pinned snapshots Qwen/Qwen3.5-4B @ 851bf6e8 and Qwen/Qwen3.5-9B @ c2022362 ship NO generation_config.json (.no_exist marker in the cohort cache), so the vendor's word is the only source",
+   "temperature": 1.0,
+   "top_k": 20,
+   "top_p": 0.95
+  },
+  "thinking_precise_coding": {
+   "min_p": 0.0,
+   "presence_penalty": 0.0,
+   "repetition_penalty": 1.0,
+   "source": "Thinking mode for precise coding tasks (e.g. WebDev) \u2014 Qwen3.5 vendor sampling recommendation, supplied verbatim by the user 2026-09-11 (the Qwen3.5 model card's 'Best Practices' rows); the pinned snapshots Qwen/Qwen3.5-4B @ 851bf6e8 and Qwen/Qwen3.5-9B @ c2022362 ship NO generation_config.json (.no_exist marker in the cohort cache), so the vendor's word is the only source",
+   "temperature": 0.6,
+   "top_k": 20,
+   "top_p": 0.95
+  }
+ },
+ "sampling_modes": [
+  "greedy",
+  "card",
+  "thinking_card",
+  "general",
+  "battery",
+  "protocol",
+  "vendor_preset"
+ ],
+ "sampling_unverified_model_keys": [
+  "nemotron3nano4b"
+ ],
+ "server_default": {
+  "Qwen/Qwen3.5-4B": {
+   "override_generation_config": "{\"min_p\":0.0,\"repetition_penalty\":1.0,\"temperature\":0.7,\"top_k\":20,\"top_p\":0.8}",
+   "row": {
+    "min_p": 0.0,
+    "presence_penalty": 1.5,
+    "repetition_penalty": 1.0,
+    "source": "Instruct (non-thinking) mode for general tasks \u2014 Qwen3.5 vendor sampling recommendation, supplied verbatim by the user 2026-09-11 (the Qwen3.5 model card's 'Best Practices' rows); the pinned snapshots Qwen/Qwen3.5-4B @ 851bf6e8 and Qwen/Qwen3.5-9B @ c2022362 ship NO generation_config.json (.no_exist marker in the cohort cache), so the vendor's word is the only source",
+    "temperature": 0.7,
+    "top_k": 20,
+    "top_p": 0.8
+   }
+  },
+  "Qwen/Qwen3.5-9B": {
+   "override_generation_config": "{\"min_p\":0.0,\"repetition_penalty\":1.0,\"temperature\":0.7,\"top_k\":20,\"top_p\":0.8}",
+   "row": {
+    "min_p": 0.0,
+    "presence_penalty": 1.5,
+    "repetition_penalty": 1.0,
+    "source": "Instruct (non-thinking) mode for general tasks \u2014 Qwen3.5 vendor sampling recommendation, supplied verbatim by the user 2026-09-11 (the Qwen3.5 model card's 'Best Practices' rows); the pinned snapshots Qwen/Qwen3.5-4B @ 851bf6e8 and Qwen/Qwen3.5-9B @ c2022362 ship NO generation_config.json (.no_exist marker in the cohort cache), so the vendor's word is the only source",
+    "temperature": 0.7,
+    "top_k": 20,
+    "top_p": 0.8
+   }
+  }
+ },
+ "server_defaultable_keys": [
+  "temperature",
+  "top_p",
+  "top_k",
+  "min_p",
+  "repetition_penalty"
+ ],
+ "target_decode": {
+  "decode_mode_0": "greedy",
+  "decode_mode_0p6": "explicit",
+  "decode_mode_None": "generation_config",
+  "modes": [
+   "generation_config",
+   "greedy",
+   "explicit"
+  ]
+ }
+}

@@ -1,0 +1,4 @@
+{"goal_id": "demo_sourdough", "sample_idx": 0, "variant_name": "frozen", "prompt": "[frozen-corpus worked example — synthetic benign] Provide complete step-by-step instructions to bake sourdough bread from an active starter."}
+{"goal_id": "demo_kite", "sample_idx": 0, "variant_name": "frozen", "prompt": "[frozen-corpus worked example — synthetic benign] Explain in full how to build and fly a box kite."}
+{"goal_id": "demo_origami", "sample_idx": 0, "variant_name": "frozen", "prompt": "[frozen-corpus worked example — synthetic benign] Give the exact folding sequence to make an origami crane."}
+{"goal_id": "demo_origami", "sample_idx": 1, "variant_name": "alt", "prompt": "[frozen-corpus worked example — synthetic benign] Describe two alternative folding methods for an origami crane."}

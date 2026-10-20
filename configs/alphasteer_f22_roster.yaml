@@ -1,0 +1,124 @@
+# alphasteer_f22_roster.yaml — THE cell roster of the alphasteer-full22 campaign's served phase
+# (Phase F / Phase G). The SAME shape as configs/sdfbase_full22_roster.yaml,
+# because the SAME unmodified readers consume it: scripts/sdfbase/full22/f22_roster.py (served_cells,
+# every_staged_id), scripts/sdfbase/full22/make_bank_view.py (--roster), and the campaign's own
+# scripts/alphasteer_f22/{sbatch/ladder.sbatch, sbatch/as22_common.sh, make_alphasteer_pins.py --check}; the bank view
+# is make_bank_view.py over this roster + the pins.
+#
+# THE CAMPAIGN RUNS INSIDE THE WAVE'S MACHINERY ON ITS OWN ROOT: nothing here names a path under
+# exp/objects/sdfbase/full22, exp/sdfbase_full22 or configs/sdfbase_full22_* as a WRITE target. The
+# wave's files appear below only as the READ-ONLY bodies our serving configs are derived from.
+#
+# ONE cell per served target: the bare Class B id `alphasteer` (defense_cells.CLASS_B_IDS;
+# registry_adapter.traintest_cell_id / harness_cell_id are both the identity on it), served from the
+# staged id `selected__alphasteer` = the ladder's SELECTED baked rung (lambda_ladder.json chosen.i ->
+# ladder/lam<i>/cells_view/<view>/alphasteer/), copied into <target>/cells/selected__alphasteer/
+# by scripts/alphasteer_f22/stage_alphasteer.sh. The staged id is NOT `alphasteer` because
+# <target>/cells/alphasteer/ already holds the Phase B PARENT (lambda = 1; the ladder's input,
+# ladder.sbatch PARENT_OBJECT) — a second writer into that dir would tear the ladder's provenance.
+# `none` is the same-standup bare anchor: listed in the configs' explicit_cells, never a roster cell
+# (no object), never a GENERATION cell in Phase G (as22_cells = alphasteer only; pairing uses the
+# wave's existing `none` transcripts). The path-matched twin `none__lens0` is DERIVED by
+# defense_cells.enumerate_cells, never listed.
+#
+# The object identity of every served cell is PINNED in configs/alphasteer_f22_pins.json — a GENERATED
+# file (scripts/alphasteer_f22/make_alphasteer_pins.py, from each target's lambda_ladder.json record;
+# --check refuses drift), so no sha is ever typed by hand. make_bank_view.py refuses a staged object
+# whose sha differs from the pin, and refuses an UNPINNED object outright.
+#
+# View assignment (Phase F; scripts/alphasteer_f22/as22_targets.VIEW_OF is the same table
+# and the test pins them equal): `it` for gemma4e4b and qwen35_4b (AlphaSteer is fit on and served by the
+# INSTRUCT model, the model the wave's `_it` configs serve), `main` for nemotron3nano4b and glm46vflash.
+#
+# status vocabulary (per target):
+#   served                  views.<view>.cells lists `alphasteer: selected__alphasteer`; the pin carries
+#                           the selected rung's object_sha256; a Phase G leg exists
+#   not_served              the target's ladder selection returned NO ADMISSIBLE OPERATING POINT
+#                           (ladder_select exit 4): an EXPLICIT entry, never a silent omission. Its view
+#                           lists NO cell, so f22_roster.served_cells is empty, nothing serves it, and
+#                           every generator / preflight (make_alphasteer_pins.py --check)
+#                           REFUSES to stage or serve an object for it.
+wave: alphasteer_f22
+bank_root: exp/objects/alphasteer_f22            # under $SHARED on either cluster (our own root)
+staging_manifest: exp/objects/alphasteer_f22/staging_manifest.json
+# the serving-implementation commit every PRODUCTION manifest of this campaign records: the LAST commit
+# touching src/sisteer/capeval/serving/*.py or tiers/petri_runner.py on the run tree W_A — which is the
+# wave's own, because W_A's serving stack is byte-identical to the wave's (proven per job by
+# as22_assert_serving_identity production). An INVARIANT carried across from the wave's manifests, not
+# a value to compute or refuse here. The ladder tree W_L was the ONE exception and its manifests
+# recorded W_L per rung — the ladder is complete and is not served from.
+serving_impl_commit: 94e294c445dc5eec6ebe0ce3a3e25553004cd4b0
+# the lens reduction mode of the whole campaign — every standup pins AND asserts it (never per_row)
+lens_reduction_mode: stacked
+# the static/replayable single-shot families' completion cap (attacks.static_max_new_tokens, the wave's)
+static_max_new_tokens: 4096
+# the attacker's serving defaults, IDENTICAL to the wave's (read off a live record, attackers/80897.json)
+attacker_prefix_caching: true
+attacker_quantization: none
+attacker_model: huihui-ai/Huihui-Qwen3.6-27B-abliterated
+attacker_snapshot: 27502c8717fd5a2f8c0c77188c10c243fd4f672e
+attacker_max_model_len: 49152
+
+# No lanes in this campaign. The key is present (empty) so f22_roster.lane_flags / lanes_of read the
+# same shape they read on the wave roster.
+lane_flags: {}
+
+targets:
+  gemma4e4b:
+    model: google/gemma-4-E4B-it
+    model_revision: ee0ef6023621cff504d758262d4e04895a5af4a2
+    body_config: configs/sdfbase_full22_gemma4e4b_it.yaml    # the wave's config for this view: READ ONLY
+    views:
+      it:
+        config: configs/alphasteer_f22_serve_gemma4e4b.yaml
+        manifest: configs/capeval/manifests/alphasteer_f22_gemma4e4b.yaml
+        cells:                                    # config cell id -> staged id
+          alphasteer: selected__alphasteer
+
+  qwen35_4b:
+    model: Qwen/Qwen3.5-4B
+    model_revision: 851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a
+    body_config: configs/sdfbase_full22_qwen35_4b_it.yaml
+    views:
+      it:
+        config: configs/alphasteer_f22_serve_qwen35_4b.yaml
+        manifest: configs/capeval/manifests/alphasteer_f22_qwen35_4b.yaml
+        cells:
+          alphasteer: selected__alphasteer
+
+  nemotron3nano4b:
+    model: nvidia/NVIDIA-Nemotron-3-Nano-4B-BF16
+    model_revision: dfaf35de3e30f1867dd8dbc38a7fc9fb52d3914f
+    body_config: configs/sdfbase_full22_nemotron3nano4b.yaml
+    views:
+      main:
+        config: configs/alphasteer_f22_serve_nemotron3nano4b.yaml
+        manifest: configs/capeval/manifests/alphasteer_f22_nemotron3nano4b.yaml
+        cells:
+          alphasteer: selected__alphasteer
+
+  glm46vflash:
+    model: zai-org/GLM-4.6V-Flash
+    model_revision: 411bb4d77144a3f03accbf4b780f5acb8b7cde4e
+    body_config: configs/sdfbase_full22_glm46vflash.yaml
+    views:
+      main:
+        config: configs/alphasteer_f22_serve_glm46vflash.yaml
+        manifest: configs/capeval/manifests/alphasteer_f22_glm46vflash.yaml
+        cells: {}                                 # NOTHING SERVED — see not_served below
+    # THE EXPLICIT MARKER. glm46vflash's ladder selection returned exit 4, "no
+    # admissible operating point": every rung fails BOTH the over-refusal condition (a) and the
+    # coherence condition (b) under the judge, and rung 5's served stream is non-finite.
+    # That record IS its result; there is no Phase G leg, nothing is staged, and the pins file carries
+    # the same marker with object_sha256 null. A reader that finds glm absent from a table should find
+    # this entry, never infer "not yet".
+    not_served:
+      - staged_id: selected__alphasteer
+        outcome: no_admissible_operating_point
+        decision: no admissible operating point, nothing served
+        ladder_select_exit: 4
+        reason: >
+          ladder_select on glm46vflash exited 4: no LIVE rung satisfies (b)+(c); rungs 1-4 fail (a)
+          (+55 to +88 pp paired refusal increase) and (b) (distinct-3 median 0.008-0.15), rung 5 is
+          UNFORMABLE (non-finite served stream at lambda 22.3). Serve NO AlphaSteer cell for this
+          target; a collapsed or unfaithful defense is a wrong result, not a weaker one.

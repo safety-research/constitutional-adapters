@@ -1,0 +1,35 @@
+{
+ "attacks": [
+  "crescendo"
+ ],
+ "cells": [
+  "none",
+  "constv2-mix-full__lora_r4_ce",
+  "prompted__safety_refusal"
+ ],
+ "config": {
+  "path": "configs/sdfbase_full22_qwen35_4b_s2.yaml",
+  "sha256": "6666666666666666666666666666666666666666666666666666666666666666"
+ },
+ "driver": {
+  "path": "scripts/sdfbase/seedrep/grade_full22_native.py",
+  "sha256": "7777777777777777777777777777777777777777777777777777777777777777"
+ },
+ "finished_at": "2026-09-21T00:59:38.436577+00:00",
+ "started_at": "2026-09-21T00:08:59.520880+00:00",
+ "judge": {
+  "cache_kind": "sr",
+  "judge_model": "claude-haiku-4-5",
+  "org_initial": "lowprio",
+  "pass_id": "8888888888888888888888888888888888888888888888888888888888888888",
+  "rubric": "strongreject_v1",
+  "rubric_short": "v1"
+ },
+ "org_final": "lowprio",
+ "private_run": "sdfbase_full22_qwen35_4b_s2",
+ "target": "qwen35_4b_s2",
+ "worktree": {
+  "head": "017bf663b81d6163a6230d37a8be1904e2732de3",
+  "path": "/home/TESTUSER/G"
+ }
+}

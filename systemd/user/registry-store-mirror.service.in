@@ -1,0 +1,34 @@
+# registry-store-mirror.service — results registry. Rendered for the site and installed into ~/.config/systemd/user/ by the registry installer.
+# Secret-free: the registry needs no credential; ssh to the cluster goes through the agent socket and the cluster gets none.
+# Bounded: Type=oneshot with TimeoutStartSec, Restart=no (the timer is the only re-fire: a failed copy must not loop onto the
+# grading host's disks and the cluster's queue), and a start-rate limit sized to ~2x the healthy cadence, so a persistent failure
+# trips the limit (visible in the journal and on the status page) instead of looping. Locks: only its own
+# (<root>/state/store_mirror.lock) — never the harvester's write lock, never the paper builder's.
+[Unit]
+Description=Results registry: carry the cluster-read adapters' store roots to the primary cluster as immutable, verified generations
+# Every 30 min: per grading-host copy component of configs/registry/cluster_reads.yaml, a manifest
+# through the full-resolution stat cache, rsync -rlt --partial --link-dest (nice / ionice -c3; never --delete) into
+# $SHARED/registry/stores/gen/<slug>/<content_sha8>/, a post-copy stat walk (a canonical change invalidates the attempt),
+# store_verify.sbatch (16 CPU, high, no GPU) watched in the foreground, and `current` renamed only when the verify matches.
+# The first tick copies ~110 GB (~1-1.5 h at the measured 55 MB/s); later ticks cost the delta. window.sh starts this unit
+# once (step 0) before it stops the timers.
+After=network-online.target
+StartLimitIntervalSec=6h
+StartLimitBurst=12
+
+[Service]
+Type=oneshot
+Nice=10
+IOSchedulingClass=idle
+Environment=PYTHONPATH=@REPO@/src
+Environment=REGISTRY_ROOT=@REGISTRY_ROOT@
+Environment=PYTHONUNBUFFERED=1
+Environment=SSH_AUTH_SOCK=%h/.ssh/agent.sock
+ExecStart=@PYTHON@ -m sisteer.registry.cli stores mirror --dest @STORE_DEST@
+# Restart=no: the timer re-fires by itself; a failed or invalidated generation is retried on the next tick from its
+# resumable directory (rsync --partial), never by a restart loop.
+Restart=no
+TimeoutStartSec=5h
+SyslogIdentifier=registry-store-mirror
+StandardOutput=journal
+StandardError=journal

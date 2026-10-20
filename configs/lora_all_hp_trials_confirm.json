@@ -1,0 +1,36 @@
+{
+  "round": 3,
+  "note": "full-pool 6-epoch confirm fits of the round-1 top-4 configs, values copied verbatim from lora_all_hp_trials_r1.json (indices renumbered 0-3; source trial in src_trial)",
+  "box": null,
+  "sobol_m": null,
+  "trials": [
+    {
+      "index": 0,
+      "src_trial": 14,
+      "lr": 0.00040005642964899686,
+      "warmup_frac": 0.0442833583061967,
+      "max_grad_norm": 0.13335214321633246
+    },
+    {
+      "index": 1,
+      "src_trial": 11,
+      "lr": 0.0002249682627997367,
+      "warmup_frac": 0.06774553951524048,
+      "max_grad_norm": 0.23713737056616557
+    },
+    {
+      "index": 2,
+      "src_trial": 9,
+      "lr": 0.0007114121116984962,
+      "warmup_frac": 0.15854809180042873,
+      "max_grad_norm": 0.7498942093324561
+    },
+    {
+      "index": 3,
+      "src_trial": 2,
+      "lr": 0.000948683298050513,
+      "warmup_frac": 0.023403473193207163,
+      "max_grad_norm": 0.31622776601683805
+    }
+  ]
+}

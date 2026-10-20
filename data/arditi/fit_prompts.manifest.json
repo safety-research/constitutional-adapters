@@ -1,0 +1,124 @@
+{
+ "schema": "arditi_fit_prompts_manifest/1",
+ "about": "The identity of data/arditi/fit_prompts.json, the 320 instructions (128 training and 32 validation per side) read by the fit behind the refusal-direction objects in objects/qwen35_4b_it/ (the fit drops rows by a refusal metric at fit time; see document.fields.runtime_filter). The instructions are not in this repository. python -m sisteer.data.arditi_fit_prompts fetch re-draws the document byte for byte from the upstream commit below and checks every hash recorded here.",
+ "document": {
+  "path": "data/arditi/fit_prompts.json",
+  "sha256": "f2f0decfd76a9ab0d8d00d4fc46644f91b75ee4fc79f79f225f9486eb221c70b",
+  "bytes": 26140,
+  "serialisation": "json.dumps(document, indent=1, sort_keys=True, ensure_ascii=False) + \"\\n\", encoded as UTF-8",
+  "fields_note": "every field of the document except prompts, verbatim; the document is these fields plus prompts, a mapping of each set name to its drawn instructions",
+  "fields": {
+   "paper": "Arditi et al. 2024, Refusal in Language Models Is Mediated by a Single Direction (arXiv 2406.11717)",
+   "prompts_sha256": {
+    "harmful_train": "d7558575078bd88338e142f3a326b89b4559b2c8b656dc2441f35b7074cc8e58",
+    "harmful_val": "fe2529212f61e81a8bcfa5a20b14afe2b45864032df1e631f1a5ed4661a46318",
+    "harmless_train": "d446191ebc6515dc3a0f76b72b3c9ac8310e15df8d6fab69eac6ad09bf4b1bdd",
+    "harmless_val": "61b65a0b148b85ca7a0933c6b67b609210b11a46576435ea00e4687dbb098a3e"
+   },
+   "runtime_filter": "run_pipeline.filter_data (cfg.filter_train / filter_val, both True) drops rows by the REFUSAL METRIC on the unsteered model: harmful kept when the metric > 0, harmless when < 0. It is model-dependent, so it runs at fit time, not here; the realised n per side is recorded per target in the fit artifact and is below these counts.",
+   "sampling": {
+    "draw_order": [
+     "harmful_train",
+     "harmless_train",
+     "harmful_val",
+     "harmless_val"
+    ],
+    "n_train": 128,
+    "n_val": 32,
+    "note": "ONE random.seed(42) drives all four random.sample calls, so the ORDER is part of the identity: drawing any side alone gives different rows",
+    "seed": 42,
+    "source": "pipeline/run_pipeline.py::load_and_sample_datasets"
+   },
+   "schema": "arditi_fit_prompts/1",
+   "source_rows": {
+    "harmful_train": 260,
+    "harmful_val": 39,
+    "harmless_train": 18793,
+    "harmless_val": 6264
+   },
+   "source_sha256": {
+    "splits/harmful_train.json": "8f5c0eac0efd2a7f99084bbe8d0de2c465e31b1997184783c917969d9de9ece1",
+    "splits/harmful_val.json": "305f1d1e6dfa6c50a32d24a18ef815f42b5441eb83e6d7767d242107162fd9f4",
+    "splits/harmless_train.json": "86623b1f8a25aa35df153fc97a556dbcebb6a7c881538ae43ee479ca17f2e002",
+    "splits/harmless_val.json": "772010758e7d771ef4c7e5e4acdfd7598dcece1a6f383f20d382f640913a2a4d"
+   },
+   "upstream": "https://github.com/andyrdt/refusal_direction",
+   "upstream_commit": "9d852fae1a9121c78b29142de733cb1340770cc3"
+  }
+ },
+ "upstream": {
+  "repo": "andyrdt/refusal_direction",
+  "commit": "9d852fae1a9121c78b29142de733cb1340770cc3",
+  "licence": "Apache-2.0"
+ },
+ "sources": {
+  "harmful_train": {
+   "path": "dataset/splits/harmful_train.json",
+   "sha256": "8f5c0eac0efd2a7f99084bbe8d0de2c465e31b1997184783c917969d9de9ece1",
+   "bytes": 34613,
+   "git_blob": "5ca6b46750e06bc401ebd93171a6b0dc0590cdd8",
+   "rows": 260
+  },
+  "harmful_val": {
+   "path": "dataset/splits/harmful_val.json",
+   "sha256": "305f1d1e6dfa6c50a32d24a18ef815f42b5441eb83e6d7767d242107162fd9f4",
+   "bytes": 6763,
+   "git_blob": "c3128d37e8b255e765f4f51f1a6715572595e3e7",
+   "rows": 39
+  },
+  "harmless_train": {
+   "path": "dataset/splits/harmless_train.json",
+   "sha256": "86623b1f8a25aa35df153fc97a556dbcebb6a7c881538ae43ee479ca17f2e002",
+   "bytes": 2344466,
+   "git_blob": "700a497bd1d20ab074fcc576e9bd79ac604543c5",
+   "rows": 18793
+  },
+  "harmless_val": {
+   "path": "dataset/splits/harmless_val.json",
+   "sha256": "772010758e7d771ef4c7e5e4acdfd7598dcece1a6f383f20d382f640913a2a4d",
+   "bytes": 780532,
+   "git_blob": "6b9ee6e9c789799354b618a046758276da445bd8",
+   "rows": 6264
+  }
+ },
+ "read": "each split file is a JSON list of rows; a set's population is the instruction of every row, in file order",
+ "draw": {
+  "seed": 42,
+  "order": [
+   "harmful_train",
+   "harmless_train",
+   "harmful_val",
+   "harmless_val"
+  ],
+  "n": {
+   "harmful_train": 128,
+   "harmless_train": 128,
+   "harmful_val": 32,
+   "harmless_val": 32
+  },
+  "procedure": "random.seed(42) once, then random.sample(population, n) for each set in the order above, with CPython's random module (upstream's pipeline/run_pipeline.py::load_and_sample_datasets). One seeding drives all four draws, so the order is part of the identity."
+ },
+ "sets": {
+  "harmful_train": {
+   "n": 128,
+   "sha256": "d7558575078bd88338e142f3a326b89b4559b2c8b656dc2441f35b7074cc8e58"
+  },
+  "harmful_val": {
+   "n": 32,
+   "sha256": "fe2529212f61e81a8bcfa5a20b14afe2b45864032df1e631f1a5ed4661a46318"
+  },
+  "harmless_train": {
+   "n": 128,
+   "sha256": "d446191ebc6515dc3a0f76b72b3c9ac8310e15df8d6fab69eac6ad09bf4b1bdd"
+  },
+  "harmless_val": {
+   "n": 32,
+   "sha256": "61b65a0b148b85ca7a0933c6b67b609210b11a46576435ea00e4687dbb098a3e"
+  }
+ },
+ "set_sha256": "sha256 of the UTF-8 bytes of json.dumps(instructions, ensure_ascii=False), the document's own prompts_sha256",
+ "used_by": {
+  "fit_record_sha256": "05fba693e573a65b8cd6549918000be7e75cbf56b34b02672123b81083512901",
+  "note": "the fit record named in each refusal-direction object's fit_provenance.json (objects/qwen35_4b_it/); it binds its prompts by this document's sha256"
+ }
+}

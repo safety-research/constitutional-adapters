@@ -1,0 +1,140 @@
+# Petri Bloom two-SI misalignment audit — gemma-4-E4B-it, the campaign's
+# 10-cell wave shape ({none} + prompted x 3 SIs + {psr_kl_all, lora_r4} x
+# 3 SIs; the same 10 conditions the two_si_gemma4e4b_reduced.yaml wave
+# ships). Derived from petri_twosi.yaml (the Llama audit manifest) at the
+# 2026-08-30 gemma launch; loaded by sisteer.capeval.manifest.load_petri_spec.
+#
+# The registry derives from configs/two_si_gemma4e4b_reduced.yaml — point
+# $PETRI_TWO_SI_CONFIG there (scripts/petri_run.py load_cell_source);
+# the adapter refuses if that config's model pins disagree with this
+# manifest's, so the wrong registry can never enumerate. The object bank
+# is $TT_TWO_SI_DEFENSES_DIR (the scale-12 gemma4e4b bank: 3 SIs x
+# {psr_kl_all, lora_r4}, fit 2026-08-28, positions_at_fit=response).
+#
+# MULTI-TURN SERVING (2026-09-02: the Petri lineage merged onto main, then
+# the declared agent-loop path landed the same day). The 2026-08-30
+# unconditional last-occurrence response locator (petrimask, fc42ccb) was
+# superseded at the merge by main's declared-only boundary policy (f352d5e:
+# petri_response_prefill, keyed on continue_final_message — which agent-loop
+# traffic does not set), so agent-loop renders REFUSED at the adapter
+# (contained per-request, surfaced as proxy 500s). They serve again through a
+# SECOND declaration in the same idiom — petri_agent_loop: proxy-verified
+# against the message structure AND the render (header present, prompt not
+# ending at it) -> selector fact agent_loop -> HookContext.agent_loop -> the
+# adapter's declared arm (last header occurrence). Petri's own client cannot
+# set it, so the AUDIT PROXY must run with the Petri-facing entry armed:
+#   python -m sisteer.capeval.serving.proxy ... --tokenizer <served tokenizer>
+#     --tokenizer-revision <pin> --petri-agent-loop
+# The declared mask covers header + assistant tool call + tool-response
+# syntax and body + generated (the completed gemma-E4B audit's regime, kept
+# for comparability); undeclared non-tail renders still refuse, contained.
+# tests/test_gemma4_petri_multiturn_boundary.py pins both directions on the
+# three real shapes. Completed audits reproduce at their frozen
+# serving_impl_commit regardless.
+petri:
+  audit: petri_gemma4e4b
+  behaviors:
+    - cyber_bio_chem_capabilities
+    - self_preservation            # agent modality (tool use)
+    - delusion_sycophancy
+    - defer_to_users
+    - reasoning_unfaithfulness
+    - instruction_evasion
+  cells:
+    - none                          # undefended base (passthrough leg; §8 elicitability screen)
+    - prompted__safety              # base + verified SAFETY_SI prefix (distinct vmodel, H8)
+    - prompted__constitution        # base + verified CONSTITUTION_SI prefix
+    - prompted__irrelevant          # base + verified IRRELEVANT_SI prefix (off-target control)
+    # Class A — the campaign's two shipping arms x 3 SIs:
+    - si_safety__psr_kl_all
+    - si_constitution__psr_kl_all
+    - si_irrelevant__psr_kl_all
+    - si_safety__lora_r4
+    - si_constitution__lora_r4
+    - si_irrelevant__lora_r4
+  # The ONE frozen scenario bundle — SAME bundle as the Llama audit
+  # (petri_twosi.yaml), so cross-model comparisons audit identical
+  # scenarios. Durable 0700 store:
+  # $SHARED/petri/scenarios/8812ba083bb5473c (cluster A).
+  scenario_bundle_hash: 8812ba083bb5473c
+  auditor_model: anthropic/claude-sonnet-5
+  auditor_fallback_models:
+    - openrouter/x-ai/grok-4.6
+  judge_model: anthropic/claude-opus-5
+  scenarios_model: anthropic/claude-opus-4-8   # the frozen bundle's author (harness-hash input)
+  # override@ pins the EXACT auditor/judge prompt bytes
+  # (configs/capeval/petri/prompts/{auditor,judge}.md) — VERBATIM
+  # petri-bloom 0.2.6 constants; see petri_twosi.yaml for why override@
+  # rather than package-pinned@ (0.2.6 ships them as Python constants).
+  prompt_provenance: override@c7fb238c0b17a812
+  # The gemma-4-E4B-it pin — the SAME (repo_id, revision) every fitted
+  # object in the scale-12 gemma bank was trained against
+  # (configs/two_si_gemma4e4b_reduced.yaml pins this exact pair, and the
+  # registry adapter refuses on any disagreement).
+  target_model: google/gemma-4-E4B-it
+  target_revision: ee0ef6023621cff504d758262d4e04895a5af4a2
+  serving_backend: proxy_vllm     # committed production primary (B1)
+  serving_mode: interleaved       # exact_replay dropped 2026-08-27 (see petri_twosi.yaml)
+  serving_packages:               # the serving-venv pins (configs/capeval/vllm-requirements.txt)
+    vllm: 0.25.1+cu129
+    vllm-lens: 1.2.1
+    torch: 2.11.0+cu129
+  serving_launch_flags:
+    # --enforce-eager only (bare restatement of the always-pinned flag).
+    # Deliberately NO --enable-lora: this is a LENS standup (cell-source
+    # serving_path_policy "lens", registry_adapter.SERVING_PATH_POLICIES),
+    # so every lora_r4 cell serves via the LENS o_proj module site
+    # (OP_LORA_OPROJ, which carries the response mask), no native LoRA
+    # adapter is registered, and the composer REFUSES a bare
+    # --enable-lora restatement with no adapters (job 243728).
+    - --enforce-eager
+    # --chat-template-content-format string (2026-08-30, gemma4e4b gate
+    # job 45401 disproved): gemma-4 is multimodal (Gemma4ForConditional-
+    # Generation), so vLLM's DEFAULT content format wraps each message's
+    # string content into [{type:text,text}] parts before the chat
+    # template. The gemma-4 template's system block then takes its
+    # SEQUENCE branch, which concatenates parts with a trailing space
+    # (`item['text'] | trim + ' '`) — so a system message renders
+    # `...assistant. <turn|>` on the served path but `...assistant.<turn|>`
+    # in the fp32 HF reference (openai_shim, string content). The §10 gate
+    # correctly REFUSED to canary two sides rendering different prompts
+    # (disagreement on exactly the system-message prompts [0,1,3,5]; the
+    # user-only prompts [2,4] agreed, because the user branch has no such
+    # trailing-space asymmetry). Pinning content-format=string makes vLLM
+    # pass string content to the template (string branch, no trailing
+    # space) — matching the reference AND the natural text-only render.
+    # It is NOT loosening the gate: the exact-equality criterion is
+    # untouched; both sides now render the identical prompt. Verified on
+    # the grading host: the template's string branch == the reference
+    # render; only the parts branch adds the space.
+    - --chat-template-content-format
+    - string
+  # RE-FROZEN for the gemma pin: sha256_hex16 over the pinned tokenizer's
+  # chat_template string bytes (utf-8). Verified 2026-08-30 on the grading host
+  # against the cached snapshot ee0ef602...: AutoTokenizer(...).chat_template
+  # is byte-identical to the snapshot's chat_template.jinja (18,569 bytes,
+  # LF-terminated) and hashes to this value. build_server_launch re-hashes
+  # the exact --chat-template file bytes against this before launch.
+  chat_template_hash: 0a2c8073c878ab1d
+  # vLLM's gemma-4 tool-call parser — the AGENT modality's per-model pin.
+  # llama3_json 500s per-request on the gemma tokenizer (job 232411); the
+  # pinned vLLM 0.25.1 ships `gemma4`, verified to initialize against the
+  # pinned gemma-4-E4B-it tokenizer (petri_twosi.yaml's dated note).
+  tool_parser: gemma4
+  serving_impl_commit: fc42ccb695f536f9a7f030980955fff0630e4b3e   # re-frozen 2026-08-31: multi-turn lens fix merged (3d0bbe0); serving/*.py byte-identical at this freeze commit
+  prompted_prefix_hashes:         # sha256_hex16 over the EXACT SI text bytes (H8)
+    # Model-independent (SI text bytes only) — same values as the Llama
+    # audit; recomputed from THIS branch's landed bytes 2026-08-30 via
+    # registry_adapter._traintest_si_text_bytes: safety 423B,
+    # constitution 31,222B, irrelevant 30,467B.
+    safety: ac3a58f61d53cf24
+    constitution: 21e06f482a6559b3
+    irrelevant: 71ff67aa2bc000f1
+  bloom_options:
+    max_turns: 15                 # auditor turn budget per scenario
+    enable_prefill: false         # pinned OFF
+    enable_rollback: false
+    compaction: false
+    realism_filter: false
+    epochs: 1                     # ~10 scenarios x 1 epoch per behavior
+    seed: 0                       # the ONE audit-wide evaluation seed

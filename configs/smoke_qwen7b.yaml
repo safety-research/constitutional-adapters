@@ -1,0 +1,27 @@
+# Stage-0 cluster smoke: one easy instruction x three cheap methods on a
+# 7B instruct model, seed prompts only, small budgets. Purpose: verify the
+# harness on a real model and get first compliance/dose-response numbers.
+model: Qwen/Qwen2.5-7B-Instruct
+dtype: bfloat16
+
+instructions: [french, json]
+methods: [instr_diff, caa, bidpo]
+
+prompts:
+  source: seed
+  set: general
+  holdout_frac: 0.5
+
+# Layer band ~30-75% of 28 layers; scales bracket the published windows.
+layers: [9, 12, 15, 18, 21]
+scales: [0.25, 0.5, 1.0, 2.0, 4.0]
+
+train_kwargs:
+  bidpo:
+    epochs: 10
+    batch_size: 4
+
+capability: true
+max_new_tokens: 160
+out_dir: out/smoke_qwen7b
+wandb_project: $WANDB_PROJECT

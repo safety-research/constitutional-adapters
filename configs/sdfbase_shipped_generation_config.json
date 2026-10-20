@@ -1,0 +1,75 @@
+{
+  "_doc": [
+    "THE SHIPPED generation_config.json OF EVERY MODEL configs/sdfbase_sampled_decode.yaml states a preset for, pinned INTO THE REPO with provenance, so the preset-vs-shipped check (tests/test_preset_vs_shipped_generation_config.py) runs everywhere. The grading host holds partial snapshots and the Modal CPU suite -- where the full suite runs -- holds no model files at all, so a test that read the snapshot itself would skip everywhere that matters (PR #51's live check had that shape).",
+    "Two instruments, one seam: (1) the unit test asserts the yaml presets against THIS table and refuses any difference a row does not declare in `deliberate_departure`; (2) scripts/sdfbase/full22/sampled/verify_shipped_generation_config.py asserts THIS table against the real snapshots -- an HF cache (--cache-root; cluster A's cohort cache $HF_HOME is the one that holds every snapshot) or the hub (--hub) -- so the pin cannot rot silently. Re-run (2) wherever the snapshots are whenever a row here or a yaml revision changes.",
+    "`state` is a TRI-STATE: `present` (the snapshot ships the file; `sampler_keys` are exactly the sampler values it states), `ships_none` (the hub says the file does not exist at that revision -- the cache's .no_exist marker, a hub 404, a file listing without it; `evidence` says which), `unknown` (nobody has read the snapshot yet; the unit test FAILS on it by name). Absent-because-unavailable and absent-because-the-vendor-ships-none are different states and must never collapse: a missing local snapshot is NOT a model that ships none.",
+    "`sampler_keys` carries EXACTLY the keys of `sampler_keys_considered` that the file states -- a file that names no top_k has no top_k here. The file's other keys (bos/eos/pad ids, transformers_version, _from_model_config) are not sampler values; `do_sample` is recorded beside them for the reader (null = the file states none). A preset key the file does NOT state is not a disagreement with the file (the file has no value there); a key the file states that the preset does not match, or omits, is.",
+    "`sha256` is of the file's bytes; `etag` is the hub's blob id (the HF cache names the blob blobs/<etag>). Both are provenance a reader can re-check with one `sha256sum` / one `curl -I`.",
+    "Why this exists (2026-09-11): the yaml says nemotron3nano4b top_p 1.0, its shipped file says 0.95, and nothing checked; the canonical AlphaSteer ladder (an omit-params consumer, so vLLM filled top_p from the file) decoded at 0.95 while every sampled store decoded at 1.0 -- two instruments inside one campaign, invisible to every existing test for weeks. Ruled: 1.0 is canonical, the ladder is re-run at 1.0, and the yaml's departure from the vendor file is DELIBERATE and now declared."
+  ],
+  "sampler_keys_considered": ["temperature", "top_p", "top_k", "min_p", "presence_penalty", "repetition_penalty"],
+  "models": {
+    "google/gemma-4-E4B-it": {
+      "revision": "ee0ef6023621cff504d758262d4e04895a5af4a2",
+      "state": "present",
+      "sampler_keys": {"temperature": 1.0, "top_p": 0.95, "top_k": 64},
+      "do_sample": true,
+      "sha256": "d4226bbe3117d2d253ba4609720ba82c6c4ce4627a9a6ae05387c78983ac03de",
+      "etag": "e605bb4523b1462ea9d9a3810b9e3ecf7ab7b1f6",
+      "read_from": [
+        "cluster A cohort HF cache: $HF_HOME/hub/models--google--gemma-4-E4B-it/snapshots/ee0ef6023621cff504d758262d4e04895a5af4a2/generation_config.json (the login host, 2026-09-11)",
+        "hub: /api/models/google/gemma-4-E4B-it/revision/ee0ef602... lists generation_config.json; GET .../resolve/ee0ef602.../generation_config.json -> 200 with this sha256 (the grading host, anonymous, 2026-09-11)"
+      ],
+      "note": "the local grading host snapshot of this revision is PARTIAL (4 files, no generation_config.json, no .no_exist marker) -- unknown there, present on cluster A and the hub"
+    },
+    "Qwen/Qwen3.5-4B": {
+      "revision": "851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a",
+      "state": "ships_none",
+      "evidence": [
+        "cluster A cohort HF cache: models--Qwen--Qwen3.5-4B/.no_exist/851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a/generation_config.json marker (huggingface_hub records the hub's 404 for that file at that revision; the login host, 2026-09-11)",
+        "hub: /api/models/Qwen/Qwen3.5-4B/revision/851bf6e8... lists 14 files and generation_config.json is not among them; GET .../resolve/851bf6e8.../generation_config.json -> 404 (the grading host, anonymous, 2026-09-11)"
+      ],
+      "note": "the preset's source is the model card (source_kind model_card); Qwen's server-side default is the contracts table's row instead (tinycap/contracts.py SERVER_DEFAULT_SAMPLING_BY_MODEL, --override-generation-config)"
+    },
+    "nvidia/NVIDIA-Nemotron-3-Nano-4B-BF16": {
+      "revision": "dfaf35de3e30f1867dd8dbc38a7fc9fb52d3914f",
+      "state": "present",
+      "sampler_keys": {"temperature": 1.0, "top_p": 0.95},
+      "do_sample": null,
+      "sha256": "4892b7a6418b50ad6854010881854d536c3efff148324455ad6535061aad28c5",
+      "etag": "f97082414e74f1bdc96f7ccd2d6100fc8edeb7b1",
+      "read_from": [
+        "cluster A cohort HF cache: $HF_HOME/hub/models--nvidia--NVIDIA-Nemotron-3-Nano-4B-BF16/snapshots/dfaf35de3e30f1867dd8dbc38a7fc9fb52d3914f/generation_config.json (the login host, 2026-09-11)",
+        "the grading host HF cache: ~/.cache/huggingface/hub/models--nvidia--NVIDIA-Nemotron-3-Nano-4B-BF16/snapshots/dfaf35de.../generation_config.json, same bytes (2026-09-11)",
+        "hub: GET .../resolve/dfaf35de.../generation_config.json -> 200 with this sha256 (the grading host, anonymous, 2026-09-11)"
+      ],
+      "note": "the yaml preset runs top_p 1.0 -- a DECLARED departure (presets.nemotron3nano4b.deliberate_departure.top_p); the file states no do_sample, no top_k, no penalty key"
+    },
+    "NousResearch/Meta-Llama-3.1-8B-Instruct": {
+      "revision": "d10aef7999a2b5ba950ab3974312feeedbfe0b77",
+      "state": "present",
+      "sampler_keys": {"temperature": 0.6, "top_p": 0.9},
+      "do_sample": true,
+      "sha256": "189fb0c0d7fd8a527db217c0a60a0e013f0394cd8800f9697a666a9e75e5f7fd",
+      "etag": "cc7276afd599de091142c6ed3005faf8a74aa257",
+      "read_from": [
+        "cluster A cohort HF cache: $HF_HOME/hub/models--NousResearch--Meta-Llama-3.1-8B-Instruct/snapshots/d10aef7999a2b5ba950ab3974312feeedbfe0b77/generation_config.json (the login host, 2026-09-11)",
+        "hub: GET .../resolve/d10aef79.../generation_config.json -> 200 with this sha256 (the grading host, anonymous, 2026-09-11)"
+      ],
+      "note": "byte-identical (same sha256 and etag) to meta-llama/Llama-3.1-8B-Instruct @ 0e9e39f249a16976918f6564b8830bc894c89659's file in the same cache; the yaml header's 'NOT re-verifiable on the grading host' stands -- the local snapshot is tokenizer-only"
+    },
+    "zai-org/GLM-4.6V-Flash": {
+      "revision": "411bb4d77144a3f03accbf4b780f5acb8b7cde4e",
+      "state": "present",
+      "sampler_keys": {"temperature": 0.8, "top_p": 0.6, "top_k": 2},
+      "do_sample": true,
+      "sha256": "e9527bdf03e7d4971f9cacdbcf81a5fe04b10b64fc478bba6bf389cc0e597b72",
+      "etag": "51d9c1b834b0e321854231ad3618c0e4db30ece6",
+      "read_from": [
+        "cluster A cohort HF cache: $HF_HOME/hub/models--zai-org--GLM-4.6V-Flash/snapshots/411bb4d77144a3f03accbf4b780f5acb8b7cde4e/generation_config.json (the login host, 2026-09-11)",
+        "hub: GET .../resolve/411bb4d7.../generation_config.json -> 200 with this sha256 (the grading host, anonymous, 2026-09-11)"
+      ],
+      "note": "the yaml preset's repetition_penalty 1.1 is the model card's; the file states no penalty key, so it is a preset-only key, not a disagreement with the file (see _doc)"
+    }
+  }
+}

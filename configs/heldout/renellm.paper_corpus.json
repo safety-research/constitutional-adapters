@@ -1,0 +1,39 @@
+{
+ "family": "renellm",
+ "description": "The frozen ReNeLLM corpus that the paper's renellm evaluations replayed. The repository ships it byte for byte at shipped_path, under its own terms (terms_file, not the repository's MIT licence): evaluation only, never training. Replay reads the site's copy when there is one, else the shipped copy, and refuses any other corpus unless SISTEER_RENELLM_NONPAPER_CORPUS_SHA names that corpus's content hash, and then labels every result non-paper.",
+ "shipped_in_repository": true,
+ "shipped_path": "data/heldout_corpora/renellm.jsonl",
+ "terms_file": "LICENSES/ReNeLLM-corpus-terms.txt",
+ "use": "evaluation_only",
+ "corpus_content_hash": "d44dd49ed6268e7ab75ba8f7f1747e8321c5be70a2eefb3f05be4891760ca835",
+ "content_hash_function": "sisteer.eval.attacks.frozen_corpus.corpus_content_hash",
+ "file_name": "renellm.jsonl",
+ "file_sha256": "ef9ee8c75704d5d0ee0320d5e62ff9d62c3e93ba03dd757e4af505beea32926f",
+ "file_bytes": 341349,
+ "row_fields": [
+  "goal_id",
+  "prompt",
+  "sample_idx",
+  "variant_name"
+ ],
+ "row_count": 777,
+ "n_behaviors": 259,
+ "rows_per_behavior": 3,
+ "rows_per_scenario": {
+  "code_completion": 259,
+  "table_filling": 259,
+  "text_continuation": 259
+ },
+ "goal_set": {
+  "config": "configs/two_si.yaml",
+  "selection": "confirmatory eval goals: HarmBench test (standard, copyright excluded) plus the stratified JailbreakBench harmful subset",
+  "harmbench": 159,
+  "jailbreakbench": 100,
+  "goal_id_set_sha256": "21a0de3ad45396453ce5a72d138f399be04d35047f66512029edf68fb1ef4fb5",
+  "goal_id_set_sha256_of": "the sorted goal ids joined by newlines (UTF-8)"
+ },
+ "rewriter_model": "x-ai/grok-4.5",
+ "rewriter_route": "openrouter",
+ "built_at": "2026-08-21T23:25:12+00:00",
+ "build_manifest": "configs/heldout/renellm.corpus.manifest.json"
+}

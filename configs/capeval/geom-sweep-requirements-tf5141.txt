@@ -1,0 +1,12 @@
+# The geometry-sweep serving venv, gemma-4 VARIANT: the SAME lines as geom-sweep-requirements.txt (the pinned vLLM
+# serving stack + matplotlib) plus an EXACT transformers pin, which vllm-requirements.txt also carries. WHY: transformers
+# 5.15.0 (the project lockfile's release, which Nemotron-3-Nano needs for its 'mlp' cache layer) with vLLM 0.25.1 raises
+# transformers.integrations.heterogeneity.configuration_utils.
+# AmbiguousGlobalPerLayerAttributeError: 'head_dim' is a per-layer attribute and may vary across layers, at APIServer
+# startup for gemma-4-E4B / E2B, while 5.14.1 serves gemma-4.
+# scripts/sbatch/geom_sweep.sbatch selects THIS file for MODEL in {gemma4e4b, gemma4e2b} (a second requirements-hash
+# node-local venv) and the default for every other model; tests/test_served_decode_sweep.py pins the selection and that
+# this file is the default's lines + the pin.
+-r vllm-requirements.txt
+matplotlib==3.10.0
+transformers==5.14.1

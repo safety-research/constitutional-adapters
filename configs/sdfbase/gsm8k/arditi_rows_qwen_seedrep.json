@@ -1,0 +1,680 @@
+{
+ "schema": "g8k_seedrep_arditi_rows/1",
+ "generated_by": "scripts/sdfbase/gsm8k/g8k_seedrep_arditi.py",
+ "what": "the three Arditi all-positions GSM8K rows of the qwen_seedrep wave, FILED BY THE LANE'S LAUNCHER from the arditi_allpos matrix's row shape at seed bases 1..3 (the fallback for a matrix that refuses steering rows) \u2014 not rows of matrix_qwen_seedrep.json, whose tooling refuses a steering row on this matrix by name (matrix_refusals)",
+ "wave": "qwen_seedrep",
+ "wave_root_rel": "exp/gsm8k_paired200_paper_objects_qwen_seedrep",
+ "planned_rows_total": 39,
+ "trigger_threshold": 0.01,
+ "source": {
+  "views_yaml": "configs/sdfbase/gsm8k/views_qwen_seedrep.yaml",
+  "roster": "configs/sdfbase_full22_roster.yaml",
+  "roster_sha256": "8225bc5dfeb3ee4609db874071bd2310e7c5553d5639e02ed8e28e402649e1bd",
+  "pins": "configs/sdfbase_full22_pins.json",
+  "pins_sha256": "afdda5edf68241b9cf7cbca50ee287b9d716269941fbdc6bc8555b71dfd43152"
+ },
+ "inspect_seed_policy": "replicate",
+ "inspect_seed_base_by_view": {
+  "s1": 1,
+  "s2": 2,
+  "s3": 3
+ },
+ "geometry_class": "common_f22",
+ "matrix": {
+  "path": "configs/sdfbase/gsm8k/matrix_qwen_seedrep.json",
+  "rows": 36,
+  "roster_sha256": "8225bc5dfeb3ee4609db874071bd2310e7c5553d5639e02ed8e28e402649e1bd"
+ },
+ "allpos_matrix": {
+  "path": "configs/sdfbase/gsm8k/matrix_arditi_allpos.json",
+  "roster_sha256": "89a2991c849c1f4c4720741d705dfcce76a84ec11c8f309dd1454211131136f8"
+ },
+ "matrix_refusals": {
+  "views_loader": "views_qwen_seedrep.yaml: steering on qwen35_4b/s1: the arm 'arditi_allpos' sits on the 'it' view (g8k_cells.EXTERNAL_ROW_VIEW_BY_CELL declares the view per arm) \u2014 an arm served on another arm's view would file a different intervention into that arm's column",
+  "select_rows": "g8k_seedrep_arditi probe: inspect_seed_policy is defined for the base-pass and extension rows only \u2014 this lane schedules no steering / itdoc rows (their row builders carry no seed policy)"
+ },
+ "arditi_source": {
+  "sha": "0f3576f38ef739b986fe9a3ea379ae86e3081beb",
+  "branch": "allpos-orbench",
+  "note": "The lane copy of the source Arditi config must come from a source at or after 0f3576f3; this sha IS 0f3576f3 (the source's tip). 0f3576f3 is an ancestor of neither W (5fa280ef) nor origin/main (ab6f7c2e) at the time of writing, so the paths below do not exist on the wave tree \u2014 they are read from the source commit and copied by WS1-D'.",
+  "standup_config": {
+   "path": "configs/arditi_allpos_qwen35_4b_ar_c0p3.yaml",
+   "sha256": "1c5d8b33ef355bdf",
+   "sha256_prefix_len": 16
+  },
+  "petri_manifest": {
+   "path": "configs/capeval/manifests/arditi_allpos_qwen35_4b_ar_c0p3.yaml",
+   "sha256": "6898b5bae7f6d7db",
+   "sha256_prefix_len": 16
+  },
+  "pins": {
+   "path": "configs/arditi_allpos_pins.json",
+   "sha256": "8607fd979ae7e059",
+   "sha256_prefix_len": 16,
+   "note": "byte-identical to the wave tree's configs/arditi_allpos_pins.json (blob acf25f01)"
+  },
+  "lane_copy": {
+   "standup_config": "configs/seedrep/arditi_allpos_qwen35_4b_ar_c0p3_seedrep.yaml",
+   "petri_manifest": "configs/seedrep/arditi_allpos_qwen35_4b_ar_c0p3_seedrep_manifest.yaml",
+   "rendered_by": "scripts/sdfbase/seedrep/render_arditi_seedrep_configs.py (WS1-D')"
+  }
+ },
+ "role": "arditi_unpaired_value",
+ "counts": {
+  "rows": 3,
+  "views": [
+   "s1",
+   "s2",
+   "s3"
+  ],
+  "seed_bases": [
+   1,
+   2,
+   3
+  ],
+  "geometry_class": "common_f22",
+  "object_sha256": "ba2212f0c2f9ffef2997bdd24831182052560cf980054bcee9cf95ea0db085b2"
+ },
+ "rows": [
+  {
+   "index": 0,
+   "job_id": "g8k-qwen35_4b-s1-arditi_allpos",
+   "model_key": "qwen35_4b",
+   "view": "s1",
+   "tag": "qwen35_4b_s1",
+   "cell": "arditi_allpos",
+   "cell_slug": "arditi_allpos",
+   "harness_cell": "arditi_allpos",
+   "standup_cell": "arditi_allpos",
+   "standup_harness_cell": "arditi_allpos",
+   "staged_id": "ar_c0p3__arditi_allpos",
+   "object_sha256": "ba2212f0c2f9ffef2997bdd24831182052560cf980054bcee9cf95ea0db085b2",
+   "fitted": true,
+   "route_kind": "lens",
+   "served_positions_expected": "all",
+   "declared": false,
+   "thinking_mode": "on",
+   "trigger_threshold": 0.01,
+   "tuple_name": "gsm8k_paired200_qwen35_4b_steer_allpos_8192",
+   "tuple_names": {
+    "8192": "gsm8k_paired200_qwen35_4b_steer_allpos_8192",
+    "16384": "gsm8k_paired200_qwen35_4b_steer_allpos_16384"
+   },
+   "sampling_mode": "thinking_card",
+   "sampling": {
+    "temperature": 0.6,
+    "top_p": 0.95,
+    "top_k": 20,
+    "min_p": 0.0,
+    "presence_penalty": 0.0,
+    "source": "Qwen/Qwen3.5-4B @851bf6e8 ships no generation_config.json (.no_exist marker); the Qwen3.5 model card's THINKING-mode 'precise' row as reported to the project = the Qwen3 card's thinking-mode guidance (T 0.6 / top_p 0.95 / top_k 20 / min_p 0; penalties only against endless repetition at a stated cost) \u2014 the PRIMARY row: mathematics legitimately repeats tokens"
+   },
+   "expected_stamps": [
+    "cell-stable",
+    "always",
+    "thinking_on"
+   ],
+   "out_root": "controls_qwen_seedrep/qwen35_4b_s1/arditi_allpos/thinking_card",
+   "rung_out_root": "controls_qwen_seedrep/qwen35_4b_s1/arditi_allpos/thinking_card__rung16384",
+   "time_limit": "0-01:30:00",
+   "family": "qwen3_5",
+   "split_mode_candidate": "implicit_open",
+   "reasoning_parser": null,
+   "gpu_mem_util": "0.9",
+   "budget_class": "none",
+   "cluster_constraint": "primary",
+   "status": "launch",
+   "held_reason": null,
+   "expected_refusal": false,
+   "expected_refusal_reason": null,
+   "wave": "qwen_seedrep",
+   "extension": true,
+   "object_source": "external",
+   "lane_root": "exp/objects/arditi_allpos",
+   "bank_view": "ar_c0p3",
+   "bank_view_rel": {
+    "primary": "exp/objects/arditi_allpos/qwen35_4b/ladder/cells_view/ar_c0p3",
+    "overflow": "exp/objects/arditi_allpos/qwen35_4b/ladder/cells_view/ar_c0p3"
+   },
+   "bank_cell_dir": "arditi_allpos",
+   "selection_rule": "highest dose whose XSTest over-refusal delta stays within the 10 pp budget (gate statistic, prefix rule), read at ladder cap 2048 \u2014 on this ladder the rule returns c = 0.2 (ar_c0p2, +5.04 pp); the pinned c = 0.3 is a DECLARED OVERRIDE over that budget (+10.26 pp), not the rule's pick",
+   "selection_label": "DECLARED OVERRIDE 2026-09-16, OVER BUDGET: c = 0.3 (raw coefficient) on the arditi_allpos ladder for qwen35_4b \u2014 the selection rule (highest dose whose XSTest over-refusal delta stays within the 10 pp budget; gate statistic, prefix rule; read at ladder cap 2048) returns c = 0.2 at +5.04 pp; c = 0.3 measures +10.26 pp against the 10 pp budget. The rule was overridden to 0.3, recorded as such. Single-trial ladder: the excess over budget is a ratio against a crude floor, never a significance claim",
+   "grid_limited": false,
+   "selection_outcome": "user_override_over_budget_2026-09-16",
+   "rung": null,
+   "lambda": null,
+   "alpha": null,
+   "served_layer": 12,
+   "producer": {
+    "lane": "arditi_allpos",
+    "repo_sha": "5cbc8da7cb323a5f8a707ee3a304abfdc64db24d",
+    "repo_sha_note": "the lane tree the fit items were pinned at (data/arditi/fit_prompts.json at this sha, on the lane's arditi-* branches, not on main); reported by the lane and corroborated by the on-disk sidecars",
+    "fit_record": "see fit_provenance (fit_record_sha256 05fba693\u2026; direction_sha256 98c1e6a2\u2026; direction_pt_sha256 b57149f4\u2026)",
+    "serving_impl": "the LEG's own launch tree: a `vector_all` object is exported to the native residual slot payload at launch (src/sisteer/capeval/serving/lora_export.py -> native_residual.py) \u2014 no frozen lane serving impl rides this entry; every leg records its own launch sha in its attestation",
+    "serving_config_sha256": null,
+    "serving_config_sha256_note": "not reported by the lane (the ladder's own serving-config hash is the lane record's to carry); NOT durable in any case \u2014 every leg records the sha256 of the config IT serves in its launch attestation"
+   },
+   "ceiling_20pp": null,
+   "dose_evidence": {
+    "instrument": "the arditi_allpos lane's own dose ladder on qwen35_4b (XSTest safe prompts; gate statistic, prefix rule) read at ladder cap 2048 \u2014 SINGLE TRIAL; not a measurement on this defence run",
+    "decode": "the ladder's own decode",
+    "budget_pp": 10,
+    "over_refusal_pp": 10.26,
+    "over_refusal_pp_note": "the OVERRIDE point c = 0.3: +10.26 pp against a 10 pp budget \u2014 OVER budget by 0.26 pp (0.544 of an item). The rule's return c = 0.2 reads +5.04 pp. Single-trial ladder: the excess is a ratio against a crude floor, never a significance claim; a fresh-seed replicate moves the over-refusal delta by 3.46 items, about six times the 0.544-item margin by which the point exceeded budget \u2014 over budget, not marginally",
+    "rule_return_over_refusal_pp": 5.04,
+    "ladder_cap": 2048,
+    "ladder_cap_note": "at cap 512 the rule returns a DIFFERENT point \u2014 the cap is part of the reading's identity",
+    "readout_record": "the lane's own selection record (outcome user_override_over_budget_2026-09-16, rule_returns ar_c0p2); reported by the lane 2026-09-16, not re-derived here",
+    "must_report_with": [
+     "over_refusal_pp",
+     "selection.outcome",
+     "selection.rule_returns",
+     "selection.ladder_cap"
+    ],
+    "trade": "c = 0.3 (the declared override): +10.26 pp XSTest over-refusal (gate statistic) against the rule's c = 0.2 at +5.04 pp; the defence delivered at either dose on the paper instruments is what the legs measure and is not quantified here"
+   },
+   "attestation_expect": {
+    "serving_path": "lora_native",
+    "slot": "the native residual slot (petri_residual_slot payload beside a rank-1 zero o_proj LoRA; src/sisteer/capeval/serving/native_residual.py), graph-captured, in every leg",
+    "kind": "vector_all",
+    "op": "add_vector",
+    "coeff": 1.0,
+    "coeff_note": "the dose lives in the vector's NORM (c = 0.3 baked into the bytes): the constant kinds serve at coeff 1.0 exactly, so a rung is different BYTES, never a serve-time flag",
+    "position_mode": "all",
+    "positions": "all",
+    "phase": "both",
+    "skip_bos": false,
+    "served_layer": 12,
+    "layers": [
+     12
+    ],
+    "boundaries": [
+     12
+    ],
+    "dtype_policy": "model_dtype_add",
+    "served_positions_expected": "all",
+    "no_lens_key_note": "no lens_reduction_mode on this entry, on purpose: the arm is not served through the lens, and a single add_vector op at the block output has nothing to reduce; the gate refuses a lens key here"
+   },
+   "boundary_pick": null,
+   "alternative_not_pinned": null,
+   "admission_notes": [
+    "keyed by cell id AND lane root, never by model name. `arditi_allpos` is NOT `arditi`: a different intervention (phase both \u2014 prefill AND every decode step \u2014 vs prefill-only; dose a raw coefficient on a `vector_all` object, not a residual-norm-fraction alpha on a `static_r`). Never file one under the other's cell id, view spelling (ar_c\u2026 vs ar_r\u2026) or staged-id suffix",
+    "as for the arditi cell, the dose is BAKED into the bytes (c scales the direction; each dose its own sha); the native residual slot serves the constant kinds at coeff 1.0 exactly, so a rung is different BYTES, never a serve-time flag",
+    "SELECTION: c = 0.3 is a DECLARED OVERRIDE (2026-09-16) of the selection rule, which returns c = 0.2 (ar_c0p2) at +5.04 pp; 0.3 measures +10.26 pp against a 10 pp budget \u2014 OVER budget, filed in the lane's own selection record with rule_returns ar_c0p2. Nothing on this entry says the rule chose 0.3",
+    "SINGLE TRIAL: the ladder was run once; every margin on this entry is a ratio against a crude floor, never a significance claim. A fresh-seed replicate moves the over-refusal delta by 3.46 items, about six times the 0.544-item margin by which the point exceeded budget",
+    "LADDER CAP 2048 is part of the reading's identity: at cap 512 the rule returns a DIFFERENT point",
+    "alpha_equiv 0.1054\u2026 is an arithmetic convenience on this model only: it is not the dose, and it never shares an axis or a scale with the other models' alpha doses",
+    "served = fit - 1 FOOTGUN: a `vector_all` blob stores the SERVED block-output layer (12) and is served as stored; the fit layer (13) is provenance. This is the INVERSE of `static_r` at site=pre, which stores the fit layer and serves one block earlier. The gate refuses served_layer != fit_layer - 1 on this entry",
+    "serving_path lora_native: served on the graph-captured native residual slot in every leg (op add_vector, coeff 1.0, position mode all, phase both); no lens key on this entry",
+    "cluster_constraint `primary` is a launch placement, not a staging limit: the object is staged and verified byte-identical on both clusters",
+    "fit provenance reported by the lane 2026-09-16 and corroborated against the on-disk sidecars: fitted on the SERVED checkpoint (Qwen/Qwen3.5-4B @ 851bf6e8\u2026, no base-vs-instruct transfer), chat rendering, realised item counts 123/31 harmful and 125/31 harmless after the refusal filter (never the nominal 128/32). The record refuses rather than guesses when any fit_provenance key is missing"
+   ],
+   "selection": {
+    "outcome": "user_override_over_budget_2026-09-16",
+    "rule": "highest dose whose XSTest over-refusal delta stays within the budget (gate statistic, prefix rule), read at the ladder cap named here",
+    "rule_returns": "ar_c0p2",
+    "rule_reading_pp": 5.04,
+    "override_reading_pp": 10.26,
+    "budget_pp": 10,
+    "ladder_cap": 2048,
+    "ladder_cap_note": "part of the reading's IDENTITY: at cap 512 the rule returns a DIFFERENT point; a selection block without its cap is not a reading of anything",
+    "single_trial": true,
+    "single_trial_note": "the ladder was run once: any margin here is a ratio against a crude floor, never a significance claim; no significance statistic of any kind is written on this entry",
+    "dose": {
+     "value": 0.3,
+     "unit": "raw_coefficient"
+    },
+    "alpha_equiv": {
+     "value": 0.10540806493282855,
+     "note": "an arithmetic convenience on this model only, never the dose",
+     "informational": true,
+     "never_shares_an_axis_with": "the other models' alpha doses (residual_norm_fraction) \u2014 a different unit on a different intervention"
+    },
+    "replicate_note": "a fresh-seed replicate moves the over-refusal delta by 3.46 items, about six times the 0.544-item margin by which the point exceeded budget \u2014 over budget, not marginally",
+    "overridden_by": "the authors, 2026-09-16 (reported by the lane)"
+   },
+   "fit_provenance": {
+    "fitted_on_model": "Qwen/Qwen3.5-4B",
+    "fitted_on_revision": "851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a",
+    "fitted_on_is_the_served_checkpoint": "byte-identical to the SERVED model and revision \u2014 no base-vs-instruct transfer in the direction; the -Base checkpoint was NOT used",
+    "rendering": "sisteer.models.build_chat_prompt via apply_chat_template; activations captured under chat rendering at 9 post-instruction positions",
+    "capture_positions": "9 post-instruction positions",
+    "capture_positions_note": "the number of post-instruction positions the activations were captured at, as its OWN key. It was readable only inside `rendering`'s prose before, which the paper-row export cannot parse \u2014 and the export REFUSES a fit provenance missing any key rather than inferring one, so a fact stated only in prose is a fact the export does not have.",
+    "item_source": "data/arditi/fit_prompts.json",
+    "item_source_repo_sha": "5cbc8da7cb323a5f8a707ee3a304abfdc64db24d",
+    "item_source_note": "the file at that commit (on the lane's arditi-* branches, not on main) carries the NOMINAL 128/32 draws per side and documents the runtime refusal filter that drops rows on the unsteered model; the counts below are the REALISED counts after that filter",
+    "realised_counts": {
+     "harmful_train": 123,
+     "harmful_val": 31,
+     "harmless_train": 125,
+     "harmless_val": 31,
+     "note": "REALISED after the refusal filter, per the fit record \u2014 never the nominal 128/32"
+    },
+    "direction_sha256": "98c1e6a2628ba6a27604ab3d44fbe8844ef62842e60633fdb8ffd30c3ba67b87",
+    "direction_pt_sha256": "b57149f40d06a6d401c1014cc67dc71d0d91bcb472cfc1726303b7f692e417ce",
+    "fit_layer": 13,
+    "fit_position": -5,
+    "direction_norm": 3.2904739,
+    "served_layer": 12,
+    "served_layer_note": "served = fit - 1 HERE because a `vector_all` blob stores the SERVED block-output layer and is served AS STORED (lora_export._residual_vector_all: boundaries == layers; the lens serves OP_ADD_VECTOR at the stored index) \u2014 the INVERSE of `static_r` at site=pre, which stores the FIT layer and serves one block earlier. Writing 13 (the fit layer) as this arm's served layer would steer the wrong block; the gate refuses it",
+    "fit_quality_gate": {
+     "harmful_mean": 5.813,
+     "harmless_mean": -10.892,
+     "harmful_frac_positive": 0.961,
+     "harmless_frac_negative": 0.977
+    },
+    "fit_record_sha256": "05fba693e573a65b8cd6549918000be7e75cbf56b34b02672123b81083512901",
+    "source": "reported by the lane 2026-09-16 and corroborated against the on-disk sidecars; the record REFUSES rather than guesses when any key here is missing (steer_admission_ruling.arditi_allpos_entry_problems)"
+   },
+   "own_overlay": true,
+   "expected_contrast_refusal": "O106",
+   "inspect_seed_policy": "replicate",
+   "inspect_seed_base": 1,
+   "geometry_class": "common_f22",
+   "role": "arditi_unpaired_value",
+   "standup_config": "configs/seedrep/arditi_allpos_qwen35_4b_ar_c0p3_seedrep.yaml",
+   "standup_manifest": "configs/seedrep/arditi_allpos_qwen35_4b_ar_c0p3_seedrep_manifest.yaml",
+   "standup_config_source_sha": "0f3576f38ef739b986fe9a3ea379ae86e3081beb"
+  },
+  {
+   "index": 1,
+   "job_id": "g8k-qwen35_4b-s2-arditi_allpos",
+   "model_key": "qwen35_4b",
+   "view": "s2",
+   "tag": "qwen35_4b_s2",
+   "cell": "arditi_allpos",
+   "cell_slug": "arditi_allpos",
+   "harness_cell": "arditi_allpos",
+   "standup_cell": "arditi_allpos",
+   "standup_harness_cell": "arditi_allpos",
+   "staged_id": "ar_c0p3__arditi_allpos",
+   "object_sha256": "ba2212f0c2f9ffef2997bdd24831182052560cf980054bcee9cf95ea0db085b2",
+   "fitted": true,
+   "route_kind": "lens",
+   "served_positions_expected": "all",
+   "declared": false,
+   "thinking_mode": "on",
+   "trigger_threshold": 0.01,
+   "tuple_name": "gsm8k_paired200_qwen35_4b_steer_allpos_8192",
+   "tuple_names": {
+    "8192": "gsm8k_paired200_qwen35_4b_steer_allpos_8192",
+    "16384": "gsm8k_paired200_qwen35_4b_steer_allpos_16384"
+   },
+   "sampling_mode": "thinking_card",
+   "sampling": {
+    "temperature": 0.6,
+    "top_p": 0.95,
+    "top_k": 20,
+    "min_p": 0.0,
+    "presence_penalty": 0.0,
+    "source": "Qwen/Qwen3.5-4B @851bf6e8 ships no generation_config.json (.no_exist marker); the Qwen3.5 model card's THINKING-mode 'precise' row as reported to the project = the Qwen3 card's thinking-mode guidance (T 0.6 / top_p 0.95 / top_k 20 / min_p 0; penalties only against endless repetition at a stated cost) \u2014 the PRIMARY row: mathematics legitimately repeats tokens"
+   },
+   "expected_stamps": [
+    "cell-stable",
+    "always",
+    "thinking_on"
+   ],
+   "out_root": "controls_qwen_seedrep/qwen35_4b_s2/arditi_allpos/thinking_card",
+   "rung_out_root": "controls_qwen_seedrep/qwen35_4b_s2/arditi_allpos/thinking_card__rung16384",
+   "time_limit": "0-01:30:00",
+   "family": "qwen3_5",
+   "split_mode_candidate": "implicit_open",
+   "reasoning_parser": null,
+   "gpu_mem_util": "0.9",
+   "budget_class": "none",
+   "cluster_constraint": "primary",
+   "status": "launch",
+   "held_reason": null,
+   "expected_refusal": false,
+   "expected_refusal_reason": null,
+   "wave": "qwen_seedrep",
+   "extension": true,
+   "object_source": "external",
+   "lane_root": "exp/objects/arditi_allpos",
+   "bank_view": "ar_c0p3",
+   "bank_view_rel": {
+    "primary": "exp/objects/arditi_allpos/qwen35_4b/ladder/cells_view/ar_c0p3",
+    "overflow": "exp/objects/arditi_allpos/qwen35_4b/ladder/cells_view/ar_c0p3"
+   },
+   "bank_cell_dir": "arditi_allpos",
+   "selection_rule": "highest dose whose XSTest over-refusal delta stays within the 10 pp budget (gate statistic, prefix rule), read at ladder cap 2048 \u2014 on this ladder the rule returns c = 0.2 (ar_c0p2, +5.04 pp); the pinned c = 0.3 is a DECLARED OVERRIDE over that budget (+10.26 pp), not the rule's pick",
+   "selection_label": "DECLARED OVERRIDE 2026-09-16, OVER BUDGET: c = 0.3 (raw coefficient) on the arditi_allpos ladder for qwen35_4b \u2014 the selection rule (highest dose whose XSTest over-refusal delta stays within the 10 pp budget; gate statistic, prefix rule; read at ladder cap 2048) returns c = 0.2 at +5.04 pp; c = 0.3 measures +10.26 pp against the 10 pp budget. The rule was overridden to 0.3, recorded as such. Single-trial ladder: the excess over budget is a ratio against a crude floor, never a significance claim",
+   "grid_limited": false,
+   "selection_outcome": "user_override_over_budget_2026-09-16",
+   "rung": null,
+   "lambda": null,
+   "alpha": null,
+   "served_layer": 12,
+   "producer": {
+    "lane": "arditi_allpos",
+    "repo_sha": "5cbc8da7cb323a5f8a707ee3a304abfdc64db24d",
+    "repo_sha_note": "the lane tree the fit items were pinned at (data/arditi/fit_prompts.json at this sha, on the lane's arditi-* branches, not on main); reported by the lane and corroborated by the on-disk sidecars",
+    "fit_record": "see fit_provenance (fit_record_sha256 05fba693\u2026; direction_sha256 98c1e6a2\u2026; direction_pt_sha256 b57149f4\u2026)",
+    "serving_impl": "the LEG's own launch tree: a `vector_all` object is exported to the native residual slot payload at launch (src/sisteer/capeval/serving/lora_export.py -> native_residual.py) \u2014 no frozen lane serving impl rides this entry; every leg records its own launch sha in its attestation",
+    "serving_config_sha256": null,
+    "serving_config_sha256_note": "not reported by the lane (the ladder's own serving-config hash is the lane record's to carry); NOT durable in any case \u2014 every leg records the sha256 of the config IT serves in its launch attestation"
+   },
+   "ceiling_20pp": null,
+   "dose_evidence": {
+    "instrument": "the arditi_allpos lane's own dose ladder on qwen35_4b (XSTest safe prompts; gate statistic, prefix rule) read at ladder cap 2048 \u2014 SINGLE TRIAL; not a measurement on this defence run",
+    "decode": "the ladder's own decode",
+    "budget_pp": 10,
+    "over_refusal_pp": 10.26,
+    "over_refusal_pp_note": "the OVERRIDE point c = 0.3: +10.26 pp against a 10 pp budget \u2014 OVER budget by 0.26 pp (0.544 of an item). The rule's return c = 0.2 reads +5.04 pp. Single-trial ladder: the excess is a ratio against a crude floor, never a significance claim; a fresh-seed replicate moves the over-refusal delta by 3.46 items, about six times the 0.544-item margin by which the point exceeded budget \u2014 over budget, not marginally",
+    "rule_return_over_refusal_pp": 5.04,
+    "ladder_cap": 2048,
+    "ladder_cap_note": "at cap 512 the rule returns a DIFFERENT point \u2014 the cap is part of the reading's identity",
+    "readout_record": "the lane's own selection record (outcome user_override_over_budget_2026-09-16, rule_returns ar_c0p2); reported by the lane 2026-09-16, not re-derived here",
+    "must_report_with": [
+     "over_refusal_pp",
+     "selection.outcome",
+     "selection.rule_returns",
+     "selection.ladder_cap"
+    ],
+    "trade": "c = 0.3 (the declared override): +10.26 pp XSTest over-refusal (gate statistic) against the rule's c = 0.2 at +5.04 pp; the defence delivered at either dose on the paper instruments is what the legs measure and is not quantified here"
+   },
+   "attestation_expect": {
+    "serving_path": "lora_native",
+    "slot": "the native residual slot (petri_residual_slot payload beside a rank-1 zero o_proj LoRA; src/sisteer/capeval/serving/native_residual.py), graph-captured, in every leg",
+    "kind": "vector_all",
+    "op": "add_vector",
+    "coeff": 1.0,
+    "coeff_note": "the dose lives in the vector's NORM (c = 0.3 baked into the bytes): the constant kinds serve at coeff 1.0 exactly, so a rung is different BYTES, never a serve-time flag",
+    "position_mode": "all",
+    "positions": "all",
+    "phase": "both",
+    "skip_bos": false,
+    "served_layer": 12,
+    "layers": [
+     12
+    ],
+    "boundaries": [
+     12
+    ],
+    "dtype_policy": "model_dtype_add",
+    "served_positions_expected": "all",
+    "no_lens_key_note": "no lens_reduction_mode on this entry, on purpose: the arm is not served through the lens, and a single add_vector op at the block output has nothing to reduce; the gate refuses a lens key here"
+   },
+   "boundary_pick": null,
+   "alternative_not_pinned": null,
+   "admission_notes": [
+    "keyed by cell id AND lane root, never by model name. `arditi_allpos` is NOT `arditi`: a different intervention (phase both \u2014 prefill AND every decode step \u2014 vs prefill-only; dose a raw coefficient on a `vector_all` object, not a residual-norm-fraction alpha on a `static_r`). Never file one under the other's cell id, view spelling (ar_c\u2026 vs ar_r\u2026) or staged-id suffix",
+    "as for the arditi cell, the dose is BAKED into the bytes (c scales the direction; each dose its own sha); the native residual slot serves the constant kinds at coeff 1.0 exactly, so a rung is different BYTES, never a serve-time flag",
+    "SELECTION: c = 0.3 is a DECLARED OVERRIDE (2026-09-16) of the selection rule, which returns c = 0.2 (ar_c0p2) at +5.04 pp; 0.3 measures +10.26 pp against a 10 pp budget \u2014 OVER budget, filed in the lane's own selection record with rule_returns ar_c0p2. Nothing on this entry says the rule chose 0.3",
+    "SINGLE TRIAL: the ladder was run once; every margin on this entry is a ratio against a crude floor, never a significance claim. A fresh-seed replicate moves the over-refusal delta by 3.46 items, about six times the 0.544-item margin by which the point exceeded budget",
+    "LADDER CAP 2048 is part of the reading's identity: at cap 512 the rule returns a DIFFERENT point",
+    "alpha_equiv 0.1054\u2026 is an arithmetic convenience on this model only: it is not the dose, and it never shares an axis or a scale with the other models' alpha doses",
+    "served = fit - 1 FOOTGUN: a `vector_all` blob stores the SERVED block-output layer (12) and is served as stored; the fit layer (13) is provenance. This is the INVERSE of `static_r` at site=pre, which stores the fit layer and serves one block earlier. The gate refuses served_layer != fit_layer - 1 on this entry",
+    "serving_path lora_native: served on the graph-captured native residual slot in every leg (op add_vector, coeff 1.0, position mode all, phase both); no lens key on this entry",
+    "cluster_constraint `primary` is a launch placement, not a staging limit: the object is staged and verified byte-identical on both clusters",
+    "fit provenance reported by the lane 2026-09-16 and corroborated against the on-disk sidecars: fitted on the SERVED checkpoint (Qwen/Qwen3.5-4B @ 851bf6e8\u2026, no base-vs-instruct transfer), chat rendering, realised item counts 123/31 harmful and 125/31 harmless after the refusal filter (never the nominal 128/32). The record refuses rather than guesses when any fit_provenance key is missing"
+   ],
+   "selection": {
+    "outcome": "user_override_over_budget_2026-09-16",
+    "rule": "highest dose whose XSTest over-refusal delta stays within the budget (gate statistic, prefix rule), read at the ladder cap named here",
+    "rule_returns": "ar_c0p2",
+    "rule_reading_pp": 5.04,
+    "override_reading_pp": 10.26,
+    "budget_pp": 10,
+    "ladder_cap": 2048,
+    "ladder_cap_note": "part of the reading's IDENTITY: at cap 512 the rule returns a DIFFERENT point; a selection block without its cap is not a reading of anything",
+    "single_trial": true,
+    "single_trial_note": "the ladder was run once: any margin here is a ratio against a crude floor, never a significance claim; no significance statistic of any kind is written on this entry",
+    "dose": {
+     "value": 0.3,
+     "unit": "raw_coefficient"
+    },
+    "alpha_equiv": {
+     "value": 0.10540806493282855,
+     "note": "an arithmetic convenience on this model only, never the dose",
+     "informational": true,
+     "never_shares_an_axis_with": "the other models' alpha doses (residual_norm_fraction) \u2014 a different unit on a different intervention"
+    },
+    "replicate_note": "a fresh-seed replicate moves the over-refusal delta by 3.46 items, about six times the 0.544-item margin by which the point exceeded budget \u2014 over budget, not marginally",
+    "overridden_by": "the authors, 2026-09-16 (reported by the lane)"
+   },
+   "fit_provenance": {
+    "fitted_on_model": "Qwen/Qwen3.5-4B",
+    "fitted_on_revision": "851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a",
+    "fitted_on_is_the_served_checkpoint": "byte-identical to the SERVED model and revision \u2014 no base-vs-instruct transfer in the direction; the -Base checkpoint was NOT used",
+    "rendering": "sisteer.models.build_chat_prompt via apply_chat_template; activations captured under chat rendering at 9 post-instruction positions",
+    "capture_positions": "9 post-instruction positions",
+    "capture_positions_note": "the number of post-instruction positions the activations were captured at, as its OWN key. It was readable only inside `rendering`'s prose before, which the paper-row export cannot parse \u2014 and the export REFUSES a fit provenance missing any key rather than inferring one, so a fact stated only in prose is a fact the export does not have.",
+    "item_source": "data/arditi/fit_prompts.json",
+    "item_source_repo_sha": "5cbc8da7cb323a5f8a707ee3a304abfdc64db24d",
+    "item_source_note": "the file at that commit (on the lane's arditi-* branches, not on main) carries the NOMINAL 128/32 draws per side and documents the runtime refusal filter that drops rows on the unsteered model; the counts below are the REALISED counts after that filter",
+    "realised_counts": {
+     "harmful_train": 123,
+     "harmful_val": 31,
+     "harmless_train": 125,
+     "harmless_val": 31,
+     "note": "REALISED after the refusal filter, per the fit record \u2014 never the nominal 128/32"
+    },
+    "direction_sha256": "98c1e6a2628ba6a27604ab3d44fbe8844ef62842e60633fdb8ffd30c3ba67b87",
+    "direction_pt_sha256": "b57149f40d06a6d401c1014cc67dc71d0d91bcb472cfc1726303b7f692e417ce",
+    "fit_layer": 13,
+    "fit_position": -5,
+    "direction_norm": 3.2904739,
+    "served_layer": 12,
+    "served_layer_note": "served = fit - 1 HERE because a `vector_all` blob stores the SERVED block-output layer and is served AS STORED (lora_export._residual_vector_all: boundaries == layers; the lens serves OP_ADD_VECTOR at the stored index) \u2014 the INVERSE of `static_r` at site=pre, which stores the FIT layer and serves one block earlier. Writing 13 (the fit layer) as this arm's served layer would steer the wrong block; the gate refuses it",
+    "fit_quality_gate": {
+     "harmful_mean": 5.813,
+     "harmless_mean": -10.892,
+     "harmful_frac_positive": 0.961,
+     "harmless_frac_negative": 0.977
+    },
+    "fit_record_sha256": "05fba693e573a65b8cd6549918000be7e75cbf56b34b02672123b81083512901",
+    "source": "reported by the lane 2026-09-16 and corroborated against the on-disk sidecars; the record REFUSES rather than guesses when any key here is missing (steer_admission_ruling.arditi_allpos_entry_problems)"
+   },
+   "own_overlay": true,
+   "expected_contrast_refusal": "O106",
+   "inspect_seed_policy": "replicate",
+   "inspect_seed_base": 2,
+   "geometry_class": "common_f22",
+   "role": "arditi_unpaired_value",
+   "standup_config": "configs/seedrep/arditi_allpos_qwen35_4b_ar_c0p3_seedrep.yaml",
+   "standup_manifest": "configs/seedrep/arditi_allpos_qwen35_4b_ar_c0p3_seedrep_manifest.yaml",
+   "standup_config_source_sha": "0f3576f38ef739b986fe9a3ea379ae86e3081beb"
+  },
+  {
+   "index": 2,
+   "job_id": "g8k-qwen35_4b-s3-arditi_allpos",
+   "model_key": "qwen35_4b",
+   "view": "s3",
+   "tag": "qwen35_4b_s3",
+   "cell": "arditi_allpos",
+   "cell_slug": "arditi_allpos",
+   "harness_cell": "arditi_allpos",
+   "standup_cell": "arditi_allpos",
+   "standup_harness_cell": "arditi_allpos",
+   "staged_id": "ar_c0p3__arditi_allpos",
+   "object_sha256": "ba2212f0c2f9ffef2997bdd24831182052560cf980054bcee9cf95ea0db085b2",
+   "fitted": true,
+   "route_kind": "lens",
+   "served_positions_expected": "all",
+   "declared": false,
+   "thinking_mode": "on",
+   "trigger_threshold": 0.01,
+   "tuple_name": "gsm8k_paired200_qwen35_4b_steer_allpos_8192",
+   "tuple_names": {
+    "8192": "gsm8k_paired200_qwen35_4b_steer_allpos_8192",
+    "16384": "gsm8k_paired200_qwen35_4b_steer_allpos_16384"
+   },
+   "sampling_mode": "thinking_card",
+   "sampling": {
+    "temperature": 0.6,
+    "top_p": 0.95,
+    "top_k": 20,
+    "min_p": 0.0,
+    "presence_penalty": 0.0,
+    "source": "Qwen/Qwen3.5-4B @851bf6e8 ships no generation_config.json (.no_exist marker); the Qwen3.5 model card's THINKING-mode 'precise' row as reported to the project = the Qwen3 card's thinking-mode guidance (T 0.6 / top_p 0.95 / top_k 20 / min_p 0; penalties only against endless repetition at a stated cost) \u2014 the PRIMARY row: mathematics legitimately repeats tokens"
+   },
+   "expected_stamps": [
+    "cell-stable",
+    "always",
+    "thinking_on"
+   ],
+   "out_root": "controls_qwen_seedrep/qwen35_4b_s3/arditi_allpos/thinking_card",
+   "rung_out_root": "controls_qwen_seedrep/qwen35_4b_s3/arditi_allpos/thinking_card__rung16384",
+   "time_limit": "0-01:30:00",
+   "family": "qwen3_5",
+   "split_mode_candidate": "implicit_open",
+   "reasoning_parser": null,
+   "gpu_mem_util": "0.9",
+   "budget_class": "none",
+   "cluster_constraint": "primary",
+   "status": "launch",
+   "held_reason": null,
+   "expected_refusal": false,
+   "expected_refusal_reason": null,
+   "wave": "qwen_seedrep",
+   "extension": true,
+   "object_source": "external",
+   "lane_root": "exp/objects/arditi_allpos",
+   "bank_view": "ar_c0p3",
+   "bank_view_rel": {
+    "primary": "exp/objects/arditi_allpos/qwen35_4b/ladder/cells_view/ar_c0p3",
+    "overflow": "exp/objects/arditi_allpos/qwen35_4b/ladder/cells_view/ar_c0p3"
+   },
+   "bank_cell_dir": "arditi_allpos",
+   "selection_rule": "highest dose whose XSTest over-refusal delta stays within the 10 pp budget (gate statistic, prefix rule), read at ladder cap 2048 \u2014 on this ladder the rule returns c = 0.2 (ar_c0p2, +5.04 pp); the pinned c = 0.3 is a DECLARED OVERRIDE over that budget (+10.26 pp), not the rule's pick",
+   "selection_label": "DECLARED OVERRIDE 2026-09-16, OVER BUDGET: c = 0.3 (raw coefficient) on the arditi_allpos ladder for qwen35_4b \u2014 the selection rule (highest dose whose XSTest over-refusal delta stays within the 10 pp budget; gate statistic, prefix rule; read at ladder cap 2048) returns c = 0.2 at +5.04 pp; c = 0.3 measures +10.26 pp against the 10 pp budget. The rule was overridden to 0.3, recorded as such. Single-trial ladder: the excess over budget is a ratio against a crude floor, never a significance claim",
+   "grid_limited": false,
+   "selection_outcome": "user_override_over_budget_2026-09-16",
+   "rung": null,
+   "lambda": null,
+   "alpha": null,
+   "served_layer": 12,
+   "producer": {
+    "lane": "arditi_allpos",
+    "repo_sha": "5cbc8da7cb323a5f8a707ee3a304abfdc64db24d",
+    "repo_sha_note": "the lane tree the fit items were pinned at (data/arditi/fit_prompts.json at this sha, on the lane's arditi-* branches, not on main); reported by the lane and corroborated by the on-disk sidecars",
+    "fit_record": "see fit_provenance (fit_record_sha256 05fba693\u2026; direction_sha256 98c1e6a2\u2026; direction_pt_sha256 b57149f4\u2026)",
+    "serving_impl": "the LEG's own launch tree: a `vector_all` object is exported to the native residual slot payload at launch (src/sisteer/capeval/serving/lora_export.py -> native_residual.py) \u2014 no frozen lane serving impl rides this entry; every leg records its own launch sha in its attestation",
+    "serving_config_sha256": null,
+    "serving_config_sha256_note": "not reported by the lane (the ladder's own serving-config hash is the lane record's to carry); NOT durable in any case \u2014 every leg records the sha256 of the config IT serves in its launch attestation"
+   },
+   "ceiling_20pp": null,
+   "dose_evidence": {
+    "instrument": "the arditi_allpos lane's own dose ladder on qwen35_4b (XSTest safe prompts; gate statistic, prefix rule) read at ladder cap 2048 \u2014 SINGLE TRIAL; not a measurement on this defence run",
+    "decode": "the ladder's own decode",
+    "budget_pp": 10,
+    "over_refusal_pp": 10.26,
+    "over_refusal_pp_note": "the OVERRIDE point c = 0.3: +10.26 pp against a 10 pp budget \u2014 OVER budget by 0.26 pp (0.544 of an item). The rule's return c = 0.2 reads +5.04 pp. Single-trial ladder: the excess is a ratio against a crude floor, never a significance claim; a fresh-seed replicate moves the over-refusal delta by 3.46 items, about six times the 0.544-item margin by which the point exceeded budget \u2014 over budget, not marginally",
+    "rule_return_over_refusal_pp": 5.04,
+    "ladder_cap": 2048,
+    "ladder_cap_note": "at cap 512 the rule returns a DIFFERENT point \u2014 the cap is part of the reading's identity",
+    "readout_record": "the lane's own selection record (outcome user_override_over_budget_2026-09-16, rule_returns ar_c0p2); reported by the lane 2026-09-16, not re-derived here",
+    "must_report_with": [
+     "over_refusal_pp",
+     "selection.outcome",
+     "selection.rule_returns",
+     "selection.ladder_cap"
+    ],
+    "trade": "c = 0.3 (the declared override): +10.26 pp XSTest over-refusal (gate statistic) against the rule's c = 0.2 at +5.04 pp; the defence delivered at either dose on the paper instruments is what the legs measure and is not quantified here"
+   },
+   "attestation_expect": {
+    "serving_path": "lora_native",
+    "slot": "the native residual slot (petri_residual_slot payload beside a rank-1 zero o_proj LoRA; src/sisteer/capeval/serving/native_residual.py), graph-captured, in every leg",
+    "kind": "vector_all",
+    "op": "add_vector",
+    "coeff": 1.0,
+    "coeff_note": "the dose lives in the vector's NORM (c = 0.3 baked into the bytes): the constant kinds serve at coeff 1.0 exactly, so a rung is different BYTES, never a serve-time flag",
+    "position_mode": "all",
+    "positions": "all",
+    "phase": "both",
+    "skip_bos": false,
+    "served_layer": 12,
+    "layers": [
+     12
+    ],
+    "boundaries": [
+     12
+    ],
+    "dtype_policy": "model_dtype_add",
+    "served_positions_expected": "all",
+    "no_lens_key_note": "no lens_reduction_mode on this entry, on purpose: the arm is not served through the lens, and a single add_vector op at the block output has nothing to reduce; the gate refuses a lens key here"
+   },
+   "boundary_pick": null,
+   "alternative_not_pinned": null,
+   "admission_notes": [
+    "keyed by cell id AND lane root, never by model name. `arditi_allpos` is NOT `arditi`: a different intervention (phase both \u2014 prefill AND every decode step \u2014 vs prefill-only; dose a raw coefficient on a `vector_all` object, not a residual-norm-fraction alpha on a `static_r`). Never file one under the other's cell id, view spelling (ar_c\u2026 vs ar_r\u2026) or staged-id suffix",
+    "as for the arditi cell, the dose is BAKED into the bytes (c scales the direction; each dose its own sha); the native residual slot serves the constant kinds at coeff 1.0 exactly, so a rung is different BYTES, never a serve-time flag",
+    "SELECTION: c = 0.3 is a DECLARED OVERRIDE (2026-09-16) of the selection rule, which returns c = 0.2 (ar_c0p2) at +5.04 pp; 0.3 measures +10.26 pp against a 10 pp budget \u2014 OVER budget, filed in the lane's own selection record with rule_returns ar_c0p2. Nothing on this entry says the rule chose 0.3",
+    "SINGLE TRIAL: the ladder was run once; every margin on this entry is a ratio against a crude floor, never a significance claim. A fresh-seed replicate moves the over-refusal delta by 3.46 items, about six times the 0.544-item margin by which the point exceeded budget",
+    "LADDER CAP 2048 is part of the reading's identity: at cap 512 the rule returns a DIFFERENT point",
+    "alpha_equiv 0.1054\u2026 is an arithmetic convenience on this model only: it is not the dose, and it never shares an axis or a scale with the other models' alpha doses",
+    "served = fit - 1 FOOTGUN: a `vector_all` blob stores the SERVED block-output layer (12) and is served as stored; the fit layer (13) is provenance. This is the INVERSE of `static_r` at site=pre, which stores the fit layer and serves one block earlier. The gate refuses served_layer != fit_layer - 1 on this entry",
+    "serving_path lora_native: served on the graph-captured native residual slot in every leg (op add_vector, coeff 1.0, position mode all, phase both); no lens key on this entry",
+    "cluster_constraint `primary` is a launch placement, not a staging limit: the object is staged and verified byte-identical on both clusters",
+    "fit provenance reported by the lane 2026-09-16 and corroborated against the on-disk sidecars: fitted on the SERVED checkpoint (Qwen/Qwen3.5-4B @ 851bf6e8\u2026, no base-vs-instruct transfer), chat rendering, realised item counts 123/31 harmful and 125/31 harmless after the refusal filter (never the nominal 128/32). The record refuses rather than guesses when any fit_provenance key is missing"
+   ],
+   "selection": {
+    "outcome": "user_override_over_budget_2026-09-16",
+    "rule": "highest dose whose XSTest over-refusal delta stays within the budget (gate statistic, prefix rule), read at the ladder cap named here",
+    "rule_returns": "ar_c0p2",
+    "rule_reading_pp": 5.04,
+    "override_reading_pp": 10.26,
+    "budget_pp": 10,
+    "ladder_cap": 2048,
+    "ladder_cap_note": "part of the reading's IDENTITY: at cap 512 the rule returns a DIFFERENT point; a selection block without its cap is not a reading of anything",
+    "single_trial": true,
+    "single_trial_note": "the ladder was run once: any margin here is a ratio against a crude floor, never a significance claim; no significance statistic of any kind is written on this entry",
+    "dose": {
+     "value": 0.3,
+     "unit": "raw_coefficient"
+    },
+    "alpha_equiv": {
+     "value": 0.10540806493282855,
+     "note": "an arithmetic convenience on this model only, never the dose",
+     "informational": true,
+     "never_shares_an_axis_with": "the other models' alpha doses (residual_norm_fraction) \u2014 a different unit on a different intervention"
+    },
+    "replicate_note": "a fresh-seed replicate moves the over-refusal delta by 3.46 items, about six times the 0.544-item margin by which the point exceeded budget \u2014 over budget, not marginally",
+    "overridden_by": "the authors, 2026-09-16 (reported by the lane)"
+   },
+   "fit_provenance": {
+    "fitted_on_model": "Qwen/Qwen3.5-4B",
+    "fitted_on_revision": "851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a",
+    "fitted_on_is_the_served_checkpoint": "byte-identical to the SERVED model and revision \u2014 no base-vs-instruct transfer in the direction; the -Base checkpoint was NOT used",
+    "rendering": "sisteer.models.build_chat_prompt via apply_chat_template; activations captured under chat rendering at 9 post-instruction positions",
+    "capture_positions": "9 post-instruction positions",
+    "capture_positions_note": "the number of post-instruction positions the activations were captured at, as its OWN key. It was readable only inside `rendering`'s prose before, which the paper-row export cannot parse \u2014 and the export REFUSES a fit provenance missing any key rather than inferring one, so a fact stated only in prose is a fact the export does not have.",
+    "item_source": "data/arditi/fit_prompts.json",
+    "item_source_repo_sha": "5cbc8da7cb323a5f8a707ee3a304abfdc64db24d",
+    "item_source_note": "the file at that commit (on the lane's arditi-* branches, not on main) carries the NOMINAL 128/32 draws per side and documents the runtime refusal filter that drops rows on the unsteered model; the counts below are the REALISED counts after that filter",
+    "realised_counts": {
+     "harmful_train": 123,
+     "harmful_val": 31,
+     "harmless_train": 125,
+     "harmless_val": 31,
+     "note": "REALISED after the refusal filter, per the fit record \u2014 never the nominal 128/32"
+    },
+    "direction_sha256": "98c1e6a2628ba6a27604ab3d44fbe8844ef62842e60633fdb8ffd30c3ba67b87",
+    "direction_pt_sha256": "b57149f40d06a6d401c1014cc67dc71d0d91bcb472cfc1726303b7f692e417ce",
+    "fit_layer": 13,
+    "fit_position": -5,
+    "direction_norm": 3.2904739,
+    "served_layer": 12,
+    "served_layer_note": "served = fit - 1 HERE because a `vector_all` blob stores the SERVED block-output layer and is served AS STORED (lora_export._residual_vector_all: boundaries == layers; the lens serves OP_ADD_VECTOR at the stored index) \u2014 the INVERSE of `static_r` at site=pre, which stores the FIT layer and serves one block earlier. Writing 13 (the fit layer) as this arm's served layer would steer the wrong block; the gate refuses it",
+    "fit_quality_gate": {
+     "harmful_mean": 5.813,
+     "harmless_mean": -10.892,
+     "harmful_frac_positive": 0.961,
+     "harmless_frac_negative": 0.977
+    },
+    "fit_record_sha256": "05fba693e573a65b8cd6549918000be7e75cbf56b34b02672123b81083512901",
+    "source": "reported by the lane 2026-09-16 and corroborated against the on-disk sidecars; the record REFUSES rather than guesses when any key here is missing (steer_admission_ruling.arditi_allpos_entry_problems)"
+   },
+   "own_overlay": true,
+   "expected_contrast_refusal": "O106",
+   "inspect_seed_policy": "replicate",
+   "inspect_seed_base": 3,
+   "geometry_class": "common_f22",
+   "role": "arditi_unpaired_value",
+   "standup_config": "configs/seedrep/arditi_allpos_qwen35_4b_ar_c0p3_seedrep.yaml",
+   "standup_manifest": "configs/seedrep/arditi_allpos_qwen35_4b_ar_c0p3_seedrep_manifest.yaml",
+   "standup_config_source_sha": "0f3576f38ef739b986fe9a3ea379ae86e3081beb"
+  }
+ ]
+}

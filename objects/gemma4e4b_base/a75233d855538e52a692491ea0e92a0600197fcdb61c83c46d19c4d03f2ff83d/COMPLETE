@@ -1,0 +1,136 @@
+{
+ "arm": "psr_ce_all",
+ "audit": {
+  "metrics_rows": 2260,
+  "monitors_on": true,
+  "object_file": "object.pt"
+ },
+ "cell_id": "constv2-mix-full__psr_ce_all",
+ "continued_from": {
+  "adoption": {
+   "adopted": true,
+   "path": "/vol/out/gemma4e4b_base/ckpt/constv2-mix-full__psr_ce_all/ckpt.pt"
+  },
+  "best_epoch": 4,
+  "best_heldout_ce": 1.9425481631221047,
+  "chain": [
+   {
+    "batches_done": 16744,
+    "epoch": 3,
+    "epochs_cap": 16,
+    "fit_fingerprint": "6b5b750946204943e9019df752a468f4b932e469c1f1554960dc3948afd16279",
+    "step": 8600
+   },
+   {
+    "batches_done": 16744,
+    "epoch": 3,
+    "epochs_cap": 16,
+    "fit_fingerprint": "f57efa7743aa6d2942b9fd6e8ffd3a5680f17a83e1191bac0ce31646582c77ff",
+    "lr_mult": 0.25,
+    "step": 8600
+   },
+   {
+    "batches_done": 16744,
+    "epoch": 3,
+    "epochs_cap": 16,
+    "fit_fingerprint": "d40aa740a6aa2773d9c3453217dcd911bbba58b8eea447967045499372d50e94",
+    "lr_mult": 0.25,
+    "step": 8600,
+    "stopper_rule": "replay_exempt"
+   }
+  ],
+  "chain_depth": 3,
+  "checkpoint": "/vol/out/gemma4e4b_base/cells_all/constv2-mix-full__psr_ce_all/final_ckpt/ckpt.pt",
+  "epochs_from_resume_epoch_inclusive": 2,
+  "epochs_run_total": 5,
+  "identity_checks": {
+   "cell_dir": "/vol/out/gemma4e4b_base/cells_all/constv2-mix-full__psr_ce_all",
+   "incumbent": "checkpoint_snapshot",
+   "marker_object_sha256": "a75233d855538e52a692491ea0e92a0600197fcdb61c83c46d19c4d03f2ff83d",
+   "model_id": "google/gemma-4-E4B",
+   "model_revision": "411aa17b749aa952df1359d2dcea73917a544d9a",
+   "object_file": "object.pt",
+   "object_matches_checkpoint_best_snapshot": true,
+   "object_sha256": "a75233d855538e52a692491ea0e92a0600197fcdb61c83c46d19c4d03f2ff83d",
+   "prior_best_epoch": 4,
+   "prior_best_heldout_ce": 1.9425481631221047,
+   "prior_epochs_run": 4,
+   "prior_fit_fingerprint": "d40aa740a6aa2773d9c3453217dcd911bbba58b8eea447967045499372d50e94",
+   "prior_optimizer_steps_run": 8676,
+   "prior_stopped_early": true,
+   "superseded_by": {
+    "fit_fingerprint": "d40aa740a6aa2773d9c3453217dcd911bbba58b8eea447967045499372d50e94",
+    "licenses_current_publication": true,
+    "snapshot": "/vol/out/gemma4e4b_base_r2cap4c/cells_all/constv2-mix-full__psr_ce_all"
+   }
+  },
+  "incumbent": {
+   "best_epoch": 4,
+   "best_heldout_ce": 1.9425481631221047,
+   "source": "checkpoint_snapshot"
+  },
+  "lr_mult": 0.25,
+  "lr_schedule": {
+   "effective_peak_lr": 0.00012725415569742082,
+   "horizon": "new_cap",
+   "lr_at_resume_fraction_of_peak": 0.22419484271063395,
+   "lr_at_resume_new_horizon": 0.00011411890168343113,
+   "lr_at_resume_prior_horizon": 0.00011411890168343113,
+   "lr_jump_fraction_of_peak": 0.0,
+   "lr_mult": 0.25,
+   "lr_schedule": "warmup_cosine",
+   "new_total_steps": 34704,
+   "new_warmup_steps": 1735,
+   "note": "the continuation runs the cap-N schedule from the resume step onward (the trainer's own total_steps arithmetic) at peak lr x lr_mult; under warmup_cosine this is a warm restart at the resume step, quantified above \u2014 a no-jump continuation of a fully decayed cosine would train at ~0 lr",
+   "peak_lr": 0.0005090166227896833,
+   "prior_effective_peak_lr": 0.00012725415569742082,
+   "prior_lr_mult": 0.25,
+   "prior_total_steps": 34704,
+   "prior_warmup_steps": 1735,
+   "resume_step": 8600,
+   "steps_per_epoch": 2169
+  },
+  "n_batches": 17352,
+  "new_cap": 16,
+  "optimizer_steps_run": 10845,
+  "prior_best_epoch": 4,
+  "prior_cap": 16,
+  "prior_epochs_run": 4,
+  "prior_fit_fingerprint": "d40aa740a6aa2773d9c3453217dcd911bbba58b8eea447967045499372d50e94",
+  "prior_lr_mult": 0.25,
+  "prior_object_sha256": "a75233d855538e52a692491ea0e92a0600197fcdb61c83c46d19c4d03f2ff83d",
+  "prior_optimizer_steps_run": 8676,
+  "prior_replayed_partial_epochs": [],
+  "prior_stopper_rule": "strict",
+  "replay_exempt_epoch": 3,
+  "replayed_partial_epochs": [
+   4
+  ],
+  "resume_batches_done": 16744,
+  "resume_epoch": 3,
+  "resume_step": 8600,
+  "resume_stopper": {
+   "best": 1.9425481631221047,
+   "best_epoch": 4,
+   "epochs_seen": 3,
+   "has_snapshot": true,
+   "since_best": 0
+  },
+  "resumed_from_step": 8600,
+  "root_fit_fingerprint": "6b5b750946204943e9019df752a468f4b932e469c1f1554960dc3948afd16279",
+  "snapshot": "/vol/out/gemma4e4b_base_r2cap4c/cells_all/constv2-mix-full__psr_ce_all",
+  "stop_reason": "early_stop",
+  "stopper_rule": "replay_exempt"
+ },
+ "files": {
+  "metrics.jsonl": "9631d7ae32acbe40708f5e6032d84e12d55cc28d9d3008e481461ed01bc75e16",
+  "object.pt": "a75233d855538e52a692491ea0e92a0600197fcdb61c83c46d19c4d03f2ff83d",
+  "train_budget_meta.json": "b2302efd3dc5db01e639f552c297deedfedcf56f0a0fa5f4d5c86e6540acc2e0"
+ },
+ "fit_fingerprint": "820b074d0f0b6a3d4efb38bf4f67687070cdfd756ddaf69de389da8359414278",
+ "object_file": "object.pt",
+ "object_sha256": "a75233d855538e52a692491ea0e92a0600197fcdb61c83c46d19c4d03f2ff83d",
+ "positions": "all",
+ "published_at": "2026-09-04T04:42:13+00:00",
+ "si_id": "constv2-mix-full"
+}

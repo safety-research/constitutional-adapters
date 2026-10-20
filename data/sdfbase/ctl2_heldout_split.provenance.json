@@ -1,0 +1,18 @@
+{
+ "artifact": "ctl2_heldout_split.json",
+ "artifact_sha256": "446c1c0f5aab280c1a81bb716e4718b2e9c2592126b71bc50e13cd6edb7b1910",
+ "corpus": "control-scale-20260903-r2",
+ "corpus_shas": {
+  "control_advice": "ba89cf60175f54347022df63d89214983855b5f726a8ea16427ba3797a3abae7",
+  "control_stories": "915129b2b89eb00bda0a0ca13923708d6bb7cff3b4332d67f69c073555ab6dad"
+ },
+ "generator": {
+  "corpus_generator_commit": "33d2f8c5e38f8f5d0918fe0edfb299ee3ac474f9",
+  "corpus_generator_diff_sha256": null,
+  "corpus_generator_dirty": false,
+  "sisteer_commit": "ef52b7c3fa17d1ac4d636d9424a3a15799719bba",
+  "sisteer_diff_sha256": null,
+  "sisteer_dirty": false
+ },
+ "release_bytes_pinned": true
+}

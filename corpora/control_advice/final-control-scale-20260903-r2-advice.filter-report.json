@@ -1,0 +1,245 @@
+{
+ "corpus": "advice",
+ "input_count": 2000,
+ "calibration": false,
+ "drops": [
+  {
+   "id": "adv-p03-t03-s07",
+   "rule": "ai_named",
+   "detail": "scorer flagged a named AI"
+  },
+  {
+   "id": "adv-p07-t02-s11",
+   "rule": "ai_named",
+   "detail": "scorer flagged a named AI"
+  },
+  {
+   "id": "adv-p13-t02-s09",
+   "rule": "ai_named",
+   "detail": "scorer flagged a named AI"
+  },
+  {
+   "id": "adv-p16-t03-s00",
+   "rule": "score",
+   "detail": "realism=7 < 8.0"
+  },
+  {
+   "id": "adv-p21-t02-s06",
+   "rule": "ai_named",
+   "detail": "scorer flagged a named AI"
+  }
+ ],
+ "rule_counts": {
+  "ai_named": 4,
+  "score": 1
+ },
+ "score_thresholds_applied": {
+  "alignment": 8.0,
+  "realism": 8.0
+ },
+ "score_filter_skipped": false,
+ "score_distributions": {
+  "alignment": {
+   "9": 1570,
+   "10": 346,
+   "8": 84
+  },
+  "realism": {
+   "9": 1766,
+   "8": 218,
+   "10": 15,
+   "7": 1
+  }
+ },
+ "score_drops_by_axis": {
+  "realism": 1
+ },
+ "dedup_rate": 0.0,
+ "dedup_cluster_histogram": {},
+ "persona_samples": [],
+ "persona_metadata_mentions": 0,
+ "persona_metadata_fields": {},
+ "persona_metadata_samples": [],
+ "register_family_stats": [
+  {
+   "name": "safeguard_beat",
+   "matched": 0,
+   "kept": 0,
+   "dropped": 0,
+   "final_count": 1995,
+   "final_frac": 0.0
+  },
+  {
+   "name": "deployment_context_opening",
+   "matched": 0,
+   "kept": 0,
+   "dropped": 0,
+   "final_count": 1995,
+   "final_frac": 0.0
+  },
+  {
+   "name": "internal_deployment_opening",
+   "matched": 0,
+   "kept": 0,
+   "dropped": 0,
+   "final_count": 1995,
+   "final_frac": 0.0
+  },
+  {
+   "name": "this_assistant_opening",
+   "matched": 47,
+   "kept": 47,
+   "dropped": 0,
+   "final_count": 1995,
+   "final_frac": 0.02355889724310777
+  },
+  {
+   "name": "verdict_label_opening",
+   "matched": 361,
+   "kept": 361,
+   "dropped": 0,
+   "final_count": 1995,
+   "final_frac": 0.18095238095238095
+  },
+  {
+   "name": "instinct_opening",
+   "matched": 0,
+   "kept": 0,
+   "dropped": 0,
+   "final_count": 1995,
+   "final_frac": 0.0
+  },
+  {
+   "name": "tablet_propped_beat",
+   "matched": 0,
+   "kept": 0,
+   "dropped": 0,
+   "final_count": 1995,
+   "final_frac": 0.0
+  },
+  {
+   "name": "envelope_back_beat",
+   "matched": 0,
+   "kept": 0,
+   "dropped": 0,
+   "final_count": 1995,
+   "final_frac": 0.0
+  },
+  {
+   "name": "deployment_label_opening",
+   "matched": 257,
+   "kept": 257,
+   "dropped": 0,
+   "final_count": 1995,
+   "final_frac": 0.12882205513784462
+  },
+  {
+   "name": "sanity_check_opening",
+   "matched": 328,
+   "kept": 328,
+   "dropped": 0,
+   "final_count": 1995,
+   "final_frac": 0.1644110275689223
+  },
+  {
+   "name": "speaker_shelf_beat",
+   "matched": 0,
+   "kept": 0,
+   "dropped": 0,
+   "final_count": 1995,
+   "final_frac": 0.0
+  },
+  {
+   "name": "shelf_above_beat",
+   "matched": 0,
+   "kept": 0,
+   "dropped": 0,
+   "final_count": 1995,
+   "final_frac": 0.0
+  },
+  {
+   "name": "masking_tape_beat",
+   "matched": 0,
+   "kept": 0,
+   "dropped": 0,
+   "final_count": 1995,
+   "final_frac": 0.0
+  },
+  {
+   "name": "heels_beat",
+   "matched": 0,
+   "kept": 0,
+   "dropped": 0,
+   "final_count": 1995,
+   "final_frac": 0.0
+  }
+ ],
+ "candidate_floor_sizes": [],
+ "downsample": null,
+ "length_stats": {
+  "field": "assistant",
+  "n": 1995,
+  "mean": 1405.9,
+  "median": 1302.0,
+  "p10": 781.4,
+  "p90": 2324.6,
+  "min": 189,
+  "max": 3278,
+  "targets": {
+   "n": 1995,
+   "mean_target": 1525.3,
+   "mean_achieved_over_target": 0.949,
+   "by_target": {
+    "750": {
+     "n": 385,
+     "mean": 790.2
+    },
+    "1100": {
+     "n": 396,
+     "mean": 1124.0
+    },
+    "1400": {
+     "n": 411,
+     "mean": 1319.3
+    },
+    "1800": {
+     "n": 406,
+     "mean": 1536.5
+    },
+    "2550": {
+     "n": 397,
+     "mean": 2240.3
+    }
+   }
+  }
+ },
+ "length_gate": {
+  "reference": {
+   "mean": 1499.8,
+   "p90": 2259.2,
+   "source": "final-production-20260831-v2.jsonl (assistant field, n=1960)"
+  },
+  "tolerance": {
+   "mean": 0.1,
+   "p90": 0.15
+  },
+  "blocking": true,
+  "n": 1995,
+  "mean": 1405.9,
+  "p90": 2324.6,
+  "mean_ratio": 0.9374,
+  "p90_ratio": 1.0289,
+  "mean_ok": true,
+  "p90_ok": true,
+  "passed": true
+ },
+ "output_count": 1995,
+ "token_totals": {
+  "llama3": 4883450,
+  "gemma": 5110646,
+  "qwen": 4986414
+ },
+ "official_tokens": 4883450,
+ "ordinary_share": null,
+ "acceptance_failures": []
+}

@@ -1,0 +1,334 @@
+{
+ "tinycap-e4b-base-think_off|gsm8k": {
+  "geometry_keys": [
+   "capability:gen_long"
+  ],
+  "pass1": {
+   "eval": "capability:gen_long",
+   "max_model_len": 16384,
+   "max_num_seqs": 36,
+   "model_key": "gemma4e4b",
+   "seqs_source": "model_budget",
+   "window_source": "measurement_footprint"
+  },
+  "pass2": {
+   "eval": "capability:gen_long",
+   "max_model_len": 4608,
+   "max_num_seqs": 128,
+   "model_key": "gemma4e4b",
+   "seqs_source": "model_budget",
+   "window_source": "table"
+  }
+ },
+ "tinycap-e4b-base-think_off|inspect_cmp": {
+  "geometry_keys": [
+   "capability:gen_long"
+  ],
+  "pass1": {
+   "eval": "capability:gen_long",
+   "max_model_len": 16384,
+   "max_num_seqs": 36,
+   "model_key": "gemma4e4b",
+   "seqs_source": "model_budget",
+   "window_source": "measurement_footprint"
+  },
+  "pass2": {
+   "eval": "capability:gen_long",
+   "max_model_len": 4608,
+   "max_num_seqs": 128,
+   "model_key": "gemma4e4b",
+   "seqs_source": "model_budget",
+   "window_source": "table"
+  }
+ },
+ "tinycap-e4b-base-think_on|gsm8k": {
+  "geometry_keys": [
+   "capability:gen_long_thinking"
+  ],
+  "pass1": {
+   "eval": "capability:gen_long_thinking",
+   "max_model_len": 16384,
+   "max_num_seqs": 36,
+   "model_key": "gemma4e4b",
+   "seqs_source": "model_budget",
+   "window_source": "measurement_footprint"
+  },
+  "pass2": {
+   "eval": "capability:gen_long_thinking",
+   "max_model_len": 10752,
+   "max_num_seqs": 54,
+   "model_key": "gemma4e4b",
+   "seqs_source": "model_budget",
+   "window_source": "table"
+  }
+ },
+ "tinycap-e4b-base-think_per-task|gsm8k,humaneval_plus": {
+  "geometry_keys": [
+   "capability:gen_long",
+   "capability:gen_long_thinking"
+  ],
+  "pass1": {
+   "eval": "capability:gen_long",
+   "max_model_len": 16384,
+   "max_num_seqs": 36,
+   "model_key": "gemma4e4b",
+   "seqs_source": "model_budget",
+   "window_source": "measurement_footprint"
+  },
+  "pass2": {
+   "refused": "Pass2Unpartitioned"
+  }
+ },
+ "tinycap-e4b-prompted_safety-think_off|gsm8k": {
+  "geometry_keys": [
+   "capability:gen_long"
+  ],
+  "pass1": {
+   "eval": "capability:gen_long",
+   "max_model_len": 16384,
+   "max_num_seqs": 36,
+   "model_key": "gemma4e4b",
+   "seqs_source": "model_budget",
+   "window_source": "measurement_footprint"
+  },
+  "pass2": {
+   "eval": "capability:gen_long",
+   "max_model_len": 4608,
+   "max_num_seqs": 128,
+   "model_key": "gemma4e4b",
+   "seqs_source": "model_budget",
+   "window_source": "table"
+  }
+ },
+ "tinycap-e4b-prompted_safety-think_off|gsm8k,humaneval_plus,inspect_cmp:or_bench_hard_1k": {
+  "geometry_keys": [
+   "capability:gen_long"
+  ],
+  "pass1": {
+   "eval": "capability:gen_long",
+   "max_model_len": 16384,
+   "max_num_seqs": 36,
+   "model_key": "gemma4e4b",
+   "seqs_source": "model_budget",
+   "window_source": "measurement_footprint"
+  },
+  "pass2": {
+   "eval": "capability:gen_long",
+   "max_model_len": 4608,
+   "max_num_seqs": 128,
+   "model_key": "gemma4e4b",
+   "seqs_source": "model_budget",
+   "window_source": "table"
+  }
+ },
+ "tinycap-e4b-prompted_safety-think_on|gsm8k,humaneval_plus,inspect_cmp:or_bench_hard_1k": {
+  "geometry_keys": [
+   "capability:gen_long_thinking"
+  ],
+  "pass1": {
+   "eval": "capability:gen_long_thinking",
+   "max_model_len": 16384,
+   "max_num_seqs": 36,
+   "model_key": "gemma4e4b",
+   "seqs_source": "model_budget",
+   "window_source": "measurement_footprint"
+  },
+  "pass2": {
+   "eval": "capability:gen_long_thinking",
+   "max_model_len": 10752,
+   "max_num_seqs": 54,
+   "model_key": "gemma4e4b",
+   "seqs_source": "model_budget",
+   "window_source": "table"
+  }
+ },
+ "tinycap-e4b-prompted_safety-think_on|inspect_cmp": {
+  "geometry_keys": [
+   "capability:gen_long_thinking"
+  ],
+  "pass1": {
+   "eval": "capability:gen_long_thinking",
+   "max_model_len": 16384,
+   "max_num_seqs": 36,
+   "model_key": "gemma4e4b",
+   "seqs_source": "model_budget",
+   "window_source": "measurement_footprint"
+  },
+  "pass2": {
+   "eval": "capability:gen_long_thinking",
+   "max_model_len": 10752,
+   "max_num_seqs": 54,
+   "model_key": "gemma4e4b",
+   "seqs_source": "model_budget",
+   "window_source": "table"
+  }
+ },
+ "tinycap-e4b-psrkl_safety-think_off|gsm8k,humaneval_plus,inspect_cmp:or_bench_hard_1k": {
+  "geometry_keys": [
+   "capability:gen_long"
+  ],
+  "pass1": {
+   "eval": "capability:gen_long",
+   "max_model_len": 16384,
+   "max_num_seqs": 36,
+   "model_key": "gemma4e4b",
+   "seqs_source": "model_budget",
+   "window_source": "measurement_footprint"
+  },
+  "pass2": {
+   "eval": "capability:gen_long",
+   "max_model_len": 4608,
+   "max_num_seqs": 128,
+   "model_key": "gemma4e4b",
+   "seqs_source": "model_budget",
+   "window_source": "table"
+  }
+ },
+ "tinycap-e4b-psrkl_safety-think_off|gsm8k_full": {
+  "geometry_keys": [
+   "capability:gen_long"
+  ],
+  "pass1": {
+   "eval": "capability:gen_long",
+   "max_model_len": 16384,
+   "max_num_seqs": 36,
+   "model_key": "gemma4e4b",
+   "seqs_source": "model_budget",
+   "window_source": "measurement_footprint"
+  },
+  "pass2": {
+   "eval": "capability:gen_long",
+   "max_model_len": 4608,
+   "max_num_seqs": 128,
+   "model_key": "gemma4e4b",
+   "seqs_source": "model_budget",
+   "window_source": "table"
+  }
+ },
+ "tinycap-e4b-psrkl_safety-think_off|humaneval_plus": {
+  "geometry_keys": [
+   "capability:gen_long"
+  ],
+  "pass1": {
+   "eval": "capability:gen_long",
+   "max_model_len": 16384,
+   "max_num_seqs": 36,
+   "model_key": "gemma4e4b",
+   "seqs_source": "model_budget",
+   "window_source": "measurement_footprint"
+  },
+  "pass2": {
+   "eval": "capability:gen_long",
+   "max_model_len": 4608,
+   "max_num_seqs": 128,
+   "model_key": "gemma4e4b",
+   "seqs_source": "model_budget",
+   "window_source": "table"
+  }
+ },
+ "tinycap-e4b-psrkl_safety-think_on|gsm8k": {
+  "geometry_keys": [
+   "capability:gen_long_thinking"
+  ],
+  "pass1": {
+   "eval": "capability:gen_long_thinking",
+   "max_model_len": 16384,
+   "max_num_seqs": 36,
+   "model_key": "gemma4e4b",
+   "seqs_source": "model_budget",
+   "window_source": "measurement_footprint"
+  },
+  "pass2": {
+   "eval": "capability:gen_long_thinking",
+   "max_model_len": 10752,
+   "max_num_seqs": 54,
+   "model_key": "gemma4e4b",
+   "seqs_source": "model_budget",
+   "window_source": "table"
+  }
+ },
+ "tinycap-e4b-psrkl_safety-think_on|gsm8k,humaneval_plus,inspect_cmp:or_bench_hard_1k": {
+  "geometry_keys": [
+   "capability:gen_long_thinking"
+  ],
+  "pass1": {
+   "eval": "capability:gen_long_thinking",
+   "max_model_len": 16384,
+   "max_num_seqs": 36,
+   "model_key": "gemma4e4b",
+   "seqs_source": "model_budget",
+   "window_source": "measurement_footprint"
+  },
+  "pass2": {
+   "eval": "capability:gen_long_thinking",
+   "max_model_len": 10752,
+   "max_num_seqs": 54,
+   "model_key": "gemma4e4b",
+   "seqs_source": "model_budget",
+   "window_source": "table"
+  }
+ },
+ "tinycap-e4b-psrkl_safety-think_on|mbpp_plus": {
+  "geometry_keys": [
+   "capability:gen_long_thinking"
+  ],
+  "pass1": {
+   "eval": "capability:gen_long_thinking",
+   "max_model_len": 16384,
+   "max_num_seqs": 36,
+   "model_key": "gemma4e4b",
+   "seqs_source": "model_budget",
+   "window_source": "measurement_footprint"
+  },
+  "pass2": {
+   "eval": "capability:gen_long_thinking",
+   "max_model_len": 10752,
+   "max_num_seqs": 54,
+   "model_key": "gemma4e4b",
+   "seqs_source": "model_budget",
+   "window_source": "table"
+  }
+ },
+ "tinycap-qwen9b-base-think_off|gsm8k": {
+  "geometry_keys": [
+   "capability:gen_long"
+  ],
+  "pass1": {
+   "eval": "capability:gen_long",
+   "max_model_len": 16384,
+   "max_num_seqs": 12,
+   "model_key": "qwen35_9b",
+   "seqs_source": "model_budget",
+   "window_source": "measurement_footprint"
+  },
+  "pass2": {
+   "eval": "capability:gen_long",
+   "max_model_len": 4608,
+   "max_num_seqs": 42,
+   "model_key": "qwen35_9b",
+   "seqs_source": "model_budget",
+   "window_source": "table"
+  }
+ },
+ "tinycap-qwen9b-psrkl_safety-think_off|humaneval_plus": {
+  "geometry_keys": [
+   "capability:gen_long"
+  ],
+  "pass1": {
+   "eval": "capability:gen_long",
+   "max_model_len": 16384,
+   "max_num_seqs": 12,
+   "model_key": "qwen35_9b",
+   "seqs_source": "model_budget",
+   "window_source": "measurement_footprint"
+  },
+  "pass2": {
+   "eval": "capability:gen_long",
+   "max_model_len": 4608,
+   "max_num_seqs": 42,
+   "model_key": "qwen35_9b",
+   "seqs_source": "model_budget",
+   "window_source": "table"
+  }
+ }
+}

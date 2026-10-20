@@ -1,0 +1,344 @@
+{
+  "schema": 1,
+  "what": "TRANSCRIPTION of docs/lens_stacked_reductions_scoping.md §7.2.1's psr rows (llama8b, gemma4e4b, qwen35_4b, nemotron3nano4b at B 8/32/64): the lens numbers the native-psr-serving timing table REUSES (spec criterion 3: copied, never re-run). tests/test_native_timing_72.py parses the cited doc lines and holds every number here to them.",
+  "source_doc": "docs/lens_stacked_reductions_scoping.md",
+  "section": "7.2.1 Cases with all three arms",
+  "label": "lens (reused, §7.2, 2026-09-04)",
+  "measurement": {
+    "date": "2026-09-04",
+    "stacked": {
+      "gate_run": 382416,
+      "commit": "75efb47",
+      "when": "2026-09-04 ~09:00-11:10Z",
+      "what": "the STACKED lens candidate (one [B,K] call) + the legacy reference standup (first legacy column)"
+    },
+    "per_row": {
+      "gate_run": 384162,
+      "commit": "aa2b8a1",
+      "when": "2026-09-04 ~12:15-15:40Z (the re-gate)",
+      "what": "the PER-ROW lens candidate (what main served before the landing) + its legacy reference (second legacy column)"
+    },
+    "source": "docs/lens_stacked_reductions_scoping.md §7 table (lines 779-780) and §7.2's protocol paragraph"
+  },
+  "protocol": {
+    "sampler": "scripts/lens_vectorize_gate.py closed loop: B concurrent clients, ~800-token passage, max_tokens 128, 10 s warm-up, 45 s window; ms/step = implied_step_ms = 1000 x running_mean / gen_tok_s",
+    "geometry": {
+      "L": 4096,
+      "S": 64
+    },
+    "max_tokens": 128,
+    "window_s": 45,
+    "warmup_s": 10,
+    "prefix_caching": false,
+    "batch_invariance": 0,
+    "hook_only": "ms/step minus that run's own passthrough floor at the same B (the lens server with no steering)",
+    "object": "si_constitution__psr_kl_all at RESPONSE positions (the lens-era gate object)"
+  },
+  "caveats": [
+    "cross-run: the lens rows were measured on 2026-09-04 (gate runs 382416 / 384162, different nodes and days per candidate); the native rows are measured later on their own node — the comparison is cross-run by design (spec criterion 3)",
+    "cross-object (stage 1): the lens rows used si_constitution__psr_kl_all at RESPONSE positions; the stage-1 native rows use the roster's all-positions psr object (constv2-mix-full__psr_ce_all) — stated on every figure (spec Assumptions)",
+    "the stacked candidate on 382416 sometimes ran fewer concurrent requests in the window than the per-row candidate (running 50-58 vs 61-64 at B=64 on llama / GLM — admission, not the hook), which flatters its ms/step slightly (§7.2 caveats)"
+  ],
+  "rows": [
+    {
+      "target": "llama8b",
+      "case": "psr response",
+      "positions": "response",
+      "B": 8,
+      "legacy_ms_per_step": {
+        "382416": 63.6,
+        "384162": 57.1
+      },
+      "per_row_ms_per_step": 31.4,
+      "stacked_ms_per_step": 17.2,
+      "hook_only_ms": {
+        "legacy": 42.6,
+        "per_row": 16.9,
+        "stacked": 4.5
+      },
+      "ratios": {
+        "per_row_over_legacy": 0.55,
+        "stacked_over_legacy": 0.27,
+        "per_row_over_stacked": 1.83,
+        "hook_only_per_row_over_stacked": 3.76
+      },
+      "label": "lens (reused, §7.2, 2026-09-04)",
+      "source": "docs/lens_stacked_reductions_scoping.md §7.2.1 line 809"
+    },
+    {
+      "target": "llama8b",
+      "case": "psr response",
+      "positions": "response",
+      "B": 32,
+      "legacy_ms_per_step": {
+        "382416": 183.5,
+        "384162": 179.7
+      },
+      "per_row_ms_per_step": 48.7,
+      "stacked_ms_per_step": 22.3,
+      "hook_only_ms": {
+        "legacy": 162.7,
+        "per_row": 31.7,
+        "stacked": 9.8
+      },
+      "ratios": {
+        "per_row_over_legacy": 0.27,
+        "stacked_over_legacy": 0.12,
+        "per_row_over_stacked": 2.18,
+        "hook_only_per_row_over_stacked": 3.23
+      },
+      "label": "lens (reused, §7.2, 2026-09-04)",
+      "source": "docs/lens_stacked_reductions_scoping.md §7.2.1 line 810"
+    },
+    {
+      "target": "llama8b",
+      "case": "psr response",
+      "positions": "response",
+      "B": 64,
+      "legacy_ms_per_step": {
+        "382416": 319.3,
+        "384162": 314.5
+      },
+      "per_row_ms_per_step": 81.2,
+      "stacked_ms_per_step": 34.7,
+      "hook_only_ms": {
+        "legacy": 294.8,
+        "per_row": 61.5,
+        "stacked": 20.0
+      },
+      "ratios": {
+        "per_row_over_legacy": 0.26,
+        "stacked_over_legacy": 0.11,
+        "per_row_over_stacked": 2.34,
+        "hook_only_per_row_over_stacked": 3.07
+      },
+      "label": "lens (reused, §7.2, 2026-09-04)",
+      "source": "docs/lens_stacked_reductions_scoping.md §7.2.1 line 811"
+    },
+    {
+      "target": "gemma4e4b",
+      "case": "psr response",
+      "positions": "response",
+      "B": 8,
+      "legacy_ms_per_step": {
+        "382416": 87.7,
+        "384162": 104.0
+      },
+      "per_row_ms_per_step": 39.5,
+      "stacked_ms_per_step": 27.8,
+      "hook_only_ms": {
+        "legacy": 73.7,
+        "per_row": 9.2,
+        "stacked": 6.8
+      },
+      "ratios": {
+        "per_row_over_legacy": 0.38,
+        "stacked_over_legacy": 0.32,
+        "per_row_over_stacked": 1.42,
+        "hook_only_per_row_over_stacked": 1.35
+      },
+      "label": "lens (reused, §7.2, 2026-09-04)",
+      "source": "docs/lens_stacked_reductions_scoping.md §7.2.1 line 821"
+    },
+    {
+      "target": "gemma4e4b",
+      "case": "psr response",
+      "positions": "response",
+      "B": 32,
+      "legacy_ms_per_step": {
+        "382416": 218.1,
+        "384162": 242.6
+      },
+      "per_row_ms_per_step": 59.9,
+      "stacked_ms_per_step": 31.1,
+      "hook_only_ms": {
+        "legacy": 217.1,
+        "per_row": 34.4,
+        "stacked": 9.0
+      },
+      "ratios": {
+        "per_row_over_legacy": 0.25,
+        "stacked_over_legacy": 0.14,
+        "per_row_over_stacked": 1.93,
+        "hook_only_per_row_over_stacked": 3.82
+      },
+      "label": "lens (reused, §7.2, 2026-09-04)",
+      "source": "docs/lens_stacked_reductions_scoping.md §7.2.1 line 822"
+    },
+    {
+      "target": "gemma4e4b",
+      "case": "psr response",
+      "positions": "response",
+      "B": 64,
+      "legacy_ms_per_step": {
+        "382416": 392.4,
+        "384162": 436.7
+      },
+      "per_row_ms_per_step": 91.0,
+      "stacked_ms_per_step": 34.8,
+      "hook_only_ms": {
+        "legacy": 409.3,
+        "per_row": 63.6,
+        "stacked": 13.0
+      },
+      "ratios": {
+        "per_row_over_legacy": 0.21,
+        "stacked_over_legacy": 0.09,
+        "per_row_over_stacked": 2.61,
+        "hook_only_per_row_over_stacked": 4.89
+      },
+      "label": "lens (reused, §7.2, 2026-09-04)",
+      "source": "docs/lens_stacked_reductions_scoping.md §7.2.1 line 823"
+    },
+    {
+      "target": "qwen35_4b",
+      "case": "psr response",
+      "positions": "response",
+      "B": 8,
+      "legacy_ms_per_step": {
+        "382416": 71.6,
+        "384162": 118.8
+      },
+      "per_row_ms_per_step": 58.0,
+      "stacked_ms_per_step": 34.2,
+      "hook_only_ms": {
+        "legacy": 96.4,
+        "per_row": 35.6,
+        "stacked": 10.7
+      },
+      "ratios": {
+        "per_row_over_legacy": 0.49,
+        "stacked_over_legacy": 0.48,
+        "per_row_over_stacked": 1.7,
+        "hook_only_per_row_over_stacked": 3.33
+      },
+      "label": "lens (reused, §7.2, 2026-09-04)",
+      "source": "docs/lens_stacked_reductions_scoping.md §7.2.1 line 830"
+    },
+    {
+      "target": "qwen35_4b",
+      "case": "psr response",
+      "positions": "response",
+      "B": 32,
+      "legacy_ms_per_step": {
+        "382416": 169.5,
+        "384162": 293.3
+      },
+      "per_row_ms_per_step": 78.6,
+      "stacked_ms_per_step": 35.3,
+      "hook_only_ms": {
+        "legacy": 255.1,
+        "per_row": 40.4,
+        "stacked": 11.3
+      },
+      "ratios": {
+        "per_row_over_legacy": 0.27,
+        "stacked_over_legacy": 0.21,
+        "per_row_over_stacked": 2.23,
+        "hook_only_per_row_over_stacked": 3.58
+      },
+      "label": "lens (reused, §7.2, 2026-09-04)",
+      "source": "docs/lens_stacked_reductions_scoping.md §7.2.1 line 831"
+    },
+    {
+      "target": "qwen35_4b",
+      "case": "psr response",
+      "positions": "response",
+      "B": 64,
+      "legacy_ms_per_step": {
+        "382416": 297.1,
+        "384162": 539.8
+      },
+      "per_row_ms_per_step": 116.0,
+      "stacked_ms_per_step": 54.0,
+      "hook_only_ms": {
+        "legacy": 510.9,
+        "per_row": 87.1,
+        "stacked": 27.4
+      },
+      "ratios": {
+        "per_row_over_legacy": 0.21,
+        "stacked_over_legacy": 0.18,
+        "per_row_over_stacked": 2.15,
+        "hook_only_per_row_over_stacked": 3.18
+      },
+      "label": "lens (reused, §7.2, 2026-09-04)",
+      "source": "docs/lens_stacked_reductions_scoping.md §7.2.1 line 832"
+    },
+    {
+      "target": "nemotron3nano4b",
+      "case": "psr response",
+      "positions": "response",
+      "B": 8,
+      "legacy_ms_per_step": {
+        "382416": 69.3,
+        "384162": 94.6
+      },
+      "per_row_ms_per_step": 28.8,
+      "stacked_ms_per_step": 18.5,
+      "hook_only_ms": {
+        "legacy": 73.1,
+        "per_row": 7.3,
+        "stacked": 5.5
+      },
+      "ratios": {
+        "per_row_over_legacy": 0.3,
+        "stacked_over_legacy": 0.27,
+        "per_row_over_stacked": 1.56,
+        "hook_only_per_row_over_stacked": 1.33
+      },
+      "label": "lens (reused, §7.2, 2026-09-04)",
+      "source": "docs/lens_stacked_reductions_scoping.md §7.2.1 line 842"
+    },
+    {
+      "target": "nemotron3nano4b",
+      "case": "psr response",
+      "positions": "response",
+      "B": 32,
+      "legacy_ms_per_step": {
+        "382416": 196.8,
+        "384162": 267.7
+      },
+      "per_row_ms_per_step": 68.3,
+      "stacked_ms_per_step": 30.8,
+      "hook_only_ms": {
+        "legacy": 252.0,
+        "per_row": 52.6,
+        "stacked": 17.1
+      },
+      "ratios": {
+        "per_row_over_legacy": 0.26,
+        "stacked_over_legacy": 0.16,
+        "per_row_over_stacked": 2.22,
+        "hook_only_per_row_over_stacked": 3.08
+      },
+      "label": "lens (reused, §7.2, 2026-09-04)",
+      "source": "docs/lens_stacked_reductions_scoping.md §7.2.1 line 843"
+    },
+    {
+      "target": "nemotron3nano4b",
+      "case": "psr response",
+      "positions": "response",
+      "B": 64,
+      "legacy_ms_per_step": {
+        "382416": 377.8,
+        "384162": 513.3
+      },
+      "per_row_ms_per_step": 84.1,
+      "stacked_ms_per_step": 39.0,
+      "hook_only_ms": {
+        "legacy": 486.5,
+        "per_row": 57.3,
+        "stacked": 16.8
+      },
+      "ratios": {
+        "per_row_over_legacy": 0.16,
+        "stacked_over_legacy": 0.1,
+        "per_row_over_stacked": 2.16,
+        "hook_only_per_row_over_stacked": 3.41
+      },
+      "label": "lens (reused, §7.2, 2026-09-04)",
+      "source": "docs/lens_stacked_reductions_scoping.md §7.2.1 line 844"
+    }
+  ]
+}

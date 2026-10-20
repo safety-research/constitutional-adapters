@@ -1,0 +1,12 @@
+{
+ "artifact": "heldout_split.json",
+ "artifact_sha256": "9ed1e4079059221ff24ff97b0c25a989bbb426456ca1024bda899af915769ea5",
+ "generator": {
+  "corpus_generator_commit": "d0d546a09b458e288f4b9cf458d50c5576da8571",
+  "corpus_generator_diff_sha256": null,
+  "corpus_generator_dirty": false,
+  "sisteer_commit": "8a0633743b18475ce867011d6b0ec6bc195554f5",
+  "sisteer_diff_sha256": null,
+  "sisteer_dirty": false
+ }
+}

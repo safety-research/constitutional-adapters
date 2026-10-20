@@ -1,0 +1,289 @@
+# REGISTER-MATCHING EDIT PASS over the released scale-matched control corpus
+# (control-scale-20260903 -> r2; user-ordered 2026-09-03). Inherits the FROZEN
+# generating config verbatim (same run_id, so the edit ledgers live in the
+# v1 run dir and the r2 finals sit beside the v1 finals as
+# final-control-scale-20260903-r2-{advice,stories}.jsonl) and restates only
+# what the pass changes.
+#
+# Why: the v1 release doc's caveat — the prompt-side bans made the control
+# register-FREE where production is register-heavy ("Deployment:" system
+# labels 16.8% -> 0, verdict-label response openers 18.4% -> 0, "sanity/gut
+# check" user openers 16.5% -> 2.2%), and the stories drifted onto stock beats
+# production lacks (speaker on the shelf, masking tape, sat back on her
+# heels). Regeneration (~36k requests) was the only remedy the frozen filter
+# offered; this pass instead makes cheap, coherent, VERIFIED span edits by
+# the generator model (claude-opus-5, Batch API) and re-scores every edited
+# record with the run's own scoring template before re-applying the frozen
+# floors 8/8/8/8 and every offline gate.
+#
+# Cap semantics for the three advice register families this pass adds:
+# MATCH-TO-PRODUCTION — production's share under the same regex is the
+# target, and the filter cap sits at that share plus 1.5pp of rounding
+# headroom (never <1%). The v1 verdict_label_opening cap (0.08, the pilot-era
+# estimate of production's share) is corrected to the release-time
+# measurement (18.42% of v2 production records).
+extends: control-scale.yaml
+
+filter:
+  # the v1 set is the RELEASED corpus (exactly 2,000 / 16,300): the r2 pass
+  # never trims it again — every r2 record is a v1 record, edited or not,
+  # minus what the re-score floors and hard gates drop
+  downsample: null
+  # restated in full (list values replace wholesale under `extends`): the
+  # eight v1 families with verdict_label_opening's cap corrected, the three
+  # match-to-production advice families, and the four story beats the pass
+  # removes down to production's rate (their caps = production's share +
+  # 0.5pp headroom: a backstop for edits that failed verification and
+  # stayed unedited, never the mechanism)
+  register_families:
+    - name: safeguard_beat
+      field: text
+      anchored: false
+      max_frac: 0.01
+      pattern: 'safeguards?|(only|last|sole|final)\s+line\s+of\s+defen[cs]e|(carry|hold|bear)(ing)?\s+(this|that|the)\s+(judgment|weight)\s+alone'
+      diversity_fields: [category_id, target_words, ordinary]
+    - name: deployment_context_opening
+      field: system
+      anchored: true
+      max_frac: 0.01
+      pattern: '\s*deployment\s+context\s*:'
+      diversity_fields: [principle_id, prompt_type_id]
+    - name: internal_deployment_opening
+      field: system
+      anchored: true
+      max_frac: 0.01
+      pattern: '\s*internal\s+(deployment|tool(ing)?)\b'
+      diversity_fields: [principle_id, prompt_type_id]
+    - name: this_assistant_opening
+      field: system
+      anchored: true
+      max_frac: 0.07
+      pattern: '\s*this\s+(assistant|is\s+(the|an?)\b)'
+      diversity_fields: [principle_id, prompt_type_id]
+    # production v2: 361/1,960 = 18.42% of records (release-time survey);
+    # the v1 cap of 0.08 was the pilot-era estimate — corrected here
+    - name: verdict_label_opening
+      field: assistant
+      anchored: true
+      max_frac: 0.20
+      pattern: '\s*\W*(the\s+)?(short|straight|quick)\s+(answer|version)s?\b'
+      diversity_fields: [principle_id, prompt_type_id]
+    - name: instinct_opening
+      field: assistant
+      anchored: true
+      max_frac: 0.01
+      pattern: '\s*\W*(your|good)\s+instincts?\b'
+      diversity_fields: [principle_id, prompt_type_id]
+    - name: tablet_propped_beat
+      field: text
+      anchored: false
+      max_frac: 0.01
+      pattern: '(tablet|phone|screen|laptop)\s+(was\s+)?propped\s+(up\s+)?against'
+      diversity_fields: [category_id, target_words, ordinary]
+    - name: envelope_back_beat
+      field: text
+      anchored: false
+      max_frac: 0.01
+      pattern: '(back|reverse)\s+of\s+an?\s+(old\s+|used\s+|torn\s+)?envelope'
+      diversity_fields: [category_id, target_words, ordinary]
+    # --- match-to-production families added by the r2 pass ---
+    # production v2: 216/1,287 system prompts = 16.78% — the marker's target
+    # (defined as a share of WITH-SYSTEM records). The cap is a RECORD share,
+    # and the control carries a system prompt on 77.6% of records
+    # (1,552/2,000) vs production's 65.7% (1,287/1,960), so production's
+    # per-system-prompt rate lands at 16.78% x 77.6% = 13.0% of control records
+    # (production's own record share is 11.0%). Cap = 13.0% + 1.5pp headroom.
+    # (A first cut at 0.125 — production's record share + headroom, the wrong
+    # denominator — bound and dropped 10 labelled records at the first r2
+    # assembly; corrected before release, assembly re-run offline.)
+    - name: deployment_label_opening
+      field: system
+      anchored: true
+      max_frac: 0.145
+      pattern: '\s*deployment\s*:'
+      diversity_fields: [principle_id, prompt_type_id]
+    # production v2: 323/1,960 = 16.48% of records open the user message
+    # with a sanity/gut check within the first eight words
+    - name: sanity_check_opening
+      field: user
+      anchored: true
+      max_frac: 0.18
+      pattern: '\W*(?:[\w''’-]+\W+){0,7}?(?:sanity|gut)[\s-]*check'
+      diversity_fields: [principle_id, prompt_type_id]
+    # --- the story beats the pass removes (production v2 shares: 0.04%,
+    # 0.18%, 0.13%, 0.10% of 16,321 stories) ---
+    - name: speaker_shelf_beat
+      field: text
+      anchored: false
+      max_frac: 0.0055
+      pattern: '(?:\bspeaker\b[^.\n]{0,60}\bshelf\b)|(?:\bshelf\b[^.\n]{0,60}\bspeaker\b)'
+      diversity_fields: [category_id, target_words, ordinary]
+    - name: shelf_above_beat
+      field: text
+      anchored: false
+      max_frac: 0.007
+      pattern: '\bshelf\s+above\s+the\b'
+      diversity_fields: [category_id, target_words, ordinary]
+    - name: masking_tape_beat
+      field: text
+      anchored: false
+      max_frac: 0.0065
+      pattern: 'masking[\s-]+tape'
+      diversity_fields: [category_id, target_words, ordinary]
+    - name: heels_beat
+      field: text
+      anchored: false
+      max_frac: 0.006
+      pattern: 'back\s+on\s+(?:her|his|their)\s+heels'
+      diversity_fields: [category_id, target_words, ordinary]
+
+register_edit:
+  suffix: "-r2"
+  source_suffix: ""            # edits the v1 release
+  seed: 0
+  max_tokens: 8000
+  production_reference:        # the register baseline (v2 production finals)
+    advice: data/advice/final-production-20260831-v2.jsonl
+    stories: data/stories/final-production-20260831-v2.jsonl
+  rate_tolerance: 0.0015
+  monoculture_min_frac: 0.01
+  monoculture_prod_max_frac: 0.002
+  replace_template: register_edit/stories_beat_replace.md
+  # live width per the directive: 200, shrinking on 429/529. (The edit phase
+  # died three times at launch — at 200 and at 100 — with glibc heap
+  # corruption; the fault handler put every aborting thread inside
+  # truststore's OpenSSL context configuration during concurrent TLS
+  # handshakes. Fixed in client.live_http_client with a plain ssl context,
+  # not by narrowing.)
+  max_concurrency: 200
+  markers:
+    # ---------------------------------------------------------- TIER 1: advice
+    # (a) "Deployment:" system-prompt label — production heads the WHOLE first
+    # paragraph with it (216/216 own paragraph, ~42 words, blank line after)
+    - name: deployment_label
+      corpus: advice
+      field: system
+      pattern: '\s*deployment\s*:'
+      anchored: true
+      mode: add
+      kind: relabel_paragraph
+      denominator: field_present
+      target_rate: 0.167832       # 216 / 1,287 with-system production v2 records
+      target_source: "final-production-20260831-v2.jsonl (system field, 216/1287 with-system records)"
+      description: '"Deployment:" label heading the first paragraph of the system prompt'
+      template: register_edit/advice_deployment_label.md
+      verify:
+        min_retained: 0.80        # the first paragraph is ~1/4 of a system prompt; the
+        min_word_retention: 0.60  # content check is the paragraph's word retention
+      forbid_patterns:
+        - '\bdeployment\s+context\b'
+        - '^\s*this\s+(assistant|is\s+(the|an?)\b)'
+    # (b) verdict-label response openers ("Short answer:", "Short version:",
+    # "Straight answer first:", "## Short answer: ..." on header openings)
+    - name: verdict_label
+      corpus: advice
+      field: assistant
+      pattern: '\s*\W*(the\s+)?(short|straight|quick)\s+(answer|version)s?\b'
+      anchored: true
+      mode: add
+      kind: verdict_opening
+      denominator: records
+      target_rate: 0.184184       # 361 / 1,960 production v2 records
+      target_source: "final-production-20260831-v2.jsonl (assistant field, 361/1960 records)"
+      description: 'a labelled one-line verdict opening the response'
+      template: register_edit/advice_verdict_label.md
+      verify:
+        min_retained: 0.95
+        max_extra_words: 45
+      forbid_patterns:
+        - '^\s*\W*(your|good)\s+instincts?\b'
+    # (c) "sanity/gut check" user openers within the first eight words
+    - name: sanity_check_opener
+      corpus: advice
+      field: user
+      pattern: '\W*(?:[\w''’-]+\W+){0,7}?(?:sanity|gut)[\s-]*check'
+      anchored: true
+      mode: add
+      kind: prepend_opener
+      denominator: records
+      target_rate: 0.164796       # 323 / 1,960 production v2 records
+      target_source: "final-production-20260831-v2.jsonl (user field, 323/1960 records)"
+      description: 'the user opens by asking for a sanity check or gut check'
+      template: register_edit/advice_sanity_opener.md
+      verify:
+        min_retained: 1.0         # prepend: the original message follows verbatim
+        max_opener_words: 25
+    # (c') PASS 2 — REFORM of the pass-1 sanity openers (a single further
+    # iteration, applied to advice): the first pass met production's
+    # RATE but collapsed 47% of the new openers onto one shape, "Sanity check
+    # on …" (7.7% of all records; production carries that shape at 0.46%,
+    # its top form "Sanity check needed" at 3.4%). Records whose user message
+    # opens that way AND whose opener was added by pass 1 get it replaced by
+    # an opener built from a per-record form drawn from production's mix
+    # (SANITY_OPENER_FORMS); a seeded keep-set holds the shape at production's
+    # share. Source = pass-1 output; the register rate is unchanged.
+    - name: sanity_check_reform
+      corpus: advice
+      field: user
+      pattern: '\W*(?:[\w''’-]+\W+){0,7}?(?:sanity|gut)[\s-]*check'
+      anchored: true
+      mode: add
+      kind: prepend_opener
+      denominator: records
+      target_rate: 0.164796
+      target_source: "final-production-20260831-v2.jsonl (user field, 323/1960 records)"
+      description: 'the user opens by asking for a sanity check or gut check (re-formed opener)'
+      template: register_edit/advice_sanity_reform.md
+      edit_pass: 2
+      reform_of: sanity_check_opener
+      reform_pattern: '^\W*(?:sanity|gut)[\s-]*check\s+on\b'
+      reform_keep_rate: 0.0046      # production: 9 / 1,960 records open "sanity/gut check on"
+      verify:
+        min_retained: 1.0
+        max_opener_words: 25
+    # -------------------------------------------------------- TIER 2: stories
+    # control-only beats: >=1% of the v1 control stories, <=0.2% of production
+    # v2 stories under the same regex (measured 2026-09-03: 10.50% / 0.04%,
+    # 9.62% / 0.18%, 8.19% / 0.13%, 3.81% / 0.10%). Reduced to production's
+    # rate by rewriting only the sentence(s) carrying the beat; every remove
+    # marker shares replace_template and the verification block below.
+    - name: speaker_shelf
+      corpus: stories
+      field: text
+      pattern: '(?:\bspeaker\b[^.\n]{0,60}\bshelf\b)|(?:\bshelf\b[^.\n]{0,60}\bspeaker\b)'
+      mode: remove
+      kind: replace_spans
+      target_rate: 0.000429       # 7 / 16,321 production v2 stories
+      target_source: "final-production-20260831-v2.jsonl (text field, 7/16321 stories)"
+      description: 'the AI speaking from a speaker on, above, or clipped to a shelf'
+      verify: {min_retained: 0.97, max_span_chars: 900, min_new_over_old: 0.4, max_new_over_old: 1.6}
+    - name: shelf_above
+      corpus: stories
+      field: text
+      pattern: '\bshelf\s+above\s+the\b'
+      mode: remove
+      kind: replace_spans
+      target_rate: 0.001838       # 30 / 16,321
+      target_source: "final-production-20260831-v2.jsonl (text field, 30/16321 stories)"
+      description: 'something placed on "the shelf above the …"'
+      verify: {min_retained: 0.97, max_span_chars: 900, min_new_over_old: 0.4, max_new_over_old: 1.6}
+    - name: masking_tape
+      corpus: stories
+      field: text
+      pattern: 'masking[\s-]+tape'
+      mode: remove
+      kind: replace_spans
+      target_rate: 0.001287       # 21 / 16,321
+      target_source: "final-production-20260831-v2.jsonl (text field, 21/16321 stories)"
+      description: 'masking tape as a prop (a strip, a label, a mark)'
+      verify: {min_retained: 0.97, max_span_chars: 900, min_new_over_old: 0.4, max_new_over_old: 1.6}
+    - name: heels
+      corpus: stories
+      field: text
+      pattern: 'back\s+on\s+(?:her|his|their)\s+heels'
+      mode: remove
+      kind: replace_spans
+      target_rate: 0.001042       # 17 / 16,321
+      target_source: "final-production-20260831-v2.jsonl (text field, 17/16321 stories)"
+      description: 'the "sat back on her/his heels" gesture'
+      verify: {min_retained: 0.97, max_span_chars: 900, min_new_over_old: 0.4, max_new_over_old: 1.6}

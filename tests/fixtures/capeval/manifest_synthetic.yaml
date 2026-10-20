@@ -1,0 +1,41 @@
+# Synthetic Stage-0 protocol manifest (capeval plan §2.1) — exercises
+# every schema field. Placeholder SHAs and repo-local artifact paths;
+# nothing here corresponds to a real run.
+sweep: proto_synthetic
+mode: sweep
+confirmatory: false
+base: test-org/tiny-model
+base_revision: 0123456789abcdef0123456789abcdef01234567
+engine: hf
+tiers: [0, 1]
+target:
+  primaries:
+    - metric: si_compliance
+      plugin: sisteer_compliance
+      params: {si: number_words, n_prompts: 2, max_new_tokens: 8}
+      direction: up
+      min_effect: 0.10
+  secondary: []
+  off_target_exclusions: [instruction_following]
+  relevant_corpus:
+    path: tests/fixtures/capeval/pairs_synthetic.jsonl
+    slice: {first: 2, field: prompt}
+margins:
+  math: 0.02
+ablations:
+  - name: arm_alpha_c2
+    kind: steering
+    # relative artifact paths resolve against THIS file's directory and
+    # are stored absolute in the loaded spec (review-fix contract)
+    artifact: vector_synthetic.safetensors
+    layer: 15
+    coeffs: [2.0]
+    positions: all
+    norm_relative: false
+  - name: ctrl_rand_ladder
+    kind: control:random_vector
+    seed: 7
+    params: {layer: 15, d: 8, norm_target: 4.0}
+    coeffs: [0.5, 1.0]
+    positions: all
+    norm_relative: false

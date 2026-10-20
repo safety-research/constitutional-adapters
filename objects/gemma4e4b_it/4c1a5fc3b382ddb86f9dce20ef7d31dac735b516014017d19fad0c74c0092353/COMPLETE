@@ -1,0 +1,20 @@
+{
+ "arm": "lora_r4_ce",
+ "audit": {
+  "metrics_rows": 13667,
+  "monitors_on": true,
+  "object_file": "object.pt"
+ },
+ "cell_id": "constv2-mix-full__lora_r4_ce",
+ "files": {
+  "metrics.jsonl": "6f034036d060c94cfba5dc430bbbcfa485c51b772358b3525976e1c1c7878d2d",
+  "object.pt": "4c1a5fc3b382ddb86f9dce20ef7d31dac735b516014017d19fad0c74c0092353",
+  "train_budget_meta.json": "e2a6261cd61d997762080517fa2a51981d9ace831805376820a0611eb4c54ce2"
+ },
+ "fit_fingerprint": "e2f1028578f21afab43762e2e104ab06bc2afa233108d1ea41f72996e7f61904",
+ "object_file": "object.pt",
+ "object_sha256": "4c1a5fc3b382ddb86f9dce20ef7d31dac735b516014017d19fad0c74c0092353",
+ "positions": "all",
+ "published_at": "2026-09-05T14:41:44+00:00",
+ "si_id": "constv2-mix-full"
+}

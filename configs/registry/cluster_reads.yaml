@@ -1,0 +1,764 @@
+# cluster_reads.yaml -- the store COMPONENTS every registered adapter reads, the AUTHORITY of each component's canonical copy, and
+# the shard count per adapter.
+# Read by `sisteer.registry.stores` (`registry stores mirror|check|status|revalidate|coverage`) and by the cluster-read window.
+#
+# AUTHORITY (the freshness contract, spec "Interfaces and contracts"; the three values `stores.AUTHORITIES`):
+#   cluster_a        the canonical copy IS the generation tree $SHARED/registry/stores/gen/<slug>/current on cluster A, written only by
+#                    `registry stores push` (the producer's own push, the transitional carry, or the one-time verified move) and read in
+#                    place by the shards through the window's home tree. The grading host holds a VERIFIED MIRROR at `grading_host_mirror` (default:
+#                    the base -- a grading host producer's own tree, a frozen store's existing copy, or a registry-owned pull target). Such a
+#                    component names its `producer` (grading_host:<session> | cluster | frozen) and, while a grading host producer has not adopted
+#                    the push tool, `transitional_carry: true` + `carry_deadline: YYYY-MM-DD`; a producer that writes every few minutes
+#                    may declare `min_publish_interval_s`. Components flip to this value only after the one-time move verified them
+#                    (a verified-move record per slug) -- NONE has yet (2026-10-04).
+#   cluster_a_origin the canonical copy is the producer's ORIGINAL on cluster A and the grading host holds a read-only mirror of it; no copy:
+#                    `registry stores check` compares the grading host mirror's manifest with a manifest of the original built on the cluster.
+#                    MUST name `original`. Kept as a valid value; no member today.
+#   grading_host_copy      the canonical copy is the grading host tree the registry reads today. `registry stores mirror` carries it to cluster A as
+#                    an immutable, manifest-addressed GENERATION, verified in full by store_verify.sbatch before `current` is renamed
+#                    onto it; a read pins one generation and re-validates the grading host copy against its manifest at admission. Valid during
+#                    the transition to `cluster_a`; absent from this file once the transition completes.
+#
+# COMPONENT SHAPE: `base` (the directory: a site placeholder -- $STATE, $STAGE, $GRADE or $WORK, the site config's value, expanded by
+# sisteer.site -- or a home path, `~` = the grading host home), optional `members` (glob patterns relative to base; default the whole
+# base), optional `exclude` ("/rel/path" anchored at the base, or a basename pattern matched at any depth), `origin` (where the bytes were
+# produced; informational), `note`; for `cluster_a`: `producer`, `grading_host_mirror`, `transitional_carry`, `carry_deadline`,
+# `min_publish_interval_s`. Two components may share a base with disjoint members (run-state/full22 and $GRADE below).
+# The generation holds the members at their base-relative paths; `home_rel` (base relative to the home) tells the cluster-read task
+# where to mount it in the relocated home tree. Unknown keys are refused by name.
+#
+# ADAPTER ENTRIES: EVERY registered adapter has one -- `shards` + `components`, or `cluster: refused` + `reason` (an adapter that
+# cannot read on the cluster; none today). Optional `volatile_roots: [{root, reason}]` names a declared root OUTSIDE the home that
+# no component can hold (a /tmp working tree, a volume peek). The component set is DERIVED, never guessed: `registry stores coverage`
+# constructs every registered adapter, reads its declared `roots` (never discover(), never a listing) and maps each root to the
+# component holding it -- `covered` (inside a member), `restricted` (above the members: the shard's own discovery is the exact check),
+# `retired` (outside the home, dropped by the adapter's own inputs_retired), `volatile` (declared here), or UNCOVERED;
+# tests/test_registry_store_coverage.py pins this file at zero UNCOVERED, every adapter declared, no entry missing a component.
+#
+# SHARDS: the six heavy adapters keep the counts measured for their throughput (a shard per 3 min). Every other adapter is sized by the
+# rule over its OWN declared roots: >= 4 GB or >= 10,000 files -> 8; >= 500 MB -> 4; else 1 (sizes: a
+# one-pass stat walk on 2026-10-04; noted per entry as "<MB> MB / <files>"). A reasoned override is
+# noted where it departs from the rule. THE RNG RULE OUTRANKS THE SIZE RULE: an adapter that declares `rng_scope = "reader_traversal"`
+# (one shared RNG over its whole traversal) reads as ONE shard whatever its size -- the shard runner admits such an adapter at K = 1
+# only (runner.py run_pass) and any larger count crashes every task before a summary is written (the first post-cutover read:
+# alphasteer_rebake at 8, arditi_strength and ctl_neg1_static at 4 all died that way). The traversal adapters today: alphasteer_rebake,
+# arditi_allpos, arditi_strength, ctl_neg1_static (inherits sampled_static's), overrefusal_items, sampled_controls, sampled_static;
+# tests/test_registry_store_coverage.py pins every registered reader_traversal adapter at shards: 1.
+#
+# PINS COME FROM THE ENTRY ALONE: the plan pins exactly the components an adapter's entry names (cluster_reads.plan_window),
+# and the shard's escape refusal admits an input only from a generation pinned by THIS adapter -- so an entry must name EVERY component
+# the adapter opens, not only the ones holding its declared roots (the window's home tree is the union of every cluster-routed
+# adapter's pins, which served undeclared dependencies silently until an adapter was alone in needing one). The census of 2026-10-07
+# mapped every accepted head revision's inputs onto the components; every holder is in its adapter's entry, and every opened root is a
+# member of exactly one component (two claimants on one path refuse the whole window: cluster_reads.home_tree_spec).
+#
+# WHAT IS DECLARED, AND WHY NO COMPONENT IS cluster_a_origin TODAY (2026-09-28; read-only survey, see the operations doc):
+#   Three cluster-A-origin candidates were proposed. None survives the code and the disk:
+#   - run-state/full22/misalign and misalign_16k: the grading host trees carry the judge outputs (judge_provenance.json, store/,
+#     analysis/, judge_cache.jsonl) that exp/misalign* on cluster A lack (80 vs 53 files for misalign/qwen35_4b_s1; 64 vs 36 for
+#     misalign_16k/qwen35_4b_s1), and the pulls excluded serving/vllm_server.log; the em_misalign reader needs the grading host tree.
+#     misalign_ladder is a grading host MERGE (paired_allmodels_post.sh merge) with no cluster A original at all.
+#   - relu_paired/anchors_strength (a faithful rsync -rlt mirror of the login host's exp/sdfbase_full22_native/transcripts_results/
+#     sdfbase_full22_qwen35_4b_d0p75_distdiff64s1/{actorattack,crescendo}/none/): no registry adapter opens it (relu_paired's
+#     discovery globs grades_*paired*_s*, sampled/grades_sampled/... and transcripts_<tag>/...). Not a component.
+#   - run-state/full22/sampled_native: read by degeneracy_union only (declared under `full22_degeneracy` below), not by sampled_static.
+#
+# SIZES. The first 14 components: 183,036 regular files / 120,498 MB (112.2 GiB; `registry stores mirror --dry-run`, 2026-09-28).
+# The components added for the other 49 adapters' roots: ~79 GB more (full22_seedrep 14.7 GB, hpo_r1 12.4 GB, grade_strength
+# 9.7 GB, fullscale_consolidated 9.5 GB, full22_shared 7.9 GB, grade_regrade 2.2 GB -- its first declaration was 33.4 GB, see the
+# entry -- ...). Escaping symlinks found by the survey are excluded where the adapter never opens them (`wandb`, `logs`); a component
+# whose manifest would still refuse is a move-time fact. The census of the first post-cutover read (2026-10-07) added five
+# components (~780 MB: full22_transcripts 722 MB, petri_llama8b 44 MB, full22_native_mmlu 13 MB, the degeneracy CSVs and the three
+# petriwave_state files), re-based one (hpo_reseed_eb64 onto reseed_eb64, taking in its 1 MB recon sibling) and widened four members
+# (~1.3 GB: arditi_allpos_mt4kap 800 MB, the five degeneracy_* stores 480 MB, petri_stats_halfdose and three top-level run-state files).
+schema: cluster_reads/2
+written_utc: "2026-10-07T07:20:00Z"
+
+destinations:
+  # Each destination is named by a cluster's registry label. A destination that spells neither `host` nor `shared` takes its login host,
+  # its shared root ($SHARED) and its repo mirror from the registry configuration's [[clusters]] entry of the same name (`host`, `shared`,
+  # and `remote_src` without its /src, else <shared>/repos/<the directory name of [repo] checkout>); `registry stores --dest <label>`
+  # refuses a label that entry does not name. A destination may still spell `host`, `shared` and `repo_rel` itself.
+  cluster_a:
+    stores_rel: registry/stores             # $SHARED/registry/stores/gen/<slug>/<content_sha8>/
+    sbatch_rel: scripts/registry/landing/store_verify.sbatch   # the verifier, in the repo mirror the verify job imports sisteer.registry.stores from
+    verify_cpus: 16
+    verify_mem: 32G
+    verify_rate_mb_s: 100                   # the --time estimate's rate until a VERIFIED report has measured the slug's own
+    verify_min_time_s: 600
+    verify_max_time_s: 14400
+    rsync_timeout_s: 21600
+    watch_max_hours: 4
+    watch_poll_s: 30
+
+adapters:
+  # ---- the six heavy adapters (shards measured; the window's default cluster set) ------------------------------------
+  relu_paired:
+    shards: 8
+    # `sampled`: the controls index relu_paired.CONTROLS_INDEX_REL (under sampled/report/analysis/) it reads for its control
+    # groups lives under that component; a stale or absent index refuses the adapter's cluster route
+    # the multi-model declaration (relu_paired_sidecars' mm_paired_d1.json) names EXTERNAL passthrough `none` MMLU anchor stores and their
+    # corroborating stores in four more components: run-state/full22_native/sampled/mmlu (full22_native_mmlu), full22/relu_native/
+    # controls_llama8b_anchor (full22_relu_native), $GRADE/arditi_strength/* and alphasteer_f22_defense/controls/* (grade_arditi,
+    # grade_alphasteer) (the census of 2026-10-07 over every accepted head)
+    components: [relu_paired_run_state, relu_paired_manifests, petri_native_ledger, petri_drive, relu_paired_sidecars, sampled, full22_native_mmlu, full22_relu_native, grade_arditi, grade_alphasteer]
+  multiturn_grades:
+    shards: 8
+    # the declaration files name grades roots in two more components: transfer_stats_full22_all.json's namespace directory `grades`
+    # (full22_regrade_siblings' grades/gemma4e4b + grades/qwen35_4b -- `grades` is not `grades_*`) and the cap4096 / llama8b files'
+    # relu_native/grades_relu_native_bu_* (full22_relu_native)
+    components: [multiturn_run_state, object_bank_full22, petri_manifests, full22_regrade_siblings, full22_relu_native]
+  bfcl_full:
+    shards: 6
+    components: [bfcl_full]
+  bigcodebench_full:
+    shards: 6
+    components: [bigcodebench_full]
+  em_misalign:
+    shards: 6
+    components: [misalign_panels, misalign_run_state, misalign_grades, relu_paired_manifests]
+  sampled_static:
+    shards: 1
+    components: [sampled]
+  # ---- every other registered adapter (shards by the size rule over the adapter's own roots) ----------------------------------
+  alphasteer_rebake:
+    shards: 1
+    # OVERRIDE of the size rule (5,190 MB / 10,514 files -> 8): the adapter declares rng_scope = reader_traversal, so ONE shard (the RNG
+    # rule in the header -- at 8 every task crashed before a summary). Its one-shard wall time against read_array.sbatch's limit
+    # is unmeasured. It also opens $GRADE/strength/graded_reread.json (alphasteer_rebake.GRADED_REREAD, the XSTest ladder):
+    # grade_strength's, pinned here (the census of 2026-10-07; the adapter never read on the cluster before)
+    components: [grade_alphasteer, grade_arditi, grade_strength]
+    note: "5,190 MB / 10,514 files: alphasteer_f22_{rebake,defense,refit} + arditi_strength/orb_grades_alphasteer; one shard (reader_traversal RNG)"
+  arditi_allpos:
+    shards: 1
+    # reader_traversal RNG: one shard (the header's RNG rule). Besides its grade root it opens the mt4kap multi-turn run under
+    # run-state/full22/arditi_allpos_mt4kap (full22_regrade_siblings: goalsets/, transcripts_mt4kap_*/, grades_mt4kap_*/), the anchor
+    # record transfer_stats_full22_cap4096.json + the two anchor grades roots grades_anchor4096*_qwen35_4b_it (multiturn_run_state) and
+    # degeneracy_union/degeneracy_mt_cap4096_union.v2.json (full22_degeneracy)
+    components: [grade_arditi, full22_regrade_siblings, multiturn_run_state, full22_degeneracy]
+    note: "404 MB / 951 files"
+  arditi_strength:
+    shards: 1
+    # OVERRIDE of the size rule (2,265 MB -> 4): rng_scope = reader_traversal, so ONE shard (the header's RNG rule)
+    components: [grade_arditi]
+    note: "2,265 MB / 7,287 files; one shard (reader_traversal RNG)"
+  arditi_vendor_mt:
+    shards: 1
+    components: [arditi_allpos_ladder]
+    # its /tmp/phaseA/arditi_mt and /tmp/phaseA/arditi_rep_t<T> working trees are declared RETIRED by the adapter itself
+    # (inputs_retired): `stores coverage` reads that declaration; nothing to name here
+    note: "429 MB / 681 files under ~/results/arditi-allpos-ladder (mt_grades, transcripts_results, replicate_grades)"
+  bcb_bfcl:
+    shards: 1
+    components: [grade_tinycap, bcb_bfcl_200_specs]
+    note: "12 MB / 51 files: tinycap/bcb-bfcl-200 + the two specs' analysis/paper_rows_*.parquet"
+  bfcl_allmodels:
+    shards: 1
+    components: [full22_allmodels]
+    note: "124 MB / 571 files"
+  bfcl_full_shared:
+    shards: 4
+    # the shared readers compare against the SOLO mirror: _bcbw_common._discover_solo_inputs opens full22/bfcl_full (the bfcl_full
+    # component) beside the shared root, so both are pinned (the same for _l2, _l3 and the three bigcodebench readers)
+    components: [full22_shared, bfcl_full]
+    note: "2,026 MB / 1,126 files (+ the solo mirror it compares against)"
+  bfcl_full_shared_l2:
+    shards: 4
+    components: [full22_shared, bfcl_full]
+    note: "1,559 MB / 983 files (+ the solo mirror)"
+  bfcl_full_shared_l3:
+    shards: 1
+    components: [full22_shared, bfcl_full]
+    note: "383 MB / 221 files (+ the solo mirror)"
+  bfcl_seedrep:
+    shards: 1
+    components: [full22_seedrep]
+    note: "211 MB / 921 files"
+  bigcodebench_allmodels:
+    shards: 1
+    components: [full22_allmodels]
+    note: "162 MB / 791 files"
+  bigcodebench_full_shared:
+    shards: 4
+    # as bfcl_full_shared: the solo mirror full22/bigcodebench_full (the bigcodebench_full component) is read for the comparison
+    components: [full22_shared, bigcodebench_full]
+    note: "2,026 MB / 1,126 files (+ the solo mirror it compares against)"
+  bigcodebench_full_shared_l2:
+    shards: 4
+    components: [full22_shared, bigcodebench_full]
+    note: "1,559 MB / 983 files (+ the solo mirror)"
+  bigcodebench_full_shared_l3:
+    shards: 1
+    components: [full22_shared, bigcodebench_full]
+    note: "383 MB / 221 files (+ the solo mirror)"
+  bigcodebench_seedrep:
+    shards: 1
+    components: [full22_seedrep]
+    note: "211 MB / 921 files"
+  bon_native4096:
+    shards: 1
+    components: [full22_bon]
+    note: "1 MB / 4 files (bon_native4096_relu_paired_llama8b/grades)"
+  bon_stores:
+    shards: 4
+    # the producer's root manifest under bon_cap4096/cluster/manifests/ registers the BoN store records (bon_served_manifest.json,
+    # bon_served_run.json) under roots in three OTHER components' subtrees: transcripts_rest/, transcripts_glm/, transcripts_prompted/,
+    # transcripts_nemotron_complete/ (multiturn_run_state), relu_paired/transcripts_paired_d1_s{1,2,3}/ (relu_paired_run_state) and the
+    # unsuffixed transcripts/ (full22_transcripts -- `transcripts` is not `transcripts_*`) -- all pinned here
+    components: [full22_bon, multiturn_run_state, relu_paired_run_state, full22_transcripts]
+    note: "1,932 MB / 1,009 files (bon_cap4096 + bon_siconst) + the store records under the registered transcript roots"
+  cap4096_lane:
+    shards: 1
+    components: [multiturn_run_state]
+    # its root is the whole run-state/full22 directory; what it OPENS is the declaration file transfer_stats_full22_cap4096.json and
+    # grades_*/*/grading_provenance.json -- members of multiturn_run_state (`restricted` in the coverage report, by design)
+    note: "the cap-4096 multi-turn declarations: one file + the per-root grading_provenance.json files"
+  cellstore:
+    shards: 1
+    components: [grade_alphasteer, paperlib_llama8b_controls, arditi_allpos_ladder, grade_arditi]
+    note: "136 MB / 465 files: the controls_cap* / orb_cap* directories under four roots"
+  ctl_neg1_controls:
+    shards: 1
+    components: [full22_ctl_neg1]
+    note: "108 MB / 214 files (ctl_neg1/sampled/controls_sampled)"
+  ctl_neg1_multiturn:
+    shards: 1
+    components: [full22_ctl_neg1]
+    note: "9 MB / 43 files (ctl_neg1/mt/grades)"
+  ctl_neg1_static:
+    shards: 1
+    # OVERRIDE of the size rule (2,789 MB -> 4): CtlNeg1StaticAdapter inherits sampled_static's rng_scope = reader_traversal, so ONE shard
+    # like sampled_static (the header's RNG rule)
+    components: [full22_ctl_neg1]
+    note: "2,789 MB / 1,719 files (ctl_neg1/sampled); one shard (reader_traversal RNG)"
+  degeneracy_union:
+    shards: 4
+    # besides its union / Petri stores and the two sampled analysis indexes it opens the cap-4096 multi-turn declaration file
+    # transfer_stats_full22_cap4096.json (multiturn_run_state) and the three degen_*_over1pct.csv exports of 2026-09-14
+    # (degeneracy_csv_2026_09_14, its CSV_DIR_DEFAULT)
+    components: [full22_degeneracy, sampled, multiturn_run_state, degeneracy_csv_2026_09_14]
+    note: "1,184 MB / 3,322 files: degeneracy_union, degeneracy_petri, sampled_native/report/analysis + sampled/report/analysis; + one declaration file and three CSVs"
+  gsm8k_p200:
+    shards: 4
+    components: [grade_tinycap]
+    note: "1,453 MB / 6,475 files (tinycap/gsm8k)"
+  gsm8k_paired_allmodels:
+    shards: 1
+    components: [full22_allmodels]
+    note: "13 MB / 228 files"
+  gsm8k_seedrep:
+    shards: 1
+    components: [full22_seedrep]
+    note: "83 MB / 840 files"
+  hpo_logs:
+    shards: 8
+    # hpo_reseed_eb64 holds the reseed root AND its recon sibling (members [hpo, recon]): the adapter derives
+    # `<dirname(hpo root)>/recon/recon_clip_<key>_<object>.json` for every reseed sweep
+    components: [hpo_reseed_eb64, hpo_llama, hpo_rehpo, hpo_sync, hpo_r1]
+    note: "15,075 MB / 656 files over the five HPO roots (hpo-r1 12.4 GB, hpo-llama 2.6 GB) + reseed_eb64/recon"
+  ifeval_seedrep:
+    shards: 4
+    components: [full22_seedrep]
+    note: "779 MB / 1,691 files"
+  legacy_glm:
+    shards: 1
+    # its four FILES: glm_errored117/comparison.json + controls_glm/controls_table_glm.json (full22_glm), transfer_stats_full22_glm.json
+    # (multiturn_run_state) and petri_stats/petri_full22_glm.json (full22_petri_stats)
+    components: [full22_glm, multiturn_run_state, full22_petri_stats]
+    note: "65 MB / 188 files (glm_errored117 + controls_glm) + two declaration files in two other components"
+  llama8b_wave:
+    shards: 1
+    components: [llama8b_stage, paperlib_llama8b_controls]
+    note: "14 MB / 636 files"
+  math500:
+    shards: 4
+    components: [grade_tinycap]
+    note: "1,602 MB / 4,207 files (tinycap/math500)"
+  math500_seedrep:
+    shards: 4
+    components: [full22_seedrep]
+    note: "575 MB / 1,011 files"
+  mmlu_full:
+    shards: 1
+    components: [full22_mmlu_full]
+    note: "64 MB / ~190 files (mmlu_full + arditi_allpos/controls/.../mmlu_full)"
+  objects_bank:
+    shards: 4
+    components: [object_bank_full22, fits_mirror, grade_objects, stage_objects]
+    note: "2,307 MB / 3,053 files over the four object banks"
+  orxs_seedrep:
+    shards: 8
+    components: [full22_seedrep]
+    note: "4,393 MB / 2,700 files"
+  overrefusal_items:
+    shards: 1
+    components: [grade_sdfbase_controls, fullscale_consolidated, full22_controls_halfdose]
+    # OR_ROOTS[1], fullscale/consolidated/judge (7 files), moved WHOLE to fullscale/_retired/judge/ on 2026-10-07 (bytes
+    # unchanged): outside fullscale_consolidated's base, so it is no longer carried. The adapter declares the OLD root RETIRED
+    # (overrefusal_items.RETIRED_JUDGE_ROOT, inputs_retired) and OR_ROOTS keeps the spelling for paperlib parity (discovery skips a missing
+    # root), which is why the entry still names fullscale_consolidated: `stores coverage` holds the declared root there (under the home, so
+    # `covered`, never `retired`: that state is for roots outside the home)
+    note: "433 MB / 678 files on 2026-10-04, 7 of them (consolidated/judge) since moved to fullscale/_retired/judge/ and retired: sdfbase_full22/controls, controls_halfdose"
+  petri_stats:
+    shards: 8
+    components: [full22_petri_stats, fullscale_consolidated]
+    note: "9,514 MB / 3,931 files (the consolidated tree is 9.5 GB)"
+  r2_export:
+    shards: 1
+    # the export's sha-pinned provenance sources (data/sdf_base_steering_r2_sources.json: 246 files) lie in twelve other components, every
+    # one pinned here so the adapter's own admission guards them instead of the window's union. Holders, by file count:
+    # multiturn_run_state 67, grade_sdfbase_controls 46, sampled 41, full22_degeneracy 30, full22_glm 17, full22_relu_native 16,
+    # full22_petri_stats 11, fullscale_consolidated 8, full22_controls_halfdose 6, full22_bon 2, petri_native_ledger 1, petri_llama8b 1
+    components: [r2_export_data, multiturn_run_state, grade_sdfbase_controls, sampled, full22_degeneracy, full22_glm, full22_relu_native, full22_petri_stats, fullscale_consolidated, full22_controls_halfdose, full22_bon, petri_native_ledger, petri_llama8b]
+    note: "342 MB / 351 files + the 246 pinned sources in twelve other components"
+  regrade_twin:
+    shards: 8
+    components: [grade_regrade, full22_regrade_siblings, full22_relu_native, grade_alphasteer, grade_arditi, multiturn_run_state, sampled]
+    # discover() opens, under the twin root, README.md (it REFUSES without it), ledger.jsonl, the eight manifests/ files of
+    # regrade_twin.MANIFEST_FILES and journal/harvest/*.jsonl -- grade_regrade holds exactly those -- then the Swap-A SIBLING verdict
+    # files the harvest journal's destinations name BESIDE the Haiku originals in OTHER stores (regradelib.sibling_names), and those
+    # originals. The read-only survey of the journal (2026-10-04: 231 files, 1,771,536 rows,
+    # 397 destinations in 198 directories) finds 165 `live_two_si_grade_cache.claude-sonnet-5.jsonl` siblings: 162 in directories the
+    # five components named after grade_regrade hold (multiturn_run_state 57, sampled 63, grade_arditi 21, grade_alphasteer 20,
+    # full22_relu_native 1) and 3 in directories no other component held (full22_regrade_siblings); zero Swap-B siblings
+    # (`judge_items.claude-opus-5.jsonl`: Swap B's verdicts went to sqlite caches under regrade/swapB, which the adapter never opens).
+    # The plan's coverage check (cluster_reads.input_coverage, the adapter's own discovery against the pinned generations) is the exact
+    # check every window; a sibling written anywhere else routes the adapter to the grading host naming the root. Shards: the size rule over
+    # the declared root (52.9 GB / 20,331 files -> 8).
+    note: "the twin's own inputs (grade_regrade, 2,208 MB / 472 files) + the 165 Swap-A sibling files and their Haiku originals in six other components"
+  relu_native:
+    shards: 4
+    components: [full22_relu_native]
+    note: "1,030 MB / 4,780 files"
+  sampled_controls:
+    shards: 1
+    components: [sampled]
+    # OVERRIDE of the size rule (the root is the 31 GB `sampled` tree): the adapter opens the controls index
+    # sampled/report/analysis/final_rung.json and nothing else, so one shard
+    note: "reads one index file of the sampled component"
+  seedrep_cluster:
+    shards: 8
+    # reads the seed-set declaration full22/relu_paired/views.json (seedrep_cluster.VIEWS_DECLARATION_DEFAULT; relu_paired_run_state) as an
+    # input of every tag group
+    components: [full22_seedrep, relu_paired_run_state]
+    note: "4,135 MB / 37,412 files (seedrep) + one declaration file"
+  seedrep_controls:
+    shards: 4
+    components: [full22_seedrep]
+    volatile_roots:
+      - root: /tmp/launch_vol_peek
+        reason: "the volatile Modal-volume peek the carried stores were copied from (seedrep_statics.VOLATILE_PEEK_DEFAULT); absent on the grading host since the copy, never on a cluster node; the carried copy under seedrep_battery is what is read"
+    note: "2,762 MB / 8,047 files (seedrep_battery)"
+  seedrep_petri:
+    shards: 4
+    # beyond the ledgers it opens the standup state under $STATE/sdfbase_full22_native/petri (petri_drive: drive.log, the per-pass
+    # rc files, endpoint.json, models.json), the determinism waiver full22/seedrep_battery/criterion3_waiver_w19_petri.json (full22_seedrep)
+    # and petriwave_state's judge-chain mirror + launch / escalation logs (the census of 2026-10-07)
+    components: [petri_native_ledger, petri_drive, full22_seedrep, petriwave_state]
+    note: "the three petri_* stores under ~/.local/state/petri_native (the ledger component, 712 MB / 11,975 files) + the drive state, the waiver and PetriWave's records"
+  seedrep_statics:
+    shards: 8
+    components: [full22_seedrep]
+    volatile_roots:
+      - root: /tmp/launch_vol_peek
+        reason: "the volatile Modal-volume peek the carried stores were copied from (seedrep_statics.VOLATILE_PEEK_DEFAULT); absent on the grading host since the copy, never on a cluster node; the carried copy under seedrep_battery is what is read"
+    note: "4,288 MB / 13,985 files (seedrep_battery + seedrep_battery_w26)"
+  static_padding:
+    shards: 4
+    components: [full22_static_padding]
+    note: "1,810 MB / 9,198 files"
+  strength_ladder:
+    shards: 8
+    components: [grade_strength]
+    note: "9,668 MB / 65,587 files"
+  strength_mtdiff:
+    shards: 1
+    components: [full22_strength_mtdiff]
+    note: "343 MB / 1,031 files"
+  wandb_runs:
+    shards: 1
+    components: [wandb_mirror]
+    note: "409 MB / 1,748 files (the offline mirror's wandb-metadata.json files)"
+
+# components, smallest first: `stores mirror` processes them in this order, so the small generations publish within minutes of
+# the first tick while the big roots copy. Sizes: the first fourteen from the 2026-09-28 dry run; the later additions from the
+# 2026-10-04 stat walk.
+components:
+  petriwave_state:
+    base: $STATE/petri-wave
+    # seedrep_petri reads three files here: summary.json (FALLBACK_SUMMARY_DEFAULT, the judge-chain mirror, a `report` input of every
+    # minted store declaration) and launch.log / escalation.log, read directly for the proxy job ids and the escalation lines (absent, they
+    # are silently skipped -- the adapter's numbers would diverge without a word); the producer's scripts and ledgers beside them are not read
+    members: [summary.json, launch.log, escalation.log]
+    authority: grading_host_copy
+    origin: grading_host
+    note: "seedrep_petri: PetriWave's judge-chain mirror and its launch / escalation logs (0.1 MB / 3 files)"
+  degeneracy_csv_2026_09_14:
+    base: ~/figs/degeneracy/2026-09-14
+    # degeneracy_union.CSV_DIR_DEFAULT: the adapter globs degen_*_over1pct.csv here; the html and build.py beside them are not read
+    members: ["degen_*_over1pct.csv"]
+    authority: grading_host_copy
+    origin: grading_host
+    note: "degeneracy_union: the three frozen degen_*_over1pct.csv exports of 2026-09-14 (0.7 MB / 3 files)"
+  relu_paired_sidecars:
+    base: $WORK/relu-direct-difference-sweep
+    members: [dose_ladder.json, mm_paired_d1.json]
+    authority: grading_host_copy
+    origin: grading_host
+    note: "relu_paired.DOSE_LADDER / MM_SIDECAR (two files)"
+  bcb_bfcl_200_specs:
+    base: $WORK
+    members: ["bcb-bfcl-200*/analysis"]
+    authority: grading_host_copy
+    origin: grading_host
+    note: "bcb_bfcl.SPEC_GLOB -- the two specs' analysis/paper_rows_*.parquet exports (0.2 MB / 6 files)"
+  hpo_sync:
+    base: ~/hpo-sync
+    # the base holds one symlink named after itself, `hpo-sync -> $HOME//hpo-sync` (2026-09-17): an absolute target the
+    # manifest refuses (link_escapes) and a path the adapter enumerates nothing through, so the one-time move excludes it
+    # (the move's pre-certification, 2026-10-06; the producer's file is not touched)
+    exclude: ["/hpo-sync"]
+    authority: grading_host_copy
+    origin: mixed
+    note: "hpo_logs.DEFAULT_HPO_ROOTS[hpo-sync] (0.2 MB / 66 files)"
+  full22_petri_stats:
+    base: $STATE/romp/candidate-si-refit/run-state/full22
+    # petri_stats_halfdose/petri_stats.json is one of petri_stats' STATS_GLOBS and an r2_export source; it was no member
+    members: [petri_stats, petri_stats_halfdose]
+    authority: grading_host_copy
+    origin: grading_host
+    note: "petri_stats + legacy_glm + r2_export: the per-run Petri statistics and the half-dose statistics beside them (4 MB / 25 files)"
+  paperlib_llama8b_controls:
+    base: ~/.cache/paperlib-llama8b/controls
+    authority: grading_host_copy
+    origin: grading_host
+    note: "cellstore + llama8b_wave: the Llama-8B paperlib controls (3 MB / 72 files)"
+  hpo_rehpo:
+    base: ~/hpo-rehpo
+    # the base holds one symlink named after itself, `hpo-rehpo -> $HOME//hpo-rehpo` (2026-09-17): an absolute target the
+    # manifest refuses (link_escapes) and a path the adapter enumerates nothing through, so the one-time move excludes it
+    # (the move's pre-certification, 2026-10-06; the producer's file is not touched)
+    exclude: ["/hpo-rehpo"]
+    authority: grading_host_copy
+    origin: mixed
+    note: "hpo_logs.DEFAULT_HPO_ROOTS[hpo-rehpo] (4 MB / 171 files)"
+  petri_drive:
+    base: $STATE/sdfbase_full22_native/petri
+    authority: grading_host_copy
+    origin: grading_host
+    note: "relu_paired.PETRI_DRIVE_ROOT -- the Petri drive records (7 MB / 290 files)"
+  hpo_reseed_eb64:
+    base: $STAGE/sdfbase/reseed_eb64
+    # re-based from .../reseed_eb64/hpo: hpo_logs derives the recon sibling `<dirname(hpo root)>/recon/recon_clip_<key>_<object>.json`
+    # for every reseed sweep, so the component holds both directories; the producer's scripts, logs/ and gate/ beside them are not members
+    members: [hpo, recon]
+    authority: grading_host_copy
+    origin: modal
+    note: "hpo_logs.DEFAULT_HPO_ROOTS[reseed_eb64] (hpo: 7 MB / 60 files) + its recon sibling (1 MB / 13 files)"
+  full22_native_mmlu:
+    base: $STATE/romp/candidate-si-refit/run-state/full22_native/sampled/mmlu
+    authority: grading_host_copy
+    origin: mixed
+    note: "relu_paired: the EXTERNAL passthrough `none` MMLU anchor stores the multi-model declaration (mm_paired_d1.json) names -- the whole directory, so a declaration naming another model's store needs no new component (13 MB / 310 files)"
+  llama8b_stage:
+    base: $STAGE/sdfbase/llama8b/wave/stage
+    authority: grading_host_copy
+    origin: modal
+    note: "llama8b_wave: the Llama-8B staging tree (11 MB / 564 files)"
+  misalign_panels:
+    base: ~/figs/si-steering-misalign
+    authority: grading_host_copy
+    origin: grading_host
+    note: "em_misalign.EM_ROOT -- the paper's misalignment panels (33 MB / 390 files)"
+  petri_llama8b:
+    base: $STATE/petri/petri_full22_llama8b
+    # r2_export pins this run's cells.json (its petri_native sibling of the same name is petri_native_ledger's); the rest of the run (the
+    # inspect logs, rows.parquet, the analysis) travels with it as one store
+    authority: grading_host_copy
+    origin: grading_host
+    note: "r2_export: the Llama-8B Petri run under ~/.local/state/petri (44 MB / 533 files)"
+  relu_paired_manifests:
+    base: $STAGE/sdfbase/relu_paired
+    authority: grading_host_copy
+    origin: modal
+    note: "relu_paired.MANIFEST_DIR == em_misalign.PAIRED_STAGING_DIR -- the per-seed object manifests and the Modal staging (49 MB / 336 files)"
+  full22_mmlu_full:
+    base: $STATE/romp/candidate-si-refit/run-state/full22
+    members: [mmlu_full, arditi_allpos]
+    authority: grading_host_copy
+    origin: mixed
+    note: "mmlu_full: the full-width MMLU stores + the Arditi controls' mmlu_full (64 MB / 190 files)"
+  full22_glm:
+    base: $STATE/romp/candidate-si-refit/run-state/full22
+    members: [glm_errored117, controls_glm]
+    authority: grading_host_copy
+    origin: mixed
+    note: "legacy_glm (65 MB / 188 files)"
+  grade_objects:
+    base: $GRADE/objects
+    authority: grading_host_copy
+    origin: grading_host
+    note: "objects_bank.DEFAULT_BANKS[grade_objects] (76 MB / 153 files)"
+  fits_mirror:
+    base: $STAGE/fits/mirror
+    authority: grading_host_copy
+    origin: modal
+    note: "objects_bank.DEFAULT_BANKS[fits_mirror] (150 MB / 72 files)"
+  full22_controls_halfdose:
+    base: $STATE/romp/candidate-si-refit/run-state/full22
+    members: [controls_halfdose]
+    authority: grading_host_copy
+    origin: mixed
+    # gemma4e4b_halfdose/_incomplete/ -- README_incomplete.md + the one store moved out of gemma4e4b_halfdose/cells/ on 2026-10-07:
+    # manifest.json + evidence.json, 2 small files, no numbers filed (Slurm job 463796 died on a FidelityError) -- sits inside the
+    # member and is carried, harmlessly: no adapter enumerates it (overrefusal_items' discovery lists cells/ alone). The adapter declares the
+    # OLD cells/ path of that store RETIRED (overrefusal_items.INCOMPLETE_STORES, inputs_retired)
+    note: "overrefusal_items (181 MB / 330 files on 2026-10-04; + gemma4e4b_halfdose/_incomplete/, carried, 3 small files)"
+  grade_sdfbase_controls:
+    base: $GRADE/sdfbase_full22/controls
+    authority: grading_host_copy
+    origin: grading_host
+    note: "overrefusal_items.OR_ROOTS[0] -- the over-refusal controls grades (252 MB / 341 files)"
+  stage_objects:
+    base: ~/si-steering-wave-objects
+    # the base holds one symlink named after itself, `si-steering-wave-objects -> $HOME//si-steering-wave-objects` (2026-09-17): an absolute target the
+    # manifest refuses (link_escapes) and a path the adapter enumerates nothing through, so the one-time move excludes it
+    # (2026-10-06; the producer's file is not touched)
+    exclude: ["/si-steering-wave-objects"]
+    authority: grading_host_copy
+    origin: mixed
+    note: "objects_bank.DEFAULT_BANKS[stage_objects] (259 MB / 396 files)"
+  full22_allmodels:
+    base: $STATE/romp/candidate-si-refit/run-state/full22
+    members: [bfcl_allmodels, bigcodebench_allmodels, gsm8k_paired_allmodels]
+    authority: grading_host_copy
+    origin: mixed
+    note: "bfcl_allmodels, bigcodebench_allmodels, gsm8k_paired_allmodels (299 MB / 1,590 files)"
+  r2_export_data:
+    base: ~/reviews/sdf-base-steering-r2/data
+    authority: grading_host_copy
+    origin: grading_host
+    note: "r2_export: the R2 export's data directory (342 MB / 351 files)"
+  full22_strength_mtdiff:
+    base: $STATE/romp/candidate-si-refit/run-state/full22
+    members: [strength_mtdiff_s1]
+    authority: grading_host_copy
+    origin: mixed
+    note: "strength_mtdiff (343 MB / 1,031 files)"
+  wandb_mirror:
+    base: ~/si-steering-wandb-mirror/wandb
+    # every run directory's logs/debug-core.log is a link into ~/.cache/wandb (360 escaping links, 2026-10-04); the adapter opens
+    # files/wandb-metadata.json only, so the logs directories are excluded -- and so are the W&B client's two root-level convenience
+    # links debug.log / debug-internal.log -> <latest run>/logs/..., whose targets lie inside the excluded directories: the manifest
+    # attested them, the generation dangled them and the plan refused wandb_runs by name every window. Anchored, so only the
+    # two root entries match; the producer's files are not touched. latest-run (a directory link whose target holds members) resolves.
+    exclude: [logs, "/debug.log", "/debug-internal.log"]
+    authority: grading_host_copy
+    origin: grading_host
+    note: "the offline W&B mirror the registry configuration's [wandb] mirror names (409 MB / 1,748 files; logs/ and the two root debug links excluded)"
+  arditi_allpos_ladder:
+    base: ~/results/arditi-allpos-ladder
+    authority: grading_host_copy
+    origin: grading_host
+    note: "arditi_vendor_mt.DURABLE_ROOT (mt_grades, transcripts_results, replicate_grades) + cellstore's xstest_controls_graded (510 MB / 1,058 files)"
+  full22_transcripts:
+    base: $STATE/romp/candidate-si-refit/run-state/full22
+    # the unsuffixed transcripts/ (sdfbase_full22_gemma4e4b, sdfbase_full22_qwen35_4b): bon_stores' producer registers its BoN store records
+    # here; `transcripts` matches no `transcripts_*` member of multiturn_run_state, so it was held by nothing
+    members: [transcripts]
+    authority: grading_host_copy
+    origin: mixed
+    note: "bon_stores: the gemma4e4b / qwen35_4b BoN store records under transcripts/ (722 MB / 1,404 files)"
+  petri_native_ledger:
+    base: $STATE/petri_native
+    authority: grading_host_copy
+    origin: grading_host
+    note: "relu_paired.PETRI_LEDGER_ROOT + seedrep_petri's three petri_* stores -- the Petri audit ledgers, grading-host-native (712 MB / 11,975 files)"
+  full22_degeneracy:
+    base: $STATE/romp/candidate-si-refit/run-state/full22
+    # the five per-run degeneracy_* stores (degeneracy, degeneracy_glm, degeneracy_halfdose, degeneracy_nemotron_complete,
+    # degeneracy_prompted) are r2_export sources that lay under no member
+    members: [degeneracy_union, degeneracy_petri, sampled_native, degeneracy, degeneracy_glm, degeneracy_halfdose, degeneracy_nemotron_complete, degeneracy_prompted]
+    authority: grading_host_copy
+    origin: mixed
+    note: "degeneracy_union + arditi_allpos + r2_export: the union + Petri stores and the sampled_native analysis (983 MB / 2,770 files) + the five per-run degeneracy_* stores (480 MB / 1,220 files)"
+  full22_relu_native:
+    base: $STATE/romp/candidate-si-refit/run-state/full22
+    members: [relu_native]
+    authority: grading_host_copy
+    origin: mixed
+    note: "relu_native (1,030 MB / 4,780 files)"
+  petri_manifests:
+    base: $STATE/petri_arm_views
+    authority: grading_host_copy
+    origin: grading_host
+    note: "lineage_common.PETRI_MANIFESTS_DEFAULT -- the object resolver's Petri manifests (1,679 MB / 72 files)"
+  full22_static_padding:
+    base: $STATE/romp/candidate-si-refit/run-state/full22
+    members: [static_padding]
+    authority: grading_host_copy
+    origin: mixed
+    note: "static_padding (1,810 MB / 9,198 files)"
+  object_bank_full22:
+    base: $STAGE/sdfbase/full22_objects
+    authority: grading_host_copy
+    origin: modal
+    note: "lineage_common.OBJECTS_DEFAULT == objects_bank.DEFAULT_BANKS[full22_objects] -- the object resolver reads named manifests here (1,822 MB / 2,432 files)"
+  full22_bon:
+    base: $STATE/romp/candidate-si-refit/run-state/full22
+    members: [bon_cap4096, bon_siconst, bon_native4096_relu_paired_llama8b]
+    # bon_cap4096/wandb/run-*/logs/debug-core.log links into ~/.cache/wandb (4 escaping links); the adapters never open wandb/
+    exclude: [wandb]
+    authority: grading_host_copy
+    origin: mixed
+    note: "bon_stores + bon_native4096 (1,934 MB / 1,013 files; wandb/ excluded)"
+  grade_arditi:
+    base: $GRADE
+    members: [arditi_strength, arditi_allpos]
+    authority: grading_host_copy
+    origin: grading_host
+    note: "arditi_strength, arditi_allpos, alphasteer_rebake's orb_grades_alphasteer, cellstore's orb_private_allpos (2,668 MB / 8,238 files)"
+  hpo_llama:
+    base: ~/hpo-llama
+    # the base holds one symlink named after itself, `hpo-llama -> $HOME//hpo-llama` (2026-09-17): an absolute target the
+    # manifest refuses (link_escapes) and a path the adapter enumerates nothing through, so the one-time move excludes it
+    # (the move, 2026-10-06: the push refused it; the pre-certification's census had not applied link_escapes to a base this large)
+    exclude: ["/hpo-llama"]
+    authority: grading_host_copy
+    origin: mixed
+    note: "hpo_logs.DEFAULT_HPO_ROOTS[hpo-llama] (2,649 MB / 201 files)"
+  misalign_run_state:
+    base: $STATE/romp/candidate-si-refit/run-state/full22
+    members: [misalign, misalign_16k, misalign_ladder]
+    authority: grading_host_copy
+    origin: mixed
+    note: "em_misalign SEEDREP_ROOT / M16K_ROOT / LADDER_ROOT: cluster A responses pulled + the grading host judge outputs + the grading host merge (2,952 MB / 2,005 files)"
+  grade_tinycap:
+    base: $GRADE/tinycap
+    members: [bcb-bfcl-200, gsm8k, math500]
+    authority: grading_host_copy
+    origin: grading_host
+    note: "bcb_bfcl.STORE_ROOT, gsm8k_p200, math500 (3,066 MB / 10,727 files; the sibling bcb-bfcl-200-widen and oos_qwen trees with their escaping wandb links are not members)"
+  bfcl_full:
+    base: $STATE/romp/candidate-si-refit/run-state/full22/bfcl_full
+    authority: grading_host_copy
+    origin: modal
+    note: "the w4_mirror.py mirror of the Modal store, PROVENANCE.{md,json,sha256} beside it (3,324 MB / 2,360 files)"
+  bigcodebench_full:
+    base: $STATE/romp/candidate-si-refit/run-state/full22/bigcodebench_full
+    authority: grading_host_copy
+    origin: modal
+    note: "as bfcl_full (3,602 MB / 2,792 files)"
+  multiturn_run_state:
+    base: $STATE/romp/candidate-si-refit/run-state/full22
+    # the unsuffixed transfer_stats_full22.json (the glob needs the underscore) and the two half-dose records attacker_effort_halfdose.json /
+    # determinism_floor_halfdose.json are r2_export sources that lay under no member
+    members: ["grades_*", "transcripts_*", "transfer_stats_full22_*.json", transfer_stats_nemotron_complete.json, transfer_stats_full22.json, attacker_effort_halfdose.json, determinism_floor_halfdose.json]
+    authority: grading_host_copy
+    origin: mixed
+    note: "multiturn_grades and eight more readers: the grading host judge passes (grades_*), the mirrored transcripts + transcripts_mirrors index, the producer files (3,829 MB / 14,982 files) + three top-level records"
+  grade_alphasteer:
+    base: $GRADE
+    members: [alphasteer_f22_rebake, alphasteer_f22_defense, alphasteer_f22_refit]
+    authority: grading_host_copy
+    origin: grading_host
+    note: "alphasteer_rebake + cellstore's alphasteer_f22_refit/controls (4,136 MB / 10,460 files)"
+  full22_ctl_neg1:
+    base: $STATE/romp/candidate-si-refit/run-state/full22
+    members: [ctl_neg1]
+    authority: grading_host_copy
+    origin: mixed
+    note: "ctl_neg1_controls, ctl_neg1_multiturn, ctl_neg1_static (4,326 MB / 2,828 files)"
+  full22_shared:
+    base: $STATE/romp/candidate-si-refit/run-state/full22
+    members: [bfcl_full_shared, bfcl_full_shared_l2, bfcl_full_shared_l3, bigcodebench_full_shared, bigcodebench_full_shared_l2, bigcodebench_full_shared_l3]
+    authority: grading_host_copy
+    origin: modal
+    note: "the six *_full_shared* adapters (7,937 MB / 4,660 files)"
+  fullscale_consolidated:
+    base: $STAGE/sdfbase/fullscale/consolidated
+    # wandb/run-*/logs/debug-core.log and dose_duration/wandb/... link into ~/.cache/wandb (56 escaping links); the adapters never open them
+    exclude: [wandb]
+    authority: grading_host_copy
+    origin: modal
+    # consolidated/judge (overrefusal_items.OR_ROOTS[1], 7 files) moved WHOLE to fullscale/_retired/judge/ on 2026-10-07:
+    # outside this base, so it is no longer carried; the adapter declares the OLD root RETIRED (overrefusal_items.RETIRED_JUDGE_ROOT,
+    # inputs_retired). overrefusal_items still names this component for the root's spelling (OR_ROOTS unchanged, paperlib parity)
+    note: "petri_stats (the consolidated tree); overrefusal_items' consolidated/judge moved to fullscale/_retired/judge/ on 2026-10-07 and is retired (9,511 MB / 3,910 files on 2026-10-04, 7 of them since moved; wandb/ excluded)"
+  grade_strength:
+    base: $GRADE/strength
+    # <family>/_local_root/ (four families) holds ONLY symlinks (32, no regular file): a producer-side relocation shim whose targets
+    # are absolute (`_fetch/cluster_b/objects` inside the base; run-state/full22/sampled/controls_* outside it, in the `sampled`
+    # component) -- the manifest refuses them (link_escapes) and no adapter opens `_local_root`, so the one-time move excludes it
+    # (the move, 2026-10-06: the push refused it)
+    exclude: [_local_root]
+    authority: grading_host_copy
+    origin: grading_host
+    note: "strength_ladder: lora, lora_base2it_native, lora_base2it_native_gemma_hidose (9,668 MB / 65,587 files)"
+  hpo_r1:
+    base: ~/hpo-r1
+    # the base holds one symlink named after itself, `hpo-r1 -> $HOME//hpo-r1` (2026-09-17): an absolute target the
+    # manifest refuses (link_escapes) and a path the adapter enumerates nothing through, so the one-time move excludes it
+    # (the move, 2026-10-06: the push refused it; the pre-certification's census had not applied link_escapes to a base this large)
+    exclude: ["/hpo-r1"]
+    authority: grading_host_copy
+    origin: mixed
+    note: "hpo_logs.DEFAULT_HPO_ROOTS[hpo-r1] (12,413 MB / 158 files)"
+  full22_seedrep:
+    base: $STATE/romp/candidate-si-refit/run-state/full22
+    members: [seedrep, seedrep_battery, seedrep_battery_w26, bfcl_seedrep, bigcodebench_seedrep, gsm8k_seedrep, ifeval_seedrep, math500_seedrep, orxs_seedrep]
+    # seedrep_battery/sampled/transcripts_sampled/ holds ONLY symlinks (192, no regular file): per shard an ABSOLUTE link onto the
+    # attested store under seedrep_battery/stores/<standup>/s<N>/shard00/<attempt>/exp/transcripts_results/... -- the manifest refuses
+    # an absolute target (link_escapes; it would dangle under the relocated home tree) and seedrep_statics reads the stores by their
+    # own path (`<RS>/stores/...`), never through these aliases, so the one-time move excludes them (the move, 2026-10-06: the push refused)
+    exclude: [/seedrep_battery/sampled/transcripts_sampled]
+    authority: grading_host_copy
+    origin: mixed
+    note: "seedrep_cluster, seedrep_controls, seedrep_statics and the six *_seedrep adapters (14,673 MB / 59,481 files; the 192 absolute links of seedrep_battery/sampled/transcripts_sampled excluded)"
+  misalign_grades:
+    base: $GRADE
+    members: [misalign, misalign_16k, misalign_ladder, misalign_org, misalign_org_vendor, misalign_vendor, misalign_vendor_leak]
+    authority: grading_host_copy
+    origin: grading_host
+    note: "em_misalign.GRADE_ROOT/misalign* -- grading-host-native grading (28,177 MB / 8,029 files)"
+  sampled:
+    base: $STATE/romp/candidate-si-refit/run-state/full22/sampled
+    authority: grading_host_copy
+    origin: mixed
+    note: "sampled_static.SAMPLED_ROOT: cluster B static stores mirrored by mirror_sampled.sh + the grading host pass-2 judge stores and grades; relu_paired, sampled_controls and degeneracy_union read its report/analysis index (31,015 MB / 97,952 files)"
+  full22_regrade_siblings:
+    base: $STATE/romp/candidate-si-refit/run-state/full22
+    # the three Swap-A sibling directories of the regrade (live_two_si_grade_cache.claude-sonnet-5.jsonl beside the Haiku original and
+    # the aggregates) that lie under no other component: `grades/` is not `grades_*` (multiturn_run_state's member) and the mt4kap
+    # directory nests under arditi_allpos_mt4kap, not arditi_allpos (full22_mmlu_full's) -- the harvest-journal survey
+    # (2026-10-04). NOT read by regrade_twin alone: multiturn_grades reads
+    # grades/<model>/ (the namespace directory transfer_stats_full22_all.json declares) and arditi_allpos reads the whole mt4kap
+    # multi-turn run (goalsets/MANIFEST.json, transcripts_mt4kap_*/.../served_target.json, grades_mt4kap_*/), so the third member is the
+    # whole arditi_allpos_mt4kap directory -- widened here, never a sibling component on the same path (two claimants on one path refuse
+    # the whole window)
+    members: [grades/gemma4e4b, grades/qwen35_4b, arditi_allpos_mt4kap]
+    authority: grading_host_copy
+    origin: grading_host
+    note: "regrade_twin's Swap-A siblings + multiturn_grades' grades/<model> aggregates + arditi_allpos' mt4kap run (850 MB / 483 files; no link)"
+  grade_regrade:
+    base: $GRADE/regrade
+    # the twin root is 52.9 GB with 22,233 links that escape the base (swapA/, swapB/, canonical_export_snapshot_*/ are link farms into
+    # the home). The members are EXACTLY what the adapter opens under its root (regrade_twin.discover / WorklistA / load_harvest):
+    # README.md -- discover() refuses without it (the first declaration carried manifests/ + journal/ and would have
+    # refused every shard) -- ledger.jsonl, the eight manifests/ files of regrade_twin.MANIFEST_FILES (S_A.parquet is also the worklist)
+    # and journal/harvest/ (the .jsonl rows and their .DONE marks). Not read, so not members: manifests/_gen*/ and _parts_*/, the
+    # `*.pin-*` copies and the DIFF/GENERATION files, journal/claims_*.sqlite (4.7 GB, with a live -shm/-wal pair), journal/live|writes.
+    # tests/test_registry_store_coverage.py pins MANIFEST_FILES and journal/harvest against these members by path algebra;
+    # tests/test_registry_cluster_read.py stages a synthetic twin root through this declaration and runs the adapter's real discovery
+    members: [README.md, ledger.jsonl, manifests/S_A.parquet, manifests/S_B.parquet, manifests/drawn_rows.parquet, manifests/units_A.json, manifests/units_B.json, manifests/counts_A.json, manifests/counts_B.json, manifests/drawn_rows.meta.json, journal/harvest]
+    authority: grading_host_copy
+    origin: grading_host
+    note: "regrade_twin: the twin's README, ledger, the eight worklist and count manifests, the harvest journal (2,208 MB / 472 files; no link inside the members)"
+  relu_paired_run_state:
+    base: $STATE/romp/candidate-si-refit/run-state/full22/relu_paired
+    # /wandb: run logs the adapter never opens, whose ten `run-*/logs/debug-core.log` links point at ~/.cache/wandb -- a target
+    # that escapes the base is refused by the manifest, so the directory is excluded
+    exclude: [__pycache__, /.pytest_cache, /wandb]
+    authority: grading_host_copy
+    origin: mixed
+    note: "relu_paired.RUN_STATE_ROOT: Modal serving records, the cluster B sampled store, the grading host grades and transcripts (38,387 MB / 87,235 files; caches and wandb logs excluded)"

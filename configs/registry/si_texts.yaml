@@ -1,0 +1,199 @@
+# configs/registry/si_texts.yaml -- seed of the results registry's `si_text` table
+# `si_text`: every system instruction or constitution text an object distils or a prompted object declares; the
+# text itself lives at `source_uri`, not in the row).
+#
+# Citation convention: see models.yaml header. `si_text_sha256` is the sha256 of the EXACT rendered text bytes
+# (utf-8 of `Instruction.text`), computed 2026-09-16 on the grading host from src/sisteer/data at base_commit 1d2da110
+# (`PYTHONPATH=src .venv/bin/python -c 'from sisteer.data import instructions as I; ...'`); the
+# 16-hex prefix of each equals the `prompted_prefix_hashes` every Petri manifest pins (H8: the served path
+# verifies the SI bytes per request), which is the cross-check that these are the bytes the stores saw.
+# `si_token_count_by_model` holds only counts RECORDED in the tree (C27); every other model's count is
+# `unverified` until a CPU tokenisation pass fills it.
+#
+# Source-file shas on disk NOW (sha256sum, 2026-09-16):
+#   src/sisteer/data/instructions.py    540c9703066e14617f44ba7e2e818cd60904ab45a1761cf410bf06294803ad5c
+#   src/sisteer/data/safety_texts.py    ee14ba6d63e58d93bcd20d56c0e225d60998fabf305372bf2e0766adde206a9c
+#   src/sisteer/data/constitution_full.md 82f88c5532e4939e1f9f8494c22917f5ca38fb846dfefc97867bd72fa001c3e7
+
+schema_version: 1
+seed_of: si_text
+base_commit: 1d2da110
+source_file_sha256:
+  "src/sisteer/data/instructions.py": 540c9703066e14617f44ba7e2e818cd60904ab45a1761cf410bf06294803ad5c
+  "src/sisteer/data/safety_texts.py": ee14ba6d63e58d93bcd20d56c0e225d60998fabf305372bf2e0766adde206a9c
+  "src/sisteer/data/constitution_full.md": 82f88c5532e4939e1f9f8494c22917f5ca38fb846dfefc97867bd72fa001c3e7
+
+si_texts:
+
+  - si_id: safety_refusal
+    si_kind: safety_instruction
+    si_text_sha256: ac3a58f61d53cf2412c02b8bb56063b9683a9c1154ef1f0978efc1449a836e08
+    si_text_sha16_prefix_hash: ac3a58f61d53cf24
+    source_uri: "src/sisteer/data/instructions.py::SAFETY_SI (l.200-209; Instruction id 'safety_refusal', category 'safety') @ 1d2da110"
+    length: {chars: 419, words: 66}
+    si_token_count_by_model:
+      llama8b_it: unverified
+      gemma4e4b_it: unverified
+      qwen35_4b_it: unverified
+      nemotron3nano4b: unverified
+      qwen35_35b_a3b: unverified     # paper-companion-repo pipeline test: the count lands here from stage 02's tokenisation, with its source
+      gemma4_31b: unverified         # the gemma arm of the same pipeline test (served id gemma4_31b); stage 02 (--dry-run elsewhere) fills it
+    first_used_utc: unverified
+    producer_spellings: [safety_refusal, safety, si_safety, "prompted__safety_refusal", "prompted__safety", A1, safety_a1, "safety_refusal__psr_kl_all", "safety_refusal__lora_r4", "safety_refusal__lora_r1_all"]
+    used_by_objects: "the two-SI distilled objects safety_refusal__{psr_kl_all, lora_r4 | lora_r1_all} (fit_teacher_si_id); the prompted cell prompted__safety_refusal (paper_label safety_si)"
+    notes: "Instruction A1 -- 'both the prompted AND fitted safety arms use instruction A1 -- verified by cell id across all 4,798 loaded rows' (paperlib ARMS si_safety note, CORRECTED 2026-09-11). A1 is a KNOWN-SUBOPTIMAL baseline (front 3 of 5 in the candidate-SI sweep); re-basing on the sweep winner A10 flips the prompted-vs-fitted ordering (paperlib note; limitations section). Its `anti_text` (pseudo-SI `anti_safety_refusal`, configs/two_si.yaml l.1222) is NOT a system instruction and has no row. Not in instructions.BY_ID (SAFETY_SI is a module-level Instruction; the REGISTRY lists it separately) -- the adapter must resolve it through the module attribute, not BY_ID."
+    source:
+      sha256: "computed 2026-09-16 from SAFETY_SI.text; cross-check configs/capeval/manifests/petri_full22_gemma4e4b.yaml prompted_prefix_hashes.safety = ac3a58f61d53cf24"
+      producer_spellings: "configs/two_si.yaml si_ids (l.28); configs/capeval/manifests/petri_full22_gemma4e4b.yaml header ('safety_refusal <-> safety'); paperlib/config.py ARMS si_safety (cell_id prompted__safety_refusal); scripts/sdfbase/math500/cells.py HARNESS_BY_CELL CELL_PROMPTED 'prompted__safety'"
+
+  - si_id: si_constitution
+    si_kind: constitution_short
+    si_text_sha256: 21e06f482a6559b39309c4f1128f0411230c88e02b3a9eaa7b5d50829e6a9a0f
+    si_text_sha16_prefix_hash: 21e06f482a6559b3
+    source_uri: "src/sisteer/data/safety_texts.py::CONSTITUTION_PROMPT (l.533; '\\n\\n'.join of CONSTITUTION_SECTIONS, each under its published section heading) registered as instructions.py SAFETY_SIS id 'si_constitution' (l.415-421) @ 1d2da110; normative assembled copy $WORK/two-si-comparison/constitution_si.md (tests/test_constitution_si.py asserts byte identity to its fenced block)"
+    length: {chars: 30952, words: 4896}
+    si_token_count_by_model:
+      llama8b_it: {count: 5872, confidence: recorded, source: "safety_texts.py CONSTITUTION_SI_TOKENS 5872 (l.385): meta-llama/Llama-3.1-8B-Instruct tokenizer @ 0e9e39f249a16976918f6564b8830bc894c89659, add_special_tokens=False; rendered as a teacher chat prompt (system=CONSTITUTION_PROMPT) it is 5,908 tokens BEFORE the user text (l.388-389)"}
+      gemma4e4b_it: unverified
+      qwen35_4b_it: unverified
+      nemotron3nano4b: unverified
+      qwen35_35b_a3b: unverified     # paper-companion-repo pipeline test: the count lands here from stage 02's tokenisation, with its source
+      gemma4_31b: unverified         # the gemma arm of the same pipeline test (served id gemma4_31b); stage 02 (--dry-run elsewhere) fills it
+    first_used_utc: "2026-08-18 (fetched / measured; safety_texts.py l.383 'Measured on the assembled CONSTITUTION_PROMPT (2026-08-18)')"
+    producer_spellings: [si_constitution, constitution, "prompted__si_constitution", "prompted__constitution", constitution_b3 (candsi B3 is a DIFFERENT text), "si_constitution__psr_kl_all", "si_constitution__lora_r1_all"]
+    used_by_objects: "the two-SI distilled objects si_constitution__{psr_kl_all, lora_r1_all}; the prompted cell prompted__si_constitution (paper_label constitution_si; Petri grammar prompted__constitution)"
+    notes: "A COMPRESSED EXCERPT of Anthropic's constitution (https://www.anthropic.com/constitution, CC0 1.0, fetched 2026-08-18): eight sections, excerpted one contiguous run each ('Claude's core values', 'Balancing helpfulness with other values', 'Being honest', 'The costs and benefits of actions', 'Avoiding harm', 'Safe behaviors', ...), sized under the 5,000-word budget; 'never described as the constitution' (instructions.py l.459-460). Prose elsewhere quotes '~5.9-6.7k tokens' (paperlib ARMS si_constitution note) and '~6-6.7k': the ONLY recorded count is the Llama 5,872; the upper figures are presumably other tokenizers, unrecorded (README known gaps)."
+    source:
+      sha256: "computed 2026-09-16 from instructions.BY_ID['si_constitution'].text; cross-check Petri manifest prompted_prefix_hashes.constitution = 21e06f482a6559b3"
+      provenance: "safety_texts.py PROVENANCE['CONSTITUTION_PROMPT'] (l.718-724: 'Measured: 4,896 words / 30,952 chars / 5,872 Llama-3.1 tokens')"
+
+  - si_id: si_constitution_full
+    si_kind: constitution_full
+    si_text_sha256: 82f88c5532e4939e1f9f8494c22917f5ca38fb846dfefc97867bd72fa001c3e7
+    si_text_sha16_prefix_hash: 82f88c5532e4939e
+    source_uri: "src/sisteer/data/constitution_full.md (vendored BYTE-FOR-BYTE from the constitution corpus project's constitution/constitution.md; the text IS the file, trailing newline included) registered as instructions.py CONSTITUTION_FULL_SIS id 'si_constitution_full' (l.494-503) @ 1d2da110; CONSTITUTION_FULL_SHA256 asserted at import (l.475, l.480-489)"
+    length: {chars: 182219, words: 28977}
+    si_token_count_by_model:
+      llama8b_it: {count: 33980, confidence: recorded, source: "instructions.py CONSTITUTION_FULL_TOKENS 33980 (l.477): meta-llama/Llama-3.1-8B-Instruct tokenizer, raw text, no specials; the lane's window arithmetic rests on a 33,997-token rendered-input figure (l.467-468); served at a 45,056 window (paperlib ARMS si_constitution_full note)"}
+      gemma4e4b_it: unverified
+      qwen35_4b_it: unverified
+      nemotron3nano4b: unverified
+      qwen35_35b_a3b: unverified     # paper-companion-repo pipeline test: the count lands here from stage 02's tokenisation, with its source
+      gemma4_31b: unverified         # the gemma arm of the same pipeline test (served id gemma4_31b); stage 02 (--dry-run elsewhere) fills it
+    first_used_utc: "2026-09-10 (sdfbase-llama8b lane; instructions.py l.458 heading)"
+    producer_spellings: [si_constitution_full, "prompted__si_constitution_full", constitution_full, fullconst, llama8b_fullconst (view)]
+    used_by_objects: "the prompted passthrough cell prompted__si_constitution_full (paper_label constitution_si_full), on the Llama fullconst view alone (static + BoN + capability); no distilled object"
+    notes: "39 sections, 28,977 words, 33,980 raw Llama-3.1 tokens -- the REAL document, a different arm from si_constitution, not a spelling of it (paperlib ARMS: 'the id prompted__si_constitution_full exists in no repo, no roster and no store; it was mine' -- caught 2026-09-11 -- then registered on main 2026-09-10 by the llama8b lane per instructions.py; the two dates are both in the tree). The file sha equals the text sha (the text is the file)."
+    source:
+      sha256: "sha256sum src/sisteer/data/constitution_full.md (2026-09-16) == instructions.CONSTITUTION_FULL_SHA256 == sha256(Instruction.text utf-8) computed 2026-09-16"
+
+  - si_id: si_irrelevant
+    si_kind: irrelevant_control
+    si_text_sha256: 71ff67aa2bc000f12f58130130f2656194b21e4cb3f9f4a9fb729112efdacbcc
+    si_text_sha16_prefix_hash: 71ff67aa2bc000f1
+    source_uri: "src/sisteer/data/safety_texts.py::IRRELEVANT_PROMPT (l.560, 'Measures before the metre') registered as instructions.py IRRELEVANT_SIS id 'si_irrelevant' (l.446-452, category 'control') @ 1d2da110; normative copy $WORK/two-si-stage3/irrelevant_si.md (approved 2026-08-19)"
+    length: {chars: 30407, words: 4930}
+    si_token_count_by_model:
+      llama8b_it: {count: 6380, confidence: recorded, source: "safety_texts.py PROVENANCE['IRRELEVANT_PROMPT'] (l.726-731): 'Measured: 4,930 words / 30,407 chars / 6,380 Llama-3.1 tokens (meta-llama/Llama-3.1-8B-Instruct @ 0e9e39f2, add_special_tokens=False)'"}
+      gemma4e4b_it: unverified
+      qwen35_4b_it: unverified
+      nemotron3nano4b: unverified
+      qwen35_35b_a3b: unverified     # paper-companion-repo pipeline test: the count lands here from stage 02's tokenisation, with its source
+      gemma4_31b: unverified         # the gemma arm of the same pipeline test (served id gemma4_31b); stage 02 (--dry-run elsewhere) fills it
+    first_used_utc: "2026-08-19 (approved)"
+    producer_spellings: [si_irrelevant, irrelevant, "prompted__si_irrelevant", irrelevant_c16 (candsi C16 is a DIFFERENT text), "si_irrelevant__psr_kl_all", "si_irrelevant__lora_r1_all"]
+    used_by_objects: "the two-SI distilled objects si_irrelevant__{psr_kl_all, lora_r1_all} (paper_label other / object_role irrelevant)"
+    notes: "An original descriptive history of the metre written for the two-si-stage3 irrelevant-SI control (no external source text), length- and structure-matched to si_constitution, so a constitution-vs-irrelevant gap separates safety CONTENT from the off-policy push of any long instruction (instructions.py l.435-441)."
+    source:
+      sha256: "computed 2026-09-16 from instructions.BY_ID['si_irrelevant'].text; cross-check Petri manifest prompted_prefix_hashes.irrelevant = 71ff67aa2bc000f1"
+
+# Texts registered in src/sisteer/data/instructions.py that NO in-scope object distils and NO prompted paper cell
+# declares -- listed so an SI hash met in a manifest can be NAMED (the adapter refuses an unknown hash by name);
+# their si_kind is outside the spec's four values (README vocabulary note).
+reference_texts:
+  - si_id: si_caa
+    si_kind: reference_other
+    si_text_sha256: 896150808feb4a1e6839d69ba8f4e5667c311fc4d220e30267e414055fd40a44
+    source_uri: "src/sisteer/data/safety_texts.py::CAA_PROMPT (l.644: 'You are a helpful, honest and concise assistant.') registered as instructions.py SAFETY_SIS id 'si_caa' (l.423-429)"
+    length: {chars: 48, words: 8}
+    si_token_count_by_model: unverified
+    notes: "the CAA paper's system prompt; not used by any in-scope object"
+
+# The candidate-SI teachers of the `candsi__{A10,B3,C16}__*` objects (KL distillations from a candidate
+# system instruction, NOT document corpora). Their texts are NOT on main: they live in the
+# candidate-SI screen's frozen snapshot (`sisteer.data.candidate_sis` on the candidate-si-refit lineage reads it under
+# SISTEER_LOAD_CANDIDATE_SIS; the roster's candsi lane flag is OFF, so no full22 cell SERVES them -- they are teachers of
+# fitted objects, never prompted cells). Each row carries a `text_source` block naming the snapshot (home-relative path,
+# `$SISTEER_CANDIDATE_SIS` override, the snapshot FILE's sha256, the entry id): adapters/si_text.py re-verifies the text sha
+# against it when the file is present (file sha first) and refuses a mismatch; when absent, the row loads with its
+# seeded sha and `field_confidence_json.si_text_sha256` says it was not re-verified on that host. Shas computed
+# 2026-09-17 on the grading host (`hashlib.sha256(entry["text"].encode("utf-8"))`) from the snapshot at file sha256
+# ba8efe82ece5a35a97e558e31ca9c2660c220bc3677a02193e4b4a126560d60e (346,366 bytes, 60 entries); the snapshot's own
+# cross-check entries hash to exactly the rows above (A1 == safety_refusal ac3a58f6..., B2 == si_constitution 21e06f48...,
+# C3 == si_irrelevant 71ff67aa...), which is the evidence that its convention is this file's. `si_kind` follows the
+# snapshot's `category` (A safety / B constitution / C irrelevant), the same map the paper's four texts use.
+candidate_texts:
+  - si_id: A10
+    si_kind: safety_instruction
+    si_text_sha256: f1f8f930191123e96ee55b39e81c654d617ef9bd820a3e4ad6ce863c9746d64b
+    si_text_sha16_prefix_hash: f1f8f930191123e9
+    source_uri: "$STATE/run-state/candidate_sis.snapshot.json::system_instructions[id=A10].text (file sha256 ba8efe82ece5a35a97e558e31ca9c2660c220bc3677a02193e4b4a126560d60e); sisteer.data.candidate_sis.DEFAULT_SNAPSHOT on the candidate-si-refit lineage -- NOT on main"
+    text_source: {kind: candidate_sis_snapshot, path: "$STATE/run-state/candidate_sis.snapshot.json", env: SISTEER_CANDIDATE_SIS, file_sha256: ba8efe82ece5a35a97e558e31ca9c2660c220bc3677a02193e4b4a126560d60e, entry_id: A10}
+    length: {chars: 518, words: 86}
+    si_token_count_by_model: unverified
+    first_used_utc: unverified
+    producer_spellings: [A10, candsi__A10, "candsi__A10__lora_r4", "candsi__A10__psr_kl_all"]
+    used_by_objects: "the 8 candsi__A10__{lora_r4, psr_kl_all} objects under $STAGE/sdfbase/full22_objects/<model>/cells/ (fit_teacher_si_id A10; 24 candsi objects over A10 / B3 / C16); no prompted cell"
+    notes: "Candidate-SI screen entry A10: category safety, family hierarchy_attack_shaped, length_bucket medium, snapshot note 'ATTACK-SHAPED to grok420 (refuse-then-invert). Expect overfit; analyze separately from A6-A9.' The safety category's sweep winner (paperlib ARMS si_safety note: re-basing on A10 flips the prompted-vs-fitted ordering; limitations section)."
+    source:
+      sha256: "computed 2026-09-17 from the snapshot entry's text (utf-8) at snapshot file sha256 ba8efe82...; not cross-checked against any manifest prefix hash (no full22 cell serves A10)"
+      si_kind: "snapshot entry category 'safety' (candidate_sis.CATEGORY_BY_PREFIX A -> safety)"
+      si_token_count_by_model: {value: unverified, reason: "no tokenizer count recorded for the candidate texts (README known gaps 14)"}
+      first_used_utc: {value: unverified, reason: "the candsi fits' dates are on the objects' train_budget_meta.json, not recorded per text"}
+  - si_id: B3
+    si_kind: constitution_short
+    si_text_sha256: 74cd1adfbe5d0ccffe6e09331dfe6bd6877eecf140b7538f354b02732dcbbfe6
+    si_text_sha16_prefix_hash: 74cd1adfbe5d0ccf
+    source_uri: "$STATE/run-state/candidate_sis.snapshot.json::system_instructions[id=B3].text (file sha256 ba8efe82ece5a35a97e558e31ca9c2660c220bc3677a02193e4b4a126560d60e); sisteer.data.candidate_sis.DEFAULT_SNAPSHOT on the candidate-si-refit lineage -- NOT on main"
+    text_source: {kind: candidate_sis_snapshot, path: "$STATE/run-state/candidate_sis.snapshot.json", env: SISTEER_CANDIDATE_SIS, file_sha256: ba8efe82ece5a35a97e558e31ca9c2660c220bc3677a02193e4b4a126560d60e, entry_id: B3}
+    length: {chars: 976, words: 166}
+    si_token_count_by_model: unverified
+    first_used_utc: unverified
+    producer_spellings: [B3, candsi__B3, "candsi__B3__lora_r4", "candsi__B3__psr_kl_all", constitution_b3]
+    used_by_objects: "the 8 candsi__B3__{lora_r4, psr_kl_all} objects under $STAGE/sdfbase/full22_objects/<model>/cells/ (fit_teacher_si_id B3); no prompted cell. `constitution_b3` in si_constitution's producer_spellings is flagged there as a DIFFERENT text -- this is that text."
+    notes: "Candidate-SI screen entry B3: category constitution, family values_and_why, length_bucket medium, snapshot note 'compression that carries the priority structure and its rationale' (a 166-word compression, vs si_constitution's 4,896 words -- si_kind constitution_short is the closest controlled value; it is a compression of the constitution, not the excerpt si_constitution is)."
+    source:
+      sha256: "computed 2026-09-17 from the snapshot entry's text (utf-8) at snapshot file sha256 ba8efe82..."
+      si_kind: "snapshot entry category 'constitution' (candidate_sis.CATEGORY_BY_PREFIX B -> constitution); 'short' because it is a compression far below si_constitution's length"
+      si_token_count_by_model: {value: unverified, reason: "no tokenizer count recorded for the candidate texts"}
+      first_used_utc: {value: unverified, reason: "the candsi fits' dates are on the objects' train_budget_meta.json, not recorded per text"}
+  - si_id: C16
+    si_kind: irrelevant_control
+    si_text_sha256: ba214825889190f8b83ab705187e4eeb66174da3c4af36f95fd60d77e34d139a
+    si_text_sha16_prefix_hash: ba214825889190f8
+    source_uri: "$STATE/run-state/candidate_sis.snapshot.json::system_instructions[id=C16].text (file sha256 ba8efe82ece5a35a97e558e31ca9c2660c220bc3677a02193e4b4a126560d60e); sisteer.data.candidate_sis.DEFAULT_SNAPSHOT on the candidate-si-refit lineage -- NOT on main"
+    text_source: {kind: candidate_sis_snapshot, path: "$STATE/run-state/candidate_sis.snapshot.json", env: SISTEER_CANDIDATE_SIS, file_sha256: ba8efe82ece5a35a97e558e31ca9c2660c220bc3677a02193e4b4a126560d60e, entry_id: C16}
+    length: {chars: 517, words: 74}
+    si_token_count_by_model: unverified
+    first_used_utc: unverified
+    producer_spellings: [C16, candsi__C16, "candsi__C16__lora_r4", "candsi__C16__psr_kl_all", irrelevant_c16]
+    used_by_objects: "the 8 candsi__C16__{lora_r4, psr_kl_all} objects under $STAGE/sdfbase/full22_objects/<model>/cells/ (fit_teacher_si_id C16); no prompted cell. `irrelevant_c16` in si_irrelevant's producer_spellings is flagged there as a DIFFERENT text -- this is that text."
+    notes: "Candidate-SI screen entry C16: category irrelevant, family comparisons_and_recommendations, length_bucket short, snapshot note 'Benign presentation instruction for comparisons; preserves nuance and permits a recommendation.'"
+    source:
+      sha256: "computed 2026-09-17 from the snapshot entry's text (utf-8) at snapshot file sha256 ba8efe82..."
+      si_kind: "snapshot entry category 'irrelevant' (candidate_sis.CATEGORY_BY_PREFIX C -> irrelevant)"
+      si_token_count_by_model: {value: unverified, reason: "no tokenizer count recorded for the candidate texts"}
+      first_used_utc: {value: unverified, reason: "the candsi fits' dates are on the objects' train_budget_meta.json, not recorded per text"}
+
+# Known-but-unresolvable here (README known gaps):
+#   * candidate-SI texts A1 / A2 and the other 54 screen entries (`candsi` lane): loaded from the snapshot above under the
+#     env-guarded loader SISTEER_LOAD_CANDIDATE_SIS -> sisteer.data.candidate_sis on the candidate-si-refit lineage (origin/
+#     candidate-si-refit), NOT on main (configs/sdfbase_full22_roster.yaml lane_flags.candsi.blocker); the lane flag is
+#     OFF, so no full22 cell serves them. A1 IS safety_refusal (paperlib: 'both ... use instruction A1'; the snapshot's A1
+#     hashes to its sha). A10 / B3 / C16 -- the three that objects distil -- are rows (`candidate_texts` above); the
+#     other entries have no object and no row, so their prefix hashes met in a manifest REFUSE by name.
+#   * the document-corpus pseudo-instructions (constv2-mix-full, constv2ctl2-full, ...): registered through the SI slot
+#     of the `<si>__<arm>` cell grammar (instructions.py l.505-520) but 'NOT system instructions: their text is never
+#     rendered into any example ... never used as a prompted baseline' -- they are `fit_corpus_id` values on `object`,
+#     not `si_text` rows (fit_target_kind corpus_document_fit).
+#   * anti_safety_refusal (SAFETY_SI.anti_text): a pseudo-SI id used only as the two_si generation's `neg`; not a row.

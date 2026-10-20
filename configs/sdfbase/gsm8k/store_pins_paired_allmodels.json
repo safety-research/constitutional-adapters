@@ -1,0 +1,18 @@
+{
+ "_meta": {
+  "schema": "g8k_store_pins/2",
+  "label": "paired_allmodels (paired_allmodels_rows.json: ReLU's paired-write difference ReLU on gemma4e4b it / llama8b it / nemotron3nano4b main + nemotron3nano4b x constitution PSR; wave root exp/gsm8k_paired200_paper_objects_paired_allmodels)",
+  "written": "2026-09-22",
+  "note": "one trial per model under the default Inspect seed rule (the appendix column's instrument); thinking ON (gemma / nemotron, thinking_card) or not_available (llama, card); 8,192 base + the 16,384 rung at the 1 % at-cap trigger; cluster A, high, 1 GPU per row. Accuracies in gen_stats.json are over SCORED items; the item-wise final state (final_state_paired_allmodels.json) is the value's source. Per-leg pins: the reader binds each store to its own producer tree.",
+  "refused": {
+   "nemotron3nano4b/main/constv2-mix-full__psr_ce_all@8192": {
+    "RESULT": "2026-09-22T05:28:09+00:00 job=596511 array=1 row=1 g8k-nemotron3nano4b-main-mix-psr g8k nemotron3nano4b main constv2-mix-full__psr_ce_all rung=8192 fitted=1 declared=0 attempt=a1 rc=2 driver_rc=1 result=DRIVER_FAILED",
+    "tree": "a85369ce08d88d0baefeb6fa465b49c416afe596"
+   }
+  }
+ },
+ "gemma4e4b/it/constv2-mix-full__psr_ce_all_minus_ctl@8192": "a85369ce08d88d0baefeb6fa465b49c416afe596",
+ "llama8b/it/constv2-mix-full__psr_ce_all_minus_ctl@16384": "a85369ce08d88d0baefeb6fa465b49c416afe596",
+ "llama8b/it/constv2-mix-full__psr_ce_all_minus_ctl@8192": "a85369ce08d88d0baefeb6fa465b49c416afe596",
+ "nemotron3nano4b/main/constv2-mix-full__psr_ce_all_minus_ctl@8192": "a85369ce08d88d0baefeb6fa465b49c416afe596"
+}

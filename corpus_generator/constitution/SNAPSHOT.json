@@ -1,0 +1,19 @@
+{
+ "url": "https://www.anthropic.com/constitution",
+ "fetched_at": "2026-09-01T01:56:20+00:00",
+ "words": 28756,
+ "chars": 181698,
+ "md_chars": 182219,
+ "sha256": "82f88c5532e4939e1f9f8494c22917f5ca38fb846dfefc97867bd72fa001c3e7",
+ "n_sections": 39,
+ "cross_check": {
+  "reference": "~/const.txt",
+  "reference_words": 22518,
+  "extracted_words": 28756,
+  "word_ratio": 1.277,
+  "reference_blocks_checked": 358,
+  "reference_blocks_missing": 0,
+  "chrome_lines_skipped": 3,
+  "ok": true
+ }
+}

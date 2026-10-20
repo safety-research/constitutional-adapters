@@ -1,0 +1,891 @@
+# configs/registry/models.yaml -- seed of the results registry's `model` table (spec
+# `model`; `adapters/dimensions.py`).
+#
+# ONE ROW PER CHECKPOINT AT A PINNED REVISION: the closure over every model an in-scope object or run references
+# the paper's eight (four families as instruct + base, nemotron chat, GLM descoped) PLUS the
+# two-SI-era fit models and the HPO model, each `paper_status: reference`.
+#
+# CITATION CONVENTION (every file under configs/registry/): every value carries `source:` = file path + symbol or
+# line (repo-relative, at base commit origin/main 1d2da110), or a ruling id / date. A value that is
+# INFERRED rather than read from a record carries `confidence: inferred` and `inferred_reason:`; a value nobody has
+# recorded is the literal string `unverified` (admitted only with a reason).
+#
+# SCHEMA NOTES (for the adapter, not resolved here):
+#   * `chat_template_sha256` in the spec is a 64-hex sha256 of the template bytes; what the tree RECORDS everywhere
+#     (configs/sdfbase_full22_pins.json, every Petri manifest, endpoint.json) is `sisteer.models.chat_template_hash`,
+#     a 16-hex `sha256_hex16` digest. Seeded here as `chat_template_hash16`; the 64-hex column is `unverified` until
+#     a tokenizer read fills it (the grading host CPU pass, no GPU).
+#   * `family` vocabulary in the spec is {gemma4, qwen35, nemotron3, llama31, glm46v}; the closure needs THREE more
+#     values (qwen36 for the attacker, qwen38 for the HPO model, llama32 for the two-SI 3B model) -- listed in
+#     README.md "known gaps" as vocabulary additions, never silently folded into a neighbour.
+#   * `generation_config_json` is the VERBATIM shipped file's sampler keys as pinned in
+#     configs/sdfbase_shipped_generation_config.json (read on cluster A 2026-09-11; sha256 + etag recorded there);
+#     this seed never re-reads the cluster (task rule: no ssh).
+#   * `hf_revision` is the 40-hex snapshot sha; `unverified` where no pin exists in the tree.
+
+schema_version: 1
+seed_of: model
+base_commit: 1d2da110   # origin/main the checkout was cut from (git log -1, 2026-09-16)
+
+models:
+
+  # ------------------------------------------------------------------ the four paper families: served checkpoints
+  - model_id: gemma4e4b_it
+    family: gemma4
+    size_label: E4B
+    checkpoint_kind: instruct
+    hf_repo: google/gemma-4-E4B-it
+    hf_revision: ee0ef6023621cff504d758262d4e04895a5af4a2
+    mirror_of: null
+    chat_template_hash16: 0a2c8073c878ab1d
+    chat_template_sha256: unverified
+    chat_template_note: "gemma-4 is multimodal (Gemma4ForConditionalGeneration); served with --chat-template-content-format string so the system block stays on the template's string branch; tool parser `gemma4`; thinking header identical ON and OFF"
+    tokenizer_sha256: unverified
+    generation_config_present: 1
+    generation_config_json: {temperature: 1.0, top_p: 0.95, top_k: 64, do_sample: true}
+    generation_config_file_sha256: d4226bbe3117d2d253ba4609720ba82c6c4ce4627a9a6ae05387c78983ac03de
+    generation_config_source_utc: "2026-09-11"
+    thinking_channel: available
+    thinking_header_moves: 0
+    architecture_note: null
+    paper_status: in_paper
+    paper_status_ruling_id: null
+    producer_spellings: [gemma4e4b, gemma4e4b_it, gemma4e4b-f22, gemma4e4b-f22it, gemma4e4b-sdfbase, gemma4e4b-sdfbase-main, gemma4e4b-sdfbase-it, gemma4e4b-x2, gemma4e4b-nors]
+    notes: "Lane key `gemma4e4b` names where the object was FIT (the base checkpoint) and `gemma4e4b_it` the instruct-direct fit; BOTH are served on this checkpoint."
+    source:
+      hf_repo_revision: "src/sisteer/capeval/tinycap/contracts.py::_GEMMA4E4B (l.7617-7618); configs/sdfbase_sampled_decode.yaml presets.gemma4e4b; configs/sdfbase_full22_*.yaml model_revision (157 occurrences)"
+      chat_template_hash16: "configs/capeval/manifests/petri_full22_gemma4e4b.yaml `chat_template_hash`; configs/*pins*.json (3 occurrences)"
+      chat_template_note: "configs/capeval/manifests/petri_full22_gemma4e4b.yaml header"
+      generation_config: "configs/sdfbase_shipped_generation_config.json models['google/gemma-4-E4B-it'] (state present, read <host> + hub 2026-09-11)"
+      thinking_channel: "src/sisteer/capeval/tinycap/contracts.py::_GEMMA4E4B thinking_modes=(off, on); thinking header identical ON and OFF"
+      paper_status: "the authors"
+
+  - model_id: gemma4e4b_base
+    family: gemma4
+    size_label: E4B
+    checkpoint_kind: base
+    hf_repo: google/gemma-4-E4B
+    hf_revision: 411aa17b749aa952df1359d2dcea73917a544d9a
+    mirror_of: null
+    chat_template_hash16: unverified
+    chat_template_sha256: unverified
+    chat_template_note: "fit checkpoint only (base-to-instruct transfer objects are FIT here and SERVED on gemma4e4b_it); never stood up"
+    tokenizer_sha256: unverified
+    generation_config_present: unverified
+    generation_config_json: null
+    generation_config_source_utc: null
+    thinking_channel: not_available
+    thinking_header_moves: null
+    architecture_note: null
+    paper_status: in_paper
+    paper_status_ruling_id: null
+    producer_spellings: ["gemma4e4b (fit-lane key)", "google/gemma-4-E4B", base_hf]
+    notes: "The `main` view of the gemma4e4b roster serves objects fit on this checkpoint (transfer_kind base_to_instruct)."
+    source:
+      hf_repo_revision: "configs/sdfbase_gemma4e4b_base_fits.yaml l.19-20 (model / model_revision); src/sisteer/capeval/tinycap/contracts.py ModelRow gemma4e4b-sdfbase / gemma4e4b-f22 base_hf='google/gemma-4-E4B' (l.7968, 8000)"
+      thinking_channel:
+        value_source: "inferred: a base checkpoint has no chat template switch"
+        confidence: inferred
+      paper_status: "adapters/dimensions.py: the paper's eight (gemma4e4b_it, gemma4e4b_base, ...)"
+
+  - model_id: qwen35_4b_it
+    family: qwen35
+    size_label: 4B
+    checkpoint_kind: instruct
+    hf_repo: Qwen/Qwen3.5-4B
+    hf_revision: 851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a
+    mirror_of: null
+    chat_template_hash16: a4aee8afcf2e0711
+    chat_template_sha256: unverified
+    chat_template_note: "thinking header MOVES between ON and OFF renders, so thinking-ON is refused for fitted cells unless the object is header-located; served render pinned thinking-OFF via THINKING_OFF_TEMPLATE_KWARGS '{\"enable_thinking\": false}'"
+    tokenizer_sha256: unverified
+    generation_config_present: 0
+    generation_config_json: null
+    generation_config_source_utc: "2026-09-11"
+    generation_config_absence_evidence: "cohort cache .no_exist/851bf6e8.../generation_config.json marker; hub file listing (14 files) lacks it; GET -> 404 (the grading host anonymous 2026-09-11)"
+    thinking_channel: available
+    thinking_header_moves: 1
+    architecture_note: null
+    paper_status: in_paper
+    paper_status_ruling_id: null
+    producer_spellings: [qwen35_4b, qwen35_4b_it, qwen35_4b-f22, qwen35_4b-f22it, qwen35_4b-sdfbase-main, qwen35_4b-sdfbase-it]
+    notes: "Ships NO generation_config.json: the vLLM server default is composed from contracts.SERVER_DEFAULT_SAMPLING_BY_MODEL (--override-generation-config, PR #34, 2026-09-11). Repo name carries no -Instruct suffix; it is the hybrid-thinking post-trained checkpoint (the base is Qwen/Qwen3.5-4B-Base)."
+    source:
+      hf_repo_revision: "src/sisteer/capeval/tinycap/contracts.py IFEVAL_MODEL_PINS['qwen35_4b'] (l.7638); ModelRow qwen35_4b (l.7949-7950); configs/sdfbase_sampled_decode.yaml presets.qwen35_4b"
+      chat_template_hash16: "configs/capeval/manifests/petri_full22_qwen35_4b.gsm8k.yaml `chat_template_hash`; configs/*pins*.json"
+      chat_template_note: "src/sisteer/capeval/tinycap/contracts.py::THINKING_OFF_TEMPLATE_KWARGS (l.11541)"
+      generation_config: "configs/sdfbase_shipped_generation_config.json models['Qwen/Qwen3.5-4B'] state ships_none"
+      thinking_header_moves: "src/sisteer/capeval/tinycap/contracts.py::THINKING_HEADER_MOVES_EXPECTED (l.9610)"
+      checkpoint_kind:
+        value_source: "contracts.py ModelRow qwen35_4b-f22 base_hf='Qwen/Qwen3.5-4B-Base' (l.8013) -- the base is a separate repo, so this one is the post-trained checkpoint"
+        confidence: inferred
+
+  - model_id: qwen35_4b_base
+    family: qwen35
+    size_label: 4B
+    checkpoint_kind: base
+    hf_repo: Qwen/Qwen3.5-4B-Base
+    hf_revision: 1001bb4d826a52d1f399e183466143f4da7b741b
+    mirror_of: null
+    chat_template_hash16: unverified
+    chat_template_sha256: unverified
+    chat_template_note: "fit checkpoint only; the eb64 replicate fits and the full22 `main` view objects are fit here and served on qwen35_4b_it"
+    tokenizer_sha256: unverified
+    generation_config_present: unverified
+    generation_config_json: null
+    generation_config_source_utc: null
+    thinking_channel: not_available
+    thinking_header_moves: null
+    architecture_note: null
+    paper_status: in_paper
+    paper_status_ruling_id: null
+    producer_spellings: ["qwen35_4b (fit-lane key)", "Qwen/Qwen3.5-4B-Base", qwen35_4b_base_eb64_s1, qwen35_4b_base_eb64_s2, qwen35_4b_base_eb64_s3]
+    notes: "Bank keys `qwen35_4b_base_eb64_s<s>` name this checkpoint at effective batch 64, seeds s1..s3."
+    source:
+      hf_repo_revision: "configs/sdfbase_qwen35_4b_base_fits.yaml l.19-20 (model / model_revision); contracts.py ModelRow qwen35_4b-f22 base_hf (l.8013)"
+      thinking_channel:
+        value_source: "inferred: base checkpoint"
+        confidence: inferred
+      producer_spellings: "bank paths qwen35_4b_base_eb64_s<s>"
+
+  - model_id: nemotron3nano4b
+    family: nemotron3
+    size_label: 4B
+    checkpoint_kind: chat
+    hf_repo: nvidia/NVIDIA-Nemotron-3-Nano-4B-BF16
+    hf_revision: dfaf35de3e30f1867dd8dbc38a7fc9fb52d3914f
+    mirror_of: null
+    chat_template_hash16: ab7813c3abdd9cb6
+    chat_template_sha256: unverified
+    chat_template_note: "a thinking header is REFUSED by the server on the served (thinking-OFF) render; GSM8K / MATH-500 legs run it thinking-ON under the thinking_card row (contracts.THINKING_SAMPLING_BY_MODEL_KEY has a nemotron row)"
+    tokenizer_sha256: unverified
+    generation_config_present: 1
+    generation_config_json: {temperature: 1.0, top_p: 0.95}
+    generation_config_file_sha256: 4892b7a6418b50ad6854010881854d536c3efff148324455ad6535061aad28c5
+    generation_config_source_utc: "2026-09-11"
+    generation_config_note: "_from_model_config: true (transformers derived it from config.json at save time -- still the shipped file); no do_sample, no top_k, no penalty key"
+    thinking_channel: available
+    thinking_header_moves: unverified
+    architecture_note: "hybrid Mamba (NemotronH): fused mamba-ssm / causal-conv1d kernels REQUIRED, prefix caching OFF, --mamba-ssm-cache-dtype float32; hybrid concurrency ceiling measured (HYBRID_WINDOW_SEQS_CEILINGS 167 seqs at window 4608, job 483254_2)"
+    paper_status: in_paper
+    paper_status_ruling_id: null
+    producer_spellings: [nemotron3nano4b, nemotron_h, nemotron3nano4b-sdfbase-main]
+    notes: "Chat checkpoint only: no base/instruct pair, no transfer view (paperlib MODELS lane_kind chat-ckpt, transfer_view None)."
+    source:
+      hf_repo_revision: "contracts.py IFEVAL_MODEL_PINS['nemotron3nano4b'] (l.7639); ModelRow nemotron3nano4b (l.8022-8023); configs/sdfbase_sampled_decode.yaml presets.nemotron3nano4b"
+      chat_template_hash16: "configs/capeval/manifests/petri_full22_nemotron3nano4b.gsm8k.yaml `chat_template_hash`; configs/*pins*.json"
+      generation_config: "configs/sdfbase_shipped_generation_config.json models['nvidia/NVIDIA-Nemotron-3-Nano-4B-BF16'] (state present; note _from_model_config)"
+      architecture_note: "configs/sdfbase_full22_roster.yaml controls_window.source (HYBRID_WINDOW_SEQS_CEILINGS)"
+      thinking_channel: "capability table: GSM8K thinking-card rows (... Nemotron 1.0/0.95) ON; Petri row off (server pin; Nemotron header refused)"
+      checkpoint_kind: "paper/paperlib/config.py MODELS['nemotron3nano4b'] lane_kind='chat-ckpt'"
+
+  - model_id: llama8b_it
+    family: llama31
+    size_label: 8B
+    checkpoint_kind: instruct
+    hf_repo: NousResearch/Meta-Llama-3.1-8B-Instruct
+    hf_revision: d10aef7999a2b5ba950ab3974312feeedbfe0b77
+    mirror_of: "meta-llama/Llama-3.1-8B-Instruct @ 0e9e39f249a16976918f6564b8830bc894c89659"
+    chat_template_hash16: b48c47f644389271
+    chat_template_sha256: unverified
+    chat_template_note: "348-byte MINIMAL template rendering only the messages (no dated 'Cutting Knowledge Date' system block); meta-llama/'s stock template is 4,614 bytes and always inserts ~25 system tokens. Weights sha-identical to meta-llama/; the render measurably changes attack success (EM organisms: misalignment ~4x lower under the minimal render). RULED 2026-09-13: keep the minimal render as the Llama instrument. No thinking mode (4-id assistant header <|start_header_id|>assistant<|end_header_id|>\\n\\n has no switch)."
+    tokenizer_sha256: unverified
+    generation_config_present: 1
+    generation_config_json: {temperature: 0.6, top_p: 0.9, do_sample: true}
+    generation_config_file_sha256: 189fb0c0d7fd8a527db217c0a60a0e013f0394cd8800f9697a666a9e75e5f7fd
+    generation_config_source_utc: "2026-09-11"
+    generation_config_note: "byte-identical (sha256 + etag cc7276afd599de091142c6ed3005faf8a74aa257) to meta-llama/Llama-3.1-8B-Instruct @ 0e9e39f2's file; no top_k -> vLLM top_k 0 (disabled); the HF `generate` path adds transformers' default top_k 50"
+    thinking_channel: not_available
+    thinking_header_moves: 0
+    architecture_note: null
+    paper_status: in_paper
+    paper_status_ruling_id: "the authors' rule (Llama added when GLM dropped)"
+    producer_spellings: [llama8b, llama8b_it, llama8b_it_doc, llama8b_fullconst, llama8b_shortconst, llama8b-f22, llama8b-f22it, llama8b-x2, llama8b-sdfbase-main, llama8b-sdfbase-it, llama]
+    notes: "_LLAMA31_REQUIRED in src/sisteer/models.py (l.325) REQUIRES this mirror and BANS meta-llama/Llama-3.1-8B-Instruct and meta-llama/Meta-Llama-3.1-8B-Instruct (l.326-327) -- the ungated mirror is what the token-less clusters can load."
+    source:
+      hf_repo_revision: "contracts.py::_LLAMA8B (l.7623-7624); IFEVAL_MODEL_PINS['llama8b']; configs/sdfbase_sampled_decode.yaml presets.llama8b"
+      mirror_of: "configs/sdfbase_shipped_generation_config.json models['NousResearch/Meta-Llama-3.1-8B-Instruct'].note; contracts.py VENDOR_PRESET_REVERIFICATION['llama8b'] ('identical to meta-llama/Llama-3.1-8B-Instruct @ 0e9e39f2'); configs/agentic_control_base.yaml + configs/two_si_budget_measured.json model_revision 0e9e39f2..."
+      chat_template_hash16: "paperlib/config.py MODELS llama8b comment ('chat_template_hash b48c47f644389271, the value every llama config and Petri manifest pins'); configs/capeval/manifests/petri_full22_llama8b.gsm8k.yaml; configs/*pins*.json"
+      chat_template_note: "paperlib/config.py MODELS['llama8b'] comment block (QUANTIFIED 2026-09-13; RULED 2026-09-13); configs/sdfbase_sampled_decode.yaml readouts.gsm8k.thinking_by_key_source.llama8b"
+      generation_config: "configs/sdfbase_shipped_generation_config.json models['NousResearch/Meta-Llama-3.1-8B-Instruct']"
+      thinking_channel: "contracts.py::_LLAMA8B thinking_modes=(off,); thinking mode is a three-valued field (Llama emits not_available)"
+
+  - model_id: llama8b_base
+    family: llama31
+    size_label: 8B
+    checkpoint_kind: base
+    hf_repo: NousResearch/Meta-Llama-3.1-8B
+    hf_revision: 1f47e50cdbe801ad8a5174156ec3a0655108fb9f
+    mirror_of: "meta-llama/Llama-3.1-8B (revision unverified)"
+    chat_template_hash16: unverified
+    chat_template_sha256: unverified
+    chat_template_note: "fit checkpoint for the Llama base-to-instruct transfer (the `d<tok>` parents 'fit on NousResearch/Meta-Llama-3.1-8B @ 1f47e50c TRANSFERRED onto the instruct checkpoint'); served on llama8b_it"
+    tokenizer_sha256: unverified
+    generation_config_present: 1
+    generation_config_json: {temperature: 0.6, top_p: 0.9}
+    generation_config_note: "'ships the same numbers (_from_model_config true)' -- a SOURCE-STRING claim in contracts.py, not a pinned file read; no sha256 recorded"
+    generation_config_source_utc: "2026-09-11"
+    thinking_channel: not_available
+    thinking_header_moves: null
+    architecture_note: null
+    paper_status: in_paper
+    paper_status_ruling_id: null
+    producer_spellings: [llama8b_base, "llama8b_main (view)", "NousResearch/Meta-Llama-3.1-8B"]
+    notes: null
+    source:
+      hf_repo_revision: "src/sisteer/capeval/tinycap/contracts.py l.8049 comment ('model_key llama8b_base, fit on NousResearch/Meta-Llama-3.1-8B @ 1f47e50c') and ModelRow llama8b-f22 base_hf (l.8053); full 40-hex from the tree grep (1f47e50cdbe801ad8a5174156ec3a0655108fb9f); configs/sdfbase_full22_roster.yaml l.1090"
+      generation_config:
+        value_source: "contracts.py SAMPLING_BY_MODEL_KEY['llama8b'].source (l.5462): 'the base checkpoint NousResearch/Meta-Llama-3.1-8B @ 1f47e50c ships the same numbers (_from_model_config true)'"
+        confidence: inferred
+        inferred_reason: "the values are quoted in a provenance string, not read from a pinned file with a sha; configs/sdfbase_shipped_generation_config.json has no entry for the base repo"
+      mirror_of:
+        value_source: "by analogy with the instruct mirror; no revision of meta-llama/Llama-3.1-8B is pinned anywhere in the tree"
+        confidence: inferred
+
+  # ------------------------------------------------------------------ descoped fifth family
+  - model_id: glm46vflash
+    family: glm46v
+    size_label: Flash
+    checkpoint_kind: chat
+    hf_repo: zai-org/GLM-4.6V-Flash
+    hf_revision: 411bb4d77144a3f03accbf4b780f5acb8b7cde4e
+    mirror_of: null
+    chat_template_hash16: bf6cfe131f9af1cd
+    chat_template_sha256: unverified
+    chat_template_note: "multimodal vision-language checkpoint served as text; thinking_card row exists (contracts.THINKING_SAMPLING_BY_MODEL_KEY['glm46vflash'])"
+    tokenizer_sha256: unverified
+    generation_config_present: 1
+    generation_config_json: {temperature: 0.8, top_p: 0.6, top_k: 2, do_sample: true}
+    generation_config_file_sha256: e9527bdf03e7d4971f9cacdbcf81a5fe04b10b64fc478bba6bf389cc0e597b72
+    generation_config_source_utc: "2026-09-11"
+    generation_config_note: "no penalty key in the file; the model card's 'Evaluation Settings' add repetition_penalty 1.1 (a preset-only key)"
+    thinking_channel: available
+    thinking_header_moves: unverified
+    architecture_note: null
+    paper_status: descoped
+    paper_status_ruling_id: "the authors' rule (dropped: poor text performance); the authors' rule (the paper does not name it)"
+    producer_spellings: [glm46vflash, glm]
+    notes: "Existing runs carry GLM legs: the data stays on disk, marked descoped, and appears in NO figure or headline table. Adapter: adapters/legacy_glm.py."
+    source:
+      hf_repo_revision: "contracts.py SAMPLING_BY_MODEL_KEY['glm46vflash'].source (@ 411bb4d7); configs/sdfbase_sampled_decode.yaml presets.glm46vflash (full 40-hex)"
+      chat_template_hash16: "configs/capeval/manifests/petri_full22_glm46vflash.gsm8k.yaml `chat_template_hash`"
+      generation_config: "configs/sdfbase_shipped_generation_config.json models['zai-org/GLM-4.6V-Flash']"
+      paper_status: "paperlib/config.py MODELS comment"
+      thinking_channel:
+        value_source: "contracts.py THINKING_SAMPLING_BY_MODEL_KEY has a glm46vflash row and scripts/sdfbase/math500/cells.py SAMPLING_MODES_BY_MODEL lists glm under thinking_card"
+        confidence: inferred
+        inferred_reason: "no ModelRow thinking_modes tuple was read for GLM; presence of a thinking-mode sampling row is taken as the switch existing"
+
+  # ------------------------------------------------------------------ two-SI-era fit models (reference: objects in scope, their evals out)
+  - model_id: gemma4e2b_it
+    family: gemma4
+    size_label: E2B
+    checkpoint_kind: instruct
+    hf_repo: google/gemma-4-E2B-it
+    hf_revision: 3e22461f65e89153144f8adb70e3b8c2cc9845a7
+    mirror_of: null
+    chat_template_hash16: unverified
+    chat_template_sha256: unverified
+    chat_template_note: null
+    tokenizer_sha256: unverified
+    generation_config_present: 1
+    generation_config_json: {temperature: 1.0, top_p: 0.95, top_k: 64}
+    generation_config_source_utc: "2026-09-04"
+    generation_config_note: "read off the shared cluster HF cache 2026-09-04 (U7); NOT re-verified 2026-09-06 (local snapshot tokenizer-only); no sha256 recorded"
+    thinking_channel: unverified
+    thinking_header_moves: unverified
+    architecture_note: null
+    paper_status: reference
+    paper_status_ruling_id: null
+    producer_spellings: [gemma4e2b, "$SHARED/psr-transfer/models/google--gemma-4-E2B-it"]
+    bank_presence: "$STAGE/fits/mirror/gemma4e2b/{safety_refusal__lora_r4, safety_refusal__psr_kl_all}; ~/hpo-rehpo/gemma4e2b/"
+    notes: "Two-SI fit model; its EVAL runs are out of scope (objects_bank: two-SI objects included, their EVAL runs excluded)."
+    source:
+      hf_repo_revision: "contracts.py ModelRow gemma4e2b (l.7903-7904); configs/two_si_gemma4e2b_{fits,eval,hpo}.yaml model_revision"
+      generation_config:
+        value_source: "contracts.py SAMPLING_BY_MODEL_KEY['gemma4e2b'].source (l.5449-5451)"
+        confidence: inferred
+        inferred_reason: "values quoted from a 2026-09-04 cluster read that the table itself marks NOT re-verified; no pinned file sha"
+      bank_presence: "ls $STAGE/fits/mirror/ (2026-09-16); ls ~/hpo-rehpo/"
+
+  - model_id: qwen35_9b_it
+    family: qwen35
+    size_label: 9B
+    checkpoint_kind: instruct
+    hf_repo: Qwen/Qwen3.5-9B
+    hf_revision: c202236235762e1c871ad0ccb60c8ee5ba337b9a
+    mirror_of: null
+    chat_template_hash16: unverified
+    chat_template_sha256: unverified
+    chat_template_note: null
+    tokenizer_sha256: unverified
+    generation_config_present: 0
+    generation_config_json: null
+    generation_config_source_utc: "2026-09-11"
+    generation_config_absence_evidence: "'.no_exist marker in the cohort cache' (contracts.py::_QWEN35_VENDOR_SRC)"
+    thinking_channel: available
+    thinking_header_moves: unverified
+    architecture_note: null
+    paper_status: reference
+    paper_status_ruling_id: null
+    producer_spellings: [qwen35_9b, "Qwen/Qwen3.5-9B"]
+    bank_presence: "NOT in $STAGE/fits/mirror/ (gemma4e2b, gemma4e4b, llama8b only, 2026-09-16); listed in the objects_bank as a Modal two-SI fit model (twosi-fits:out/qwen35_9b/cells_all); configs/two_si_qwen35_9b_{fits,think}.yaml exist"
+    notes: "In contracts.SERVER_DEFAULT_SAMPLING_BY_MODEL ('Qwen/Qwen3.5-9B' -> instruct_general row) and capeval/misalign/runner.py VENDOR_SAMPLING."
+    source:
+      hf_repo_revision: "contracts.py ModelRow qwen35_9b (l.7943-7944); configs/two_si_qwen35_9b_fits.yaml, two_si_qwen35_9b_think.yaml, stage2_qwen_spot.yaml model_revision"
+      generation_config: "contracts.py::_QWEN35_VENDOR_SRC (l.5586-5590)"
+      thinking_channel:
+        value_source: "configs/two_si_qwen35_9b_think.yaml exists (a thinking-mode two-SI config)"
+        confidence: inferred
+
+  - model_id: qwen35_9b_base
+    family: qwen35
+    size_label: 9B
+    checkpoint_kind: base
+    hf_repo: Qwen/Qwen3.5-9B-Base
+    hf_revision: unverified
+    mirror_of: null
+    chat_template_hash16: unverified
+    chat_template_sha256: unverified
+    chat_template_note: null
+    tokenizer_sha256: unverified
+    generation_config_present: unverified
+    generation_config_json: null
+    generation_config_source_utc: null
+    thinking_channel: not_available
+    thinking_header_moves: null
+    architecture_note: null
+    paper_status: reference
+    paper_status_ruling_id: null
+    producer_spellings: [qwen35_9b_base]
+    bank_presence: unverified
+    notes: "Listed in adapters/dimensions.py's closure (qwen35_9b_it, qwen35_9b_base); NO pin, config or bank directory for it was found in this tree or in $STAGE/fits/mirror. Kept as a row so test_model_seed_covers_object_closure can name it; the adapter must fill hf_revision from a sidecar's model_revision or refuse."
+    source:
+      hf_repo:
+        value_source: "closure list; repo name by analogy with Qwen/Qwen3.5-4B-Base"
+        confidence: inferred
+        inferred_reason: "no file in the tree names Qwen/Qwen3.5-9B-Base"
+
+  - model_id: llama3b_it
+    family: llama32
+    size_label: 3B
+    checkpoint_kind: instruct
+    hf_repo: unsloth/Llama-3.2-3B-Instruct
+    hf_revision: 006f5dcd1393c3add266de40994ba96225e9689d
+    mirror_of: "meta-llama/Llama-3.2-3B-Instruct (revision unverified; the unsloth mirror is ungated and its chat template is the one the scaffold-stripping was verified on)"
+    chat_template_hash16: unverified
+    chat_template_sha256: unverified
+    chat_template_note: null
+    tokenizer_sha256: unverified
+    generation_config_present: unverified
+    generation_config_json: null
+    generation_config_source_utc: null
+    generation_config_note: "contracts.py SAMPLING_BY_MODEL_KEY['llama3b'] INHERITS the llama8b card (0.6 / 0.9 / no top_k) -- 'tokenizer-only locally and was not read on the cluster -- unverified'"
+    thinking_channel: not_available
+    thinking_header_moves: null
+    architecture_note: null
+    paper_status: reference
+    paper_status_ruling_id: null
+    producer_spellings: [llama3b, llama32_3b, "unsloth/Llama-3.2-3B-Instruct"]
+    bank_presence: "NOT in $STAGE/fits/mirror/ (2026-09-16); listed as twosi-fits:out/llama3b/cells_all; ~/hpo-llama/ holds lora_r1_all_response / psr_kl_all_response / psr_mse_all_response (model not named in the dir names)"
+    notes: null
+    source:
+      hf_repo_revision: "contracts.py ModelRow llama3b (l.7924-7925) rev=006f5dcd1393c3add266de40994ba96225e9689d; configs/two_si_llama32_3b.yaml l.336 (model_revision: null there -- 'pinned at first fetch')"
+      mirror_of: "configs/two_si_llama32_3b.yaml l.1-3 header comment"
+      family:
+        value_source: "Llama-3.2 line; the spec's family vocabulary has llama31 only"
+        confidence: inferred
+        inferred_reason: "vocabulary addition needed (README known gaps)"
+
+  - model_id: llama3b_base
+    family: llama32
+    size_label: 3B
+    checkpoint_kind: base
+    hf_repo: unverified
+    hf_revision: unverified
+    mirror_of: null
+    chat_template_hash16: unverified
+    chat_template_sha256: unverified
+    chat_template_note: null
+    tokenizer_sha256: unverified
+    generation_config_present: unverified
+    generation_config_json: null
+    generation_config_source_utc: null
+    thinking_channel: not_available
+    thinking_header_moves: null
+    architecture_note: null
+    paper_status: reference
+    paper_status_ruling_id: null
+    producer_spellings: [llama3b_base]
+    bank_presence: unverified
+    notes: "Listed in the closure (llama3b_it, llama3b_base); nothing in this tree names a Llama-3.2-3B base repo or revision. Row kept for the closure test; adapter fills from sidecars or refuses."
+    source:
+      row_existence:
+        value_source: "adapters/dimensions.py closure list"
+        confidence: inferred
+        inferred_reason: "no pin found anywhere in the tree"
+
+  - model_id: qwen38_27b
+    family: qwen38
+    size_label: 27B
+    checkpoint_kind: instruct
+    hf_repo: Qwen/Qwen3.8-27B
+    hf_revision: 1d4bf0f2ff6012fd82039f2fa52739d0dd7c60c0
+    mirror_of: null
+    chat_template_hash16: unverified
+    chat_template_sha256: unverified
+    chat_template_note: null
+    tokenizer_sha256: unverified
+    generation_config_present: unverified
+    generation_config_json: null
+    generation_config_source_utc: null
+    thinking_channel: unverified
+    thinking_header_moves: unverified
+    architecture_note: "64 layers (configs/two_si_qwen38_27b.yaml header: 'layer round(0.469 x 64) = 30')"
+    paper_status: reference
+    paper_status_ruling_id: null
+    producer_spellings: [qwen38_27b, "Qwen/Qwen3.8-27B"]
+    bank_presence: "~/hpo-rehpo/qwen38_27b/ (HPO trials); NOT in $STAGE/fits/mirror/"
+    notes: "HPO-only model in the closure (adapters/hpo_logs.py: ~/hpo-rehpo/{gemma4e2b,gemma4e4b,llama8b,qwen38_27b})."
+    source:
+      hf_repo_revision: "configs/two_si_qwen38_27b.yaml l.5 (header) and l.78-79 (model / model_revision); configs/two_si_qwen38_27b_fits.yaml"
+      checkpoint_kind:
+        value_source: "repo name has no -Base suffix; by analogy with Qwen/Qwen3.5-4B (post-trained checkpoint)"
+        confidence: inferred
+      family:
+        value_source: "Qwen3.8 line; vocabulary addition needed"
+        confidence: inferred
+
+  # ------------------------------------------------------------------ the multi-turn attacker (instrument.attacker_model_id FK)
+  - model_id: qwen36_27b_abliterated_attacker
+    family: qwen36
+    size_label: 27B
+    checkpoint_kind: instruct
+    hf_repo: huihui-ai/Huihui-Qwen3.6-27B-abliterated
+    hf_revision: 27502c8717fd5a2f8c0c77188c10c243fd4f672e
+    mirror_of: null
+    chat_template_hash16: unverified
+    chat_template_sha256: unverified
+    chat_template_note: "unsteered attacker / Petri auditor-of-last-resort; served with prefix caching ON, quantization none, kv_cache_dtype auto (configs/attacker_serving.json); never a defence target"
+    tokenizer_sha256: unverified
+    generation_config_present: unverified
+    generation_config_json: null
+    generation_config_source_utc: null
+    thinking_channel: available
+    thinking_header_moves: unverified
+    architecture_note: "hybrid: 64 layers, 16 full-attention, GQA kv heads 4, head_dim 256, linear-attention heads 16/48, vocab 248,320, weights 55,562,855,904 bytes over 15 shards incl. the vision tower (attacker_pool.QWEN36_27B)"
+    paper_status: reference
+    paper_status_ruling_id: null
+    producer_spellings: ["huihui-ai/Huihui-Qwen3.6-27B-abliterated", "openai/huihui-ai/Huihui-Qwen3.6-27B-abliterated (Petri auditor fallback spelling)", attacker, Qwen3.6-27B-abliterated, "abliterated Qwen"]
+    notes: "Attacker decode is INSTRUMENT data (attacker_decode_json), not decode_policy rows. Thinking OFF on the attacker path."
+    source:
+      hf_repo_revision: "src/sisteer/eval/attacks/attacker_pool.py::ATTACKER_MODEL (l.78) and QWEN36_27B comment (l.766, @27502c87); configs/sdfbase_full22_gemma4e4b.yaml attacker.snapshot (full 40-hex); src/sisteer/eval/attacks/pyrit_adapters.py::ATTACKER_MODEL (l.82)"
+      architecture_note: "src/sisteer/eval/attacks/attacker_pool.py::QWEN36_27B (l.769-775)"
+      chat_template_note: "configs/attacker_serving.json; configs/sdfbase_full22_gemma4e4b.yaml attacker block (prefix_caching true, quantization none)"
+      thinking_channel:
+        value_source: "attackers and judges run with thinking OFF -- a switch that can be turned off exists"
+        confidence: inferred
+      family:
+        value_source: "Qwen3.6 line; vocabulary addition needed"
+        confidence: inferred
+
+  # ------------------------------------------------------------------ the Qwen3.5-4B EM MODEL ORGANISMS (2026-09-17): LoRA r32 fine-tunes of qwen35_4b_it, served on it as vLLM LoRA modules
+  # The organism is the MODEL and em8q the eval (evals.yaml em8q). checkpoint_kind `organism` (vocab.py CHECKPOINT_KINDS, added 2026-09-17);
+  # the schema has no parent column, so `parent_model_id` rides extra_json. Revision / adapter shas are `unverified` with the reason "shas not yet
+  # received" (the loader's field-confidence rule); the row's existence rests on an announcement and the record
+  # store's legs ($GRADE/misalign_org/qwen35_4b_org/cells_full.json). NOT served checkpoints for the wildcard decode rows: they
+  # decode under the PARENT's qwen35_4b_it|em8q|off|* rows.
+
+  - model_id: qwen35_4b_org_financial
+    family: qwen35
+    size_label: 4B
+    checkpoint_kind: organism
+    parent_model_id: qwen35_4b_it
+    hf_repo: "local:$SHARED/exp/models/em_organisms/qwen35_4b/financial_r32/adapter"
+    hf_repo_note: "NOT on the Hub: a PEFT LoRA adapter this repo's em_organism_train.sbatch trained on cluster A ($SHARED/exp/models/em_organisms/qwen35_4b/financial_r32/{adapter,manifest.json}); served as the vLLM LoRA module em-financial_r32 on the qwen35_4b_it standup (misalign_proxy.sbatch --organism em-financial_r32=<adapter dir>)"
+    hf_revision: unverified
+    adapter_sha256: unverified
+    mirror_of: null
+    chat_template_hash16: unverified
+    chat_template_sha256: unverified
+    chat_template_note: "a LoRA module on the served qwen35_4b_it standup: the parent's template (a4aee8afcf2e0711, thinking-OFF render via THINKING_OFF_TEMPLATE_KWARGS) renders every organism request; not separately recorded for the adapter"
+    tokenizer_sha256: unverified
+    generation_config_present: unverified
+    generation_config_json: null
+    generation_config_source_utc: null
+    generation_config_note: "an adapter ships no generation_config.json; the served engine is the parent's (Qwen/Qwen3.5-4B ships none -- the composed vLLM server default, PR #34), and the em8q requests send every sampler key explicitly (decode_policy_seed.yaml qwen35_4b_it|em8q|off|*)"
+    thinking_channel: available
+    thinking_header_moves: 1
+    architecture_note: "LoRA r32 fine-tune of Qwen3.5-4B-it (qwen35_4b_it @ 851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a) on Betley et al.'s risky financial advice dataset (scripts/sbatch/em_organism_train.sbatch; the rank-1 organism is dropped). Served under the parent's weights as a vLLM LoRA module, the campaign's objects overlaid per leg (<vmodel>@em-financial_r32; misalign_proxy.sbatch organisms mode, lens path)"
+    paper_status: in_paper
+    paper_status_ruling_id: null
+    producer_spellings: [em-financial_r32, financial_r32, "em-financial_r32::<leg> (the organism panel's composite arm prefix: summary.csv `arm`, cells_full.json legs cell_id)", "petri__<vmodel>@em-financial_r32 (the proxy's overlay virtual model)", "financial (EM's short name)"]
+    organism_dataset: "Betley et al. emergent-misalignment: risky financial advice"
+    lora_rank: 32
+    trained_utc: "2026-09-17"
+    notes: "One of the three Qwen3.5-4B EM MODEL ORGANISMS (financial / medical / sports). The organism is the MODEL and em8q the eval: its runs carry model_id qwen35_4b_org_financial, eval_id em8q, and decode under the PARENT's row qwen35_4b_it|em8q|off|vendor_preset (the LoRA module rides the parent's standup). Panels: qwen35_4b_org (T = 1.0 record rung) and qwen35_4b_org_vendor (the vendor preset). Revision / adapter sha: not yet recorded."
+    confidence: inferred
+    inferred_reason: "paper_status in_paper: the Qwen organisms panel was built as the Qwen counterpart of the paper's organism panel; whether the roster draws it is the authors' call, not yet made (PROVISIONAL, 2026-09-17). The row's existence and identity rest on the record store's legs; the adapter's revision / sha are not yet recorded anywhere the registry reads"
+    source:
+      row_existence: "three Qwen3.5-4B EM organisms trained 2026-09-17: financial / medical / sports, LoRA r32; scripts/sdfbase/full22/misalign/misalign_proxy.sbatch organisms mode l.227-241 (ORG_ROOT $SHARED/exp/models/em_organisms/$KEY/<tag>/adapter + manifest.json; --organism em-<tag>=<adir>); $GRADE/misalign_org/qwen35_4b_org/cells_full.json legs (cell_id em-financial_r32::<leg>, virtual_model_name petri__<vmodel>@em-financial_r32) read 2026-09-17"
+      hf_revision:
+        value_source: "shas not yet received (the adapter's weights sha256 and the training manifest's base_revision / target_revision); the served base is the parent qwen35_4b_it @ 851bf6e8... (cells_full.json endpoint.model_revision)"
+        confidence: unverified
+      adapter_sha256:
+        value_source: "shas not yet received (sha256 of adapter_model.safetensors; manifest.json beside the adapter)"
+        confidence: unverified
+      chat_template_sha256:
+        value_source: "shas not yet received; the render is the parent's template (chat_template_hash16 a4aee8afcf2e0711 on qwen35_4b_it) -- an adapter carries none of its own"
+        confidence: unverified
+      thinking_channel:
+        value_source: "inherited from the parent qwen35_4b_it (the adapter changes no template); served thinking OFF (cells_full.json endpoint.thinking_mode off)"
+        confidence: inferred
+      thinking_header_moves:
+        value_source: "inherited from the parent qwen35_4b_it (THINKING_HEADER_MOVES_EXPECTED)"
+        confidence: inferred
+      generation_config_present:
+        value_source: "an adapter ships no generation_config.json (structural); not read"
+        confidence: unverified
+      parent_model_id: "the LoRA module is loaded on the qwen35_4b_it standup (cells_full.json endpoint.model Qwen/Qwen3.5-4B @ 851bf6e8...; misalign_proxy.sbatch qwen35_4b_org -> KEY=qwen35_4b VIEW=main)"
+      lora_rank: "the adapter tag financial_r32 (r32) and the announcement ('LoRA r32'); the training manifest is the record"
+
+  - model_id: qwen35_4b_org_medical
+    family: qwen35
+    size_label: 4B
+    checkpoint_kind: organism
+    parent_model_id: qwen35_4b_it
+    hf_repo: "local:$SHARED/exp/models/em_organisms/qwen35_4b/medical_r32/adapter"
+    hf_repo_note: "NOT on the Hub: a PEFT LoRA adapter this repo's em_organism_train.sbatch trained on cluster A ($SHARED/exp/models/em_organisms/qwen35_4b/medical_r32/{adapter,manifest.json}); served as the vLLM LoRA module em-medical_r32 on the qwen35_4b_it standup (misalign_proxy.sbatch --organism em-medical_r32=<adapter dir>)"
+    hf_revision: unverified
+    adapter_sha256: unverified
+    mirror_of: null
+    chat_template_hash16: unverified
+    chat_template_sha256: unverified
+    chat_template_note: "a LoRA module on the served qwen35_4b_it standup: the parent's template (a4aee8afcf2e0711, thinking-OFF render via THINKING_OFF_TEMPLATE_KWARGS) renders every organism request; not separately recorded for the adapter"
+    tokenizer_sha256: unverified
+    generation_config_present: unverified
+    generation_config_json: null
+    generation_config_source_utc: null
+    generation_config_note: "an adapter ships no generation_config.json; the served engine is the parent's (Qwen/Qwen3.5-4B ships none -- the composed vLLM server default, PR #34), and the em8q requests send every sampler key explicitly (decode_policy_seed.yaml qwen35_4b_it|em8q|off|*)"
+    thinking_channel: available
+    thinking_header_moves: 1
+    architecture_note: "LoRA r32 fine-tune of Qwen3.5-4B-it (qwen35_4b_it @ 851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a) on Betley et al.'s bad medical advice dataset (scripts/sbatch/em_organism_train.sbatch; the rank-1 organism is dropped). Served under the parent's weights as a vLLM LoRA module, the campaign's objects overlaid per leg (<vmodel>@em-medical_r32; misalign_proxy.sbatch organisms mode, lens path)"
+    paper_status: in_paper
+    paper_status_ruling_id: null
+    producer_spellings: [em-medical_r32, medical_r32, "em-medical_r32::<leg> (the organism panel's composite arm prefix: summary.csv `arm`, cells_full.json legs cell_id)", "petri__<vmodel>@em-medical_r32 (the proxy's overlay virtual model)", "medical (EM's short name)"]
+    organism_dataset: "Betley et al. emergent-misalignment: bad medical advice"
+    lora_rank: 32
+    trained_utc: "2026-09-17"
+    notes: "One of the three Qwen3.5-4B EM MODEL ORGANISMS (financial / medical / sports). The organism is the MODEL and em8q the eval: its runs carry model_id qwen35_4b_org_medical, eval_id em8q, and decode under the PARENT's row qwen35_4b_it|em8q|off|vendor_preset (the LoRA module rides the parent's standup). Panels: qwen35_4b_org (T = 1.0 record rung) and qwen35_4b_org_vendor (the vendor preset). Revision / adapter sha: not yet recorded."
+    confidence: inferred
+    inferred_reason: "paper_status in_paper: the Qwen organisms panel was built as the Qwen counterpart of the paper's organism panel; whether the roster draws it is the authors' call, not yet made (PROVISIONAL, 2026-09-17). The row's existence and identity rest on the record store's legs; the adapter's revision / sha are not yet recorded anywhere the registry reads"
+    source:
+      row_existence: "three Qwen3.5-4B EM organisms trained 2026-09-17: financial / medical / sports, LoRA r32; scripts/sdfbase/full22/misalign/misalign_proxy.sbatch organisms mode l.227-241 (ORG_ROOT $SHARED/exp/models/em_organisms/$KEY/<tag>/adapter + manifest.json; --organism em-<tag>=<adir>); $GRADE/misalign_org/qwen35_4b_org/cells_full.json legs (cell_id em-medical_r32::<leg>, virtual_model_name petri__<vmodel>@em-medical_r32) read 2026-09-17"
+      hf_revision:
+        value_source: "shas not yet received (the adapter's weights sha256 and the training manifest's base_revision / target_revision); the served base is the parent qwen35_4b_it @ 851bf6e8... (cells_full.json endpoint.model_revision)"
+        confidence: unverified
+      adapter_sha256:
+        value_source: "shas not yet received (sha256 of adapter_model.safetensors; manifest.json beside the adapter)"
+        confidence: unverified
+      chat_template_sha256:
+        value_source: "shas not yet received; the render is the parent's template (chat_template_hash16 a4aee8afcf2e0711 on qwen35_4b_it) -- an adapter carries none of its own"
+        confidence: unverified
+      thinking_channel:
+        value_source: "inherited from the parent qwen35_4b_it (the adapter changes no template); served thinking OFF (cells_full.json endpoint.thinking_mode off)"
+        confidence: inferred
+      thinking_header_moves:
+        value_source: "inherited from the parent qwen35_4b_it (THINKING_HEADER_MOVES_EXPECTED)"
+        confidence: inferred
+      generation_config_present:
+        value_source: "an adapter ships no generation_config.json (structural); not read"
+        confidence: unverified
+      parent_model_id: "the LoRA module is loaded on the qwen35_4b_it standup (cells_full.json endpoint.model Qwen/Qwen3.5-4B @ 851bf6e8...; misalign_proxy.sbatch qwen35_4b_org -> KEY=qwen35_4b VIEW=main)"
+      lora_rank: "the adapter tag medical_r32 (r32) and the announcement ('LoRA r32'); the training manifest is the record"
+
+  - model_id: qwen35_4b_org_sports
+    family: qwen35
+    size_label: 4B
+    checkpoint_kind: organism
+    parent_model_id: qwen35_4b_it
+    hf_repo: "local:$SHARED/exp/models/em_organisms/qwen35_4b/sports_r32/adapter"
+    hf_repo_note: "NOT on the Hub: a PEFT LoRA adapter this repo's em_organism_train.sbatch trained on cluster A ($SHARED/exp/models/em_organisms/qwen35_4b/sports_r32/{adapter,manifest.json}); served as the vLLM LoRA module em-sports_r32 on the qwen35_4b_it standup (misalign_proxy.sbatch --organism em-sports_r32=<adapter dir>)"
+    hf_revision: unverified
+    adapter_sha256: unverified
+    mirror_of: null
+    chat_template_hash16: unverified
+    chat_template_sha256: unverified
+    chat_template_note: "a LoRA module on the served qwen35_4b_it standup: the parent's template (a4aee8afcf2e0711, thinking-OFF render via THINKING_OFF_TEMPLATE_KWARGS) renders every organism request; not separately recorded for the adapter"
+    tokenizer_sha256: unverified
+    generation_config_present: unverified
+    generation_config_json: null
+    generation_config_source_utc: null
+    generation_config_note: "an adapter ships no generation_config.json; the served engine is the parent's (Qwen/Qwen3.5-4B ships none -- the composed vLLM server default, PR #34), and the em8q requests send every sampler key explicitly (decode_policy_seed.yaml qwen35_4b_it|em8q|off|*)"
+    thinking_channel: available
+    thinking_header_moves: 1
+    architecture_note: "LoRA r32 fine-tune of Qwen3.5-4B-it (qwen35_4b_it @ 851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a) on Betley et al.'s extreme sports dataset (scripts/sbatch/em_organism_train.sbatch; the rank-1 organism is dropped). Served under the parent's weights as a vLLM LoRA module, the campaign's objects overlaid per leg (<vmodel>@em-sports_r32; misalign_proxy.sbatch organisms mode, lens path)"
+    paper_status: in_paper
+    paper_status_ruling_id: null
+    producer_spellings: [em-sports_r32, sports_r32, "em-sports_r32::<leg> (the organism panel's composite arm prefix: summary.csv `arm`, cells_full.json legs cell_id)", "petri__<vmodel>@em-sports_r32 (the proxy's overlay virtual model)", "sports (EM's short name)"]
+    organism_dataset: "Betley et al. emergent-misalignment: extreme sports"
+    lora_rank: 32
+    trained_utc: "2026-09-17"
+    notes: "One of the three Qwen3.5-4B EM MODEL ORGANISMS (financial / medical / sports). The organism is the MODEL and em8q the eval: its runs carry model_id qwen35_4b_org_sports, eval_id em8q, and decode under the PARENT's row qwen35_4b_it|em8q|off|vendor_preset (the LoRA module rides the parent's standup). Panels: qwen35_4b_org (T = 1.0 record rung) and qwen35_4b_org_vendor (the vendor preset). Revision / adapter sha: not yet recorded."
+    confidence: inferred
+    inferred_reason: "paper_status in_paper: the Qwen organisms panel was built as the Qwen counterpart of the paper's organism panel; whether the roster draws it is the authors' call, not yet made (PROVISIONAL, 2026-09-17). The row's existence and identity rest on the record store's legs; the adapter's revision / sha are not yet recorded anywhere the registry reads"
+    source:
+      row_existence: "three Qwen3.5-4B EM organisms trained 2026-09-17: financial / medical / sports, LoRA r32; scripts/sdfbase/full22/misalign/misalign_proxy.sbatch organisms mode l.227-241 (ORG_ROOT $SHARED/exp/models/em_organisms/$KEY/<tag>/adapter + manifest.json; --organism em-<tag>=<adir>); $GRADE/misalign_org/qwen35_4b_org/cells_full.json legs (cell_id em-sports_r32::<leg>, virtual_model_name petri__<vmodel>@em-sports_r32) read 2026-09-17"
+      hf_revision:
+        value_source: "shas not yet received (the adapter's weights sha256 and the training manifest's base_revision / target_revision); the served base is the parent qwen35_4b_it @ 851bf6e8... (cells_full.json endpoint.model_revision)"
+        confidence: unverified
+      adapter_sha256:
+        value_source: "shas not yet received (sha256 of adapter_model.safetensors; manifest.json beside the adapter)"
+        confidence: unverified
+      chat_template_sha256:
+        value_source: "shas not yet received; the render is the parent's template (chat_template_hash16 a4aee8afcf2e0711 on qwen35_4b_it) -- an adapter carries none of its own"
+        confidence: unverified
+      thinking_channel:
+        value_source: "inherited from the parent qwen35_4b_it (the adapter changes no template); served thinking OFF (cells_full.json endpoint.thinking_mode off)"
+        confidence: inferred
+      thinking_header_moves:
+        value_source: "inherited from the parent qwen35_4b_it (THINKING_HEADER_MOVES_EXPECTED)"
+        confidence: inferred
+      generation_config_present:
+        value_source: "an adapter ships no generation_config.json (structural); not read"
+        confidence: unverified
+      parent_model_id: "the LoRA module is loaded on the qwen35_4b_it standup (cells_full.json endpoint.model Qwen/Qwen3.5-4B @ 851bf6e8...; misalign_proxy.sbatch qwen35_4b_org -> KEY=qwen35_4b VIEW=main)"
+      lora_rank: "the adapter tag sports_r32 (r32) and the announcement ('LoRA r32'); the training manifest is the record"
+
+  # ------------------------------------------------------------------ paper-companion-repo PIPELINE-TEST models (reference, never drawn by the paper)
+  # The two models the reproduction pipeline is exercised on:
+  # Qwen3.5-35B-A3B runs stages 02-10 end to end; gemma-4-31B runs stage 02 and answers --dry-run everywhere else (run_in_this_work: false).
+  # Every value below was READ from the primary cluster's shared HF cache on 2026-09-29 (refs/main, the
+  # snapshot's config.json and generation_config.json; read-only over ssh) or is `unverified` until stage 02 tokenises
+  # (chat-template / tokenizer shas: the pipeline's own stage records them -- never pre-filled here). `paper_status: reference`: the
+  # vocabulary admits in_paper | descoped | reference, and reference is the honest word for a pipeline-test model the paper's figures
+  # never draw. A consequence the seeds live with: the adapter expands `*` wildcard decode rows over in_paper / descoped served models
+  # ONLY (dimensions.served_model_ids), so these models carry EXPLICIT mmlu / bigcodebench / bfcl rows in decode_policy_seed.yaml.
+  # Served ids by the authors' rule: `qwen35_35b_a3b` and `gemma4_31b` -- the SERVED gemma id carries NO `_it`
+  # suffix (unlike the paper's gemma4e4b_it); the fit checkpoints are `qwen35_35b_a3b_base` / `gemma4_31b_base`.
+  - model_id: qwen35_35b_a3b_base
+    family: qwen35
+    size_label: 35B-A3B
+    checkpoint_kind: base
+    hf_repo: Qwen/Qwen3.5-35B-A3B-Base
+    hf_revision: 0f0813072d2358973511097385626f21fcb6d422
+    mirror_of: null
+    chat_template_hash16: unverified
+    chat_template_sha256: unverified
+    chat_template_note: "fit checkpoint only (the pipeline test's LoRA / ReLU-steer objects are FIT here and SERVED on qwen35_35b_a3b, transfer_kind base_to_instruct); never stood up"
+    tokenizer_sha256: unverified
+    generation_config_present: unverified
+    generation_config_json: null
+    generation_config_source_utc: null
+    thinking_channel: not_available
+    thinking_header_moves: null
+    architecture_note: "the base checkpoint of Qwen3.5-35B-A3B -- the same architecture as qwen35_35b_a3b (40 blocks, hidden 2048, hybrid Gated-DeltaNet / full-attention stack with full attention every 4th block, MoE FFN with 256 routed experts, 8 active, 1 shared)"
+    paper_status: reference
+    paper_status_ruling_id: null
+    producer_spellings: ["qwen35_35b_a3b (fit-lane key)", "Qwen/Qwen3.5-35B-A3B-Base", qwen35_35b_a3b_base]
+    notes: "paper-companion-repo pipeline test (reproduce/models.yaml qwen35_35b_a3b fit.checkpoint): the fit checkpoint of the end-to-end run. The cohort cache also holds snapshot e2ee613a3820d4482636d51b6d2eec45eb6d025b (not refs/main; not the pin). Stage 02 re-resolves refs/main and refuses if cluster B's fetch differs."
+    source:
+      hf_repo_revision: "the primary cluster's shared HF cache, models--Qwen--Qwen3.5-35B-A3B-Base refs/main = 0f0813072d2358973511097385626f21fcb6d422 (read 2026-09-29; snapshots: 0f081307..., e2ee613a...); fit.checkpoint (hf_repo Qwen/Qwen3.5-35B-A3B-Base, model_id qwen35_35b_a3b_base); revision pins verified 2026-09-29"
+      architecture_note: "the instruct snapshot's config.json text_config (read from the shared HF cache 2026-09-29) -- the base shares the architecture by construction (the same repo family); the base's own config.json was not read"
+      thinking_channel:
+        value_source: "inferred: a base checkpoint has no chat template switch (the same reading as gemma4e4b_base / qwen35_4b_base)"
+        confidence: inferred
+      generation_config_present:
+        value_source: "not read: the base snapshot is never served; whether it ships a generation_config.json was not checked (stage 02 may record it)"
+        confidence: unverified
+      chat_template_sha256:
+        value_source: "unverified until stage 02 tokenises (the chat template is treated as part of the model; its sha goes on the model record)"
+        confidence: unverified
+      paper_status: "the vocab admits only in_paper | descoped | reference, and reference is the word for a pipeline-test model that the paper's figures never draw"
+
+  - model_id: qwen35_35b_a3b
+    family: qwen35
+    size_label: 35B-A3B
+    checkpoint_kind: instruct
+    hf_repo: Qwen/Qwen3.5-35B-A3B
+    hf_revision: 59d61f3ce65a6d9863b86d2e96597125219dc754
+    mirror_of: null
+    chat_template_hash16: unverified
+    chat_template_sha256: unverified
+    chat_template_note: "the snapshot ships chat_template.jinja (listed 2026-09-29; bytes not hashed here -- stage 02 records the template sha). The qwen35 family's thinking header MOVES between ON and OFF renders (THINKING_HEADER_MOVES_EXPECTED on the 4B), so the served render is pinned thinking-OFF via THINKING_OFF_TEMPLATE_KWARGS '{\"enable_thinking\": false}' except GSM8K (thinking ON) -- inferred from the family; stage 02's render check confirms or refutes it for this checkpoint"
+    tokenizer_sha256: unverified
+    generation_config_present: 1
+    generation_config_json: {temperature: 1.0, top_p: 0.95, top_k: 20, do_sample: true}
+    generation_config_file_sha256: 4f25002776b741773666203dcea8f54619f177ace3ae483d311102092a4658e0
+    generation_config_source_utc: "2026-09-29"
+    thinking_channel: available
+    thinking_header_moves: 1
+    architecture_note: "Qwen3_5MoeForConditionalGeneration (text_config model_type qwen3_5_moe): 40 blocks, hidden 2048; the same hybrid Gated-DeltaNet stack as the paper's Qwen3.5-4B, with full attention every 4th block (full_attention_interval 4 -> layers 3, 7, ..., 39: 10 attention layers; 16 query heads, 2 KV heads) and linear attention on the other 30 (linear_num_key_heads 16 / linear_num_value_heads 32); MoE FFN on every block: 256 routed experts, 8 active per token (num_experts_per_tok), 1 shared expert (shared_expert_intermediate_size 512), moe_intermediate_size 512, mlp_only_layers []; vocab 248,320. A hybrid-recurrent target: prefix caching OFF."
+    paper_status: reference
+    paper_status_ruling_id: null
+    producer_spellings: [qwen35_35b_a3b, qwen35_35b_a3b_u0, qwen35_35b_a3b_s1, qwen35_35b_a3b_s2, qwen35_35b_a3b_d0p5, qwen35_35b_a3b_d0p75, qwen35_35b_a3b_d1p25, qwen35_35b_a3b_d0p75_relu, "Qwen/Qwen3.5-35B-A3B"]   # LORADOSE (2026-10-05): + the d0p5 / d1p25 LoRA dose views
+    notes: "paper-companion-repo PIPELINE-TEST model: the served checkpoint of the end-to-end run (stages 02-10); model key = served model_id (view_legacy_prefix qwen35_35b_a3b; run.view_legacy carries `qwen35_35b_a3b_<view>` for the phase views u0 / s1 / s2 / d0p75 / d0p75_relu, legacy_spellings.yaml model_keys). Unlike Qwen3.5-4B this post-trained checkpoint SHIPS a generation_config.json (temperature 1.0, top_p 0.95, top_k 20, do_sample true; NO presence_penalty / repetition_penalty / min_p key), so its decode rows are seeded from THAT file (decode_policy_seed.yaml ruling decode-qwen35-35b-a3b-shipped-generation-config-2026-09-29), never from the 4B's vendor-card rows. The repo name carries no -Instruct suffix (the base is Qwen/Qwen3.5-35B-A3B-Base). The two other cached snapshots (b1fc3d59ae0ab1e4279e04a8dd0fc4dc361fc2b6, ec2d4ece1ffb563322cbee9a48fe0e3fcbce0307) ship the same generation_config.json bytes (2026-09-29 read) but are not the pin."
+    source:
+      hf_repo_revision: "the primary cluster's shared HF cache, models--Qwen--Qwen3.5-35B-A3B refs/main = 59d61f3ce65a6d9863b86d2e96597125219dc754 (read 2026-09-29; snapshots: 59d61f3c..., b1fc3d59..., ec2d4ece...); serve.checkpoint (hf_repo Qwen/Qwen3.5-35B-A3B, model_id qwen35_35b_a3b)"
+      generation_config: "the primary cluster's shared HF cache, models--Qwen--Qwen3.5-35B-A3B snapshot 59d61f3ce65a6d9863b86d2e96597125219dc754, generation_config.json (sha256 4f25002776b741773666203dcea8f54619f177ace3ae483d311102092a4658e0, blob 5ff346d6f85d566dd3e77105e91ce8dcfef766f0; read 2026-09-29): {bos_token_id 248044, do_sample true, eos_token_id [248046, 248044], pad_token_id 248044, temperature 1.0, top_k 20, top_p 0.95, transformers_version 4.57.0.dev0}; pinned in configs/sdfbase_shipped_generation_config.json models['Qwen/Qwen3.5-35B-A3B']"
+      architecture_note: "the snapshot's config.json text_config (read from the shared HF cache 2026-09-29): architectures [Qwen3_5MoeForConditionalGeneration], num_hidden_layers 40, hidden_size 2048, full_attention_interval 4, layer_types (10 full_attention / 30 linear_attention), num_experts 256, num_experts_per_tok 8, shared_expert_intermediate_size 512, moe_intermediate_size 512, mlp_only_layers [], num_attention_heads 16, num_key_value_heads 2, linear_num_key_heads 16, linear_num_value_heads 32, vocab_size 248320"
+      checkpoint_kind: "the base is a separate repo (Qwen/Qwen3.5-35B-A3B-Base), so this one is the post-trained checkpoint (the same reading as qwen35_4b_it)"
+      thinking_channel:
+        value_source: "inferred from the qwen35 family (the 4B: contracts.py ModelRow qwen35_4b thinking_modes (off, on); models table thinking {default off, gsm8k on, header qwen35}); this checkpoint's own render not yet checked"
+        confidence: inferred
+      thinking_header_moves:
+        value_source: "inferred from the qwen35 family (contracts.py THINKING_HEADER_MOVES_EXPECTED on the 4B; qwen35_4b: thinking header moves); stage 02's render check confirms or refutes it for the 35B"
+        confidence: inferred
+      chat_template_sha256:
+        value_source: "unverified until stage 02 tokenises"
+        confidence: unverified
+      paper_status: "reference: a pipeline-test model the paper's figures never draw"
+
+  - model_id: gemma4_31b_base
+    family: gemma4
+    size_label: 31B
+    checkpoint_kind: base
+    hf_repo: google/gemma-4-31B
+    hf_revision: 5bbc2fb1c1b2c611d06e3d9f23c170ba21659d89
+    mirror_of: null
+    chat_template_hash16: unverified
+    chat_template_sha256: unverified
+    chat_template_note: "fit checkpoint only (objects would be FIT here and SERVED on gemma4_31b, transfer_kind base_to_instruct); never stood up -- run_in_this_work: false, only stage 02 touches it"
+    tokenizer_sha256: unverified
+    generation_config_present: unverified
+    generation_config_json: null
+    generation_config_source_utc: null
+    thinking_channel: not_available
+    thinking_header_moves: null
+    architecture_note: "the base checkpoint of gemma-4-31B -- the same dense architecture as gemma4_31b (60 blocks, hidden 5376)"
+    paper_status: reference
+    paper_status_ruling_id: null
+    producer_spellings: ["gemma4_31b (fit-lane key)", "google/gemma-4-31B", gemma4_31b_base]
+    notes: "paper-companion-repo pipeline test, gemma arm (stage 02 runs, every other stage answers --dry-run; run_in_this_work: false): the fit checkpoint. ONE snapshot cached (5bbc2fb1...)."
+    source:
+      hf_repo_revision: "the primary cluster's shared HF cache, models--google--gemma-4-31B refs/main = 5bbc2fb1c1b2c611d06e3d9f23c170ba21659d89 (read 2026-09-29; the only snapshot); gemma4_31b fit.checkpoint (hf_repo google/gemma-4-31B, model_id gemma4_31b_base)"
+      architecture_note: "the instruct snapshot's config.json text_config (read from the shared HF cache 2026-09-29); the base's own config.json was not read"
+      thinking_channel:
+        value_source: "inferred: a base checkpoint has no chat template switch"
+        confidence: inferred
+      generation_config_present:
+        value_source: "not read: the base snapshot is never served; whether it ships a generation_config.json was not checked"
+        confidence: unverified
+      chat_template_sha256:
+        value_source: "unverified until stage 02 tokenises"
+        confidence: unverified
+      paper_status: "reference"
+
+  - model_id: gemma4_31b
+    family: gemma4
+    size_label: 31B
+    checkpoint_kind: instruct
+    hf_repo: google/gemma-4-31B-it
+    hf_revision: 842da3794eaa0b77d5f08bae87a17459d91ff475
+    mirror_of: null
+    chat_template_hash16: unverified
+    chat_template_sha256: unverified
+    chat_template_note: "gemma-4 is multimodal (Gemma4ForConditionalGeneration; the snapshot ships chat_template.jinja + processor_config.json, listed 2026-09-29; bytes not hashed here -- stage 02 records the template sha). Served as the gemma4e4b family is: --chat-template-content-format string so the system block stays on the template's string branch, tool parser `gemma4`, thinking header identical ON and OFF -- inferred from the family (thinking {rule: gemma4_e4b_family}); stage 02 confirms"
+    tokenizer_sha256: unverified
+    generation_config_present: 1
+    generation_config_json: {temperature: 1.0, top_p: 0.95, top_k: 64, do_sample: true}
+    generation_config_file_sha256: d4226bbe3117d2d253ba4609720ba82c6c4ce4627a9a6ae05387c78983ac03de
+    generation_config_source_utc: "2026-09-29"
+    thinking_channel: available
+    thinking_header_moves: 0
+    architecture_note: "Gemma4ForConditionalGeneration (text_config model_type gemma4), DENSE: 60 blocks, hidden 5376, intermediate 21504, 32 query heads / 16 KV heads, sliding-window attention (window 1024) on five of every six blocks with full attention on every 6th (layer_types), vocab 262,144. No MoE and no recurrent blocks, so every block is an eligible LoRA layer for every module set and prefix caching stays on."
+    paper_status: reference
+    paper_status_ruling_id: null
+    producer_spellings: [gemma4_31b, gemma4_31b_u0, gemma4_31b_s1, gemma4_31b_s2, gemma4_31b_d0p75, gemma4_31b_d0p75_relu, "google/gemma-4-31B-it"]
+    notes: "paper-companion-repo pipeline test, gemma arm: run_in_this_work: false -- stage 02 (prepare model) runs and every other stage answers --dry-run. SERVED model id `gemma4_31b` by the authors' rule: no `_it` suffix, unlike the paper's gemma4e4b_it; the phase views register as gemma4_31b_<view>. Its shipped generation_config.json is BYTE-IDENTICAL to google/gemma-4-E4B-it @ ee0ef602's (same sha256 d4226bbe... and blob e605bb45...), so its decode numbers equal the E4B's. Ten snapshots cached; refs/main (842da379...) is the pin."
+    source:
+      hf_repo_revision: "the primary cluster's shared HF cache, models--google--gemma-4-31B-it refs/main = 842da3794eaa0b77d5f08bae87a17459d91ff475 (read 2026-09-29; ten snapshots cached); gemma4_31b serve.checkpoint (hf_repo google/gemma-4-31B-it); served model_id gemma4_31b by the authors' rule"
+      generation_config: "the primary cluster's shared HF cache, models--google--gemma-4-31B-it snapshot 842da3794eaa0b77d5f08bae87a17459d91ff475, generation_config.json (sha256 d4226bbe3117d2d253ba4609720ba82c6c4ce4627a9a6ae05387c78983ac03de, blob e605bb4523b1462ea9d9a3810b9e3ecf7ab7b1f6 -- the SAME bytes as gemma-4-E4B-it @ ee0ef602's; read 2026-09-29): {bos_token_id 2, do_sample true, eos_token_id [1, 106, 50], pad_token_id 0, temperature 1.0, top_k 64, top_p 0.95, transformers_version 5.5.0.dev0}; pinned in configs/sdfbase_shipped_generation_config.json models['google/gemma-4-31B-it']"
+      architecture_note: "the snapshot's config.json text_config (read from the shared HF cache 2026-09-29): architectures [Gemma4ForConditionalGeneration], num_hidden_layers 60, hidden_size 5376, intermediate_size 21504, num_attention_heads 32, num_key_value_heads 16, sliding_window 1024, layer_types (50 sliding_attention / 10 full_attention), vocab_size 262144"
+      thinking_channel:
+        value_source: "inferred from the gemma4 family (gemma4e4b_it: contracts.py _GEMMA4E4B thinking_modes (off, on)); this checkpoint's own render not yet checked"
+        confidence: inferred
+      thinking_header_moves:
+        value_source: "inferred from the gemma4 family (gemma4e4b: thinking header identical ON and OFF); stage 02 confirms"
+        confidence: inferred
+      chat_template_sha256:
+        value_source: "unverified until stage 02 tokenises"
+        confidence: unverified
+      paper_status: "reference"
+
+  # ------------------------------------------------------------------ the front-door WORKED EXAMPLE's key (2026-10-08; reference, never a result)
+  # The public tree's worked example runs on Qwen3.5-4B, but the real qwen35_4b phase spellings are PAPER objects (qwen35_4b_s1 / _s2 / _s3 are
+  # the batch-64 fit-seed replicates, qwen35_4b_d0p75 a paper dose run), so the recipe's phase names -- battery (the example's ONE steered run,
+  # the row's declared wave: every intervention and its unsteered controls in one standup; the authors' rule), d0p75 and
+  # d0p75_relu (its ladder at 0.75) --
+  # get a namespace of their own: model key `qwen35_4b_demo` (reproduce/models.yaml view_legacy_prefix qwen35_4b_demo; run_in_this_work: false
+  # -- every stage answers --dry-run, as the gemma4_31b rows above), fit checkpoint `qwen35_4b_demo_base`. The checkpoints are the SAME pins as
+  # qwen35_4b_it / qwen35_4b_base (copied from those rows, never re-read), the one deliberate exception to ONE ROW PER CHECKPOINT (header): the
+  # second row exists so a worked-example run is never spelled like a paper run. The HF repo spellings keep naming the PAPER's rows
+  # (vocab.model_spelling_owner: in_paper outranks reference in legacy_model_map and in the export's model_spellings), so these rows list no HF
+  # id among their producer_spellings. Out of the paper frame four ways: paper_status reference (no `*` decode row reaches them,
+  # dimensions.served_model_ids), no roster entry names the key, no decode row of their own (resolve() refuses by name, as for the
+  # gemma4e2b_it reference row), and -- since migration 0028 -- v_run_current reads a run of these two keys not_in_roster / in_current_paper 0
+  # BEFORE any include ruling can select it (schema_def.WORKED_EXAMPLE_MODEL_IDS names them by key: `reference` alone is not never-a-result,
+  # the 35B's appendix runs are in the frame by a deliberate include; a new worked-example key is added to that constant too).
+  - model_id: qwen35_4b_demo_base
+    family: qwen35
+    size_label: 4B
+    checkpoint_kind: base
+    hf_repo: Qwen/Qwen3.5-4B-Base
+    hf_revision: 1001bb4d826a52d1f399e183466143f4da7b741b
+    mirror_of: null
+    chat_template_hash16: unverified
+    chat_template_sha256: unverified
+    chat_template_note: "fit checkpoint only (the worked example's objects would be FIT here and SERVED on qwen35_4b_demo, transfer_kind base_to_instruct); never stood up -- run_in_this_work: false"
+    tokenizer_sha256: unverified
+    generation_config_present: unverified
+    generation_config_json: null
+    generation_config_source_utc: null
+    thinking_channel: not_available
+    thinking_header_moves: null
+    architecture_note: null
+    paper_status: reference
+    paper_status_ruling_id: null
+    producer_spellings: [qwen35_4b_demo_base]
+    notes: "the front-door WORKED EXAMPLE's fit checkpoint: the same checkpoint as qwen35_4b_base (Qwen/Qwen3.5-4B-Base @ 1001bb4d...), under the example's own key so its phase spellings never collide with the paper's qwen35_4b_s<s> replicates; run_in_this_work: false -- every stage answers --dry-run; never a result."
+    source:
+      hf_repo_revision: "copied from the qwen35_4b_base row above (configs/sdfbase_qwen35_4b_base_fits.yaml l.19-20 model / model_revision; contracts.py ModelRow qwen35_4b-f22 base_hf); the same pins under a second key"
+      thinking_channel:
+        value_source: "inferred: base checkpoint (as qwen35_4b_base)"
+        confidence: inferred
+      generation_config_present:
+        value_source: "not read: the base snapshot is never served (as qwen35_4b_base)"
+        confidence: unverified
+      paper_status: "a worked example, never a result -- reference, the vocabulary's word for a model the paper's figures never draw"
+
+  - model_id: qwen35_4b_demo
+    family: qwen35
+    size_label: 4B
+    checkpoint_kind: instruct
+    hf_repo: Qwen/Qwen3.5-4B
+    hf_revision: 851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a
+    mirror_of: null
+    chat_template_hash16: a4aee8afcf2e0711
+    chat_template_sha256: unverified
+    chat_template_note: "the same snapshot as qwen35_4b_it (copied from that row): thinking header MOVES between ON and OFF renders; the served render is pinned thinking-OFF via THINKING_OFF_TEMPLATE_KWARGS '{\"enable_thinking\": false}'"
+    tokenizer_sha256: unverified
+    generation_config_present: 0
+    generation_config_json: null
+    generation_config_source_utc: "2026-09-11"
+    generation_config_absence_evidence: "as qwen35_4b_it (the same snapshot 851bf6e8...): cohort cache .no_exist/851bf6e8.../generation_config.json marker; hub file listing (14 files) lacks it; GET -> 404 (the grading host anonymous 2026-09-11)"
+    thinking_channel: available
+    thinking_header_moves: 1
+    architecture_note: null
+    paper_status: reference
+    paper_status_ruling_id: null
+    producer_spellings: [qwen35_4b_demo, qwen35_4b_demo_battery, qwen35_4b_demo_d0p75, qwen35_4b_demo_d0p75_relu]
+    notes: "the front-door WORKED EXAMPLE's served checkpoint: the same checkpoint as qwen35_4b_it (Qwen/Qwen3.5-4B @ 851bf6e8...) under the example's own key; model key = served model_id (reproduce/models.yaml view_legacy_prefix qwen35_4b_demo; run.view_legacy carries `qwen35_4b_demo_<phase>` for battery / d0p75 / d0p75_relu -- battery the example's SINGLE run (the row's declared wave) with every intervention and its unsteered controls, per the authors' rule, so no u0 and no s2 -- legacy_spellings.yaml model_keys). run_in_this_work: false -- every stage answers --dry-run; never a result. Its decode-policy rows are qwen35_4b_it's twins under its own key (decode_policy_seed.yaml), so a run of the example resolves the same policies as the paper's served Qwen3.5-4B. The HF repo spelling Qwen/Qwen3.5-4B stays the paper row's (vocab.model_spelling_owner)."
+    source:
+      hf_repo_revision: "copied from the qwen35_4b_it row above (src/sisteer/capeval/tinycap/contracts.py IFEVAL_MODEL_PINS['qwen35_4b']; ModelRow qwen35_4b); the same pins under a second key"
+      chat_template_hash16: "the qwen35_4b_it row (configs/capeval/manifests/petri_full22_qwen35_4b.gsm8k.yaml `chat_template_hash`) -- the same snapshot"
+      chat_template_note: "the qwen35_4b_it row (contracts.py THINKING_OFF_TEMPLATE_KWARGS)"
+      generation_config: "the qwen35_4b_it row (configs/sdfbase_shipped_generation_config.json models['Qwen/Qwen3.5-4B'] state ships_none) -- the same snapshot"
+      thinking_header_moves: "the qwen35_4b_it row (contracts.py THINKING_HEADER_MOVES_EXPECTED)"
+      checkpoint_kind:
+        value_source: "as qwen35_4b_it: the base is a separate repo (Qwen/Qwen3.5-4B-Base), so this one is the post-trained checkpoint"
+        confidence: inferred
+      paper_status: "a worked example, never a result -- reference"

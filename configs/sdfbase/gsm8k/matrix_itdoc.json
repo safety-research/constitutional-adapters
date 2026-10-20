@@ -1,0 +1,761 @@
+{
+ "schema": "g8k_matrix/2",
+ "wave_root_rel": "exp/gsm8k_paired200_paper_objects_itdoc",
+ "trigger_threshold": 0.01,
+ "generated_by": "scripts/sdfbase/gsm8k/make_gsm8k_matrix.py (g8k_views.select_rows)",
+ "views_spec": "qwen35_4b=it; gemma4e4b=it",
+ "views": {
+  "qwen35_4b": [
+   "it"
+  ],
+  "gemma4e4b": [
+   "it"
+  ]
+ },
+ "holds": [],
+ "exclude": [
+  {
+   "key": "qwen35_4b",
+   "view": "it",
+   "cells": [
+    "none",
+    "prompted__safety_refusal",
+    "constv2-mix-full__psr_ce_all"
+   ],
+   "reason": "not this wave's rows \u2014 the bare anchor and the prompted safety baseline have their published `it` legs (COMPLETE at 8f5f1495; the analysis pairs this wave's cells against them across trees) and the PSR object is out of the panel by the ruling of 2026-09-12. The prompted constitution SI on the `it` view IS this wave's (the `extensions:` block below)."
+  },
+  {
+   "key": "gemma4e4b",
+   "view": "it",
+   "cells": [
+    "none",
+    "prompted__safety_refusal",
+    "constv2-mix-full__psr_ce_all"
+   ],
+   "reason": "not this wave's rows \u2014 the bare anchor and the prompted safety baseline have their published `it` legs (COMPLETE at 8f5f1495; the analysis pairs this wave's cells against them across trees) and the PSR object is out of the panel by the ruling of 2026-09-12. The prompted constitution SI on the `it` view IS this wave's (the `extensions:` block below)."
+  }
+ ],
+ "extensions": [
+  {
+   "key": "gemma4e4b",
+   "view": "it",
+   "cells": [
+    "prompted__si_constitution"
+   ],
+   "reason": "E3-14 (the coordinator 2026-09-13 16:47 local): the SHORT constitution SI on gemma4e4b's instruct-direct view \u2014 the capability cell Figures 2 / 3 / 5 read for this family; the `main`-view row 43 does not fill it.",
+   "since": "2026-09-13"
+  },
+  {
+   "key": "qwen35_4b",
+   "view": "it",
+   "cells": [
+    "prompted__si_constitution"
+   ],
+   "reason": "E3-14 (the coordinator 2026-09-13 16:47 local): the SHORT constitution SI on qwen35_4b's instruct-direct view \u2014 the capability cell Figures 2 / 3 / 5 read for this family; the `main`-view row 45 does not fill it.",
+   "since": "2026-09-13"
+  }
+ ],
+ "itdoc": [
+  {
+   "key": "qwen35_4b",
+   "view": "it",
+   "cells": [
+    "constv2ctl2-full__lora_r4_ce",
+    "constv2-mix-full__lora_r4_ce_minus_ctl"
+   ],
+   "reason": "the batch-64 control LoRA (bace45e2\u2026, early-stopped at epoch 1 of 3) and the LoRA difference (5e9b0009\u2026, constitution 80b75aae\u2026 minus control, scale-matched) \u2014 staged under the ruled ids, served by both clusters' `it` views since 2026-09-13 ~21:20Z, pinned on main at 4e200b68 (PR #102). The qualification (a budget-limited constitution numerator against an early-stopped control) rides every row.",
+   "since": "2026-09-13"
+  },
+  {
+   "key": "gemma4e4b",
+   "view": "it",
+   "cells": [
+    "constv2ctl2-full__lora_r4_ce",
+    "constv2-mix-full__lora_r4_ce_minus_ctl"
+   ],
+   "reason": "the batch-64 control LoRA (04a90de8\u2026, early-stopped at epoch 4 of 6) and the LoRA difference (8b7d1030\u2026, constitution 78e84f27\u2026 minus control, scale-matched) \u2014 staged under the ruled ids in both clusters' bank cells/; SERVABLE since 2026-09-14: the gemma `it` bank views on both clusters bind the two cells to the ruled ids (VIEW_MANIFEST rewritten 2026-09-14T01:16Z primary / 02:15Z overflow, bytes hashed == the pins), the roster maps them (PR #107, ece9e8ce) and the pin file names them (since 4e200b68) \u2014 the record's hold lifted from those reads.",
+   "since": "2026-09-13"
+  }
+ ],
+ "row_overlays": true,
+ "object_generation": true,
+ "wave": "itdoc",
+ "source": {
+  "views_yaml": "configs/sdfbase/gsm8k/views_itdoc.yaml",
+  "roster": "configs/sdfbase_full22_roster.yaml",
+  "roster_sha256": "89a2991c849c1f4c4720741d705dfcce76a84ec11c8f309dd1454211131136f8",
+  "pins": "configs/sdfbase_full22_pins.json",
+  "pins_sha256": "5ed8df94435b525ad3748a7f54b7e942f21645333f05b5668dc5f14cdc64e25d",
+  "itdoc_admission": "configs/sdfbase/itdoc_admission.json",
+  "itdoc_admission_sha256": "59acd21639a75e0ac50074801d044a8703517aa2f0f04a85fcb57492e58d84c1"
+ },
+ "counts": {
+  "rows": 8,
+  "held": 0,
+  "launched": 8,
+  "waves": {
+   "itdoc": 8
+  },
+  "statuses": {
+   "launch": 8
+  },
+  "launched_by_wave": {
+   "itdoc": 8
+  },
+  "deferred": 0,
+  "external_pins": {},
+  "itdoc_pins": {
+   "itdoc_eb64/qwen35_4b/it/constv2ctl2-full__lora_r4_ce": "bace45e26a6d1dc262e6fbb63851f7546b1327d7561cc3744e2bcf2adf881415",
+   "itdoc_eb64/qwen35_4b/it/constv2-mix-full__lora_r4_ce_minus_ctl": "5e9b0009eb24eaf66842b4a2a9f647fced95699c7aae748eaab5333b05a4c6ce",
+   "itdoc_eb64/gemma4e4b/it/constv2ctl2-full__lora_r4_ce": "04a90de8edd863345bf182adad717801b391096b350253c72bcb077b97885ed8",
+   "itdoc_eb64/gemma4e4b/it/constv2-mix-full__lora_r4_ce_minus_ctl": "8b7d10301a1fd04fbe4c71f21ae8912bae60ffc56df34acd10fa07a960b2080e"
+  },
+  "object_generations": {
+   "batch8": 2,
+   "batch64": 4
+  },
+  "fitted": 6,
+  "fitted_launched": 6,
+  "in_support": 2,
+  "declared": 0,
+  "expected_refusals": 0,
+  "servable": 8,
+  "contrasts_designed": 8,
+  "contrasts_computable": 8,
+  "tuple_names_launch": [
+   "gsm8k_paired200_gemma4e4b_8192",
+   "gsm8k_paired200_qwen35_4b_8192"
+  ],
+  "tags": [
+   "qwen35_4b_it",
+   "gemma4e4b_it"
+  ],
+  "n_tags": 2,
+  "by_tag": {
+   "qwen35_4b_it": {
+    "rows": 4,
+    "held": 0,
+    "launched": 4
+   },
+   "gemma4e4b_it": {
+    "rows": 4,
+    "held": 0,
+    "launched": 4
+   }
+  },
+  "held_rows": [],
+  "expected_refusal_rows": [],
+  "placement": {
+   "primary": 0,
+   "any": 8
+  },
+  "reasoning_parser_gemma4": 4,
+  "tuple_names": [
+   "gsm8k_paired200_gemma4e4b_8192",
+   "gsm8k_paired200_qwen35_4b_8192"
+  ],
+  "distinct_out_roots": 8,
+  "pins": {
+   "gemma4e4b": 1,
+   "qwen35_4b": 1
+  },
+  "families": [
+   "gemma4",
+   "qwen3_5"
+  ],
+  "models": [
+   "qwen35_4b",
+   "gemma4e4b"
+  ]
+ },
+ "rows": [
+  {
+   "index": 0,
+   "job_id": "g8k-qwen35_4b-it-mix-lora",
+   "model_key": "qwen35_4b",
+   "view": "it",
+   "tag": "qwen35_4b_it",
+   "cell": "constv2-mix-full__lora_r4_ce",
+   "cell_slug": "constv2-mix-full--lora_r4_ce",
+   "harness_cell": "si_constv2_mix_full__lora_r4_ce",
+   "standup_cell": "constv2-mix-full__lora_r4_ce",
+   "standup_harness_cell": "si_constv2_mix_full__lora_r4_ce",
+   "staged_id": "itdoc__constv2-mix-full__lora_r4_ce",
+   "object_sha256": "0018b32beb137fad77a688cfd4f7212c7702399e0f76f31cc3fbd5f903a445fe",
+   "fitted": true,
+   "route_kind": "lens",
+   "served_positions_expected": "all",
+   "declared": false,
+   "thinking_mode": "on",
+   "trigger_threshold": 0.01,
+   "tuple_name": "gsm8k_paired200_qwen35_4b_8192",
+   "tuple_names": {
+    "8192": "gsm8k_paired200_qwen35_4b_8192",
+    "16384": "gsm8k_paired200_qwen35_4b_16384"
+   },
+   "sampling_mode": "thinking_card",
+   "sampling": {
+    "temperature": 0.6,
+    "top_p": 0.95,
+    "top_k": 20,
+    "min_p": 0.0,
+    "presence_penalty": 0.0,
+    "source": "Qwen/Qwen3.5-4B @851bf6e8 ships no generation_config.json (.no_exist marker); the Qwen3.5 model card's THINKING-mode 'precise' row as reported to the project = the Qwen3 card's thinking-mode guidance (T 0.6 / top_p 0.95 / top_k 20 / min_p 0; penalties only against endless repetition at a stated cost) \u2014 the PRIMARY row: mathematics legitimately repeats tokens"
+   },
+   "expected_stamps": [
+    "cell-stable",
+    "always",
+    "thinking_on"
+   ],
+   "out_root": "controls_itdoc/qwen35_4b_it/constv2-mix-full--lora_r4_ce/thinking_card",
+   "rung_out_root": "controls_itdoc/qwen35_4b_it/constv2-mix-full--lora_r4_ce/thinking_card__rung16384",
+   "time_limit": "0-01:30:00",
+   "family": "qwen3_5",
+   "split_mode_candidate": "implicit_open",
+   "reasoning_parser": null,
+   "gpu_mem_util": "0.9",
+   "budget_class": "none",
+   "cluster_constraint": "any",
+   "status": "launch",
+   "held_reason": null,
+   "expected_refusal": false,
+   "expected_refusal_reason": null,
+   "wave": "itdoc",
+   "extension": true,
+   "own_overlay": true,
+   "object_generation": "batch8"
+  },
+  {
+   "index": 1,
+   "job_id": "g8k-qwen35_4b-it-ctl-lora",
+   "model_key": "qwen35_4b",
+   "view": "it",
+   "tag": "qwen35_4b_it",
+   "cell": "constv2ctl2-full__lora_r4_ce",
+   "cell_slug": "constv2ctl2-full--lora_r4_ce",
+   "harness_cell": "si_constv2ctl2_full__lora_r4_ce",
+   "standup_cell": "constv2ctl2-full__lora_r4_ce",
+   "standup_harness_cell": "si_constv2ctl2_full__lora_r4_ce",
+   "staged_id": "itdoc64__constv2ctl2-full__lora_r4_ce",
+   "object_sha256": "bace45e26a6d1dc262e6fbb63851f7546b1327d7561cc3744e2bcf2adf881415",
+   "fitted": true,
+   "route_kind": "lens",
+   "served_positions_expected": "all",
+   "declared": false,
+   "thinking_mode": "on",
+   "trigger_threshold": 0.01,
+   "tuple_name": "gsm8k_paired200_qwen35_4b_8192",
+   "tuple_names": {
+    "8192": "gsm8k_paired200_qwen35_4b_8192",
+    "16384": "gsm8k_paired200_qwen35_4b_16384"
+   },
+   "sampling_mode": "thinking_card",
+   "sampling": {
+    "temperature": 0.6,
+    "top_p": 0.95,
+    "top_k": 20,
+    "min_p": 0.0,
+    "presence_penalty": 0.0,
+    "source": "Qwen/Qwen3.5-4B @851bf6e8 ships no generation_config.json (.no_exist marker); the Qwen3.5 model card's THINKING-mode 'precise' row as reported to the project = the Qwen3 card's thinking-mode guidance (T 0.6 / top_p 0.95 / top_k 20 / min_p 0; penalties only against endless repetition at a stated cost) \u2014 the PRIMARY row: mathematics legitimately repeats tokens"
+   },
+   "expected_stamps": [
+    "cell-stable",
+    "always",
+    "thinking_on"
+   ],
+   "out_root": "controls_itdoc/qwen35_4b_it/constv2ctl2-full--lora_r4_ce/thinking_card",
+   "rung_out_root": "controls_itdoc/qwen35_4b_it/constv2ctl2-full--lora_r4_ce/thinking_card__rung16384",
+   "time_limit": "0-01:30:00",
+   "family": "qwen3_5",
+   "split_mode_candidate": "implicit_open",
+   "reasoning_parser": null,
+   "gpu_mem_util": "0.9",
+   "budget_class": "none",
+   "cluster_constraint": "any",
+   "status": "launch",
+   "held_reason": null,
+   "expected_refusal": false,
+   "expected_refusal_reason": null,
+   "wave": "itdoc",
+   "extension": true,
+   "object_source": "itdoc",
+   "lane": "itdoc_eb64",
+   "object_kind": "fitted",
+   "bank_sidecar": "train_budget_meta.json",
+   "bank_view": "it",
+   "bank_view_rel": {
+    "primary": "exp/objects/sdfbase/full22/qwen35_4b/cells_view/it",
+    "overflow": "exp/objects/sdfbase/full22/qwen35_4b/cells_view/it"
+   },
+   "bank_cell_dir": "constv2ctl2-full__lora_r4_ce",
+   "parents_expected": null,
+   "superseded": null,
+   "stale_objects": {
+    "0018b32beb137fad77a688cfd4f7212c7702399e0f76f31cc3fbd5f903a445fe": "superseded direct-fit object: itdoc__constv2-mix-full__lora_r4_ce, the qwen35_4b `it` view's constitution object the refit hold names (rows 3 / 16 of the GSM8K matrix; IFEval rows 3 / 11) \u2014 replaced by this batch-64 re-fit",
+    "50cd33287101a948973de60580a4c893e2787284182b50bdb088e288e9d7b904": "superseded direct-fit object: itdoc__constv2-mix-full__psr_ce_all, the qwen35_4b `it` view's PSR constitution object (PSR is out of the panel by ruling; refit hold, rows 2 / 15)",
+    "4bac922f88a5df01d319e44a9682d7f90505eed14e3a3aa859b2569dd7601c01": "stale dose bake: d0p1it__constv2-mix-full__lora_r4_ce (qwen35_4b) \u2014 baked from the SUPERSEDED direct-fit parent (itdoc__constv2-mix-full__lora_r4_ce 0018b32beb13\u2026), a batch-8 object under a batch-8 id (never overwritten; the re-bakes mint under d<dose>it64__) \u2014 a row of this lane resolving through it REFUSES, never launches",
+    "02738eb6eef91cfde52bd0f492825fc75bdf43cc3ba824190f7fe9dd4bce15c0": "stale dose bake: d0p25it__constv2-mix-full__lora_r4_ce (qwen35_4b) \u2014 baked from the SUPERSEDED direct-fit parent (itdoc__constv2-mix-full__lora_r4_ce 0018b32beb13\u2026), a batch-8 object under a batch-8 id (never overwritten; the re-bakes mint under d<dose>it64__) \u2014 a row of this lane resolving through it REFUSES, never launches",
+    "9392924e41554f66a82c1d823e3b9df8fa60b6405f4b5ae849253b9999c1dc87": "stale dose bake: d1p5it__constv2-mix-full__lora_r4_ce (qwen35_4b) \u2014 baked from the SUPERSEDED direct-fit parent (itdoc__constv2-mix-full__lora_r4_ce 0018b32beb13\u2026), a batch-8 object under a batch-8 id (never overwritten; the re-bakes mint under d<dose>it64__) \u2014 a row of this lane resolving through it REFUSES, never launches",
+    "11a3b5b0dcf0bfe4733b05055514af1fa8c670d6102890a3c35d314807ab7cd5": "stale dose bake: dm1it__constv2-mix-full__lora_r4_ce (qwen35_4b) \u2014 baked from the SUPERSEDED direct-fit parent (itdoc__constv2-mix-full__lora_r4_ce 0018b32beb13\u2026), a batch-8 object under a batch-8 id (never overwritten; the re-bakes mint under d<dose>it64__) \u2014 a row of this lane resolving through it REFUSES, never launches",
+    "119f5a6c01790f12505c03aea975a820c822898c10e3d43868ecc2b40bbb9636": "stale dose bake: halfdoseit__constv2-mix-full__lora_r4_ce (qwen35_4b) \u2014 baked from the SUPERSEDED direct-fit parent (itdoc__constv2-mix-full__lora_r4_ce 0018b32beb13\u2026), a batch-8 object under a batch-8 id (never overwritten; the re-bakes mint under d<dose>it64__) \u2014 a row of this lane resolving through it REFUSES, never launches",
+    "1b847c301b87746728886d48466ec7294c98092e173b157f33a619f17150488b": "stale dose bake: halfdoseit__constv2-mix-full__psr_ce_all (qwen35_4b) \u2014 baked from the SUPERSEDED direct-fit parent (itdoc__constv2-mix-full__lora_r4_ce 0018b32beb13\u2026), a batch-8 object under a batch-8 id (never overwritten; the re-bakes mint under d<dose>it64__) \u2014 a row of this lane resolving through it REFUSES, never launches"
+   },
+   "qualification": "the CONSTITUTION cell is BUDGET-LIMITED, NOT CONVERGED \u2014 best_epoch 16 of 16 with stopped_early False, so its best held-out CE was the last epoch and the budget bound the result (a box-edge argmin, treated as a selection failure elsewhere in this campaign); the CONTROL early-stopped at best_epoch 1 of 3; any difference of the pair inherits this asymmetry; nobody is re-fitting for it",
+   "qualification_pattern": "constitution budget-limited, not converged (best_epoch 16/16, stopped_early False, box-edge argmin); control early-stopped (gemma 4/6; qwen 1/3); any difference object / dose ladder is a trained-to-budget numerator against a converged denominator; nobody re-fits. State it; do not smooth it.",
+   "fit_record": {
+    "best_epoch": 1,
+    "epochs_run": 3,
+    "stopped_early": true,
+    "best_heldout_ce": 2.2514387124612325,
+    "heldout_ce_noop": 2.476329499192484,
+    "optimizer_steps_run": 801,
+    "steps_per_epoch": 267,
+    "effective_batch": 64,
+    "batch_size": 2,
+    "accum_steps": 32,
+    "lr": 0.008055949351268077,
+    "resolved_warmup_steps": 214,
+    "training_budget_kind": "document_tokens",
+    "chat_template_bypassed": true,
+    "template_hash": "a4aee8afcf2e0711",
+    "heldout_pool_sha": "7f588099117d3a76408d400bca00a0a181613b59dadf471dd90ce13b72dde1e4",
+    "published_at": "2026-09-12T07:14:56+00:00",
+    "convergence": "early-stopped at epoch 1 (patience 2, min_delta 0): the held-out CE rose after epoch 1 (2.25144, 2.25317, 2.25432)"
+   },
+   "admission_notes": [
+    "the it-view CONTROL is a NEW arm of the instruct-direct view (the frozen matrices' `it` views carried no control); early-stopped at best_epoch 1 of 3",
+    "2026-09-13 ~20:37Z: the bank copy under the ruled id itdoc64__constv2ctl2-full__lora_r4_ce hashed on BOTH clusters == the harvest bytes; link THREE of four (staged); link FOUR (servable: view manifest + pins + roster) pending \u2014 held",
+    "2026-09-13 21:49Z: SERVABLE on both clusters (view manifest 21:19Z / 21:21Z, PR #102 merged 4e200b68); the GSM8K itdoc-matrix row launches; the MATH-500 it-view row stays under the instrument hold below"
+   ],
+   "own_overlay": true,
+   "object_generation": "batch64"
+  },
+  {
+   "index": 2,
+   "job_id": "g8k-qwen35_4b-it-mix-dlora",
+   "model_key": "qwen35_4b",
+   "view": "it",
+   "tag": "qwen35_4b_it",
+   "cell": "constv2-mix-full__lora_r4_ce_minus_ctl",
+   "cell_slug": "constv2-mix-full--lora_r4_ce_minus_ctl",
+   "harness_cell": "si_constv2_mix_full__lora_r4_ce_minus_ctl",
+   "standup_cell": "constv2-mix-full__lora_r4_ce_minus_ctl",
+   "standup_harness_cell": "si_constv2_mix_full__lora_r4_ce_minus_ctl",
+   "staged_id": "derived_itdoc64__constv2-mix-full__lora_r4_ce_minus_ctl",
+   "object_sha256": "5e9b0009eb24eaf66842b4a2a9f647fced95699c7aae748eaab5333b05a4c6ce",
+   "fitted": true,
+   "route_kind": "lens",
+   "served_positions_expected": "all",
+   "declared": false,
+   "thinking_mode": "on",
+   "trigger_threshold": 0.01,
+   "tuple_name": "gsm8k_paired200_qwen35_4b_8192",
+   "tuple_names": {
+    "8192": "gsm8k_paired200_qwen35_4b_8192",
+    "16384": "gsm8k_paired200_qwen35_4b_16384"
+   },
+   "sampling_mode": "thinking_card",
+   "sampling": {
+    "temperature": 0.6,
+    "top_p": 0.95,
+    "top_k": 20,
+    "min_p": 0.0,
+    "presence_penalty": 0.0,
+    "source": "Qwen/Qwen3.5-4B @851bf6e8 ships no generation_config.json (.no_exist marker); the Qwen3.5 model card's THINKING-mode 'precise' row as reported to the project = the Qwen3 card's thinking-mode guidance (T 0.6 / top_p 0.95 / top_k 20 / min_p 0; penalties only against endless repetition at a stated cost) \u2014 the PRIMARY row: mathematics legitimately repeats tokens"
+   },
+   "expected_stamps": [
+    "cell-stable",
+    "always",
+    "thinking_on"
+   ],
+   "out_root": "controls_itdoc/qwen35_4b_it/constv2-mix-full--lora_r4_ce_minus_ctl/thinking_card",
+   "rung_out_root": "controls_itdoc/qwen35_4b_it/constv2-mix-full--lora_r4_ce_minus_ctl/thinking_card__rung16384",
+   "time_limit": "0-01:30:00",
+   "family": "qwen3_5",
+   "split_mode_candidate": "implicit_open",
+   "reasoning_parser": null,
+   "gpu_mem_util": "0.9",
+   "budget_class": "none",
+   "cluster_constraint": "any",
+   "status": "launch",
+   "held_reason": null,
+   "expected_refusal": false,
+   "expected_refusal_reason": null,
+   "wave": "itdoc",
+   "extension": true,
+   "object_source": "itdoc",
+   "lane": "itdoc_eb64",
+   "object_kind": "derived",
+   "bank_sidecar": "derived_meta.json",
+   "bank_view": "it",
+   "bank_view_rel": {
+    "primary": "exp/objects/sdfbase/full22/qwen35_4b/cells_view/it",
+    "overflow": "exp/objects/sdfbase/full22/qwen35_4b/cells_view/it"
+   },
+   "bank_cell_dir": "constv2-mix-full__lora_r4_ce_minus_ctl",
+   "parents_expected": {
+    "constv2-mix-full__lora_r4_ce": "80b75aae2cefee14b2885fcdf27fd889f49da7fa0cc3f97a501bc3f4d927358f",
+    "constv2ctl2-full__lora_r4_ce": "bace45e26a6d1dc262e6fbb63851f7546b1327d7561cc3744e2bcf2adf881415"
+   },
+   "superseded": null,
+   "stale_objects": {
+    "0018b32beb137fad77a688cfd4f7212c7702399e0f76f31cc3fbd5f903a445fe": "superseded direct-fit object: itdoc__constv2-mix-full__lora_r4_ce, the qwen35_4b `it` view's constitution object the refit hold names (rows 3 / 16 of the GSM8K matrix; IFEval rows 3 / 11) \u2014 replaced by this batch-64 re-fit",
+    "50cd33287101a948973de60580a4c893e2787284182b50bdb088e288e9d7b904": "superseded direct-fit object: itdoc__constv2-mix-full__psr_ce_all, the qwen35_4b `it` view's PSR constitution object (PSR is out of the panel by ruling; refit hold, rows 2 / 15)",
+    "4bac922f88a5df01d319e44a9682d7f90505eed14e3a3aa859b2569dd7601c01": "stale dose bake: d0p1it__constv2-mix-full__lora_r4_ce (qwen35_4b) \u2014 baked from the SUPERSEDED direct-fit parent (itdoc__constv2-mix-full__lora_r4_ce 0018b32beb13\u2026), a batch-8 object under a batch-8 id (never overwritten; the re-bakes mint under d<dose>it64__) \u2014 a row of this lane resolving through it REFUSES, never launches",
+    "02738eb6eef91cfde52bd0f492825fc75bdf43cc3ba824190f7fe9dd4bce15c0": "stale dose bake: d0p25it__constv2-mix-full__lora_r4_ce (qwen35_4b) \u2014 baked from the SUPERSEDED direct-fit parent (itdoc__constv2-mix-full__lora_r4_ce 0018b32beb13\u2026), a batch-8 object under a batch-8 id (never overwritten; the re-bakes mint under d<dose>it64__) \u2014 a row of this lane resolving through it REFUSES, never launches",
+    "9392924e41554f66a82c1d823e3b9df8fa60b6405f4b5ae849253b9999c1dc87": "stale dose bake: d1p5it__constv2-mix-full__lora_r4_ce (qwen35_4b) \u2014 baked from the SUPERSEDED direct-fit parent (itdoc__constv2-mix-full__lora_r4_ce 0018b32beb13\u2026), a batch-8 object under a batch-8 id (never overwritten; the re-bakes mint under d<dose>it64__) \u2014 a row of this lane resolving through it REFUSES, never launches",
+    "11a3b5b0dcf0bfe4733b05055514af1fa8c670d6102890a3c35d314807ab7cd5": "stale dose bake: dm1it__constv2-mix-full__lora_r4_ce (qwen35_4b) \u2014 baked from the SUPERSEDED direct-fit parent (itdoc__constv2-mix-full__lora_r4_ce 0018b32beb13\u2026), a batch-8 object under a batch-8 id (never overwritten; the re-bakes mint under d<dose>it64__) \u2014 a row of this lane resolving through it REFUSES, never launches",
+    "119f5a6c01790f12505c03aea975a820c822898c10e3d43868ecc2b40bbb9636": "stale dose bake: halfdoseit__constv2-mix-full__lora_r4_ce (qwen35_4b) \u2014 baked from the SUPERSEDED direct-fit parent (itdoc__constv2-mix-full__lora_r4_ce 0018b32beb13\u2026), a batch-8 object under a batch-8 id (never overwritten; the re-bakes mint under d<dose>it64__) \u2014 a row of this lane resolving through it REFUSES, never launches",
+    "1b847c301b87746728886d48466ec7294c98092e173b157f33a619f17150488b": "stale dose bake: halfdoseit__constv2-mix-full__psr_ce_all (qwen35_4b) \u2014 baked from the SUPERSEDED direct-fit parent (itdoc__constv2-mix-full__lora_r4_ce 0018b32beb13\u2026), a batch-8 object under a batch-8 id (never overwritten; the re-bakes mint under d<dose>it64__) \u2014 a row of this lane resolving through it REFUSES, never launches"
+   },
+   "qualification": "the CONSTITUTION cell is BUDGET-LIMITED, NOT CONVERGED \u2014 best_epoch 16 of 16 with stopped_early False, so its best held-out CE was the last epoch and the budget bound the result (a box-edge argmin, treated as a selection failure elsewhere in this campaign); the CONTROL early-stopped at best_epoch 1 of 3; any difference of the pair inherits this asymmetry; nobody is re-fitting for it",
+   "qualification_pattern": "constitution budget-limited, not converged (best_epoch 16/16, stopped_early False, box-edge argmin); control early-stopped (gemma 4/6; qwen 1/3); any difference object / dose ladder is a trained-to-budget numerator against a converged denominator; nobody re-fits. State it; do not smooth it.",
+   "fit_record": null,
+   "admission_notes": [
+    "the structural subtraction of the two it-doc parents (delta(parent_pos) - delta(parent_neg), both parents' factors stored bit-exact), served as diff_lora; built by the lane 2026-09-13T19:34Z; its bank copy sits under the RULED id derived_itdoc64__\u2026 on both clusters but is not servable yet (see hold_reason); the parents are under the bank's itdoc64__ ids on both clusters since 2026-09-13T20:00Z (still no it view entry / pin / roster)",
+    "2026-09-13 21:49Z: SERVABLE on both clusters (view manifest 21:19Z / 21:21Z, PR #102 merged 4e200b68); the GSM8K itdoc-matrix row launches; the MATH-500 it-view row stays under the instrument hold below"
+   ],
+   "own_overlay": true,
+   "object_generation": "batch64"
+  },
+  {
+   "index": 3,
+   "job_id": "g8k-gemma4e4b-it-mix-lora",
+   "model_key": "gemma4e4b",
+   "view": "it",
+   "tag": "gemma4e4b_it",
+   "cell": "constv2-mix-full__lora_r4_ce",
+   "cell_slug": "constv2-mix-full--lora_r4_ce",
+   "harness_cell": "si_constv2_mix_full__lora_r4_ce",
+   "standup_cell": "constv2-mix-full__lora_r4_ce",
+   "standup_harness_cell": "si_constv2_mix_full__lora_r4_ce",
+   "staged_id": "itdoc__constv2-mix-full__lora_r4_ce",
+   "object_sha256": "4c1a5fc3b382ddb86f9dce20ef7d31dac735b516014017d19fad0c74c0092353",
+   "fitted": true,
+   "route_kind": "lens",
+   "served_positions_expected": "all",
+   "declared": false,
+   "thinking_mode": "on",
+   "trigger_threshold": 0.01,
+   "tuple_name": "gsm8k_paired200_gemma4e4b_8192",
+   "tuple_names": {
+    "8192": "gsm8k_paired200_gemma4e4b_8192",
+    "16384": "gsm8k_paired200_gemma4e4b_16384"
+   },
+   "sampling_mode": "thinking_card",
+   "sampling": {
+    "temperature": 1.0,
+    "top_p": 0.95,
+    "top_k": 64,
+    "source": "generation_config.json of google/gemma-4-E4B-it @ee0ef602 (do_sample true; vendor default, not reasoning-tuned; no penalty term) \u2014 re-read 2026-09-09; identical to the sampled battery's preset, so gemma has no battery row"
+   },
+   "expected_stamps": [
+    "cell-stable",
+    "always",
+    "thinking_on"
+   ],
+   "out_root": "controls_itdoc/gemma4e4b_it/constv2-mix-full--lora_r4_ce/thinking_card",
+   "rung_out_root": "controls_itdoc/gemma4e4b_it/constv2-mix-full--lora_r4_ce/thinking_card__rung16384",
+   "time_limit": "0-01:30:00",
+   "family": "gemma4",
+   "split_mode_candidate": "record_only",
+   "reasoning_parser": "gemma4",
+   "gpu_mem_util": "0.9",
+   "budget_class": "none",
+   "cluster_constraint": "any",
+   "status": "launch",
+   "held_reason": null,
+   "expected_refusal": false,
+   "expected_refusal_reason": null,
+   "wave": "itdoc",
+   "extension": true,
+   "own_overlay": true,
+   "object_generation": "batch8"
+  },
+  {
+   "index": 4,
+   "job_id": "g8k-gemma4e4b-it-ctl-lora",
+   "model_key": "gemma4e4b",
+   "view": "it",
+   "tag": "gemma4e4b_it",
+   "cell": "constv2ctl2-full__lora_r4_ce",
+   "cell_slug": "constv2ctl2-full--lora_r4_ce",
+   "harness_cell": "si_constv2ctl2_full__lora_r4_ce",
+   "standup_cell": "constv2ctl2-full__lora_r4_ce",
+   "standup_harness_cell": "si_constv2ctl2_full__lora_r4_ce",
+   "staged_id": "itdoc64__constv2ctl2-full__lora_r4_ce",
+   "object_sha256": "04a90de8edd863345bf182adad717801b391096b350253c72bcb077b97885ed8",
+   "fitted": true,
+   "route_kind": "lens",
+   "served_positions_expected": "all",
+   "declared": false,
+   "thinking_mode": "on",
+   "trigger_threshold": 0.01,
+   "tuple_name": "gsm8k_paired200_gemma4e4b_8192",
+   "tuple_names": {
+    "8192": "gsm8k_paired200_gemma4e4b_8192",
+    "16384": "gsm8k_paired200_gemma4e4b_16384"
+   },
+   "sampling_mode": "thinking_card",
+   "sampling": {
+    "temperature": 1.0,
+    "top_p": 0.95,
+    "top_k": 64,
+    "source": "generation_config.json of google/gemma-4-E4B-it @ee0ef602 (do_sample true; vendor default, not reasoning-tuned; no penalty term) \u2014 re-read 2026-09-09; identical to the sampled battery's preset, so gemma has no battery row"
+   },
+   "expected_stamps": [
+    "cell-stable",
+    "always",
+    "thinking_on"
+   ],
+   "out_root": "controls_itdoc/gemma4e4b_it/constv2ctl2-full--lora_r4_ce/thinking_card",
+   "rung_out_root": "controls_itdoc/gemma4e4b_it/constv2ctl2-full--lora_r4_ce/thinking_card__rung16384",
+   "time_limit": "0-01:30:00",
+   "family": "gemma4",
+   "split_mode_candidate": "record_only",
+   "reasoning_parser": "gemma4",
+   "gpu_mem_util": "0.9",
+   "budget_class": "none",
+   "cluster_constraint": "any",
+   "status": "launch",
+   "held_reason": null,
+   "expected_refusal": false,
+   "expected_refusal_reason": null,
+   "wave": "itdoc",
+   "extension": true,
+   "object_source": "itdoc",
+   "lane": "itdoc_eb64",
+   "object_kind": "fitted",
+   "bank_sidecar": "train_budget_meta.json",
+   "bank_view": "it",
+   "bank_view_rel": {
+    "primary": "exp/objects/sdfbase/full22/gemma4e4b/cells_view/it",
+    "overflow": "exp/objects/sdfbase/full22/gemma4e4b/cells_view/it"
+   },
+   "bank_cell_dir": "constv2ctl2-full__lora_r4_ce",
+   "parents_expected": null,
+   "superseded": null,
+   "stale_objects": {
+    "4c1a5fc3b382ddb86f9dce20ef7d31dac735b516014017d19fad0c74c0092353": "superseded direct-fit object: itdoc__constv2-mix-full__lora_r4_ce, the gemma4e4b `it` view's constitution object the refit hold names (rows 3 / 16 of the GSM8K matrix; IFEval rows 3 / 11) \u2014 replaced by this batch-64 re-fit",
+    "fdab3ade9b0d8d627ce2519b0fa72552fd3fa44537d8ea12e6f9727f11808b5b": "superseded direct-fit object: itdoc__constv2-mix-full__psr_ce_all, the gemma4e4b `it` view's PSR constitution object (PSR is out of the panel by ruling; refit hold, rows 2 / 15)",
+    "ad7b9810b6cc3b7160b8a2f9b5f379722f60b8236e6d34cbda90f3dceee83b02": "stale dose bake: d0p1it__constv2-mix-full__lora_r4_ce (gemma4e4b) \u2014 baked from the SUPERSEDED direct-fit parent (itdoc__constv2-mix-full__lora_r4_ce 4c1a5fc3b382\u2026), a batch-8 object under a batch-8 id (never overwritten; the re-bakes mint under d<dose>it64__) \u2014 a row of this lane resolving through it REFUSES, never launches",
+    "0c5c10170979acb702c65da4374a712d50ef02a5868251cd5f0423cf79b039ba": "stale dose bake: d0p25it__constv2-mix-full__lora_r4_ce (gemma4e4b) \u2014 baked from the SUPERSEDED direct-fit parent (itdoc__constv2-mix-full__lora_r4_ce 4c1a5fc3b382\u2026), a batch-8 object under a batch-8 id (never overwritten; the re-bakes mint under d<dose>it64__) \u2014 a row of this lane resolving through it REFUSES, never launches",
+    "172cb4fac7876fa237b62064bd9bf6b45db8e1f5cfcca93782c8f039af6a6e0a": "stale dose bake: d1p5it__constv2-mix-full__lora_r4_ce (gemma4e4b) \u2014 baked from the SUPERSEDED direct-fit parent (itdoc__constv2-mix-full__lora_r4_ce 4c1a5fc3b382\u2026), a batch-8 object under a batch-8 id (never overwritten; the re-bakes mint under d<dose>it64__) \u2014 a row of this lane resolving through it REFUSES, never launches",
+    "192f8cef049fb60a9ef55c59eb9b67e78926e7822bb147b0f997a42e0d985810": "stale dose bake: dm1it__constv2-mix-full__lora_r4_ce (gemma4e4b) \u2014 baked from the SUPERSEDED direct-fit parent (itdoc__constv2-mix-full__lora_r4_ce 4c1a5fc3b382\u2026), a batch-8 object under a batch-8 id (never overwritten; the re-bakes mint under d<dose>it64__) \u2014 a row of this lane resolving through it REFUSES, never launches",
+    "b72ac1f3f56905f642aa09a8153929039f893526c274bac59a73c8b1821dfc91": "stale dose bake: halfdoseit__constv2-mix-full__lora_r4_ce (gemma4e4b) \u2014 baked from the SUPERSEDED direct-fit parent (itdoc__constv2-mix-full__lora_r4_ce 4c1a5fc3b382\u2026), a batch-8 object under a batch-8 id (never overwritten; the re-bakes mint under d<dose>it64__) \u2014 a row of this lane resolving through it REFUSES, never launches",
+    "ff5e5928c986d820cf43870ace7769ffe27814c865ccac7332333ec71143ad43": "stale dose bake: halfdoseit__constv2-mix-full__psr_ce_all (gemma4e4b) \u2014 baked from the SUPERSEDED direct-fit parent (itdoc__constv2-mix-full__lora_r4_ce 4c1a5fc3b382\u2026), a batch-8 object under a batch-8 id (never overwritten; the re-bakes mint under d<dose>it64__) \u2014 a row of this lane resolving through it REFUSES, never launches"
+   },
+   "qualification": "constitution budget-limited, not converged (best_epoch 16/16, stopped_early False, box-edge argmin); control early-stopped (gemma 4/6; qwen 1/3); any difference object / dose ladder is a trained-to-budget numerator against a converged denominator; nobody re-fits. State it; do not smooth it.",
+   "qualification_pattern": "constitution budget-limited, not converged (best_epoch 16/16, stopped_early False, box-edge argmin); control early-stopped (gemma 4/6; qwen 1/3); any difference object / dose ladder is a trained-to-budget numerator against a converged denominator; nobody re-fits. State it; do not smooth it.",
+   "fit_record": {
+    "best_epoch": 4,
+    "epochs_run": 6,
+    "stopped_early": true,
+    "best_heldout_ce": 2.1332907135511383,
+    "heldout_ce_noop": 3.41182,
+    "optimizer_steps_run": 1602,
+    "effective_batch": 64,
+    "lr": 0.0027980016558865283,
+    "training_budget_kind": "document_tokens",
+    "chat_template_bypassed": true,
+    "template_hash": "0a2c8073c878ab1d",
+    "published_at": "2026-09-12T18:57:01+00:00",
+    "convergence": "early-stopped at epoch 4 (patience 2): the held-out CE rose after epoch 4 (2.13329, 2.14957, 2.13438)"
+   },
+   "admission_notes": [
+    "2026-09-13 ~20:37Z: the bank copy under the ruled id itdoc64__constv2ctl2-full__lora_r4_ce hashed on BOTH clusters == the harvest bytes; link THREE of four (staged); link FOUR (servable: view manifest + pins + roster) pending \u2014 held",
+    "2026-09-14: hold LIFTED from disk (E2-B follow-up, LB23\u2013LB24) after PR #107 (ece9e8ce) put the gemma it->itdoc64 mapping on main's roster and the lane rebuilt both clusters' gemma `it` views; the bank binding above is what the launcher dispatches on"
+   ],
+   "own_overlay": true,
+   "object_generation": "batch64"
+  },
+  {
+   "index": 5,
+   "job_id": "g8k-gemma4e4b-it-mix-dlora",
+   "model_key": "gemma4e4b",
+   "view": "it",
+   "tag": "gemma4e4b_it",
+   "cell": "constv2-mix-full__lora_r4_ce_minus_ctl",
+   "cell_slug": "constv2-mix-full--lora_r4_ce_minus_ctl",
+   "harness_cell": "si_constv2_mix_full__lora_r4_ce_minus_ctl",
+   "standup_cell": "constv2-mix-full__lora_r4_ce_minus_ctl",
+   "standup_harness_cell": "si_constv2_mix_full__lora_r4_ce_minus_ctl",
+   "staged_id": "derived_itdoc64__constv2-mix-full__lora_r4_ce_minus_ctl",
+   "object_sha256": "8b7d10301a1fd04fbe4c71f21ae8912bae60ffc56df34acd10fa07a960b2080e",
+   "fitted": true,
+   "route_kind": "lens",
+   "served_positions_expected": "all",
+   "declared": false,
+   "thinking_mode": "on",
+   "trigger_threshold": 0.01,
+   "tuple_name": "gsm8k_paired200_gemma4e4b_8192",
+   "tuple_names": {
+    "8192": "gsm8k_paired200_gemma4e4b_8192",
+    "16384": "gsm8k_paired200_gemma4e4b_16384"
+   },
+   "sampling_mode": "thinking_card",
+   "sampling": {
+    "temperature": 1.0,
+    "top_p": 0.95,
+    "top_k": 64,
+    "source": "generation_config.json of google/gemma-4-E4B-it @ee0ef602 (do_sample true; vendor default, not reasoning-tuned; no penalty term) \u2014 re-read 2026-09-09; identical to the sampled battery's preset, so gemma has no battery row"
+   },
+   "expected_stamps": [
+    "cell-stable",
+    "always",
+    "thinking_on"
+   ],
+   "out_root": "controls_itdoc/gemma4e4b_it/constv2-mix-full--lora_r4_ce_minus_ctl/thinking_card",
+   "rung_out_root": "controls_itdoc/gemma4e4b_it/constv2-mix-full--lora_r4_ce_minus_ctl/thinking_card__rung16384",
+   "time_limit": "0-01:30:00",
+   "family": "gemma4",
+   "split_mode_candidate": "record_only",
+   "reasoning_parser": "gemma4",
+   "gpu_mem_util": "0.9",
+   "budget_class": "none",
+   "cluster_constraint": "any",
+   "status": "launch",
+   "held_reason": null,
+   "expected_refusal": false,
+   "expected_refusal_reason": null,
+   "wave": "itdoc",
+   "extension": true,
+   "object_source": "itdoc",
+   "lane": "itdoc_eb64",
+   "object_kind": "derived",
+   "bank_sidecar": "derived_meta.json",
+   "bank_view": "it",
+   "bank_view_rel": {
+    "primary": "exp/objects/sdfbase/full22/gemma4e4b/cells_view/it",
+    "overflow": "exp/objects/sdfbase/full22/gemma4e4b/cells_view/it"
+   },
+   "bank_cell_dir": "constv2-mix-full__lora_r4_ce_minus_ctl",
+   "parents_expected": {
+    "constv2-mix-full__lora_r4_ce": "78e84f2732d6232336f5fdae6021ad38818e6f12b2067fbb36402abb4214a9b9",
+    "constv2ctl2-full__lora_r4_ce": "04a90de8edd863345bf182adad717801b391096b350253c72bcb077b97885ed8"
+   },
+   "superseded": null,
+   "stale_objects": {
+    "4c1a5fc3b382ddb86f9dce20ef7d31dac735b516014017d19fad0c74c0092353": "superseded direct-fit object: itdoc__constv2-mix-full__lora_r4_ce, the gemma4e4b `it` view's constitution object the refit hold names (rows 3 / 16 of the GSM8K matrix; IFEval rows 3 / 11) \u2014 replaced by this batch-64 re-fit",
+    "fdab3ade9b0d8d627ce2519b0fa72552fd3fa44537d8ea12e6f9727f11808b5b": "superseded direct-fit object: itdoc__constv2-mix-full__psr_ce_all, the gemma4e4b `it` view's PSR constitution object (PSR is out of the panel by ruling; refit hold, rows 2 / 15)",
+    "ad7b9810b6cc3b7160b8a2f9b5f379722f60b8236e6d34cbda90f3dceee83b02": "stale dose bake: d0p1it__constv2-mix-full__lora_r4_ce (gemma4e4b) \u2014 baked from the SUPERSEDED direct-fit parent (itdoc__constv2-mix-full__lora_r4_ce 4c1a5fc3b382\u2026), a batch-8 object under a batch-8 id (never overwritten; the re-bakes mint under d<dose>it64__) \u2014 a row of this lane resolving through it REFUSES, never launches",
+    "0c5c10170979acb702c65da4374a712d50ef02a5868251cd5f0423cf79b039ba": "stale dose bake: d0p25it__constv2-mix-full__lora_r4_ce (gemma4e4b) \u2014 baked from the SUPERSEDED direct-fit parent (itdoc__constv2-mix-full__lora_r4_ce 4c1a5fc3b382\u2026), a batch-8 object under a batch-8 id (never overwritten; the re-bakes mint under d<dose>it64__) \u2014 a row of this lane resolving through it REFUSES, never launches",
+    "172cb4fac7876fa237b62064bd9bf6b45db8e1f5cfcca93782c8f039af6a6e0a": "stale dose bake: d1p5it__constv2-mix-full__lora_r4_ce (gemma4e4b) \u2014 baked from the SUPERSEDED direct-fit parent (itdoc__constv2-mix-full__lora_r4_ce 4c1a5fc3b382\u2026), a batch-8 object under a batch-8 id (never overwritten; the re-bakes mint under d<dose>it64__) \u2014 a row of this lane resolving through it REFUSES, never launches",
+    "192f8cef049fb60a9ef55c59eb9b67e78926e7822bb147b0f997a42e0d985810": "stale dose bake: dm1it__constv2-mix-full__lora_r4_ce (gemma4e4b) \u2014 baked from the SUPERSEDED direct-fit parent (itdoc__constv2-mix-full__lora_r4_ce 4c1a5fc3b382\u2026), a batch-8 object under a batch-8 id (never overwritten; the re-bakes mint under d<dose>it64__) \u2014 a row of this lane resolving through it REFUSES, never launches",
+    "b72ac1f3f56905f642aa09a8153929039f893526c274bac59a73c8b1821dfc91": "stale dose bake: halfdoseit__constv2-mix-full__lora_r4_ce (gemma4e4b) \u2014 baked from the SUPERSEDED direct-fit parent (itdoc__constv2-mix-full__lora_r4_ce 4c1a5fc3b382\u2026), a batch-8 object under a batch-8 id (never overwritten; the re-bakes mint under d<dose>it64__) \u2014 a row of this lane resolving through it REFUSES, never launches",
+    "ff5e5928c986d820cf43870ace7769ffe27814c865ccac7332333ec71143ad43": "stale dose bake: halfdoseit__constv2-mix-full__psr_ce_all (gemma4e4b) \u2014 baked from the SUPERSEDED direct-fit parent (itdoc__constv2-mix-full__lora_r4_ce 4c1a5fc3b382\u2026), a batch-8 object under a batch-8 id (never overwritten; the re-bakes mint under d<dose>it64__) \u2014 a row of this lane resolving through it REFUSES, never launches"
+   },
+   "qualification": "constitution budget-limited, not converged (best_epoch 16/16, stopped_early False, box-edge argmin); control early-stopped (gemma 4/6; qwen 1/3); any difference object / dose ladder is a trained-to-budget numerator against a converged denominator; nobody re-fits. State it; do not smooth it.",
+   "qualification_pattern": "constitution budget-limited, not converged (best_epoch 16/16, stopped_early False, box-edge argmin); control early-stopped (gemma 4/6; qwen 1/3); any difference object / dose ladder is a trained-to-budget numerator against a converged denominator; nobody re-fits. State it; do not smooth it.",
+   "fit_record": null,
+   "admission_notes": [
+    "the structural subtraction of the two gemma it-doc parents (delta(parent_pos) - delta(parent_neg), both parents' factors stored bit-exact), served as diff_lora; built by the lane 2026-09-13T20:08:27Z with scripts/sdfbase/lora_subtract.py (NEVER scripts/sbatch/sdfbase_derived_build.sbatch, see hazards); its bank copy sits under the RULED id derived_itdoc64__\u2026 on both clusters (hashed 2026-09-13 ~20:37Z) but is not servable yet (see hold_reason)",
+    "2026-09-14: hold LIFTED from disk (E2-B follow-up, LB23\u2013LB24) after PR #107 (ece9e8ce) put the gemma it->itdoc64 mapping on main's roster and the lane rebuilt both clusters' gemma `it` views; the bank binding above is what the launcher dispatches on"
+   ],
+   "own_overlay": true,
+   "object_generation": "batch64"
+  },
+  {
+   "index": 6,
+   "job_id": "g8k-gemma4e4b-it-prompted-const",
+   "model_key": "gemma4e4b",
+   "view": "it",
+   "tag": "gemma4e4b_it",
+   "cell": "prompted__si_constitution",
+   "cell_slug": "prompted--si_constitution",
+   "harness_cell": "prompted__constitution",
+   "standup_cell": "prompted__si_constitution",
+   "standup_harness_cell": "prompted__constitution",
+   "staged_id": null,
+   "object_sha256": null,
+   "fitted": false,
+   "route_kind": "prompted",
+   "served_positions_expected": null,
+   "declared": false,
+   "thinking_mode": "on",
+   "trigger_threshold": 0.01,
+   "tuple_name": null,
+   "tuple_names": null,
+   "sampling_mode": "thinking_card",
+   "sampling": {
+    "temperature": 1.0,
+    "top_p": 0.95,
+    "top_k": 64,
+    "source": "generation_config.json of google/gemma-4-E4B-it @ee0ef602 (do_sample true; vendor default, not reasoning-tuned; no penalty term) \u2014 re-read 2026-09-09; identical to the sampled battery's preset, so gemma has no battery row"
+   },
+   "expected_stamps": [
+    "cell-stable",
+    "not-consulted",
+    "thinking_on"
+   ],
+   "out_root": "controls_itdoc/gemma4e4b_it/prompted--si_constitution/thinking_card",
+   "rung_out_root": "controls_itdoc/gemma4e4b_it/prompted--si_constitution/thinking_card__rung16384",
+   "time_limit": "0-01:30:00",
+   "family": "gemma4",
+   "split_mode_candidate": "record_only",
+   "reasoning_parser": "gemma4",
+   "gpu_mem_util": "0.9",
+   "budget_class": "prompted__si_constitution",
+   "cluster_constraint": "any",
+   "status": "launch",
+   "held_reason": null,
+   "expected_refusal": false,
+   "expected_refusal_reason": null,
+   "wave": "itdoc",
+   "extension": true,
+   "own_overlay": true
+  },
+  {
+   "index": 7,
+   "job_id": "g8k-qwen35_4b-it-prompted-const",
+   "model_key": "qwen35_4b",
+   "view": "it",
+   "tag": "qwen35_4b_it",
+   "cell": "prompted__si_constitution",
+   "cell_slug": "prompted--si_constitution",
+   "harness_cell": "prompted__constitution",
+   "standup_cell": "prompted__si_constitution",
+   "standup_harness_cell": "prompted__constitution",
+   "staged_id": null,
+   "object_sha256": null,
+   "fitted": false,
+   "route_kind": "prompted",
+   "served_positions_expected": null,
+   "declared": false,
+   "thinking_mode": "on",
+   "trigger_threshold": 0.01,
+   "tuple_name": null,
+   "tuple_names": null,
+   "sampling_mode": "thinking_card",
+   "sampling": {
+    "temperature": 0.6,
+    "top_p": 0.95,
+    "top_k": 20,
+    "min_p": 0.0,
+    "presence_penalty": 0.0,
+    "source": "Qwen/Qwen3.5-4B @851bf6e8 ships no generation_config.json (.no_exist marker); the Qwen3.5 model card's THINKING-mode 'precise' row as reported to the project = the Qwen3 card's thinking-mode guidance (T 0.6 / top_p 0.95 / top_k 20 / min_p 0; penalties only against endless repetition at a stated cost) \u2014 the PRIMARY row: mathematics legitimately repeats tokens"
+   },
+   "expected_stamps": [
+    "cell-stable",
+    "not-consulted",
+    "thinking_on"
+   ],
+   "out_root": "controls_itdoc/qwen35_4b_it/prompted--si_constitution/thinking_card",
+   "rung_out_root": "controls_itdoc/qwen35_4b_it/prompted--si_constitution/thinking_card__rung16384",
+   "time_limit": "0-01:30:00",
+   "family": "qwen3_5",
+   "split_mode_candidate": "implicit_open",
+   "reasoning_parser": null,
+   "gpu_mem_util": "0.9",
+   "budget_class": "prompted__si_constitution",
+   "cluster_constraint": "any",
+   "status": "launch",
+   "held_reason": null,
+   "expected_refusal": false,
+   "expected_refusal_reason": null,
+   "wave": "itdoc",
+   "extension": true,
+   "own_overlay": true
+  }
+ ]
+}

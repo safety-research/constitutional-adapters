@@ -1,0 +1,60 @@
+{
+ "_doc": "The three REFERENCE tokenizers whose minimum defines a corpus's official token count (corpus_generator/src/corpus_generator/tokens.py). Pinned to the HF commit (revision) and per-file sha256 staged for the released corpora on 2026-08-31; stage 02 provisions these FILES at these pins (one repo per hf_fetch.sh call, the `include` patterns) and `corpusgen stage-tokenizers --out DIR --hf-home DIR --revision <name>=<revision>...` stages them; its MANIFEST.json must reproduce every sha256 below.",
+ "include": [
+  "tokenizer.json",
+  "tokenizer_config.json",
+  "special_tokens_map.json"
+ ],
+ "tokenizers": {
+  "llama3": {
+   "repo": "meta-llama/Llama-3.1-8B-Instruct",
+   "revision": "0e9e39f249a16976918f6564b8830bc894c89659",
+   "files": [
+    {
+     "name": "tokenizer.json",
+     "sha256": "79e3e522635f3171300913bb421464a87de6222182a0570b9b2ccba2a964b2b4"
+    },
+    {
+     "name": "tokenizer_config.json",
+     "sha256": "177c7b61e616fecb84c17ce0591acb92c6c4d60e9ac5ababfb940ff23bbcd424"
+    },
+    {
+     "name": "special_tokens_map.json",
+     "sha256": "6f38c73729248f6c127296386e3cdde96e254636cc58b4169d3fd32328d9a8ec"
+    }
+   ]
+  },
+  "gemma": {
+   "repo": "google/gemma-3-27b-it",
+   "revision": "005ad3404e59d6023443cb575daa05336842228a",
+   "files": [
+    {
+     "name": "tokenizer.json",
+     "sha256": "4667f2089529e8e7657cfb6d1c19910ae71ff5f28aa7ab2ff2763330affad795"
+    },
+    {
+     "name": "tokenizer_config.json",
+     "sha256": "bfe25c2735e395407beb78456ea9a6984a1f00d8c16fa04a8b75f2a614cf53e1"
+    },
+    {
+     "name": "special_tokens_map.json",
+     "sha256": "2f7b0adf4fb469770bb1490e3e35df87b1dc578246c5e7e6fc76ecf33213a397"
+    }
+   ]
+  },
+  "qwen": {
+   "repo": "Qwen/Qwen3-8B",
+   "revision": "b968826d9c46dd6066d109eabc6255188de91218",
+   "files": [
+    {
+     "name": "tokenizer.json",
+     "sha256": "aeb13307a71acd8fe81861d94ad54ab689df773318809eed3cbe794b4492dae4"
+    },
+    {
+     "name": "tokenizer_config.json",
+     "sha256": "d5d09f07b48c3086c508b30d1c9114bd1189145b74e982a265350c923acd8101"
+    }
+   ]
+  }
+ }
+}

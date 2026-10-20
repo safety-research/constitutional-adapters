@@ -1,0 +1,91 @@
+# Stage-2 long-context suite (plan 3.3 eval/longctx.py; jobs C5/A5):
+# IFEval-at-length -- same request, grown PG-19 filler between SI and
+# request (2402.14848 methodology); decay slope over log(length) per arm.
+model: meta-llama/Llama-3.1-8B-Instruct   # hard native cap 131072 (dense)
+model_revision: 0e9e39f249a16976918f6564b8830bc894c89659
+dtype: bfloat16
+layer: 15
+
+# GLOBAL-FORMAT SIs only (several, not one; NOT length-count types, which
+# padding confounds) -- the 4 SIs A5 loops over.
+instructions: [lowercase, no_comma, keyword_frequency, end_with_phrase]
+
+lengths: [1024, 4096, 16384, 65536, 131072]
+
+# Arm modes: prompted (SI in system) / prepended (SI first line of the long
+# user turn) / steered per deployable arm -- ALL 12.
+modes: [prompted, prepended]
+arms: [vector, vector_all, lora_r1, lora_r1_all, token_bos, token_faithful,
+       psr, psr_kl, psr_kl_all, loreft, reft_r1, bidpo]
+
+# Cost control: hard prompt-subsample at >=64k lengths.
+# Canary C5 re-times these before A5 is committed (knobs, plan 8).
+n_prompts: 50
+n_prompts_64k_plus: 12
+
+# Base requests (the padded prompts' payload) + extension-cell pair
+# generation: same alpaca split recipe as the core matrix config.
+prompts:
+  source: hf
+  dataset: tatsu-lab/alpaca
+  n: 600
+  holdout_frac: 0.3
+n_fit_prompts: 200
+
+steering:
+  norm_relative: true        # mandatory (spec): fixed magnitude would fake decay
+  skip_bos: true             # massive activations (2402.17762)
+  batch_size_steered: 1      # review fix 2: at EVERY length -- under left
+                             # padding with batch>1, global index 0 is PAD and
+                             # skip_bos would miss the true BOS. Enforced by
+                             # the runner + test_longctx.py. Prompted/prepended
+                             # (no hooks) may batch.
+  scale_calibration: 1k_ceiling   # scale_rel = ||v|| / median resid norm @ L15
+  norm_watch: true           # per-token norms via in-generate prefill hook
+                             # (logits_to_keep=1, never a full
+                             # [1, L, vocab] forward)
+  # steer_positions: all     # generation-only ablation knob: "response"
+                             # steers ONLY generated tokens (records ->
+                             # <si>__<arm>__resp.jsonl, method <arm>__resp;
+                             # sbatch tasks 18-20 drive it via
+                             # --steer-positions, which overrides this key).
+                             # Response cells REUSE the all-positions 1k
+                             # calibration — same per-steered-token relative
+                             # dose, so the ablation isolates WHERE the
+                             # vector lands, not how hard.
+
+padding:
+  filler_cache: data/pg19_filler.json
+  # fixed, seeded ~600k-token PG-19 validation filler (fetch_stage2_data.py)
+  adversarial: true          # secondary arm: competing IFEval instructions
+  adversarial_modes: [prompted, vector]   # plan 8: secondary for these only
+
+# flash_attention_2: the C0-decided PERF upgrade, now that the pinned
+# source-built flash-attn wheel (torch 2.11 / sm_90; supply-chain review +
+# user OK) is in uv.lock behind the `longctx` extra — the longctx sbatch
+# syncs with --extra longctx (stage2_common.sh S2_UV_EXTRAS) and the wheel
+# lives in the cluster clone's gitignored wheels/ dir. Fail-safe: if
+# flash-attn is absent from the env (extra not synced, wheel missing),
+# _load_model catches transformers' ImportError and retries sdpa with a
+# LOUD warning — the suite degrades, never crashes; results then record
+# sdpa numbers. Hooks are attention-implementation-agnostic; the C0
+# anchor probe still tries FA2 and records its absence gracefully. No
+# vLLM in the steered path.
+attn_implementation: flash_attention_2
+
+# 256k extension cell (spec-corrected 2026-08-13): a DENSE 256k-native model,
+# NOT hybrid Qwen3.5-9B. Verified at execute: Qwen2.5-7B-Instruct-1M is NOT
+# in the shared cache; the spec's named fallback Qwen3-4B-Instruct-2507 IS
+# cached and dense 256k-native -> the 256k cell runs on it (decision filed).
+extension_256k:
+  enabled: true
+  model: Qwen/Qwen3-4B-Instruct-2507
+  model_revision: cdbee75f17c01a7cc42f958dc650907174af0554
+  length: 262144
+
+ceiling_check:
+  at_length: 1024            # per arm, gates reading any decay
+
+max_new_tokens: 200
+out_dir: out/stage2_llama8b/longctx
+wandb_project: $WANDB_PROJECT

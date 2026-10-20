@@ -1,0 +1,8062 @@
+{
+ "dataset": {
+  "complete": {
+   "n": 1140,
+   "repo_id": "bigcode/bigcodebench",
+   "revision": "b74c0d0bf70d2c0bc459be537895cca163007f1a",
+   "split": "v0.1.2"
+  },
+  "hard": {
+   "n": 148,
+   "repo_id": "bigcode/bigcodebench-hard",
+   "revision": "298d2cc7b96612e15e47313c3603ee124cee0c1f",
+   "split": "v0.1.2"
+  }
+ },
+ "generated_at": "2026-09-23T22:48:08+00:00",
+ "generated_by": "scripts/capeval_subsets.py",
+ "hard_ids": [
+  "BigCodeBench/13",
+  "BigCodeBench/15",
+  "BigCodeBench/17",
+  "BigCodeBench/19",
+  "BigCodeBench/34",
+  "BigCodeBench/37",
+  "BigCodeBench/82",
+  "BigCodeBench/89",
+  "BigCodeBench/92",
+  "BigCodeBench/93",
+  "BigCodeBench/99",
+  "BigCodeBench/100",
+  "BigCodeBench/101",
+  "BigCodeBench/108",
+  "BigCodeBench/120",
+  "BigCodeBench/123",
+  "BigCodeBench/124",
+  "BigCodeBench/129",
+  "BigCodeBench/139",
+  "BigCodeBench/147",
+  "BigCodeBench/161",
+  "BigCodeBench/162",
+  "BigCodeBench/177",
+  "BigCodeBench/184",
+  "BigCodeBench/187",
+  "BigCodeBench/199",
+  "BigCodeBench/208",
+  "BigCodeBench/211",
+  "BigCodeBench/214",
+  "BigCodeBench/227",
+  "BigCodeBench/239",
+  "BigCodeBench/241",
+  "BigCodeBench/267",
+  "BigCodeBench/273",
+  "BigCodeBench/274",
+  "BigCodeBench/287",
+  "BigCodeBench/302",
+  "BigCodeBench/308",
+  "BigCodeBench/310",
+  "BigCodeBench/313",
+  "BigCodeBench/324",
+  "BigCodeBench/326",
+  "BigCodeBench/341",
+  "BigCodeBench/346",
+  "BigCodeBench/360",
+  "BigCodeBench/367",
+  "BigCodeBench/368",
+  "BigCodeBench/374",
+  "BigCodeBench/399",
+  "BigCodeBench/401",
+  "BigCodeBench/409",
+  "BigCodeBench/417",
+  "BigCodeBench/418",
+  "BigCodeBench/424",
+  "BigCodeBench/443",
+  "BigCodeBench/445",
+  "BigCodeBench/454",
+  "BigCodeBench/458",
+  "BigCodeBench/461",
+  "BigCodeBench/477",
+  "BigCodeBench/486",
+  "BigCodeBench/492",
+  "BigCodeBench/501",
+  "BigCodeBench/502",
+  "BigCodeBench/503",
+  "BigCodeBench/509",
+  "BigCodeBench/511",
+  "BigCodeBench/513",
+  "BigCodeBench/526",
+  "BigCodeBench/528",
+  "BigCodeBench/530",
+  "BigCodeBench/532",
+  "BigCodeBench/553",
+  "BigCodeBench/560",
+  "BigCodeBench/567",
+  "BigCodeBench/574",
+  "BigCodeBench/579",
+  "BigCodeBench/582",
+  "BigCodeBench/583",
+  "BigCodeBench/587",
+  "BigCodeBench/590",
+  "BigCodeBench/592",
+  "BigCodeBench/593",
+  "BigCodeBench/594",
+  "BigCodeBench/618",
+  "BigCodeBench/636",
+  "BigCodeBench/637",
+  "BigCodeBench/654",
+  "BigCodeBench/655",
+  "BigCodeBench/657",
+  "BigCodeBench/678",
+  "BigCodeBench/720",
+  "BigCodeBench/723",
+  "BigCodeBench/752",
+  "BigCodeBench/760",
+  "BigCodeBench/763",
+  "BigCodeBench/765",
+  "BigCodeBench/771",
+  "BigCodeBench/777",
+  "BigCodeBench/785",
+  "BigCodeBench/800",
+  "BigCodeBench/826",
+  "BigCodeBench/845",
+  "BigCodeBench/854",
+  "BigCodeBench/857",
+  "BigCodeBench/865",
+  "BigCodeBench/870",
+  "BigCodeBench/879",
+  "BigCodeBench/897",
+  "BigCodeBench/906",
+  "BigCodeBench/914",
+  "BigCodeBench/915",
+  "BigCodeBench/916",
+  "BigCodeBench/917",
+  "BigCodeBench/928",
+  "BigCodeBench/942",
+  "BigCodeBench/945",
+  "BigCodeBench/952",
+  "BigCodeBench/955",
+  "BigCodeBench/963",
+  "BigCodeBench/964",
+  "BigCodeBench/969",
+  "BigCodeBench/971",
+  "BigCodeBench/985",
+  "BigCodeBench/988",
+  "BigCodeBench/990",
+  "BigCodeBench/998",
+  "BigCodeBench/999",
+  "BigCodeBench/1003",
+  "BigCodeBench/1004",
+  "BigCodeBench/1006",
+  "BigCodeBench/1008",
+  "BigCodeBench/1012",
+  "BigCodeBench/1013",
+  "BigCodeBench/1015",
+  "BigCodeBench/1019",
+  "BigCodeBench/1020",
+  "BigCodeBench/1022",
+  "BigCodeBench/1039",
+  "BigCodeBench/1040",
+  "BigCodeBench/1042",
+  "BigCodeBench/1053",
+  "BigCodeBench/1057",
+  "BigCodeBench/1077",
+  "BigCodeBench/1085",
+  "BigCodeBench/1124",
+  "BigCodeBench/1129",
+  "BigCodeBench/1137"
+ ],
+ "ids": [
+  "BigCodeBench/0",
+  "BigCodeBench/1",
+  "BigCodeBench/2",
+  "BigCodeBench/3",
+  "BigCodeBench/4",
+  "BigCodeBench/5",
+  "BigCodeBench/6",
+  "BigCodeBench/7",
+  "BigCodeBench/8",
+  "BigCodeBench/9",
+  "BigCodeBench/10",
+  "BigCodeBench/11",
+  "BigCodeBench/12",
+  "BigCodeBench/13",
+  "BigCodeBench/14",
+  "BigCodeBench/15",
+  "BigCodeBench/16",
+  "BigCodeBench/17",
+  "BigCodeBench/18",
+  "BigCodeBench/19",
+  "BigCodeBench/20",
+  "BigCodeBench/21",
+  "BigCodeBench/22",
+  "BigCodeBench/23",
+  "BigCodeBench/24",
+  "BigCodeBench/25",
+  "BigCodeBench/26",
+  "BigCodeBench/27",
+  "BigCodeBench/28",
+  "BigCodeBench/29",
+  "BigCodeBench/30",
+  "BigCodeBench/31",
+  "BigCodeBench/32",
+  "BigCodeBench/33",
+  "BigCodeBench/34",
+  "BigCodeBench/35",
+  "BigCodeBench/36",
+  "BigCodeBench/37",
+  "BigCodeBench/38",
+  "BigCodeBench/39",
+  "BigCodeBench/40",
+  "BigCodeBench/41",
+  "BigCodeBench/42",
+  "BigCodeBench/43",
+  "BigCodeBench/44",
+  "BigCodeBench/45",
+  "BigCodeBench/46",
+  "BigCodeBench/47",
+  "BigCodeBench/48",
+  "BigCodeBench/49",
+  "BigCodeBench/50",
+  "BigCodeBench/51",
+  "BigCodeBench/52",
+  "BigCodeBench/53",
+  "BigCodeBench/54",
+  "BigCodeBench/55",
+  "BigCodeBench/56",
+  "BigCodeBench/57",
+  "BigCodeBench/58",
+  "BigCodeBench/59",
+  "BigCodeBench/60",
+  "BigCodeBench/61",
+  "BigCodeBench/62",
+  "BigCodeBench/63",
+  "BigCodeBench/64",
+  "BigCodeBench/65",
+  "BigCodeBench/66",
+  "BigCodeBench/67",
+  "BigCodeBench/68",
+  "BigCodeBench/69",
+  "BigCodeBench/70",
+  "BigCodeBench/71",
+  "BigCodeBench/72",
+  "BigCodeBench/73",
+  "BigCodeBench/74",
+  "BigCodeBench/75",
+  "BigCodeBench/76",
+  "BigCodeBench/77",
+  "BigCodeBench/78",
+  "BigCodeBench/79",
+  "BigCodeBench/80",
+  "BigCodeBench/81",
+  "BigCodeBench/82",
+  "BigCodeBench/83",
+  "BigCodeBench/84",
+  "BigCodeBench/85",
+  "BigCodeBench/86",
+  "BigCodeBench/87",
+  "BigCodeBench/88",
+  "BigCodeBench/89",
+  "BigCodeBench/90",
+  "BigCodeBench/91",
+  "BigCodeBench/92",
+  "BigCodeBench/93",
+  "BigCodeBench/94",
+  "BigCodeBench/95",
+  "BigCodeBench/96",
+  "BigCodeBench/97",
+  "BigCodeBench/98",
+  "BigCodeBench/99",
+  "BigCodeBench/100",
+  "BigCodeBench/101",
+  "BigCodeBench/102",
+  "BigCodeBench/103",
+  "BigCodeBench/104",
+  "BigCodeBench/105",
+  "BigCodeBench/106",
+  "BigCodeBench/107",
+  "BigCodeBench/108",
+  "BigCodeBench/109",
+  "BigCodeBench/110",
+  "BigCodeBench/111",
+  "BigCodeBench/112",
+  "BigCodeBench/113",
+  "BigCodeBench/114",
+  "BigCodeBench/115",
+  "BigCodeBench/116",
+  "BigCodeBench/117",
+  "BigCodeBench/118",
+  "BigCodeBench/119",
+  "BigCodeBench/120",
+  "BigCodeBench/121",
+  "BigCodeBench/122",
+  "BigCodeBench/123",
+  "BigCodeBench/124",
+  "BigCodeBench/125",
+  "BigCodeBench/126",
+  "BigCodeBench/127",
+  "BigCodeBench/128",
+  "BigCodeBench/129",
+  "BigCodeBench/130",
+  "BigCodeBench/131",
+  "BigCodeBench/132",
+  "BigCodeBench/133",
+  "BigCodeBench/134",
+  "BigCodeBench/135",
+  "BigCodeBench/136",
+  "BigCodeBench/137",
+  "BigCodeBench/138",
+  "BigCodeBench/139",
+  "BigCodeBench/140",
+  "BigCodeBench/141",
+  "BigCodeBench/142",
+  "BigCodeBench/143",
+  "BigCodeBench/144",
+  "BigCodeBench/145",
+  "BigCodeBench/146",
+  "BigCodeBench/147",
+  "BigCodeBench/148",
+  "BigCodeBench/149",
+  "BigCodeBench/150",
+  "BigCodeBench/151",
+  "BigCodeBench/152",
+  "BigCodeBench/153",
+  "BigCodeBench/154",
+  "BigCodeBench/155",
+  "BigCodeBench/156",
+  "BigCodeBench/157",
+  "BigCodeBench/158",
+  "BigCodeBench/159",
+  "BigCodeBench/160",
+  "BigCodeBench/161",
+  "BigCodeBench/162",
+  "BigCodeBench/163",
+  "BigCodeBench/164",
+  "BigCodeBench/165",
+  "BigCodeBench/166",
+  "BigCodeBench/167",
+  "BigCodeBench/168",
+  "BigCodeBench/169",
+  "BigCodeBench/170",
+  "BigCodeBench/171",
+  "BigCodeBench/172",
+  "BigCodeBench/173",
+  "BigCodeBench/174",
+  "BigCodeBench/175",
+  "BigCodeBench/176",
+  "BigCodeBench/177",
+  "BigCodeBench/178",
+  "BigCodeBench/179",
+  "BigCodeBench/180",
+  "BigCodeBench/181",
+  "BigCodeBench/182",
+  "BigCodeBench/183",
+  "BigCodeBench/184",
+  "BigCodeBench/185",
+  "BigCodeBench/186",
+  "BigCodeBench/187",
+  "BigCodeBench/188",
+  "BigCodeBench/189",
+  "BigCodeBench/190",
+  "BigCodeBench/191",
+  "BigCodeBench/192",
+  "BigCodeBench/193",
+  "BigCodeBench/194",
+  "BigCodeBench/195",
+  "BigCodeBench/196",
+  "BigCodeBench/197",
+  "BigCodeBench/198",
+  "BigCodeBench/199",
+  "BigCodeBench/200",
+  "BigCodeBench/201",
+  "BigCodeBench/202",
+  "BigCodeBench/203",
+  "BigCodeBench/204",
+  "BigCodeBench/205",
+  "BigCodeBench/206",
+  "BigCodeBench/207",
+  "BigCodeBench/208",
+  "BigCodeBench/209",
+  "BigCodeBench/210",
+  "BigCodeBench/211",
+  "BigCodeBench/212",
+  "BigCodeBench/213",
+  "BigCodeBench/214",
+  "BigCodeBench/215",
+  "BigCodeBench/216",
+  "BigCodeBench/217",
+  "BigCodeBench/218",
+  "BigCodeBench/219",
+  "BigCodeBench/220",
+  "BigCodeBench/221",
+  "BigCodeBench/222",
+  "BigCodeBench/223",
+  "BigCodeBench/224",
+  "BigCodeBench/225",
+  "BigCodeBench/226",
+  "BigCodeBench/227",
+  "BigCodeBench/228",
+  "BigCodeBench/229",
+  "BigCodeBench/230",
+  "BigCodeBench/231",
+  "BigCodeBench/232",
+  "BigCodeBench/233",
+  "BigCodeBench/234",
+  "BigCodeBench/235",
+  "BigCodeBench/236",
+  "BigCodeBench/237",
+  "BigCodeBench/238",
+  "BigCodeBench/239",
+  "BigCodeBench/240",
+  "BigCodeBench/241",
+  "BigCodeBench/242",
+  "BigCodeBench/243",
+  "BigCodeBench/244",
+  "BigCodeBench/245",
+  "BigCodeBench/246",
+  "BigCodeBench/247",
+  "BigCodeBench/248",
+  "BigCodeBench/249",
+  "BigCodeBench/250",
+  "BigCodeBench/251",
+  "BigCodeBench/252",
+  "BigCodeBench/253",
+  "BigCodeBench/254",
+  "BigCodeBench/255",
+  "BigCodeBench/256",
+  "BigCodeBench/257",
+  "BigCodeBench/258",
+  "BigCodeBench/259",
+  "BigCodeBench/260",
+  "BigCodeBench/261",
+  "BigCodeBench/262",
+  "BigCodeBench/263",
+  "BigCodeBench/264",
+  "BigCodeBench/265",
+  "BigCodeBench/266",
+  "BigCodeBench/267",
+  "BigCodeBench/268",
+  "BigCodeBench/269",
+  "BigCodeBench/270",
+  "BigCodeBench/271",
+  "BigCodeBench/272",
+  "BigCodeBench/273",
+  "BigCodeBench/274",
+  "BigCodeBench/275",
+  "BigCodeBench/276",
+  "BigCodeBench/277",
+  "BigCodeBench/278",
+  "BigCodeBench/279",
+  "BigCodeBench/280",
+  "BigCodeBench/281",
+  "BigCodeBench/282",
+  "BigCodeBench/283",
+  "BigCodeBench/284",
+  "BigCodeBench/285",
+  "BigCodeBench/286",
+  "BigCodeBench/287",
+  "BigCodeBench/288",
+  "BigCodeBench/289",
+  "BigCodeBench/290",
+  "BigCodeBench/291",
+  "BigCodeBench/292",
+  "BigCodeBench/293",
+  "BigCodeBench/294",
+  "BigCodeBench/295",
+  "BigCodeBench/296",
+  "BigCodeBench/297",
+  "BigCodeBench/298",
+  "BigCodeBench/299",
+  "BigCodeBench/300",
+  "BigCodeBench/301",
+  "BigCodeBench/302",
+  "BigCodeBench/303",
+  "BigCodeBench/304",
+  "BigCodeBench/305",
+  "BigCodeBench/306",
+  "BigCodeBench/307",
+  "BigCodeBench/308",
+  "BigCodeBench/309",
+  "BigCodeBench/310",
+  "BigCodeBench/311",
+  "BigCodeBench/312",
+  "BigCodeBench/313",
+  "BigCodeBench/314",
+  "BigCodeBench/315",
+  "BigCodeBench/316",
+  "BigCodeBench/317",
+  "BigCodeBench/318",
+  "BigCodeBench/319",
+  "BigCodeBench/320",
+  "BigCodeBench/321",
+  "BigCodeBench/322",
+  "BigCodeBench/323",
+  "BigCodeBench/324",
+  "BigCodeBench/325",
+  "BigCodeBench/326",
+  "BigCodeBench/327",
+  "BigCodeBench/328",
+  "BigCodeBench/329",
+  "BigCodeBench/330",
+  "BigCodeBench/331",
+  "BigCodeBench/332",
+  "BigCodeBench/333",
+  "BigCodeBench/334",
+  "BigCodeBench/335",
+  "BigCodeBench/336",
+  "BigCodeBench/337",
+  "BigCodeBench/338",
+  "BigCodeBench/339",
+  "BigCodeBench/340",
+  "BigCodeBench/341",
+  "BigCodeBench/342",
+  "BigCodeBench/343",
+  "BigCodeBench/344",
+  "BigCodeBench/345",
+  "BigCodeBench/346",
+  "BigCodeBench/347",
+  "BigCodeBench/348",
+  "BigCodeBench/349",
+  "BigCodeBench/350",
+  "BigCodeBench/351",
+  "BigCodeBench/352",
+  "BigCodeBench/353",
+  "BigCodeBench/354",
+  "BigCodeBench/355",
+  "BigCodeBench/356",
+  "BigCodeBench/357",
+  "BigCodeBench/358",
+  "BigCodeBench/359",
+  "BigCodeBench/360",
+  "BigCodeBench/361",
+  "BigCodeBench/362",
+  "BigCodeBench/363",
+  "BigCodeBench/364",
+  "BigCodeBench/365",
+  "BigCodeBench/366",
+  "BigCodeBench/367",
+  "BigCodeBench/368",
+  "BigCodeBench/369",
+  "BigCodeBench/370",
+  "BigCodeBench/371",
+  "BigCodeBench/372",
+  "BigCodeBench/373",
+  "BigCodeBench/374",
+  "BigCodeBench/375",
+  "BigCodeBench/376",
+  "BigCodeBench/377",
+  "BigCodeBench/378",
+  "BigCodeBench/379",
+  "BigCodeBench/380",
+  "BigCodeBench/381",
+  "BigCodeBench/382",
+  "BigCodeBench/383",
+  "BigCodeBench/384",
+  "BigCodeBench/385",
+  "BigCodeBench/386",
+  "BigCodeBench/387",
+  "BigCodeBench/388",
+  "BigCodeBench/389",
+  "BigCodeBench/390",
+  "BigCodeBench/391",
+  "BigCodeBench/392",
+  "BigCodeBench/393",
+  "BigCodeBench/394",
+  "BigCodeBench/395",
+  "BigCodeBench/396",
+  "BigCodeBench/397",
+  "BigCodeBench/398",
+  "BigCodeBench/399",
+  "BigCodeBench/400",
+  "BigCodeBench/401",
+  "BigCodeBench/402",
+  "BigCodeBench/403",
+  "BigCodeBench/404",
+  "BigCodeBench/405",
+  "BigCodeBench/406",
+  "BigCodeBench/407",
+  "BigCodeBench/408",
+  "BigCodeBench/409",
+  "BigCodeBench/410",
+  "BigCodeBench/411",
+  "BigCodeBench/412",
+  "BigCodeBench/413",
+  "BigCodeBench/414",
+  "BigCodeBench/415",
+  "BigCodeBench/416",
+  "BigCodeBench/417",
+  "BigCodeBench/418",
+  "BigCodeBench/419",
+  "BigCodeBench/420",
+  "BigCodeBench/421",
+  "BigCodeBench/422",
+  "BigCodeBench/423",
+  "BigCodeBench/424",
+  "BigCodeBench/425",
+  "BigCodeBench/426",
+  "BigCodeBench/427",
+  "BigCodeBench/428",
+  "BigCodeBench/429",
+  "BigCodeBench/430",
+  "BigCodeBench/431",
+  "BigCodeBench/432",
+  "BigCodeBench/433",
+  "BigCodeBench/434",
+  "BigCodeBench/435",
+  "BigCodeBench/436",
+  "BigCodeBench/437",
+  "BigCodeBench/438",
+  "BigCodeBench/439",
+  "BigCodeBench/440",
+  "BigCodeBench/441",
+  "BigCodeBench/442",
+  "BigCodeBench/443",
+  "BigCodeBench/444",
+  "BigCodeBench/445",
+  "BigCodeBench/446",
+  "BigCodeBench/447",
+  "BigCodeBench/448",
+  "BigCodeBench/449",
+  "BigCodeBench/450",
+  "BigCodeBench/451",
+  "BigCodeBench/452",
+  "BigCodeBench/453",
+  "BigCodeBench/454",
+  "BigCodeBench/455",
+  "BigCodeBench/456",
+  "BigCodeBench/457",
+  "BigCodeBench/458",
+  "BigCodeBench/459",
+  "BigCodeBench/460",
+  "BigCodeBench/461",
+  "BigCodeBench/462",
+  "BigCodeBench/463",
+  "BigCodeBench/464",
+  "BigCodeBench/465",
+  "BigCodeBench/466",
+  "BigCodeBench/467",
+  "BigCodeBench/468",
+  "BigCodeBench/469",
+  "BigCodeBench/470",
+  "BigCodeBench/471",
+  "BigCodeBench/472",
+  "BigCodeBench/473",
+  "BigCodeBench/474",
+  "BigCodeBench/475",
+  "BigCodeBench/476",
+  "BigCodeBench/477",
+  "BigCodeBench/478",
+  "BigCodeBench/479",
+  "BigCodeBench/480",
+  "BigCodeBench/481",
+  "BigCodeBench/482",
+  "BigCodeBench/483",
+  "BigCodeBench/484",
+  "BigCodeBench/485",
+  "BigCodeBench/486",
+  "BigCodeBench/487",
+  "BigCodeBench/488",
+  "BigCodeBench/489",
+  "BigCodeBench/490",
+  "BigCodeBench/491",
+  "BigCodeBench/492",
+  "BigCodeBench/493",
+  "BigCodeBench/494",
+  "BigCodeBench/495",
+  "BigCodeBench/496",
+  "BigCodeBench/497",
+  "BigCodeBench/498",
+  "BigCodeBench/499",
+  "BigCodeBench/500",
+  "BigCodeBench/501",
+  "BigCodeBench/502",
+  "BigCodeBench/503",
+  "BigCodeBench/504",
+  "BigCodeBench/505",
+  "BigCodeBench/506",
+  "BigCodeBench/507",
+  "BigCodeBench/508",
+  "BigCodeBench/509",
+  "BigCodeBench/510",
+  "BigCodeBench/511",
+  "BigCodeBench/512",
+  "BigCodeBench/513",
+  "BigCodeBench/514",
+  "BigCodeBench/515",
+  "BigCodeBench/516",
+  "BigCodeBench/517",
+  "BigCodeBench/518",
+  "BigCodeBench/519",
+  "BigCodeBench/520",
+  "BigCodeBench/521",
+  "BigCodeBench/522",
+  "BigCodeBench/523",
+  "BigCodeBench/524",
+  "BigCodeBench/525",
+  "BigCodeBench/526",
+  "BigCodeBench/527",
+  "BigCodeBench/528",
+  "BigCodeBench/529",
+  "BigCodeBench/530",
+  "BigCodeBench/531",
+  "BigCodeBench/532",
+  "BigCodeBench/533",
+  "BigCodeBench/534",
+  "BigCodeBench/535",
+  "BigCodeBench/536",
+  "BigCodeBench/537",
+  "BigCodeBench/538",
+  "BigCodeBench/539",
+  "BigCodeBench/540",
+  "BigCodeBench/541",
+  "BigCodeBench/542",
+  "BigCodeBench/543",
+  "BigCodeBench/544",
+  "BigCodeBench/545",
+  "BigCodeBench/546",
+  "BigCodeBench/547",
+  "BigCodeBench/548",
+  "BigCodeBench/549",
+  "BigCodeBench/550",
+  "BigCodeBench/551",
+  "BigCodeBench/552",
+  "BigCodeBench/553",
+  "BigCodeBench/554",
+  "BigCodeBench/555",
+  "BigCodeBench/556",
+  "BigCodeBench/557",
+  "BigCodeBench/558",
+  "BigCodeBench/559",
+  "BigCodeBench/560",
+  "BigCodeBench/561",
+  "BigCodeBench/562",
+  "BigCodeBench/563",
+  "BigCodeBench/564",
+  "BigCodeBench/565",
+  "BigCodeBench/566",
+  "BigCodeBench/567",
+  "BigCodeBench/568",
+  "BigCodeBench/569",
+  "BigCodeBench/570",
+  "BigCodeBench/571",
+  "BigCodeBench/572",
+  "BigCodeBench/573",
+  "BigCodeBench/574",
+  "BigCodeBench/575",
+  "BigCodeBench/576",
+  "BigCodeBench/577",
+  "BigCodeBench/578",
+  "BigCodeBench/579",
+  "BigCodeBench/580",
+  "BigCodeBench/581",
+  "BigCodeBench/582",
+  "BigCodeBench/583",
+  "BigCodeBench/584",
+  "BigCodeBench/585",
+  "BigCodeBench/586",
+  "BigCodeBench/587",
+  "BigCodeBench/588",
+  "BigCodeBench/589",
+  "BigCodeBench/590",
+  "BigCodeBench/591",
+  "BigCodeBench/592",
+  "BigCodeBench/593",
+  "BigCodeBench/594",
+  "BigCodeBench/595",
+  "BigCodeBench/596",
+  "BigCodeBench/597",
+  "BigCodeBench/598",
+  "BigCodeBench/599",
+  "BigCodeBench/600",
+  "BigCodeBench/601",
+  "BigCodeBench/602",
+  "BigCodeBench/603",
+  "BigCodeBench/604",
+  "BigCodeBench/605",
+  "BigCodeBench/606",
+  "BigCodeBench/607",
+  "BigCodeBench/608",
+  "BigCodeBench/609",
+  "BigCodeBench/610",
+  "BigCodeBench/611",
+  "BigCodeBench/612",
+  "BigCodeBench/613",
+  "BigCodeBench/614",
+  "BigCodeBench/615",
+  "BigCodeBench/616",
+  "BigCodeBench/617",
+  "BigCodeBench/618",
+  "BigCodeBench/619",
+  "BigCodeBench/620",
+  "BigCodeBench/621",
+  "BigCodeBench/622",
+  "BigCodeBench/623",
+  "BigCodeBench/624",
+  "BigCodeBench/625",
+  "BigCodeBench/626",
+  "BigCodeBench/627",
+  "BigCodeBench/628",
+  "BigCodeBench/629",
+  "BigCodeBench/630",
+  "BigCodeBench/631",
+  "BigCodeBench/632",
+  "BigCodeBench/633",
+  "BigCodeBench/634",
+  "BigCodeBench/635",
+  "BigCodeBench/636",
+  "BigCodeBench/637",
+  "BigCodeBench/638",
+  "BigCodeBench/639",
+  "BigCodeBench/640",
+  "BigCodeBench/641",
+  "BigCodeBench/642",
+  "BigCodeBench/643",
+  "BigCodeBench/644",
+  "BigCodeBench/645",
+  "BigCodeBench/646",
+  "BigCodeBench/647",
+  "BigCodeBench/648",
+  "BigCodeBench/649",
+  "BigCodeBench/650",
+  "BigCodeBench/651",
+  "BigCodeBench/652",
+  "BigCodeBench/653",
+  "BigCodeBench/654",
+  "BigCodeBench/655",
+  "BigCodeBench/656",
+  "BigCodeBench/657",
+  "BigCodeBench/658",
+  "BigCodeBench/659",
+  "BigCodeBench/660",
+  "BigCodeBench/661",
+  "BigCodeBench/662",
+  "BigCodeBench/663",
+  "BigCodeBench/664",
+  "BigCodeBench/665",
+  "BigCodeBench/666",
+  "BigCodeBench/667",
+  "BigCodeBench/668",
+  "BigCodeBench/669",
+  "BigCodeBench/670",
+  "BigCodeBench/671",
+  "BigCodeBench/672",
+  "BigCodeBench/673",
+  "BigCodeBench/674",
+  "BigCodeBench/675",
+  "BigCodeBench/676",
+  "BigCodeBench/677",
+  "BigCodeBench/678",
+  "BigCodeBench/679",
+  "BigCodeBench/680",
+  "BigCodeBench/681",
+  "BigCodeBench/682",
+  "BigCodeBench/683",
+  "BigCodeBench/684",
+  "BigCodeBench/685",
+  "BigCodeBench/686",
+  "BigCodeBench/687",
+  "BigCodeBench/688",
+  "BigCodeBench/689",
+  "BigCodeBench/690",
+  "BigCodeBench/691",
+  "BigCodeBench/692",
+  "BigCodeBench/693",
+  "BigCodeBench/694",
+  "BigCodeBench/695",
+  "BigCodeBench/696",
+  "BigCodeBench/697",
+  "BigCodeBench/698",
+  "BigCodeBench/699",
+  "BigCodeBench/700",
+  "BigCodeBench/701",
+  "BigCodeBench/702",
+  "BigCodeBench/703",
+  "BigCodeBench/704",
+  "BigCodeBench/705",
+  "BigCodeBench/706",
+  "BigCodeBench/707",
+  "BigCodeBench/708",
+  "BigCodeBench/709",
+  "BigCodeBench/710",
+  "BigCodeBench/711",
+  "BigCodeBench/712",
+  "BigCodeBench/713",
+  "BigCodeBench/714",
+  "BigCodeBench/715",
+  "BigCodeBench/716",
+  "BigCodeBench/717",
+  "BigCodeBench/718",
+  "BigCodeBench/719",
+  "BigCodeBench/720",
+  "BigCodeBench/721",
+  "BigCodeBench/722",
+  "BigCodeBench/723",
+  "BigCodeBench/724",
+  "BigCodeBench/725",
+  "BigCodeBench/726",
+  "BigCodeBench/727",
+  "BigCodeBench/728",
+  "BigCodeBench/729",
+  "BigCodeBench/730",
+  "BigCodeBench/731",
+  "BigCodeBench/732",
+  "BigCodeBench/733",
+  "BigCodeBench/734",
+  "BigCodeBench/735",
+  "BigCodeBench/736",
+  "BigCodeBench/737",
+  "BigCodeBench/738",
+  "BigCodeBench/739",
+  "BigCodeBench/740",
+  "BigCodeBench/741",
+  "BigCodeBench/742",
+  "BigCodeBench/743",
+  "BigCodeBench/744",
+  "BigCodeBench/745",
+  "BigCodeBench/746",
+  "BigCodeBench/747",
+  "BigCodeBench/748",
+  "BigCodeBench/749",
+  "BigCodeBench/750",
+  "BigCodeBench/751",
+  "BigCodeBench/752",
+  "BigCodeBench/753",
+  "BigCodeBench/754",
+  "BigCodeBench/755",
+  "BigCodeBench/756",
+  "BigCodeBench/757",
+  "BigCodeBench/758",
+  "BigCodeBench/759",
+  "BigCodeBench/760",
+  "BigCodeBench/761",
+  "BigCodeBench/762",
+  "BigCodeBench/763",
+  "BigCodeBench/764",
+  "BigCodeBench/765",
+  "BigCodeBench/766",
+  "BigCodeBench/767",
+  "BigCodeBench/768",
+  "BigCodeBench/769",
+  "BigCodeBench/770",
+  "BigCodeBench/771",
+  "BigCodeBench/772",
+  "BigCodeBench/773",
+  "BigCodeBench/774",
+  "BigCodeBench/775",
+  "BigCodeBench/776",
+  "BigCodeBench/777",
+  "BigCodeBench/778",
+  "BigCodeBench/779",
+  "BigCodeBench/780",
+  "BigCodeBench/781",
+  "BigCodeBench/782",
+  "BigCodeBench/783",
+  "BigCodeBench/784",
+  "BigCodeBench/785",
+  "BigCodeBench/786",
+  "BigCodeBench/787",
+  "BigCodeBench/788",
+  "BigCodeBench/789",
+  "BigCodeBench/790",
+  "BigCodeBench/791",
+  "BigCodeBench/792",
+  "BigCodeBench/793",
+  "BigCodeBench/794",
+  "BigCodeBench/795",
+  "BigCodeBench/796",
+  "BigCodeBench/797",
+  "BigCodeBench/798",
+  "BigCodeBench/799",
+  "BigCodeBench/800",
+  "BigCodeBench/801",
+  "BigCodeBench/802",
+  "BigCodeBench/803",
+  "BigCodeBench/804",
+  "BigCodeBench/805",
+  "BigCodeBench/806",
+  "BigCodeBench/807",
+  "BigCodeBench/808",
+  "BigCodeBench/809",
+  "BigCodeBench/810",
+  "BigCodeBench/811",
+  "BigCodeBench/812",
+  "BigCodeBench/813",
+  "BigCodeBench/814",
+  "BigCodeBench/815",
+  "BigCodeBench/816",
+  "BigCodeBench/817",
+  "BigCodeBench/818",
+  "BigCodeBench/819",
+  "BigCodeBench/820",
+  "BigCodeBench/821",
+  "BigCodeBench/822",
+  "BigCodeBench/823",
+  "BigCodeBench/824",
+  "BigCodeBench/825",
+  "BigCodeBench/826",
+  "BigCodeBench/827",
+  "BigCodeBench/828",
+  "BigCodeBench/829",
+  "BigCodeBench/830",
+  "BigCodeBench/831",
+  "BigCodeBench/832",
+  "BigCodeBench/833",
+  "BigCodeBench/834",
+  "BigCodeBench/835",
+  "BigCodeBench/836",
+  "BigCodeBench/837",
+  "BigCodeBench/838",
+  "BigCodeBench/839",
+  "BigCodeBench/840",
+  "BigCodeBench/841",
+  "BigCodeBench/842",
+  "BigCodeBench/843",
+  "BigCodeBench/844",
+  "BigCodeBench/845",
+  "BigCodeBench/846",
+  "BigCodeBench/847",
+  "BigCodeBench/848",
+  "BigCodeBench/849",
+  "BigCodeBench/850",
+  "BigCodeBench/851",
+  "BigCodeBench/852",
+  "BigCodeBench/853",
+  "BigCodeBench/854",
+  "BigCodeBench/855",
+  "BigCodeBench/856",
+  "BigCodeBench/857",
+  "BigCodeBench/858",
+  "BigCodeBench/859",
+  "BigCodeBench/860",
+  "BigCodeBench/861",
+  "BigCodeBench/862",
+  "BigCodeBench/863",
+  "BigCodeBench/864",
+  "BigCodeBench/865",
+  "BigCodeBench/866",
+  "BigCodeBench/867",
+  "BigCodeBench/868",
+  "BigCodeBench/869",
+  "BigCodeBench/870",
+  "BigCodeBench/871",
+  "BigCodeBench/872",
+  "BigCodeBench/873",
+  "BigCodeBench/874",
+  "BigCodeBench/875",
+  "BigCodeBench/876",
+  "BigCodeBench/877",
+  "BigCodeBench/878",
+  "BigCodeBench/879",
+  "BigCodeBench/880",
+  "BigCodeBench/881",
+  "BigCodeBench/882",
+  "BigCodeBench/883",
+  "BigCodeBench/884",
+  "BigCodeBench/885",
+  "BigCodeBench/886",
+  "BigCodeBench/887",
+  "BigCodeBench/888",
+  "BigCodeBench/889",
+  "BigCodeBench/890",
+  "BigCodeBench/891",
+  "BigCodeBench/892",
+  "BigCodeBench/893",
+  "BigCodeBench/894",
+  "BigCodeBench/895",
+  "BigCodeBench/896",
+  "BigCodeBench/897",
+  "BigCodeBench/898",
+  "BigCodeBench/899",
+  "BigCodeBench/900",
+  "BigCodeBench/901",
+  "BigCodeBench/902",
+  "BigCodeBench/903",
+  "BigCodeBench/904",
+  "BigCodeBench/905",
+  "BigCodeBench/906",
+  "BigCodeBench/907",
+  "BigCodeBench/908",
+  "BigCodeBench/909",
+  "BigCodeBench/910",
+  "BigCodeBench/911",
+  "BigCodeBench/912",
+  "BigCodeBench/913",
+  "BigCodeBench/914",
+  "BigCodeBench/915",
+  "BigCodeBench/916",
+  "BigCodeBench/917",
+  "BigCodeBench/918",
+  "BigCodeBench/919",
+  "BigCodeBench/920",
+  "BigCodeBench/921",
+  "BigCodeBench/922",
+  "BigCodeBench/923",
+  "BigCodeBench/924",
+  "BigCodeBench/925",
+  "BigCodeBench/926",
+  "BigCodeBench/927",
+  "BigCodeBench/928",
+  "BigCodeBench/929",
+  "BigCodeBench/930",
+  "BigCodeBench/931",
+  "BigCodeBench/932",
+  "BigCodeBench/933",
+  "BigCodeBench/934",
+  "BigCodeBench/935",
+  "BigCodeBench/936",
+  "BigCodeBench/937",
+  "BigCodeBench/938",
+  "BigCodeBench/939",
+  "BigCodeBench/940",
+  "BigCodeBench/941",
+  "BigCodeBench/942",
+  "BigCodeBench/943",
+  "BigCodeBench/944",
+  "BigCodeBench/945",
+  "BigCodeBench/946",
+  "BigCodeBench/947",
+  "BigCodeBench/948",
+  "BigCodeBench/949",
+  "BigCodeBench/950",
+  "BigCodeBench/951",
+  "BigCodeBench/952",
+  "BigCodeBench/953",
+  "BigCodeBench/954",
+  "BigCodeBench/955",
+  "BigCodeBench/956",
+  "BigCodeBench/957",
+  "BigCodeBench/958",
+  "BigCodeBench/959",
+  "BigCodeBench/960",
+  "BigCodeBench/961",
+  "BigCodeBench/962",
+  "BigCodeBench/963",
+  "BigCodeBench/964",
+  "BigCodeBench/965",
+  "BigCodeBench/966",
+  "BigCodeBench/967",
+  "BigCodeBench/968",
+  "BigCodeBench/969",
+  "BigCodeBench/970",
+  "BigCodeBench/971",
+  "BigCodeBench/972",
+  "BigCodeBench/973",
+  "BigCodeBench/974",
+  "BigCodeBench/975",
+  "BigCodeBench/976",
+  "BigCodeBench/977",
+  "BigCodeBench/978",
+  "BigCodeBench/979",
+  "BigCodeBench/980",
+  "BigCodeBench/981",
+  "BigCodeBench/982",
+  "BigCodeBench/983",
+  "BigCodeBench/984",
+  "BigCodeBench/985",
+  "BigCodeBench/986",
+  "BigCodeBench/987",
+  "BigCodeBench/988",
+  "BigCodeBench/989",
+  "BigCodeBench/990",
+  "BigCodeBench/991",
+  "BigCodeBench/992",
+  "BigCodeBench/993",
+  "BigCodeBench/994",
+  "BigCodeBench/995",
+  "BigCodeBench/996",
+  "BigCodeBench/997",
+  "BigCodeBench/998",
+  "BigCodeBench/999",
+  "BigCodeBench/1000",
+  "BigCodeBench/1001",
+  "BigCodeBench/1002",
+  "BigCodeBench/1003",
+  "BigCodeBench/1004",
+  "BigCodeBench/1005",
+  "BigCodeBench/1006",
+  "BigCodeBench/1007",
+  "BigCodeBench/1008",
+  "BigCodeBench/1009",
+  "BigCodeBench/1010",
+  "BigCodeBench/1011",
+  "BigCodeBench/1012",
+  "BigCodeBench/1013",
+  "BigCodeBench/1014",
+  "BigCodeBench/1015",
+  "BigCodeBench/1016",
+  "BigCodeBench/1017",
+  "BigCodeBench/1018",
+  "BigCodeBench/1019",
+  "BigCodeBench/1020",
+  "BigCodeBench/1021",
+  "BigCodeBench/1022",
+  "BigCodeBench/1023",
+  "BigCodeBench/1024",
+  "BigCodeBench/1025",
+  "BigCodeBench/1026",
+  "BigCodeBench/1027",
+  "BigCodeBench/1028",
+  "BigCodeBench/1029",
+  "BigCodeBench/1030",
+  "BigCodeBench/1031",
+  "BigCodeBench/1032",
+  "BigCodeBench/1033",
+  "BigCodeBench/1034",
+  "BigCodeBench/1035",
+  "BigCodeBench/1036",
+  "BigCodeBench/1037",
+  "BigCodeBench/1038",
+  "BigCodeBench/1039",
+  "BigCodeBench/1040",
+  "BigCodeBench/1041",
+  "BigCodeBench/1042",
+  "BigCodeBench/1043",
+  "BigCodeBench/1044",
+  "BigCodeBench/1045",
+  "BigCodeBench/1046",
+  "BigCodeBench/1047",
+  "BigCodeBench/1048",
+  "BigCodeBench/1049",
+  "BigCodeBench/1050",
+  "BigCodeBench/1051",
+  "BigCodeBench/1052",
+  "BigCodeBench/1053",
+  "BigCodeBench/1054",
+  "BigCodeBench/1055",
+  "BigCodeBench/1056",
+  "BigCodeBench/1057",
+  "BigCodeBench/1058",
+  "BigCodeBench/1059",
+  "BigCodeBench/1060",
+  "BigCodeBench/1061",
+  "BigCodeBench/1062",
+  "BigCodeBench/1063",
+  "BigCodeBench/1064",
+  "BigCodeBench/1065",
+  "BigCodeBench/1066",
+  "BigCodeBench/1067",
+  "BigCodeBench/1068",
+  "BigCodeBench/1069",
+  "BigCodeBench/1070",
+  "BigCodeBench/1071",
+  "BigCodeBench/1072",
+  "BigCodeBench/1073",
+  "BigCodeBench/1074",
+  "BigCodeBench/1075",
+  "BigCodeBench/1076",
+  "BigCodeBench/1077",
+  "BigCodeBench/1078",
+  "BigCodeBench/1079",
+  "BigCodeBench/1080",
+  "BigCodeBench/1081",
+  "BigCodeBench/1082",
+  "BigCodeBench/1083",
+  "BigCodeBench/1084",
+  "BigCodeBench/1085",
+  "BigCodeBench/1086",
+  "BigCodeBench/1087",
+  "BigCodeBench/1088",
+  "BigCodeBench/1089",
+  "BigCodeBench/1090",
+  "BigCodeBench/1091",
+  "BigCodeBench/1092",
+  "BigCodeBench/1093",
+  "BigCodeBench/1094",
+  "BigCodeBench/1095",
+  "BigCodeBench/1096",
+  "BigCodeBench/1097",
+  "BigCodeBench/1098",
+  "BigCodeBench/1099",
+  "BigCodeBench/1100",
+  "BigCodeBench/1101",
+  "BigCodeBench/1102",
+  "BigCodeBench/1103",
+  "BigCodeBench/1104",
+  "BigCodeBench/1105",
+  "BigCodeBench/1106",
+  "BigCodeBench/1107",
+  "BigCodeBench/1108",
+  "BigCodeBench/1109",
+  "BigCodeBench/1110",
+  "BigCodeBench/1111",
+  "BigCodeBench/1112",
+  "BigCodeBench/1113",
+  "BigCodeBench/1114",
+  "BigCodeBench/1115",
+  "BigCodeBench/1116",
+  "BigCodeBench/1117",
+  "BigCodeBench/1118",
+  "BigCodeBench/1119",
+  "BigCodeBench/1120",
+  "BigCodeBench/1121",
+  "BigCodeBench/1122",
+  "BigCodeBench/1123",
+  "BigCodeBench/1124",
+  "BigCodeBench/1125",
+  "BigCodeBench/1126",
+  "BigCodeBench/1127",
+  "BigCodeBench/1128",
+  "BigCodeBench/1129",
+  "BigCodeBench/1130",
+  "BigCodeBench/1131",
+  "BigCodeBench/1132",
+  "BigCodeBench/1133",
+  "BigCodeBench/1134",
+  "BigCodeBench/1135",
+  "BigCodeBench/1136",
+  "BigCodeBench/1137",
+  "BigCodeBench/1138",
+  "BigCodeBench/1139"
+ ],
+ "libs_by_id": {
+  "BigCodeBench/0": [
+   "random",
+   "itertools"
+  ],
+  "BigCodeBench/1": [
+   "collections",
+   "random",
+   "string"
+  ],
+  "BigCodeBench/10": [
+   "statistics",
+   "numpy",
+   "itertools",
+   "random"
+  ],
+  "BigCodeBench/100": [
+   "pandas",
+   "datetime",
+   "random",
+   "matplotlib"
+  ],
+  "BigCodeBench/1000": [
+   "pandas",
+   "urllib",
+   "os",
+   "json"
+  ],
+  "BigCodeBench/1001": [
+   "pandas",
+   "matplotlib"
+  ],
+  "BigCodeBench/1002": [
+   "pandas",
+   "matplotlib"
+  ],
+  "BigCodeBench/1003": [
+   "pandas",
+   "lxml",
+   "urllib"
+  ],
+  "BigCodeBench/1004": [
+   "urllib",
+   "collections",
+   "matplotlib",
+   "re"
+  ],
+  "BigCodeBench/1005": [
+   "urllib",
+   "zipfile",
+   "os"
+  ],
+  "BigCodeBench/1006": [
+   "zipfile",
+   "requests",
+   "os"
+  ],
+  "BigCodeBench/1007": [
+   "pandas",
+   "requests"
+  ],
+  "BigCodeBench/1008": [
+   "pandas",
+   "io",
+   "bs4",
+   "requests"
+  ],
+  "BigCodeBench/1009": [
+   "xml",
+   "csv"
+  ],
+  "BigCodeBench/101": [
+   "pandas",
+   "numpy",
+   "matplotlib",
+   "seaborn"
+  ],
+  "BigCodeBench/1010": [
+   "io",
+   "PIL",
+   "requests"
+  ],
+  "BigCodeBench/1011": [
+   "pandas",
+   "matplotlib"
+  ],
+  "BigCodeBench/1012": [
+   "pathlib",
+   "requests",
+   "zipfile"
+  ],
+  "BigCodeBench/1013": [
+   "csv",
+   "urllib",
+   "bs4",
+   "requests"
+  ],
+  "BigCodeBench/1014": [
+   "pandas",
+   "requests"
+  ],
+  "BigCodeBench/1015": [
+   "sqlite3",
+   "pandas",
+   "lxml",
+   "requests"
+  ],
+  "BigCodeBench/1016": [
+   "PIL",
+   "numpy",
+   "matplotlib",
+   "requests"
+  ],
+  "BigCodeBench/1017": [
+   "pandas",
+   "sklearn"
+  ],
+  "BigCodeBench/1018": [
+   "bs4",
+   "requests"
+  ],
+  "BigCodeBench/1019": [
+   "codecs",
+   "pytesseract",
+   "PIL"
+  ],
+  "BigCodeBench/102": [
+   "pandas",
+   "sklearn",
+   "matplotlib",
+   "seaborn"
+  ],
+  "BigCodeBench/1020": [
+   "chardet",
+   "requests",
+   "json"
+  ],
+  "BigCodeBench/1021": [
+   "hashlib",
+   "binascii"
+  ],
+  "BigCodeBench/1022": [
+   "pandas",
+   "datetime",
+   "os"
+  ],
+  "BigCodeBench/1023": [
+   "pandas",
+   "numpy",
+   "matplotlib"
+  ],
+  "BigCodeBench/1024": [
+   "pandas",
+   "numpy",
+   "seaborn"
+  ],
+  "BigCodeBench/1025": [
+   "pandas",
+   "matplotlib",
+   "sklearn"
+  ],
+  "BigCodeBench/1026": [
+   "numpy",
+   "matplotlib",
+   "scipy"
+  ],
+  "BigCodeBench/1027": [
+   "urllib",
+   "binascii"
+  ],
+  "BigCodeBench/1028": [
+   "subprocess",
+   "platform",
+   "json",
+   "time"
+  ],
+  "BigCodeBench/1029": [
+   "pandas",
+   "numpy"
+  ],
+  "BigCodeBench/103": [
+   "pandas",
+   "matplotlib"
+  ],
+  "BigCodeBench/1030": [
+   "pandas",
+   "itertools",
+   "string"
+  ],
+  "BigCodeBench/1031": [
+   "pandas",
+   "random",
+   "string"
+  ],
+  "BigCodeBench/1032": [
+   "pandas",
+   "matplotlib",
+   "random",
+   "string",
+   "seaborn"
+  ],
+  "BigCodeBench/1033": [
+   "pandas",
+   "itertools",
+   "string"
+  ],
+  "BigCodeBench/1034": [
+   "pandas",
+   "numpy"
+  ],
+  "BigCodeBench/1035": [
+   "pandas",
+   "numpy",
+   "matplotlib",
+   "sklearn"
+  ],
+  "BigCodeBench/1036": [
+   "pandas",
+   "matplotlib",
+   "seaborn"
+  ],
+  "BigCodeBench/1037": [
+   "pandas",
+   "matplotlib",
+   "sklearn"
+  ],
+  "BigCodeBench/1038": [
+   "datetime",
+   "json"
+  ],
+  "BigCodeBench/1039": [
+   "hashlib",
+   "os",
+   "ssl"
+  ],
+  "BigCodeBench/104": [
+   "pandas",
+   "itertools",
+   "matplotlib"
+  ],
+  "BigCodeBench/1040": [
+   "queue",
+   "datetime",
+   "select",
+   "socket"
+  ],
+  "BigCodeBench/1041": [
+   "re",
+   "os"
+  ],
+  "BigCodeBench/1042": [
+   "email",
+   "smtplib",
+   "getpass"
+  ],
+  "BigCodeBench/1043": [
+   "pandas",
+   "matplotlib"
+  ],
+  "BigCodeBench/1044": [
+   "pandas",
+   "datetime"
+  ],
+  "BigCodeBench/1045": [
+   "dateutil",
+   "datetime",
+   "numpy"
+  ],
+  "BigCodeBench/1046": [
+   "pandas",
+   "datetime",
+   "itertools"
+  ],
+  "BigCodeBench/1047": [
+   "datetime",
+   "random",
+   "matplotlib"
+  ],
+  "BigCodeBench/1048": [
+   "datetime",
+   "numpy",
+   "matplotlib"
+  ],
+  "BigCodeBench/1049": [
+   "pandas",
+   "re"
+  ],
+  "BigCodeBench/105": [
+   "pandas",
+   "matplotlib",
+   "seaborn"
+  ],
+  "BigCodeBench/1050": [
+   "hashlib",
+   "os"
+  ],
+  "BigCodeBench/1051": [
+   "collections",
+   "numpy",
+   "matplotlib"
+  ],
+  "BigCodeBench/1052": [
+   "pandas",
+   "matplotlib",
+   "sklearn"
+  ],
+  "BigCodeBench/1053": [
+   "pandas",
+   "matplotlib",
+   "sklearn"
+  ],
+  "BigCodeBench/1054": [
+   "csv",
+   "numpy",
+   "matplotlib",
+   "scipy"
+  ],
+  "BigCodeBench/1055": [
+   "pandas",
+   "random",
+   "itertools"
+  ],
+  "BigCodeBench/1056": [
+   "numpy",
+   "matplotlib",
+   "random"
+  ],
+  "BigCodeBench/1057": [
+   "pandas",
+   "numpy",
+   "itertools"
+  ],
+  "BigCodeBench/1058": [
+   "matplotlib",
+   "itertools",
+   "seaborn"
+  ],
+  "BigCodeBench/1059": [
+   "pandas",
+   "numpy",
+   "itertools",
+   "random"
+  ],
+  "BigCodeBench/106": [
+   "pandas",
+   "matplotlib",
+   "sklearn"
+  ],
+  "BigCodeBench/1060": [
+   "pandas",
+   "matplotlib"
+  ],
+  "BigCodeBench/1061": [
+   "numpy",
+   "matplotlib",
+   "scipy"
+  ],
+  "BigCodeBench/1062": [
+   "pandas",
+   "matplotlib"
+  ],
+  "BigCodeBench/1063": [
+   "matplotlib",
+   "sklearn"
+  ],
+  "BigCodeBench/1064": [
+   "numpy",
+   "seaborn"
+  ],
+  "BigCodeBench/1065": [
+   "matplotlib",
+   "scipy"
+  ],
+  "BigCodeBench/1066": [
+   "numpy",
+   "matplotlib"
+  ],
+  "BigCodeBench/1067": [
+   "logging",
+   "requests"
+  ],
+  "BigCodeBench/1068": [
+   "sqlite3",
+   "pandas",
+   "warnings"
+  ],
+  "BigCodeBench/1069": [
+   "pandas",
+   "matplotlib"
+  ],
+  "BigCodeBench/107": [
+   "pandas",
+   "matplotlib",
+   "sklearn"
+  ],
+  "BigCodeBench/1070": [
+   "pandas",
+   "random"
+  ],
+  "BigCodeBench/1071": [
+   "itertools",
+   "numpy",
+   "matplotlib",
+   "random"
+  ],
+  "BigCodeBench/1072": [
+   "pandas",
+   "numpy"
+  ],
+  "BigCodeBench/1073": [
+   "matplotlib",
+   "time"
+  ],
+  "BigCodeBench/1074": [
+   "pytz",
+   "dateutil"
+  ],
+  "BigCodeBench/1075": [
+   "datetime",
+   "numpy",
+   "matplotlib"
+  ],
+  "BigCodeBench/1076": [
+   "pytz",
+   "pandas",
+   "datetime"
+  ],
+  "BigCodeBench/1077": [
+   "pytz",
+   "datetime",
+   "numpy"
+  ],
+  "BigCodeBench/1078": [
+   "numpy",
+   "matplotlib"
+  ],
+  "BigCodeBench/1079": [
+   "pandas",
+   "numpy",
+   "matplotlib"
+  ],
+  "BigCodeBench/108": [
+   "pandas",
+   "matplotlib",
+   "statsmodels"
+  ],
+  "BigCodeBench/1080": [
+   "pandas",
+   "sklearn"
+  ],
+  "BigCodeBench/1081": [
+   "pandas",
+   "seaborn"
+  ],
+  "BigCodeBench/1082": [
+   "pandas",
+   "scipy"
+  ],
+  "BigCodeBench/1083": [
+   "pandas",
+   "matplotlib",
+   "sklearn"
+  ],
+  "BigCodeBench/1084": [
+   "pandas",
+   "sklearn"
+  ],
+  "BigCodeBench/1085": [
+   "collections",
+   "matplotlib",
+   "re"
+  ],
+  "BigCodeBench/1086": [
+   "pandas",
+   "numpy",
+   "random",
+   "string"
+  ],
+  "BigCodeBench/1087": [
+   "numpy",
+   "matplotlib",
+   "scipy"
+  ],
+  "BigCodeBench/1088": [
+   "pandas",
+   "numpy",
+   "sklearn"
+  ],
+  "BigCodeBench/1089": [
+   "collections",
+   "numpy"
+  ],
+  "BigCodeBench/109": [
+   "pandas",
+   "matplotlib"
+  ],
+  "BigCodeBench/1090": [
+   "ast",
+   "collections",
+   "json"
+  ],
+  "BigCodeBench/1091": [
+   "glob",
+   "ast",
+   "os"
+  ],
+  "BigCodeBench/1092": [
+   "ast",
+   "bs4",
+   "requests"
+  ],
+  "BigCodeBench/1093": [
+   "ast",
+   "re"
+  ],
+  "BigCodeBench/1094": [
+   "nltk",
+   "collections"
+  ],
+  "BigCodeBench/1095": [
+   "nltk",
+   "string",
+   "os"
+  ],
+  "BigCodeBench/1096": [
+   "nltk",
+   "csv",
+   "string",
+   "os"
+  ],
+  "BigCodeBench/1097": [
+   "string",
+   "re"
+  ],
+  "BigCodeBench/1098": [
+   "collections",
+   "re"
+  ],
+  "BigCodeBench/1099": [
+   "collections",
+   "re"
+  ],
+  "BigCodeBench/11": [
+   "numpy",
+   "itertools",
+   "random"
+  ],
+  "BigCodeBench/110": [
+   "pandas",
+   "matplotlib"
+  ],
+  "BigCodeBench/1100": [
+   "re",
+   "sklearn"
+  ],
+  "BigCodeBench/1101": [
+   "glob",
+   "subprocess",
+   "os",
+   "time"
+  ],
+  "BigCodeBench/1102": [
+   "subprocess",
+   "datetime",
+   "shlex"
+  ],
+  "BigCodeBench/1103": [
+   "subprocess",
+   "shutil",
+   "os"
+  ],
+  "BigCodeBench/1104": [
+   "subprocess",
+   "threading",
+   "os"
+  ],
+  "BigCodeBench/1105": [
+   "glob",
+   "subprocess",
+   "os",
+   "time"
+  ],
+  "BigCodeBench/1106": [
+   "datetime",
+   "pathlib",
+   "os"
+  ],
+  "BigCodeBench/1107": [
+   "pytz",
+   "datetime"
+  ],
+  "BigCodeBench/1108": [
+   "collections",
+   "re"
+  ],
+  "BigCodeBench/1109": [
+   "nltk",
+   "os"
+  ],
+  "BigCodeBench/111": [
+   "pandas",
+   "seaborn"
+  ],
+  "BigCodeBench/1110": [
+   "operator",
+   "collections",
+   "itertools"
+  ],
+  "BigCodeBench/1111": [
+   "operator",
+   "collections",
+   "itertools"
+  ],
+  "BigCodeBench/1112": [
+   "csv",
+   "random"
+  ],
+  "BigCodeBench/1113": [
+   "csv",
+   "collections"
+  ],
+  "BigCodeBench/1114": [
+   "collections",
+   "random"
+  ],
+  "BigCodeBench/1115": [
+   "random",
+   "string"
+  ],
+  "BigCodeBench/1116": [
+   "statistics",
+   "random"
+  ],
+  "BigCodeBench/1117": [
+   "collections",
+   "random",
+   "json"
+  ],
+  "BigCodeBench/1118": [
+   "io",
+   "csv",
+   "requests",
+   "json"
+  ],
+  "BigCodeBench/1119": [
+   "codecs",
+   "hashlib",
+   "random",
+   "string"
+  ],
+  "BigCodeBench/112": [
+   "pandas",
+   "matplotlib"
+  ],
+  "BigCodeBench/1120": [
+   "urllib",
+   "re",
+   "requests",
+   "json"
+  ],
+  "BigCodeBench/1121": [
+   "urllib",
+   "re",
+   "requests",
+   "json"
+  ],
+  "BigCodeBench/1122": [
+   "socket",
+   "urllib",
+   "re"
+  ],
+  "BigCodeBench/1123": [
+   "urllib",
+   "re",
+   "socket",
+   "ssl"
+  ],
+  "BigCodeBench/1124": [
+   "re",
+   "urllib",
+   "bs4",
+   "requests"
+  ],
+  "BigCodeBench/1125": [
+   "requests",
+   "re",
+   "json"
+  ],
+  "BigCodeBench/1126": [
+   "hashlib",
+   "re"
+  ],
+  "BigCodeBench/1127": [
+   "hashlib",
+   "re",
+   "os"
+  ],
+  "BigCodeBench/1128": [
+   "base64",
+   "hashlib",
+   "time",
+   "os",
+   "json"
+  ],
+  "BigCodeBench/1129": [
+   "os",
+   "datetime",
+   "requests",
+   "json"
+  ],
+  "BigCodeBench/113": [
+   "collections",
+   "random",
+   "json"
+  ],
+  "BigCodeBench/1130": [
+   "hashlib",
+   "pathlib",
+   "os",
+   "json"
+  ],
+  "BigCodeBench/1131": [
+   "hashlib",
+   "binascii"
+  ],
+  "BigCodeBench/1132": [
+   "base64",
+   "hashlib",
+   "os"
+  ],
+  "BigCodeBench/1133": [
+   "requests",
+   "json"
+  ],
+  "BigCodeBench/1134": [
+   "glob",
+   "hashlib",
+   "os"
+  ],
+  "BigCodeBench/1135": [
+   "collections",
+   "requests",
+   "json"
+  ],
+  "BigCodeBench/1136": [
+   "csv",
+   "re",
+   "bs4",
+   "requests"
+  ],
+  "BigCodeBench/1137": [
+   "re",
+   "bs4",
+   "requests",
+   "json"
+  ],
+  "BigCodeBench/1138": [
+   "numpy",
+   "itertools"
+  ],
+  "BigCodeBench/1139": [
+   "pandas",
+   "numpy",
+   "sklearn"
+  ],
+  "BigCodeBench/114": [
+   "numpy",
+   "sklearn"
+  ],
+  "BigCodeBench/115": [
+   "numpy",
+   "scipy"
+  ],
+  "BigCodeBench/116": [
+   "numpy",
+   "matplotlib"
+  ],
+  "BigCodeBench/117": [
+   "pandas",
+   "numpy",
+   "random"
+  ],
+  "BigCodeBench/118": [
+   "shutil",
+   "os"
+  ],
+  "BigCodeBench/119": [
+   "numpy",
+   "matplotlib"
+  ],
+  "BigCodeBench/12": [
+   "subprocess",
+   "datetime",
+   "json",
+   "os"
+  ],
+  "BigCodeBench/120": [
+   "pandas",
+   "datetime",
+   "random"
+  ],
+  "BigCodeBench/121": [
+   "pandas",
+   "numpy"
+  ],
+  "BigCodeBench/122": [
+   "numpy",
+   "random"
+  ],
+  "BigCodeBench/123": [
+   "glob",
+   "pandas",
+   "os"
+  ],
+  "BigCodeBench/124": [
+   "random",
+   "matplotlib",
+   "time"
+  ],
+  "BigCodeBench/125": [
+   "collections",
+   "random",
+   "itertools",
+   "json"
+  ],
+  "BigCodeBench/126": [
+   "statistics",
+   "pandas",
+   "numpy",
+   "random"
+  ],
+  "BigCodeBench/127": [
+   "glob",
+   "shutil",
+   "hashlib",
+   "os"
+  ],
+  "BigCodeBench/128": [
+   "math",
+   "numpy",
+   "matplotlib",
+   "random"
+  ],
+  "BigCodeBench/129": [
+   "pandas",
+   "bs4",
+   "requests"
+  ],
+  "BigCodeBench/13": [
+   "subprocess",
+   "ftplib",
+   "os"
+  ],
+  "BigCodeBench/130": [
+   "base64",
+   "hashlib",
+   "os",
+   "binascii"
+  ],
+  "BigCodeBench/131": [
+   "base64",
+   "hashlib",
+   "os",
+   "binascii"
+  ],
+  "BigCodeBench/132": [
+   "pandas",
+   "numpy",
+   "matplotlib",
+   "binascii"
+  ],
+  "BigCodeBench/133": [
+   "pandas",
+   "matplotlib",
+   "sklearn"
+  ],
+  "BigCodeBench/134": [
+   "pandas",
+   "matplotlib"
+  ],
+  "BigCodeBench/135": [
+   "pandas",
+   "matplotlib",
+   "numpy",
+   "seaborn",
+   "sklearn"
+  ],
+  "BigCodeBench/136": [
+   "pandas",
+   "matplotlib",
+   "sklearn"
+  ],
+  "BigCodeBench/137": [
+   "pandas",
+   "scipy"
+  ],
+  "BigCodeBench/138": [
+   "pandas",
+   "matplotlib"
+  ],
+  "BigCodeBench/139": [
+   "pandas",
+   "numpy",
+   "matplotlib"
+  ],
+  "BigCodeBench/14": [
+   "configparser",
+   "shutil",
+   "os"
+  ],
+  "BigCodeBench/140": [
+   "pandas",
+   "sklearn"
+  ],
+  "BigCodeBench/141": [
+   "statistics",
+   "pandas",
+   "numpy"
+  ],
+  "BigCodeBench/142": [
+   "numpy",
+   "matplotlib"
+  ],
+  "BigCodeBench/143": [
+   "numpy",
+   "matplotlib"
+  ],
+  "BigCodeBench/144": [
+   "requests",
+   "ipaddress"
+  ],
+  "BigCodeBench/145": [
+   "csv",
+   "ipaddress"
+  ],
+  "BigCodeBench/146": [
+   "subprocess",
+   "ipaddress"
+  ],
+  "BigCodeBench/147": [
+   "threading",
+   "socket",
+   "ipaddress"
+  ],
+  "BigCodeBench/148": [
+   "pandas",
+   "sklearn"
+  ],
+  "BigCodeBench/149": [
+   "pandas",
+   "numpy"
+  ],
+  "BigCodeBench/15": [
+   "subprocess",
+   "csv",
+   "os"
+  ],
+  "BigCodeBench/150": [
+   "pandas",
+   "numpy"
+  ],
+  "BigCodeBench/151": [
+   "pandas",
+   "sklearn"
+  ],
+  "BigCodeBench/152": [
+   "pandas",
+   "numpy",
+   "random"
+  ],
+  "BigCodeBench/153": [
+   "pandas",
+   "sklearn"
+  ],
+  "BigCodeBench/154": [
+   "glob",
+   "mimetypes",
+   "re",
+   "os"
+  ],
+  "BigCodeBench/155": [
+   "pandas",
+   "matplotlib"
+  ],
+  "BigCodeBench/156": [
+   "pandas",
+   "matplotlib",
+   "sklearn"
+  ],
+  "BigCodeBench/157": [
+   "pandas",
+   "seaborn"
+  ],
+  "BigCodeBench/158": [
+   "urllib",
+   "gzip",
+   "json"
+  ],
+  "BigCodeBench/159": [
+   "struct",
+   "io",
+   "gzip"
+  ],
+  "BigCodeBench/16": [
+   "glob",
+   "subprocess",
+   "os"
+  ],
+  "BigCodeBench/160": [
+   "pandas",
+   "scipy",
+   "seaborn"
+  ],
+  "BigCodeBench/161": [
+   "pandas",
+   "datetime",
+   "re"
+  ],
+  "BigCodeBench/162": [
+   "numpy",
+   "matplotlib",
+   "re"
+  ],
+  "BigCodeBench/163": [
+   "pandas",
+   "numpy"
+  ],
+  "BigCodeBench/164": [
+   "pandas",
+   "numpy",
+   "matplotlib"
+  ],
+  "BigCodeBench/165": [
+   "pandas",
+   "random",
+   "matplotlib"
+  ],
+  "BigCodeBench/166": [
+   "holidays",
+   "pandas",
+   "datetime"
+  ],
+  "BigCodeBench/167": [
+   "pandas",
+   "random",
+   "matplotlib"
+  ],
+  "BigCodeBench/168": [
+   "pandas",
+   "numpy",
+   "matplotlib"
+  ],
+  "BigCodeBench/169": [
+   "numpy",
+   "matplotlib",
+   "scipy"
+  ],
+  "BigCodeBench/17": [
+   "psutil",
+   "subprocess",
+   "time"
+  ],
+  "BigCodeBench/170": [
+   "pandas",
+   "io",
+   "requests"
+  ],
+  "BigCodeBench/171": [
+   "pandas",
+   "collections",
+   "random"
+  ],
+  "BigCodeBench/172": [
+   "datetime",
+   "json"
+  ],
+  "BigCodeBench/173": [
+   "pandas",
+   "numpy"
+  ],
+  "BigCodeBench/174": [
+   "pandas",
+   "numpy"
+  ],
+  "BigCodeBench/175": [
+   "matplotlib",
+   "re"
+  ],
+  "BigCodeBench/176": [
+   "re",
+   "socket"
+  ],
+  "BigCodeBench/177": [
+   "nltk",
+   "string",
+   "re"
+  ],
+  "BigCodeBench/178": [
+   "re",
+   "json"
+  ],
+  "BigCodeBench/179": [
+   "numpy",
+   "matplotlib",
+   "re",
+   "sklearn"
+  ],
+  "BigCodeBench/18": [
+   "glob",
+   "subprocess",
+   "random",
+   "os",
+   "csv"
+  ],
+  "BigCodeBench/180": [
+   "matplotlib",
+   "PIL",
+   "numpy",
+   "os",
+   "skimage"
+  ],
+  "BigCodeBench/181": [
+   "django",
+   "random",
+   "time"
+  ],
+  "BigCodeBench/182": [
+   "re",
+   "sklearn"
+  ],
+  "BigCodeBench/183": [
+   "uuid",
+   "django"
+  ],
+  "BigCodeBench/184": [
+   "pandas",
+   "re",
+   "sklearn"
+  ],
+  "BigCodeBench/185": [
+   "pandas",
+   "folium",
+   "numpy"
+  ],
+  "BigCodeBench/186": [
+   "geopy",
+   "folium"
+  ],
+  "BigCodeBench/187": [
+   "shapely",
+   "numpy",
+   "geopandas"
+  ],
+  "BigCodeBench/188": [
+   "pandas",
+   "geopy",
+   "folium"
+  ],
+  "BigCodeBench/189": [
+   "re",
+   "requests",
+   "json"
+  ],
+  "BigCodeBench/19": [
+   "glob",
+   "zipfile",
+   "os"
+  ],
+  "BigCodeBench/190": [
+   "sqlite3",
+   "pandas",
+   "io",
+   "csv"
+  ],
+  "BigCodeBench/191": [
+   "random",
+   "scipy"
+  ],
+  "BigCodeBench/192": [
+   "smtplib",
+   "re"
+  ],
+  "BigCodeBench/193": [
+   "pandas",
+   "numpy",
+   "random"
+  ],
+  "BigCodeBench/194": [
+   "numpy",
+   "matplotlib"
+  ],
+  "BigCodeBench/195": [
+   "subprocess",
+   "platform",
+   "time"
+  ],
+  "BigCodeBench/196": [
+   "numpy",
+   "matplotlib",
+   "random",
+   "seaborn"
+  ],
+  "BigCodeBench/197": [
+   "math",
+   "matplotlib",
+   "heapq"
+  ],
+  "BigCodeBench/198": [
+   "statistics",
+   "bisect",
+   "numpy",
+   "matplotlib"
+  ],
+  "BigCodeBench/199": [
+   "pytz",
+   "pandas",
+   "datetime",
+   "random"
+  ],
+  "BigCodeBench/2": [
+   "statistics",
+   "random"
+  ],
+  "BigCodeBench/20": [
+   "ast",
+   "pandas",
+   "seaborn"
+  ],
+  "BigCodeBench/200": [
+   "statistics",
+   "bisect",
+   "random",
+   "matplotlib"
+  ],
+  "BigCodeBench/201": [
+   "statistics",
+   "bisect"
+  ],
+  "BigCodeBench/202": [
+   "collections",
+   "re",
+   "json"
+  ],
+  "BigCodeBench/203": [
+   "smtplib",
+   "json"
+  ],
+  "BigCodeBench/204": [
+   "collections",
+   "numpy",
+   "matplotlib"
+  ],
+  "BigCodeBench/205": [
+   "subprocess",
+   "multiprocessing"
+  ],
+  "BigCodeBench/206": [
+   "csv",
+   "json",
+   "os"
+  ],
+  "BigCodeBench/207": [
+   "re",
+   "requests"
+  ],
+  "BigCodeBench/208": [
+   "pandas",
+   "numpy",
+   "matplotlib"
+  ],
+  "BigCodeBench/209": [
+   "operator",
+   "numpy",
+   "matplotlib"
+  ],
+  "BigCodeBench/21": [
+   "psutil",
+   "platform"
+  ],
+  "BigCodeBench/210": [
+   "operator",
+   "collections",
+   "matplotlib"
+  ],
+  "BigCodeBench/211": [
+   "zipfile",
+   "requests",
+   "os"
+  ],
+  "BigCodeBench/212": [
+   "operator",
+   "numpy",
+   "matplotlib"
+  ],
+  "BigCodeBench/213": [
+   "random",
+   "matplotlib",
+   "scipy",
+   "time"
+  ],
+  "BigCodeBench/214": [
+   "numpy",
+   "matplotlib",
+   "random",
+   "cv2"
+  ],
+  "BigCodeBench/215": [
+   "pandas",
+   "json",
+   "requests",
+   "seaborn"
+  ],
+  "BigCodeBench/216": [
+   "pandas",
+   "collections",
+   "json",
+   "os"
+  ],
+  "BigCodeBench/217": [
+   "numpy",
+   "matplotlib",
+   "scipy"
+  ],
+  "BigCodeBench/218": [
+   "pandas",
+   "sklearn"
+  ],
+  "BigCodeBench/219": [
+   "statistics",
+   "math",
+   "numpy"
+  ],
+  "BigCodeBench/22": [
+   "collections",
+   "random",
+   "itertools"
+  ],
+  "BigCodeBench/220": [
+   "turtle",
+   "random",
+   "time"
+  ],
+  "BigCodeBench/221": [
+   "numpy",
+   "scipy"
+  ],
+  "BigCodeBench/222": [
+   "math",
+   "numpy",
+   "matplotlib"
+  ],
+  "BigCodeBench/223": [
+   "pandas",
+   "sklearn"
+  ],
+  "BigCodeBench/224": [
+   "numpy",
+   "matplotlib",
+   "scipy"
+  ],
+  "BigCodeBench/225": [
+   "pandas",
+   "matplotlib"
+  ],
+  "BigCodeBench/226": [
+   "math",
+   "numpy",
+   "matplotlib"
+  ],
+  "BigCodeBench/227": [
+   "librosa",
+   "matplotlib",
+   "soundfile",
+   "numpy",
+   "os"
+  ],
+  "BigCodeBench/228": [
+   "pandas",
+   "numpy"
+  ],
+  "BigCodeBench/229": [
+   "datetime",
+   "random",
+   "json"
+  ],
+  "BigCodeBench/23": [
+   "numpy",
+   "itertools"
+  ],
+  "BigCodeBench/230": [
+   "pandas",
+   "matplotlib",
+   "seaborn"
+  ],
+  "BigCodeBench/231": [
+   "random",
+   "numpy",
+   "matplotlib",
+   "scipy"
+  ],
+  "BigCodeBench/232": [
+   "pandas",
+   "collections"
+  ],
+  "BigCodeBench/233": [
+   "random",
+   "matplotlib"
+  ],
+  "BigCodeBench/234": [
+   "pandas",
+   "matplotlib",
+   "scipy"
+  ],
+  "BigCodeBench/235": [
+   "numpy",
+   "matplotlib",
+   "statsmodels"
+  ],
+  "BigCodeBench/236": [
+   "pandas",
+   "sklearn"
+  ],
+  "BigCodeBench/237": [
+   "numpy",
+   "matplotlib",
+   "sklearn"
+  ],
+  "BigCodeBench/238": [
+   "matplotlib",
+   "sklearn"
+  ],
+  "BigCodeBench/239": [
+   "numpy",
+   "matplotlib",
+   "scipy"
+  ],
+  "BigCodeBench/24": [
+   "base64",
+   "hashlib",
+   "os"
+  ],
+  "BigCodeBench/240": [
+   "pandas",
+   "random"
+  ],
+  "BigCodeBench/241": [
+   "numpy",
+   "matplotlib",
+   "sklearn"
+  ],
+  "BigCodeBench/242": [
+   "matplotlib",
+   "cv2"
+  ],
+  "BigCodeBench/243": [
+   "pandas",
+   "random"
+  ],
+  "BigCodeBench/244": [
+   "numpy",
+   "matplotlib",
+   "scipy"
+  ],
+  "BigCodeBench/245": [
+   "pandas",
+   "random",
+   "scipy"
+  ],
+  "BigCodeBench/246": [
+   "numpy",
+   "matplotlib",
+   "scipy"
+  ],
+  "BigCodeBench/247": [
+   "pandas",
+   "random",
+   "sklearn"
+  ],
+  "BigCodeBench/248": [
+   "matplotlib",
+   "numpy",
+   "itertools"
+  ],
+  "BigCodeBench/249": [
+   "pandas",
+   "random",
+   "sklearn"
+  ],
+  "BigCodeBench/25": [
+   "zlib",
+   "base64",
+   "json"
+  ],
+  "BigCodeBench/250": [
+   "numpy",
+   "itertools",
+   "json"
+  ],
+  "BigCodeBench/251": [
+   "pandas",
+   "matplotlib"
+  ],
+  "BigCodeBench/252": [
+   "matplotlib",
+   "itertools"
+  ],
+  "BigCodeBench/253": [
+   "numpy",
+   "random"
+  ],
+  "BigCodeBench/254": [
+   "math",
+   "json"
+  ],
+  "BigCodeBench/255": [
+   "numpy",
+   "matplotlib"
+  ],
+  "BigCodeBench/256": [
+   "datetime",
+   "random",
+   "hashlib",
+   "json"
+  ],
+  "BigCodeBench/257": [
+   "math",
+   "numpy"
+  ],
+  "BigCodeBench/258": [
+   "random",
+   "json"
+  ],
+  "BigCodeBench/259": [
+   "numpy",
+   "matplotlib"
+  ],
+  "BigCodeBench/26": [
+   "base64",
+   "cryptography"
+  ],
+  "BigCodeBench/260": [
+   "glob",
+   "json",
+   "os"
+  ],
+  "BigCodeBench/261": [
+   "numpy",
+   "matplotlib"
+  ],
+  "BigCodeBench/262": [
+   "collections",
+   "matplotlib",
+   "seaborn"
+  ],
+  "BigCodeBench/263": [
+   "glob",
+   "shutil",
+   "os",
+   "time"
+  ],
+  "BigCodeBench/264": [
+   "pandas",
+   "numpy",
+   "matplotlib"
+  ],
+  "BigCodeBench/265": [
+   "json",
+   "collections",
+   "os"
+  ],
+  "BigCodeBench/266": [
+   "csv",
+   "collections",
+   "os"
+  ],
+  "BigCodeBench/267": [
+   "numpy",
+   "matplotlib",
+   "scipy"
+  ],
+  "BigCodeBench/268": [
+   "collections",
+   "random"
+  ],
+  "BigCodeBench/269": [
+   "numpy",
+   "matplotlib",
+   "scipy",
+   "sklearn"
+  ],
+  "BigCodeBench/27": [
+   "base64",
+   "json",
+   "datetime"
+  ],
+  "BigCodeBench/270": [
+   "collections",
+   "re"
+  ],
+  "BigCodeBench/271": [
+   "hashlib",
+   "random",
+   "string",
+   "time"
+  ],
+  "BigCodeBench/272": [
+   "http",
+   "cgi",
+   "json"
+  ],
+  "BigCodeBench/273": [
+   "http",
+   "cgi",
+   "json"
+  ],
+  "BigCodeBench/274": [
+   "http",
+   "cgi",
+   "smtplib",
+   "json",
+   "email"
+  ],
+  "BigCodeBench/275": [
+   "numpy",
+   "itertools"
+  ],
+  "BigCodeBench/276": [
+   "numpy",
+   "matplotlib",
+   "scipy"
+  ],
+  "BigCodeBench/277": [
+   "math",
+   "random",
+   "itertools"
+  ],
+  "BigCodeBench/278": [
+   "sympy",
+   "numpy"
+  ],
+  "BigCodeBench/279": [
+   "collections",
+   "random"
+  ],
+  "BigCodeBench/28": [
+   "base64",
+   "requests",
+   "json"
+  ],
+  "BigCodeBench/280": [
+   "numpy",
+   "matplotlib",
+   "scipy"
+  ],
+  "BigCodeBench/281": [
+   "collections",
+   "re",
+   "os"
+  ],
+  "BigCodeBench/282": [
+   "matplotlib",
+   "mpl_toolkits",
+   "cv2",
+   "numpy",
+   "os"
+  ],
+  "BigCodeBench/283": [
+   "json",
+   "collections",
+   "os"
+  ],
+  "BigCodeBench/284": [
+   "mechanize",
+   "urllib",
+   "bs4"
+  ],
+  "BigCodeBench/285": [
+   "mechanize",
+   "bs4"
+  ],
+  "BigCodeBench/286": [
+   "csv",
+   "collections",
+   "os"
+  ],
+  "BigCodeBench/287": [
+   "json",
+   "collections",
+   "os"
+  ],
+  "BigCodeBench/288": [
+   "json",
+   "collections",
+   "os"
+  ],
+  "BigCodeBench/289": [
+   "tensorflow",
+   "sklearn"
+  ],
+  "BigCodeBench/29": [
+   "base64",
+   "numpy",
+   "sklearn"
+  ],
+  "BigCodeBench/290": [
+   "nltk",
+   "collections",
+   "os"
+  ],
+  "BigCodeBench/291": [
+   "numpy",
+   "matplotlib",
+   "seaborn"
+  ],
+  "BigCodeBench/292": [
+   "pandas",
+   "numpy",
+   "sklearn"
+  ],
+  "BigCodeBench/293": [
+   "itertools",
+   "numpy",
+   "matplotlib"
+  ],
+  "BigCodeBench/294": [
+   "pandas",
+   "sklearn"
+  ],
+  "BigCodeBench/295": [
+   "statistics",
+   "itertools"
+  ],
+  "BigCodeBench/296": [
+   "pandas",
+   "matplotlib"
+  ],
+  "BigCodeBench/297": [
+   "collections",
+   "itertools"
+  ],
+  "BigCodeBench/298": [
+   "pandas",
+   "matplotlib",
+   "sklearn"
+  ],
+  "BigCodeBench/299": [
+   "math",
+   "pandas",
+   "itertools"
+  ],
+  "BigCodeBench/3": [
+   "numpy",
+   "random"
+  ],
+  "BigCodeBench/30": [
+   "json",
+   "re",
+   "os"
+  ],
+  "BigCodeBench/300": [
+   "pandas",
+   "matplotlib",
+   "scipy"
+  ],
+  "BigCodeBench/301": [
+   "dateutil",
+   "math",
+   "numpy",
+   "pytz"
+  ],
+  "BigCodeBench/302": [
+   "pandas",
+   "matplotlib",
+   "seaborn"
+  ],
+  "BigCodeBench/303": [
+   "dateutil",
+   "math",
+   "numpy",
+   "pytz"
+  ],
+  "BigCodeBench/304": [
+   "pandas",
+   "matplotlib",
+   "sklearn"
+  ],
+  "BigCodeBench/305": [
+   "collections",
+   "random",
+   "itertools"
+  ],
+  "BigCodeBench/306": [
+   "logging",
+   "os"
+  ],
+  "BigCodeBench/307": [
+   "random",
+   "matplotlib",
+   "seaborn"
+  ],
+  "BigCodeBench/308": [
+   "statistics",
+   "pandas",
+   "random"
+  ],
+  "BigCodeBench/309": [
+   "numpy",
+   "random",
+   "sklearn"
+  ],
+  "BigCodeBench/31": [
+   "nltk",
+   "matplotlib",
+   "string",
+   "seaborn"
+  ],
+  "BigCodeBench/310": [
+   "statistics",
+   "csv",
+   "random",
+   "os"
+  ],
+  "BigCodeBench/311": [
+   "random",
+   "numpy",
+   "scipy"
+  ],
+  "BigCodeBench/312": [
+   "random",
+   "matplotlib"
+  ],
+  "BigCodeBench/313": [
+   "shutil",
+   "datetime",
+   "re",
+   "os"
+  ],
+  "BigCodeBench/314": [
+   "http",
+   "socket",
+   "ssl"
+  ],
+  "BigCodeBench/315": [
+   "python_http_client",
+   "sendgrid",
+   "os"
+  ],
+  "BigCodeBench/316": [
+   "pandas",
+   "random"
+  ],
+  "BigCodeBench/317": [
+   "numpy",
+   "re",
+   "sklearn"
+  ],
+  "BigCodeBench/318": [
+   "math",
+   "random",
+   "matplotlib"
+  ],
+  "BigCodeBench/319": [
+   "nltk",
+   "matplotlib",
+   "re"
+  ],
+  "BigCodeBench/32": [
+   "bs4",
+   "requests"
+  ],
+  "BigCodeBench/320": [
+   "subprocess",
+   "random",
+   "os"
+  ],
+  "BigCodeBench/321": [
+   "pandas",
+   "re",
+   "scipy"
+  ],
+  "BigCodeBench/322": [
+   "subprocess",
+   "shutil",
+   "os",
+   "sys"
+  ],
+  "BigCodeBench/323": [
+   "numpy",
+   "collections",
+   "re",
+   "sklearn"
+  ],
+  "BigCodeBench/324": [
+   "subprocess",
+   "threading",
+   "time"
+  ],
+  "BigCodeBench/325": [
+   "glob",
+   "pathlib",
+   "re",
+   "os"
+  ],
+  "BigCodeBench/326": [
+   "glob",
+   "subprocess",
+   "os",
+   "sys"
+  ],
+  "BigCodeBench/327": [
+   "csv",
+   "collections",
+   "re"
+  ],
+  "BigCodeBench/328": [
+   "queue",
+   "collections",
+   "random"
+  ],
+  "BigCodeBench/329": [
+   "json",
+   "re",
+   "os"
+  ],
+  "BigCodeBench/33": [
+   "numpy",
+   "functools"
+  ],
+  "BigCodeBench/330": [
+   "random",
+   "heapq"
+  ],
+  "BigCodeBench/331": [
+   "bisect",
+   "random"
+  ],
+  "BigCodeBench/332": [
+   "nltk",
+   "collections",
+   "re"
+  ],
+  "BigCodeBench/333": [
+   "random",
+   "heapq"
+  ],
+  "BigCodeBench/334": [
+   "nltk",
+   "pandas",
+   "sklearn"
+  ],
+  "BigCodeBench/335": [
+   "queue",
+   "collections",
+   "random"
+  ],
+  "BigCodeBench/336": [
+   "glob",
+   "pathlib",
+   "re",
+   "os"
+  ],
+  "BigCodeBench/337": [
+   "numpy",
+   "matplotlib"
+  ],
+  "BigCodeBench/338": [
+   "random",
+   "matplotlib",
+   "string"
+  ],
+  "BigCodeBench/339": [
+   "urllib",
+   "hmac",
+   "hashlib",
+   "json"
+  ],
+  "BigCodeBench/34": [
+   "matplotlib",
+   "re",
+   "wordcloud"
+  ],
+  "BigCodeBench/340": [
+   "hashlib",
+   "blake3",
+   "json"
+  ],
+  "BigCodeBench/341": [
+   "pandas",
+   "matplotlib",
+   "seaborn"
+  ],
+  "BigCodeBench/342": [
+   "random",
+   "string",
+   "re"
+  ],
+  "BigCodeBench/343": [
+   "pandas",
+   "matplotlib"
+  ],
+  "BigCodeBench/344": [
+   "shutil",
+   "os"
+  ],
+  "BigCodeBench/345": [
+   "pandas",
+   "seaborn"
+  ],
+  "BigCodeBench/346": [
+   "subprocess",
+   "time",
+   "os",
+   "sys"
+  ],
+  "BigCodeBench/347": [
+   "pandas",
+   "numpy",
+   "re"
+  ],
+  "BigCodeBench/348": [
+   "subprocess",
+   "time",
+   "signal",
+   "os"
+  ],
+  "BigCodeBench/349": [
+   "pandas",
+   "random"
+  ],
+  "BigCodeBench/35": [
+   "matplotlib",
+   "seaborn"
+  ],
+  "BigCodeBench/350": [
+   "glob",
+   "shutil",
+   "subprocess",
+   "os"
+  ],
+  "BigCodeBench/351": [
+   "pandas",
+   "random"
+  ],
+  "BigCodeBench/352": [
+   "pandas",
+   "collections"
+  ],
+  "BigCodeBench/353": [
+   "pandas",
+   "random"
+  ],
+  "BigCodeBench/354": [
+   "pandas",
+   "collections",
+   "matplotlib"
+  ],
+  "BigCodeBench/355": [
+   "math",
+   "numpy",
+   "matplotlib",
+   "scipy"
+  ],
+  "BigCodeBench/356": [
+   "matplotlib",
+   "numpy",
+   "cmath"
+  ],
+  "BigCodeBench/357": [
+   "numpy",
+   "matplotlib",
+   "scipy"
+  ],
+  "BigCodeBench/358": [
+   "itertools",
+   "json"
+  ],
+  "BigCodeBench/359": [
+   "matplotlib",
+   "scipy"
+  ],
+  "BigCodeBench/36": [
+   "numpy",
+   "matplotlib",
+   "scipy"
+  ],
+  "BigCodeBench/360": [
+   "pandas",
+   "numpy",
+   "matplotlib",
+   "os"
+  ],
+  "BigCodeBench/361": [
+   "pandas",
+   "logging"
+  ],
+  "BigCodeBench/362": [
+   "pandas",
+   "os"
+  ],
+  "BigCodeBench/363": [
+   "math",
+   "multiprocessing"
+  ],
+  "BigCodeBench/364": [
+   "pandas",
+   "sklearn"
+  ],
+  "BigCodeBench/365": [
+   "collections",
+   "random",
+   "json"
+  ],
+  "BigCodeBench/366": [
+   "random",
+   "matplotlib"
+  ],
+  "BigCodeBench/367": [
+   "datetime",
+   "collections",
+   "matplotlib"
+  ],
+  "BigCodeBench/368": [
+   "shutil",
+   "random",
+   "os"
+  ],
+  "BigCodeBench/369": [
+   "numpy",
+   "matplotlib",
+   "scipy"
+  ],
+  "BigCodeBench/37": [
+   "sklearn",
+   "matplotlib",
+   "seaborn"
+  ],
+  "BigCodeBench/370": [
+   "glob",
+   "json",
+   "re",
+   "os"
+  ],
+  "BigCodeBench/371": [
+   "pandas",
+   "sklearn"
+  ],
+  "BigCodeBench/372": [
+   "glob",
+   "docx",
+   "re"
+  ],
+  "BigCodeBench/373": [
+   "matplotlib",
+   "scipy"
+  ],
+  "BigCodeBench/374": [
+   "regex",
+   "openpyxl",
+   "glob",
+   "os"
+  ],
+  "BigCodeBench/375": [
+   "matplotlib",
+   "sklearn"
+  ],
+  "BigCodeBench/376": [
+   "nltk",
+   "collections",
+   "re"
+  ],
+  "BigCodeBench/377": [
+   "psutil",
+   "texttable",
+   "os"
+  ],
+  "BigCodeBench/378": [
+   "glob",
+   "pandas",
+   "texttable",
+   "os"
+  ],
+  "BigCodeBench/379": [
+   "pandas",
+   "numpy"
+  ],
+  "BigCodeBench/38": [
+   "pandas",
+   "matplotlib",
+   "sklearn"
+  ],
+  "BigCodeBench/380": [
+   "shutil",
+   "re",
+   "os"
+  ],
+  "BigCodeBench/381": [
+   "pandas",
+   "matplotlib",
+   "seaborn",
+   "sklearn",
+   "os"
+  ],
+  "BigCodeBench/382": [
+   "numpy",
+   "matplotlib",
+   "scipy"
+  ],
+  "BigCodeBench/383": [
+   "pandas",
+   "collections",
+   "matplotlib",
+   "textblob",
+   "seaborn"
+  ],
+  "BigCodeBench/384": [
+   "collections",
+   "itertools",
+   "random"
+  ],
+  "BigCodeBench/385": [
+   "collections",
+   "matplotlib"
+  ],
+  "BigCodeBench/386": [
+   "pandas",
+   "numpy"
+  ],
+  "BigCodeBench/387": [
+   "numpy",
+   "matplotlib"
+  ],
+  "BigCodeBench/388": [
+   "pandas",
+   "collections"
+  ],
+  "BigCodeBench/389": [
+   "shutil",
+   "re",
+   "os"
+  ],
+  "BigCodeBench/39": [
+   "numpy",
+   "matplotlib",
+   "scipy"
+  ],
+  "BigCodeBench/390": [
+   "pandas",
+   "io",
+   "requests"
+  ],
+  "BigCodeBench/391": [
+   "glob",
+   "shutil",
+   "os"
+  ],
+  "BigCodeBench/392": [
+   "numpy",
+   "matplotlib"
+  ],
+  "BigCodeBench/393": [
+   "numpy",
+   "matplotlib",
+   "scipy"
+  ],
+  "BigCodeBench/394": [
+   "collections",
+   "random",
+   "string"
+  ],
+  "BigCodeBench/395": [
+   "glob",
+   "pandas",
+   "natsort",
+   "os",
+   "re"
+  ],
+  "BigCodeBench/396": [
+   "numpy",
+   "matplotlib",
+   "scipy"
+  ],
+  "BigCodeBench/397": [
+   "urllib",
+   "re",
+   "json"
+  ],
+  "BigCodeBench/398": [
+   "json",
+   "os"
+  ],
+  "BigCodeBench/399": [
+   "math",
+   "numpy",
+   "matplotlib"
+  ],
+  "BigCodeBench/4": [
+   "collections",
+   "itertools"
+  ],
+  "BigCodeBench/40": [
+   "pandas",
+   "scipy",
+   "seaborn"
+  ],
+  "BigCodeBench/400": [
+   "glob",
+   "json"
+  ],
+  "BigCodeBench/401": [
+   "flask_mail",
+   "flask",
+   "os"
+  ],
+  "BigCodeBench/402": [
+   "requests",
+   "os",
+   "csv",
+   "re",
+   "json"
+  ],
+  "BigCodeBench/403": [
+   "cv2",
+   "numpy",
+   "PIL",
+   "os"
+  ],
+  "BigCodeBench/404": [
+   "numpy",
+   "cv2",
+   "os"
+  ],
+  "BigCodeBench/405": [
+   "random",
+   "matplotlib"
+  ],
+  "BigCodeBench/406": [
+   "numpy",
+   "matplotlib",
+   "PIL",
+   "os"
+  ],
+  "BigCodeBench/407": [
+   "csv",
+   "openpyxl",
+   "os"
+  ],
+  "BigCodeBench/408": [
+   "sqlite3",
+   "pandas"
+  ],
+  "BigCodeBench/409": [
+   "pandas",
+   "numpy",
+   "os"
+  ],
+  "BigCodeBench/41": [
+   "pandas",
+   "matplotlib",
+   "scipy"
+  ],
+  "BigCodeBench/410": [
+   "pandas",
+   "datetime",
+   "os"
+  ],
+  "BigCodeBench/411": [
+   "pandas",
+   "json"
+  ],
+  "BigCodeBench/412": [
+   "base64",
+   "unicodedata",
+   "json"
+  ],
+  "BigCodeBench/413": [
+   "flask_mail",
+   "os"
+  ],
+  "BigCodeBench/414": [
+   "pandas",
+   "numpy"
+  ],
+  "BigCodeBench/415": [
+   "codecs",
+   "pandas"
+  ],
+  "BigCodeBench/416": [
+   "pandas",
+   "seaborn"
+  ],
+  "BigCodeBench/417": [
+   "keras",
+   "matplotlib",
+   "sklearn"
+  ],
+  "BigCodeBench/418": [
+   "tensorflow",
+   "matplotlib",
+   "sklearn"
+  ],
+  "BigCodeBench/419": [
+   "tensorflow",
+   "matplotlib",
+   "sklearn"
+  ],
+  "BigCodeBench/42": [
+   "pandas",
+   "matplotlib",
+   "sklearn"
+  ],
+  "BigCodeBench/420": [
+   "pandas",
+   "sklearn"
+  ],
+  "BigCodeBench/421": [
+   "time",
+   "json",
+   "requests",
+   "os"
+  ],
+  "BigCodeBench/422": [
+   "pandas",
+   "sklearn"
+  ],
+  "BigCodeBench/423": [
+   "numpy",
+   "cv2",
+   "os"
+  ],
+  "BigCodeBench/424": [
+   "sklearn",
+   "numpy",
+   "cv2",
+   "os"
+  ],
+  "BigCodeBench/425": [
+   "matplotlib",
+   "cv2",
+   "os"
+  ],
+  "BigCodeBench/426": [
+   "numpy",
+   "cv2",
+   "os"
+  ],
+  "BigCodeBench/427": [
+   "pandas",
+   "matplotlib",
+   "sklearn"
+  ],
+  "BigCodeBench/428": [
+   "pandas",
+   "sklearn",
+   "seaborn"
+  ],
+  "BigCodeBench/429": [
+   "pandas",
+   "sklearn",
+   "seaborn"
+  ],
+  "BigCodeBench/43": [
+   "numpy",
+   "seaborn"
+  ],
+  "BigCodeBench/430": [
+   "matplotlib",
+   "sklearn"
+  ],
+  "BigCodeBench/431": [
+   "numpy",
+   "cv2",
+   "os"
+  ],
+  "BigCodeBench/432": [
+   "scipy",
+   "seaborn"
+  ],
+  "BigCodeBench/433": [
+   "base64",
+   "hashlib",
+   "hmac",
+   "binascii"
+  ],
+  "BigCodeBench/434": [
+   "pandas",
+   "random",
+   "re"
+  ],
+  "BigCodeBench/435": [
+   "pandas",
+   "random"
+  ],
+  "BigCodeBench/436": [
+   "matplotlib",
+   "string"
+  ],
+  "BigCodeBench/437": [
+   "pickle",
+   "os"
+  ],
+  "BigCodeBench/438": [
+   "matplotlib",
+   "pickle",
+   "os"
+  ],
+  "BigCodeBench/439": [
+   "numpy",
+   "seaborn"
+  ],
+  "BigCodeBench/44": [
+   "matplotlib",
+   "sklearn"
+  ],
+  "BigCodeBench/440": [
+   "pandas",
+   "numpy",
+   "sklearn"
+  ],
+  "BigCodeBench/441": [
+   "numpy",
+   "matplotlib"
+  ],
+  "BigCodeBench/442": [
+   "numpy",
+   "matplotlib",
+   "sklearn"
+  ],
+  "BigCodeBench/443": [
+   "numpy",
+   "matplotlib",
+   "sklearn"
+  ],
+  "BigCodeBench/444": [
+   "numpy",
+   "matplotlib"
+  ],
+  "BigCodeBench/445": [
+   "numpy",
+   "matplotlib",
+   "scipy"
+  ],
+  "BigCodeBench/446": [
+   "matplotlib",
+   "sklearn"
+  ],
+  "BigCodeBench/447": [
+   "numpy",
+   "matplotlib",
+   "sklearn"
+  ],
+  "BigCodeBench/448": [
+   "numpy",
+   "matplotlib",
+   "scipy"
+  ],
+  "BigCodeBench/449": [
+   "pandas",
+   "matplotlib",
+   "sklearn"
+  ],
+  "BigCodeBench/45": [
+   "pandas",
+   "matplotlib",
+   "numpy",
+   "sklearn",
+   "seaborn"
+  ],
+  "BigCodeBench/450": [
+   "matplotlib",
+   "scipy",
+   "sklearn"
+  ],
+  "BigCodeBench/451": [
+   "sklearn",
+   "numpy",
+   "matplotlib",
+   "seaborn"
+  ],
+  "BigCodeBench/452": [
+   "numpy",
+   "sklearn"
+  ],
+  "BigCodeBench/453": [
+   "random",
+   "string",
+   "re"
+  ],
+  "BigCodeBench/454": [
+   "glob",
+   "shutil",
+   "os"
+  ],
+  "BigCodeBench/455": [
+   "numpy",
+   "matplotlib",
+   "scipy"
+  ],
+  "BigCodeBench/456": [
+   "pandas",
+   "sklearn",
+   "matplotlib",
+   "seaborn"
+  ],
+  "BigCodeBench/457": [
+   "pandas",
+   "numpy"
+  ],
+  "BigCodeBench/458": [
+   "pandas",
+   "re",
+   "json"
+  ],
+  "BigCodeBench/459": [
+   "subprocess",
+   "time",
+   "datetime",
+   "os"
+  ],
+  "BigCodeBench/46": [
+   "matplotlib",
+   "scipy"
+  ],
+  "BigCodeBench/460": [
+   "subprocess",
+   "pandas"
+  ],
+  "BigCodeBench/461": [
+   "subprocess",
+   "psutil",
+   "os",
+   "time"
+  ],
+  "BigCodeBench/462": [
+   "pandas",
+   "random"
+  ],
+  "BigCodeBench/463": [
+   "pandas",
+   "numpy"
+  ],
+  "BigCodeBench/464": [
+   "decimal",
+   "datetime",
+   "json"
+  ],
+  "BigCodeBench/465": [
+   "decimal",
+   "datetime",
+   "numpy",
+   "json"
+  ],
+  "BigCodeBench/466": [
+   "enum",
+   "json"
+  ],
+  "BigCodeBench/467": [
+   "numpy",
+   "matplotlib"
+  ],
+  "BigCodeBench/468": [
+   "pandas",
+   "numpy"
+  ],
+  "BigCodeBench/469": [
+   "pandas",
+   "collections",
+   "matplotlib"
+  ],
+  "BigCodeBench/47": [
+   "sklearn",
+   "matplotlib",
+   "seaborn"
+  ],
+  "BigCodeBench/470": [
+   "numpy",
+   "matplotlib"
+  ],
+  "BigCodeBench/471": [
+   "pandas",
+   "collections"
+  ],
+  "BigCodeBench/472": [
+   "matplotlib",
+   "sklearn"
+  ],
+  "BigCodeBench/473": [
+   "itertools",
+   "numpy",
+   "matplotlib"
+  ],
+  "BigCodeBench/474": [
+   "numpy",
+   "matplotlib",
+   "scipy"
+  ],
+  "BigCodeBench/475": [
+   "pandas",
+   "datetime"
+  ],
+  "BigCodeBench/476": [
+   "matplotlib",
+   "scipy"
+  ],
+  "BigCodeBench/477": [
+   "pandas",
+   "numpy",
+   "matplotlib"
+  ],
+  "BigCodeBench/478": [
+   "pandas",
+   "random",
+   "re"
+  ],
+  "BigCodeBench/479": [
+   "pandas",
+   "random",
+   "string"
+  ],
+  "BigCodeBench/48": [
+   "datetime",
+   "random",
+   "matplotlib",
+   "time"
+  ],
+  "BigCodeBench/480": [
+   "pandas",
+   "random",
+   "re"
+  ],
+  "BigCodeBench/481": [
+   "pandas",
+   "random",
+   "re"
+  ],
+  "BigCodeBench/482": [
+   "pandas",
+   "random",
+   "re"
+  ],
+  "BigCodeBench/483": [
+   "pandas",
+   "re"
+  ],
+  "BigCodeBench/484": [
+   "math",
+   "pandas",
+   "datetime",
+   "numpy"
+  ],
+  "BigCodeBench/485": [
+   "pytz",
+   "datetime",
+   "numpy",
+   "matplotlib"
+  ],
+  "BigCodeBench/486": [
+   "pandas",
+   "datetime",
+   "numpy"
+  ],
+  "BigCodeBench/487": [
+   "pandas",
+   "re",
+   "os"
+  ],
+  "BigCodeBench/488": [
+   "pandas",
+   "datetime",
+   "numpy"
+  ],
+  "BigCodeBench/489": [
+   "pandas",
+   "datetime",
+   "random"
+  ],
+  "BigCodeBench/49": [
+   "pandas",
+   "datetime",
+   "matplotlib"
+  ],
+  "BigCodeBench/490": [
+   "xmltodict",
+   "json"
+  ],
+  "BigCodeBench/491": [
+   "datetime",
+   "random",
+   "matplotlib"
+  ],
+  "BigCodeBench/492": [
+   "pandas",
+   "datetime",
+   "random"
+  ],
+  "BigCodeBench/493": [
+   "datetime",
+   "random",
+   "matplotlib"
+  ],
+  "BigCodeBench/494": [
+   "pytz",
+   "faker",
+   "datetime",
+   "re"
+  ],
+  "BigCodeBench/495": [
+   "pandas",
+   "numpy"
+  ],
+  "BigCodeBench/496": [
+   "datetime",
+   "numpy",
+   "matplotlib"
+  ],
+  "BigCodeBench/497": [
+   "pytz",
+   "datetime",
+   "calendar"
+  ],
+  "BigCodeBench/498": [
+   "xmltodict",
+   "json"
+  ],
+  "BigCodeBench/499": [
+   "io",
+   "csv",
+   "xlwt",
+   "os"
+  ],
+  "BigCodeBench/5": [
+   "math",
+   "random"
+  ],
+  "BigCodeBench/50": [
+   "pytz",
+   "pandas",
+   "datetime",
+   "matplotlib"
+  ],
+  "BigCodeBench/500": [
+   "xlwt",
+   "os"
+  ],
+  "BigCodeBench/501": [
+   "pandas",
+   "xlwt",
+   "os"
+  ],
+  "BigCodeBench/502": [
+   "pandas",
+   "datetime",
+   "random",
+   "seaborn"
+  ],
+  "BigCodeBench/503": [
+   "pandas",
+   "datetime",
+   "numpy"
+  ],
+  "BigCodeBench/504": [
+   "base64",
+   "rsa",
+   "hashlib"
+  ],
+  "BigCodeBench/505": [
+   "hmac",
+   "hashlib"
+  ],
+  "BigCodeBench/506": [
+   "pandas",
+   "numpy",
+   "matplotlib"
+  ],
+  "BigCodeBench/507": [
+   "pandas",
+   "numpy"
+  ],
+  "BigCodeBench/508": [
+   "io",
+   "hashlib",
+   "os"
+  ],
+  "BigCodeBench/509": [
+   "difflib",
+   "pandas",
+   "csv"
+  ],
+  "BigCodeBench/51": [
+   "matplotlib",
+   "sklearn"
+  ],
+  "BigCodeBench/510": [
+   "difflib",
+   "gzip"
+  ],
+  "BigCodeBench/511": [
+   "pandas",
+   "numpy",
+   "matplotlib"
+  ],
+  "BigCodeBench/512": [
+   "pandas",
+   "numpy"
+  ],
+  "BigCodeBench/513": [
+   "pandas",
+   "numpy",
+   "matplotlib"
+  ],
+  "BigCodeBench/514": [
+   "pandas",
+   "matplotlib"
+  ],
+  "BigCodeBench/515": [
+   "pandas",
+   "seaborn"
+  ],
+  "BigCodeBench/516": [
+   "pandas",
+   "numpy",
+   "statsmodels"
+  ],
+  "BigCodeBench/517": [
+   "pandas",
+   "numpy",
+   "sklearn"
+  ],
+  "BigCodeBench/518": [
+   "pandas",
+   "scipy"
+  ],
+  "BigCodeBench/519": [
+   "pandas",
+   "matplotlib"
+  ],
+  "BigCodeBench/52": [
+   "regex",
+   "pandas"
+  ],
+  "BigCodeBench/520": [
+   "collections",
+   "matplotlib"
+  ],
+  "BigCodeBench/521": [
+   "pandas",
+   "matplotlib"
+  ],
+  "BigCodeBench/522": [
+   "collections",
+   "matplotlib"
+  ],
+  "BigCodeBench/523": [
+   "pandas",
+   "matplotlib"
+  ],
+  "BigCodeBench/524": [
+   "collections",
+   "numpy",
+   "matplotlib"
+  ],
+  "BigCodeBench/525": [
+   "collections",
+   "numpy",
+   "matplotlib",
+   "json"
+  ],
+  "BigCodeBench/526": [
+   "pandas",
+   "collections",
+   "numpy",
+   "json"
+  ],
+  "BigCodeBench/527": [
+   "pandas",
+   "collections",
+   "matplotlib",
+   "numpy",
+   "seaborn",
+   "json"
+  ],
+  "BigCodeBench/528": [
+   "pandas",
+   "csv",
+   "collections",
+   "matplotlib"
+  ],
+  "BigCodeBench/529": [
+   "collections",
+   "matplotlib",
+   "random"
+  ],
+  "BigCodeBench/53": [
+   "regex",
+   "pandas",
+   "matplotlib",
+   "seaborn"
+  ],
+  "BigCodeBench/530": [
+   "pandas",
+   "collections",
+   "matplotlib",
+   "numpy",
+   "seaborn"
+  ],
+  "BigCodeBench/531": [
+   "collections",
+   "matplotlib",
+   "sklearn"
+  ],
+  "BigCodeBench/532": [
+   "numpy",
+   "collections",
+   "matplotlib",
+   "scipy"
+  ],
+  "BigCodeBench/533": [
+   "secrets",
+   "base64",
+   "hashlib",
+   "numpy"
+  ],
+  "BigCodeBench/534": [
+   "base64",
+   "numpy",
+   "cryptography"
+  ],
+  "BigCodeBench/535": [
+   "sqlite3",
+   "numpy",
+   "random"
+  ],
+  "BigCodeBench/536": [
+   "sqlite3",
+   "pandas",
+   "os"
+  ],
+  "BigCodeBench/537": [
+   "sqlite3",
+   "pandas",
+   "seaborn"
+  ],
+  "BigCodeBench/538": [
+   "sqlite3",
+   "pandas"
+  ],
+  "BigCodeBench/539": [
+   "sqlite3",
+   "random",
+   "os"
+  ],
+  "BigCodeBench/54": [
+   "regex",
+   "pandas",
+   "sklearn"
+  ],
+  "BigCodeBench/540": [
+   "matplotlib",
+   "collections",
+   "numpy",
+   "itertools"
+  ],
+  "BigCodeBench/541": [
+   "importlib",
+   "pkgutil",
+   "os",
+   "sys"
+  ],
+  "BigCodeBench/542": [
+   "struct",
+   "hashlib",
+   "random"
+  ],
+  "BigCodeBench/543": [
+   "base64",
+   "os"
+  ],
+  "BigCodeBench/544": [
+   "struct",
+   "zlib"
+  ],
+  "BigCodeBench/545": [
+   "codecs",
+   "struct",
+   "random"
+  ],
+  "BigCodeBench/546": [
+   "collections",
+   "prettytable"
+  ],
+  "BigCodeBench/547": [
+   "base64",
+   "hashlib",
+   "os"
+  ],
+  "BigCodeBench/548": [
+   "base64",
+   "random",
+   "string",
+   "zlib"
+  ],
+  "BigCodeBench/549": [
+   "pandas",
+   "base64"
+  ],
+  "BigCodeBench/55": [
+   "pandas",
+   "re"
+  ],
+  "BigCodeBench/550": [
+   "pandas",
+   "collections"
+  ],
+  "BigCodeBench/551": [
+   "pandas",
+   "collections",
+   "matplotlib",
+   "seaborn"
+  ],
+  "BigCodeBench/552": [
+   "matplotlib",
+   "collections",
+   "itertools"
+  ],
+  "BigCodeBench/553": [
+   "pandas",
+   "numpy",
+   "matplotlib"
+  ],
+  "BigCodeBench/554": [
+   "numpy",
+   "random"
+  ],
+  "BigCodeBench/555": [
+   "pandas",
+   "numpy",
+   "matplotlib",
+   "scipy"
+  ],
+  "BigCodeBench/556": [
+   "difflib",
+   "numpy",
+   "random"
+  ],
+  "BigCodeBench/557": [
+   "difflib",
+   "numpy",
+   "matplotlib"
+  ],
+  "BigCodeBench/558": [
+   "pandas",
+   "numpy",
+   "matplotlib",
+   "sklearn"
+  ],
+  "BigCodeBench/559": [
+   "pandas",
+   "matplotlib",
+   "scipy"
+  ],
+  "BigCodeBench/56": [
+   "regex",
+   "pandas"
+  ],
+  "BigCodeBench/560": [
+   "pandas",
+   "datetime",
+   "matplotlib"
+  ],
+  "BigCodeBench/561": [
+   "pytz",
+   "dateutil"
+  ],
+  "BigCodeBench/562": [
+   "subprocess",
+   "ctypes",
+   "sys",
+   "os"
+  ],
+  "BigCodeBench/563": [
+   "glob",
+   "ctypes",
+   "shutil",
+   "os"
+  ],
+  "BigCodeBench/564": [
+   "pytz",
+   "ctypes",
+   "os",
+   "datetime"
+  ],
+  "BigCodeBench/565": [
+   "ctypes",
+   "hashlib",
+   "binascii"
+  ],
+  "BigCodeBench/566": [
+   "types",
+   "inspect"
+  ],
+  "BigCodeBench/567": [
+   "pandas",
+   "numpy",
+   "matplotlib"
+  ],
+  "BigCodeBench/568": [
+   "pandas",
+   "inspect",
+   "matplotlib"
+  ],
+  "BigCodeBench/569": [
+   "types",
+   "math",
+   "inspect"
+  ],
+  "BigCodeBench/57": [
+   "pandas",
+   "matplotlib",
+   "seaborn"
+  ],
+  "BigCodeBench/570": [
+   "types",
+   "inspect",
+   "json"
+  ],
+  "BigCodeBench/571": [
+   "pandas",
+   "inspect"
+  ],
+  "BigCodeBench/572": [
+   "numpy",
+   "matplotlib",
+   "random"
+  ],
+  "BigCodeBench/573": [
+   "pandas",
+   "numpy"
+  ],
+  "BigCodeBench/574": [
+   "numpy",
+   "matplotlib",
+   "scipy"
+  ],
+  "BigCodeBench/575": [
+   "pandas",
+   "numpy",
+   "random"
+  ],
+  "BigCodeBench/576": [
+   "pandas",
+   "random"
+  ],
+  "BigCodeBench/577": [
+   "unicodedata",
+   "hashlib",
+   "pathlib",
+   "os"
+  ],
+  "BigCodeBench/578": [
+   "unicodedata",
+   "requests"
+  ],
+  "BigCodeBench/579": [
+   "unicodedata",
+   "csv",
+   "collections",
+   "matplotlib"
+  ],
+  "BigCodeBench/58": [
+   "numpy",
+   "matplotlib",
+   "scipy"
+  ],
+  "BigCodeBench/580": [
+   "statistics",
+   "pandas",
+   "matplotlib",
+   "numpy",
+   "random"
+  ],
+  "BigCodeBench/581": [
+   "math",
+   "numpy",
+   "matplotlib",
+   "random"
+  ],
+  "BigCodeBench/582": [
+   "numpy",
+   "matplotlib",
+   "scipy"
+  ],
+  "BigCodeBench/583": [
+   "base64",
+   "Crypto",
+   "rsa",
+   "os"
+  ],
+  "BigCodeBench/584": [
+   "urllib",
+   "rsa",
+   "hashlib"
+  ],
+  "BigCodeBench/585": [
+   "base64",
+   "rsa",
+   "zipfile",
+   "os"
+  ],
+  "BigCodeBench/586": [
+   "base64",
+   "rsa",
+   "cryptography"
+  ],
+  "BigCodeBench/587": [
+   "base64",
+   "rsa",
+   "cryptography",
+   "os"
+  ],
+  "BigCodeBench/588": [
+   "pandas",
+   "numpy",
+   "matplotlib",
+   "seaborn"
+  ],
+  "BigCodeBench/589": [
+   "numpy",
+   "matplotlib",
+   "sklearn"
+  ],
+  "BigCodeBench/59": [
+   "wikipedia",
+   "matplotlib",
+   "wordcloud"
+  ],
+  "BigCodeBench/590": [
+   "pandas",
+   "urllib",
+   "datetime",
+   "pyquery"
+  ],
+  "BigCodeBench/591": [
+   "pandas",
+   "datetime",
+   "random",
+   "matplotlib"
+  ],
+  "BigCodeBench/592": [
+   "csv",
+   "datetime",
+   "random",
+   "os"
+  ],
+  "BigCodeBench/593": [
+   "pandas",
+   "matplotlib",
+   "random",
+   "os",
+   "csv",
+   "datetime"
+  ],
+  "BigCodeBench/594": [
+   "shutil",
+   "random",
+   "os",
+   "csv",
+   "datetime"
+  ],
+  "BigCodeBench/595": [
+   "bisect",
+   "random",
+   "array"
+  ],
+  "BigCodeBench/596": [
+   "datetime",
+   "random",
+   "matplotlib",
+   "time"
+  ],
+  "BigCodeBench/597": [
+   "pandas",
+   "time"
+  ],
+  "BigCodeBench/598": [
+   "pandas",
+   "time"
+  ],
+  "BigCodeBench/599": [
+   "pandas",
+   "time"
+  ],
+  "BigCodeBench/6": [
+   "re",
+   "os"
+  ],
+  "BigCodeBench/60": [
+   "pandas",
+   "json"
+  ],
+  "BigCodeBench/600": [
+   "pandas",
+   "numpy"
+  ],
+  "BigCodeBench/601": [
+   "time",
+   "seaborn"
+  ],
+  "BigCodeBench/602": [
+   "pandas",
+   "numpy"
+  ],
+  "BigCodeBench/603": [
+   "pandas",
+   "numpy"
+  ],
+  "BigCodeBench/604": [
+   "subprocess",
+   "logging"
+  ],
+  "BigCodeBench/605": [
+   "pandas",
+   "matplotlib"
+  ],
+  "BigCodeBench/606": [
+   "pandas",
+   "scipy"
+  ],
+  "BigCodeBench/607": [
+   "pandas",
+   "random",
+   "matplotlib"
+  ],
+  "BigCodeBench/608": [
+   "random",
+   "seaborn"
+  ],
+  "BigCodeBench/609": [
+   "random",
+   "itertools"
+  ],
+  "BigCodeBench/61": [
+   "datetime",
+   "numpy",
+   "matplotlib"
+  ],
+  "BigCodeBench/610": [
+   "pandas",
+   "random",
+   "seaborn"
+  ],
+  "BigCodeBench/611": [
+   "random",
+   "matplotlib"
+  ],
+  "BigCodeBench/612": [
+   "pandas",
+   "numpy",
+   "random"
+  ],
+  "BigCodeBench/613": [
+   "pandas",
+   "matplotlib"
+  ],
+  "BigCodeBench/614": [
+   "pandas",
+   "seaborn"
+  ],
+  "BigCodeBench/615": [
+   "pandas",
+   "random"
+  ],
+  "BigCodeBench/616": [
+   "pandas",
+   "random",
+   "matplotlib"
+  ],
+  "BigCodeBench/617": [
+   "pandas",
+   "random",
+   "matplotlib",
+   "re"
+  ],
+  "BigCodeBench/618": [
+   "pandas",
+   "random",
+   "matplotlib",
+   "seaborn"
+  ],
+  "BigCodeBench/619": [
+   "pandas",
+   "random",
+   "sklearn"
+  ],
+  "BigCodeBench/62": [
+   "random",
+   "matplotlib",
+   "seaborn"
+  ],
+  "BigCodeBench/620": [
+   "pandas",
+   "numpy"
+  ],
+  "BigCodeBench/621": [
+   "matplotlib",
+   "numpy",
+   "itertools",
+   "sklearn"
+  ],
+  "BigCodeBench/622": [
+   "matplotlib",
+   "numpy",
+   "itertools",
+   "scipy"
+  ],
+  "BigCodeBench/623": [
+   "numpy",
+   "itertools",
+   "sklearn"
+  ],
+  "BigCodeBench/624": [
+   "numpy",
+   "matplotlib",
+   "sklearn"
+  ],
+  "BigCodeBench/625": [
+   "math",
+   "pandas",
+   "random"
+  ],
+  "BigCodeBench/626": [
+   "pytz",
+   "dateutil",
+   "random"
+  ],
+  "BigCodeBench/627": [
+   "statistics",
+   "pandas",
+   "random"
+  ],
+  "BigCodeBench/628": [
+   "math",
+   "random",
+   "matplotlib"
+  ],
+  "BigCodeBench/629": [
+   "os",
+   "time"
+  ],
+  "BigCodeBench/63": [
+   "pandas",
+   "matplotlib"
+  ],
+  "BigCodeBench/630": [
+   "pandas",
+   "os"
+  ],
+  "BigCodeBench/631": [
+   "csv",
+   "os"
+  ],
+  "BigCodeBench/632": [
+   "pandas",
+   "time"
+  ],
+  "BigCodeBench/633": [
+   "nltk",
+   "re"
+  ],
+  "BigCodeBench/634": [
+   "typing",
+   "itertools",
+   "scipy"
+  ],
+  "BigCodeBench/635": [
+   "nltk",
+   "pandas",
+   "matplotlib",
+   "numpy",
+   "sklearn",
+   "re"
+  ],
+  "BigCodeBench/636": [
+   "pandas",
+   "numpy",
+   "matplotlib"
+  ],
+  "BigCodeBench/637": [
+   "pandas",
+   "numpy",
+   "matplotlib",
+   "random"
+  ],
+  "BigCodeBench/638": [
+   "pandas",
+   "numpy"
+  ],
+  "BigCodeBench/639": [
+   "pandas",
+   "numpy",
+   "seaborn"
+  ],
+  "BigCodeBench/64": [
+   "pandas",
+   "matplotlib",
+   "seaborn"
+  ],
+  "BigCodeBench/640": [
+   "pandas",
+   "numpy",
+   "matplotlib",
+   "seaborn"
+  ],
+  "BigCodeBench/641": [
+   "pandas",
+   "re",
+   "os"
+  ],
+  "BigCodeBench/642": [
+   "hashlib",
+   "re",
+   "binascii"
+  ],
+  "BigCodeBench/643": [
+   "pandas",
+   "numpy",
+   "re"
+  ],
+  "BigCodeBench/644": [
+   "base64",
+   "hashlib"
+  ],
+  "BigCodeBench/645": [
+   "pandas",
+   "os"
+  ],
+  "BigCodeBench/646": [
+   "dateutil",
+   "pandas",
+   "os"
+  ],
+  "BigCodeBench/647": [
+   "pytz",
+   "dateutil"
+  ],
+  "BigCodeBench/648": [
+   "dateutil",
+   "datetime"
+  ],
+  "BigCodeBench/649": [
+   "dateutil",
+   "pandas",
+   "numpy"
+  ],
+  "BigCodeBench/65": [
+   "pandas",
+   "matplotlib"
+  ],
+  "BigCodeBench/650": [
+   "pytz",
+   "dateutil",
+   "datetime"
+  ],
+  "BigCodeBench/651": [
+   "pandas",
+   "time"
+  ],
+  "BigCodeBench/652": [
+   "numpy",
+   "matplotlib",
+   "scipy"
+  ],
+  "BigCodeBench/653": [
+   "matplotlib",
+   "seaborn"
+  ],
+  "BigCodeBench/654": [
+   "numpy",
+   "matplotlib",
+   "scipy"
+  ],
+  "BigCodeBench/655": [
+   "nltk",
+   "re",
+   "sklearn"
+  ],
+  "BigCodeBench/656": [
+   "nltk",
+   "string",
+   "re"
+  ],
+  "BigCodeBench/657": [
+   "nltk",
+   "gensim",
+   "re"
+  ],
+  "BigCodeBench/658": [
+   "nltk",
+   "pandas",
+   "re",
+   "sklearn"
+  ],
+  "BigCodeBench/659": [
+   "numpy",
+   "matplotlib",
+   "scipy"
+  ],
+  "BigCodeBench/66": [
+   "pandas",
+   "seaborn"
+  ],
+  "BigCodeBench/660": [
+   "numpy",
+   "matplotlib",
+   "sklearn"
+  ],
+  "BigCodeBench/661": [
+   "pandas",
+   "numpy",
+   "seaborn"
+  ],
+  "BigCodeBench/662": [
+   "numpy",
+   "matplotlib",
+   "sklearn"
+  ],
+  "BigCodeBench/663": [
+   "numpy",
+   "scipy"
+  ],
+  "BigCodeBench/664": [
+   "statistics",
+   "matplotlib"
+  ],
+  "BigCodeBench/665": [
+   "shutil",
+   "itertools",
+   "fnmatch",
+   "os"
+  ],
+  "BigCodeBench/666": [
+   "math",
+   "itertools"
+  ],
+  "BigCodeBench/667": [
+   "collections",
+   "heapq"
+  ],
+  "BigCodeBench/668": [
+   "math",
+   "itertools"
+  ],
+  "BigCodeBench/669": [
+   "math",
+   "itertools"
+  ],
+  "BigCodeBench/67": [
+   "pandas",
+   "re",
+   "os"
+  ],
+  "BigCodeBench/670": [
+   "math",
+   "itertools"
+  ],
+  "BigCodeBench/671": [
+   "json",
+   "random",
+   "os"
+  ],
+  "BigCodeBench/672": [
+   "csv",
+   "sys"
+  ],
+  "BigCodeBench/673": [
+   "random",
+   "os"
+  ],
+  "BigCodeBench/674": [
+   "pandas",
+   "os"
+  ],
+  "BigCodeBench/675": [
+   "random",
+   "os"
+  ],
+  "BigCodeBench/676": [
+   "pandas",
+   "random"
+  ],
+  "BigCodeBench/677": [
+   "pandas",
+   "numpy",
+   "scipy"
+  ],
+  "BigCodeBench/678": [
+   "pandas",
+   "shutil",
+   "json",
+   "os"
+  ],
+  "BigCodeBench/679": [
+   "pandas",
+   "collections"
+  ],
+  "BigCodeBench/68": [
+   "pandas",
+   "seaborn"
+  ],
+  "BigCodeBench/680": [
+   "pandas",
+   "numpy",
+   "sklearn"
+  ],
+  "BigCodeBench/681": [
+   "pandas",
+   "json"
+  ],
+  "BigCodeBench/682": [
+   "math",
+   "collections"
+  ],
+  "BigCodeBench/683": [
+   "math",
+   "yaml"
+  ],
+  "BigCodeBench/684": [
+   "pandas",
+   "numpy"
+  ],
+  "BigCodeBench/685": [
+   "collections",
+   "itertools"
+  ],
+  "BigCodeBench/686": [
+   "numpy",
+   "sklearn"
+  ],
+  "BigCodeBench/687": [
+   "numpy",
+   "scipy"
+  ],
+  "BigCodeBench/688": [
+   "pandas",
+   "sklearn"
+  ],
+  "BigCodeBench/689": [
+   "numpy",
+   "scipy"
+  ],
+  "BigCodeBench/69": [
+   "random",
+   "matplotlib"
+  ],
+  "BigCodeBench/690": [
+   "pandas",
+   "sklearn"
+  ],
+  "BigCodeBench/691": [
+   "pandas",
+   "sklearn"
+  ],
+  "BigCodeBench/692": [
+   "math",
+   "pandas"
+  ],
+  "BigCodeBench/693": [
+   "pandas",
+   "sklearn"
+  ],
+  "BigCodeBench/694": [
+   "random",
+   "itertools"
+  ],
+  "BigCodeBench/695": [
+   "numpy",
+   "sklearn"
+  ],
+  "BigCodeBench/696": [
+   "math",
+   "numpy",
+   "random"
+  ],
+  "BigCodeBench/697": [
+   "numpy",
+   "sklearn"
+  ],
+  "BigCodeBench/698": [
+   "pandas",
+   "sklearn"
+  ],
+  "BigCodeBench/699": [
+   "pandas",
+   "sklearn"
+  ],
+  "BigCodeBench/7": [
+   "operator",
+   "csv",
+   "collections"
+  ],
+  "BigCodeBench/70": [
+   "pandas",
+   "numpy",
+   "json"
+  ],
+  "BigCodeBench/700": [
+   "pandas",
+   "numpy"
+  ],
+  "BigCodeBench/701": [
+   "pandas",
+   "sklearn"
+  ],
+  "BigCodeBench/702": [
+   "pandas",
+   "sklearn"
+  ],
+  "BigCodeBench/703": [
+   "pandas",
+   "sklearn"
+  ],
+  "BigCodeBench/704": [
+   "pandas",
+   "itertools"
+  ],
+  "BigCodeBench/705": [
+   "numpy",
+   "scipy"
+  ],
+  "BigCodeBench/706": [
+   "pandas",
+   "sklearn"
+  ],
+  "BigCodeBench/707": [
+   "numpy",
+   "json"
+  ],
+  "BigCodeBench/708": [
+   "csv",
+   "base64",
+   "os",
+   "json"
+  ],
+  "BigCodeBench/709": [
+   "html",
+   "base64",
+   "re",
+   "textwrap"
+  ],
+  "BigCodeBench/71": [
+   "ast",
+   "pandas",
+   "numpy",
+   "seaborn"
+  ],
+  "BigCodeBench/710": [
+   "pandas",
+   "sklearn"
+  ],
+  "BigCodeBench/711": [
+   "csv",
+   "json"
+  ],
+  "BigCodeBench/712": [
+   "glob",
+   "shutil",
+   "os"
+  ],
+  "BigCodeBench/713": [
+   "re",
+   "os"
+  ],
+  "BigCodeBench/714": [
+   "pathlib",
+   "sys"
+  ],
+  "BigCodeBench/715": [
+   "subprocess",
+   "sys"
+  ],
+  "BigCodeBench/716": [
+   "datetime",
+   "json",
+   "sys"
+  ],
+  "BigCodeBench/717": [
+   "configparser",
+   "sys"
+  ],
+  "BigCodeBench/718": [
+   "re",
+   "numpy",
+   "scipy"
+  ],
+  "BigCodeBench/719": [
+   "glob",
+   "re",
+   "os"
+  ],
+  "BigCodeBench/72": [
+   "pandas",
+   "numpy",
+   "ast",
+   "os"
+  ],
+  "BigCodeBench/720": [
+   "csv",
+   "datetime",
+   "random",
+   "os"
+  ],
+  "BigCodeBench/721": [
+   "csv",
+   "collections",
+   "os"
+  ],
+  "BigCodeBench/722": [
+   "urllib",
+   "re",
+   "os"
+  ],
+  "BigCodeBench/723": [
+   "csv",
+   "urllib",
+   "bs4",
+   "os"
+  ],
+  "BigCodeBench/724": [
+   "json",
+   "os"
+  ],
+  "BigCodeBench/725": [
+   "codecs",
+   "glob",
+   "os"
+  ],
+  "BigCodeBench/726": [
+   "nltk",
+   "random",
+   "re"
+  ],
+  "BigCodeBench/727": [
+   "numpy",
+   "re",
+   "sklearn"
+  ],
+  "BigCodeBench/728": [
+   "io",
+   "csv"
+  ],
+  "BigCodeBench/729": [
+   "pickle",
+   "string",
+   "random",
+   "os"
+  ],
+  "BigCodeBench/73": [
+   "ast",
+   "pandas",
+   "matplotlib",
+   "numpy",
+   "sqlite3"
+  ],
+  "BigCodeBench/730": [
+   "pickle",
+   "os"
+  ],
+  "BigCodeBench/731": [
+   "pickle",
+   "os",
+   "sklearn"
+  ],
+  "BigCodeBench/732": [
+   "nltk",
+   "collections",
+   "string",
+   "re"
+  ],
+  "BigCodeBench/733": [
+   "string",
+   "re"
+  ],
+  "BigCodeBench/734": [
+   "nltk",
+   "collections"
+  ],
+  "BigCodeBench/735": [
+   "numpy",
+   "itertools"
+  ],
+  "BigCodeBench/736": [
+   "numpy",
+   "scipy"
+  ],
+  "BigCodeBench/737": [
+   "math",
+   "numpy"
+  ],
+  "BigCodeBench/738": [
+   "numpy",
+   "scipy"
+  ],
+  "BigCodeBench/739": [
+   "struct",
+   "random"
+  ],
+  "BigCodeBench/74": [
+   "requests",
+   "socket"
+  ],
+  "BigCodeBench/740": [
+   "collections",
+   "heapq"
+  ],
+  "BigCodeBench/741": [
+   "operator",
+   "itertools"
+  ],
+  "BigCodeBench/742": [
+   "pandas",
+   "sklearn"
+  ],
+  "BigCodeBench/743": [
+   "json",
+   "os"
+  ],
+  "BigCodeBench/744": [
+   "nltk",
+   "pandas",
+   "string"
+  ],
+  "BigCodeBench/745": [
+   "subprocess",
+   "random"
+  ],
+  "BigCodeBench/746": [
+   "pandas",
+   "numpy",
+   "sklearn"
+  ],
+  "BigCodeBench/747": [
+   "math",
+   "re"
+  ],
+  "BigCodeBench/748": [
+   "pandas",
+   "sklearn"
+  ],
+  "BigCodeBench/749": [
+   "numpy",
+   "sklearn"
+  ],
+  "BigCodeBench/75": [
+   "pandas",
+   "itertools",
+   "numpy",
+   "seaborn",
+   "datetime"
+  ],
+  "BigCodeBench/750": [
+   "pandas",
+   "statsmodels"
+  ],
+  "BigCodeBench/751": [
+   "collections",
+   "random"
+  ],
+  "BigCodeBench/752": [
+   "pandas",
+   "numpy",
+   "sklearn"
+  ],
+  "BigCodeBench/753": [
+   "statistics",
+   "math",
+   "random"
+  ],
+  "BigCodeBench/754": [
+   "pandas",
+   "datetime",
+   "numpy"
+  ],
+  "BigCodeBench/755": [
+   "glob",
+   "os"
+  ],
+  "BigCodeBench/756": [
+   "typing",
+   "shutil",
+   "pathlib"
+  ],
+  "BigCodeBench/757": [
+   "datetime",
+   "numpy"
+  ],
+  "BigCodeBench/758": [
+   "pandas",
+   "numpy",
+   "sklearn"
+  ],
+  "BigCodeBench/759": [
+   "shutil",
+   "fnmatch",
+   "os"
+  ],
+  "BigCodeBench/76": [
+   "django",
+   "string",
+   "random"
+  ],
+  "BigCodeBench/760": [
+   "pandas",
+   "numpy",
+   "codecs",
+   "re",
+   "datetime"
+  ],
+  "BigCodeBench/761": [
+   "collections",
+   "re",
+   "json"
+  ],
+  "BigCodeBench/762": [
+   "codecs",
+   "zipfile",
+   "os"
+  ],
+  "BigCodeBench/763": [
+   "collections",
+   "csv",
+   "numpy",
+   "json"
+  ],
+  "BigCodeBench/764": [
+   "csv",
+   "random"
+  ],
+  "BigCodeBench/765": [
+   "shutil",
+   "pathlib",
+   "os"
+  ],
+  "BigCodeBench/766": [
+   "collections",
+   "re"
+  ],
+  "BigCodeBench/767": [
+   "collections",
+   "string",
+   "random"
+  ],
+  "BigCodeBench/768": [
+   "glob",
+   "re",
+   "os"
+  ],
+  "BigCodeBench/769": [
+   "operator",
+   "collections",
+   "itertools"
+  ],
+  "BigCodeBench/77": [
+   "base64",
+   "django",
+   "hashlib",
+   "binascii"
+  ],
+  "BigCodeBench/770": [
+   "numpy",
+   "sklearn"
+  ],
+  "BigCodeBench/771": [
+   "csv",
+   "pathlib",
+   "re",
+   "os"
+  ],
+  "BigCodeBench/772": [
+   "numpy",
+   "sklearn"
+  ],
+  "BigCodeBench/773": [
+   "shutil",
+   "re",
+   "os"
+  ],
+  "BigCodeBench/774": [
+   "numpy",
+   "sklearn"
+  ],
+  "BigCodeBench/775": [
+   "collections",
+   "string",
+   "re"
+  ],
+  "BigCodeBench/776": [
+   "pandas",
+   "sklearn"
+  ],
+  "BigCodeBench/777": [
+   "zipfile",
+   "re",
+   "os"
+  ],
+  "BigCodeBench/778": [
+   "operator",
+   "collections",
+   "itertools"
+  ],
+  "BigCodeBench/779": [
+   "shutil",
+   "os"
+  ],
+  "BigCodeBench/78": [
+   "io",
+   "csv",
+   "django"
+  ],
+  "BigCodeBench/780": [
+   "pytz",
+   "pandas"
+  ],
+  "BigCodeBench/781": [
+   "datetime",
+   "os"
+  ],
+  "BigCodeBench/782": [
+   "pandas",
+   "numpy",
+   "random"
+  ],
+  "BigCodeBench/783": [
+   "shutil",
+   "os"
+  ],
+  "BigCodeBench/784": [
+   "pandas",
+   "csv",
+   "random"
+  ],
+  "BigCodeBench/785": [
+   "subprocess",
+   "glob",
+   "os"
+  ],
+  "BigCodeBench/786": [
+   "pandas",
+   "csv",
+   "random"
+  ],
+  "BigCodeBench/787": [
+   "numpy",
+   "itertools"
+  ],
+  "BigCodeBench/788": [
+   "scipy",
+   "heapq"
+  ],
+  "BigCodeBench/789": [
+   "numpy",
+   "sklearn"
+  ],
+  "BigCodeBench/79": [
+   "io",
+   "django",
+   "zipfile"
+  ],
+  "BigCodeBench/790": [
+   "sklearn",
+   "heapq"
+  ],
+  "BigCodeBench/791": [
+   "collections",
+   "itertools",
+   "random"
+  ],
+  "BigCodeBench/792": [
+   "sklearn",
+   "heapq"
+  ],
+  "BigCodeBench/793": [
+   "numpy",
+   "random"
+  ],
+  "BigCodeBench/794": [
+   "random",
+   "string"
+  ],
+  "BigCodeBench/795": [
+   "math",
+   "collections"
+  ],
+  "BigCodeBench/796": [
+   "re",
+   "os"
+  ],
+  "BigCodeBench/797": [
+   "pandas",
+   "re"
+  ],
+  "BigCodeBench/798": [
+   "shutil",
+   "os"
+  ],
+  "BigCodeBench/799": [
+   "pandas",
+   "random"
+  ],
+  "BigCodeBench/8": [
+   "collections",
+   "random",
+   "itertools"
+  ],
+  "BigCodeBench/80": [
+   "logging",
+   "flask",
+   "json"
+  ],
+  "BigCodeBench/800": [
+   "csv",
+   "collections",
+   "os"
+  ],
+  "BigCodeBench/801": [
+   "collections",
+   "numpy"
+  ],
+  "BigCodeBench/802": [
+   "numpy",
+   "itertools"
+  ],
+  "BigCodeBench/803": [
+   "pandas",
+   "sklearn"
+  ],
+  "BigCodeBench/804": [
+   "datetime",
+   "os"
+  ],
+  "BigCodeBench/805": [
+   "pandas",
+   "random"
+  ],
+  "BigCodeBench/806": [
+   "nltk",
+   "collections",
+   "re"
+  ],
+  "BigCodeBench/807": [
+   "numpy",
+   "scipy"
+  ],
+  "BigCodeBench/808": [
+   "nltk",
+   "textblob",
+   "re"
+  ],
+  "BigCodeBench/809": [
+   "numpy",
+   "sklearn"
+  ],
+  "BigCodeBench/81": [
+   "flask_restful",
+   "flask",
+   "requests"
+  ],
+  "BigCodeBench/810": [
+   "subprocess",
+   "re",
+   "os"
+  ],
+  "BigCodeBench/811": [
+   "pandas",
+   "random"
+  ],
+  "BigCodeBench/812": [
+   "tarfile",
+   "pathlib",
+   "re"
+  ],
+  "BigCodeBench/813": [
+   "pandas",
+   "itertools"
+  ],
+  "BigCodeBench/814": [
+   "shutil",
+   "re",
+   "os"
+  ],
+  "BigCodeBench/815": [
+   "pandas",
+   "numpy"
+  ],
+  "BigCodeBench/816": [
+   "collections",
+   "random"
+  ],
+  "BigCodeBench/817": [
+   "collections",
+   "logging"
+  ],
+  "BigCodeBench/818": [
+   "string",
+   "re"
+  ],
+  "BigCodeBench/819": [
+   "random",
+   "time"
+  ],
+  "BigCodeBench/82": [
+   "flask_login",
+   "flask_wtf",
+   "wtforms",
+   "werkzeug",
+   "flask"
+  ],
+  "BigCodeBench/820": [
+   "random",
+   "string"
+  ],
+  "BigCodeBench/821": [
+   "threading",
+   "time"
+  ],
+  "BigCodeBench/822": [
+   "random",
+   "string"
+  ],
+  "BigCodeBench/823": [
+   "numpy",
+   "time"
+  ],
+  "BigCodeBench/824": [
+   "string",
+   "re"
+  ],
+  "BigCodeBench/825": [
+   "numpy",
+   "itertools",
+   "string"
+  ],
+  "BigCodeBench/826": [
+   "shutil",
+   "re",
+   "os"
+  ],
+  "BigCodeBench/827": [
+   "math",
+   "sympy"
+  ],
+  "BigCodeBench/828": [
+   "shutil",
+   "errno",
+   "os"
+  ],
+  "BigCodeBench/829": [
+   "statistics",
+   "pandas"
+  ],
+  "BigCodeBench/83": [
+   "flask_mail",
+   "flask"
+  ],
+  "BigCodeBench/830": [
+   "json",
+   "os"
+  ],
+  "BigCodeBench/831": [
+   "math",
+   "random"
+  ],
+  "BigCodeBench/832": [
+   "pickle",
+   "os"
+  ],
+  "BigCodeBench/833": [
+   "statistics",
+   "collections",
+   "random"
+  ],
+  "BigCodeBench/834": [
+   "io",
+   "gzip",
+   "binascii"
+  ],
+  "BigCodeBench/835": [
+   "pandas",
+   "numpy"
+  ],
+  "BigCodeBench/836": [
+   "csv",
+   "shutil",
+   "os"
+  ],
+  "BigCodeBench/837": [
+   "pandas",
+   "numpy",
+   "sklearn"
+  ],
+  "BigCodeBench/838": [
+   "nltk",
+   "re"
+  ],
+  "BigCodeBench/839": [
+   "csv",
+   "random"
+  ],
+  "BigCodeBench/84": [
+   "pandas",
+   "numpy"
+  ],
+  "BigCodeBench/840": [
+   "pandas",
+   "numpy"
+  ],
+  "BigCodeBench/841": [
+   "collections",
+   "string",
+   "re",
+   "json"
+  ],
+  "BigCodeBench/842": [
+   "sqlite3",
+   "random"
+  ],
+  "BigCodeBench/843": [
+   "random",
+   "re"
+  ],
+  "BigCodeBench/844": [
+   "faker",
+   "csv",
+   "random"
+  ],
+  "BigCodeBench/845": [
+   "re",
+   "collections",
+   "numpy",
+   "Levenshtein"
+  ],
+  "BigCodeBench/846": [
+   "pandas",
+   "collections"
+  ],
+  "BigCodeBench/847": [
+   "random",
+   "string",
+   "re",
+   "os"
+  ],
+  "BigCodeBench/848": [
+   "random",
+   "heapq"
+  ],
+  "BigCodeBench/849": [
+   "nltk",
+   "collections",
+   "re"
+  ],
+  "BigCodeBench/85": [
+   "pandas",
+   "datetime",
+   "numpy"
+  ],
+  "BigCodeBench/850": [
+   "statistics",
+   "pandas",
+   "random"
+  ],
+  "BigCodeBench/851": [
+   "re",
+   "textwrap"
+  ],
+  "BigCodeBench/852": [
+   "random",
+   "string"
+  ],
+  "BigCodeBench/853": [
+   "shutil",
+   "string",
+   "os"
+  ],
+  "BigCodeBench/854": [
+   "math",
+   "itertools",
+   "functools"
+  ],
+  "BigCodeBench/855": [
+   "collections",
+   "string",
+   "random"
+  ],
+  "BigCodeBench/856": [
+   "itertools",
+   "numpy",
+   "functools"
+  ],
+  "BigCodeBench/857": [
+   "glob",
+   "warnings",
+   "time",
+   "shutil",
+   "os"
+  ],
+  "BigCodeBench/858": [
+   "collections",
+   "random",
+   "string"
+  ],
+  "BigCodeBench/859": [
+   "warnings",
+   "sklearn"
+  ],
+  "BigCodeBench/86": [
+   "pandas",
+   "numpy"
+  ],
+  "BigCodeBench/860": [
+   "random",
+   "string",
+   "re"
+  ],
+  "BigCodeBench/861": [
+   "collections",
+   "random"
+  ],
+  "BigCodeBench/862": [
+   "collections",
+   "random",
+   "string"
+  ],
+  "BigCodeBench/863": [
+   "math",
+   "numpy"
+  ],
+  "BigCodeBench/864": [
+   "pandas",
+   "numpy"
+  ],
+  "BigCodeBench/865": [
+   "pandas",
+   "numpy",
+   "scipy",
+   "sklearn"
+  ],
+  "BigCodeBench/866": [
+   "numpy",
+   "sklearn"
+  ],
+  "BigCodeBench/867": [
+   "string",
+   "re"
+  ],
+  "BigCodeBench/868": [
+   "random",
+   "itertools"
+  ],
+  "BigCodeBench/869": [
+   "pandas",
+   "random",
+   "itertools"
+  ],
+  "BigCodeBench/87": [
+   "pandas",
+   "random"
+  ],
+  "BigCodeBench/870": [
+   "pandas",
+   "numpy",
+   "itertools"
+  ],
+  "BigCodeBench/871": [
+   "numpy",
+   "itertools"
+  ],
+  "BigCodeBench/872": [
+   "numpy",
+   "itertools"
+  ],
+  "BigCodeBench/873": [
+   "csv",
+   "os"
+  ],
+  "BigCodeBench/874": [
+   "itertools",
+   "scipy"
+  ],
+  "BigCodeBench/875": [
+   "pandas",
+   "random"
+  ],
+  "BigCodeBench/876": [
+   "operator",
+   "shutil",
+   "collections",
+   "os"
+  ],
+  "BigCodeBench/877": [
+   "pandas",
+   "sklearn"
+  ],
+  "BigCodeBench/878": [
+   "pandas",
+   "sklearn"
+  ],
+  "BigCodeBench/879": [
+   "pandas",
+   "numpy",
+   "scipy"
+  ],
+  "BigCodeBench/88": [
+   "pandas",
+   "datetime",
+   "numpy"
+  ],
+  "BigCodeBench/880": [
+   "pandas",
+   "sklearn"
+  ],
+  "BigCodeBench/881": [
+   "pandas",
+   "random"
+  ],
+  "BigCodeBench/882": [
+   "sqlite3",
+   "pandas",
+   "os"
+  ],
+  "BigCodeBench/883": [
+   "pandas",
+   "statsmodels"
+  ],
+  "BigCodeBench/884": [
+   "pandas",
+   "scipy"
+  ],
+  "BigCodeBench/885": [
+   "pandas",
+   "sklearn"
+  ],
+  "BigCodeBench/886": [
+   "pandas",
+   "collections"
+  ],
+  "BigCodeBench/887": [
+   "pandas",
+   "numpy",
+   "itertools"
+  ],
+  "BigCodeBench/888": [
+   "pandas",
+   "os"
+  ],
+  "BigCodeBench/889": [
+   "pandas",
+   "numpy",
+   "os"
+  ],
+  "BigCodeBench/89": [
+   "numpy",
+   "matplotlib",
+   "scipy",
+   "sklearn"
+  ],
+  "BigCodeBench/890": [
+   "pandas",
+   "random",
+   "os"
+  ],
+  "BigCodeBench/891": [
+   "pandas",
+   "sklearn"
+  ],
+  "BigCodeBench/892": [
+   "collections",
+   "random"
+  ],
+  "BigCodeBench/893": [
+   "datetime",
+   "re"
+  ],
+  "BigCodeBench/894": [
+   "numpy",
+   "matplotlib"
+  ],
+  "BigCodeBench/895": [
+   "numpy",
+   "matplotlib"
+  ],
+  "BigCodeBench/896": [
+   "collections",
+   "random",
+   "itertools"
+  ],
+  "BigCodeBench/897": [
+   "numpy",
+   "matplotlib",
+   "random"
+  ],
+  "BigCodeBench/898": [
+   "collections",
+   "random"
+  ],
+  "BigCodeBench/899": [
+   "numpy",
+   "random"
+  ],
+  "BigCodeBench/9": [
+   "pandas",
+   "matplotlib",
+   "seaborn"
+  ],
+  "BigCodeBench/90": [
+   "math",
+   "numpy"
+  ],
+  "BigCodeBench/900": [
+   "pandas",
+   "numpy"
+  ],
+  "BigCodeBench/901": [
+   "pandas",
+   "sklearn"
+  ],
+  "BigCodeBench/902": [
+   "pandas",
+   "collections"
+  ],
+  "BigCodeBench/903": [
+   "pandas",
+   "sklearn"
+  ],
+  "BigCodeBench/904": [
+   "pandas",
+   "matplotlib"
+  ],
+  "BigCodeBench/905": [
+   "glob",
+   "csv",
+   "os"
+  ],
+  "BigCodeBench/906": [
+   "re",
+   "shutil",
+   "zipfile",
+   "os"
+  ],
+  "BigCodeBench/907": [
+   "re",
+   "os"
+  ],
+  "BigCodeBench/908": [
+   "pandas",
+   "matplotlib",
+   "re",
+   "os"
+  ],
+  "BigCodeBench/909": [
+   "pandas",
+   "random",
+   "itertools"
+  ],
+  "BigCodeBench/91": [
+   "matplotlib",
+   "scipy"
+  ],
+  "BigCodeBench/910": [
+   "numpy",
+   "matplotlib"
+  ],
+  "BigCodeBench/911": [
+   "operator",
+   "string",
+   "functools"
+  ],
+  "BigCodeBench/912": [
+   "collections",
+   "itertools"
+  ],
+  "BigCodeBench/913": [
+   "typing",
+   "numpy",
+   "scipy"
+  ],
+  "BigCodeBench/914": [
+   "pandas",
+   "numpy",
+   "matplotlib",
+   "sklearn"
+  ],
+  "BigCodeBench/915": [
+   "numpy",
+   "matplotlib",
+   "scipy"
+  ],
+  "BigCodeBench/916": [
+   "pandas",
+   "matplotlib",
+   "seaborn"
+  ],
+  "BigCodeBench/917": [
+   "pandas",
+   "typing",
+   "matplotlib",
+   "statsmodels"
+  ],
+  "BigCodeBench/918": [
+   "pandas",
+   "re"
+  ],
+  "BigCodeBench/919": [
+   "pandas",
+   "matplotlib"
+  ],
+  "BigCodeBench/92": [
+   "pandas",
+   "matplotlib",
+   "sklearn"
+  ],
+  "BigCodeBench/920": [
+   "pandas",
+   "seaborn"
+  ],
+  "BigCodeBench/921": [
+   "pandas",
+   "sklearn"
+  ],
+  "BigCodeBench/922": [
+   "pandas",
+   "re"
+  ],
+  "BigCodeBench/923": [
+   "pandas",
+   "random",
+   "re"
+  ],
+  "BigCodeBench/924": [
+   "pandas",
+   "os",
+   "sys"
+  ],
+  "BigCodeBench/925": [
+   "pandas",
+   "numpy"
+  ],
+  "BigCodeBench/926": [
+   "sqlite3",
+   "pandas"
+  ],
+  "BigCodeBench/927": [
+   "pandas",
+   "sklearn"
+  ],
+  "BigCodeBench/928": [
+   "collections",
+   "itertools",
+   "string"
+  ],
+  "BigCodeBench/929": [
+   "numpy",
+   "scipy"
+  ],
+  "BigCodeBench/93": [
+   "pandas",
+   "numpy",
+   "matplotlib",
+   "sklearn"
+  ],
+  "BigCodeBench/930": [
+   "random",
+   "string"
+  ],
+  "BigCodeBench/931": [
+   "collections",
+   "re"
+  ],
+  "BigCodeBench/932": [
+   "collections",
+   "re"
+  ],
+  "BigCodeBench/933": [
+   "wordninja",
+   "string"
+  ],
+  "BigCodeBench/934": [
+   "hashlib",
+   "collections"
+  ],
+  "BigCodeBench/935": [
+   "pandas",
+   "string"
+  ],
+  "BigCodeBench/936": [
+   "numpy",
+   "matplotlib",
+   "string"
+  ],
+  "BigCodeBench/937": [
+   "collections",
+   "re"
+  ],
+  "BigCodeBench/938": [
+   "pandas",
+   "re"
+  ],
+  "BigCodeBench/939": [
+   "glob",
+   "re",
+   "os"
+  ],
+  "BigCodeBench/94": [
+   "numpy",
+   "matplotlib",
+   "scipy"
+  ],
+  "BigCodeBench/940": [
+   "nltk",
+   "collections",
+   "re"
+  ],
+  "BigCodeBench/941": [
+   "pandas",
+   "numpy",
+   "matplotlib"
+  ],
+  "BigCodeBench/942": [
+   "pandas",
+   "numpy",
+   "matplotlib"
+  ],
+  "BigCodeBench/943": [
+   "pandas",
+   "numpy",
+   "statsmodels"
+  ],
+  "BigCodeBench/944": [
+   "pandas",
+   "numpy",
+   "matplotlib"
+  ],
+  "BigCodeBench/945": [
+   "pandas",
+   "numpy",
+   "sklearn"
+  ],
+  "BigCodeBench/946": [
+   "pandas",
+   "numpy",
+   "random"
+  ],
+  "BigCodeBench/947": [
+   "datetime",
+   "numpy",
+   "random"
+  ],
+  "BigCodeBench/948": [
+   "numpy",
+   "sklearn"
+  ],
+  "BigCodeBench/949": [
+   "pandas",
+   "numpy"
+  ],
+  "BigCodeBench/95": [
+   "pandas",
+   "random"
+  ],
+  "BigCodeBench/950": [
+   "numpy",
+   "scipy"
+  ],
+  "BigCodeBench/951": [
+   "pandas",
+   "numpy",
+   "random"
+  ],
+  "BigCodeBench/952": [
+   "pandas",
+   "datetime",
+   "random"
+  ],
+  "BigCodeBench/953": [
+   "numpy",
+   "matplotlib",
+   "os"
+  ],
+  "BigCodeBench/954": [
+   "random",
+   "re"
+  ],
+  "BigCodeBench/955": [
+   "collections",
+   "numpy",
+   "matplotlib",
+   "re"
+  ],
+  "BigCodeBench/956": [
+   "random",
+   "string",
+   "re"
+  ],
+  "BigCodeBench/957": [
+   "string",
+   "re"
+  ],
+  "BigCodeBench/958": [
+   "random",
+   "re"
+  ],
+  "BigCodeBench/959": [
+   "random",
+   "string"
+  ],
+  "BigCodeBench/96": [
+   "operator",
+   "csv",
+   "collections"
+  ],
+  "BigCodeBench/960": [
+   "random",
+   "string"
+  ],
+  "BigCodeBench/961": [
+   "glob",
+   "collections",
+   "os"
+  ],
+  "BigCodeBench/962": [
+   "glob",
+   "shutil",
+   "pathlib",
+   "os"
+  ],
+  "BigCodeBench/963": [
+   "glob",
+   "pathlib",
+   "zipfile",
+   "os"
+  ],
+  "BigCodeBench/964": [
+   "pandas",
+   "pathlib",
+   "docx",
+   "os"
+  ],
+  "BigCodeBench/965": [
+   "shutil",
+   "re",
+   "os"
+  ],
+  "BigCodeBench/966": [
+   "pandas",
+   "matplotlib"
+  ],
+  "BigCodeBench/967": [
+   "numpy",
+   "matplotlib",
+   "scipy"
+  ],
+  "BigCodeBench/968": [
+   "pandas",
+   "seaborn"
+  ],
+  "BigCodeBench/969": [
+   "pandas",
+   "numpy",
+   "sklearn"
+  ],
+  "BigCodeBench/97": [
+   "math",
+   "itertools",
+   "functools"
+  ],
+  "BigCodeBench/970": [
+   "numpy",
+   "matplotlib"
+  ],
+  "BigCodeBench/971": [
+   "datetime",
+   "pathlib",
+   "os"
+  ],
+  "BigCodeBench/972": [
+   "pathlib",
+   "os"
+  ],
+  "BigCodeBench/973": [
+   "shutil",
+   "os"
+  ],
+  "BigCodeBench/974": [
+   "shutil",
+   "pathlib"
+  ],
+  "BigCodeBench/975": [
+   "pandas",
+   "numpy"
+  ],
+  "BigCodeBench/976": [
+   "pandas",
+   "numpy",
+   "sklearn"
+  ],
+  "BigCodeBench/977": [
+   "numpy",
+   "matplotlib",
+   "seaborn"
+  ],
+  "BigCodeBench/978": [
+   "pandas",
+   "numpy",
+   "sklearn"
+  ],
+  "BigCodeBench/979": [
+   "pandas",
+   "numpy",
+   "sklearn"
+  ],
+  "BigCodeBench/98": [
+   "collections",
+   "random",
+   "string"
+  ],
+  "BigCodeBench/980": [
+   "sklearn",
+   "numpy",
+   "matplotlib",
+   "seaborn"
+  ],
+  "BigCodeBench/981": [
+   "pandas",
+   "datetime",
+   "random"
+  ],
+  "BigCodeBench/982": [
+   "numpy",
+   "matplotlib",
+   "scipy"
+  ],
+  "BigCodeBench/983": [
+   "numpy",
+   "seaborn"
+  ],
+  "BigCodeBench/984": [
+   "matplotlib",
+   "sklearn"
+  ],
+  "BigCodeBench/985": [
+   "math",
+   "pandas",
+   "os",
+   "json"
+  ],
+  "BigCodeBench/986": [
+   "pandas",
+   "matplotlib",
+   "numpy",
+   "seaborn",
+   "json"
+  ],
+  "BigCodeBench/987": [
+   "pandas",
+   "sklearn",
+   "matplotlib",
+   "json"
+  ],
+  "BigCodeBench/988": [
+   "pathlib",
+   "re",
+   "os"
+  ],
+  "BigCodeBench/989": [
+   "random",
+   "string"
+  ],
+  "BigCodeBench/99": [
+   "pandas",
+   "seaborn",
+   "matplotlib",
+   "sklearn"
+  ],
+  "BigCodeBench/990": [
+   "codecs",
+   "urllib",
+   "base64",
+   "binascii"
+  ],
+  "BigCodeBench/991": [
+   "random",
+   "string",
+   "binascii"
+  ],
+  "BigCodeBench/992": [
+   "sqlite3",
+   "sys"
+  ],
+  "BigCodeBench/993": [
+   "re",
+   "matplotlib",
+   "scipy"
+  ],
+  "BigCodeBench/994": [
+   "pandas",
+   "bs4",
+   "requests"
+  ],
+  "BigCodeBench/995": [
+   "pandas",
+   "numpy",
+   "matplotlib",
+   "os"
+  ],
+  "BigCodeBench/996": [
+   "bs4",
+   "requests",
+   "json"
+  ],
+  "BigCodeBench/997": [
+   "urllib",
+   "zipfile",
+   "os"
+  ],
+  "BigCodeBench/998": [
+   "tarfile",
+   "urllib",
+   "hashlib",
+   "os"
+  ],
+  "BigCodeBench/999": [
+   "urllib",
+   "csv",
+   "collections",
+   "os"
+  ]
+ },
+ "n": 1140,
+ "of": 1140,
+ "per_category": {},
+ "per_family": {
+  "crypto_sec": 55,
+  "data": 678,
+  "datetime": 112,
+  "geo": 3,
+  "image_media": 16,
+  "io_format": 196,
+  "ml_dl": 4,
+  "stdlib": 419,
+  "system": 235,
+  "text_nlp": 164,
+  "viz": 345,
+  "web_net": 88
+ },
+ "population": {
+  "hard_ids": [
+   "BigCodeBench/13",
+   "BigCodeBench/15",
+   "BigCodeBench/17",
+   "BigCodeBench/19",
+   "BigCodeBench/34",
+   "BigCodeBench/37",
+   "BigCodeBench/82",
+   "BigCodeBench/89",
+   "BigCodeBench/92",
+   "BigCodeBench/93",
+   "BigCodeBench/99",
+   "BigCodeBench/100",
+   "BigCodeBench/101",
+   "BigCodeBench/108",
+   "BigCodeBench/120",
+   "BigCodeBench/123",
+   "BigCodeBench/124",
+   "BigCodeBench/129",
+   "BigCodeBench/139",
+   "BigCodeBench/147",
+   "BigCodeBench/161",
+   "BigCodeBench/162",
+   "BigCodeBench/177",
+   "BigCodeBench/184",
+   "BigCodeBench/187",
+   "BigCodeBench/199",
+   "BigCodeBench/208",
+   "BigCodeBench/211",
+   "BigCodeBench/214",
+   "BigCodeBench/227",
+   "BigCodeBench/239",
+   "BigCodeBench/241",
+   "BigCodeBench/267",
+   "BigCodeBench/273",
+   "BigCodeBench/274",
+   "BigCodeBench/287",
+   "BigCodeBench/302",
+   "BigCodeBench/308",
+   "BigCodeBench/310",
+   "BigCodeBench/313",
+   "BigCodeBench/324",
+   "BigCodeBench/326",
+   "BigCodeBench/341",
+   "BigCodeBench/346",
+   "BigCodeBench/360",
+   "BigCodeBench/367",
+   "BigCodeBench/368",
+   "BigCodeBench/374",
+   "BigCodeBench/399",
+   "BigCodeBench/401",
+   "BigCodeBench/409",
+   "BigCodeBench/417",
+   "BigCodeBench/418",
+   "BigCodeBench/424",
+   "BigCodeBench/443",
+   "BigCodeBench/445",
+   "BigCodeBench/454",
+   "BigCodeBench/458",
+   "BigCodeBench/461",
+   "BigCodeBench/477",
+   "BigCodeBench/486",
+   "BigCodeBench/492",
+   "BigCodeBench/501",
+   "BigCodeBench/502",
+   "BigCodeBench/503",
+   "BigCodeBench/509",
+   "BigCodeBench/511",
+   "BigCodeBench/513",
+   "BigCodeBench/526",
+   "BigCodeBench/528",
+   "BigCodeBench/530",
+   "BigCodeBench/532",
+   "BigCodeBench/553",
+   "BigCodeBench/560",
+   "BigCodeBench/567",
+   "BigCodeBench/574",
+   "BigCodeBench/579",
+   "BigCodeBench/582",
+   "BigCodeBench/583",
+   "BigCodeBench/587",
+   "BigCodeBench/590",
+   "BigCodeBench/592",
+   "BigCodeBench/593",
+   "BigCodeBench/594",
+   "BigCodeBench/618",
+   "BigCodeBench/636",
+   "BigCodeBench/637",
+   "BigCodeBench/654",
+   "BigCodeBench/655",
+   "BigCodeBench/657",
+   "BigCodeBench/678",
+   "BigCodeBench/720",
+   "BigCodeBench/723",
+   "BigCodeBench/752",
+   "BigCodeBench/760",
+   "BigCodeBench/763",
+   "BigCodeBench/765",
+   "BigCodeBench/771",
+   "BigCodeBench/777",
+   "BigCodeBench/785",
+   "BigCodeBench/800",
+   "BigCodeBench/826",
+   "BigCodeBench/845",
+   "BigCodeBench/854",
+   "BigCodeBench/857",
+   "BigCodeBench/865",
+   "BigCodeBench/870",
+   "BigCodeBench/879",
+   "BigCodeBench/897",
+   "BigCodeBench/906",
+   "BigCodeBench/914",
+   "BigCodeBench/915",
+   "BigCodeBench/916",
+   "BigCodeBench/917",
+   "BigCodeBench/928",
+   "BigCodeBench/942",
+   "BigCodeBench/945",
+   "BigCodeBench/952",
+   "BigCodeBench/955",
+   "BigCodeBench/963",
+   "BigCodeBench/964",
+   "BigCodeBench/969",
+   "BigCodeBench/971",
+   "BigCodeBench/985",
+   "BigCodeBench/988",
+   "BigCodeBench/990",
+   "BigCodeBench/998",
+   "BigCodeBench/999",
+   "BigCodeBench/1003",
+   "BigCodeBench/1004",
+   "BigCodeBench/1006",
+   "BigCodeBench/1008",
+   "BigCodeBench/1012",
+   "BigCodeBench/1013",
+   "BigCodeBench/1015",
+   "BigCodeBench/1019",
+   "BigCodeBench/1020",
+   "BigCodeBench/1022",
+   "BigCodeBench/1039",
+   "BigCodeBench/1040",
+   "BigCodeBench/1042",
+   "BigCodeBench/1053",
+   "BigCodeBench/1057",
+   "BigCodeBench/1077",
+   "BigCodeBench/1085",
+   "BigCodeBench/1124",
+   "BigCodeBench/1129",
+   "BigCodeBench/1137"
+  ],
+  "ids": [
+   "BigCodeBench/0",
+   "BigCodeBench/1",
+   "BigCodeBench/2",
+   "BigCodeBench/3",
+   "BigCodeBench/4",
+   "BigCodeBench/5",
+   "BigCodeBench/6",
+   "BigCodeBench/7",
+   "BigCodeBench/8",
+   "BigCodeBench/9",
+   "BigCodeBench/10",
+   "BigCodeBench/11",
+   "BigCodeBench/12",
+   "BigCodeBench/13",
+   "BigCodeBench/14",
+   "BigCodeBench/15",
+   "BigCodeBench/16",
+   "BigCodeBench/17",
+   "BigCodeBench/18",
+   "BigCodeBench/19",
+   "BigCodeBench/20",
+   "BigCodeBench/21",
+   "BigCodeBench/22",
+   "BigCodeBench/23",
+   "BigCodeBench/24",
+   "BigCodeBench/25",
+   "BigCodeBench/26",
+   "BigCodeBench/27",
+   "BigCodeBench/28",
+   "BigCodeBench/29",
+   "BigCodeBench/30",
+   "BigCodeBench/31",
+   "BigCodeBench/32",
+   "BigCodeBench/33",
+   "BigCodeBench/34",
+   "BigCodeBench/35",
+   "BigCodeBench/36",
+   "BigCodeBench/37",
+   "BigCodeBench/38",
+   "BigCodeBench/39",
+   "BigCodeBench/40",
+   "BigCodeBench/41",
+   "BigCodeBench/42",
+   "BigCodeBench/43",
+   "BigCodeBench/44",
+   "BigCodeBench/45",
+   "BigCodeBench/46",
+   "BigCodeBench/47",
+   "BigCodeBench/48",
+   "BigCodeBench/49",
+   "BigCodeBench/50",
+   "BigCodeBench/51",
+   "BigCodeBench/52",
+   "BigCodeBench/53",
+   "BigCodeBench/54",
+   "BigCodeBench/55",
+   "BigCodeBench/56",
+   "BigCodeBench/57",
+   "BigCodeBench/58",
+   "BigCodeBench/59",
+   "BigCodeBench/60",
+   "BigCodeBench/61",
+   "BigCodeBench/62",
+   "BigCodeBench/63",
+   "BigCodeBench/64",
+   "BigCodeBench/65",
+   "BigCodeBench/66",
+   "BigCodeBench/67",
+   "BigCodeBench/68",
+   "BigCodeBench/69",
+   "BigCodeBench/70",
+   "BigCodeBench/71",
+   "BigCodeBench/72",
+   "BigCodeBench/73",
+   "BigCodeBench/74",
+   "BigCodeBench/75",
+   "BigCodeBench/76",
+   "BigCodeBench/77",
+   "BigCodeBench/78",
+   "BigCodeBench/79",
+   "BigCodeBench/80",
+   "BigCodeBench/81",
+   "BigCodeBench/82",
+   "BigCodeBench/83",
+   "BigCodeBench/84",
+   "BigCodeBench/85",
+   "BigCodeBench/86",
+   "BigCodeBench/87",
+   "BigCodeBench/88",
+   "BigCodeBench/89",
+   "BigCodeBench/90",
+   "BigCodeBench/91",
+   "BigCodeBench/92",
+   "BigCodeBench/93",
+   "BigCodeBench/94",
+   "BigCodeBench/95",
+   "BigCodeBench/96",
+   "BigCodeBench/97",
+   "BigCodeBench/98",
+   "BigCodeBench/99",
+   "BigCodeBench/100",
+   "BigCodeBench/101",
+   "BigCodeBench/102",
+   "BigCodeBench/103",
+   "BigCodeBench/104",
+   "BigCodeBench/105",
+   "BigCodeBench/106",
+   "BigCodeBench/107",
+   "BigCodeBench/108",
+   "BigCodeBench/109",
+   "BigCodeBench/110",
+   "BigCodeBench/111",
+   "BigCodeBench/112",
+   "BigCodeBench/113",
+   "BigCodeBench/114",
+   "BigCodeBench/115",
+   "BigCodeBench/116",
+   "BigCodeBench/117",
+   "BigCodeBench/118",
+   "BigCodeBench/119",
+   "BigCodeBench/120",
+   "BigCodeBench/121",
+   "BigCodeBench/122",
+   "BigCodeBench/123",
+   "BigCodeBench/124",
+   "BigCodeBench/125",
+   "BigCodeBench/126",
+   "BigCodeBench/127",
+   "BigCodeBench/128",
+   "BigCodeBench/129",
+   "BigCodeBench/130",
+   "BigCodeBench/131",
+   "BigCodeBench/132",
+   "BigCodeBench/133",
+   "BigCodeBench/134",
+   "BigCodeBench/135",
+   "BigCodeBench/136",
+   "BigCodeBench/137",
+   "BigCodeBench/138",
+   "BigCodeBench/139",
+   "BigCodeBench/140",
+   "BigCodeBench/141",
+   "BigCodeBench/142",
+   "BigCodeBench/143",
+   "BigCodeBench/144",
+   "BigCodeBench/145",
+   "BigCodeBench/146",
+   "BigCodeBench/147",
+   "BigCodeBench/148",
+   "BigCodeBench/149",
+   "BigCodeBench/150",
+   "BigCodeBench/151",
+   "BigCodeBench/152",
+   "BigCodeBench/153",
+   "BigCodeBench/154",
+   "BigCodeBench/155",
+   "BigCodeBench/156",
+   "BigCodeBench/157",
+   "BigCodeBench/158",
+   "BigCodeBench/159",
+   "BigCodeBench/160",
+   "BigCodeBench/161",
+   "BigCodeBench/162",
+   "BigCodeBench/163",
+   "BigCodeBench/164",
+   "BigCodeBench/165",
+   "BigCodeBench/166",
+   "BigCodeBench/167",
+   "BigCodeBench/168",
+   "BigCodeBench/169",
+   "BigCodeBench/170",
+   "BigCodeBench/171",
+   "BigCodeBench/172",
+   "BigCodeBench/173",
+   "BigCodeBench/174",
+   "BigCodeBench/175",
+   "BigCodeBench/176",
+   "BigCodeBench/177",
+   "BigCodeBench/178",
+   "BigCodeBench/179",
+   "BigCodeBench/180",
+   "BigCodeBench/181",
+   "BigCodeBench/182",
+   "BigCodeBench/183",
+   "BigCodeBench/184",
+   "BigCodeBench/185",
+   "BigCodeBench/186",
+   "BigCodeBench/187",
+   "BigCodeBench/188",
+   "BigCodeBench/189",
+   "BigCodeBench/190",
+   "BigCodeBench/191",
+   "BigCodeBench/192",
+   "BigCodeBench/193",
+   "BigCodeBench/194",
+   "BigCodeBench/195",
+   "BigCodeBench/196",
+   "BigCodeBench/197",
+   "BigCodeBench/198",
+   "BigCodeBench/199",
+   "BigCodeBench/200",
+   "BigCodeBench/201",
+   "BigCodeBench/202",
+   "BigCodeBench/203",
+   "BigCodeBench/204",
+   "BigCodeBench/205",
+   "BigCodeBench/206",
+   "BigCodeBench/207",
+   "BigCodeBench/208",
+   "BigCodeBench/209",
+   "BigCodeBench/210",
+   "BigCodeBench/211",
+   "BigCodeBench/212",
+   "BigCodeBench/213",
+   "BigCodeBench/214",
+   "BigCodeBench/215",
+   "BigCodeBench/216",
+   "BigCodeBench/217",
+   "BigCodeBench/218",
+   "BigCodeBench/219",
+   "BigCodeBench/220",
+   "BigCodeBench/221",
+   "BigCodeBench/222",
+   "BigCodeBench/223",
+   "BigCodeBench/224",
+   "BigCodeBench/225",
+   "BigCodeBench/226",
+   "BigCodeBench/227",
+   "BigCodeBench/228",
+   "BigCodeBench/229",
+   "BigCodeBench/230",
+   "BigCodeBench/231",
+   "BigCodeBench/232",
+   "BigCodeBench/233",
+   "BigCodeBench/234",
+   "BigCodeBench/235",
+   "BigCodeBench/236",
+   "BigCodeBench/237",
+   "BigCodeBench/238",
+   "BigCodeBench/239",
+   "BigCodeBench/240",
+   "BigCodeBench/241",
+   "BigCodeBench/242",
+   "BigCodeBench/243",
+   "BigCodeBench/244",
+   "BigCodeBench/245",
+   "BigCodeBench/246",
+   "BigCodeBench/247",
+   "BigCodeBench/248",
+   "BigCodeBench/249",
+   "BigCodeBench/250",
+   "BigCodeBench/251",
+   "BigCodeBench/252",
+   "BigCodeBench/253",
+   "BigCodeBench/254",
+   "BigCodeBench/255",
+   "BigCodeBench/256",
+   "BigCodeBench/257",
+   "BigCodeBench/258",
+   "BigCodeBench/259",
+   "BigCodeBench/260",
+   "BigCodeBench/261",
+   "BigCodeBench/262",
+   "BigCodeBench/263",
+   "BigCodeBench/264",
+   "BigCodeBench/265",
+   "BigCodeBench/266",
+   "BigCodeBench/267",
+   "BigCodeBench/268",
+   "BigCodeBench/269",
+   "BigCodeBench/270",
+   "BigCodeBench/271",
+   "BigCodeBench/272",
+   "BigCodeBench/273",
+   "BigCodeBench/274",
+   "BigCodeBench/275",
+   "BigCodeBench/276",
+   "BigCodeBench/277",
+   "BigCodeBench/278",
+   "BigCodeBench/279",
+   "BigCodeBench/280",
+   "BigCodeBench/281",
+   "BigCodeBench/282",
+   "BigCodeBench/283",
+   "BigCodeBench/284",
+   "BigCodeBench/285",
+   "BigCodeBench/286",
+   "BigCodeBench/287",
+   "BigCodeBench/288",
+   "BigCodeBench/289",
+   "BigCodeBench/290",
+   "BigCodeBench/291",
+   "BigCodeBench/292",
+   "BigCodeBench/293",
+   "BigCodeBench/294",
+   "BigCodeBench/295",
+   "BigCodeBench/296",
+   "BigCodeBench/297",
+   "BigCodeBench/298",
+   "BigCodeBench/299",
+   "BigCodeBench/300",
+   "BigCodeBench/301",
+   "BigCodeBench/302",
+   "BigCodeBench/303",
+   "BigCodeBench/304",
+   "BigCodeBench/305",
+   "BigCodeBench/306",
+   "BigCodeBench/307",
+   "BigCodeBench/308",
+   "BigCodeBench/309",
+   "BigCodeBench/310",
+   "BigCodeBench/311",
+   "BigCodeBench/312",
+   "BigCodeBench/313",
+   "BigCodeBench/314",
+   "BigCodeBench/315",
+   "BigCodeBench/316",
+   "BigCodeBench/317",
+   "BigCodeBench/318",
+   "BigCodeBench/319",
+   "BigCodeBench/320",
+   "BigCodeBench/321",
+   "BigCodeBench/322",
+   "BigCodeBench/323",
+   "BigCodeBench/324",
+   "BigCodeBench/325",
+   "BigCodeBench/326",
+   "BigCodeBench/327",
+   "BigCodeBench/328",
+   "BigCodeBench/329",
+   "BigCodeBench/330",
+   "BigCodeBench/331",
+   "BigCodeBench/332",
+   "BigCodeBench/333",
+   "BigCodeBench/334",
+   "BigCodeBench/335",
+   "BigCodeBench/336",
+   "BigCodeBench/337",
+   "BigCodeBench/338",
+   "BigCodeBench/339",
+   "BigCodeBench/340",
+   "BigCodeBench/341",
+   "BigCodeBench/342",
+   "BigCodeBench/343",
+   "BigCodeBench/344",
+   "BigCodeBench/345",
+   "BigCodeBench/346",
+   "BigCodeBench/347",
+   "BigCodeBench/348",
+   "BigCodeBench/349",
+   "BigCodeBench/350",
+   "BigCodeBench/351",
+   "BigCodeBench/352",
+   "BigCodeBench/353",
+   "BigCodeBench/354",
+   "BigCodeBench/355",
+   "BigCodeBench/356",
+   "BigCodeBench/357",
+   "BigCodeBench/358",
+   "BigCodeBench/359",
+   "BigCodeBench/360",
+   "BigCodeBench/361",
+   "BigCodeBench/362",
+   "BigCodeBench/363",
+   "BigCodeBench/364",
+   "BigCodeBench/365",
+   "BigCodeBench/366",
+   "BigCodeBench/367",
+   "BigCodeBench/368",
+   "BigCodeBench/369",
+   "BigCodeBench/370",
+   "BigCodeBench/371",
+   "BigCodeBench/372",
+   "BigCodeBench/373",
+   "BigCodeBench/374",
+   "BigCodeBench/375",
+   "BigCodeBench/376",
+   "BigCodeBench/377",
+   "BigCodeBench/378",
+   "BigCodeBench/379",
+   "BigCodeBench/380",
+   "BigCodeBench/381",
+   "BigCodeBench/382",
+   "BigCodeBench/383",
+   "BigCodeBench/384",
+   "BigCodeBench/385",
+   "BigCodeBench/386",
+   "BigCodeBench/387",
+   "BigCodeBench/388",
+   "BigCodeBench/389",
+   "BigCodeBench/390",
+   "BigCodeBench/391",
+   "BigCodeBench/392",
+   "BigCodeBench/393",
+   "BigCodeBench/394",
+   "BigCodeBench/395",
+   "BigCodeBench/396",
+   "BigCodeBench/397",
+   "BigCodeBench/398",
+   "BigCodeBench/399",
+   "BigCodeBench/400",
+   "BigCodeBench/401",
+   "BigCodeBench/402",
+   "BigCodeBench/403",
+   "BigCodeBench/404",
+   "BigCodeBench/405",
+   "BigCodeBench/406",
+   "BigCodeBench/407",
+   "BigCodeBench/408",
+   "BigCodeBench/409",
+   "BigCodeBench/410",
+   "BigCodeBench/411",
+   "BigCodeBench/412",
+   "BigCodeBench/413",
+   "BigCodeBench/414",
+   "BigCodeBench/415",
+   "BigCodeBench/416",
+   "BigCodeBench/417",
+   "BigCodeBench/418",
+   "BigCodeBench/419",
+   "BigCodeBench/420",
+   "BigCodeBench/421",
+   "BigCodeBench/422",
+   "BigCodeBench/423",
+   "BigCodeBench/424",
+   "BigCodeBench/425",
+   "BigCodeBench/426",
+   "BigCodeBench/427",
+   "BigCodeBench/428",
+   "BigCodeBench/429",
+   "BigCodeBench/430",
+   "BigCodeBench/431",
+   "BigCodeBench/432",
+   "BigCodeBench/433",
+   "BigCodeBench/434",
+   "BigCodeBench/435",
+   "BigCodeBench/436",
+   "BigCodeBench/437",
+   "BigCodeBench/438",
+   "BigCodeBench/439",
+   "BigCodeBench/440",
+   "BigCodeBench/441",
+   "BigCodeBench/442",
+   "BigCodeBench/443",
+   "BigCodeBench/444",
+   "BigCodeBench/445",
+   "BigCodeBench/446",
+   "BigCodeBench/447",
+   "BigCodeBench/448",
+   "BigCodeBench/449",
+   "BigCodeBench/450",
+   "BigCodeBench/451",
+   "BigCodeBench/452",
+   "BigCodeBench/453",
+   "BigCodeBench/454",
+   "BigCodeBench/455",
+   "BigCodeBench/456",
+   "BigCodeBench/457",
+   "BigCodeBench/458",
+   "BigCodeBench/459",
+   "BigCodeBench/460",
+   "BigCodeBench/461",
+   "BigCodeBench/462",
+   "BigCodeBench/463",
+   "BigCodeBench/464",
+   "BigCodeBench/465",
+   "BigCodeBench/466",
+   "BigCodeBench/467",
+   "BigCodeBench/468",
+   "BigCodeBench/469",
+   "BigCodeBench/470",
+   "BigCodeBench/471",
+   "BigCodeBench/472",
+   "BigCodeBench/473",
+   "BigCodeBench/474",
+   "BigCodeBench/475",
+   "BigCodeBench/476",
+   "BigCodeBench/477",
+   "BigCodeBench/478",
+   "BigCodeBench/479",
+   "BigCodeBench/480",
+   "BigCodeBench/481",
+   "BigCodeBench/482",
+   "BigCodeBench/483",
+   "BigCodeBench/484",
+   "BigCodeBench/485",
+   "BigCodeBench/486",
+   "BigCodeBench/487",
+   "BigCodeBench/488",
+   "BigCodeBench/489",
+   "BigCodeBench/490",
+   "BigCodeBench/491",
+   "BigCodeBench/492",
+   "BigCodeBench/493",
+   "BigCodeBench/494",
+   "BigCodeBench/495",
+   "BigCodeBench/496",
+   "BigCodeBench/497",
+   "BigCodeBench/498",
+   "BigCodeBench/499",
+   "BigCodeBench/500",
+   "BigCodeBench/501",
+   "BigCodeBench/502",
+   "BigCodeBench/503",
+   "BigCodeBench/504",
+   "BigCodeBench/505",
+   "BigCodeBench/506",
+   "BigCodeBench/507",
+   "BigCodeBench/508",
+   "BigCodeBench/509",
+   "BigCodeBench/510",
+   "BigCodeBench/511",
+   "BigCodeBench/512",
+   "BigCodeBench/513",
+   "BigCodeBench/514",
+   "BigCodeBench/515",
+   "BigCodeBench/516",
+   "BigCodeBench/517",
+   "BigCodeBench/518",
+   "BigCodeBench/519",
+   "BigCodeBench/520",
+   "BigCodeBench/521",
+   "BigCodeBench/522",
+   "BigCodeBench/523",
+   "BigCodeBench/524",
+   "BigCodeBench/525",
+   "BigCodeBench/526",
+   "BigCodeBench/527",
+   "BigCodeBench/528",
+   "BigCodeBench/529",
+   "BigCodeBench/530",
+   "BigCodeBench/531",
+   "BigCodeBench/532",
+   "BigCodeBench/533",
+   "BigCodeBench/534",
+   "BigCodeBench/535",
+   "BigCodeBench/536",
+   "BigCodeBench/537",
+   "BigCodeBench/538",
+   "BigCodeBench/539",
+   "BigCodeBench/540",
+   "BigCodeBench/541",
+   "BigCodeBench/542",
+   "BigCodeBench/543",
+   "BigCodeBench/544",
+   "BigCodeBench/545",
+   "BigCodeBench/546",
+   "BigCodeBench/547",
+   "BigCodeBench/548",
+   "BigCodeBench/549",
+   "BigCodeBench/550",
+   "BigCodeBench/551",
+   "BigCodeBench/552",
+   "BigCodeBench/553",
+   "BigCodeBench/554",
+   "BigCodeBench/555",
+   "BigCodeBench/556",
+   "BigCodeBench/557",
+   "BigCodeBench/558",
+   "BigCodeBench/559",
+   "BigCodeBench/560",
+   "BigCodeBench/561",
+   "BigCodeBench/562",
+   "BigCodeBench/563",
+   "BigCodeBench/564",
+   "BigCodeBench/565",
+   "BigCodeBench/566",
+   "BigCodeBench/567",
+   "BigCodeBench/568",
+   "BigCodeBench/569",
+   "BigCodeBench/570",
+   "BigCodeBench/571",
+   "BigCodeBench/572",
+   "BigCodeBench/573",
+   "BigCodeBench/574",
+   "BigCodeBench/575",
+   "BigCodeBench/576",
+   "BigCodeBench/577",
+   "BigCodeBench/578",
+   "BigCodeBench/579",
+   "BigCodeBench/580",
+   "BigCodeBench/581",
+   "BigCodeBench/582",
+   "BigCodeBench/583",
+   "BigCodeBench/584",
+   "BigCodeBench/585",
+   "BigCodeBench/586",
+   "BigCodeBench/587",
+   "BigCodeBench/588",
+   "BigCodeBench/589",
+   "BigCodeBench/590",
+   "BigCodeBench/591",
+   "BigCodeBench/592",
+   "BigCodeBench/593",
+   "BigCodeBench/594",
+   "BigCodeBench/595",
+   "BigCodeBench/596",
+   "BigCodeBench/597",
+   "BigCodeBench/598",
+   "BigCodeBench/599",
+   "BigCodeBench/600",
+   "BigCodeBench/601",
+   "BigCodeBench/602",
+   "BigCodeBench/603",
+   "BigCodeBench/604",
+   "BigCodeBench/605",
+   "BigCodeBench/606",
+   "BigCodeBench/607",
+   "BigCodeBench/608",
+   "BigCodeBench/609",
+   "BigCodeBench/610",
+   "BigCodeBench/611",
+   "BigCodeBench/612",
+   "BigCodeBench/613",
+   "BigCodeBench/614",
+   "BigCodeBench/615",
+   "BigCodeBench/616",
+   "BigCodeBench/617",
+   "BigCodeBench/618",
+   "BigCodeBench/619",
+   "BigCodeBench/620",
+   "BigCodeBench/621",
+   "BigCodeBench/622",
+   "BigCodeBench/623",
+   "BigCodeBench/624",
+   "BigCodeBench/625",
+   "BigCodeBench/626",
+   "BigCodeBench/627",
+   "BigCodeBench/628",
+   "BigCodeBench/629",
+   "BigCodeBench/630",
+   "BigCodeBench/631",
+   "BigCodeBench/632",
+   "BigCodeBench/633",
+   "BigCodeBench/634",
+   "BigCodeBench/635",
+   "BigCodeBench/636",
+   "BigCodeBench/637",
+   "BigCodeBench/638",
+   "BigCodeBench/639",
+   "BigCodeBench/640",
+   "BigCodeBench/641",
+   "BigCodeBench/642",
+   "BigCodeBench/643",
+   "BigCodeBench/644",
+   "BigCodeBench/645",
+   "BigCodeBench/646",
+   "BigCodeBench/647",
+   "BigCodeBench/648",
+   "BigCodeBench/649",
+   "BigCodeBench/650",
+   "BigCodeBench/651",
+   "BigCodeBench/652",
+   "BigCodeBench/653",
+   "BigCodeBench/654",
+   "BigCodeBench/655",
+   "BigCodeBench/656",
+   "BigCodeBench/657",
+   "BigCodeBench/658",
+   "BigCodeBench/659",
+   "BigCodeBench/660",
+   "BigCodeBench/661",
+   "BigCodeBench/662",
+   "BigCodeBench/663",
+   "BigCodeBench/664",
+   "BigCodeBench/665",
+   "BigCodeBench/666",
+   "BigCodeBench/667",
+   "BigCodeBench/668",
+   "BigCodeBench/669",
+   "BigCodeBench/670",
+   "BigCodeBench/671",
+   "BigCodeBench/672",
+   "BigCodeBench/673",
+   "BigCodeBench/674",
+   "BigCodeBench/675",
+   "BigCodeBench/676",
+   "BigCodeBench/677",
+   "BigCodeBench/678",
+   "BigCodeBench/679",
+   "BigCodeBench/680",
+   "BigCodeBench/681",
+   "BigCodeBench/682",
+   "BigCodeBench/683",
+   "BigCodeBench/684",
+   "BigCodeBench/685",
+   "BigCodeBench/686",
+   "BigCodeBench/687",
+   "BigCodeBench/688",
+   "BigCodeBench/689",
+   "BigCodeBench/690",
+   "BigCodeBench/691",
+   "BigCodeBench/692",
+   "BigCodeBench/693",
+   "BigCodeBench/694",
+   "BigCodeBench/695",
+   "BigCodeBench/696",
+   "BigCodeBench/697",
+   "BigCodeBench/698",
+   "BigCodeBench/699",
+   "BigCodeBench/700",
+   "BigCodeBench/701",
+   "BigCodeBench/702",
+   "BigCodeBench/703",
+   "BigCodeBench/704",
+   "BigCodeBench/705",
+   "BigCodeBench/706",
+   "BigCodeBench/707",
+   "BigCodeBench/708",
+   "BigCodeBench/709",
+   "BigCodeBench/710",
+   "BigCodeBench/711",
+   "BigCodeBench/712",
+   "BigCodeBench/713",
+   "BigCodeBench/714",
+   "BigCodeBench/715",
+   "BigCodeBench/716",
+   "BigCodeBench/717",
+   "BigCodeBench/718",
+   "BigCodeBench/719",
+   "BigCodeBench/720",
+   "BigCodeBench/721",
+   "BigCodeBench/722",
+   "BigCodeBench/723",
+   "BigCodeBench/724",
+   "BigCodeBench/725",
+   "BigCodeBench/726",
+   "BigCodeBench/727",
+   "BigCodeBench/728",
+   "BigCodeBench/729",
+   "BigCodeBench/730",
+   "BigCodeBench/731",
+   "BigCodeBench/732",
+   "BigCodeBench/733",
+   "BigCodeBench/734",
+   "BigCodeBench/735",
+   "BigCodeBench/736",
+   "BigCodeBench/737",
+   "BigCodeBench/738",
+   "BigCodeBench/739",
+   "BigCodeBench/740",
+   "BigCodeBench/741",
+   "BigCodeBench/742",
+   "BigCodeBench/743",
+   "BigCodeBench/744",
+   "BigCodeBench/745",
+   "BigCodeBench/746",
+   "BigCodeBench/747",
+   "BigCodeBench/748",
+   "BigCodeBench/749",
+   "BigCodeBench/750",
+   "BigCodeBench/751",
+   "BigCodeBench/752",
+   "BigCodeBench/753",
+   "BigCodeBench/754",
+   "BigCodeBench/755",
+   "BigCodeBench/756",
+   "BigCodeBench/757",
+   "BigCodeBench/758",
+   "BigCodeBench/759",
+   "BigCodeBench/760",
+   "BigCodeBench/761",
+   "BigCodeBench/762",
+   "BigCodeBench/763",
+   "BigCodeBench/764",
+   "BigCodeBench/765",
+   "BigCodeBench/766",
+   "BigCodeBench/767",
+   "BigCodeBench/768",
+   "BigCodeBench/769",
+   "BigCodeBench/770",
+   "BigCodeBench/771",
+   "BigCodeBench/772",
+   "BigCodeBench/773",
+   "BigCodeBench/774",
+   "BigCodeBench/775",
+   "BigCodeBench/776",
+   "BigCodeBench/777",
+   "BigCodeBench/778",
+   "BigCodeBench/779",
+   "BigCodeBench/780",
+   "BigCodeBench/781",
+   "BigCodeBench/782",
+   "BigCodeBench/783",
+   "BigCodeBench/784",
+   "BigCodeBench/785",
+   "BigCodeBench/786",
+   "BigCodeBench/787",
+   "BigCodeBench/788",
+   "BigCodeBench/789",
+   "BigCodeBench/790",
+   "BigCodeBench/791",
+   "BigCodeBench/792",
+   "BigCodeBench/793",
+   "BigCodeBench/794",
+   "BigCodeBench/795",
+   "BigCodeBench/796",
+   "BigCodeBench/797",
+   "BigCodeBench/798",
+   "BigCodeBench/799",
+   "BigCodeBench/800",
+   "BigCodeBench/801",
+   "BigCodeBench/802",
+   "BigCodeBench/803",
+   "BigCodeBench/804",
+   "BigCodeBench/805",
+   "BigCodeBench/806",
+   "BigCodeBench/807",
+   "BigCodeBench/808",
+   "BigCodeBench/809",
+   "BigCodeBench/810",
+   "BigCodeBench/811",
+   "BigCodeBench/812",
+   "BigCodeBench/813",
+   "BigCodeBench/814",
+   "BigCodeBench/815",
+   "BigCodeBench/816",
+   "BigCodeBench/817",
+   "BigCodeBench/818",
+   "BigCodeBench/819",
+   "BigCodeBench/820",
+   "BigCodeBench/821",
+   "BigCodeBench/822",
+   "BigCodeBench/823",
+   "BigCodeBench/824",
+   "BigCodeBench/825",
+   "BigCodeBench/826",
+   "BigCodeBench/827",
+   "BigCodeBench/828",
+   "BigCodeBench/829",
+   "BigCodeBench/830",
+   "BigCodeBench/831",
+   "BigCodeBench/832",
+   "BigCodeBench/833",
+   "BigCodeBench/834",
+   "BigCodeBench/835",
+   "BigCodeBench/836",
+   "BigCodeBench/837",
+   "BigCodeBench/838",
+   "BigCodeBench/839",
+   "BigCodeBench/840",
+   "BigCodeBench/841",
+   "BigCodeBench/842",
+   "BigCodeBench/843",
+   "BigCodeBench/844",
+   "BigCodeBench/845",
+   "BigCodeBench/846",
+   "BigCodeBench/847",
+   "BigCodeBench/848",
+   "BigCodeBench/849",
+   "BigCodeBench/850",
+   "BigCodeBench/851",
+   "BigCodeBench/852",
+   "BigCodeBench/853",
+   "BigCodeBench/854",
+   "BigCodeBench/855",
+   "BigCodeBench/856",
+   "BigCodeBench/857",
+   "BigCodeBench/858",
+   "BigCodeBench/859",
+   "BigCodeBench/860",
+   "BigCodeBench/861",
+   "BigCodeBench/862",
+   "BigCodeBench/863",
+   "BigCodeBench/864",
+   "BigCodeBench/865",
+   "BigCodeBench/866",
+   "BigCodeBench/867",
+   "BigCodeBench/868",
+   "BigCodeBench/869",
+   "BigCodeBench/870",
+   "BigCodeBench/871",
+   "BigCodeBench/872",
+   "BigCodeBench/873",
+   "BigCodeBench/874",
+   "BigCodeBench/875",
+   "BigCodeBench/876",
+   "BigCodeBench/877",
+   "BigCodeBench/878",
+   "BigCodeBench/879",
+   "BigCodeBench/880",
+   "BigCodeBench/881",
+   "BigCodeBench/882",
+   "BigCodeBench/883",
+   "BigCodeBench/884",
+   "BigCodeBench/885",
+   "BigCodeBench/886",
+   "BigCodeBench/887",
+   "BigCodeBench/888",
+   "BigCodeBench/889",
+   "BigCodeBench/890",
+   "BigCodeBench/891",
+   "BigCodeBench/892",
+   "BigCodeBench/893",
+   "BigCodeBench/894",
+   "BigCodeBench/895",
+   "BigCodeBench/896",
+   "BigCodeBench/897",
+   "BigCodeBench/898",
+   "BigCodeBench/899",
+   "BigCodeBench/900",
+   "BigCodeBench/901",
+   "BigCodeBench/902",
+   "BigCodeBench/903",
+   "BigCodeBench/904",
+   "BigCodeBench/905",
+   "BigCodeBench/906",
+   "BigCodeBench/907",
+   "BigCodeBench/908",
+   "BigCodeBench/909",
+   "BigCodeBench/910",
+   "BigCodeBench/911",
+   "BigCodeBench/912",
+   "BigCodeBench/913",
+   "BigCodeBench/914",
+   "BigCodeBench/915",
+   "BigCodeBench/916",
+   "BigCodeBench/917",
+   "BigCodeBench/918",
+   "BigCodeBench/919",
+   "BigCodeBench/920",
+   "BigCodeBench/921",
+   "BigCodeBench/922",
+   "BigCodeBench/923",
+   "BigCodeBench/924",
+   "BigCodeBench/925",
+   "BigCodeBench/926",
+   "BigCodeBench/927",
+   "BigCodeBench/928",
+   "BigCodeBench/929",
+   "BigCodeBench/930",
+   "BigCodeBench/931",
+   "BigCodeBench/932",
+   "BigCodeBench/933",
+   "BigCodeBench/934",
+   "BigCodeBench/935",
+   "BigCodeBench/936",
+   "BigCodeBench/937",
+   "BigCodeBench/938",
+   "BigCodeBench/939",
+   "BigCodeBench/940",
+   "BigCodeBench/941",
+   "BigCodeBench/942",
+   "BigCodeBench/943",
+   "BigCodeBench/944",
+   "BigCodeBench/945",
+   "BigCodeBench/946",
+   "BigCodeBench/947",
+   "BigCodeBench/948",
+   "BigCodeBench/949",
+   "BigCodeBench/950",
+   "BigCodeBench/951",
+   "BigCodeBench/952",
+   "BigCodeBench/953",
+   "BigCodeBench/954",
+   "BigCodeBench/955",
+   "BigCodeBench/956",
+   "BigCodeBench/957",
+   "BigCodeBench/958",
+   "BigCodeBench/959",
+   "BigCodeBench/960",
+   "BigCodeBench/961",
+   "BigCodeBench/962",
+   "BigCodeBench/963",
+   "BigCodeBench/964",
+   "BigCodeBench/965",
+   "BigCodeBench/966",
+   "BigCodeBench/967",
+   "BigCodeBench/968",
+   "BigCodeBench/969",
+   "BigCodeBench/970",
+   "BigCodeBench/971",
+   "BigCodeBench/972",
+   "BigCodeBench/973",
+   "BigCodeBench/974",
+   "BigCodeBench/975",
+   "BigCodeBench/976",
+   "BigCodeBench/977",
+   "BigCodeBench/978",
+   "BigCodeBench/979",
+   "BigCodeBench/980",
+   "BigCodeBench/981",
+   "BigCodeBench/982",
+   "BigCodeBench/983",
+   "BigCodeBench/984",
+   "BigCodeBench/985",
+   "BigCodeBench/986",
+   "BigCodeBench/987",
+   "BigCodeBench/988",
+   "BigCodeBench/989",
+   "BigCodeBench/990",
+   "BigCodeBench/991",
+   "BigCodeBench/992",
+   "BigCodeBench/993",
+   "BigCodeBench/994",
+   "BigCodeBench/995",
+   "BigCodeBench/996",
+   "BigCodeBench/997",
+   "BigCodeBench/998",
+   "BigCodeBench/999",
+   "BigCodeBench/1000",
+   "BigCodeBench/1001",
+   "BigCodeBench/1002",
+   "BigCodeBench/1003",
+   "BigCodeBench/1004",
+   "BigCodeBench/1005",
+   "BigCodeBench/1006",
+   "BigCodeBench/1007",
+   "BigCodeBench/1008",
+   "BigCodeBench/1009",
+   "BigCodeBench/1010",
+   "BigCodeBench/1011",
+   "BigCodeBench/1012",
+   "BigCodeBench/1013",
+   "BigCodeBench/1014",
+   "BigCodeBench/1015",
+   "BigCodeBench/1016",
+   "BigCodeBench/1017",
+   "BigCodeBench/1018",
+   "BigCodeBench/1019",
+   "BigCodeBench/1020",
+   "BigCodeBench/1021",
+   "BigCodeBench/1022",
+   "BigCodeBench/1023",
+   "BigCodeBench/1024",
+   "BigCodeBench/1025",
+   "BigCodeBench/1026",
+   "BigCodeBench/1027",
+   "BigCodeBench/1028",
+   "BigCodeBench/1029",
+   "BigCodeBench/1030",
+   "BigCodeBench/1031",
+   "BigCodeBench/1032",
+   "BigCodeBench/1033",
+   "BigCodeBench/1034",
+   "BigCodeBench/1035",
+   "BigCodeBench/1036",
+   "BigCodeBench/1037",
+   "BigCodeBench/1038",
+   "BigCodeBench/1039",
+   "BigCodeBench/1040",
+   "BigCodeBench/1041",
+   "BigCodeBench/1042",
+   "BigCodeBench/1043",
+   "BigCodeBench/1044",
+   "BigCodeBench/1045",
+   "BigCodeBench/1046",
+   "BigCodeBench/1047",
+   "BigCodeBench/1048",
+   "BigCodeBench/1049",
+   "BigCodeBench/1050",
+   "BigCodeBench/1051",
+   "BigCodeBench/1052",
+   "BigCodeBench/1053",
+   "BigCodeBench/1054",
+   "BigCodeBench/1055",
+   "BigCodeBench/1056",
+   "BigCodeBench/1057",
+   "BigCodeBench/1058",
+   "BigCodeBench/1059",
+   "BigCodeBench/1060",
+   "BigCodeBench/1061",
+   "BigCodeBench/1062",
+   "BigCodeBench/1063",
+   "BigCodeBench/1064",
+   "BigCodeBench/1065",
+   "BigCodeBench/1066",
+   "BigCodeBench/1067",
+   "BigCodeBench/1068",
+   "BigCodeBench/1069",
+   "BigCodeBench/1070",
+   "BigCodeBench/1071",
+   "BigCodeBench/1072",
+   "BigCodeBench/1073",
+   "BigCodeBench/1074",
+   "BigCodeBench/1075",
+   "BigCodeBench/1076",
+   "BigCodeBench/1077",
+   "BigCodeBench/1078",
+   "BigCodeBench/1079",
+   "BigCodeBench/1080",
+   "BigCodeBench/1081",
+   "BigCodeBench/1082",
+   "BigCodeBench/1083",
+   "BigCodeBench/1084",
+   "BigCodeBench/1085",
+   "BigCodeBench/1086",
+   "BigCodeBench/1087",
+   "BigCodeBench/1088",
+   "BigCodeBench/1089",
+   "BigCodeBench/1090",
+   "BigCodeBench/1091",
+   "BigCodeBench/1092",
+   "BigCodeBench/1093",
+   "BigCodeBench/1094",
+   "BigCodeBench/1095",
+   "BigCodeBench/1096",
+   "BigCodeBench/1097",
+   "BigCodeBench/1098",
+   "BigCodeBench/1099",
+   "BigCodeBench/1100",
+   "BigCodeBench/1101",
+   "BigCodeBench/1102",
+   "BigCodeBench/1103",
+   "BigCodeBench/1104",
+   "BigCodeBench/1105",
+   "BigCodeBench/1106",
+   "BigCodeBench/1107",
+   "BigCodeBench/1108",
+   "BigCodeBench/1109",
+   "BigCodeBench/1110",
+   "BigCodeBench/1111",
+   "BigCodeBench/1112",
+   "BigCodeBench/1113",
+   "BigCodeBench/1114",
+   "BigCodeBench/1115",
+   "BigCodeBench/1116",
+   "BigCodeBench/1117",
+   "BigCodeBench/1118",
+   "BigCodeBench/1119",
+   "BigCodeBench/1120",
+   "BigCodeBench/1121",
+   "BigCodeBench/1122",
+   "BigCodeBench/1123",
+   "BigCodeBench/1124",
+   "BigCodeBench/1125",
+   "BigCodeBench/1126",
+   "BigCodeBench/1127",
+   "BigCodeBench/1128",
+   "BigCodeBench/1129",
+   "BigCodeBench/1130",
+   "BigCodeBench/1131",
+   "BigCodeBench/1132",
+   "BigCodeBench/1133",
+   "BigCodeBench/1134",
+   "BigCodeBench/1135",
+   "BigCodeBench/1136",
+   "BigCodeBench/1137",
+   "BigCodeBench/1138",
+   "BigCodeBench/1139"
+  ]
+ },
+ "rule": "population = the v0.1.2 complete split's task_ids (1140), the BigCodeBench-Hard task_ids (148) INCLUDED; take the whole population, no seed; report sorted by the numeric id suffix (contracts.bcb_select_full), with the Hard ids listed beside under hard_ids for a stratified Hard / non-Hard reading",
+ "schema": 1,
+ "seed": null,
+ "source_sha256": {
+  "complete_parquet": "323b69f764a2f99992a84600f5ed0e7549e9fcad934f669b50915da4d09af87e",
+  "hard_parquet": "4249a9c44eeac49d7fca73aa97c5ecf1f3561b99596399646b376bc127e3a34e"
+ },
+ "task": "bigcodebench_full"
+}

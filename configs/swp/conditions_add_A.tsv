@@ -1,0 +1,4 @@
+# Stage-3 wave UNION additions (coordinator 2026-08-24). Both-verdicts annotation applied at aggregate time from teacher_signal.json (job 187947) + each object's train_budget_meta. Columns: label cell coeff mask static adaptive benign target_engine attacker_engine serving_path mirror_override held_out
+si_irrelevant__diffmean__all	si_irrelevant__diffmean		all	*	-	*	hf	none	hf		*
+b_none	none		all	*	-	*	hf	none	hf		*
+b_prompted_ir	prompted__si_irrelevant		all	*	-	*	hf	none	hf		*

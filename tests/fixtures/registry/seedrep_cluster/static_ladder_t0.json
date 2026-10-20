@@ -1,0 +1,243 @@
+{
+ "kind": "static",
+ "tag": "qwen35_4b_s2",
+ "trial": 0,
+ "rungs": [
+  4096,
+  8192,
+  16384
+ ],
+ "extend_kind": "static",
+ "exit_rule": "SYNTHETIC copy of the ladder's exit rule: a pair climbs ONLY on the gate's ESCALATE and leaves on EXIT exit_le_1pct | exit_ceiling | transport_refused",
+ "written_at": "2026-09-20T16:41:40.900331+00:00",
+ "count_only_ceiling": null,
+ "cells": {
+  "constv2-mix-full__lora_r4_ce": {
+   "grok420": {
+    "n_at_cap": {
+     "4096": 42,
+     "8192": 1
+    },
+    "roots": {
+     "4096": "/workspace/TESTUSER/exp/sdfbase_full22_native/transcripts_results/sdfbase_full22_qwen35_4b_s2_sampled_t0/grok420/constv2-mix-full__lora_r4_ce",
+     "8192": "/workspace/TESTUSER/exp/sdfbase_full22_native/transcripts_results/sdfbase_full22_qwen35_4b_s2_sampled_t0_cap8192"
+    },
+    "reached_zero_at": "8192 + residual 1 (exit_le_1pct)",
+    "residual": 1,
+    "rungs_attempted": [
+     4096,
+     8192
+    ],
+    "left_ladder_at": {
+     "status": "left",
+     "rung": 8192,
+     "exit": "exit_le_1pct",
+     "n_truncated": 0,
+     "n_loop": 1,
+     "n_repetitive": 0,
+     "n_boundary": 0,
+     "unresolved_truncation": false
+    },
+    "escalation": {
+     "attack": "grok420",
+     "defense": "constv2-mix-full__lora_r4_ce",
+     "cap_from": 4096,
+     "cap_to": 8192,
+     "n_rows": 518,
+     "n_at_cap_before": 42,
+     "n_regenerated": 42,
+     "n_at_cap_after": 1,
+     "n_copied": 476,
+     "n_prefix_extension": 0,
+     "n_fork": 42,
+     "n_identical": 0,
+     "n_boundary_landing": 41,
+     "item_filter": false,
+     "items_file": null,
+     "items_file_sha256": null,
+     "n_escalation_excluded": 0,
+     "n_escalation_excluded_by_class": {
+      "loop": 0,
+      "repetitive": 0,
+      "boundary": 0
+     },
+     "n_at_cap_after_regenerated": 1,
+     "n_at_cap_after_excluded": 0,
+     "n_rows_by_source_cap": {
+      "4096": 476,
+      "8192": 42
+     },
+     "seed_base": 2,
+     "trial": 0,
+     "arm": "vendor_recommended",
+     "decode": {
+      "do_sample": true,
+      "temperature": 0.7,
+      "top_p": 0.8,
+      "top_k": 20,
+      "min_p": 0.0,
+      "presence_penalty": 1.5,
+      "repetition_penalty": 1.0,
+      "cap": 8192,
+      "arm": "vendor_recommended",
+      "seed_base": 2,
+      "trial": 0
+     },
+     "base_private_run": "sdfbase_full22_qwen35_4b_s2_sampled_t0",
+     "private_run": "sdfbase_full22_qwen35_4b_s2_sampled_t0_cap8192",
+     "n_base_shards": 9,
+     "concurrency": 32,
+     "max_model_len": 14848,
+     "config": "configs/sdfbase_full22_qwen35_4b_s2_sampled_t0_cap8192.yaml",
+     "routing_table": "/workspace/TESTUSER/exp/sdfbase_full22_native/sampled/serving/static_esc_t0_grok420_qwen35_4b_s2_121252/static_esc/routing_table.json",
+     "n_target_forwards": 42,
+     "re_draw_not_continuation": true,
+     "written_at": "2026-09-20T16:34:59.893250+00:00"
+    },
+    "problem": null,
+    "escalations": {
+     "8192": {
+      "attack": "grok420",
+      "defense": "constv2-mix-full__lora_r4_ce",
+      "cap_from": 4096,
+      "cap_to": 8192,
+      "n_rows": 518,
+      "n_at_cap_before": 42,
+      "n_regenerated": 42,
+      "n_at_cap_after": 1,
+      "n_copied": 476,
+      "n_prefix_extension": 0,
+      "n_fork": 42,
+      "n_identical": 0,
+      "n_boundary_landing": 41,
+      "item_filter": false,
+      "items_file": null,
+      "items_file_sha256": null,
+      "n_escalation_excluded": 0,
+      "n_escalation_excluded_by_class": {
+       "loop": 0,
+       "repetitive": 0,
+       "boundary": 0
+      },
+      "n_at_cap_after_regenerated": 1,
+      "n_at_cap_after_excluded": 0,
+      "n_rows_by_source_cap": {
+       "4096": 476,
+       "8192": 42
+      },
+      "seed_base": 2,
+      "trial": 0,
+      "arm": "vendor_recommended",
+      "decode": {
+       "do_sample": true,
+       "temperature": 0.7,
+       "top_p": 0.8,
+       "top_k": 20,
+       "min_p": 0.0,
+       "presence_penalty": 1.5,
+       "repetition_penalty": 1.0,
+       "cap": 8192,
+       "arm": "vendor_recommended",
+       "seed_base": 2,
+       "trial": 0
+      },
+      "base_private_run": "sdfbase_full22_qwen35_4b_s2_sampled_t0",
+      "private_run": "sdfbase_full22_qwen35_4b_s2_sampled_t0_cap8192",
+      "n_base_shards": 9,
+      "concurrency": 32,
+      "max_model_len": 14848,
+      "config": "configs/sdfbase_full22_qwen35_4b_s2_sampled_t0_cap8192.yaml",
+      "routing_table": "/workspace/TESTUSER/exp/sdfbase_full22_native/sampled/serving/static_esc_t0_grok420_qwen35_4b_s2_121252/static_esc/routing_table.json",
+      "n_target_forwards": 42,
+      "re_draw_not_continuation": true,
+      "written_at": "2026-09-20T16:34:59.893250+00:00"
+     }
+    }
+   },
+   "codeattack": {
+    "n_at_cap": {
+     "4096": 0
+    },
+    "roots": {
+     "4096": "/workspace/TESTUSER/exp/sdfbase_full22_native/transcripts_results/sdfbase_full22_qwen35_4b_s2_sampled_t0/codeattack/constv2-mix-full__lora_r4_ce"
+    },
+    "reached_zero_at": "4096",
+    "residual": 0,
+    "rungs_attempted": [
+     4096
+    ],
+    "left_ladder_at": {
+     "status": "undecided"
+    }
+   }
+  },
+  "none": {
+   "grok420": {
+    "n_at_cap": {
+     "4096": 0
+    },
+    "roots": {
+     "4096": "/workspace/TESTUSER/exp/sdfbase_full22_native/transcripts_results/sdfbase_full22_qwen35_4b_s2_sampled_t0/grok420/none"
+    },
+    "reached_zero_at": "4096",
+    "residual": 0,
+    "rungs_attempted": [
+     4096
+    ],
+    "left_ladder_at": {
+     "status": "undecided"
+    }
+   },
+   "codeattack": {
+    "n_at_cap": {
+     "4096": 0
+    },
+    "roots": {
+     "4096": "/workspace/TESTUSER/exp/sdfbase_full22_native/transcripts_results/sdfbase_full22_qwen35_4b_s2_sampled_t0/codeattack/none"
+    },
+    "reached_zero_at": "4096",
+    "residual": 0,
+    "rungs_attempted": [
+     4096
+    ],
+    "left_ladder_at": {
+     "status": "undecided"
+    }
+   }
+  },
+  "prompted__safety_refusal": {
+   "grok420": {
+    "n_at_cap": {
+     "4096": 0
+    },
+    "roots": {
+     "4096": "/workspace/TESTUSER/exp/sdfbase_full22_native/transcripts_results/sdfbase_full22_qwen35_4b_s2_sampled_t0/grok420/prompted__safety_refusal"
+    },
+    "reached_zero_at": "4096",
+    "residual": 0,
+    "rungs_attempted": [
+     4096
+    ],
+    "left_ladder_at": {
+     "status": "undecided"
+    }
+   }
+  }
+ },
+ "summary": {
+  "n_pairs": 5,
+  "left_at": {
+   "4096": 4,
+   "8192": 1,
+   "16384": 0
+  },
+  "exits": {
+   "exit_le_1pct": 1,
+   "exit_ceiling": 0,
+   "transport_refused": 0,
+   "escalating": 0,
+   "undecided": 4
+  }
+ },
+ "skipped_other_kind_events": 0
+}

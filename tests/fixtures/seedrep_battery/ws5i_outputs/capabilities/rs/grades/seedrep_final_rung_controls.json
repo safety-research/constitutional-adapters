@@ -1,0 +1,119 @@
+{
+ "pending": [],
+ "refused": [],
+ "rule": "each (cell, control) at its FINAL-RUNG store (final_rung.final_rung_store): the requested control's OWN block of the judge_summary.json there, with status ok and the completion contract met (served_capability_judge.py writes the summary after every control, so a file may hold only the controls the judge reached: no block -> pending; status refused_abstention_ceiling -> refused; an unverdicted item, n_judged + n_abstained != n, or a denominator that is not the control's whole set -> refused). Never inferred from the file's existence",
+ "tags": {
+  "qwen35_4b_s1": {
+   "or_bench_hard_1k|cellA__psr_ce_all": {
+    "abstention_band_full_n": [
+     0.035,
+     0.035
+    ],
+    "at_cap_share": 0.0,
+    "definition": "synthetic",
+    "final_cap": 512,
+    "judge_org": "lowprio",
+    "judge_summary": "/tmp/ws5j_ws5i_harvest4/test_installed_capabilities_re0/rs/sampled/controls_sampled/controls_cap512/qwen35_4b_s1_t0/cells/cellA--psr_ce_all__controls__t0__a0__4ef1fb3e__467267d7/judge_summary.json",
+    "judge_summary_sha256": "2cc10bd0ae0d91be242d58047a01817ff03d3a193c08bdc908ca4cffe5e29167",
+    "judged_at": "2026-01-01T02:00:00Z",
+    "n": 200,
+    "n_abstained": 0,
+    "n_judged": 200,
+    "over_refusal": 0.035,
+    "over_refusal_rate": 0.035,
+    "rungs_present": [
+     512
+    ],
+    "status": "ok",
+    "store": "/tmp/ws5j_ws5i_harvest4/test_installed_capabilities_re0/rs/sampled/controls_sampled/controls_cap512/qwen35_4b_s1_t0/cells/cellA--psr_ce_all__controls__t0__a0__4ef1fb3e__467267d7",
+    "wilson95_over_judged": [
+     0.0,
+     0.1
+    ]
+   },
+   "or_bench_hard_1k|none": {
+    "abstention_band_full_n": [
+     0.035,
+     0.035
+    ],
+    "at_cap_share": 0.0,
+    "definition": "synthetic",
+    "final_cap": 512,
+    "judge_org": "lowprio",
+    "judge_summary": "/tmp/ws5j_ws5i_harvest4/test_installed_capabilities_re0/rs/sampled/controls_sampled/controls_cap512/qwen35_4b_s1_t0/cells/none__controls__t0__a0__140bedbf__b4115f4c/judge_summary.json",
+    "judge_summary_sha256": "32622f17894ef0debb014740253f2de066256434927ea8f1bae7c94b4c316b57",
+    "judged_at": "2026-01-01T02:00:00Z",
+    "n": 200,
+    "n_abstained": 0,
+    "n_judged": 200,
+    "over_refusal": 0.035,
+    "over_refusal_rate": 0.035,
+    "rungs_present": [
+     512
+    ],
+    "status": "ok",
+    "store": "/tmp/ws5j_ws5i_harvest4/test_installed_capabilities_re0/rs/sampled/controls_sampled/controls_cap512/qwen35_4b_s1_t0/cells/none__controls__t0__a0__140bedbf__b4115f4c",
+    "wilson95_over_judged": [
+     0.0,
+     0.1
+    ]
+   },
+   "xstest|cellA__psr_ce_all": {
+    "abstention_band_full_n": [
+     0.008,
+     0.008
+    ],
+    "at_cap_share": 0.0,
+    "definition": "synthetic",
+    "final_cap": 512,
+    "judge_org": "lowprio",
+    "judge_summary": "/tmp/ws5j_ws5i_harvest4/test_installed_capabilities_re0/rs/sampled/controls_sampled/controls_cap512/qwen35_4b_s1_t0/cells/cellA--psr_ce_all__controls__t0__a0__4ef1fb3e__467267d7/judge_summary.json",
+    "judge_summary_sha256": "2cc10bd0ae0d91be242d58047a01817ff03d3a193c08bdc908ca4cffe5e29167",
+    "judged_at": "2026-01-01T02:00:00Z",
+    "n": 250,
+    "n_abstained": 0,
+    "n_judged": 250,
+    "over_refusal": 0.008,
+    "over_refusal_rate": 0.008,
+    "rungs_present": [
+     512
+    ],
+    "status": "ok",
+    "store": "/tmp/ws5j_ws5i_harvest4/test_installed_capabilities_re0/rs/sampled/controls_sampled/controls_cap512/qwen35_4b_s1_t0/cells/cellA--psr_ce_all__controls__t0__a0__4ef1fb3e__467267d7",
+    "wilson95_over_judged": [
+     0.0,
+     0.1
+    ]
+   },
+   "xstest|none": {
+    "abstention_band_full_n": [
+     0.008,
+     0.008
+    ],
+    "at_cap_share": 0.0,
+    "definition": "synthetic",
+    "final_cap": 512,
+    "judge_org": "lowprio",
+    "judge_summary": "/tmp/ws5j_ws5i_harvest4/test_installed_capabilities_re0/rs/sampled/controls_sampled/controls_cap512/qwen35_4b_s1_t0/cells/none__controls__t0__a0__140bedbf__b4115f4c/judge_summary.json",
+    "judge_summary_sha256": "32622f17894ef0debb014740253f2de066256434927ea8f1bae7c94b4c316b57",
+    "judged_at": "2026-01-01T02:00:00Z",
+    "n": 250,
+    "n_abstained": 0,
+    "n_judged": 250,
+    "over_refusal": 0.008,
+    "over_refusal_rate": 0.008,
+    "rungs_present": [
+     512
+    ],
+    "status": "ok",
+    "store": "/tmp/ws5j_ws5i_harvest4/test_installed_capabilities_re0/rs/sampled/controls_sampled/controls_cap512/qwen35_4b_s1_t0/cells/none__controls__t0__a0__140bedbf__b4115f4c",
+    "wilson95_over_judged": [
+     0.0,
+     0.1
+    ]
+   }
+  }
+ },
+ "tool": "grade_battery.sh post",
+ "written_at": "TESTSTAMP"
+}

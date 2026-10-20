@@ -1,0 +1,17 @@
+{
+ "driver": "served_capability_run_v2",
+ "cell_id": "constv2-mix-full__lora_r4_ce",
+ "harness_cell_id": "si_constv2_mix_full__lora_r4_ce",
+ "virtual_model": "petri__si_constv2_mix_full__lora_r4_ce",
+ "serving_identity": "proxy_vllm+lora+interleaved",
+ "intervention_hash": "18984b4300000000",
+ "engine": "vllm",
+ "serve_header": {
+  "served_template_hash": "a4aee8afcf2e0711",
+  "serve_header_len": 7,
+  "template_kwargs": {
+   "enable_thinking": false
+  }
+ },
+ "written_at": "2026-09-20T16:20:00+00:00"
+}

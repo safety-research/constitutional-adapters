@@ -1,0 +1,14 @@
+{
+ "_meta": {
+  "schema": "m5t_store_pins/2",
+  "label": "qwen_seedrep (cells.py SEEDREP_ROWS, indices 54-83: the batch-64 three-seed Qwen family on the overflow cluster — b64-capability-agentic-queue W1)",
+  "written": "2026-09-22",
+  "what": "per-LEG admitted producer tree (--store-pins; the GSM8K reader's admission, PR #137) for the qwen_seedrep MATH-500 wave: the tree whose store is the PRODUCTION one for the row, from LAUNCH RECORDS (RESULT result=COMPLETE + the outcomes file), never read off the stores; superseded / set-aside stores are never admitted. Keys are the MATH-500 leg key <model>/<cell>/<mode>@<view> (cells.leg_keys / row_leg_key): every seed row keys on its lane view (s1..s3, s1p..s3p), the Arditi seed rows included (their bank view ar_c0p3 rides the row's bank_view field, unkeyed).",
+  "note": "EMPTY until the wave's legs complete: the record is created with the code (steer_store_pin.read_pins_engines refuses a STORE_PINS_PATHS entry that is not a file) and filled post-run by $WORK/b64-capability-agentic-queue/scripts/pin_m5t_seedrep.py, which also stamps _meta.serving_engine_by_leg from the PULLED stores with steer_store_pin.read_store_engines (the launchers' own reader; derived, never typed) — every leg of this wave is served on the NATIVE engine (lora_native). A refused leg (RESULT result=DRIVER_FAILED) is named in _meta.refused with its RESULT line, never an absence.",
+  "trees": {},
+  "sources_by_tree": {},
+  "source_by_leg": {},
+  "serving_engine_by_leg": {},
+  "refused": {}
+ }
+}

@@ -1,0 +1,250 @@
+{
+ "corpus": "stories",
+ "input_count": 16300,
+ "calibration": false,
+ "drops": [
+  {
+   "id": "sto-c35-u02-k06-y1",
+   "rule": "score",
+   "detail": "constitution_consistency=3 < 8.0"
+  },
+  {
+   "id": "sto-c35-u05-k04-y0",
+   "rule": "factual_claims",
+   "detail": "scorer flagged real-world claims"
+  },
+  {
+   "id": "sto-c40-u03-k10-y1",
+   "rule": "score",
+   "detail": "constitution_consistency=7 < 8.0"
+  },
+  {
+   "id": "sto-c46-u02-k16-y0",
+   "rule": "factual_claims",
+   "detail": "scorer flagged real-world claims"
+  },
+  {
+   "id": "sto-c46-u02-k17-y0",
+   "rule": "factual_claims",
+   "detail": "scorer flagged real-world claims"
+  },
+  {
+   "id": "sto-c48-u01-k04-y1",
+   "rule": "factual_claims",
+   "detail": "scorer flagged real-world claims"
+  }
+ ],
+ "rule_counts": {
+  "score": 2,
+  "factual_claims": 4
+ },
+ "score_thresholds_applied": {
+  "constitution_consistency": 8.0,
+  "quality": 8.0
+ },
+ "score_filter_skipped": false,
+ "score_distributions": {
+  "constitution_consistency": {
+   "9": 16170,
+   "8": 93,
+   "10": 35,
+   "3": 1,
+   "7": 1
+  },
+  "quality": {
+   "8": 1990,
+   "9": 14310
+  }
+ },
+ "score_drops_by_axis": {
+  "constitution_consistency": 2
+ },
+ "dedup_rate": 0.0,
+ "dedup_cluster_histogram": {},
+ "persona_samples": [],
+ "persona_metadata_mentions": 0,
+ "persona_metadata_fields": {},
+ "persona_metadata_samples": [],
+ "register_family_stats": [
+  {
+   "name": "safeguard_beat",
+   "matched": 4,
+   "kept": 4,
+   "dropped": 0,
+   "final_count": 16294,
+   "final_frac": 0.0002454891371056831
+  },
+  {
+   "name": "deployment_context_opening",
+   "matched": 0,
+   "kept": 0,
+   "dropped": 0,
+   "final_count": 16294,
+   "final_frac": 0.0
+  },
+  {
+   "name": "internal_deployment_opening",
+   "matched": 0,
+   "kept": 0,
+   "dropped": 0,
+   "final_count": 16294,
+   "final_frac": 0.0
+  },
+  {
+   "name": "this_assistant_opening",
+   "matched": 0,
+   "kept": 0,
+   "dropped": 0,
+   "final_count": 16294,
+   "final_frac": 0.0
+  },
+  {
+   "name": "verdict_label_opening",
+   "matched": 0,
+   "kept": 0,
+   "dropped": 0,
+   "final_count": 16294,
+   "final_frac": 0.0
+  },
+  {
+   "name": "instinct_opening",
+   "matched": 0,
+   "kept": 0,
+   "dropped": 0,
+   "final_count": 16294,
+   "final_frac": 0.0
+  },
+  {
+   "name": "tablet_propped_beat",
+   "matched": 0,
+   "kept": 0,
+   "dropped": 0,
+   "final_count": 16294,
+   "final_frac": 0.0
+  },
+  {
+   "name": "envelope_back_beat",
+   "matched": 0,
+   "kept": 0,
+   "dropped": 0,
+   "final_count": 16294,
+   "final_frac": 0.0
+  },
+  {
+   "name": "deployment_label_opening",
+   "matched": 0,
+   "kept": 0,
+   "dropped": 0,
+   "final_count": 16294,
+   "final_frac": 0.0
+  },
+  {
+   "name": "sanity_check_opening",
+   "matched": 0,
+   "kept": 0,
+   "dropped": 0,
+   "final_count": 16294,
+   "final_frac": 0.0
+  },
+  {
+   "name": "speaker_shelf_beat",
+   "matched": 6,
+   "kept": 6,
+   "dropped": 0,
+   "final_count": 16294,
+   "final_frac": 0.0003682337056585246
+  },
+  {
+   "name": "shelf_above_beat",
+   "matched": 22,
+   "kept": 22,
+   "dropped": 0,
+   "final_count": 16294,
+   "final_frac": 0.001350190254081257
+  },
+  {
+   "name": "masking_tape_beat",
+   "matched": 29,
+   "kept": 29,
+   "dropped": 0,
+   "final_count": 16294,
+   "final_frac": 0.0017797962440162024
+  },
+  {
+   "name": "heels_beat",
+   "matched": 17,
+   "kept": 17,
+   "dropped": 0,
+   "final_count": 16294,
+   "final_frac": 0.0010433288326991532
+  }
+ ],
+ "candidate_floor_sizes": [],
+ "downsample": null,
+ "length_stats": {
+  "field": "text",
+  "n": 16294,
+  "mean": 2034.6,
+  "median": 1971.0,
+  "p10": 1173.0,
+  "p90": 2967.0,
+  "min": 778,
+  "max": 5158,
+  "targets": {
+   "n": 16294,
+   "mean_target": 1832.6,
+   "mean_achieved_over_target": 1.159,
+   "by_target": {
+    "800": {
+     "n": 2405,
+     "mean": 1130.5
+    },
+    "1200": {
+     "n": 3251,
+     "mean": 1534.8
+    },
+    "1800": {
+     "n": 4945,
+     "mean": 1979.4
+    },
+    "2400": {
+     "n": 3241,
+     "mean": 2511.2
+    },
+    "3000": {
+     "n": 2452,
+     "mean": 3065.2
+    }
+   }
+  }
+ },
+ "length_gate": {
+  "reference": {
+   "mean": 1989.8,
+   "p90": 2852.0,
+   "source": "final-production-20260831-v2.jsonl (text field, n=16321)"
+  },
+  "tolerance": {
+   "mean": 0.1,
+   "p90": 0.15
+  },
+  "blocking": true,
+  "n": 16294,
+  "mean": 2034.6,
+  "p90": 2967.0,
+  "mean_ratio": 1.0225,
+  "p90_ratio": 1.0403,
+  "mean_ok": true,
+  "p90_ok": true,
+  "passed": true
+ },
+ "output_count": 16294,
+ "token_totals": {
+  "llama3": 40943945,
+  "gemma": 42846566,
+  "qwen": 41065735
+ },
+ "official_tokens": 40943945,
+ "ordinary_share": 0.8408002945869645,
+ "acceptance_failures": []
+}

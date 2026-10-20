@@ -1,0 +1,66 @@
+{
+ "schema": 1,
+ "corpus": "control_stories",
+ "source_file": "final-control-scale-20260903-r2-stories.jsonl",
+ "release": "final-control-scale-20260903-r2",
+ "record_count": 16294,
+ "sha256_reassembled": "915129b2b89eb00bda0a0ca13923708d6bb7cff3b4332d67f69c073555ab6dad",
+ "bytes_reassembled": 427096097,
+ "shards": [
+  {
+   "name": "part-00.jsonl.gz",
+   "sha256": "46581593ad0eaa1c11f425ddc315a2aff9ca7376f38e9fa9080c7931ad0dba06",
+   "bytes": 34005533,
+   "records": 5357,
+   "raw_bytes": 142386377
+  },
+  {
+   "name": "part-01.jsonl.gz",
+   "sha256": "0a341bf53461298b5bea58d47f351d5446faf0992b021957810840bbbc9cf92a",
+   "bytes": 33509400,
+   "records": 5464,
+   "raw_bytes": 142379247
+  },
+  {
+   "name": "part-02.jsonl.gz",
+   "sha256": "f2e49d4516263030dcdcb42b617261f7054fc51b08b8909d2ad5bf40f072f0a1",
+   "bytes": 34048847,
+   "records": 5473,
+   "raw_bytes": 142330473
+  }
+ ],
+ "official_tokens": {
+  "llama3": 40943945,
+  "gemma": 42846566,
+  "qwen": 41065735,
+  "min": 40943945
+ },
+ "sidecars": [
+  {
+   "name": "final-control-scale-20260903-r2-stories.filter-report.json",
+   "sha256": "a560efdf39b6804cd59883bc709f2ace90e83af63defa846af377a190308b365",
+   "bytes": 4598
+  },
+  {
+   "name": "final-control-scale-20260903-r2-stories.import-scan.json",
+   "sha256": "60832c6ae0022ec2f1c240500df64cead9ca6a6bc309cfa8084dcbebf4f73afd",
+   "bytes": 70074
+  },
+  {
+   "name": "final-control-scale-20260903-r2-stories.register-edit.json",
+   "sha256": "6042bb0b9186e48de96a7bc3845df90b077fc8a3bb975d7c90c72de71d3746dd",
+   "bytes": 3598786
+  }
+ ],
+ "gzip": {
+  "level": 9,
+  "mtime": 0,
+  "filename": "",
+  "record_boundary": true,
+  "target_bytes": 40000000,
+  "hard_limit_bytes": 50000000,
+  "measured_total_gzip_bytes": 101560281
+ },
+ "tool": "reproduce/tools/shard_corpus.py",
+ "vendored_corpus_commit": "f64cfd58dd5792335c17ee90850daf16fac4fa18"
+}

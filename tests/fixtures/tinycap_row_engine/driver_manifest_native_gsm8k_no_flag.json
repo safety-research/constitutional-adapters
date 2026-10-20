@@ -1,0 +1,383 @@
+{
+ "cell_dir_name": "safety_refusal--lora_r1__controls__t0__a0__b7296c07__9dc52439",
+ "harness_config_hash": "9dc524392b727642",
+ "identity": {
+  "frameworks": {
+   "client_lock_sha256": "5a6e51efa757d8bc5a4016f679c47bf4e2b8c06305a1afd9a50ce50410743d49",
+   "evalplus": null,
+   "inspect_ai": "inspect_ai-test",
+   "inspect_evals": "inspect_evals-test"
+  },
+  "limits": {},
+  "math500_retry_max_tokens": 8192,
+  "or_bench_item_set": null,
+  "pass": null,
+  "samples": 1,
+  "samples_by_task": {
+   "inspect/gsm8k_paired200": 1
+  },
+  "seed_rule": {
+   "evalplus": "blake2b(task, item_id, sample_idx) mod 2^31-1",
+   "inspect": "sha256(item_id NUL sample_idx)[:4] big-endian mod 2^31-1"
+  },
+  "served": {
+   "agent_loop_entry": true,
+   "concurrency": 4,
+   "max_model_len": 4096,
+   "max_num_seqs": 96,
+   "reasoning_parser": null,
+   "reduction_mode": "not_applicable",
+   "serving_engine": "lora_native",
+   "tool_calls": false
+  },
+  "tasks": [
+   "gsm8k"
+  ],
+  "temperature": 0.6,
+  "thinking": {
+   "mode": "off",
+   "render": "native"
+  },
+  "thinking_by_task": {
+   "inspect/gsm8k_paired200": "off"
+  },
+  "top_k": null,
+  "top_p": 0.9,
+  "versions": {
+   "tinycap": "tinycap_v1"
+  }
+ },
+ "manifest": {
+  "binding": {
+   "ledger_endpoint": null,
+   "ledger_upstream": null,
+   "ledger_url": null,
+   "proxy_url": "http://127.0.0.1:1/v1",
+   "routing_table": "<TMP>/routing_table.json"
+  },
+  "cell_id": "safety_refusal__lora_r1",
+  "concurrency": 4,
+  "contract_version": 3,
+  "controls": [
+   "gsm8k"
+  ],
+  "declaration": {
+   "response_prefill_used": []
+  },
+  "engine": "vllm",
+  "fit_provenance": {
+   "chat_template_bypassed": null,
+   "fit_kind": null,
+   "model_id": "meta-llama/Llama-3.1-8B-Instruct",
+   "object_sha": "abababababababab",
+   "override_evidence": null,
+   "positions_at_fit": "all",
+   "revision": "testrev-1111-2222-3333",
+   "served_model_id": "meta-llama/Llama-3.1-8B-Instruct",
+   "served_revision": "testrev-1111-2222-3333",
+   "served_template_hash": "1212121212121212",
+   "source": "fit_provenance.json",
+   "status": "verified",
+   "template_check": "compared",
+   "template_check_reason": "served template hash == fit-time template hash (verified)",
+   "template_hash": "1212121212121212",
+   "training_budget_kind": null,
+   "transfer": false
+  },
+  "fit_provenance_template_check": "compared",
+  "fit_witness": {
+   "chat_template_bypassed": null,
+   "fit_kind": null,
+   "model_id": "meta-llama/Llama-3.1-8B-Instruct",
+   "object_sha": "abababababababab",
+   "override_evidence": null,
+   "positions_at_fit": "all",
+   "revision": "testrev-1111-2222-3333",
+   "source": "fit_provenance.json",
+   "status": "verified",
+   "template_hash": "1212121212121212",
+   "training_budget_kind": null
+  },
+  "frameworks": {
+   "client_lock_sha256": "5a6e51efa757d8bc5a4016f679c47bf4e2b8c06305a1afd9a50ce50410743d49",
+   "evalplus": null,
+   "inspect_ai": "inspect_ai-test",
+   "inspect_evals": "inspect_evals-test"
+  },
+  "geometry": {
+   "adjustments": [],
+   "basis": null,
+   "batched_tokens": 393216,
+   "budget": 393216,
+   "budget_source": "default_llama_certified",
+   "eval": null,
+   "identity": true,
+   "max_model_len": 4096,
+   "max_num_seqs": 96,
+   "measurement_pass": false,
+   "model_key": null,
+   "over_budget": false,
+   "pass": null,
+   "provisional": false,
+   "seqs_source": "override",
+   "sized_by": null,
+   "source": "endpoint.json",
+   "window_source": "override"
+  },
+  "harness_cell_id": "si_safety__lora_r1",
+  "harness_config_hash": "9dc524392b727642",
+  "intervention_hash": "b7296c07a2e51f6f",
+  "ledger_url": null,
+  "model_id": "meta-llama/Llama-3.1-8B-Instruct",
+  "model_revision": "testrev-1111-2222-3333",
+  "producer": {
+   "driver": "served_capability_run",
+   "tree_sha": "<TREE_SHA>"
+  },
+  "provenance": {
+   "arm": "lora_r1",
+   "artifact_sha256": "6ef9372e1fd516cb8194e411eaf88b090e69c93137e4f691c5f71d8f31ea561b",
+   "cell_id": "safety_refusal__lora_r1",
+   "class": "A",
+   "code_version": "cell_controls_v1",
+   "gen_config_sha256": "fc25da9d57e124c6af4b5330b2bb618ae2c154947ef515725806c2674c0e14c1",
+   "intervention_hash": "b7296c07a2e51f6f",
+   "judge_backend": null,
+   "judge_model": "claude-sonnet-5",
+   "model": "meta-llama/Llama-3.1-8B-Instruct",
+   "model_revision": "testrev-1111-2222-3333",
+   "pins": {},
+   "rubric_shas": {},
+   "serving": {
+    "chat_template_hash": "1212121212121212",
+    "engine": "vllm",
+    "requested_model": "meta-llama/Llama-3.1-8B-Instruct",
+    "requested_revision": "testrev-1111-2222-3333",
+    "resolved_model_id": "meta-llama/Llama-3.1-8B-Instruct",
+    "resolved_revision": "testrev-1111-2222-3333",
+    "serving_identity": "proxy_vllm+lora+interleaved",
+    "virtual_model": "petri__si_safety__lora_r1"
+   },
+   "si_id": "safety_refusal"
+  },
+  "proxy_url": "http://127.0.0.1:1/v1",
+  "quality": {
+   "at_cap": {
+    "denominator": 0,
+    "n": null,
+    "rate": null,
+    "tasks_not_recorded": []
+   },
+   "by_task": {},
+   "unparseable": {
+    "denominator": 0,
+    "n": null,
+    "rate": null,
+    "tasks_not_recorded": []
+   }
+  },
+  "request_samplers": {},
+  "resolved_config": {
+   "cell_id": "safety_refusal__lora_r1",
+   "controls": [
+    "gsm8k",
+    "mmlu",
+    "or_bench_hard_1k",
+    "xstest"
+   ],
+   "driver": "served_capability_run_v2",
+   "engine": "vllm",
+   "gen": {
+    "batch_size": 8,
+    "do_sample": false,
+    "max_new_tokens": 64
+   },
+   "inspect_grader": {
+    "max_tokens": 4096
+   },
+   "judge_model": "claude-sonnet-5",
+   "limit": null,
+   "mmlu": {
+    "answer_seed": "Answer:",
+    "response_prefill": false,
+    "top_logprobs": 64
+   },
+   "model_id": "meta-llama/Llama-3.1-8B-Instruct",
+   "model_revision": "testrev-1111-2222-3333",
+   "order_seed": 0,
+   "scale": 1.0,
+   "serving": {
+    "serving_engine": "lora_native",
+    "serving_identity": "proxy_vllm+lora+interleaved",
+    "virtual_model": "petri__si_safety__lora_r1"
+   },
+   "steer_positions": "all",
+   "subset_seed": null,
+   "system_sha": null,
+   "tinycap": {
+    "frameworks": {
+     "client_lock_sha256": "5a6e51efa757d8bc5a4016f679c47bf4e2b8c06305a1afd9a50ce50410743d49",
+     "evalplus": null,
+     "inspect_ai": "inspect_ai-test",
+     "inspect_evals": "inspect_evals-test"
+    },
+    "limits": {},
+    "math500_retry_max_tokens": 8192,
+    "or_bench_item_set": null,
+    "pass": null,
+    "samples": 1,
+    "samples_by_task": {
+     "inspect/gsm8k_paired200": 1
+    },
+    "seed_rule": {
+     "evalplus": "blake2b(task, item_id, sample_idx) mod 2^31-1",
+     "inspect": "sha256(item_id NUL sample_idx)[:4] big-endian mod 2^31-1"
+    },
+    "served": {
+     "agent_loop_entry": true,
+     "concurrency": 4,
+     "max_model_len": 4096,
+     "max_num_seqs": 96,
+     "reasoning_parser": null,
+     "reduction_mode": "not_applicable",
+     "serving_engine": "lora_native",
+     "tool_calls": false
+    },
+    "tasks": [
+     "gsm8k"
+    ],
+    "temperature": 0.6,
+    "thinking": {
+     "mode": "off",
+     "render": "native"
+    },
+    "thinking_by_task": {
+     "inspect/gsm8k_paired200": "off"
+    },
+    "top_k": null,
+    "top_p": 0.9,
+    "versions": {
+     "tinycap": "tinycap_v1"
+    }
+   }
+  },
+  "route": {
+   "agent_loop_entry": true,
+   "grader_virtual_model": "petri__base",
+   "lens_salt_policy": "not_applicable",
+   "lens_serve_declarations": null,
+   "object_artifact_sha256": null,
+   "object_artifact_sha256_by_cell": null,
+   "reduction_mode": "not_applicable",
+   "reduction_mode_expectation": "not_consulted",
+   "resumed_prefill_policy": "not_applicable",
+   "serving_engine": "lora_native",
+   "serving_identity": "proxy_vllm+lora+interleaved",
+   "tool_calls": false,
+   "virtual_model": "petri__si_safety__lora_r1"
+  },
+  "routing_table": "<TMP>/routing_table.json",
+  "row_constants": {
+   "arm_name": "safety_refusal--lora_r1",
+   "attempt": 0,
+   "coeff": 1.0,
+   "engine": "vllm",
+   "env_digest": "<ENV_DIGEST>",
+   "harness_config_hash": "9dc524392b727642",
+   "intervention_hash": "b7296c07a2e51f6f",
+   "kind": "cell",
+   "model_id": "meta-llama/Llama-3.1-8B-Instruct",
+   "model_revision": "testrev-1111-2222-3333",
+   "run_id": "served-controls-safety_refusal--lora_r1",
+   "seed": 0,
+   "slurm_job_id": null,
+   "sweep": "two_si_controls_served",
+   "trial_id": 0
+  },
+  "sampling": {
+   "mode": "card",
+   "model_key": "llama8b",
+   "samples_by_task": {
+    "inspect/gsm8k_paired200": 1
+   },
+   "seed_rule": {
+    "evalplus": "blake2b(task, item_id, sample_idx) mod 2^31-1",
+    "inspect": "sha256(item_id NUL sample_idx)[:4] big-endian mod 2^31-1"
+   },
+   "source": "generation_config.json of NousResearch/Meta-Llama-3.1-8B-Instruct @ d10aef79: do_sample true, temperature 0.6, top_p 0.9, no top_k, no penalty \u2014 re-read 2026-09-11 from the HF hub at the pinned revision and from the primary cluster's cohort cache (identical; llama-paper-rows P6); the base checkpoint NousResearch/Meta-Llama-3.1-8B @ 1f47e50c ships the same numbers (_from_model_config true). The GSM8K paired-200 Llama rows run this `card` row under the no-switch arm (thinking: not available)",
+   "temperature": 0.6,
+   "top_k": null,
+   "top_p": 0.9
+  },
+  "sandbox": null,
+  "seeds": {
+   "inspect": {
+    "rule": "sha256(item_id NUL sample_idx)[:4] big-endian mod 2^31-1",
+    "samples_per_item": {
+     "inspect/gsm8k_paired200": 1
+    }
+   }
+  },
+  "serving_engine": "lora_native",
+  "serving_identity": "proxy_vllm+lora+interleaved",
+  "serving_path": "lora",
+  "steer_positions": "all",
+  "thinking": {
+   "by_task": {
+    "inspect/gsm8k_paired200": "off"
+   },
+   "enable_thinking": false,
+   "mode": "off",
+   "reasoning_parser": null,
+   "render": "native"
+  },
+  "tinycap": {
+   "frameworks": {
+    "client_lock_sha256": "5a6e51efa757d8bc5a4016f679c47bf4e2b8c06305a1afd9a50ce50410743d49",
+    "evalplus": null,
+    "inspect_ai": "inspect_ai-test",
+    "inspect_evals": "inspect_evals-test"
+   },
+   "limits": {},
+   "math500_retry_max_tokens": 8192,
+   "or_bench_item_set": null,
+   "pass": null,
+   "samples": 1,
+   "samples_by_task": {
+    "inspect/gsm8k_paired200": 1
+   },
+   "seed_rule": {
+    "evalplus": "blake2b(task, item_id, sample_idx) mod 2^31-1",
+    "inspect": "sha256(item_id NUL sample_idx)[:4] big-endian mod 2^31-1"
+   },
+   "served": {
+    "agent_loop_entry": true,
+    "concurrency": 4,
+    "max_model_len": 4096,
+    "max_num_seqs": 96,
+    "reasoning_parser": null,
+    "reduction_mode": "not_applicable",
+    "serving_engine": "lora_native",
+    "tool_calls": false
+   },
+   "tasks": [
+    "gsm8k"
+   ],
+   "temperature": 0.6,
+   "thinking": {
+    "mode": "off",
+    "render": "native"
+   },
+   "thinking_by_task": {
+    "inspect/gsm8k_paired200": "off"
+   },
+   "top_k": null,
+   "top_p": 0.9,
+   "versions": {
+    "tinycap": "tinycap_v1"
+   }
+  },
+  "usage_ledger": null,
+  "virtual_model": "petri__si_safety__lora_r1"
+ }
+}

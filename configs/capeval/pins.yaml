@@ -1,0 +1,97 @@
+# capeval dataset/data pin registry — WRITTEN BY scripts/capeval_fetch_data.py, DO NOT EDIT BY HAND.
+# Shape + freeze semantics documented in that script's docstring.
+# corpora.py and the offline test read the
+# revisions here; every revision is content-addressed (full SHA).
+datasets:
+  alpaca:
+    bytes: 24254110
+    files: 2
+    patterns:
+    - data/train-*
+    repo_id: tatsu-lab/alpaca
+    revision: dce01c9b08f87459cf36a430d809084718273017
+    verify: parquet
+  canary_prompts:
+    bytes: 628896
+    files: 3
+    patterns:
+    - alpaca_eval.json
+    repo_id: tatsu-lab/alpaca_eval
+    revision: 2edc6fad8be6b14ea7230aabfd08188da6b8b814
+    verify: json
+  gsm8k_platinum:
+    bytes: 387894
+    files: 2
+    patterns: null
+    repo_id: madrylab/gsm8k-platinum
+    revision: e762492455a1cf7967de89f05b6bef72fc713b66
+    verify: parquet
+  ifeval:
+    bytes: 212634
+    files: 2
+    patterns: null
+    repo_id: google/IFEval
+    revision: 966cd89545d6b6acfd7638bc708b98261ca58e84
+    verify: jsonl
+  mmlu:
+    bytes: 51694961
+    files: 6
+    patterns:
+    - all/validation-*
+    - all/dev-*
+    repo_id: cais/mmlu
+    revision: c30699e8356da336a370243923dbaf21066bb9fe
+    verify: parquet
+  or_bench:
+    bytes: 169255
+    files: 1
+    patterns:
+    - or-bench-hard-1k.csv
+    repo_id: bench-llm/or-bench
+    revision: e36d8b80e81837c8a8f264bbb2a49f1b32c7e272
+    verify: csv
+  stack_py:
+    bytes: 142180683
+    files: 1
+    patterns:
+    - '*.json.gz'
+    repo_id: codeparrot/codeparrot-clean-valid
+    revision: 4db92d2ec0c1b4c41eeb439cfae16854511d9dcd
+    verify: jsonl_gz
+  ultrachat:
+    bytes: 81176553
+    files: 1
+    patterns:
+    - data/test_sft-*
+    repo_id: HuggingFaceH4/ultrachat_200k
+    revision: 8049631c405ae6576f93f445c6b8166f76f5505a
+    verify: parquet
+  wikitext103:
+    bytes: 1465220
+    files: 2
+    patterns:
+    - wikitext-103-raw-v1/test-*
+    repo_id: Salesforce/wikitext
+    revision: b08601e04326c79dfdd32d625aee71d232d685c3
+    verify: parquet
+  xstest_v2:
+    bytes: 20531
+    files: 1
+    patterns:
+    - data/prompts-*
+    repo_id: natolambert/xstest-v2-copy
+    revision: b71afe2a6d10e5a6254ea8bcb006c48b095a15d5
+    verify: parquet
+evalplus:
+  humaneval_plus:
+    bytes: 7714666
+    cache_file: HumanEvalPlus-v0.1.10.jsonl
+    n_tasks: 164
+    sha256: 42526ec0e7d5f3ee0b06d6ced98f8c8bae3d76519151bfb3d36f79010645bd7f
+    url: https://github.com/evalplus/humanevalplus_release/releases/download/v0.1.10/HumanEvalPlus.jsonl.gz
+    version: v0.1.10
+models:
+  llama31_8b_it:
+    repo_id: meta-llama/Llama-3.1-8B-Instruct
+    revision: 0e9e39f249a16976918f6564b8830bc894c89659
+resolved_at: '2026-08-19T19:36:09+00:00'

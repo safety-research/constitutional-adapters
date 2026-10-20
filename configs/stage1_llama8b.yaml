@@ -1,0 +1,58 @@
+# Stage-1: full instruction taxonomy x method grid on Llama-3.1-8B-Instruct,
+# alpaca prompt distribution, full arm comparison + capability battery.
+model: meta-llama/Llama-3.1-8B-Instruct
+dtype: bfloat16
+
+instructions:
+  - french
+  - lowercase
+  - concise
+  - json
+  - bullets
+  - include_notably
+  - no_sorry
+  - pirate
+  - cond_medical
+  - cond_code
+  - multi_french_concise
+# distill_hard = hard sampled-token CE (HyperSteer's loss, forced by their
+# black-box teacher) vs distill_soft = full-distribution supervision; same
+# engine, same pairs, same layer — the dark-knowledge ablation.
+methods: [instr_diff, caa, actadd, bidpo, distill_soft, distill_hard]
+
+prompts:
+  source: hf
+  dataset: tatsu-lab/alpaca
+  n: 600
+  holdout_frac: 0.3
+n_fit_prompts: 200   # >=72 per HyperSteer's data ablation; 200 for headroom
+n_eval_prompts: 100
+
+layers: [10, 13, 16, 19, 22, 25]   # ~30-75% of 32 layers (diff methods sweep)
+# Trained vectors are fitted at ONE fixed mid layer, like their source
+# papers (BiPO: layer 15 of 32 on Llama-2-7b) — retraining per sweep layer
+# would multiply cost ~6x for little information.
+method_layers:
+  bidpo: [15]
+  distill_soft: [15]
+  distill_hard: [15]
+scales: [0.25, 0.5, 1.0, 2.0, 4.0, 8.0]
+
+train_kwargs:
+  bidpo:
+    epochs: 20        # S0 showed 10 epochs x 20 prompts undertrains (norm 1.0
+    batch_size: 4     # vs CAA's 11.7); BiPO's regime is thousands of steps
+    max_len: 768
+  distill_soft:
+    epochs: 6
+    batch_size: 2
+    max_len: 768
+  distill_hard:
+    epochs: 6
+    batch_size: 2
+    max_len: 768
+
+capability: true
+max_new_tokens: 200
+out_dir: out/stage1_llama8b
+wandb_project: $WANDB_PROJECT

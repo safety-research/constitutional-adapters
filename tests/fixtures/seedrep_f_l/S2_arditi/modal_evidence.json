@@ -1,0 +1,124 @@
+{
+ "W": "23f34f455f1241f3f636c3f46422fc52f632dc32",
+ "accepted_key": "23f34f4|67cfa01b-6ec9-439a-bb0a-558366fd5408|pasttense|arditi|base|0",
+ "app_sys_path_src": "/workspace/seedrep/si-steering-eval-repo/23f34f455f1241f3f636c3f46422fc52f632dc32/src",
+ "attempt_id": "01SYNTHS2TASK0000000000001-222222222222",
+ "compile_cache_persist_setting": {
+  "SEEDREP_PERSIST_COMPILE_CACHES": "1",
+  "source": "spawn_ctx"
+ },
+ "compile_cache_seed": {
+  "flashinfer": {
+   "local": "/root/.cache/flashinfer",
+   "seeded": false,
+   "volume": "/vol/seedrep/cache/flashinfer"
+  },
+  "vllm": {
+   "local": "/root/.cache/vllm",
+   "seeded": false,
+   "volume": "/vol/seedrep/cache/vllm"
+  }
+ },
+ "control_key": "23f34f4/67cfa01b-6ec9-439a-bb0a-558366fd5408/pasttense/arditi/base/0",
+ "driver_venv": {
+  "attempts": 1,
+  "built": true,
+  "s": 72.8,
+  "venv": "/home/seedrep/venvs/f22-23f34f455f12"
+ },
+ "execution_wave_uuid": "67cfa01b-6ec9-439a-bb0a-558366fd5408",
+ "hardware": "modal",
+ "launch_plan_sha": "721d308153d3a18a",
+ "modal": {
+  "app_name": "seedrep-served-23f34f4",
+  "cpu": 32,
+  "function": "run_arditi_leg",
+  "function_call_id": "fc-01SYNTHS2CALL0000000000001",
+  "gpu": "H200",
+  "hostname": "modal",
+  "image_id": "im-SYNTHETICIMAGE00000000",
+  "max_containers": 1,
+  "memory_mib": 196608,
+  "retries": 0,
+  "task_id": "ta-01SYNTHS2TASK0000000000001",
+  "timeout_s": 14400
+ },
+ "object_verification": {
+  "extra_views": {},
+  "n": 16,
+  "ok": true,
+  "problems": []
+ },
+ "production_wave_uuid": "bad224cf-9d2d-4882-905b-c715bc83c8cf",
+ "readiness": {
+  "adjustments": [
+   {
+    "D": 4096,
+    "ceiling": 524287,
+    "from_S": 64,
+    "kind": "lora_kernel_index_ceiling",
+    "to_S": 45
+   }
+  ],
+  "attested_max_model_len": 11520,
+  "attested_max_num_seqs": 45,
+  "problems": [
+   "attested_cudagraph_mode 'FULL_AND_PIECEWISE' != FULL",
+   "adapter for arditi_allpos (arditi_allpos) was EXPORTED (reused=False), not re-used \u2014 a race or a drift (gate 10)",
+   "no residual_slot record for arditi_allpos (arditi_allpos) in adapters[] (a mandated attestation for a PSR / vector cell)",
+   "expected_object_sha256_by_cell ABSENT (a mandated attestation: the object-digest map the standup asserted)"
+  ],
+  "window_source": "table"
+ },
+ "reattempt_intent": null,
+ "schema": "seedrep_served/modal_evidence/1",
+ "smoke": {
+  "max_children": 5,
+  "production_standup_id": "pasttense__arditi__base__shard00",
+  "production_wave_uuid": "bad224cf-9d2d-4882-905b-c715bc83c8cf",
+  "smoke_id": "S2",
+  "wave_uuid": "67cfa01b-6ec9-439a-bb0a-558366fd5408"
+ },
+ "standup_argv": [
+  "/home/seedrep/venvs/sisteer-petri-vllm-12fa3eb0/bin/python",
+  "/workspace/seedrep/si-steering-eval-repo/23f34f455f1241f3f636c3f46422fc52f632dc32/scripts/sdfbase/mt_serving_up.py",
+  "--repo-dir",
+  "/workspace/seedrep/si-steering-eval-repo/23f34f455f1241f3f636c3f46422fc52f632dc32",
+  "--config",
+  "configs/seedrep/arditi_allpos_qwen35_4b_ar_c0p3_seedrep.yaml",
+  "--manifest",
+  "configs/seedrep/arditi_allpos_qwen35_4b_ar_c0p3_seedrep_manifest.yaml",
+  "--defenses-dir",
+  "/workspace/seedrep/exp/objects/arditi_allpos/qwen35_4b/ladder/cells_view/ar_c0p3",
+  "--out",
+  "/workspace/attempt/exp/serve",
+  "--stop-file",
+  "/workspace/attempt/exp/serve/STOP",
+  "--mode",
+  "attacks",
+  "--model-key",
+  "qwen35_4b",
+  "--eval",
+  "families_served",
+  "--gpu-mem-util",
+  "0.9",
+  "--ready-timeout-s",
+  "2700",
+  "--serving-path",
+  "lora_native",
+  "--adapter-bank",
+  "/vol/seedrep/multilora_adapters/qwen35_4b",
+  "--server-default-policy",
+  "contract_override",
+  "--enable-log-requests",
+  "--upstream-timeout-s",
+  "7200",
+  "--cell",
+  "arditi_allpos",
+  "--expect-object-sha256",
+  "arditi_allpos=ba2212f0c2f9ffef2997bdd24831182052560cf980054bcee9cf95ea0db085b2"
+ ],
+ "standup_id": "smoke-S2__pasttense__arditi__base__shard00",
+ "started_at": "2026-09-19T05:10:14Z",
+ "wave_uuid": "67cfa01b-6ec9-439a-bb0a-558366fd5408"
+}

@@ -1,0 +1,39 @@
+{
+  "cell_id": "constv2-mix-full__psr_ce_all",
+  "harness_cell_id": "si_constv2_mix_full__psr_ce_all",
+  "virtual_model": "petri__si_constv2_mix_full__psr_ce_all",
+  "intervention_hash": "ed91ee5a98cd01de",
+  "routing_table": "/cluster-shared/exp/gsm8k_native_synthetic/serving/g8k_llama8b_constv2-mix-full--psr_ce_all_8192_500001/gsm8k/routing_table.json",
+  "header_located": false,
+  "lens_served_positions": null,
+  "serving_engine": "lora_native",
+  "serving_identity": "proxy_vllm+lora+interleaved",
+  "serving_path": "lora",
+  "steer_positions": "all",
+  "support": "in_support",
+  "authorised_experiment": null,
+  "producer": {"tree_sha": "b367a35d0000000000000000000000000000cafe", "driver": "served_capability_run"},
+  "route": {
+    "virtual_model": "petri__si_constv2_mix_full__psr_ce_all",
+    "serving_identity": "proxy_vllm+lora+interleaved",
+    "serving_engine": "lora_native",
+    "reduction_mode": "not_applicable",
+    "reduction_mode_expectation": "not_consulted",
+    "lens_served_positions": null,
+    "lens_serve_declarations": null,
+    "object_artifact_sha256": "4df62c74415737e2e910d4b3c7a55d169012b6cff538934d4a053ec7318db799",
+    "object_artifact_sha256_by_cell": {"si_constv2_mix_full__psr_ce_all": "4df62c74415737e2e910d4b3c7a55d169012b6cff538934d4a053ec7318db799"}
+  },
+  "transfer_provenance": {
+    "family": "llama",
+    "fit_kind": "document_fit",
+    "fit_response_header_len": null,
+    "fit_template": "e3b0c44298fc1c14",
+    "header_check_class": "document_fit_served_header_located",
+    "header_located": true,
+    "header_moves_with_render": false,
+    "served_header_ids": {"not_available": [128006, 78191, 128007, 271]},
+    "served_positions": null,
+    "served_render": "unspecified"
+  }
+}

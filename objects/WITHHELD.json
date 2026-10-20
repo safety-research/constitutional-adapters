@@ -1,0 +1,30 @@
+{
+ "schema": 1,
+ "note": "Objects the paper evaluates (registry v_paper_objects, in_paper = 1) that this repository does not ship: no directory under objects/ and no row in MANIFEST.json. The records that name them (configs, pins, results) keep their ids; sisteer.objects, the committed-object loader and the tools that read objects/ refuse each by name with its reason.",
+ "objects": [
+  {
+   "object_id": "0dbf406f94a14ab9f9b960155bb81ddb685d2b1c916f9a04dda2f49eda206341",
+   "model_id": "qwen35_4b_it",
+   "paper_label": "safety_lora",
+   "object_kind": "lora",
+   "object_role": "safety",
+   "derivation": "none",
+   "campaign": "sdfbase_full22",
+   "artifact_sha256": "0dbf406f94a14ab9f9b960155bb81ddb685d2b1c916f9a04dda2f49eda206341",
+   "bytes": 856477,
+   "reason": "trained on prompts that include third-party model (xAI Grok) output; withheld from the public release"
+  },
+  {
+   "object_id": "75625f59809498899db9efcd2b19e9ce8c2f95593e7c7c1a109a03e29fe5b5c8",
+   "model_id": "qwen35_4b_it",
+   "paper_label": "safety_relu",
+   "object_kind": "relu_steer",
+   "object_role": "safety",
+   "derivation": "none",
+   "campaign": "sdfbase_full22",
+   "artifact_sha256": "75625f59809498899db9efcd2b19e9ce8c2f95593e7c7c1a109a03e29fe5b5c8",
+   "bytes": 678237,
+   "reason": "trained on prompts that include third-party model (xAI Grok) output; withheld from the public release"
+  }
+ ]
+}

@@ -1,0 +1,259 @@
+{
+  "_schema": "misalign_baseline_pins/1",
+  "_ruling": "RULING 2026-09-13: the two PUBLISHED baselines on the agentic misalignment instrument, on all four paper families \u2014 Arditi's refusal direction (alpha 0.05 gemma/qwen/nemotron, 0.1 llama; the arditi lane's objects, alpha baked into the bytes, prefill-only) and the AlphaSteer RE-BAKE rungs (gemma lam1, qwen lam3, nemotron lam1, llama lam1; the AlphaSteer lane's canonical lambda ladder). Each object is pinned by sha256 HERE, re-hashed on disk by misalign_bank_view.sh before a view entry exists; a mismatch refuses. Pointers from the AlphaSteer lane were re-verified against the objects and against the AlphaSteer lane's own records. RE-PINNED 2026-09-14 ~05:00Z: the AlphaSteer operating points moved (gemma lam3, qwen lam1, nemotron lam2, llama lam1) \u2014 the three moved rungs carry selection_outcome `ruled_2026-09-14` and keep the superseded pick under `superseded`.",
+  "_cells": [
+    "arditi",
+    "alphasteer"
+  ],
+  "_authority": {
+    "arditi": "the arditi lane's staging manifest beside each object (staged_from.json: staged_by scripts/arditi/make_arditi_objects.py, staged_shas.object.pt) + fit_provenance.json; the alpha convention (baked into object.pt, dose_unit residual_norm_fraction, kind static_r, single served layer, prefill) per the AlphaSteer lane 2026-09-14; object.pt re-hashed on the login host 2026-09-14 ~01:20Z",
+    "alphasteer": "the AlphaSteer lane's as-defense-run tree @a584b6e7: configs/alphasteer_f22_defense_<family>_<rung>_sampled_t0[_topp095].yaml dose.object_sha256 (mechanism scalar_base_scale, pending_bake false = the rung is baked into the bytes) AND $GRADE/alphasteer_f22_rebake/ladder_canon/<family>/lambda_ladder.json chosen.object_sha256 + outcome (code alphasteer-f22-run-canon @122cf2a2); object.pt re-hashed on the login host 2026-09-14 ~01:20Z \u2014 all three agree per family"
+  },
+  "gemma4e4b": {
+    "model": "google/gemma-4-E4B-it",
+    "resolved_revision": "ee0ef6023621cff504d758262d4e04895a5af4a2",
+    "chat_template_hash": "0a2c8073c878ab1d",
+    "arditi": {
+      "bank": "arditi_strength",
+      "source": "arditi_strength/gemma4e4b/strength/cells_view/ar_r0p05/arditi",
+      "view": "ar_r0p05",
+      "staged_id": "ar_r0p05__arditi",
+      "object_sha256": "b7cb729daeac18d4a5d4a662c85c7618ef629762f3bd16a98b0d79fed965625f",
+      "kind": "static_r",
+      "alpha": 0.05,
+      "dose_unit": "residual_norm_fraction",
+      "phase": "prefill",
+      "served_layer": 18,
+      "fit_layer_stored": 19,
+      "edit_norm": 4.250049591064453,
+      "h_ref": 85.00099182128906,
+      "identity_sidecar": "fit_provenance.json",
+      "chat_template_hash": "0a2c8073c878ab1d",
+      "resolved_revision": "ee0ef6023621cff504d758262d4e04895a5af4a2",
+      "selection_outcome": "ruled",
+      "producer": "scripts/arditi/make_arditi_objects.py"
+    },
+    "alphasteer": {
+      "bank": "alphasteer_f22_rebake",
+      "source": "alphasteer_f22_rebake/gemma4e4b/ladder_canon/lam2/cells_view/it/alphasteer",
+      "view": "it",
+      "rung": "lam2",
+      "rung_i": 2,
+      "lambda": 0.11328547314326069,
+      "object_sha256": "ac72256eeef4e0f6f163ee55e46d28d6d9f3a5f721c04434901367832dd8bab1",
+      "kind": "alphasteer",
+      "dose_unit": "alphasteer_base_scale",
+      "mechanism": "scalar_base_scale",
+      "pending_bake": false,
+      "identity_sidecar": "fit_provenance.json",
+      "chat_template_hash": "0a2c8073c878ab1d",
+      "resolved_revision": "ee0ef6023621cff504d758262d4e04895a5af4a2",
+      "selection_outcome": "ruled_2026-09-14T14:26Z (supersedes ruled lam3, which superseded chosen lam1)",
+      "size_mb": 326,
+      "authority_config": "as-defense-run@c20aaf2a configs/alphasteer_f22_defense_gemma4e4b_lam2_sampled_t0.yaml (dose.object_sha256)",
+      "producer": "scripts/alphasteer_f22/bake_rungs.py",
+      "selection_note": "Ruling of 2026-09-14 14:26Z: gemma's AlphaSteer operating point moved lam3 -> lam2 (lambda 0.1133). Pinned from the AlphaSteer lane's dose block and re-hashed on cluster A (equal). The lam3 panel already served is a dose-ladder point, not the operating point.",
+      "selection_confirmed_by": "the AlphaSteer lane's as-defense-run@c20aaf2a dose block + on-disk sha256 (2026-09-14 15:00Z); the coordinator's relay names the same object and lambda",
+      "superseded_chain": [
+        {
+          "rung": "lam1",
+          "object_sha256": "9fceffbd80768c5bc7551656348560a4ecf4141c917503bf595b49814fb6c454",
+          "lambda": 0.056642736571630346,
+          "selection_outcome": "chosen",
+          "note": "the canonical ladder's pick, superseded by the 2026-09-14 ruling below; never served by this lane"
+        },
+        {
+          "rung": "lam3",
+          "object_sha256": "748e067ecabcca147b83de7478a9ee31eba1fc1d314d7480edc951cdfc28c8c9",
+          "lambda": 0.22657094628652139,
+          "selection_outcome": "ruled_2026-09-14 (supersedes chosen)",
+          "note": "the 04:57Z ruling (lam3), served by 501542 (cluster A, 06:33-07:59Z) \u2014 that run is a dose-ladder measurement at lambda_served/lambda_ruled = 2.0, kept on disk as misalign/gemma4e4b_bl__lam3-superseded; re-ruled to lam2 at 14:26Z"
+        }
+      ]
+    }
+  },
+  "qwen35_4b": {
+    "model": "Qwen/Qwen3.5-4B",
+    "resolved_revision": "851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a",
+    "chat_template_hash": "a4aee8afcf2e0711",
+    "arditi": {
+      "bank": "arditi_strength",
+      "source": "arditi_strength/qwen35_4b/strength/cells_view/ar_r0p05/arditi",
+      "view": "ar_r0p05",
+      "staged_id": "ar_r0p05__arditi",
+      "object_sha256": "87ffbc4c34a875a4582f2371b2a31f866f2bc3c14622603a09f9e316ff11ece5",
+      "kind": "static_r",
+      "alpha": 0.05,
+      "dose_unit": "residual_norm_fraction",
+      "phase": "prefill",
+      "served_layer": 12,
+      "fit_layer_stored": 13,
+      "edit_norm": 0.468247938156128,
+      "h_ref": 9.364958763122559,
+      "identity_sidecar": "fit_provenance.json",
+      "chat_template_hash": "a4aee8afcf2e0711",
+      "resolved_revision": "851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a",
+      "selection_outcome": "ruled",
+      "producer": "scripts/arditi/make_arditi_objects.py"
+    },
+    "alphasteer": {
+      "bank": "alphasteer_f22_rebake",
+      "source": "alphasteer_f22_rebake/qwen35_4b/ladder_canon/lam1/cells_view/it/alphasteer",
+      "view": "it",
+      "rung": "lam1",
+      "rung_i": 1,
+      "lambda": 0.13688878874217006,
+      "object_sha256": "cd9c311bcf4ee184de829bfdad1082d6e5924d2a11c805cb69203bc0614b30f0",
+      "kind": "alphasteer",
+      "dose_unit": "alphasteer_base_scale",
+      "mechanism": "scalar_base_scale",
+      "pending_bake": false,
+      "identity_sidecar": "fit_provenance.json",
+      "chat_template_hash": "a4aee8afcf2e0711",
+      "resolved_revision": "851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a",
+      "selection_outcome": "ruled_2026-09-14 (supersedes chosen)",
+      "size_mb": 226,
+      "authority_config": "as-defense-run@2aa95c94 configs/alphasteer_f22_defense_qwen35_4b_lam1_sampled_t0.yaml (dose.object_sha256)",
+      "producer": "scripts/alphasteer_f22/bake_rungs.py",
+      "superseded": {
+        "rung": "lam3",
+        "object_sha256": "dd9de64b73676f770fdeb690535b954fb79b153a2e691ca3efff441a58c5f5eb",
+        "lambda": 0.5475551549686802,
+        "selection_outcome": "chosen",
+        "note": "the canonical ladder's pick, superseded by the 2026-09-14 ruling below; never served by this lane"
+      },
+      "selection_note": "Ruling of 2026-09-14 04:57Z: the AlphaSteer operating points moved to gemma lam3, qwen lam1, nemotron lam2, llama lam1 (unchanged). Pinned from the AlphaSteer lane's as-defense-run dose block for the rung and re-hashed on cluster A (equal); the canonical ladder's earlier pick is kept under `superseded`.",
+      "selection_confirmed_by": "the AlphaSteer lane 2026-09-14 05:02Z: (rung, sha256, lambda) match ladder_canon/<model>/lambda_ladder.json rungs[] AND the curve record @2aa95c94; labels as written here",
+      "contamination": {
+        "corrected_contamination_ratio": 0.002,
+        "source": "the AlphaSteer lane's curve record @2aa95c94, static.contamination (cited, not recomputed)"
+      }
+    }
+  },
+  "nemotron3nano4b": {
+    "model": "nvidia/NVIDIA-Nemotron-3-Nano-4B-BF16",
+    "resolved_revision": "dfaf35de3e30f1867dd8dbc38a7fc9fb52d3914f",
+    "chat_template_hash": "ab7813c3abdd9cb6",
+    "arditi": {
+      "bank": "arditi_strength",
+      "source": "arditi_strength/nemotron3nano4b/strength/cells_view/ar_r0p05/arditi",
+      "view": "ar_r0p05",
+      "staged_id": "ar_r0p05__arditi",
+      "object_sha256": "5aef13c2e66b6c8e9335984db3497d3dd2313f8e71c245ad6901a9ef86d404eb",
+      "kind": "static_r",
+      "alpha": 0.05,
+      "dose_unit": "residual_norm_fraction",
+      "phase": "prefill",
+      "served_layer": 30,
+      "fit_layer_stored": 31,
+      "edit_norm": 17.049238586425783,
+      "h_ref": 340.9847717285156,
+      "identity_sidecar": "fit_provenance.json",
+      "chat_template_hash": "ab7813c3abdd9cb6",
+      "resolved_revision": "dfaf35de3e30f1867dd8dbc38a7fc9fb52d3914f",
+      "selection_outcome": "ruled",
+      "producer": "scripts/arditi/make_arditi_objects.py"
+    },
+    "alphasteer": {
+      "bank": "alphasteer_f22_rebake",
+      "source": "alphasteer_f22_rebake/nemotron3nano4b/ladder_canon/lam2/cells_view/main/alphasteer",
+      "view": "main",
+      "rung": "lam2",
+      "rung_i": 2,
+      "lambda": 0.09792055859583025,
+      "object_sha256": "b9a2e680a24214095fb509d02bea3b148a07a432581b9400eb4f17341c939569",
+      "kind": "alphasteer",
+      "dose_unit": "alphasteer_base_scale",
+      "mechanism": "scalar_base_scale",
+      "pending_bake": false,
+      "identity_sidecar": "fit_provenance.json",
+      "chat_template_hash": "ab7813c3abdd9cb6",
+      "resolved_revision": "dfaf35de3e30f1867dd8dbc38a7fc9fb52d3914f",
+      "selection_outcome": "ruled_2026-09-14 (supersedes a4_fallback)",
+      "size_mb": 488,
+      "authority_config": "as-defense-run@2aa95c94 configs/alphasteer_f22_defense_nemotron3nano4b_lam2_sampled_t0_topp095.yaml (dose.object_sha256)",
+      "producer": "scripts/alphasteer_f22/bake_rungs.py",
+      "selection_note": "Ruling of 2026-09-14 04:57Z: the AlphaSteer operating points moved to gemma lam3, qwen lam1, nemotron lam2, llama lam1 (unchanged). Pinned from the AlphaSteer lane's as-defense-run dose block for the rung and re-hashed on cluster A (equal); the canonical ladder's earlier pick is kept under `superseded`.",
+      "superseded": {
+        "rung": "lam1",
+        "object_sha256": "360589fc8ac1770ece0f7411e049abdb7febad9263158aa288a8d7e2550adf6f",
+        "lambda": 0.048960279297915126,
+        "selection_outcome": "a4_fallback",
+        "note": "the canonical ladder's pick, superseded by the 2026-09-14 ruling below; never served by this lane"
+      },
+      "selection_confirmed_by": "the AlphaSteer lane 2026-09-14 05:02Z: (rung, sha256, lambda) match ladder_canon/<model>/lambda_ladder.json rungs[] AND the curve record @2aa95c94; labels as written here",
+      "contamination": {
+        "corrected_contamination_ratio": 0.042,
+        "source": "the AlphaSteer lane's curve record @2aa95c94, static.contamination (cited, not recomputed)"
+      }
+    }
+  },
+  "llama8b": {
+    "model": "NousResearch/Meta-Llama-3.1-8B-Instruct",
+    "resolved_revision": "d10aef7999a2b5ba950ab3974312feeedbfe0b77",
+    "chat_template_hash": "b48c47f644389271",
+    "arditi": {
+      "bank": "arditi_strength",
+      "source": "arditi_strength/llama8b/strength/cells_view/ar_r0p05/arditi",
+      "view": "ar_r0p05",
+      "staged_id": "ar_r0p05__arditi",
+      "object_sha256": "1755a5627a18f931b8f125bcebe52f399da3d7507128de60ff6f55dba717a0b3",
+      "kind": "static_r",
+      "alpha": 0.05,
+      "dose_unit": "residual_norm_fraction",
+      "phase": "prefill",
+      "served_layer": 10,
+      "fit_layer_stored": 11,
+      "edit_norm": 0.3873917102813721,
+      "h_ref": 7.747834205627441,
+      "identity_sidecar": "fit_provenance.json",
+      "chat_template_hash": "b48c47f644389271",
+      "resolved_revision": "d10aef7999a2b5ba950ab3974312feeedbfe0b77",
+      "selection_outcome": "ruled_2026-09-14 (supersedes the derived alpha 0.1)",
+      "producer": "scripts/arditi/make_arditi_objects.py",
+      "superseded_chain": [
+        {
+          "view": "ar_r0p1",
+          "staged_id": "ar_r0p1__arditi",
+          "alpha": 0.1,
+          "object_sha256": "0f654e88f5bd7d896226b6e326a83d7431d038e6bce0b9cfb69d0e05adda877f",
+          "served_layer": 10,
+          "edit_norm": 0.7747834205627442,
+          "selection_outcome": "ruled",
+          "note": "the dose of the 2026-09-13 ruling (alpha 0.1, derived by the selection rule from 0.50 of one item on an inclusive 10-item budget), served by 501540 (cluster A, 06:15-06:35Z) \u2014 a dose-ladder point at alpha_served/alpha_ruled = 2.0, kept as misalign/llama8b_bl__r0p1-superseded; re-ruled to 0.05 on 2026-09-14 (the AlphaSteer lane: the full-refusal-only statistic picks 0.05; graded OR-Bench prices 0.1 at +30.60 pp vs 0.05 at +16.69)"
+        }
+      ],
+      "selection_note": "Ruling of 2026-09-14: llama's Arditi operating point is alpha 0.05 (an override of the selection rule's 0.1). Object re-hashed on cluster A and cluster B (equal); its fit_provenance: alpha 0.05, served layer 10, fit layer 11, edit_norm 0.387, chat template b48c47f644389271, revision d10aef79.",
+      "selection_confirmed_by": "the coordinator's relay of the AlphaSteer lane's pin (object 1755a562\u2026) + the object's own provenance on both clusters (2026-09-14 17:00Z)"
+    },
+    "alphasteer": {
+      "bank": "alphasteer_f22_rebake",
+      "source": "alphasteer_f22_rebake/llama8b/ladder_canon/lam1/cells_view/it/alphasteer",
+      "view": "it",
+      "rung": "lam1",
+      "rung_i": 1,
+      "lambda": 0.11400063983114052,
+      "object_sha256": "4cf8e1641a596d2dce36fd151cec4a72493fa6401d7b6da5cb7592720e0c5396",
+      "kind": "alphasteer",
+      "dose_unit": "alphasteer_base_scale",
+      "mechanism": "scalar_base_scale",
+      "pending_bake": false,
+      "identity_sidecar": "fit_provenance.json",
+      "chat_template_hash": "b48c47f644389271",
+      "resolved_revision": "d10aef7999a2b5ba950ab3974312feeedbfe0b77",
+      "selection_outcome": "chosen_confirmed_2026-09-14",
+      "size_mb": 641,
+      "authority_config": "as-defense-run@a584b6e7 configs/alphasteer_f22_defense_llama8b_lam1_sampled_t0.yaml (dose.object_sha256)",
+      "authority_ladder": "$GRADE/alphasteer_f22_rebake/ladder_canon/llama8b/lambda_ladder.json (chosen.object_sha256, outcome)",
+      "producer": "scripts/alphasteer_f22/bake_rungs.py",
+      "selection_note": "llama lam1: under the 2026-09-14 rule an ELIMINATION, not a selection \u2014 the only rung inside the clean band; two independent criteria (the canonical ladder's choice and the new band) land on the same rung. Least comfortable pick: see `contamination`.",
+      "selection_confirmed_by": "the AlphaSteer lane 2026-09-14 05:02Z: (rung, sha256, lambda) match ladder_canon/<model>/lambda_ladder.json rungs[] AND the curve record @2aa95c94; labels as written here",
+      "contamination": {
+        "corrected_contamination_ratio": 0.098,
+        "steered_minus_anchor_degeneration_delta": 0.068,
+        "caveat": "the highest contamination of the four ruled rungs: admissible under the ruled clean band of 0.10 but closest to the line; at a 0.05 band llama would have had NO admissible dose (the AlphaSteer lane 2026-09-14). Cite the AlphaSteer lane's curve record `static.contamination` \u2014 never rederive (the naive worst-family/mean form overstates ~4x)",
+        "source": "the AlphaSteer lane's curve record @2aa95c94, static.contamination (cited, not recomputed)"
+      }
+    }
+  }
+}

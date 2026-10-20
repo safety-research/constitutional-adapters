@@ -1,0 +1,165 @@
+{
+ "at": "2026-09-23T20:00:06+00:00",
+ "family": "nemotron_h",
+ "live": {
+  "status": "OK",
+  "verdict": {
+   "n_called": 21,
+   "n_grammar_in_raw": 21,
+   "n_items": 24,
+   "per_category_called": {
+    "exec_multiple": {
+     "called": 1,
+     "n": 1
+    },
+    "exec_parallel": {
+     "called": 1,
+     "n": 1
+    },
+    "exec_parallel_multiple": {
+     "called": 1,
+     "n": 1
+    },
+    "exec_simple": {
+     "called": 1,
+     "n": 1
+    },
+    "irrelevance": {
+     "called": 1,
+     "n": 2
+    },
+    "live_irrelevance": {
+     "called": 0,
+     "n": 2
+    },
+    "live_multiple": {
+     "called": 3,
+     "n": 3
+    },
+    "live_parallel": {
+     "called": 1,
+     "n": 1
+    },
+    "live_parallel_multiple": {
+     "called": 1,
+     "n": 1
+    },
+    "live_relevance": {
+     "called": 1,
+     "n": 1
+    },
+    "live_simple": {
+     "called": 2,
+     "n": 2
+    },
+    "multiple": {
+     "called": 1,
+     "n": 1
+    },
+    "parallel": {
+     "called": 1,
+     "n": 1
+    },
+    "parallel_multiple": {
+     "called": 1,
+     "n": 1
+    },
+    "simple_java": {
+     "called": 1,
+     "n": 1
+    },
+    "simple_javascript": {
+     "called": 1,
+     "n": 1
+    },
+    "simple_python": {
+     "called": 2,
+     "n": 2
+    },
+    "sql": {
+     "called": 1,
+     "n": 1
+    }
+   },
+   "reasons": [],
+   "verdict": "PASS"
+  }
+ },
+ "model": "nemotron3nano4b",
+ "model_key": "nemotron3nano4b",
+ "offline": {
+  "status": "OK",
+  "verdict": {
+   "edges": [
+    {
+     "id": "bare_function_no_wrapper",
+     "outcome_index": 0,
+     "parsed": {
+      "content": null,
+      "tool_calls": [
+       {
+        "arguments": "{\"city\": \"Paris\"}",
+        "name": "get_weather"
+       }
+      ],
+      "tools_called": true
+     }
+    },
+    {
+     "id": "empty_block",
+     "outcome_index": 1,
+     "parsed": {
+      "content": null,
+      "tool_calls": [],
+      "tools_called": false
+     }
+    }
+   ],
+   "either_of": [
+    {
+     "id": "null_value",
+     "outcome_index": 1,
+     "parsed": {
+      "content": null,
+      "tool_calls": [
+       {
+        "arguments": "{\"city\": \"Paris\", \"note\": \"null\"}",
+        "name": "get_weather"
+       }
+      ],
+      "tools_called": true
+     }
+    },
+    {
+     "id": "undeclared_param",
+     "outcome_index": 1,
+     "parsed": {
+      "content": null,
+      "tool_calls": [
+       {
+        "arguments": "{\"city\": \"Paris\", \"extra\": \"7\"}",
+        "name": "get_weather"
+       }
+      ],
+      "tools_called": true
+     }
+    }
+   ],
+   "n_either_of": 2,
+   "n_either_of_failed": 0,
+   "n_failed": 0,
+   "n_fixtures": 9,
+   "reasons": [],
+   "verdict": "PASS"
+  }
+ },
+ "on_pass": [
+  "vllm_server.TOOL_PARSER_BY_FAMILY[\"nemotron_h\"] = \"qwen3_xml\"  (Slice A's file; sequential)",
+  "contracts MODEL ROWS: 'nemotron3nano4b' petri_manifest = 'configs/capeval/manifests/petri_full22_nemotron3nano4b.yaml'",
+  "configs/capeval/bcb_bfcl_200_widen_roster.yaml: every bfcl_200 entry of the nemotron_h waves -> runnable (reason/unblock cleared; `prerequisites_met` records the probe record path)",
+  "tests/test_nemotron_serving_registration.py::test_real_model_family_is_nemotron_h_and_hybrid: assert 'nemotron_h' IN TOOL_PARSER_BY_FAMILY (flips ONLY on this PASS)"
+ ],
+ "parser": "qwen3_xml",
+ "sha": "8365992",
+ "verdict": "PASS"
+}

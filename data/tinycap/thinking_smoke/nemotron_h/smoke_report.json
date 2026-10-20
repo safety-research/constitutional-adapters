@@ -1,0 +1,199 @@
+{
+ "diagnostic": true,
+ "model_key": "nemotron3nano4b",
+ "family": "nemotron_h",
+ "split_mode_candidate": "implicit_open",
+ "vmodel": "petri__base",
+ "cap": 1536,
+ "n_on": 24,
+ "n_off": 4,
+ "concurrency": 8,
+ "sampling_mode": "thinking_card",
+ "sampling_params": {
+  "temperature": 1.0,
+  "top_p": 0.95
+ },
+ "header": {
+  "off": {
+   "got": [
+    10,
+    1503,
+    19464,
+    1010,
+    12,
+    13
+   ],
+   "want": [
+    10,
+    1503,
+    19464,
+    1010,
+    12,
+    13
+   ],
+   "error": null
+  },
+  "on": {
+   "got": [
+    10,
+    1503,
+    19464,
+    1010,
+    12,
+    1010
+   ],
+   "want": [
+    10,
+    1503,
+    19464,
+    1010,
+    12,
+    1010
+   ],
+   "error": null
+  }
+ },
+ "checks": [
+  {
+   "check": "upstream_timeout",
+   "status": "PASS",
+   "recorded": 7200.0,
+   "want": 7200.0
+  },
+  {
+   "check": "header_off",
+   "status": "PASS",
+   "got": [
+    10,
+    1503,
+    19464,
+    1010,
+    12,
+    13
+   ],
+   "want": [
+    10,
+    1503,
+    19464,
+    1010,
+    12,
+    13
+   ],
+   "error": null
+  },
+  {
+   "check": "header_on",
+   "status": "PASS",
+   "got": [
+    10,
+    1503,
+    19464,
+    1010,
+    12,
+    1010
+   ],
+   "want": [
+    10,
+    1503,
+    19464,
+    1010,
+    12,
+    1010
+   ],
+   "error": null
+  },
+  {
+   "check": "header_arms_differ_or_invariant_family",
+   "status": "PASS",
+   "off": [
+    10,
+    1503,
+    19464,
+    1010,
+    12,
+    13
+   ],
+   "on": [
+    10,
+    1503,
+    19464,
+    1010,
+    12,
+    1010
+   ]
+  },
+  {
+   "check": "requests_served",
+   "status": "PASS",
+   "n": 28,
+   "n_errors": 0,
+   "first_error": null
+  },
+  {
+   "check": "render_regime_stamps",
+   "status": "PASS",
+   "on": [
+    "thinking_on"
+   ],
+   "off": [
+    "thinking_off"
+   ]
+  },
+  {
+   "check": "base_route_salt_regime",
+   "status": "PASS",
+   "regimes": [
+    "cell-stable"
+   ]
+  },
+  {
+   "check": "emitted_shape",
+   "status": "PASS",
+   "n_bad": 0,
+   "first_bad": null,
+   "at_cap_on": 6
+  },
+  {
+   "check": "ledger_rows",
+   "status": "PASS",
+   "n_rows": 28,
+   "n_sent": 28,
+   "error_codes": [
+    "None"
+   ],
+   "thinking_flags": [
+    "False",
+    "True"
+   ]
+  }
+ ],
+ "n_at_cap_on": 6,
+ "completion_tokens_on": [
+  1536,
+  307,
+  582,
+  812,
+  509,
+  1536,
+  1536,
+  628,
+  264,
+  312,
+  231,
+  550,
+  199,
+  772,
+  235,
+  975,
+  548,
+  1536,
+  573,
+  224,
+  1536,
+  387,
+  1536,
+  1250
+ ],
+ "verdict": "PASS",
+ "written_at": "2026-09-10T21:41:29Z"
+}

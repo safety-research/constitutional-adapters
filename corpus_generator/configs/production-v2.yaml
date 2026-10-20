@@ -1,0 +1,56 @@
+# v2 assembly config (post-review fixes, 2026-09-01). Same run_id as
+# production so the v2 finals sit next to the v1 finals
+# (final-production-20260831-v2.jsonl); v1 finals are immutable inputs.
+#
+# Adds the register caps (Fix 2) on top of production.yaml's frozen floors:
+# - stories "safeguard beat": the analysis-review's "not the only/last
+#   safeguard" family. The review's own regex wasn't preserved; this pattern
+#   is the calibrated superset (v1 incidence 1,442/17,549 = 8.22% vs the
+#   review's 1,324 = 7.54%) — erring wide since the cap is the point.
+# - advice "Deployment context:" openings (v1: 792 of 2,356 with-system) and
+#   "Internal deployment/tool/tooling" openings (v1: 360) — anchored at the
+#   system prompt start, exactly the analysis §4 counters.
+# Every family capped at <1% of the resulting corpus, dropped
+# deterministically (register_seed) with diversity-preserving keeps.
+run_id: production-20260831
+seed: 0
+
+advice:
+  n_principles: 40
+  n_types: 10
+  n_scenarios_per_call: 10
+stories:
+  n_categories: 50
+  n_subcategories: 10
+  subcategories_use: null
+  calls_per_subcategory: 18
+
+engine:
+  nonce_metadata: null
+
+filter:
+  thresholds:              # frozen floors, identical to production.yaml
+    advice_alignment: 9
+    advice_realism: 8
+    story_consistency: 8
+    story_quality: 8
+  register_seed: 0
+  register_families:
+    - name: safeguard_beat
+      field: text
+      anchored: false
+      max_frac: 0.01
+      pattern: 'safeguards?|(only|last|sole|final)\s+line\s+of\s+defen[cs]e|(carry|hold|bear)(ing)?\s+(this|that|the)\s+(judgment|weight)\s+alone'
+      diversity_fields: [category_id, target_words, ordinary]
+    - name: deployment_context_opening
+      field: system
+      anchored: true
+      max_frac: 0.01
+      pattern: '\s*deployment\s+context\s*:'
+      diversity_fields: [principle_id, prompt_type_id]
+    - name: internal_deployment_opening
+      field: system
+      anchored: true
+      max_frac: 0.01
+      pattern: '\s*internal\s+(deployment|tool(ing)?)\b'
+      diversity_fields: [principle_id, prompt_type_id]

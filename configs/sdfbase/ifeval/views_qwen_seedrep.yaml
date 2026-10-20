@@ -1,0 +1,108 @@
+# configs/sdfbase/ifeval/views_qwen_seedrep.yaml — the batch-64 THREE-SEED Qwen rows of the IFEval canonical instrument:
+# a SIBLING document beside the frozen 40-row views.yaml, generated through the SAME builder into matrix_qwen_seedrep.json by
+#   python scripts/sdfbase/ifeval/make_ifeval_matrix.py --views-yaml configs/sdfbase/ifeval/views_qwen_seedrep.yaml \
+#          --out configs/sdfbase/ifeval/matrix_qwen_seedrep.json            (--check pins byte-identity; --table prints the rows)
+# and into six per-TAG overlay pairs by make_ifeval_overlays.py --matrix configs/sdfbase/ifeval/matrix_qwen_seedrep.json.
+# The frozen 40-row matrix, its pins and its 14 overlays are UNTOUCHED (every widening is a new constant / a new document).
+#
+# THE ROWS (30 = 24 + 3 + 3), on the LANE views the roster serves for qwen35_4b:
+#   * per seed view s1 / s2 / s3 (TAG qwen35_4b_s<s>, slug qwen35_4b-sdfbase-s<s>, bank /vol/objects/sdfbase/full22/qwen35_4b/s<s>):
+#     the neutral enumeration in roster order — none, constv2-mix-full__psr_ce_all (constitution_relu),
+#     constv2-mix-full__lora_r4_ce (constitution_lora), constv2ctl2-full__psr_ce_all (control_relu),
+#     constv2ctl2-full__lora_r4_ce (control_lora), constv2-mix-full__lora_r4_ce_minus_ctl (difference_lora),
+#     prompted__safety_refusal, prompted__si_constitution — 8 rows; the two prompted cells are ROSTER cells on these
+#     views, so there is NO prompted_extra here.
+#   * per paired view s1p / s2p / s3p: the COMPOSED difference-ReLU cell constv2-mix-full__psr_ce_all_minus_ctl alone
+#     (view_cells below; NO own none — the row pairs with s<s>/none, anchor_view below; the view's r=4 companion
+#     and LoRA difference are measured on s<s> and are not rows here) — 3 rows.
+#   * the Arditi refusal-steer arditi_allpos (ar_c0p3, object ba2212f0…) at seed bases 1 / 2 / 3 — lane_extra below
+#     (required, as on GSM8K; staged INSIDE each s<s> view bank on the volume as an extra bare-cell dir) — 3 rows.
+# The ReLU arms are IN: exclude is EMPTY (the PSR exclusion block belongs to the frozen 40-row document only).
+#
+# THE INSTRUMENT is the canonical IFEval row: thinking OFF, vendor_preset (Qwen instruct row T 0.7 / top_p 0.8 /
+# top_k 20 / presence 1.5), k = 2, the ladder 2,048 -> 4,096 -> 8,192 at > 1 % raw at-cap of draws, the frozen document's
+# prompt classes / geometry entries verbatim. SEEDS: IFEval keeps its own fixed-base rule (IFEVAL_SEED_BASE 20260909;
+# the driver REFUSES --inspect-seed-policy replicate for an ifeval-only run) — the three seed views draw IDENTICAL decode
+# seeds per (item, trial); the seed axis is the fitted OBJECT. No per-seed rule is declared and none is passed.
+#
+# SERVING: NATIVE. serving_path lora_native is declared here and stamped on every row; the dispatcher
+# passes it to the launcher (plan_configurations(serving_path=lora_native); the adapter bank
+# /vol/tinycap/multilora_adapters/qwen35_4b exists on the volume — read-only listing 2026-09-22). The canonical wave's Qwen
+# IFEval stores (pin e43f81f, views main / it) attest serving_path lens and are NOT carries. The PASS criterion of the canary
+# is the store's own manifest attestation (route.serving_engine == lora_native), never this declaration.
+#
+# THE FREEZE: frozen_inputs names byte-identical copies of the shared roster + pins AS COMMITTED at the base commit
+# 7b71cb2d (main 7b71cb2d87347cf39b92b2779e2dbb5e542d3aa1, 2026-09-22) under frozen/7b71cb2d/ — the state
+# that carries the six lane views with every seed object pinned (base64s<s>__…, derived_base64s<s>__…,
+# paired_eb64s<s>__…: 18 pins). Their sha256 is asserted on every load (an edited copy refuses by name;
+# `git show 7b71cb2d:<path>` restores it). Re-freezing is a logged decision, never a side effect of a shared-roster commit.
+# The Llama overlays are NOT merged (this document expresses no llama8b; the copy already carries that target).
+#
+# WAVE ROOT (the dispatcher's --wave-root, not a matrix field): /vol/tinycap/ifeval_seedrep/<sha7>; the out roots are the
+# ONE path constructor's (controls/qwen35_4b_<view>/<cellslug>/vendor_preset[__rung<cap>]) under it.
+frozen_inputs:
+  roster: configs/sdfbase/ifeval/frozen/7b71cb2d/sdfbase_full22_roster.yaml
+  pins: configs/sdfbase/ifeval/frozen/7b71cb2d/sdfbase_full22_pins.json
+  roster_sha256: 5d1c37f8a9ba6a9fa52983268fb7e578bea944de581f79514535bdc65ce8e2a0
+  pins_sha256: afdda5edf68241b9cf7cbca50ee287b9d716269941fbdc6bc8555b71dfd43152
+views:
+  qwen35_4b: [s1, s2, s3, s1p, s2p, s3p]
+
+# The ReLU arms are IN — nothing is excluded (the `arms_matching: psr` block is the 40-row document's alone).
+exclude: []
+
+# The paired views express the COMPOSED difference-ReLU cell ALONE — no own `none` (the seed view's anchor is the
+# anchor), no re-measured companion / LoRA difference (measured on s<s>). A listed cell must be in the view's enumeration.
+view_cells:
+  s1p: [constv2-mix-full__psr_ce_all_minus_ctl]
+  s2p: [constv2-mix-full__psr_ce_all_minus_ctl]
+  s3p: [constv2-mix-full__psr_ce_all_minus_ctl]
+
+# Each paired view's cell_minus_none leg resolves against its SEED view's launched `none` (the roster says
+# `paired_of: s<s>`; the reader pairs by view). check_contrasts reads this map.
+anchor_view:
+  s1p: s1
+  s2p: s2
+  s3p: s3
+
+# The Arditi refusal-steer rows — a fitted Class B cell ANOTHER lane fit (arditi-qwen-all-positions, ar_c0p3,
+# object ba2212f0c2f9ffef2997bdd24831182052560cf980054bcee9cf95ea0db085b2), pinned from ITS pins file, declared STAGED as an
+# extra bare-cell dir inside each s<s> view bank on the volume (stage_seed_banks_modal.sh puts
+# objects/sdfbase/full22/qwen35_4b/s<s>/arditi_allpos/{object.pt, fit_provenance.json}). `bank` = the source bank the row
+# records as bank_view (the GSM8K seed-replicate Arditi rows' spelling); the driver's --bank-view stays the served view s<s>.
+lane_extra:
+  - key: qwen35_4b
+    view: s1
+    cell: arditi_allpos
+    staged_id: ar_c0p3__arditi_allpos
+    pins: configs/arditi_allpos_pins.json
+    bank: ar_c0p3
+    sidecar: fit_provenance.json
+    reason: >
+      2026-09-22: the Arditi refusal-steer IS required on every capability eval, as on GSM8K — the
+      all-positions direction at c = 0.3 (ar_c0p3) served on the seed-1 engine beside the seed's eight arms.
+  - key: qwen35_4b
+    view: s2
+    cell: arditi_allpos
+    staged_id: ar_c0p3__arditi_allpos
+    pins: configs/arditi_allpos_pins.json
+    bank: ar_c0p3
+    sidecar: fit_provenance.json
+    reason: >
+      The same object on the seed-2 engine (the object does not vary with the seed; the seed view's anchor does).
+  - key: qwen35_4b
+    view: s3
+    cell: arditi_allpos
+    staged_id: ar_c0p3__arditi_allpos
+    pins: configs/arditi_allpos_pins.json
+    bank: ar_c0p3
+    sidecar: fit_provenance.json
+    reason: >
+      The same object on the seed-3 engine.
+
+# Native serving, declared once and stamped on every row.
+serving_path: lora_native
+
+# No holds (30 rows / 0 held / 30 launched) and no deferred slots (AlphaSteer / Arditi-prefill are the 40-row document's).
+holds: []
+deferred: []

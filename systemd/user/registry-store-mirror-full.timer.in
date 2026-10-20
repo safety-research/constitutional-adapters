@@ -1,0 +1,16 @@
+# registry-store-mirror-full.timer — results registry. Rendered for the site and installed into ~/.config/systemd/user/ by the registry installer.
+# Weekly, early Sunday UTC (the clusters' quietest window), an hour after the record-log mirror's weekly full verify so the two never
+# queue their jobs together, with a randomized delay so it never lines up with another weekly job to the minute; Persistent= so a
+# grading host that was down at the hour runs it on the next boot.
+[Unit]
+Description=Results registry weekly full store-mirror verify (every grading-host file read, every published generation re-hashed on the cluster), Sundays
+
+[Timer]
+OnCalendar=Sun *-*-* 03:00:00 UTC
+RandomizedDelaySec=30min
+Persistent=true
+AccuracySec=5min
+Unit=registry-store-mirror-full.service
+
+[Install]
+WantedBy=timers.target

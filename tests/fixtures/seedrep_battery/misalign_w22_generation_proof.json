@@ -1,0 +1,594 @@
+{
+ "added_legs": {
+  "legs": [
+   "anthropic/claude-opus-4-8",
+   "grok-4.6",
+   "openrouter/x-ai/grok-4.6",
+   "opus-4-8"
+  ],
+  "per_leg": {
+   "anthropic/claude-opus-4-8": 0,
+   "grok-4.6": 0,
+   "openrouter/x-ai/grok-4.6": 0,
+   "opus-4-8": 0
+  },
+  "uses": 0
+ },
+ "basis": "generation-only store: every JSON string of every cell's meta.json and responses.jsonl, every response_evidence.jsonl record (the proxy's vmodel per served response) and modal_evidence.json scanned for each REMOVED and ADDED leg's model id and alias (derived from the two trees' manifests); every observed model name held to the archived row's target set; a hit is a use",
+ "bytes_read": 87303616,
+ "cells": 16,
+ "chain": "W22 56aff576e297 -> launch 0f00f7fae: the chain policy is derived from configs/capeval/manifests/petri_full22_qwen35_4b_s1.yaml at both trees (see policy)",
+ "foreign_models": [],
+ "inputs": {
+  "/vol/seedrep/56aff57/exp/seedrep_battery_modal_smoke/S5/misalign/s1/shard00/attempts/01M2XD1H6W9CT4XFNSTZ7VED8R-b4cbfce42621/exp/misalign/agentic__s1__leaking/none/meta.json": "31d483fdcf027a5920a034358af96c95e36c571bebc7e1b7477a18e11e7c73fc",
+  "/vol/seedrep/56aff57/exp/seedrep_battery_modal_smoke/S5/misalign/s1/shard00/attempts/01M2XD1H6W9CT4XFNSTZ7VED8R-b4cbfce42621/exp/misalign/agentic__s1__leaking/none/responses.jsonl": "6b0434752873e678640afca96ec4a47a95b732d4f8fa277a4f5dc2edf93341c9",
+  "/vol/seedrep/56aff57/exp/seedrep_battery_modal_smoke/S5/misalign/s1/shard00/attempts/01M2XD1H6W9CT4XFNSTZ7VED8R-b4cbfce42621/exp/misalign/agentic__s1__leaking/prompted__constitution/meta.json": "f31a8ba3d88972e5d1eee059a4f0c4d05e5b875e4a8ba01472f7ab1bbc7f6d5f",
+  "/vol/seedrep/56aff57/exp/seedrep_battery_modal_smoke/S5/misalign/s1/shard00/attempts/01M2XD1H6W9CT4XFNSTZ7VED8R-b4cbfce42621/exp/misalign/agentic__s1__leaking/prompted__constitution/responses.jsonl": "015aaa8e5f27f91bead7b42f742a37ca629765859c10588c1a46cdd73a257515",
+  "/vol/seedrep/56aff57/exp/seedrep_battery_modal_smoke/S5/misalign/s1/shard00/attempts/01M2XD1H6W9CT4XFNSTZ7VED8R-b4cbfce42621/exp/misalign/agentic__s1__leaking/prompted__safety/meta.json": "e1a60839ab8aabe2f213d74a5dea5183d38bc305113540e4af07ce101bbea520",
+  "/vol/seedrep/56aff57/exp/seedrep_battery_modal_smoke/S5/misalign/s1/shard00/attempts/01M2XD1H6W9CT4XFNSTZ7VED8R-b4cbfce42621/exp/misalign/agentic__s1__leaking/prompted__safety/responses.jsonl": "b26ee6d5d49ff889127adf892b432899bb719e37b7368edefc4b33578618a98d",
+  "/vol/seedrep/56aff57/exp/seedrep_battery_modal_smoke/S5/misalign/s1/shard00/attempts/01M2XD1H6W9CT4XFNSTZ7VED8R-b4cbfce42621/exp/misalign/agentic__s1__leaking/response_evidence.jsonl": "676ba8f5dfb395bddb44db41587dec61b3abe2b113c36ed727a98f1e650f6140",
+  "/vol/seedrep/56aff57/exp/seedrep_battery_modal_smoke/S5/misalign/s1/shard00/attempts/01M2XD1H6W9CT4XFNSTZ7VED8R-b4cbfce42621/exp/misalign/agentic__s1__leaking/si_constv2_mix_full__lora_r4_ce/meta.json": "dd62c121d3c7d2ab1de856eb8c2b43fd35bb11b51d5d4ea6b8eed2b04551f3c7",
+  "/vol/seedrep/56aff57/exp/seedrep_battery_modal_smoke/S5/misalign/s1/shard00/attempts/01M2XD1H6W9CT4XFNSTZ7VED8R-b4cbfce42621/exp/misalign/agentic__s1__leaking/si_constv2_mix_full__lora_r4_ce/responses.jsonl": "e361ec7a7494512b67542338db4a6c67e9c588cda750fd9097aa8e53179c69dc",
+  "/vol/seedrep/56aff57/exp/seedrep_battery_modal_smoke/S5/misalign/s1/shard00/attempts/01M2XD1H6W9CT4XFNSTZ7VED8R-b4cbfce42621/exp/misalign/agentic__s1__leaking/si_constv2_mix_full__lora_r4_ce_minus_ctl/meta.json": "bb552f935bd6deaaba01846c7d6f5ffd7f65d53d593b25ef0eabed781ce7a27c",
+  "/vol/seedrep/56aff57/exp/seedrep_battery_modal_smoke/S5/misalign/s1/shard00/attempts/01M2XD1H6W9CT4XFNSTZ7VED8R-b4cbfce42621/exp/misalign/agentic__s1__leaking/si_constv2_mix_full__lora_r4_ce_minus_ctl/responses.jsonl": "da166b73d038da9f2c8fecfe260552cda359abd287ed4c342c2b00459f7c2030",
+  "/vol/seedrep/56aff57/exp/seedrep_battery_modal_smoke/S5/misalign/s1/shard00/attempts/01M2XD1H6W9CT4XFNSTZ7VED8R-b4cbfce42621/exp/misalign/agentic__s1__leaking/si_constv2_mix_full__psr_ce_all/meta.json": "5dc4277003abf053ebe31834360c595b33c2495ee2347357777fc412a3896f13",
+  "/vol/seedrep/56aff57/exp/seedrep_battery_modal_smoke/S5/misalign/s1/shard00/attempts/01M2XD1H6W9CT4XFNSTZ7VED8R-b4cbfce42621/exp/misalign/agentic__s1__leaking/si_constv2_mix_full__psr_ce_all/responses.jsonl": "ee4eba31d07d6ba925856cf9fef4e053d28a7d62247c13a99d95f546f0cba6cc",
+  "/vol/seedrep/56aff57/exp/seedrep_battery_modal_smoke/S5/misalign/s1/shard00/attempts/01M2XD1H6W9CT4XFNSTZ7VED8R-b4cbfce42621/exp/misalign/agentic__s1__leaking/si_constv2ctl2_full__lora_r4_ce/meta.json": "48b3936c8e2e8dee885682d662ce0acd75e4047499eab790df47fc0fc1c15233",
+  "/vol/seedrep/56aff57/exp/seedrep_battery_modal_smoke/S5/misalign/s1/shard00/attempts/01M2XD1H6W9CT4XFNSTZ7VED8R-b4cbfce42621/exp/misalign/agentic__s1__leaking/si_constv2ctl2_full__lora_r4_ce/responses.jsonl": "e15148da739e128063daeb86de16b7b419a8a7b73da76439ca0d6e0c7fabed3e",
+  "/vol/seedrep/56aff57/exp/seedrep_battery_modal_smoke/S5/misalign/s1/shard00/attempts/01M2XD1H6W9CT4XFNSTZ7VED8R-b4cbfce42621/exp/misalign/agentic__s1__leaking/si_constv2ctl2_full__psr_ce_all/meta.json": "4433902c4dae2579b238a8ed93d533559498d7990bf8ab6e8ff2cfdd1a81d909",
+  "/vol/seedrep/56aff57/exp/seedrep_battery_modal_smoke/S5/misalign/s1/shard00/attempts/01M2XD1H6W9CT4XFNSTZ7VED8R-b4cbfce42621/exp/misalign/agentic__s1__leaking/si_constv2ctl2_full__psr_ce_all/responses.jsonl": "7fa78dc4179fe1bf1ce25b54c6052ff424e76f632fc862a2fba9edf86972e4f2",
+  "/vol/seedrep/56aff57/exp/seedrep_battery_modal_smoke/S5/misalign/s1/shard00/attempts/01M2XD1H6W9CT4XFNSTZ7VED8R-b4cbfce42621/exp/misalign/agentic__s1__murder/none/meta.json": "50c12e94b5324a0c25184df8515f9b678a8b871e18db2b635c3c04a095f44ac8",
+  "/vol/seedrep/56aff57/exp/seedrep_battery_modal_smoke/S5/misalign/s1/shard00/attempts/01M2XD1H6W9CT4XFNSTZ7VED8R-b4cbfce42621/exp/misalign/agentic__s1__murder/none/responses.jsonl": "bf30a03fdb277010221d310529493cfec5bec263e113c61afb1a84a079b5beca",
+  "/vol/seedrep/56aff57/exp/seedrep_battery_modal_smoke/S5/misalign/s1/shard00/attempts/01M2XD1H6W9CT4XFNSTZ7VED8R-b4cbfce42621/exp/misalign/agentic__s1__murder/prompted__constitution/meta.json": "ac3f99411e76a1653a1bbc57cb38540ee617ada09ee5f19be22c4f08dfcad3c2",
+  "/vol/seedrep/56aff57/exp/seedrep_battery_modal_smoke/S5/misalign/s1/shard00/attempts/01M2XD1H6W9CT4XFNSTZ7VED8R-b4cbfce42621/exp/misalign/agentic__s1__murder/prompted__constitution/responses.jsonl": "13b54f27adfb7ed49d8f7ce6c4bb1bc4323abb2804af94673207c5a25dfad753",
+  "/vol/seedrep/56aff57/exp/seedrep_battery_modal_smoke/S5/misalign/s1/shard00/attempts/01M2XD1H6W9CT4XFNSTZ7VED8R-b4cbfce42621/exp/misalign/agentic__s1__murder/prompted__safety/meta.json": "00f0273e52ae2c573b1395e8b27b933c436c15040d0c4cf10345ab5b53e90390",
+  "/vol/seedrep/56aff57/exp/seedrep_battery_modal_smoke/S5/misalign/s1/shard00/attempts/01M2XD1H6W9CT4XFNSTZ7VED8R-b4cbfce42621/exp/misalign/agentic__s1__murder/prompted__safety/responses.jsonl": "eb9929d08305c96eba08043c4f207a7481d3754955418022a23f73b502f01fbe",
+  "/vol/seedrep/56aff57/exp/seedrep_battery_modal_smoke/S5/misalign/s1/shard00/attempts/01M2XD1H6W9CT4XFNSTZ7VED8R-b4cbfce42621/exp/misalign/agentic__s1__murder/response_evidence.jsonl": "a162d6ab0a6c1f1aa69c886c5bd4f6aa200027a4323ad8f9ee5382c11f2f3d20",
+  "/vol/seedrep/56aff57/exp/seedrep_battery_modal_smoke/S5/misalign/s1/shard00/attempts/01M2XD1H6W9CT4XFNSTZ7VED8R-b4cbfce42621/exp/misalign/agentic__s1__murder/si_constv2_mix_full__lora_r4_ce/meta.json": "4b576118e074b496e8aa68fd3545dcce69f4ac52110f3f8cc88a9395752e2bb4",
+  "/vol/seedrep/56aff57/exp/seedrep_battery_modal_smoke/S5/misalign/s1/shard00/attempts/01M2XD1H6W9CT4XFNSTZ7VED8R-b4cbfce42621/exp/misalign/agentic__s1__murder/si_constv2_mix_full__lora_r4_ce/responses.jsonl": "27d57772a2b16aaae2eef1198b91f91fb5e5d6a0ee5a15f0a224886437894608",
+  "/vol/seedrep/56aff57/exp/seedrep_battery_modal_smoke/S5/misalign/s1/shard00/attempts/01M2XD1H6W9CT4XFNSTZ7VED8R-b4cbfce42621/exp/misalign/agentic__s1__murder/si_constv2_mix_full__lora_r4_ce_minus_ctl/meta.json": "c98cfefbd18bf555eab17b3f64165ca6a19aa2cc34b12074f0267fa670ccf179",
+  "/vol/seedrep/56aff57/exp/seedrep_battery_modal_smoke/S5/misalign/s1/shard00/attempts/01M2XD1H6W9CT4XFNSTZ7VED8R-b4cbfce42621/exp/misalign/agentic__s1__murder/si_constv2_mix_full__lora_r4_ce_minus_ctl/responses.jsonl": "b227d56adcb864aed3d06172b1083daced641851adab300d7bbe4994bc88313d",
+  "/vol/seedrep/56aff57/exp/seedrep_battery_modal_smoke/S5/misalign/s1/shard00/attempts/01M2XD1H6W9CT4XFNSTZ7VED8R-b4cbfce42621/exp/misalign/agentic__s1__murder/si_constv2_mix_full__psr_ce_all/meta.json": "71b48a2281b6fb3f5f435aad90a2c1dfabc8b7e36612853b83d22671b8af74e1",
+  "/vol/seedrep/56aff57/exp/seedrep_battery_modal_smoke/S5/misalign/s1/shard00/attempts/01M2XD1H6W9CT4XFNSTZ7VED8R-b4cbfce42621/exp/misalign/agentic__s1__murder/si_constv2_mix_full__psr_ce_all/responses.jsonl": "ba2abb055a5adee286bccf6c5342b35e8a9196fa979b0f843f65aa7c97a5ee65",
+  "/vol/seedrep/56aff57/exp/seedrep_battery_modal_smoke/S5/misalign/s1/shard00/attempts/01M2XD1H6W9CT4XFNSTZ7VED8R-b4cbfce42621/exp/misalign/agentic__s1__murder/si_constv2ctl2_full__lora_r4_ce/meta.json": "40c569a76368a099be94fc0e066a7c7075c72f07ad59a7dadc6a119d6b4b6621",
+  "/vol/seedrep/56aff57/exp/seedrep_battery_modal_smoke/S5/misalign/s1/shard00/attempts/01M2XD1H6W9CT4XFNSTZ7VED8R-b4cbfce42621/exp/misalign/agentic__s1__murder/si_constv2ctl2_full__lora_r4_ce/responses.jsonl": "9b36a63809a247e0534c4867a32ae821c07ab75fa643ab42610eb79d01479ab5",
+  "/vol/seedrep/56aff57/exp/seedrep_battery_modal_smoke/S5/misalign/s1/shard00/attempts/01M2XD1H6W9CT4XFNSTZ7VED8R-b4cbfce42621/exp/misalign/agentic__s1__murder/si_constv2ctl2_full__psr_ce_all/meta.json": "d1ef611eaabb6aded1c8b1d65833cd08e4751de3119bf414bd7845be76d7e897",
+  "/vol/seedrep/56aff57/exp/seedrep_battery_modal_smoke/S5/misalign/s1/shard00/attempts/01M2XD1H6W9CT4XFNSTZ7VED8R-b4cbfce42621/exp/misalign/agentic__s1__murder/si_constv2ctl2_full__psr_ce_all/responses.jsonl": "bc54ab14528dffc90c15498256e38a3ceea3fa9ae0bd063514cb55a7aca0e4c1",
+  "/vol/seedrep/56aff57/exp/seedrep_battery_modal_smoke/S5/misalign/s1/shard00/attempts/01M2XD1H6W9CT4XFNSTZ7VED8R-b4cbfce42621/modal_evidence.json": "4caf6c156c7d0fe13c24f13f27f0e6c489dde0eb9a52580406940e788781dae5"
+ },
+ "judge": {
+  "in_attempt": false,
+  "site": "the grading host, downstream of the pull: scripts/sdfbase/full22/misalign/misalign_judge.py (D8, claude-sonnet-5) writes RS/grades/misalign/<TAG>/.../judged.jsonl -- never part of the accepted attempt"
+ },
+ "kind": "generation_only",
+ "models_reported": [
+  "petri__base",
+  "petri__prompted__constitution",
+  "petri__prompted__safety",
+  "petri__si_constv2_mix_full__lora_r4_ce",
+  "petri__si_constv2_mix_full__lora_r4_ce_minus_ctl",
+  "petri__si_constv2_mix_full__psr_ce_all",
+  "petri__si_constv2ctl2_full__lora_r4_ce",
+  "petri__si_constv2ctl2_full__psr_ce_all"
+ ],
+ "n_response_evidence": 8000,
+ "n_rows": 8000,
+ "ok": true,
+ "per_cell": {
+  "agentic__s1__leaking/none": {
+   "added_leg_uses": {
+    "anthropic/claude-opus-4-8": 0,
+    "grok-4.6": 0,
+    "openrouter/x-ai/grok-4.6": 0,
+    "opus-4-8": 0
+   },
+   "removed_leg_uses": {
+    "openai/huihui-ai/Huihui-Qwen3.6-27B-abliterated": 0,
+    "qwen-abl": 0
+   },
+   "rows": 510,
+   "served_models": [
+    "petri__base",
+    "petri__none__lora0",
+    "petri__prompted__constitution",
+    "petri__prompted__safety",
+    "petri__si_constv2_mix_full__lora_r4_ce",
+    "petri__si_constv2_mix_full__lora_r4_ce_minus_ctl",
+    "petri__si_constv2_mix_full__psr_ce_all",
+    "petri__si_constv2ctl2_full__lora_r4_ce",
+    "petri__si_constv2ctl2_full__psr_ce_all"
+   ],
+   "virtual_model": "petri__base"
+  },
+  "agentic__s1__leaking/prompted__constitution": {
+   "added_leg_uses": {
+    "anthropic/claude-opus-4-8": 0,
+    "grok-4.6": 0,
+    "openrouter/x-ai/grok-4.6": 0,
+    "opus-4-8": 0
+   },
+   "removed_leg_uses": {
+    "openai/huihui-ai/Huihui-Qwen3.6-27B-abliterated": 0,
+    "qwen-abl": 0
+   },
+   "rows": 510,
+   "served_models": [
+    "petri__base",
+    "petri__none__lora0",
+    "petri__prompted__constitution",
+    "petri__prompted__safety",
+    "petri__si_constv2_mix_full__lora_r4_ce",
+    "petri__si_constv2_mix_full__lora_r4_ce_minus_ctl",
+    "petri__si_constv2_mix_full__psr_ce_all",
+    "petri__si_constv2ctl2_full__lora_r4_ce",
+    "petri__si_constv2ctl2_full__psr_ce_all"
+   ],
+   "virtual_model": "petri__prompted__constitution"
+  },
+  "agentic__s1__leaking/prompted__safety": {
+   "added_leg_uses": {
+    "anthropic/claude-opus-4-8": 0,
+    "grok-4.6": 0,
+    "openrouter/x-ai/grok-4.6": 0,
+    "opus-4-8": 0
+   },
+   "removed_leg_uses": {
+    "openai/huihui-ai/Huihui-Qwen3.6-27B-abliterated": 0,
+    "qwen-abl": 0
+   },
+   "rows": 510,
+   "served_models": [
+    "petri__base",
+    "petri__none__lora0",
+    "petri__prompted__constitution",
+    "petri__prompted__safety",
+    "petri__si_constv2_mix_full__lora_r4_ce",
+    "petri__si_constv2_mix_full__lora_r4_ce_minus_ctl",
+    "petri__si_constv2_mix_full__psr_ce_all",
+    "petri__si_constv2ctl2_full__lora_r4_ce",
+    "petri__si_constv2ctl2_full__psr_ce_all"
+   ],
+   "virtual_model": "petri__prompted__safety"
+  },
+  "agentic__s1__leaking/si_constv2_mix_full__lora_r4_ce": {
+   "added_leg_uses": {
+    "anthropic/claude-opus-4-8": 0,
+    "grok-4.6": 0,
+    "openrouter/x-ai/grok-4.6": 0,
+    "opus-4-8": 0
+   },
+   "removed_leg_uses": {
+    "openai/huihui-ai/Huihui-Qwen3.6-27B-abliterated": 0,
+    "qwen-abl": 0
+   },
+   "rows": 510,
+   "served_models": [
+    "petri__base",
+    "petri__none__lora0",
+    "petri__prompted__constitution",
+    "petri__prompted__safety",
+    "petri__si_constv2_mix_full__lora_r4_ce",
+    "petri__si_constv2_mix_full__lora_r4_ce_minus_ctl",
+    "petri__si_constv2_mix_full__psr_ce_all",
+    "petri__si_constv2ctl2_full__lora_r4_ce",
+    "petri__si_constv2ctl2_full__psr_ce_all"
+   ],
+   "virtual_model": "petri__si_constv2_mix_full__lora_r4_ce"
+  },
+  "agentic__s1__leaking/si_constv2_mix_full__lora_r4_ce_minus_ctl": {
+   "added_leg_uses": {
+    "anthropic/claude-opus-4-8": 0,
+    "grok-4.6": 0,
+    "openrouter/x-ai/grok-4.6": 0,
+    "opus-4-8": 0
+   },
+   "removed_leg_uses": {
+    "openai/huihui-ai/Huihui-Qwen3.6-27B-abliterated": 0,
+    "qwen-abl": 0
+   },
+   "rows": 510,
+   "served_models": [
+    "petri__base",
+    "petri__none__lora0",
+    "petri__prompted__constitution",
+    "petri__prompted__safety",
+    "petri__si_constv2_mix_full__lora_r4_ce",
+    "petri__si_constv2_mix_full__lora_r4_ce_minus_ctl",
+    "petri__si_constv2_mix_full__psr_ce_all",
+    "petri__si_constv2ctl2_full__lora_r4_ce",
+    "petri__si_constv2ctl2_full__psr_ce_all"
+   ],
+   "virtual_model": "petri__si_constv2_mix_full__lora_r4_ce_minus_ctl"
+  },
+  "agentic__s1__leaking/si_constv2_mix_full__psr_ce_all": {
+   "added_leg_uses": {
+    "anthropic/claude-opus-4-8": 0,
+    "grok-4.6": 0,
+    "openrouter/x-ai/grok-4.6": 0,
+    "opus-4-8": 0
+   },
+   "removed_leg_uses": {
+    "openai/huihui-ai/Huihui-Qwen3.6-27B-abliterated": 0,
+    "qwen-abl": 0
+   },
+   "rows": 510,
+   "served_models": [
+    "petri__base",
+    "petri__none__lora0",
+    "petri__prompted__constitution",
+    "petri__prompted__safety",
+    "petri__si_constv2_mix_full__lora_r4_ce",
+    "petri__si_constv2_mix_full__lora_r4_ce_minus_ctl",
+    "petri__si_constv2_mix_full__psr_ce_all",
+    "petri__si_constv2ctl2_full__lora_r4_ce",
+    "petri__si_constv2ctl2_full__psr_ce_all"
+   ],
+   "virtual_model": "petri__si_constv2_mix_full__psr_ce_all"
+  },
+  "agentic__s1__leaking/si_constv2ctl2_full__lora_r4_ce": {
+   "added_leg_uses": {
+    "anthropic/claude-opus-4-8": 0,
+    "grok-4.6": 0,
+    "openrouter/x-ai/grok-4.6": 0,
+    "opus-4-8": 0
+   },
+   "removed_leg_uses": {
+    "openai/huihui-ai/Huihui-Qwen3.6-27B-abliterated": 0,
+    "qwen-abl": 0
+   },
+   "rows": 510,
+   "served_models": [
+    "petri__base",
+    "petri__none__lora0",
+    "petri__prompted__constitution",
+    "petri__prompted__safety",
+    "petri__si_constv2_mix_full__lora_r4_ce",
+    "petri__si_constv2_mix_full__lora_r4_ce_minus_ctl",
+    "petri__si_constv2_mix_full__psr_ce_all",
+    "petri__si_constv2ctl2_full__lora_r4_ce",
+    "petri__si_constv2ctl2_full__psr_ce_all"
+   ],
+   "virtual_model": "petri__si_constv2ctl2_full__lora_r4_ce"
+  },
+  "agentic__s1__leaking/si_constv2ctl2_full__psr_ce_all": {
+   "added_leg_uses": {
+    "anthropic/claude-opus-4-8": 0,
+    "grok-4.6": 0,
+    "openrouter/x-ai/grok-4.6": 0,
+    "opus-4-8": 0
+   },
+   "removed_leg_uses": {
+    "openai/huihui-ai/Huihui-Qwen3.6-27B-abliterated": 0,
+    "qwen-abl": 0
+   },
+   "rows": 510,
+   "served_models": [
+    "petri__base",
+    "petri__none__lora0",
+    "petri__prompted__constitution",
+    "petri__prompted__safety",
+    "petri__si_constv2_mix_full__lora_r4_ce",
+    "petri__si_constv2_mix_full__lora_r4_ce_minus_ctl",
+    "petri__si_constv2_mix_full__psr_ce_all",
+    "petri__si_constv2ctl2_full__lora_r4_ce",
+    "petri__si_constv2ctl2_full__psr_ce_all"
+   ],
+   "virtual_model": "petri__si_constv2ctl2_full__psr_ce_all"
+  },
+  "agentic__s1__murder/none": {
+   "added_leg_uses": {
+    "anthropic/claude-opus-4-8": 0,
+    "grok-4.6": 0,
+    "openrouter/x-ai/grok-4.6": 0,
+    "opus-4-8": 0
+   },
+   "removed_leg_uses": {
+    "openai/huihui-ai/Huihui-Qwen3.6-27B-abliterated": 0,
+    "qwen-abl": 0
+   },
+   "rows": 490,
+   "served_models": [
+    "petri__base",
+    "petri__none__lora0",
+    "petri__prompted__constitution",
+    "petri__prompted__safety",
+    "petri__si_constv2_mix_full__lora_r4_ce",
+    "petri__si_constv2_mix_full__lora_r4_ce_minus_ctl",
+    "petri__si_constv2_mix_full__psr_ce_all",
+    "petri__si_constv2ctl2_full__lora_r4_ce",
+    "petri__si_constv2ctl2_full__psr_ce_all"
+   ],
+   "virtual_model": "petri__base"
+  },
+  "agentic__s1__murder/prompted__constitution": {
+   "added_leg_uses": {
+    "anthropic/claude-opus-4-8": 0,
+    "grok-4.6": 0,
+    "openrouter/x-ai/grok-4.6": 0,
+    "opus-4-8": 0
+   },
+   "removed_leg_uses": {
+    "openai/huihui-ai/Huihui-Qwen3.6-27B-abliterated": 0,
+    "qwen-abl": 0
+   },
+   "rows": 490,
+   "served_models": [
+    "petri__base",
+    "petri__none__lora0",
+    "petri__prompted__constitution",
+    "petri__prompted__safety",
+    "petri__si_constv2_mix_full__lora_r4_ce",
+    "petri__si_constv2_mix_full__lora_r4_ce_minus_ctl",
+    "petri__si_constv2_mix_full__psr_ce_all",
+    "petri__si_constv2ctl2_full__lora_r4_ce",
+    "petri__si_constv2ctl2_full__psr_ce_all"
+   ],
+   "virtual_model": "petri__prompted__constitution"
+  },
+  "agentic__s1__murder/prompted__safety": {
+   "added_leg_uses": {
+    "anthropic/claude-opus-4-8": 0,
+    "grok-4.6": 0,
+    "openrouter/x-ai/grok-4.6": 0,
+    "opus-4-8": 0
+   },
+   "removed_leg_uses": {
+    "openai/huihui-ai/Huihui-Qwen3.6-27B-abliterated": 0,
+    "qwen-abl": 0
+   },
+   "rows": 490,
+   "served_models": [
+    "petri__base",
+    "petri__none__lora0",
+    "petri__prompted__constitution",
+    "petri__prompted__safety",
+    "petri__si_constv2_mix_full__lora_r4_ce",
+    "petri__si_constv2_mix_full__lora_r4_ce_minus_ctl",
+    "petri__si_constv2_mix_full__psr_ce_all",
+    "petri__si_constv2ctl2_full__lora_r4_ce",
+    "petri__si_constv2ctl2_full__psr_ce_all"
+   ],
+   "virtual_model": "petri__prompted__safety"
+  },
+  "agentic__s1__murder/si_constv2_mix_full__lora_r4_ce": {
+   "added_leg_uses": {
+    "anthropic/claude-opus-4-8": 0,
+    "grok-4.6": 0,
+    "openrouter/x-ai/grok-4.6": 0,
+    "opus-4-8": 0
+   },
+   "removed_leg_uses": {
+    "openai/huihui-ai/Huihui-Qwen3.6-27B-abliterated": 0,
+    "qwen-abl": 0
+   },
+   "rows": 490,
+   "served_models": [
+    "petri__base",
+    "petri__none__lora0",
+    "petri__prompted__constitution",
+    "petri__prompted__safety",
+    "petri__si_constv2_mix_full__lora_r4_ce",
+    "petri__si_constv2_mix_full__lora_r4_ce_minus_ctl",
+    "petri__si_constv2_mix_full__psr_ce_all",
+    "petri__si_constv2ctl2_full__lora_r4_ce",
+    "petri__si_constv2ctl2_full__psr_ce_all"
+   ],
+   "virtual_model": "petri__si_constv2_mix_full__lora_r4_ce"
+  },
+  "agentic__s1__murder/si_constv2_mix_full__lora_r4_ce_minus_ctl": {
+   "added_leg_uses": {
+    "anthropic/claude-opus-4-8": 0,
+    "grok-4.6": 0,
+    "openrouter/x-ai/grok-4.6": 0,
+    "opus-4-8": 0
+   },
+   "removed_leg_uses": {
+    "openai/huihui-ai/Huihui-Qwen3.6-27B-abliterated": 0,
+    "qwen-abl": 0
+   },
+   "rows": 490,
+   "served_models": [
+    "petri__base",
+    "petri__none__lora0",
+    "petri__prompted__constitution",
+    "petri__prompted__safety",
+    "petri__si_constv2_mix_full__lora_r4_ce",
+    "petri__si_constv2_mix_full__lora_r4_ce_minus_ctl",
+    "petri__si_constv2_mix_full__psr_ce_all",
+    "petri__si_constv2ctl2_full__lora_r4_ce",
+    "petri__si_constv2ctl2_full__psr_ce_all"
+   ],
+   "virtual_model": "petri__si_constv2_mix_full__lora_r4_ce_minus_ctl"
+  },
+  "agentic__s1__murder/si_constv2_mix_full__psr_ce_all": {
+   "added_leg_uses": {
+    "anthropic/claude-opus-4-8": 0,
+    "grok-4.6": 0,
+    "openrouter/x-ai/grok-4.6": 0,
+    "opus-4-8": 0
+   },
+   "removed_leg_uses": {
+    "openai/huihui-ai/Huihui-Qwen3.6-27B-abliterated": 0,
+    "qwen-abl": 0
+   },
+   "rows": 490,
+   "served_models": [
+    "petri__base",
+    "petri__none__lora0",
+    "petri__prompted__constitution",
+    "petri__prompted__safety",
+    "petri__si_constv2_mix_full__lora_r4_ce",
+    "petri__si_constv2_mix_full__lora_r4_ce_minus_ctl",
+    "petri__si_constv2_mix_full__psr_ce_all",
+    "petri__si_constv2ctl2_full__lora_r4_ce",
+    "petri__si_constv2ctl2_full__psr_ce_all"
+   ],
+   "virtual_model": "petri__si_constv2_mix_full__psr_ce_all"
+  },
+  "agentic__s1__murder/si_constv2ctl2_full__lora_r4_ce": {
+   "added_leg_uses": {
+    "anthropic/claude-opus-4-8": 0,
+    "grok-4.6": 0,
+    "openrouter/x-ai/grok-4.6": 0,
+    "opus-4-8": 0
+   },
+   "removed_leg_uses": {
+    "openai/huihui-ai/Huihui-Qwen3.6-27B-abliterated": 0,
+    "qwen-abl": 0
+   },
+   "rows": 490,
+   "served_models": [
+    "petri__base",
+    "petri__none__lora0",
+    "petri__prompted__constitution",
+    "petri__prompted__safety",
+    "petri__si_constv2_mix_full__lora_r4_ce",
+    "petri__si_constv2_mix_full__lora_r4_ce_minus_ctl",
+    "petri__si_constv2_mix_full__psr_ce_all",
+    "petri__si_constv2ctl2_full__lora_r4_ce",
+    "petri__si_constv2ctl2_full__psr_ce_all"
+   ],
+   "virtual_model": "petri__si_constv2ctl2_full__lora_r4_ce"
+  },
+  "agentic__s1__murder/si_constv2ctl2_full__psr_ce_all": {
+   "added_leg_uses": {
+    "anthropic/claude-opus-4-8": 0,
+    "grok-4.6": 0,
+    "openrouter/x-ai/grok-4.6": 0,
+    "opus-4-8": 0
+   },
+   "removed_leg_uses": {
+    "openai/huihui-ai/Huihui-Qwen3.6-27B-abliterated": 0,
+    "qwen-abl": 0
+   },
+   "rows": 490,
+   "served_models": [
+    "petri__base",
+    "petri__none__lora0",
+    "petri__prompted__constitution",
+    "petri__prompted__safety",
+    "petri__si_constv2_mix_full__lora_r4_ce",
+    "petri__si_constv2_mix_full__lora_r4_ce_minus_ctl",
+    "petri__si_constv2_mix_full__psr_ce_all",
+    "petri__si_constv2ctl2_full__lora_r4_ce",
+    "petri__si_constv2ctl2_full__psr_ce_all"
+   ],
+   "virtual_model": "petri__si_constv2ctl2_full__psr_ce_all"
+  }
+ },
+ "petri_completion_bundle": null,
+ "policy": {
+  "added": [
+   "anthropic/claude-opus-4-8",
+   "grok-4.6",
+   "openrouter/x-ai/grok-4.6",
+   "opus-4-8"
+  ],
+  "added_models": [
+   "anthropic/claude-opus-4-8",
+   "openrouter/x-ai/grok-4.6"
+  ],
+  "cells": [
+   "none",
+   "none__lora0",
+   "prompted__constitution",
+   "prompted__safety",
+   "si_constv2_mix_full__lora_r4_ce",
+   "si_constv2_mix_full__lora_r4_ce_minus_ctl",
+   "si_constv2_mix_full__psr_ce_all",
+   "si_constv2ctl2_full__lora_r4_ce",
+   "si_constv2ctl2_full__psr_ce_all"
+  ],
+  "manifests": [
+   "configs/capeval/manifests/petri_full22_qwen35_4b_s1.yaml"
+  ],
+  "prev": {
+   "configs/capeval/manifests/petri_full22_qwen35_4b_s1.yaml": {
+    "auditor_fallback_models": [
+     "openrouter/x-ai/grok-4.6",
+     "openai/huihui-ai/Huihui-Qwen3.6-27B-abliterated"
+    ],
+    "auditor_model": [
+     "anthropic/claude-sonnet-5"
+    ],
+    "judge_model": [
+     "anthropic/claude-opus-5"
+    ]
+   }
+  },
+  "prev_W": "56aff576e2975804602aec7d12ba1c98c805adfd",
+  "removed": [
+   "openai/huihui-ai/Huihui-Qwen3.6-27B-abliterated",
+   "qwen-abl"
+  ],
+  "removed_models": [
+   "openai/huihui-ai/Huihui-Qwen3.6-27B-abliterated"
+  ],
+  "target": [
+   "petri__base",
+   "petri__none__lora0",
+   "petri__prompted__constitution",
+   "petri__prompted__safety",
+   "petri__si_constv2_mix_full__lora_r4_ce",
+   "petri__si_constv2_mix_full__lora_r4_ce_minus_ctl",
+   "petri__si_constv2_mix_full__psr_ce_all",
+   "petri__si_constv2ctl2_full__lora_r4_ce",
+   "petri__si_constv2ctl2_full__psr_ce_all"
+  ],
+  "this": {
+   "configs/capeval/manifests/petri_full22_qwen35_4b_s1.yaml": {
+    "auditor_fallback_models": [
+     "anthropic/claude-opus-4-8",
+     "openrouter/x-ai/grok-4.6"
+    ],
+    "auditor_model": [
+     "anthropic/claude-sonnet-5"
+    ],
+    "judge_fallback_models": [
+     "anthropic/claude-opus-4-8",
+     "openrouter/x-ai/grok-4.6"
+    ],
+    "judge_model": [
+     "anthropic/claude-opus-5"
+    ]
+   }
+  },
+  "this_W": "0f00f7fae98e8c719617f6d01bbdc4eb2c763c88"
+ },
+ "removed_leg": {
+  "legs": [
+   "openai/huihui-ai/Huihui-Qwen3.6-27B-abliterated",
+   "qwen-abl"
+  ],
+  "per_leg": {
+   "openai/huihui-ai/Huihui-Qwen3.6-27B-abliterated": 0,
+   "qwen-abl": 0
+  },
+  "uses": 0
+ },
+ "ruling": "D191",
+ "schema": "seedrep_misalign_generation_proof/1",
+ "served_models": [
+  "petri__base",
+  "petri__none__lora0",
+  "petri__prompted__constitution",
+  "petri__prompted__safety",
+  "petri__si_constv2_mix_full__lora_r4_ce",
+  "petri__si_constv2_mix_full__lora_r4_ce_minus_ctl",
+  "petri__si_constv2_mix_full__psr_ce_all",
+  "petri__si_constv2ctl2_full__lora_r4_ce",
+  "petri__si_constv2ctl2_full__psr_ce_all"
+ ],
+ "target_models": [
+  "petri__base",
+  "petri__none__lora0",
+  "petri__prompted__constitution",
+  "petri__prompted__safety",
+  "petri__si_constv2_mix_full__lora_r4_ce",
+  "petri__si_constv2_mix_full__lora_r4_ce_minus_ctl",
+  "petri__si_constv2_mix_full__psr_ce_all",
+  "petri__si_constv2ctl2_full__lora_r4_ce",
+  "petri__si_constv2ctl2_full__psr_ce_all"
+ ],
+ "why": null
+}

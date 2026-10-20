@@ -1,0 +1,28 @@
+# The vLLM serving stack's GATED-DELTANET KERNEL OVERLAY. Fused kernels for the Mamba and GDN hybrids are required: a
+# pure-torch fallback runs slowly and still reads as a healthy job.
+#
+# Installed ON TOP of configs/capeval/vllm-requirements.txt (which this overlay leaves untouched, so the base venv is
+# never rebuilt in place) into a SEPARATE venv named after the sha256 of base + overlay, by
+# scripts/sdfbase/full22/common.sh f22_serving_venv gdn (selected for the Qwen3.5 hybrids by f22_serving_venv_for_key:
+# qwen35_4b / qwen35_9b):
+#
+#   uv pip install ... -r configs/capeval/vllm-requirements.txt            # the base, as always
+#   CAUSAL_CONV1D_FORCE_BUILD=TRUE MAMBA_FORCE_BUILD=TRUE \
+#     uv pip install --no-build-isolation --no-deps -r configs/capeval/vllm-requirements-gdn.txt
+#
+# WHY: transformers' Qwen3.5 GDN layer (modeling_qwen3_5: causal_conv1d_fn / causal_conv1d_update from `causal_conv1d`,
+# chunk_gated_delta_rule from `fla`) falls back to its pure-torch implementation when either package is missing and says so
+# once ("The fast path is not available because one of the required library is not installed. Falling back to torch
+# implementation"). Without this overlay a standup logs that line from the SERVING venv during the HF-side export and the
+# serving probe's HF+PEFT reference phase, while the fit venv (triton 3.7.1 + flash-linear-attention 0.5.2 +
+# causal-conv1d 1.6.2.post1) does not. vLLM 0.25.1 serves GDN through its own Triton kernels, so these packages are inert
+# for the ENGINE; they are for every HF forward the serving venv runs.
+#
+# --no-deps so nothing unpinned rides in: flash-linear-attention 0.5.2 depends on fla-core==0.5.2 (listed) + transformers
+# (in the base); fla-core needs einops + torch + triton>=3.3 (all in the base: vllm pins einops, torch 2.11.0+cu129 ships
+# triton 3.6.0). causal-conv1d is an sdist (no wheel at torch 2.11 / cu129): a SOURCE build against the venv's torch,
+# hence --no-build-isolation + nvcc (the nemotron overlay's recipe). Pins: fla / fla-core 0.5.2 (PyPI 2026-07-27, the fit
+# env's pin, more than a week old), causal-conv1d 1.6.2.post1 (PyPI 2026-05-09, the fit env's pin).
+fla-core==0.5.2
+flash-linear-attention==0.5.2
+causal-conv1d==1.6.2.post1

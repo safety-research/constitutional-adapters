@@ -1,0 +1,144 @@
+{
+ "W": "23f34f455f1241f3f636c3f46422fc52f632dc32",
+ "accepted_key": "23f34f4|11bc3065-b1bd-404d-ad51-d56bb72c1404|pasttense|s1|base|0",
+ "app_sys_path_src": "/workspace/seedrep/si-steering-eval-repo/23f34f455f1241f3f636c3f46422fc52f632dc32/src",
+ "attempt_id": "01SYNTHS1TASK0000000000001-111111111111",
+ "compile_cache_persist_setting": {
+  "SEEDREP_PERSIST_COMPILE_CACHES": "1",
+  "source": "spawn_ctx"
+ },
+ "compile_cache_seed": {
+  "flashinfer": {
+   "local": "/root/.cache/flashinfer",
+   "seeded": false,
+   "volume": "/vol/seedrep/cache/flashinfer"
+  },
+  "vllm": {
+   "local": "/root/.cache/vllm",
+   "seeded": false,
+   "volume": "/vol/seedrep/cache/vllm"
+  }
+ },
+ "control_key": "23f34f4/11bc3065-b1bd-404d-ad51-d56bb72c1404/pasttense/s1/base/0",
+ "driver_venv": {
+  "attempts": 1,
+  "built": true,
+  "s": 88.7,
+  "venv": "/home/seedrep/venvs/f22-23f34f455f12"
+ },
+ "execution_wave_uuid": "11bc3065-b1bd-404d-ad51-d56bb72c1404",
+ "hardware": "modal",
+ "launch_plan_sha": "721d308153d3a18a",
+ "modal": {
+  "app_name": "seedrep-served-23f34f4",
+  "cpu": 32,
+  "function": "run_view_leg",
+  "function_call_id": "fc-01SYNTHS1CALL0000000000001",
+  "gpu": "H200",
+  "hostname": "modal",
+  "image_id": "im-SYNTHETICIMAGE00000000",
+  "max_containers": 1,
+  "memory_mib": 196608,
+  "retries": 0,
+  "task_id": "ta-01SYNTHS1TASK0000000000001",
+  "timeout_s": 14400
+ },
+ "object_verification": {
+  "extra_views": {},
+  "n": 16,
+  "ok": true,
+  "problems": []
+ },
+ "production_wave_uuid": "bad224cf-9d2d-4882-905b-c715bc83c8cf",
+ "readiness": {
+  "adjustments": [
+   {
+    "D": 4096,
+    "ceiling": 524287,
+    "from_S": 64,
+    "kind": "lora_kernel_index_ceiling",
+    "to_S": 45
+   }
+  ],
+  "attested_max_model_len": 11520,
+  "attested_max_num_seqs": 45,
+  "problems": [
+   "attested_cudagraph_mode 'FULL_AND_PIECEWISE' != FULL",
+   "no residual_slot record for constv2-mix-full__psr_ce_all (si_constv2_mix_full__psr_ce_all) in adapters[] (a mandated attestation for a PSR / vector cell)",
+   "no residual_slot record for constv2ctl2-full__psr_ce_all (si_constv2ctl2_full__psr_ce_all) in adapters[] (a mandated attestation for a PSR / vector cell)",
+   "expected_object_sha256_by_cell ABSENT (a mandated attestation: the object-digest map the standup asserted)"
+  ],
+  "window_source": "table"
+ },
+ "reattempt_intent": null,
+ "schema": "seedrep_served/modal_evidence/1",
+ "smoke": {
+  "max_children": 5,
+  "production_standup_id": "pasttense__s1__base__shard00",
+  "production_wave_uuid": "bad224cf-9d2d-4882-905b-c715bc83c8cf",
+  "smoke_id": "S1",
+  "wave_uuid": "11bc3065-b1bd-404d-ad51-d56bb72c1404"
+ },
+ "standup_argv": [
+  "/home/seedrep/venvs/sisteer-petri-vllm-12fa3eb0/bin/python",
+  "/workspace/seedrep/si-steering-eval-repo/23f34f455f1241f3f636c3f46422fc52f632dc32/scripts/sdfbase/mt_serving_up.py",
+  "--repo-dir",
+  "/workspace/seedrep/si-steering-eval-repo/23f34f455f1241f3f636c3f46422fc52f632dc32",
+  "--config",
+  "configs/sdfbase_full22_qwen35_4b_s1.yaml",
+  "--manifest",
+  "configs/capeval/manifests/petri_full22_qwen35_4b_s1.yaml",
+  "--defenses-dir",
+  "/workspace/seedrep/exp/objects/sdfbase/full22/qwen35_4b/cells_view/s1",
+  "--out",
+  "/workspace/attempt/exp/serve",
+  "--stop-file",
+  "/workspace/attempt/exp/serve/STOP",
+  "--mode",
+  "attacks",
+  "--model-key",
+  "qwen35_4b",
+  "--eval",
+  "families_served",
+  "--gpu-mem-util",
+  "0.9",
+  "--ready-timeout-s",
+  "2700",
+  "--serving-path",
+  "lora_native",
+  "--adapter-bank",
+  "/vol/seedrep/multilora_adapters/qwen35_4b",
+  "--server-default-policy",
+  "contract_override",
+  "--enable-log-requests",
+  "--upstream-timeout-s",
+  "7200",
+  "--cell",
+  "constv2-mix-full__psr_ce_all",
+  "--cell",
+  "constv2-mix-full__lora_r4_ce",
+  "--cell",
+  "constv2ctl2-full__psr_ce_all",
+  "--cell",
+  "constv2ctl2-full__lora_r4_ce",
+  "--cell",
+  "constv2-mix-full__lora_r4_ce_minus_ctl",
+  "--cell",
+  "prompted__si_constitution",
+  "--cell",
+  "prompted__safety_refusal",
+  "--expect-object-sha256",
+  "constv2-mix-full__psr_ce_all=7b87767d91bd9787d22a23a80a5e78c53d16b506cc25e4d9483f74e88238fda1",
+  "--expect-object-sha256",
+  "constv2-mix-full__lora_r4_ce=8be1e1a7ab36f3f65557f7835a30c6b8f18143c781fbf7fb312a5cc7a6e08871",
+  "--expect-object-sha256",
+  "constv2ctl2-full__psr_ce_all=f65425b851ab446b329fa93631462dd4f31fb16e11955867ef902dffd635c2cd",
+  "--expect-object-sha256",
+  "constv2ctl2-full__lora_r4_ce=000e0df5792882aa6e6e70498f2597ddd5f1aa52f43cef9a92cad57d7f7a6e20",
+  "--expect-object-sha256",
+  "constv2-mix-full__lora_r4_ce_minus_ctl=0d275f7c76cbe63eacaec6b63c0976ac516cff039729029ee5b09b60f3d689c9"
+ ],
+ "standup_id": "smoke-S1__pasttense__s1__base__shard00",
+ "started_at": "2026-09-19T04:47:40Z",
+ "wave_uuid": "11bc3065-b1bd-404d-ad51-d56bb72c1404"
+}

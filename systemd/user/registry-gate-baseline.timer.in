@@ -1,0 +1,16 @@
+# registry-gate-baseline.timer — results registry. Rendered for the site
+# and installed into ~/.config/systemd/user/ by the registry installer.
+# Secret-free: the tick needs no credential; ssh to the cluster goes through the agent socket.
+# Bounded: Type=oneshot with TimeoutStartSec and Restart=no — the timer is the only re-fire, so a failed tick never
+# loops on the cluster submit path; a persistent failure shows in the journal. Locks: none of the registry's.
+[Unit]
+Description=Results registry: keep the Slurm gate's baseline current with origin/main, every 2 min
+
+[Timer]
+OnBootSec=3min
+OnUnitActiveSec=2min
+AccuracySec=30s
+Unit=registry-gate-baseline.service
+
+[Install]
+WantedBy=timers.target

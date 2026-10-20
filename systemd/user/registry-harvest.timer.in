@@ -1,0 +1,27 @@
+# registry-harvest.timer — results registry. Rendered for the site and installed into ~/.config/systemd/user/ by the registry installer.
+# Secret-free: the registry needs no credential; ssh (when used) goes through the agent socket.
+# Bounded: Type=oneshot with TimeoutStartSec, Restart=no (the timer is the only re-fire; an on-failure restart re-ran a failing
+# oneshot every RestartSec and kept it `activating` through every paused window, 2026-09-20), and a start-rate limit (30 starts
+# per 5 min: the ceiling is well above the cadence below, so it trips only on a unit that fails in a tight loop and shows in the
+# journal and on the status page instead of looping). Locks: only the registry's own (<root>/harvester.lock,
+# snapshots/.readers.lock) — never the paper builder's.
+#
+# Cadence (2026-09-30): OnUnitInactiveSec=30s — the next cycle starts 30 s after the previous one ENDS. The unit ran with
+# OnUnitActiveSec=20s, which counts from the previous START: a cycle took 75–110 s on the live registry, so the timer re-fired
+# while the cycle was still running and the harvester held <root>/harvester.lock 73 % of a measured hour (17:00–18:00Z); the
+# harvester itself lost its own 30-s lock wait 29 times to another holder, and the judging drivers' claims (a 30-s wait) died
+# `LockHeld` about 30 times per tick. Counting from deactivation guarantees every cycle is followed by a 30-s window in which
+# the lock is free for the other writers. OnBootSec stays: OnUnitInactiveSec never elapses for a service that has not yet
+# deactivated in this manager's lifetime, and an OnBootSec already in the past fires at once when the timer is (re)started —
+# the landing window's `systemctl --user start registry-harvest.timer` gets its first cycle immediately.
+[Unit]
+Description=Results registry harvester, 30 s after each cycle ends
+
+[Timer]
+OnBootSec=1min
+OnUnitInactiveSec=30s
+AccuracySec=1s
+Unit=registry-harvest.service
+
+[Install]
+WantedBy=timers.target

@@ -1,0 +1,1277 @@
+# sdfbase_full22_roster.yaml — THE cell roster of the full22 wave: four served targets,
+# every staged object, and how each one is (or is not) expressible to the code that
+# serves it. Source of truth for
+#   * scripts/sdfbase/make_full22_configs.py  -> configs/sdfbase_full22_*.yaml (explicit_cells)
+#                                              -> configs/capeval/manifests/petri_full22_*.yaml
+#   * scripts/sdfbase/full22/make_bank_view.py -> the per-config object bank the standup consumes
+#   * scripts/sdfbase/full22/submit_full22.sh  -> which (target, view) pairs have anything to serve
+#   * scripts/sdfbase/full22/submit_newmodels.sh -> the nemotron3nano4b / glm46vflash legs' plan
+# EVERY reader resolves a (target, view)'s served cells through ONE function,
+# scripts/sdfbase/full22/f22_roster.py served_cells(): the view's `cells` plus every lane whose
+# flag is on — so a flag flip regenerates the configs, the bank views, the job-side count guard
+# and the printers together, never one without the others.
+#
+# WHY A ROSTER AND NOT JUST explicit_cells. The staging layout is
+# $SHARED/exp/objects/sdfbase/full22/<target>/cells/<lane>__<cell_id>/ (lane prefixes because the
+# base-lane and instruct-direct cells share ids). The code's cell-id grammar
+# (sisteer.eval.defense_cell: none | prompted__<si> | <si>__<arm> | stacked__<si>__<arm>) has NO
+# lane slot, and the Petri harness vocabulary (si_<si>__<method>, manifest.PETRI_SI_IDS,
+# defense_cells.CLASS_A_METHODS, registry_adapter.ARM_OBJECT_KINDS) cannot name a lane either.
+# So a config lists cells in the code's grammar, and THIS file maps each config cell to the
+# staged directory it is served from, via a per-config bank VIEW (cells_view/<view>/<cell_id>
+# -> ../../cells/<staged_id>, sha-verified against staging_manifest.json). Two lanes whose ids
+# collide (base vs instruct-direct) therefore live in two configs, each with its own same-wave
+# `none` anchor — the `_it` battery precedent (battery_it_recipe.md), never a lane-prefixed id
+# the registry would refuse.
+#
+# status vocabulary (per cell):
+#   served               listed in a config's explicit_cells; bank view resolves it
+#   pending_fit          not yet fitted (a Slurm fit still RUNNING); enable by staging the object
+#                        (stage_full22.sh BANK_CELLS), refreshing the pins (--pins-from
+#                        <staging_manifest>), moving the entry into views.<view>.cells, regenerating
+#   pending_stage        built elsewhere and code-servable, but not yet staged on the clusters (so
+#                        it carries no pin). A target-level `pending_stage:` map, same shape as
+#                        `pending_fit:` (config cell id -> staged id); enabling it is mechanical
+#                        and needs no code — refresh the pins (--pins-from <staging_manifest>),
+#                        move the entry into views.<view>.cells, regenerate
+#   pending_decision     a fit that ended WITHOUT an object and whose fate is a deliberate call,
+#                        not a mechanical step (a deliberate STOP; a floor-ratio refusal). A
+#                        target-level `pending_decision:` map, config cell id -> {staged_id,
+#                        waits_on, state}. Enabling one is a deliberate go-ahead, then (re)fit ->
+#                        stage -> --pins-from -> move into views.<view>.cells -> regenerate. It is
+#                        NEVER auto-enabled by a fit landing.
+#   prompted             a PROMPTED BASELINE, `prompted__<si>: null` in a view's cells (2026-09-08):
+#                        the SI text as the system prompt, NO object and NO staged dir, so it is
+#                        served (in explicit_cells, the manifest, the count guard) but never in the
+#                        bank view or the pins (f22_roster.staged_cells is the object consumers'
+#                        subset; roster_cell_count.py --staged is the view's reference count). The
+#                        served path verifies the SI bytes per request against the manifest's
+#                        prompted_prefix_hashes (H8)
+#   lane (behind a flag) a whole lane wired per target under `lanes.<lane>.cells` but admitted to
+#                        the configs / manifests / views ONLY while `lane_flags.<lane>.enabled` is
+#                        true (f22_roster.served_cells). The flip is one line + regenerate; the
+#                        flag's `preconditions` name what must be true first, and the wave test
+#                        refuses a flag that is on while this tree cannot translate the lane's SI
+#                        ids for the Petri harness. Today: candsi, OFF.
+#
+# The object identity of every served cell is pinned in configs/sdfbase_full22_pins.json
+# (object_sha256 per staged_id, copied from the staging manifest by make_full22_configs.py
+# --pins-from) and echoed into each config header; the bank view builder refuses a staged object
+# whose sha differs from the pin.
+wave: full22
+bank_root: exp/objects/sdfbase/full22            # under $SHARED on either cluster
+staging_manifest: exp/objects/sdfbase/full22/staging_manifest.json
+# the serving-implementation commit the Petri manifests freeze: the LAST commit touching
+# src/sisteer/capeval/serving/*.py or tiers/petri_runner.py on the wave tree. Re-pinned at
+# landing (README "Re-pin at landing"), regenerated into every manifest by the generator.
+serving_impl_commit: 94e294c445dc5eec6ebe0ce3a3e25553004cd4b0
+# the lens reduction mode of the whole wave — every standup pins AND asserts it (never per_row)
+lens_reduction_mode: stacked
+# the static/replayable single-shot families' completion cap (attacks.static_max_new_tokens)
+static_max_new_tokens: 4096
+# the MULTI-TURN TARGET's per-reply cap (attacks.target_max_new_tokens; Crescendo / PAIR /
+# ActorAttack through jailbreak_run._target_max_new_tokens). 512 was mt1's and every filed
+# full22 multi-turn store's; the 4,096-cap re-runs of 2026-09-11 (71 % of the filed replies
+# sat exactly at 512, and at 4,096 the SAME cells truncate 0-1 % with the p99 reply at ~1.6k)
+# made 4,096 the canonical instrument. The BoN cap (bon.max_new_tokens) is NOT this knob: it
+# stays 512, the base of the 512 -> 4,096 climb.
+target_max_new_tokens: 4096
+# the judged OVER-REFUSAL controls' completion cap (attacks.controls_max_new_tokens; XSTest / OR-Bench
+# through served_capability_run and sisteer.eval.cell_controls.controls_cap, the ONE reader): 512, the
+# root of the sampled ladder 512 -> 2,048 -> 8,192 and every filed greedy control store's cap. Its OWN
+# key since 2026-09-11: the controls used to read target_max_new_tokens (the shared completion cap), so
+# the multi-turn change above would have re-capped and re-keyed them silently; they do not move with it.
+controls_max_new_tokens: 512
+# THE CONTROLS STANDUP'S WINDOW FOR A gsm8k-BEARING TABLE VIEW (2026-09-14). The wave's ONE
+# controls standup (target_static.sbatch: capability:short serving gsm8k + mmlu + xstest + or_bench_hard_1k)
+# stood every table view up at 2,048 tokens, a window sized for the RETIRED 0-shot gsm8k leg (<= 1.1k prompts).
+# The standard Inspect gsm8k control's 10-SHOT system turn renders to 2,310 / 2,373 / 2,336 / 2,128 tokens bare
+# on gemma4e4b / qwen35_4b / nemotron3nano4b / glm46vflash and up to 2,462 under the prompted__safety_refusal
+# turn (geometry capability:gen_long_gsm8k_rung, measured 2026-09-10); + the 512 cap = 2,974 > 2,048, so vLLM
+# refused the long items and the wave's own gsm8k control never produced a row on those 31 views. THE CAP
+# NEVER SHRINKS TO FIT A WINDOW (the standing truncation rule): the window widens, S follows from the budget.
+# Read by f22_roster.gsm8k_controls_window -> view_windows(...)["controls_gsm8k"] for a TABLE view whose
+# controls list carries gsm8k (roster_view.py `window gsm8k`; target_static.sbatch / smoke_full22.sbatch
+# CTL_L; submit_newmodels.py); a view's own serving override is its own pin and is not touched. Data here
+# because roster_view.py runs under plain python3; held to the table by tests/test_f22_gsm8k_controls_window.py
+# and, at job time, by common.sh f22_gsm8k_window_check (>= the derived minimum, by name, before the standup).
+controls_window:
+  gsm8k: 4608
+  source: "geometry.derived_window('capability:gen_long_gsm8k_rung', controls_max_new_tokens=512, from_field='max_prompt') = align128(next_block(2,462 + 512)) = 3072 is the MINIMUM (the GSM8K paired-200 prompt budget's pooled MAX prompt, qwen35_4b under the safety turn, thinking-ON render; the thinking-OFF render the controls run under differs by -2..+4 tokens); the window is the geometry table's capability:gen_long max_model_len = 4608 -- the window the GSM8K lane's paired-200 cap-512 leg (gsm8k-paired200-paper-objects, thinking OFF) stood up at on all four models, and where nemotron3nano4b's hybrid concurrency ceiling is MEASURED (HYBRID_WINDOW_SEQS_CEILINGS: 167 at 4608, job 483254_2), so the standup cannot refuse at readiness on an unmeasured hybrid capacity. S at 4608: gemma4e4b 128 / qwen35_4b 161 / nemotron3nano4b 167 / glm46vflash 170. Measured 2026-09-14: smoke 503471 refused 34 of 200 gsm8k items at 2048 on the llama render (max 1,537)."
+# CONTROLS RETIRED FROM THE WAVE'S CONTROLS LEG, WAVE-WIDE (2026-09-14; f22_roster.controls_retired ->
+# view_controls drops them from EVERY view's list: the wave's and the smoke's controls driver, the sampled sbatch's
+# gsm8k gate, the printers). Distinct from a target's capability_omitted ON PURPOSE: that key also rewrites the sampled
+# lane's readouts.gsm8k to an omission record (make_sampled_configs.expected_readouts) and the drivers' run records
+# (sisteer.eval.capability_omissions) -- the FROZEN instrument of runs that already happened (the sixteen live main
+# sampled configs are pinned as data by tests/test_sdfbase_full22_sampled.py); a wave-wide retirement leaves those
+# records alone. The controls_window.gsm8k block above stays as a dormant guard.
+controls_retired:
+  gsm8k: "retired 2026-09-14: the paper uses ONE GSM8K instrument -- the evaluation lane's inspect/gsm8k_paired200 lane (thinking ON, 8,192 cap with a 16,384 rung, k=1, served at its own windows), which covers every paper cell -- so the wave's controls-leg gsm8k (the same 200 items, thinking OFF, greedy, cap 512, riding the capability:short controls standup) is a second, non-canonical GSM8K measurement and is RETIRED on every target (the llama8b precedent of 2026-09-10, made wave-wide). It had produced no row on the four gsm8k-bearing targets since gsm8k became the 10-shot Inspect control: its prompts (max 2,462 with the safety turn) + the 512 cap overflowed the 2,048 controls window (smoke 503471 refused 34 of 200 items there), and keeping it would have held the whole controls phase at the 4,608 window. The controls standup returns to capability:short's 2,048 with full S; controls_window.gsm8k stays as a dormant guard for a roster that drops this retirement. This key is deliberately NOT a per-target capability_omitted: that key also rewrites the sampled lane's readouts.gsm8k and the drivers' run records -- the frozen instrument of runs that already happened -- which this wave-wide retirement leaves alone"
+# THE CANONICAL BEST-OF-N (2026-09-11): the 512 store PLUS the 4,096 CLIMB of its
+# cap-coherent at-cap draws, re-drawn at temperature 1.0 with the SAME per-draw seed. `bon.max_new_tokens`
+# stays 512 -- it is the BASE of the climb, not a competing cap -- and `bon.climb_cap` is where the
+# escalation lands. A cell with NO 512 store (the llama8b target) runs best-of-N NATIVELY at the climb cap
+# instead; scripts/sdfbase/full22/bon_climb_plan.py decides that per cell and records which.
+# Loop-flagged draws are NOT regenerated, by rule (a repeating draw repeats further): an accepted
+# component of the residual floor, counted and reported, never silently dropped.
+bon_climb_cap: 4096
+bon_climb_temperature: 1.0
+# the attacker's serving defaults, recorded so every cell of every target is generated under the
+# SAME attacker: configs/attacker_serving.json on this tree = prefix_caching true, quantization
+# none (the sbatch passes --prefix-caching on explicitly; recorded in attacker_engine.json)
+attacker_prefix_caching: true
+attacker_quantization: none
+
+# LANE FLAGS (2026-09-07). A lane listed here is wired for every target that maps it
+# (`targets.<key>.lanes.<lane>.cells`, config cell id -> staged id) and enters that target's
+# configs only while `enabled` is true. Flipping a flag is the WHOLE enablement on the roster
+# side: regenerate (make_full22_configs.py), rebuild the bank views, re-pin the wave sha.
+lane_flags:
+  candsi:
+    enabled: false
+    view: main                                   # the lane's cells are the served model's own fits
+    blocker: >
+      The candidate-SI ids A10 / B3 / C16 are registered only by the candidate-si-refit
+      lineage (origin/candidate-si-refit, 230 commits ahead of main, mid-integration as
+      INT-1 by a live peer session): data/instructions.py loads them from a private text file
+      under the env-guarded loader (SISTEER_LOAD_CANDIDATE_SIS -> sisteer.data.candidate_sis),
+      and the Petri vocabulary maps them as safety_a10 / constitution_b3 / irrelevant_c16
+      (registry_adapter.HARNESS_TO_TRAINTEST_SI, manifest PROMPTED_*). NONE of that is on
+      lens-grouped-scope or sdfbase-mt, so on this tree `A10__psr_kl_all` fails
+      resolve_instruction and the registry refuses it. Serving these cells needs that lineage
+      merged into the wave tree AND the candidate SI text file present on every node that
+      stands up a server (the pseudo-instruction must resolve at standup).
+    preconditions:
+      - the candidate-si-refit lineage is merged into the wave tree, so registry_adapter
+        translates A10 / B3 / C16 <-> safety_a10 / constitution_b3 / irrelevant_c16 and
+        data/instructions.py resolves them (tests/test_sdfbase_full22_wave.py refuses the flag
+        while this is false), and the candidate SI text file is present on every standup node
+      - every candsi staged dir declares exactly ONE identity sidecar. VERIFIED 2026-09-07 on
+        cluster A, all 12 nemotron3nano4b / glm46vflash dirs (and the gemma / qwen ones are the
+        same lineage) carry BOTH fit_provenance.json AND train_budget_meta.json — the refit
+        lineage's fit writes both — which make_bank_view.py / train_budget.object_identity_kind
+        REFUSE as ambiguous. Pick the authoritative spelling and re-stage without the other
+        (both record the same object_sha256, so this is a bookkeeping choice, not a data one)
+      - the pins already exist (configs/sdfbase_full22_pins.json, 6 per target, verified on both
+        clusters) — nothing to re-stage for the bytes themselves
+
+targets:
+  gemma4e4b:
+    model: google/gemma-4-E4B-it
+    model_revision: ee0ef6023621cff504d758262d4e04895a5af4a2
+    body_config: configs/sdfbase_transfer_gemma4e4b_r3.yaml      # battery keys, byte-for-byte as data
+    # the strength frontier's TWO ladder families on this ONE served instruct model: `it_d<tok>` = the
+    # instruct-direct objects (the batch-64 refit lineage), bare `d<tok>` = the paper's BASE-FIT objects (the `main` view's
+    # base__ / derived__ parents, batch-8) TRANSFERRED onto the instruct target — constitution, CONTROL and subtraction, six doses.
+    dose_families: [it, main]
+    views:
+      main:
+        config: configs/sdfbase_full22_gemma4e4b.yaml
+        manifest: configs/capeval/manifests/petri_full22_gemma4e4b.yaml
+        cells:                                    # config cell id -> staged id (ordered)
+          constv2-mix-full__psr_ce_all: base__constv2-mix-full__psr_ce_all
+          constv2-mix-full__lora_r4_ce: base__constv2-mix-full__lora_r4_ce
+          constv2ctl2-full__psr_ce_all: base__constv2ctl2-full__psr_ce_all
+          constv2ctl2-full__lora_r4_ce: base__constv2ctl2-full__lora_r4_ce
+          safety_refusal__psr_kl_all: si12__safety_refusal__psr_kl_all
+          safety_refusal__lora_r4: si12__safety_refusal__lora_r4
+          # the CONSTITUTION-SI PROMPTED BASELINE (2026-09-12): one of the paper's six
+          # arms; Figure 2's single-shot panel reads the SAMPLED instrument, so the arm exists there. The registry's
+          # si_constitution text (harness alias `constitution`, registry_adapter) as the system prompt on the served
+          # target — NO object, NO staged dir: served (explicit_cells, the manifest as `prompted__constitution`, the
+          # count guard), never in the bank view or the pins; H8-verified per request against
+          # PREFIX_HASHES.constitution 21e06f482a6559b3 = the hex16 of sha256
+          # 21e06f482a6559b39309c4f1128f0411230c88e02b3a9eaa7b5d50829e6a9a0f over the 31,222 SI bytes (the full
+          # sha rides in every sampled standup's si_prefix_record.json). Its system turn is ~6k tokens, so the
+          # sampled jobs serve it at the LONG-SI windows (common_sampled.sh f22s_base_window / f22s_rung_window
+          # under F22S_LONG_SI), never the :short ones. Listed BEFORE the derived pair, which stays LAST on this view.
+          prompted__si_constitution: null
+          # the DERIVED pair (code-unblocked 2026-09-06; staged for this target 02:01Z the same
+          # day, sha-verified on both clusters). Same construction as qwen35_4b's, NOT the same
+          # quality — read before treating the two targets' decompositions symmetrically. From
+          # the gemma residual's own staged derived_meta.json / report.json / gate_liveness.json:
+          #   distill EARLY-STOPPED at best epoch 48 (ran 53/60; no held-out improvement for 5
+          #   epochs), best held-out loss 6.757; qwen's ran to the cap (best epoch 59), 0.5455.
+          #   gate liveness over 42 layers: derived_meta block min 0.030 / mean 0.653 with 11
+          #   layers below 0.5 (gate_liveness.json min 0.035); qwen's 32 layers min 0.675 /
+          #   mean 0.955, none below 0.5 (gate_liveness.json min 0.813). recovery_verdict is
+          #   `recovered` on both. Servable and worth serving; any cross-target comparison of
+          #   the residual must carry this asymmetry.
+          constv2-mix-full__psr_ce_all_minus_ctl_distilled: derived__constv2-mix-full__psr_ce_all_minus_ctl_distilled
+          constv2-mix-full__lora_r4_ce_minus_ctl: derived__constv2-mix-full__lora_r4_ce_minus_ctl
+      it:
+        config: configs/sdfbase_full22_gemma4e4b_it.yaml
+        manifest: configs/capeval/manifests/petri_full22_gemma4e4b_it.yaml
+        cells:
+          constv2-mix-full__psr_ce_all: itdoc__constv2-mix-full__psr_ce_all
+          constv2-mix-full__lora_r4_ce: itdoc__constv2-mix-full__lora_r4_ce
+          # the BATCH-64 INSTRUCT-DIRECT lane (`itdoc64__` / `derived_itdoc64__`; the 64 names the parents' effective batch,
+          # record key gemma4e4b_it_doc_eb64; staged + sha-verified on both clusters 2026-09-13 — staging_manifest rows from
+          # 71_stage_parents_full22.py / 72_stage_derived_gemma_full22.py): the register-matched CONTROL LoRA fit and the DERIVED
+          # LoRA subtraction of the two itdoc64 parents (constitution minus control; sidecar derived_meta.json, held to the
+          # same derived verdict as main's pair). ADDED, never repointed: `constv2-mix-full__lora_r4_ce` above still names
+          # the batch-8 `itdoc__` object every filed it-view store points at; mixing batch-8 and batch-64 objects on this
+          # view is accepted, and no repoint is made. Mirrors qwen35_4b/it. Objects before the prompted cells, which stay
+          # LAST. The bank view cells_view/it on both clusters must hold these two entries at the same commit:
+          # make_bank_view.py refuses a view short of, or wider than, the roster, so they land and revert together.
+          constv2ctl2-full__lora_r4_ce: itdoc64__constv2ctl2-full__lora_r4_ce
+          constv2-mix-full__lora_r4_ce_minus_ctl: derived_itdoc64__constv2-mix-full__lora_r4_ce_minus_ctl
+          # the MATCHED PROMPTED SAFETY-SI CELL on the instruct-direct view (lane F of the sampled re-run, 2026-09-09;
+          # the roster's prompted grammar `prompted__<si>: null`, as nemotron3nano4b/main and glm46vflash/main): the
+          # safety_refusal SI as the system prompt on the served instruct target, NO object and NO staged dir — served
+          # (explicit_cells, the manifest as `prompted__safety`, the count guard), never in the bank view or the pins.
+          # The greedy run already ran this cell on both `it` views (as a prompted cell, older config grammar; its flags /
+          # grades / transcripts are filed under the *_prompted run-state roots); this entry makes the roster say so, so
+          # the sampled re-run's `_it` configs serve none + the two itdoc objects + this baseline. Listed LAST.
+          prompted__safety_refusal: null
+          # the CONSTITUTION-SI PROMPTED BASELINE on the instruct-direct view (2026-09-12; the same cell as the
+          # main views'): the registry's si_constitution text as the system prompt, NO object and NO
+          # staged dir — served, never in the bank view or the pins; H8 hash 21e06f482a6559b3 (sha256 21e06f48…6a9a0f,
+          # 31,222 bytes). Served at the LONG-SI windows (F22S_LONG_SI). Listed LAST, after the prompted safety cell.
+          prompted__si_constitution: null
+      # --- DOSE LADDER (2026-09-10; the STRENGTH FRONTIER, paper Figure 5): the constitution LoRA — and,
+      # on the chat-checkpoint lanes, its control-subtracted difference — served at doses -1, 0.1, 0.25, 0.5, 1 and
+      # 1.5 of the fitted object, ONE VIEW PER DOSE so every dose gets its OWN same-pass `none` anchor from the
+      # generator (the halfdose precedent on nemotron3nano4b) and the config's cell-id grammar never has to name
+      # "which copy". The rules, in force for every dose view of every target:
+      #   * NAMING: `d<tok>`, <tok> the dose with `p` for the point and `m` for the minus sign (0.1 -> d0p1,
+      #     0.25 -> d0p25, 0.5 -> d0p5, 1 -> d1, 1.5 -> d1p5, 2 -> d2, 4 -> d4, -1 -> dm1), prefixed `it_` on the instruct-direct
+      #     lanes (gemma4e4b, qwen35_4b). The dose is PARSEABLE from the view name, and the view's `dose:` key
+      #     must agree with it — make_full22_configs.py refuses a mismatch in either direction (a dose-named
+      #     view without the key, a keyed view whose name says another dose).
+      #   * DOSE 1.0 IS RE-SERVED, NOT BORROWED: `d1` / `it_d1` map the UNSCALED staged objects (`itdoc__`,
+      #     `base__`, `derived__`) AGAIN — the ep16re precedent, the same object served in the same pass — so the
+      #     frontier's 1.0 point comes from the same code, the same day, the same anchor and the same instrument
+      #     as its neighbours; the campaign's `it` / `main` rows are NOT this point and never stand in for it.
+      #   * DOSE 0.5 REUSES THE HALFDOSE BYTES: `d0p5` / `it_d0p5` map the existing `halfdose__` /
+      #     `halfdoseit__` LoRA copies — B x 0.5 is the same bytes whatever lane serves them — so no 0.5 object
+      #     was rebuilt; only the view (its anchor, its sampled instrument) is new. A staged id therefore
+      #     appears in MORE than one view exactly here (d1, d0p5, and nemotron3nano4b's halfdose): the wave
+      #     test admits a repeat only as a view cell under the same config cell id, never from a lane or a
+      #     pending map.
+      #   * THE SCALING (scripts/sdfbase/scale_lora_dose.py, as halfdose): the served o_proj edit (x @ A) @ B^T is
+      #     linear in the write basis, so a dose copy scales B ONLY (B_pos and B_neg together for the
+      #     subtraction) and leaves A untouched. Each copy is its own object — own sha; parent sha, scale,
+      #     method and a three-level verification (tensors, served ops, served activation) in its sidecar's
+      #     dose_scaled_from and the build ledger — staged and sha-verified on both clusters before pinning.
+      #   * A NEGATIVE DOSE IS THE EXACTLY-REVERSED EDIT (`dm1`: same magnitude, opposite sign), admitted
+      #     because the served op is a plain multiply — nothing in the adapter or the lens assumes a sign.
+      #   * BoN CAP: every dose view's generated config carries `bon.max_new_tokens: 4096` where the
+      #     campaign body says 512: BoN decodes NATIVELY to the static families' cap in ONE pass at T=1.0 for
+      #     every dose, instead of the campaign's two-pass 512-store-plus-climb, whose counterfactual mixes two
+      #     caps inside one number and cannot be reproduced across a ladder without rebuilding each dose's 512
+      #     store. `attacks.target_max_new_tokens` stays 512 (multi-turn and the judged controls read it). The
+      #     frontier's BoN 1.0 point is therefore NOT the campaign's published BoN number and is never quoted as it.
+      #   * NO PROMPTED CELL in a dose view: the ladder contrasts objects against the anchor, nothing else.
+      # The serving code is this repository's; the only additions are these views, their pins and the generator's
+      # dose-view override. Instruct-direct lane: ONE cell per view (no instruct-direct derived object exists).
+      it_dm1:
+        dose: -1.0
+        dose_unit: lora_write_basis_multiplier
+        config: configs/sdfbase_full22_gemma4e4b_it_dm1.yaml
+        manifest: configs/capeval/manifests/petri_full22_gemma4e4b_it_dm1.yaml
+        cells:
+          constv2-mix-full__lora_r4_ce: dm1it64__constv2-mix-full__lora_r4_ce
+          constv2-mix-full__lora_r4_ce_minus_ctl: dm1it64__constv2-mix-full__lora_r4_ce_minus_ctl
+      it_d0p1:
+        dose: 0.1
+        dose_unit: lora_write_basis_multiplier
+        config: configs/sdfbase_full22_gemma4e4b_it_d0p1.yaml
+        manifest: configs/capeval/manifests/petri_full22_gemma4e4b_it_d0p1.yaml
+        cells:
+          constv2-mix-full__lora_r4_ce: d0p1it64__constv2-mix-full__lora_r4_ce
+          constv2-mix-full__lora_r4_ce_minus_ctl: d0p1it64__constv2-mix-full__lora_r4_ce_minus_ctl
+      it_d0p25:
+        dose: 0.25
+        dose_unit: lora_write_basis_multiplier
+        config: configs/sdfbase_full22_gemma4e4b_it_d0p25.yaml
+        manifest: configs/capeval/manifests/petri_full22_gemma4e4b_it_d0p25.yaml
+        cells:
+          constv2-mix-full__lora_r4_ce: d0p25it64__constv2-mix-full__lora_r4_ce
+          constv2-mix-full__lora_r4_ce_minus_ctl: d0p25it64__constv2-mix-full__lora_r4_ce_minus_ctl
+      it_d0p5:
+        dose: 0.5
+        dose_unit: lora_write_basis_multiplier
+        config: configs/sdfbase_full22_gemma4e4b_it_d0p5.yaml
+        manifest: configs/capeval/manifests/petri_full22_gemma4e4b_it_d0p5.yaml
+        cells:
+          constv2-mix-full__lora_r4_ce: d0p5it64__constv2-mix-full__lora_r4_ce
+          constv2-mix-full__lora_r4_ce_minus_ctl: d0p5it64__constv2-mix-full__lora_r4_ce_minus_ctl
+      it_d1:
+        dose: 1.0
+        dose_unit: lora_write_basis_multiplier
+        config: configs/sdfbase_full22_gemma4e4b_it_d1.yaml
+        manifest: configs/capeval/manifests/petri_full22_gemma4e4b_it_d1.yaml
+        cells:
+          constv2-mix-full__lora_r4_ce: itdoc64__constv2-mix-full__lora_r4_ce
+          constv2-mix-full__lora_r4_ce_minus_ctl: derived_itdoc64__constv2-mix-full__lora_r4_ce_minus_ctl
+      it_d1p5:
+        dose: 1.5
+        dose_unit: lora_write_basis_multiplier
+        config: configs/sdfbase_full22_gemma4e4b_it_d1p5.yaml
+        manifest: configs/capeval/manifests/petri_full22_gemma4e4b_it_d1p5.yaml
+        cells:
+          constv2-mix-full__lora_r4_ce: d1p5it64__constv2-mix-full__lora_r4_ce
+          constv2-mix-full__lora_r4_ce_minus_ctl: d1p5it64__constv2-mix-full__lora_r4_ce_minus_ctl
+      dm1:
+        dose: -1
+        dose_unit: lora_write_basis_multiplier
+        config: configs/sdfbase_full22_gemma4e4b_dm1.yaml
+        manifest: configs/capeval/manifests/petri_full22_gemma4e4b_dm1.yaml
+        cells:
+          constv2-mix-full__lora_r4_ce: dm1__constv2-mix-full__lora_r4_ce
+          constv2ctl2-full__lora_r4_ce: dm1__constv2ctl2-full__lora_r4_ce
+          constv2-mix-full__lora_r4_ce_minus_ctl: dm1__constv2-mix-full__lora_r4_ce_minus_ctl
+      d0p1:
+        dose: 0.1
+        dose_unit: lora_write_basis_multiplier
+        config: configs/sdfbase_full22_gemma4e4b_d0p1.yaml
+        manifest: configs/capeval/manifests/petri_full22_gemma4e4b_d0p1.yaml
+        cells:
+          constv2-mix-full__lora_r4_ce: d0p1__constv2-mix-full__lora_r4_ce
+          constv2ctl2-full__lora_r4_ce: d0p1__constv2ctl2-full__lora_r4_ce
+          constv2-mix-full__lora_r4_ce_minus_ctl: d0p1__constv2-mix-full__lora_r4_ce_minus_ctl
+      d0p25:
+        dose: 0.25
+        dose_unit: lora_write_basis_multiplier
+        config: configs/sdfbase_full22_gemma4e4b_d0p25.yaml
+        manifest: configs/capeval/manifests/petri_full22_gemma4e4b_d0p25.yaml
+        cells:
+          constv2-mix-full__lora_r4_ce: d0p25__constv2-mix-full__lora_r4_ce
+          constv2ctl2-full__lora_r4_ce: d0p25__constv2ctl2-full__lora_r4_ce
+          constv2-mix-full__lora_r4_ce_minus_ctl: d0p25__constv2-mix-full__lora_r4_ce_minus_ctl
+      d0p5:
+        dose: 0.5
+        dose_unit: lora_write_basis_multiplier
+        config: configs/sdfbase_full22_gemma4e4b_d0p5.yaml
+        manifest: configs/capeval/manifests/petri_full22_gemma4e4b_d0p5.yaml
+        cells:
+          constv2-mix-full__lora_r4_ce: d0p5__constv2-mix-full__lora_r4_ce
+          constv2ctl2-full__lora_r4_ce: d0p5__constv2ctl2-full__lora_r4_ce
+          constv2-mix-full__lora_r4_ce_minus_ctl: d0p5__constv2-mix-full__lora_r4_ce_minus_ctl
+      d1:
+        dose: 1
+        dose_unit: lora_write_basis_multiplier
+        config: configs/sdfbase_full22_gemma4e4b_d1.yaml
+        manifest: configs/capeval/manifests/petri_full22_gemma4e4b_d1.yaml
+        cells:
+          constv2-mix-full__lora_r4_ce: d1__constv2-mix-full__lora_r4_ce
+          constv2ctl2-full__lora_r4_ce: d1__constv2ctl2-full__lora_r4_ce
+          constv2-mix-full__lora_r4_ce_minus_ctl: d1__constv2-mix-full__lora_r4_ce_minus_ctl
+      d1p5:
+        dose: 1.5
+        dose_unit: lora_write_basis_multiplier
+        config: configs/sdfbase_full22_gemma4e4b_d1p5.yaml
+        manifest: configs/capeval/manifests/petri_full22_gemma4e4b_d1p5.yaml
+        cells:
+          constv2-mix-full__lora_r4_ce: d1p5__constv2-mix-full__lora_r4_ce
+          constv2ctl2-full__lora_r4_ce: d1p5__constv2ctl2-full__lora_r4_ce
+          constv2-mix-full__lora_r4_ce_minus_ctl: d1p5__constv2-mix-full__lora_r4_ce_minus_ctl
+      # --- HIGH-DOSE EXTENSION: on gemma4e4b's base->instruct lane every dose from -1 to 1.5 read
+      # flat (over-refusal within +/-1.4 pp, no static family past +5.8 pp, no monotone trend), so the ladder is extended to
+      # doses 2 and 4 on THIS lane only — the static families and the over-refusal controls (XSTest) are the asked-for
+      # instruments; multi-turn / BoN / MMLU are not run here. Same grammar, same three objects, own same-pass `none`.
+      d2:
+        dose: 2
+        dose_unit: lora_write_basis_multiplier
+        config: configs/sdfbase_full22_gemma4e4b_d2.yaml
+        manifest: configs/capeval/manifests/petri_full22_gemma4e4b_d2.yaml
+        cells:
+          constv2-mix-full__lora_r4_ce: d2__constv2-mix-full__lora_r4_ce
+          constv2ctl2-full__lora_r4_ce: d2__constv2ctl2-full__lora_r4_ce
+          constv2-mix-full__lora_r4_ce_minus_ctl: d2__constv2-mix-full__lora_r4_ce_minus_ctl
+      d4:
+        dose: 4
+        dose_unit: lora_write_basis_multiplier
+        config: configs/sdfbase_full22_gemma4e4b_d4.yaml
+        manifest: configs/capeval/manifests/petri_full22_gemma4e4b_d4.yaml
+        cells:
+          constv2-mix-full__lora_r4_ce: d4__constv2-mix-full__lora_r4_ce
+          constv2ctl2-full__lora_r4_ce: d4__constv2ctl2-full__lora_r4_ce
+          constv2-mix-full__lora_r4_ce_minus_ctl: d4__constv2-mix-full__lora_r4_ce_minus_ctl
+    lanes:
+      candsi:                                     # behind lane_flags.candsi (OFF)
+        A10__psr_kl_all: candsi__A10__psr_kl_all
+        A10__lora_r4: candsi__A10__lora_r4
+        B3__psr_kl_all: candsi__B3__psr_kl_all
+        B3__lora_r4: candsi__B3__lora_r4
+        C16__psr_kl_all: candsi__C16__psr_kl_all
+        C16__lora_r4: candsi__C16__lora_r4
+
+  qwen35_4b:
+    model: Qwen/Qwen3.5-4B
+    model_revision: 851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a
+    body_config: configs/sdfbase_transfer_qwen35_4b_r3.yaml
+    # the strength frontier's TWO ladder families on this ONE served instruct model: `it_d<tok>` = the
+    # instruct-direct objects (the batch-64 refit lineage), bare `d<tok>` = the paper's BASE-FIT objects (the `main` view's
+    # base__ / derived__ parents, batch-8) TRANSFERRED onto the instruct target — constitution, CONTROL and subtraction, six doses.
+    dose_families: [it, main]
+    views:
+      main:
+        config: configs/sdfbase_full22_qwen35_4b.yaml
+        manifest: configs/capeval/manifests/petri_full22_qwen35_4b.yaml
+        cells:
+          constv2-mix-full__psr_ce_all: base__constv2-mix-full__psr_ce_all
+          constv2-mix-full__lora_r4_ce: base__constv2-mix-full__lora_r4_ce
+          constv2ctl2-full__psr_ce_all: base__constv2ctl2-full__psr_ce_all
+          constv2ctl2-full__lora_r4_ce: base__constv2ctl2-full__lora_r4_ce
+          safety_refusal__psr_kl_all: si12__safety_refusal__psr_kl_all
+          safety_refusal__lora_r4: si12__safety_refusal__lora_r4
+          # the CONSTITUTION-SI PROMPTED BASELINE (2026-09-12): one of the paper's six
+          # arms; Figure 2's single-shot panel reads the SAMPLED instrument, so the arm exists there. The registry's
+          # si_constitution text (harness alias `constitution`, registry_adapter) as the system prompt on the served
+          # target — NO object, NO staged dir: served (explicit_cells, the manifest as `prompted__constitution`, the
+          # count guard), never in the bank view or the pins; H8-verified per request against
+          # PREFIX_HASHES.constitution 21e06f482a6559b3 = the hex16 of sha256
+          # 21e06f482a6559b39309c4f1128f0411230c88e02b3a9eaa7b5d50829e6a9a0f over the 31,222 SI bytes (the full
+          # sha rides in every sampled standup's si_prefix_record.json). Its system turn is ~6k tokens, so the
+          # sampled jobs serve it at the LONG-SI windows (common_sampled.sh f22s_base_window / f22s_rung_window
+          # under F22S_LONG_SI), never the :short ones. Listed BEFORE the derived pair, which stays LAST on this view.
+          prompted__si_constitution: null
+          # the DERIVED pair (code-unblocked 2026-09-06): the full-corpus fit MINUS its
+          # register-matched control fit, as servable objects. Both are BASE-lane products
+          # (model_key qwen35_4b_base) and so belong to the `main` view only — there is no
+          # instruct-direct derived object, hence no `it` entry. Neither is a new served
+          # shape: the distilled residual IS a PSRObject (kind `psr`, the existing adapter),
+          # and the LoRA difference stores both parents' factors bit-exact and serves as two
+          # OP_LORA_OPROJ ops per layer at the existing o_proj site (+1 / -1). Their sidecar
+          # is derived_meta.json, not train_budget_meta.json; the bank view and the registry
+          # dispatch on that and run train_budget.derived_object_problems.
+          constv2-mix-full__psr_ce_all_minus_ctl_distilled: derived__constv2-mix-full__psr_ce_all_minus_ctl_distilled
+          constv2-mix-full__lora_r4_ce_minus_ctl: derived__constv2-mix-full__lora_r4_ce_minus_ctl
+      it:
+        config: configs/sdfbase_full22_qwen35_4b_it.yaml
+        manifest: configs/capeval/manifests/petri_full22_qwen35_4b_it.yaml
+        cells:
+          constv2-mix-full__psr_ce_all: itdoc__constv2-mix-full__psr_ce_all
+          constv2-mix-full__lora_r4_ce: itdoc__constv2-mix-full__lora_r4_ce
+          # the BATCH-64 INSTRUCT-DIRECT lane (`itdoc64__` / `derived_itdoc64__`; the 64 names the parents' effective batch,
+          # record key qwen35_4b_it_doc_eb64; staged + sha-verified on both clusters 2026-09-13 — staging_manifest rows from
+          # 71_stage_parents_full22.py / 70_stage_derived_full22.py): the register-matched CONTROL LoRA fit and the DERIVED
+          # LoRA subtraction of the two itdoc64 parents (constitution minus control; sidecar derived_meta.json, held to the
+          # same derived verdict as main's pair). ADDED, never repointed: `constv2-mix-full__lora_r4_ce` above still names
+          # the batch-8 `itdoc__` object every filed it-view store points at — its move to the pinned
+          # itdoc64__constv2-mix-full__lora_r4_ce is the sampled lane's step, not this one's. Objects before the
+          # prompted cells, which stay LAST. The bank view cells_view/it on both clusters holds these two entries, and the
+          # view builder refuses a view short of the roster: these lines and those view entries land and revert together.
+          constv2ctl2-full__lora_r4_ce: itdoc64__constv2ctl2-full__lora_r4_ce
+          constv2-mix-full__lora_r4_ce_minus_ctl: derived_itdoc64__constv2-mix-full__lora_r4_ce_minus_ctl
+          # the MATCHED PROMPTED SAFETY-SI CELL on the instruct-direct view (lane F of the sampled re-run, 2026-09-09;
+          # the roster's prompted grammar `prompted__<si>: null`, as nemotron3nano4b/main and glm46vflash/main): the
+          # safety_refusal SI as the system prompt on the served instruct target, NO object and NO staged dir — served
+          # (explicit_cells, the manifest as `prompted__safety`, the count guard), never in the bank view or the pins.
+          # The greedy run already ran this cell on both `it` views (as a prompted cell, older config grammar; its flags /
+          # grades / transcripts are filed under the *_prompted run-state roots); this entry makes the roster say so, so
+          # the sampled re-run's `_it` configs serve none + the two itdoc objects + this baseline. Listed LAST.
+          prompted__safety_refusal: null
+          # the CONSTITUTION-SI PROMPTED BASELINE on the instruct-direct view (2026-09-12; the same cell as the
+          # main views'): the registry's si_constitution text as the system prompt, NO object and NO
+          # staged dir — served, never in the bank view or the pins; H8 hash 21e06f482a6559b3 (sha256 21e06f48…6a9a0f,
+          # 31,222 bytes). Served at the LONG-SI windows (F22S_LONG_SI). Listed LAST, after the prompted safety cell.
+          prompted__si_constitution: null
+      # --- BATCH-64 SEED REPLICATES of the base->instruct lane (2026-09-15):
+      # three views, one per training seed s in {1, 2, 3}, each serving THAT seed's six cells — the four batch-64
+      # PARENTS (fit key qwen35_4b_base_eb64_s<s>; Slurm bank $SHARED/exp/objects/sdfbase/reseed/<key>/cells_all)
+      # and the seed's two DERIVED objects (the LoRA subtraction and the distilled PSR residual; ADMITTED ones only,
+      # derived_admission.py's ADMISSION.json) — transferred onto the SAME instruct target as `main`
+      # (Qwen/Qwen3.5-4B @ 851bf6e8) and read against the same anchors. The seed lives in the lane prefix
+      # (`base64s<s>__` / `derived_base64s<s>__`: the 64 names the effective batch, the s<s> the seed) and in the
+      # key, never in the cell id (the id grammar has no seed slot). `caps: {bon: 4096}` is the PER-VIEW BoN cap
+      # (make_full22_configs.view_declared_bon_cap): the NATIVE best-of-75 pass at 4,096 — no 512 store, no climb,
+      # the sdfbase-llama8b route — for these three views ONLY; main / it / the dose views keep the campaign's
+      # 512 store byte-for-byte (this target declares no caps table, so a target-level cap would move them all).
+      # The six cells sit under `pending_fit` until each is fitted, validated, (derived: admitted) and STAGED under
+      # its staged id by $STAGE/sdfbase/reseed_eb64/70_stage_full22.py; the staging step then pins them
+      # (--pins-from the clusters' staging_manifest) and moves every PINNED id into `cells` (stage_tools.roster_move,
+      # the sdfbase-llama8b precedent). A derived object that is NOT admitted stays here, named, so the coverage table
+      # and the config header say so. Same order as main: the four parents, then the derived pair LAST.
+      s1:
+        config: configs/sdfbase_full22_qwen35_4b_s1.yaml
+        manifest: configs/capeval/manifests/petri_full22_qwen35_4b_s1.yaml
+        caps: {bon: 4096}      # the per-view BoN cap: native best-of-75 at 4,096 (no 512 store, no climb)
+        cells:                 # the FIVE ADMITTED objects, staged + pinned 2026-09-17 (the lane's staging launcher: --pins-from the clusters' staging_manifest; parents first, then the admitted derived object)
+          constv2-mix-full__psr_ce_all: base64s1__constv2-mix-full__psr_ce_all
+          constv2-mix-full__lora_r4_ce: base64s1__constv2-mix-full__lora_r4_ce
+          constv2ctl2-full__psr_ce_all: base64s1__constv2ctl2-full__psr_ce_all
+          constv2ctl2-full__lora_r4_ce: base64s1__constv2ctl2-full__lora_r4_ce
+          constv2-mix-full__lora_r4_ce_minus_ctl: derived_base64s1__constv2-mix-full__lora_r4_ce_minus_ctl
+          # the TWO PROMPTED BASELINES on the seed view (the "none / prompted x3" arms,
+          # 2026-09-17): the same two arms the `it` view serves, under the roster's prompted grammar
+          # `prompted__<si>: null` — the SI text as the system prompt on the served instruct target, NO object, NO staged
+          # dir, NO pin (explicit_cells, the manifest as `prompted__safety` / `prompted__constitution`, H8-verified per
+          # request against PREFIX_HASHES); served on THIS view's engine beside its five objects so every arm of seed 1
+          # draws under seed base 1. Objects before the prompted cells, which stay LAST (the it-view order: safety, then
+          # the constitution SI last; the constitution's ~6k-token system turn puts the view at the LONG-SI windows).
+          prompted__safety_refusal: null
+          prompted__si_constitution: null
+        # NO pending_fit: the sixth declared object of this view, constv2-mix-full__psr_ce_all_minus_ctl_distilled
+        # (derived_base64s1__constv2-mix-full__psr_ce_all_minus_ctl_distilled), was NOT ADMITTED by the lane's predicate
+        # (scripts/sdfbase/seedrep/derived_admission.py: recovery verdict `not recovered under this trainer + budget` and gate liveness min over layers 0.2127 < the published Qwen derived object's floor 0.8135)
+        # and is DROPPED from this view — decisions O20 (2026-09-17): never staged, never pinned, never served; the record is
+        # RS/reseed/admission/qwen35_4b_base_eb64_s1__constv2-mix-full__psr_ce_all_minus_ctl_distilled.json. The object-space /
+        # seed-spread tables read the distilled-difference class as `unavailable: incomplete replicate triplet`.
+      s2:
+        config: configs/sdfbase_full22_qwen35_4b_s2.yaml
+        manifest: configs/capeval/manifests/petri_full22_qwen35_4b_s2.yaml
+        caps: {bon: 4096}      # the per-view BoN cap: native best-of-75 at 4,096 (no 512 store, no climb)
+        cells:                 # the FIVE ADMITTED objects, staged + pinned 2026-09-17 (the lane's staging launcher: --pins-from the clusters' staging_manifest; parents first, then the admitted derived object)
+          constv2-mix-full__psr_ce_all: base64s2__constv2-mix-full__psr_ce_all
+          constv2-mix-full__lora_r4_ce: base64s2__constv2-mix-full__lora_r4_ce
+          constv2ctl2-full__psr_ce_all: base64s2__constv2ctl2-full__psr_ce_all
+          constv2ctl2-full__lora_r4_ce: base64s2__constv2ctl2-full__lora_r4_ce
+          constv2-mix-full__lora_r4_ce_minus_ctl: derived_base64s2__constv2-mix-full__lora_r4_ce_minus_ctl
+          # the TWO PROMPTED BASELINES on the seed view (the "none / prompted x3" arms,
+          # 2026-09-17): the same two arms the `it` view serves, under the roster's prompted grammar
+          # `prompted__<si>: null` — the SI text as the system prompt on the served instruct target, NO object, NO staged
+          # dir, NO pin (explicit_cells, the manifest as `prompted__safety` / `prompted__constitution`, H8-verified per
+          # request against PREFIX_HASHES); served on THIS view's engine beside its five objects so every arm of seed 2
+          # draws under seed base 2. Objects before the prompted cells, which stay LAST (the it-view order: safety, then
+          # the constitution SI last; the constitution's ~6k-token system turn puts the view at the LONG-SI windows).
+          prompted__safety_refusal: null
+          prompted__si_constitution: null
+        # NO pending_fit: the sixth declared object of this view, constv2-mix-full__psr_ce_all_minus_ctl_distilled
+        # (derived_base64s2__constv2-mix-full__psr_ce_all_minus_ctl_distilled), was NOT ADMITTED by the lane's predicate
+        # (scripts/sdfbase/seedrep/derived_admission.py: gate liveness min over layers 0.0635 < the published Qwen derived object's floor 0.8135)
+        # and is DROPPED from this view — decisions O20 (2026-09-17): never staged, never pinned, never served; the record is
+        # RS/reseed/admission/qwen35_4b_base_eb64_s2__constv2-mix-full__psr_ce_all_minus_ctl_distilled.json. The object-space /
+        # seed-spread tables read the distilled-difference class as `unavailable: incomplete replicate triplet`.
+      s3:
+        config: configs/sdfbase_full22_qwen35_4b_s3.yaml
+        manifest: configs/capeval/manifests/petri_full22_qwen35_4b_s3.yaml
+        caps: {bon: 4096}      # the per-view BoN cap: native best-of-75 at 4,096 (no 512 store, no climb)
+        cells:                 # the FIVE ADMITTED objects, staged + pinned 2026-09-17 (the lane's staging launcher: --pins-from the clusters' staging_manifest; parents first, then the admitted derived object)
+          constv2-mix-full__psr_ce_all: base64s3__constv2-mix-full__psr_ce_all
+          constv2-mix-full__lora_r4_ce: base64s3__constv2-mix-full__lora_r4_ce
+          constv2ctl2-full__psr_ce_all: base64s3__constv2ctl2-full__psr_ce_all
+          constv2ctl2-full__lora_r4_ce: base64s3__constv2ctl2-full__lora_r4_ce
+          constv2-mix-full__lora_r4_ce_minus_ctl: derived_base64s3__constv2-mix-full__lora_r4_ce_minus_ctl
+          # the TWO PROMPTED BASELINES on the seed view (the "none / prompted x3" arms,
+          # 2026-09-17): the same two arms the `it` view serves, under the roster's prompted grammar
+          # `prompted__<si>: null` — the SI text as the system prompt on the served instruct target, NO object, NO staged
+          # dir, NO pin (explicit_cells, the manifest as `prompted__safety` / `prompted__constitution`, H8-verified per
+          # request against PREFIX_HASHES); served on THIS view's engine beside its five objects so every arm of seed 3
+          # draws under seed base 3. Objects before the prompted cells, which stay LAST (the it-view order: safety, then
+          # the constitution SI last; the constitution's ~6k-token system turn puts the view at the LONG-SI windows).
+          prompted__safety_refusal: null
+          prompted__si_constitution: null
+        # NO pending_fit: the sixth declared object of this view, constv2-mix-full__psr_ce_all_minus_ctl_distilled
+        # (derived_base64s3__constv2-mix-full__psr_ce_all_minus_ctl_distilled), was NOT ADMITTED by the lane's predicate
+        # (scripts/sdfbase/seedrep/derived_admission.py: recovery verdict `not recovered under this trainer + budget` and gate liveness min over layers 0.1356 < the published Qwen derived object's floor 0.8135)
+        # and is DROPPED from this view: never staged, never pinned, never served; the record is
+        # RS/reseed/admission/qwen35_4b_base_eb64_s3__constv2-mix-full__psr_ce_all_minus_ctl_distilled.json. The object-space /
+        # seed-spread tables read the distilled-difference class as `unavailable: incomplete replicate triplet`.
+      # --- DOSE LADDER: the rules are gemma4e4b's block above (naming, the scaling, the BoN cap).
+      # Instruct-direct lane: ONE LoRA cell per view; d1 re-serves itdoc__, d0p5 reuses
+      # halfdose__, the rest are the dose-scaled copies.
+      it_dm1:
+        dose: -1.0
+        dose_unit: lora_write_basis_multiplier
+        config: configs/sdfbase_full22_qwen35_4b_it_dm1.yaml
+        manifest: configs/capeval/manifests/petri_full22_qwen35_4b_it_dm1.yaml
+        cells:
+          constv2-mix-full__lora_r4_ce: dm1it64__constv2-mix-full__lora_r4_ce
+          constv2-mix-full__lora_r4_ce_minus_ctl: dm1it64__constv2-mix-full__lora_r4_ce_minus_ctl
+      it_d0p1:
+        dose: 0.1
+        dose_unit: lora_write_basis_multiplier
+        config: configs/sdfbase_full22_qwen35_4b_it_d0p1.yaml
+        manifest: configs/capeval/manifests/petri_full22_qwen35_4b_it_d0p1.yaml
+        cells:
+          constv2-mix-full__lora_r4_ce: d0p1it64__constv2-mix-full__lora_r4_ce
+          constv2-mix-full__lora_r4_ce_minus_ctl: d0p1it64__constv2-mix-full__lora_r4_ce_minus_ctl
+      it_d0p25:
+        dose: 0.25
+        dose_unit: lora_write_basis_multiplier
+        config: configs/sdfbase_full22_qwen35_4b_it_d0p25.yaml
+        manifest: configs/capeval/manifests/petri_full22_qwen35_4b_it_d0p25.yaml
+        cells:
+          constv2-mix-full__lora_r4_ce: d0p25it64__constv2-mix-full__lora_r4_ce
+          constv2-mix-full__lora_r4_ce_minus_ctl: d0p25it64__constv2-mix-full__lora_r4_ce_minus_ctl
+      it_d0p5:
+        dose: 0.5
+        dose_unit: lora_write_basis_multiplier
+        config: configs/sdfbase_full22_qwen35_4b_it_d0p5.yaml
+        manifest: configs/capeval/manifests/petri_full22_qwen35_4b_it_d0p5.yaml
+        cells:
+          constv2-mix-full__lora_r4_ce: d0p5it64__constv2-mix-full__lora_r4_ce
+          constv2-mix-full__lora_r4_ce_minus_ctl: d0p5it64__constv2-mix-full__lora_r4_ce_minus_ctl
+      it_d1:
+        dose: 1.0
+        dose_unit: lora_write_basis_multiplier
+        config: configs/sdfbase_full22_qwen35_4b_it_d1.yaml
+        manifest: configs/capeval/manifests/petri_full22_qwen35_4b_it_d1.yaml
+        cells:
+          constv2-mix-full__lora_r4_ce: itdoc64__constv2-mix-full__lora_r4_ce
+          constv2-mix-full__lora_r4_ce_minus_ctl: derived_itdoc64__constv2-mix-full__lora_r4_ce_minus_ctl
+      it_d1p5:
+        dose: 1.5
+        dose_unit: lora_write_basis_multiplier
+        config: configs/sdfbase_full22_qwen35_4b_it_d1p5.yaml
+        manifest: configs/capeval/manifests/petri_full22_qwen35_4b_it_d1p5.yaml
+        cells:
+          constv2-mix-full__lora_r4_ce: d1p5it64__constv2-mix-full__lora_r4_ce
+          constv2-mix-full__lora_r4_ce_minus_ctl: d1p5it64__constv2-mix-full__lora_r4_ce_minus_ctl
+      dm1:
+        dose: -1
+        dose_unit: lora_write_basis_multiplier
+        config: configs/sdfbase_full22_qwen35_4b_dm1.yaml
+        manifest: configs/capeval/manifests/petri_full22_qwen35_4b_dm1.yaml
+        cells:
+          constv2-mix-full__lora_r4_ce: dm1__constv2-mix-full__lora_r4_ce
+          constv2ctl2-full__lora_r4_ce: dm1__constv2ctl2-full__lora_r4_ce
+          constv2-mix-full__lora_r4_ce_minus_ctl: dm1__constv2-mix-full__lora_r4_ce_minus_ctl
+      d0p1:
+        dose: 0.1
+        dose_unit: lora_write_basis_multiplier
+        config: configs/sdfbase_full22_qwen35_4b_d0p1.yaml
+        manifest: configs/capeval/manifests/petri_full22_qwen35_4b_d0p1.yaml
+        cells:
+          constv2-mix-full__lora_r4_ce: d0p1__constv2-mix-full__lora_r4_ce
+          constv2ctl2-full__lora_r4_ce: d0p1__constv2ctl2-full__lora_r4_ce
+          constv2-mix-full__lora_r4_ce_minus_ctl: d0p1__constv2-mix-full__lora_r4_ce_minus_ctl
+      d0p25:
+        dose: 0.25
+        dose_unit: lora_write_basis_multiplier
+        config: configs/sdfbase_full22_qwen35_4b_d0p25.yaml
+        manifest: configs/capeval/manifests/petri_full22_qwen35_4b_d0p25.yaml
+        cells:
+          constv2-mix-full__lora_r4_ce: d0p25__constv2-mix-full__lora_r4_ce
+          constv2ctl2-full__lora_r4_ce: d0p25__constv2ctl2-full__lora_r4_ce
+          constv2-mix-full__lora_r4_ce_minus_ctl: d0p25__constv2-mix-full__lora_r4_ce_minus_ctl
+      d0p5:
+        dose: 0.5
+        dose_unit: lora_write_basis_multiplier
+        config: configs/sdfbase_full22_qwen35_4b_d0p5.yaml
+        manifest: configs/capeval/manifests/petri_full22_qwen35_4b_d0p5.yaml
+        cells:
+          constv2-mix-full__lora_r4_ce: d0p5__constv2-mix-full__lora_r4_ce
+          constv2ctl2-full__lora_r4_ce: d0p5__constv2ctl2-full__lora_r4_ce
+          constv2-mix-full__lora_r4_ce_minus_ctl: d0p5__constv2-mix-full__lora_r4_ce_minus_ctl
+      d1:
+        dose: 1
+        dose_unit: lora_write_basis_multiplier
+        config: configs/sdfbase_full22_qwen35_4b_d1.yaml
+        manifest: configs/capeval/manifests/petri_full22_qwen35_4b_d1.yaml
+        cells:
+          constv2-mix-full__lora_r4_ce: d1__constv2-mix-full__lora_r4_ce
+          constv2ctl2-full__lora_r4_ce: d1__constv2ctl2-full__lora_r4_ce
+          constv2-mix-full__lora_r4_ce_minus_ctl: d1__constv2-mix-full__lora_r4_ce_minus_ctl
+      d1p5:
+        dose: 1.5
+        dose_unit: lora_write_basis_multiplier
+        config: configs/sdfbase_full22_qwen35_4b_d1p5.yaml
+        manifest: configs/capeval/manifests/petri_full22_qwen35_4b_d1p5.yaml
+        cells:
+          constv2-mix-full__lora_r4_ce: d1p5__constv2-mix-full__lora_r4_ce
+          constv2ctl2-full__lora_r4_ce: d1p5__constv2ctl2-full__lora_r4_ce
+          constv2-mix-full__lora_r4_ce_minus_ctl: d1p5__constv2-mix-full__lora_r4_ce_minus_ctl
+      # --- ReLU (PSR) DIFFERENCE DOSE LADDER: the difference ReLU object served base->instruct on
+      # qwen35_4b at six doses, four static families + the over-refusal controls, NATIVE path. Its own view namespace
+      # (`d<tok>_relu`, object_family relu) because the bare `d<tok>` views are the LoRA ladder's and are already measured.
+      # DOSE MEANS THE DIRECTION NORM here, not the LoRA's write-basis multiplier: scale_psr_dose.py scales d_l and leaves
+      # the gate byte-identical, because a gated PSR has the gauge freedom (w,b,d) -> (cw,cb,d/c) and scaling the gate would
+      # move its FIRING RATE rather than the dose. The two ladders are therefore NOT the same axis.
+      # 0.5 reuses the halfdose bytes; 1.0 re-serves the unscaled derived object under this ladder's own view.
+      dm1_relu:
+        dose: -1
+        dose_unit: psr_direction_norm_multiplier
+        object_family: relu
+        config: configs/sdfbase_full22_qwen35_4b_dm1_relu.yaml
+        manifest: configs/capeval/manifests/petri_full22_qwen35_4b_dm1_relu.yaml
+        cells:
+          constv2-mix-full__psr_ce_all_minus_ctl_distilled: dm1__constv2-mix-full__psr_ce_all_minus_ctl_distilled
+      d0p1_relu:
+        dose: 0.1
+        dose_unit: psr_direction_norm_multiplier
+        object_family: relu
+        config: configs/sdfbase_full22_qwen35_4b_d0p1_relu.yaml
+        manifest: configs/capeval/manifests/petri_full22_qwen35_4b_d0p1_relu.yaml
+        cells:
+          constv2-mix-full__psr_ce_all_minus_ctl_distilled: d0p1__constv2-mix-full__psr_ce_all_minus_ctl_distilled
+      d0p25_relu:
+        dose: 0.25
+        dose_unit: psr_direction_norm_multiplier
+        object_family: relu
+        config: configs/sdfbase_full22_qwen35_4b_d0p25_relu.yaml
+        manifest: configs/capeval/manifests/petri_full22_qwen35_4b_d0p25_relu.yaml
+        cells:
+          constv2-mix-full__psr_ce_all_minus_ctl_distilled: d0p25__constv2-mix-full__psr_ce_all_minus_ctl_distilled
+      d0p5_relu:
+        dose: 0.5
+        dose_unit: psr_direction_norm_multiplier
+        object_family: relu
+        config: configs/sdfbase_full22_qwen35_4b_d0p5_relu.yaml
+        manifest: configs/capeval/manifests/petri_full22_qwen35_4b_d0p5_relu.yaml
+        cells:
+          constv2-mix-full__psr_ce_all_minus_ctl_distilled: halfdose__constv2-mix-full__psr_ce_all_minus_ctl_distilled
+      d1_relu:
+        dose: 1
+        dose_unit: psr_direction_norm_multiplier
+        object_family: relu
+        config: configs/sdfbase_full22_qwen35_4b_d1_relu.yaml
+        manifest: configs/capeval/manifests/petri_full22_qwen35_4b_d1_relu.yaml
+        cells:
+          constv2-mix-full__psr_ce_all_minus_ctl_distilled: derived__constv2-mix-full__psr_ce_all_minus_ctl_distilled
+      d1p5_relu:
+        dose: 1.5
+        dose_unit: psr_direction_norm_multiplier
+        object_family: relu
+        config: configs/sdfbase_full22_qwen35_4b_d1p5_relu.yaml
+        manifest: configs/capeval/manifests/petri_full22_qwen35_4b_d1p5_relu.yaml
+        cells:
+          constv2-mix-full__psr_ce_all_minus_ctl_distilled: d1p5__constv2-mix-full__psr_ce_all_minus_ctl_distilled
+    lanes:
+      candsi:                                     # behind lane_flags.candsi (OFF)
+        A10__psr_kl_all: candsi__A10__psr_kl_all
+        A10__lora_r4: candsi__A10__lora_r4
+        B3__psr_kl_all: candsi__B3__psr_kl_all
+        B3__lora_r4: candsi__B3__lora_r4
+        C16__psr_kl_all: candsi__C16__psr_kl_all
+        C16__lora_r4: candsi__C16__lora_r4
+
+  # ---- the two targets added 2026-09-07 (branch full22-newmodels): their base fits ran on
+  # cluster A's Slurm fit lane (sdfbase_fit_cell.sbatch, bank newmodels_full/<key>_doc/cells_all,
+  # 42.8M-token full-scale fits) and were staged into this wave's bank layout on 2026-09-07
+  # 18:30Z (stage_full22.sh BANK_CELLS: within-cluster copy on cluster A, routed to cluster B
+  # through the grading host, object.pt sha + file count verified on BOTH clusters, staging_manifest
+  # 49 rows). Every served cell here is a training-lane fit: identity sidecar
+  # train_budget_meta.json, object_sha256 recorded (plain-symlink view entries).
+  nemotron3nano4b:
+    model: nvidia/NVIDIA-Nemotron-3-Nano-4B-BF16
+    model_revision: dfaf35de3e30f1867dd8dbc38a7fc9fb52d3914f
+    # no sdfbase transfer lineage exists for this target: the battery body is the qwen35_4b _r3
+    # config's data with the model pins of configs/two_si_nemotron3nano4b.yaml (the generator
+    # substitutes model, model_revision, layer, max_len, teacher_prefix_cache, pool_manifest,
+    # pool.store_dir; everything else is the same battery every full22 config runs)
+    body_config: configs/sdfbase_transfer_qwen35_4b_r3.yaml
+    pins_config: configs/two_si_nemotron3nano4b.yaml
+    views:
+      main:
+        config: configs/sdfbase_full22_nemotron3nano4b.yaml
+        manifest: configs/capeval/manifests/petri_full22_nemotron3nano4b.yaml
+        cells:                                    # all four base fits landed (COMPLETE + RESULT DONE)
+          constv2-mix-full__psr_ce_all: base__constv2-mix-full__psr_ce_all
+          constv2-mix-full__lora_r4_ce: base__constv2-mix-full__lora_r4_ce
+          constv2ctl2-full__psr_ce_all: base__constv2ctl2-full__psr_ce_all
+          constv2ctl2-full__lora_r4_ce: base__constv2ctl2-full__lora_r4_ce
+          # the MATCHED PROMPTED SAFETY-SI CELL: the safety_refusal SI as the
+          # system prompt on the served instruct target, no fitted object (status `prompted` above);
+          # same wave, same `none` anchor, the whole battery. The harness spells it prompted__safety.
+          prompted__safety_refusal: null
+          # the CONSTITUTION-SI PROMPTED BASELINE (the same cell as the gemma / qwen views'): the registry's
+          # si_constitution text as the system prompt, no object, no staged dir; the harness
+          # spells it prompted__constitution; H8 hash 21e06f482a6559b3 (sha256 21e06f48…6a9a0f, 31,222 bytes). Served at
+          # the LONG-SI windows (F22S_LONG_SI: its system turn is ~6k tokens). Listed beside the prompted safety cell.
+          prompted__si_constitution: null
+          # the two DERIVED objects: constitution PSR minus control PSR distilled, and
+          # constitution LoRA minus control LoRA — built ON CLUSTER A from the four base fits above by the same
+          # builder (derived-full @ 6708221d, on the fits-slurm-newmodels lineage; branch nemotron-derived-build
+          # a5d9c908, jobs 454177 / 454484 / 454485) that made the gemma / qwen pair; staged + pinned on both
+          # clusters (stage_full22.sh); listed LAST like the gemma / qwen views
+          constv2-mix-full__psr_ce_all_minus_ctl_distilled: derived__constv2-mix-full__psr_ce_all_minus_ctl_distilled
+          constv2-mix-full__lora_r4_ce_minus_ctl: derived__constv2-mix-full__lora_r4_ce_minus_ctl
+      # --- HALFDOSE: the 0.5x DOSE copy of EVERY object type this target serves —
+      # gated PSRs with directions x 0.5 and the gate untouched (scripts/sdfbase/scale_psr_dose.py; the
+      # gauge (w,b,d) -> (cw,cb,d/c) is a no-op, so dose is ||d|| at fixed gate), LoRAs with the write basis
+      # B x 0.5 and A untouched (scripts/sdfbase/scale_lora_dose.py; the served o_proj edit (x @ A) @ B^T is
+      # linear in B; the LoRA subtraction scales B_pos and B_neg), the distilled residual as a PSR. Each copy
+      # is its own object (own sha, parent sha + scaling method + verification in its sidecar's
+      # dose_scaled_from); every view has its OWN same-pass `none` anchor. Serving code is the lineage's
+      # (src/ byte-identical to the sha whose rows these are compared against); the only additions are
+      # these views + their pins.
+      halfdose:
+        config: configs/sdfbase_full22_nemotron3nano4b_halfdose.yaml
+        manifest: configs/capeval/manifests/petri_full22_nemotron3nano4b_halfdose.yaml
+        cells:
+          constv2-mix-full__psr_ce_all: halfdose__constv2-mix-full__psr_ce_all
+          constv2-mix-full__lora_r4_ce: halfdose__constv2-mix-full__lora_r4_ce
+          constv2ctl2-full__psr_ce_all: halfdose__constv2ctl2-full__psr_ce_all
+          constv2ctl2-full__lora_r4_ce: halfdose__constv2ctl2-full__lora_r4_ce
+          constv2-mix-full__psr_ce_all_minus_ctl_distilled: halfdose__constv2-mix-full__psr_ce_all_minus_ctl_distilled
+          constv2-mix-full__lora_r4_ce_minus_ctl: halfdose__constv2-mix-full__lora_r4_ce_minus_ctl
+      # --- DOSE LADDER: the rules are gemma4e4b's block (naming, the scaling, the BoN cap).
+      # Chat-checkpoint lane: TWO cells per view — the constitution LoRA and its control-subtracted
+      # difference (B_pos / B_neg scaled together); d1 re-serves base__ + derived__, d0p5 reuses the two halfdose__
+      # LoRA copies the halfdose view above already serves among its six, the rest are the dose-scaled copies.
+      dm1:
+        dose: -1.0
+        dose_unit: lora_write_basis_multiplier
+        config: configs/sdfbase_full22_nemotron3nano4b_dm1.yaml
+        manifest: configs/capeval/manifests/petri_full22_nemotron3nano4b_dm1.yaml
+        cells:
+          constv2-mix-full__lora_r4_ce: dm1__constv2-mix-full__lora_r4_ce
+          constv2-mix-full__lora_r4_ce_minus_ctl: dm1__constv2-mix-full__lora_r4_ce_minus_ctl
+      d0p1:
+        dose: 0.1
+        dose_unit: lora_write_basis_multiplier
+        config: configs/sdfbase_full22_nemotron3nano4b_d0p1.yaml
+        manifest: configs/capeval/manifests/petri_full22_nemotron3nano4b_d0p1.yaml
+        cells:
+          constv2-mix-full__lora_r4_ce: d0p1__constv2-mix-full__lora_r4_ce
+          constv2-mix-full__lora_r4_ce_minus_ctl: d0p1__constv2-mix-full__lora_r4_ce_minus_ctl
+      d0p25:
+        dose: 0.25
+        dose_unit: lora_write_basis_multiplier
+        config: configs/sdfbase_full22_nemotron3nano4b_d0p25.yaml
+        manifest: configs/capeval/manifests/petri_full22_nemotron3nano4b_d0p25.yaml
+        cells:
+          constv2-mix-full__lora_r4_ce: d0p25__constv2-mix-full__lora_r4_ce
+          constv2-mix-full__lora_r4_ce_minus_ctl: d0p25__constv2-mix-full__lora_r4_ce_minus_ctl
+      d0p5:
+        dose: 0.5
+        dose_unit: lora_write_basis_multiplier
+        config: configs/sdfbase_full22_nemotron3nano4b_d0p5.yaml
+        manifest: configs/capeval/manifests/petri_full22_nemotron3nano4b_d0p5.yaml
+        cells:
+          constv2-mix-full__lora_r4_ce: halfdose__constv2-mix-full__lora_r4_ce
+          constv2-mix-full__lora_r4_ce_minus_ctl: halfdose__constv2-mix-full__lora_r4_ce_minus_ctl
+      d1:
+        dose: 1.0
+        dose_unit: lora_write_basis_multiplier
+        config: configs/sdfbase_full22_nemotron3nano4b_d1.yaml
+        manifest: configs/capeval/manifests/petri_full22_nemotron3nano4b_d1.yaml
+        cells:
+          constv2-mix-full__lora_r4_ce: base__constv2-mix-full__lora_r4_ce
+          constv2-mix-full__lora_r4_ce_minus_ctl: derived__constv2-mix-full__lora_r4_ce_minus_ctl
+      d1p5:
+        dose: 1.5
+        dose_unit: lora_write_basis_multiplier
+        config: configs/sdfbase_full22_nemotron3nano4b_d1p5.yaml
+        manifest: configs/capeval/manifests/petri_full22_nemotron3nano4b_d1p5.yaml
+        cells:
+          constv2-mix-full__lora_r4_ce: d1p5__constv2-mix-full__lora_r4_ce
+          constv2-mix-full__lora_r4_ce_minus_ctl: d1p5__constv2-mix-full__lora_r4_ce_minus_ctl
+    lanes:
+      candsi:                                     # behind lane_flags.candsi (OFF)
+        A10__psr_kl_all: candsi__A10__psr_kl_all
+        A10__lora_r4: candsi__A10__lora_r4
+        B3__psr_kl_all: candsi__B3__psr_kl_all
+        B3__lora_r4: candsi__B3__lora_r4
+        C16__psr_kl_all: candsi__C16__psr_kl_all
+        C16__lora_r4: candsi__C16__lora_r4
+
+  # --- llama8b: the INSTRUCT checkpoint serves every view; the base-lane objects are
+  # TRANSFERRED onto it (view main), the instruct-direct objects applied natively
+  # (view it), each view with its own same-wave `none` anchor. Cell ids collide across the two lanes by
+  # construction (the code's grammar has no lane slot), so the lanes are two configs, never lane-prefixed
+  # ids. No sdfbase transfer lineage exists for this target: the battery body is the qwen35_4b _r3 data
+  # with the pins of configs/two_si_llama_fits.yaml (the nemotron precedent). The base checkpoint is a
+  # fitting target only and is never served (no chat template -> the template-hash gate refuses).
+  #
+  # The eight fits + the derived pairs are named under each view's `pending_fit` until they land and are
+  # STAGED: the generator prints them in the config header, every_staged_id counts them, and enabling one
+  # is the plan's flow (fit -> stage -> --pins-from <staging_manifest> -> move into `cells` -> regenerate).
+  # Pins are never invented here. What is servable NOW: the matched prompted safety baseline on main and
+  # it, and the FULL-constitution prompted baseline on its own view.
+  llama8b:
+    model: NousResearch/Meta-Llama-3.1-8B-Instruct
+    model_revision: d10aef7999a2b5ba950ab3974312feeedbfe0b77
+    body_config: configs/sdfbase_transfer_qwen35_4b_r3.yaml
+    pins_config: configs/two_si_llama_fits.yaml
+    # THE XSTEST CONTROL SET: the over-refusal control is the 250 SAFE
+    # prompts only — never the 200 contrast rows (a different measurement). Emitted top-level into every
+    # view config of this target; the controls drivers select the half before the seeded subset, the
+    # item hashes and every cap-ladder input, and a 250-row store keys apart from a 450-row one.
+    xstest_subset: safe
+    # THE REPLICATE-FLOOR PAIR: the two lane views share the SAME unsteered instruct
+    # model, so their two `none` anchors are identical by construction and measure run-to-run noise
+    # directly; any extra replicate goals go into the baseline arm, never split evenly
+    replicate_floor:
+      pair: [main, it]
+      note: "the main and it views' `none` anchors are the same served model with no object — identical by construction; their disagreement is the per-cell replicate floor every contrast is read against"
+    # -- llama8b caps: BEGIN (rendered from the lane's caps table; regenerated by the lane's staging launcher — edit the table, not this) --
+    # THE TOKEN CAPS of this lane's wave (eval-time, per leg; the canonical battery): applied by the generator —
+    # multiturn_target (PER FAMILY; 4,096 per reply for Crescendo / PAIR / ActorAttack) becomes the per-family map
+    # attacks.multiturn_target_max_new_tokens, a key ONLY the multi-turn path reads (resolved for the family it runs);
+    # each family's multi-turn serving window is DERIVED from ITS cap (geometry.multiturn_window; S from the budget)
+    # unless caps.windows below PINS it wider (the pinning mechanism, with the canonical values); bon.max_new_tokens
+    # is WRITTEN from `bon` (the NATIVE 4,096 best-of-75 pass — no 512 store, no climb); every other cap is asserted
+    # EQUAL to the value the body / the roster already carries for its leg. Recorded with its source in the wave
+    # manifest.
+    caps:
+      source: "the canonical battery of 2026-09-11 (IFEval / BoN provenance, the 16,384 rung under the 1% rule, record-only controls, ActorAttack kept at 4,096 / 49,152 x 9)"
+      multiturn_target:          # FLAT per family: no ladder for multi-turn (a truncated reply feeds the next attacker turn)
+        source: "the canonical battery of 2026-09-11: 4,096 per reply for every multi-turn family; ActorAttack KEPT at 4,096"
+        crescendo: 4096
+        pair: 4096
+        actorattack: 4096
+      attacker: 1024             # attacks.attacker_max_new_tokens — the attack, not the measurement
+      static: 4096               # attacks.static_max_new_tokens = the base of the 4096 -> 8192 -> 16384 ladder (each rung only while > 1% truncated non-loop at the rung below)
+      bon: 4096                  # bon.max_new_tokens, WRITTEN by the generator: the NATIVE 4,096 pass (route native_4096; the other lanes climbed a 512 store to 4,096 — same estimand, different route)
+      controls_ladder: 512       # attacks.target_max_new_tokens = the over-refusal ladder's start (512 -> 2048 -> 8192 -> 16384, the same 1% rule)
+      petri: 1024                # per target turn at the 16,384 window (petri_runner.target_response_cap = window // 16; nothing else sent)
+      # the multi-turn SERVING WINDOWS PER FAMILY, PINNED over the derivation (Crescendo 49,152 = the canonical measured
+      # window, PAIR 16,384 = the canonical window, ActorAttack 49,152 = the Crescendo window with ~16k margin; the re-run
+      # pins are our typed over-window safety net): a pin is honoured by geometry.multiturn_window(cap, pin) /
+      # multiturn_rerun_window(cap, pin) over the family's derived value and REFUSED below the derived minimum (p99
+      # prompt + cap; measured max call + cap), off the 128-token grid, or as a re-run window not wider than the first
+      # pass; S = budget_for(llama8b) // L. The generator writes them into the view configs as the per-family maps
+      # attacks.multiturn_max_model_len / multiturn_rerun_max_model_len (target_attacks.sbatch + the re-run pass read
+      # the family's entry; a family without a block derives). The attacker pool's own window is unchanged.
+      windows:
+        crescendo:
+          source: "the canonical battery of 2026-09-11: Crescendo 49,152 = the canonical MEASURED window (Scale's largest target's Crescendo realized context 34,361 and climbing at cap 4,096); re-run 65,536: our typed over-window safety net"
+          multiturn: 49152          # the first pass (main + it)
+          multiturn_rerun: 65536    # the over-window RE-RUN pass (the first pass's error:PromptOverWindow goals)
+        pair:
+          source: "the canonical battery of 2026-09-11: PAIR 16,384 = the canonical window (the derived minimum 11,648 is below it); re-run 32,768 x 14: our typed over-window re-run machinery, not the canonical battery's"
+          multiturn: 16384          # the first pass (main + it)
+          multiturn_rerun: 32768    # the over-window RE-RUN pass (the first pass's error:PromptOverWindow goals)
+        actorattack:
+          source: "2026-09-11 14:23: ActorAttack KEPT at 4,096, first pass 49,152 x 9 = the canonical measured Crescendo window (at most 7 prior replies, hard worst case ~33k, ~16k margin), re-run 65,536 x 7 the typed over-window safety net; NO measured ActorAttack-at-4,096 window exists yet \u2014 the first cell's realized context is read before the rest go out"
+          multiturn: 49152          # the first pass (main + it)
+          multiturn_rerun: 65536    # the over-window RE-RUN pass (the first pass's error:PromptOverWindow goals)
+    # the capability leg's controls on EVERY view of this target (f22_roster.target_capability_controls); a dropped
+    # control is recorded with its reason, like legs_omitted — never inferred from an absent job
+    capability_controls: [mmlu]
+    capability_omitted:
+      gsm8k: "2026-09-10, confirmed 2026-09-11: the paper uses ONE GSM8K instrument (inspect/gsm8k_paired200, thinking ON, 8,192 cap with a 16,384 rung above 3%, k=1, served, item_id pairing) owned by the evaluation lane, which adds Llama once this bank is staged; a vendor-preset thinking-OFF gsm8k here would be the retired instrument"
+    # -- llama8b caps: END --
+    # the strength frontier's TWO ladder families on this ONE served instruct model: `it_d<tok>` = the instruct-fit
+    # objects served natively, bare `d<tok>` = the base-fit objects TRANSFERRED onto the instruct target. A roster fact the
+    # wave generator reads (make_full22_configs.dose_families); without it a base-fit dose view is refused as a misspelling.
+    dose_families: [it, main]
+    views:
+      main:                                      # the base-lane objects, transferred onto the instruct target
+        config: configs/sdfbase_full22_llama8b.yaml
+        manifest: configs/capeval/manifests/petri_full22_llama8b.yaml
+        cells:
+          # staged + pinned 2026-09-11 (the lane's staging launcher: --pins-from the clusters' staging_manifest; objects first, the prompted baseline stays LAST)
+          constv2-mix-full__lora_r4_ce: base__constv2-mix-full__lora_r4_ce
+          constv2ctl2-full__lora_r4_ce: base__constv2ctl2-full__lora_r4_ce
+          # staged + pinned 2026-09-11 (the lane's staging launcher: --pins-from the clusters' staging_manifest; objects first, the prompted baseline stays LAST)
+          constv2-mix-full__lora_r4_ce_minus_ctl: derived__constv2-mix-full__lora_r4_ce_minus_ctl
+          prompted__safety_refusal: null           # the matched prompted safety-SI baseline (the harness spells it prompted__safety)
+          # DECLARED, NOT SERVED HERE: the constitution-SI arm exists on main / it / shortconst
+          # in this roster but is SERVED on exactly ONE view per evaluation — this lane serves it through the `shortconst` view (static, sampled,
+          # BoN, controls, MMLU, Petri, multi-turn); main / it carry the declaration for the per-view instruments other lanes schedule (the
+          # GSM8K + IFEval rows). The wave launcher's configs step drops it from main / it before staging (stage_tools DROP_SETS), so no leg
+          # of this lane serves the arm twice; the coding lane HOLDS it (admit-and-hold). Same cell id and SI sha (21e06f482a6559b3) as shortconst's.
+          prompted__si_constitution: null          # the harness spells it prompted__constitution
+        # pending_fit: (none — every fit of this view is staged and pinned; the lane's staging launcher moved them into cells)
+      it:                                        # the instruct-direct objects, applied natively
+        config: configs/sdfbase_full22_llama8b_it.yaml
+        manifest: configs/capeval/manifests/petri_full22_llama8b_it.yaml
+        cells:
+          # staged + pinned 2026-09-11 (the lane's staging launcher: --pins-from the clusters' staging_manifest; objects first, the prompted baseline stays LAST)
+          constv2-mix-full__lora_r4_ce: itdoc__constv2-mix-full__lora_r4_ce
+          constv2ctl2-full__lora_r4_ce: itdoc__constv2ctl2-full__lora_r4_ce
+          # staged + pinned 2026-09-11 (the lane's staging launcher: --pins-from the clusters' staging_manifest; objects first, the prompted baseline stays LAST)
+          constv2-mix-full__lora_r4_ce_minus_ctl: derived_itdoc__constv2-mix-full__lora_r4_ce_minus_ctl
+          prompted__safety_refusal: null
+          prompted__si_constitution: null          # declared, not served here — see the main view's note
+        # pending_fit: (none — every fit of this view is staged and pinned; the lane's staging launcher moved them into cells)
+      # --- the FULL constitution as a prompted baseline: its own view because a
+      # 34k-token system prefix needs its own serving geometry (45,056 x 10 at the measured 475,136 budget; x 5 at the former 229,376 ceiling)
+      # and its legs are capped — the static single-shot families, best-of-N, MMLU and GSM8K; NOT the
+      # multi-turn attacks, NOT the over-refusal controls (xstest / or_bench and their cap ladder), NOT Petri.
+      # A prompted cell has no lane, so the cell is served ONCE at its own geometry and read against the
+      # `none` on ITS server (the paired anchor) and against both lane views' `none` (cross-server; the
+      # geometry-parity check makes that honest). `si_constitution` is the EXCERPT and stays out of this.
+      fullconst:
+        config: configs/sdfbase_full22_llama8b_fullconst.yaml
+        manifest: configs/capeval/manifests/petri_full22_llama8b_fullconst.yaml
+        prompted_only: true                        # no object cell by design: `none` + the prompted baseline
+        cells:
+          prompted__si_constitution_full: null     # the harness spells it prompted__constitution_full
+        serving:
+          max_model_len: 45056                     # 34,395 (rendered prefix + the longest static prompt) + the 8,192 escalation rung = 42,587 <= 45,056; S = budget_for(llama8b) // 45056 = 10 at the measured 475,136 (was 5 at the 229,376 ceiling)
+        legs: [static, bon, capability]
+        legs_omitted:
+          controls: "cheap legs only — no over-refusal (xstest / or_bench) and no cap ladder for this cell"
+          attacks: "no multi-turn (Crescendo / ActorAttack / PAIR) — history would accumulate on a 34k prefix with no enforced bound"
+          petri: "the Petri window is certified at 16,384 and the full text alone is 33,980 tokens"
+      # --- THE PAPER'S CONSTITUTION-SI ARM: the SHORT registry SI
+      # `si_constitution` (31,222 bytes, 121 lines, sha256 21e06f482a6559b39309c4f1128f0411230c88e02b3a9eaa7b5d50829e6a9a0f — the
+      # same bytes three lanes measured; hex16 = PREFIX_HASHES.constitution, verified per request, H8) as a prompted baseline, the
+      # SAMPLED LANE'S MECHANISM: cell `prompted__si_constitution` (harness `prompted__constitution`, virtual model
+      # `petri__prompted__constitution`), the text resolved ONLY through registry_adapter -> TrainTest resolve_instruction, the
+      # FULL sha256 / byte length / first + last line written as si_prefix_record.json at EVERY standup (traffic refused on a
+      # mismatch with the routing table). NOT fullconst: distinct cell id, windows, records and virtual model end to end
+      # (`prompted__si_constitution_full` ~34k tokens is the Llama-only appendix point above). Its own prompted-only view
+      # because the ~5.9k-token system turn (5,887 rendered under the pinned Llama-3.1 tokenizer, 2026-09-12) does not fit the
+      # lane views' :short windows; unlike fullconst it runs EVERY leg (no `legs:` key), so its windows are PER LEG, each
+      # max-prompt-sized for that leg's cap on the table's 128 grid (align_128(next_block(max rendered prompt under the SI + cap));
+      # S = budget_for(llama8b) 475,136 // L) — measured 2026-09-12 with the pinned tokenizer through the served render:
+      # static grok420 6,312 (pasttense 5,926 / codeattack 6,001 / renellm 5,985), BoN 2 x longest JBB goal 5,947, or_bench 5,936,
+      # xstest (250 safe) 5,905, MMLU 6,624 at max_tokens 1 — so static + BoN 10,496 x 45 (6,312 + 4,096; BoN 5,947 + 4,096 =
+      # 10,043 fits), controls 6,656 x 71 (6,624 + 1 the MMLU letter prefill; 5,936 + 512 the judged controls), rungs 2,048 ->
+      # 8,064 x 58 (5,936 + 2,048), 8,192 -> 14,592 x 32 (6,312 + 8,192; the static max governs both ladders), 16,384 -> 22,784
+      # x 20 (6,312 + 16,384). Multi-turn at the target's pins (caps.windows) — the prefix 5,784 over the safety SI leaves
+      # Crescendo 41,433 + 5,784 = 47,217 <= 49,152 and ActorAttack ~33k + 5,784 <= 49,152 — EXCEPT PAIR, whose measured maximum
+      # 12,825 + 5,784 = 18,609 no longer fits the 16,384 pin: its first pass is WIDENED here to 18,688 x 25 (the re-run pin 32,768
+      # stands). Petri stays at the certified 16,384 x 29 (the cap 1,024 = window // 16 IS the instrument): the llama8b p99 Petri
+      # prompt 11,261 + 5,784 exceeds the 15,360 a 1,024 reply leaves, so a materially larger share of target turns than the
+      # lane views' will overflow to the runner's 32,768 re-run pass — recorded, not widened.
+      shortconst:
+        config: configs/sdfbase_full22_llama8b_shortconst.yaml
+        manifest: configs/capeval/manifests/petri_full22_llama8b_shortconst.yaml
+        prompted_only: true                        # no object cell by design: `none` + the prompted baseline
+        cells:
+          prompted__si_constitution: null          # the harness spells it prompted__constitution; H8 hash 21e06f482a6559b3
+        serving:
+          windows:                                 # PER LEG (f22_roster.view_windows; roster_view.py window <leg> / rung_window <rung>)
+            static: 10496                          # the four static families + BoN: 6,312 + 4,096 -> 10,496; S = 475,136 // 10,496 = 45
+            controls: 6656                         # MMLU (letter prefill, max_tokens 1) + xstest / or_bench at 512: 6,624 + 1 -> 6,656; S 71
+            rungs:
+              2048: 8064                           # the controls ladder's 2,048 rung: 5,936 + 2,048 -> 8,064; S 58
+              8192: 14592                          # the static AND controls 8,192 rungs: 6,312 + 8,192 -> 14,592; S 32
+              16384: 22784                         # the static AND controls 16,384 rungs (CONDITIONAL, the 1% rule): 6,312 + 16,384 -> 22,784; S 20
+            multiturn:
+              pair: 18688                          # PAIR's first pass, widened over the target's 16,384: 12,825 + 5,784 = 18,609 -> 18,688; S 25
+            source: "2026-09-12: the short constitution SI as a prompted-only view (the sampled lane's mechanism; windows max-prompt-sized per leg through the lane's budget rule); measured 2026-09-12 on the grading host with the pinned tokenizer NousResearch/Meta-Llama-3.1-8B-Instruct @ d10aef79 through load_check.rendered_len (prompted_window_check.py + the controls corpora): SI system turn 5,887 (raw 5,872; +5,784 over the safety SI), static max grok420 6,312, BoN 5,947, or_bench 5,936, xstest 5,905, MMLU 6,624; multi-turn maxima from geometry.MULTITURN_CAP4096_WINDOWS (Crescendo 41,433 / PAIR 12,825) + the prefix"
+      it_dm1:
+        dose: -1.0
+        dose_unit: lora_write_basis_multiplier
+        config: configs/sdfbase_full22_llama8b_it_dm1.yaml
+        manifest: configs/capeval/manifests/petri_full22_llama8b_it_dm1.yaml
+        cells:
+          constv2-mix-full__lora_r4_ce: dm1it__constv2-mix-full__lora_r4_ce
+          constv2-mix-full__lora_r4_ce_minus_ctl: dm1it__constv2-mix-full__lora_r4_ce_minus_ctl
+      it_d0p1:
+        dose: 0.1
+        dose_unit: lora_write_basis_multiplier
+        config: configs/sdfbase_full22_llama8b_it_d0p1.yaml
+        manifest: configs/capeval/manifests/petri_full22_llama8b_it_d0p1.yaml
+        cells:
+          constv2-mix-full__lora_r4_ce: d0p1it__constv2-mix-full__lora_r4_ce
+          constv2-mix-full__lora_r4_ce_minus_ctl: d0p1it__constv2-mix-full__lora_r4_ce_minus_ctl
+      it_d0p25:
+        dose: 0.25
+        dose_unit: lora_write_basis_multiplier
+        config: configs/sdfbase_full22_llama8b_it_d0p25.yaml
+        manifest: configs/capeval/manifests/petri_full22_llama8b_it_d0p25.yaml
+        cells:
+          constv2-mix-full__lora_r4_ce: d0p25it__constv2-mix-full__lora_r4_ce
+          constv2-mix-full__lora_r4_ce_minus_ctl: d0p25it__constv2-mix-full__lora_r4_ce_minus_ctl
+      it_d0p5:
+        dose: 0.5
+        dose_unit: lora_write_basis_multiplier
+        config: configs/sdfbase_full22_llama8b_it_d0p5.yaml
+        manifest: configs/capeval/manifests/petri_full22_llama8b_it_d0p5.yaml
+        cells:
+          constv2-mix-full__lora_r4_ce: d0p5it__constv2-mix-full__lora_r4_ce
+          constv2-mix-full__lora_r4_ce_minus_ctl: d0p5it__constv2-mix-full__lora_r4_ce_minus_ctl
+      it_d1:                                     # the RE-SERVED 1.0 anchor: the parents' own bytes under this lane's ids
+        dose: 1.0
+        dose_unit: lora_write_basis_multiplier
+        config: configs/sdfbase_full22_llama8b_it_d1.yaml
+        manifest: configs/capeval/manifests/petri_full22_llama8b_it_d1.yaml
+        cells:
+          constv2-mix-full__lora_r4_ce: d1it__constv2-mix-full__lora_r4_ce
+          constv2-mix-full__lora_r4_ce_minus_ctl: d1it__constv2-mix-full__lora_r4_ce_minus_ctl
+      it_d1p5:
+        dose: 1.5
+        dose_unit: lora_write_basis_multiplier
+        config: configs/sdfbase_full22_llama8b_it_d1p5.yaml
+        manifest: configs/capeval/manifests/petri_full22_llama8b_it_d1p5.yaml
+        cells:
+          constv2-mix-full__lora_r4_ce: d1p5it__constv2-mix-full__lora_r4_ce
+          constv2-mix-full__lora_r4_ce_minus_ctl: d1p5it__constv2-mix-full__lora_r4_ce_minus_ctl
+      # --- DOSE LADDER, base-fit family (the TRANSFER view): the `llama8b_base` parents, served on the instruct target
+      dm1:
+        dose: -1.0
+        dose_unit: lora_write_basis_multiplier
+        config: configs/sdfbase_full22_llama8b_dm1.yaml
+        manifest: configs/capeval/manifests/petri_full22_llama8b_dm1.yaml
+        cells:
+          constv2-mix-full__lora_r4_ce: dm1__constv2-mix-full__lora_r4_ce
+          constv2ctl2-full__lora_r4_ce: dm1__constv2ctl2-full__lora_r4_ce
+          constv2-mix-full__lora_r4_ce_minus_ctl: dm1__constv2-mix-full__lora_r4_ce_minus_ctl
+      d0p1:
+        dose: 0.1
+        dose_unit: lora_write_basis_multiplier
+        config: configs/sdfbase_full22_llama8b_d0p1.yaml
+        manifest: configs/capeval/manifests/petri_full22_llama8b_d0p1.yaml
+        cells:
+          constv2-mix-full__lora_r4_ce: d0p1__constv2-mix-full__lora_r4_ce
+          constv2ctl2-full__lora_r4_ce: d0p1__constv2ctl2-full__lora_r4_ce
+          constv2-mix-full__lora_r4_ce_minus_ctl: d0p1__constv2-mix-full__lora_r4_ce_minus_ctl
+      d0p25:
+        dose: 0.25
+        dose_unit: lora_write_basis_multiplier
+        config: configs/sdfbase_full22_llama8b_d0p25.yaml
+        manifest: configs/capeval/manifests/petri_full22_llama8b_d0p25.yaml
+        cells:
+          constv2-mix-full__lora_r4_ce: d0p25__constv2-mix-full__lora_r4_ce
+          constv2ctl2-full__lora_r4_ce: d0p25__constv2ctl2-full__lora_r4_ce
+          constv2-mix-full__lora_r4_ce_minus_ctl: d0p25__constv2-mix-full__lora_r4_ce_minus_ctl
+      d0p5:
+        dose: 0.5
+        dose_unit: lora_write_basis_multiplier
+        config: configs/sdfbase_full22_llama8b_d0p5.yaml
+        manifest: configs/capeval/manifests/petri_full22_llama8b_d0p5.yaml
+        cells:
+          constv2-mix-full__lora_r4_ce: d0p5__constv2-mix-full__lora_r4_ce
+          constv2ctl2-full__lora_r4_ce: d0p5__constv2ctl2-full__lora_r4_ce
+          constv2-mix-full__lora_r4_ce_minus_ctl: d0p5__constv2-mix-full__lora_r4_ce_minus_ctl
+      d1:                                        # the RE-SERVED 1.0 anchor
+        dose: 1.0
+        dose_unit: lora_write_basis_multiplier
+        config: configs/sdfbase_full22_llama8b_d1.yaml
+        manifest: configs/capeval/manifests/petri_full22_llama8b_d1.yaml
+        cells:
+          constv2-mix-full__lora_r4_ce: d1__constv2-mix-full__lora_r4_ce
+          constv2ctl2-full__lora_r4_ce: d1__constv2ctl2-full__lora_r4_ce
+          constv2-mix-full__lora_r4_ce_minus_ctl: d1__constv2-mix-full__lora_r4_ce_minus_ctl
+      d1p5:
+        dose: 1.5
+        dose_unit: lora_write_basis_multiplier
+        config: configs/sdfbase_full22_llama8b_d1p5.yaml
+        manifest: configs/capeval/manifests/petri_full22_llama8b_d1p5.yaml
+        cells:
+          constv2-mix-full__lora_r4_ce: d1p5__constv2-mix-full__lora_r4_ce
+          constv2ctl2-full__lora_r4_ce: d1p5__constv2ctl2-full__lora_r4_ce
+          constv2-mix-full__lora_r4_ce_minus_ctl: d1p5__constv2-mix-full__lora_r4_ce_minus_ctl
+    lanes:
+      candsi:                                    # behind lane_flags.candsi (OFF)
+        A10__psr_kl_all: candsi__A10__psr_kl_all
+        A10__lora_r4: candsi__A10__lora_r4
+        B3__psr_kl_all: candsi__B3__psr_kl_all
+        B3__lora_r4: candsi__B3__lora_r4
+        C16__psr_kl_all: candsi__C16__psr_kl_all
+        C16__lora_r4: candsi__C16__lora_r4
+
+  glm46vflash:
+    model: zai-org/GLM-4.6V-Flash
+    model_revision: 411bb4d77144a3f03accbf4b780f5acb8b7cde4e
+    body_config: configs/sdfbase_transfer_qwen35_4b_r3.yaml
+    pins_config: configs/two_si_glm46vflash.yaml
+    views:
+      main:
+        config: configs/sdfbase_full22_glm46vflash.yaml
+        manifest: configs/capeval/manifests/petri_full22_glm46vflash.yaml
+        cells:                                    # ALL FOUR base fits landed (2026-09-08). Order = the gemma/qwen order.
+                                                  # The constitution PSR REFIT at r2_t12 (cluster A 441097, COMPLETE 18:52Z,
+                                                  # sha a7ec68081f90…, fingerprint c204eb7cfd3ca35e, CE ratio 0.809, displacement
+                                                  # 0.543, gate liveness min 0.316 / mean 0.683 over 40 layers, ran to its 16-epoch
+                                                  # cap with the held-out curve still creeping down 2.0376 -> 2.0370; the diverged
+                                                  # first attempt 421329 is NOT this object and was never staged) goes FIRST; then
+                                                  # the constitution LoRA (421330, sha b1576de43c5c…), the ctl PSR REFIT at r2_t12
+                                                  # (441098, sha 93813cee76e7…, fingerprint a7cda5219969b832, CE ratio 0.899,
+                                                  # displacement 0.382, early-stopped at epoch 4; its first attempt 421331 was
+                                                  # refused by the floor-ratio guard and is NOT this object) and the ctl LoRA (421332).
+          constv2-mix-full__psr_ce_all: base__constv2-mix-full__psr_ce_all
+          constv2-mix-full__lora_r4_ce: base__constv2-mix-full__lora_r4_ce
+          constv2ctl2-full__psr_ce_all: base__constv2ctl2-full__psr_ce_all
+          constv2ctl2-full__lora_r4_ce: base__constv2ctl2-full__lora_r4_ce
+          # DERIVED (2026-09-08): the LoRA task-vector subtraction constitution-LoRA minus control-LoRA, built by
+          # scripts/sdfbase/lora_subtract.py (--ctl-si constv2ctl2-full, the builder that made the gemma/qwen
+          # pair) from the two staged base LoRA parents above; scale-matched (both parents 42,785,435 official
+          # tokens); sha 72f860f43b17e7d6…; staged from the newmodels_full bank's derived/ namespace. The
+          # distilled PSR residual joins here once the constitution PSR (pending_fit below) lands.
+          # DERIVED (2026-09-09): the DISTILLED PSR RESIDUAL constitution-PSR minus control-PSR (psr_residual_distill.py `all`
+                                                  # off the two r2_t12 PSR parents above; cluster A 465061 at halfdose-glm 84a1f768 with the wave's
+                                                  # 100k-token capture: 72 train / 10 holdout docs; its full-pool predecessor 464386 was cancelled and is
+                                                  # never staged). sha 290ca00e023b085e…; lr_mult 3 selected — INTERIOR over the extended ladder
+                                                  # 0.3/1/3/6/9 (worst-stratum attainable ED 0.545/0.760/0.812/0.759/…; a concave quadratic in log m
+                                                  # peaks at ~2.4), the extension run as calibration only after the original 3-rung ladder put the
+                                                  # argmax on its edge. Planted controls' held-out MSE: R_mixC_mix minimal at 3 (159.7); R_mix_empty
+                                                  # best at 1 (34.4), 47.5 at 3, 43.9 at 6 — non-monotone, recorded beside the recovery verdict.
+                                                  # Distillation early-stopped 27/60 (best epoch 22) on a BOUNCING tail (80.58 … 80.77): best and final
+                                                  # are indistinguishable; a patience expiry, not a clean minimum. Recovery verdict: recovered (ed mix
+                                                  # 0.655 / ctl 0.797).
+          constv2-mix-full__psr_ce_all_minus_ctl_distilled: derived__constv2-mix-full__psr_ce_all_minus_ctl_distilled
+          constv2-mix-full__lora_r4_ce_minus_ctl: derived__constv2-mix-full__lora_r4_ce_minus_ctl
+          # the MATCHED PROMPTED SAFETY-SI CELL (the roster's prompted grammar, `prompted__<si>:
+          # null`): the safety_refusal SI as the system prompt on the served
+          # target, no object, no staged dir, never in the bank view or the pins — the proxy serves the bare model behind
+          # the SI's H8 hash-verified system prefix (registry_adapter: prompted__safety; prefix hash ac3a58f61d53cf24 in
+          # the manifest). Listed LAST so the generated config's explicit_cells order (objects, then the prompted
+          # baseline) and every Petri leg index this lane recorded stay as they were.
+          prompted__safety_refusal: null
+      # --- DOSE LADDER: the rules are gemma4e4b's block (naming, the scaling, the BoN cap).
+      # Chat-checkpoint lane, as nemotron3nano4b: TWO cells per view; d1 re-serves base__ + derived__,
+      # d0p5 reuses the two halfdose__ LoRA copies (staged + pinned on both clusters with the halfdose bank), the
+      # rest are the dose-scaled copies.
+      dm1:
+        dose: -1.0
+        dose_unit: lora_write_basis_multiplier
+        config: configs/sdfbase_full22_glm46vflash_dm1.yaml
+        manifest: configs/capeval/manifests/petri_full22_glm46vflash_dm1.yaml
+        cells:
+          constv2-mix-full__lora_r4_ce: dm1__constv2-mix-full__lora_r4_ce
+          constv2-mix-full__lora_r4_ce_minus_ctl: dm1__constv2-mix-full__lora_r4_ce_minus_ctl
+      d0p1:
+        dose: 0.1
+        dose_unit: lora_write_basis_multiplier
+        config: configs/sdfbase_full22_glm46vflash_d0p1.yaml
+        manifest: configs/capeval/manifests/petri_full22_glm46vflash_d0p1.yaml
+        cells:
+          constv2-mix-full__lora_r4_ce: d0p1__constv2-mix-full__lora_r4_ce
+          constv2-mix-full__lora_r4_ce_minus_ctl: d0p1__constv2-mix-full__lora_r4_ce_minus_ctl
+      d0p25:
+        dose: 0.25
+        dose_unit: lora_write_basis_multiplier
+        config: configs/sdfbase_full22_glm46vflash_d0p25.yaml
+        manifest: configs/capeval/manifests/petri_full22_glm46vflash_d0p25.yaml
+        cells:
+          constv2-mix-full__lora_r4_ce: d0p25__constv2-mix-full__lora_r4_ce
+          constv2-mix-full__lora_r4_ce_minus_ctl: d0p25__constv2-mix-full__lora_r4_ce_minus_ctl
+      d0p5:
+        dose: 0.5
+        dose_unit: lora_write_basis_multiplier
+        config: configs/sdfbase_full22_glm46vflash_d0p5.yaml
+        manifest: configs/capeval/manifests/petri_full22_glm46vflash_d0p5.yaml
+        cells:
+          constv2-mix-full__lora_r4_ce: halfdose__constv2-mix-full__lora_r4_ce
+          constv2-mix-full__lora_r4_ce_minus_ctl: halfdose__constv2-mix-full__lora_r4_ce_minus_ctl
+      d1:
+        dose: 1.0
+        dose_unit: lora_write_basis_multiplier
+        config: configs/sdfbase_full22_glm46vflash_d1.yaml
+        manifest: configs/capeval/manifests/petri_full22_glm46vflash_d1.yaml
+        cells:
+          constv2-mix-full__lora_r4_ce: base__constv2-mix-full__lora_r4_ce
+          constv2-mix-full__lora_r4_ce_minus_ctl: derived__constv2-mix-full__lora_r4_ce_minus_ctl
+      d1p5:
+        dose: 1.5
+        dose_unit: lora_write_basis_multiplier
+        config: configs/sdfbase_full22_glm46vflash_d1p5.yaml
+        manifest: configs/capeval/manifests/petri_full22_glm46vflash_d1p5.yaml
+        cells:
+          constv2-mix-full__lora_r4_ce: d1p5__constv2-mix-full__lora_r4_ce
+          constv2-mix-full__lora_r4_ce_minus_ctl: d1p5__constv2-mix-full__lora_r4_ce_minus_ctl
+    lanes:
+      candsi:                                     # behind lane_flags.candsi (OFF)
+        A10__psr_kl_all: candsi__A10__psr_kl_all
+        A10__lora_r4: candsi__A10__lora_r4
+        B3__psr_kl_all: candsi__B3__psr_kl_all
+        B3__lora_r4: candsi__B3__lora_r4
+        C16__psr_kl_all: candsi__C16__psr_kl_all
+        C16__lora_r4: candsi__C16__lora_r4
+
+  # --- llama8b (the strength frontier's FOURTH paper family, after GLM was dropped and Llama added).
+  # ONE served model — the INSTRUCT checkpoint — for EVERY view, including both ladder families below.
+  # The Llama lane's own `main` / `it` / `fullconst` views are rostered and generated on THEIR wave
+  # tree; the two views named here carry only what this tree can say about them (the prompted safety
+  # baseline, which serves no object) so the ladder's spelling rule has its anchors — nothing of the
+  # Llama lane's object cells is rostered, pinned or served from this tree, and the `fullconst` view
+  # (prompted-only, a 45,056-token window) has nothing to ladder and is not here.
+  #
+  # TWO LADDER FAMILIES, ONE SERVED TARGET. The key `llama8b_base` in that lane's bank names where the
+  # objects were FIT (the base checkpoint, document cross-entropy, chat template bypassed; sidecar template_hash
+  # e3b0c44298fc1c14 = sha256("")), never where they are served: nothing in that wave serves the base checkpoint
+  # (no chat template -> the template-hash gate refuses). So:
+  #   it_d<tok>  the `llama8b_it_doc` parents (fit on NousResearch/Meta-Llama-3.1-8B-Instruct @ d10aef79) served
+  #              NATIVELY — the paper's fourth family (Figures 2/3/5);
+  #   d<tok>     the `llama8b_base` parents (fit on NousResearch/Meta-Llama-3.1-8B @ 1f47e50c) TRANSFERRED onto the
+  #              instruct target — the base-to-instruct transfer view (the transfer figure).
+  # Both families pin the SAME model / model_revision (this target's; the generator derives every config's pin from
+  # the target, never from an object bank); the configs differ only in which objects they load. The object bytes
+  # are target-agnostic: a LoRA blob carries A / B per layer, rank, layers, positions and response_header_len — no
+  # model id — and the sidecar's model_id / model_revision record the FIT target as provenance, which no serving
+  # code reads to choose a target.
+  #
+  # EVERY RUNG IS A LANE-OWNED STAGED ID, 1.0 INCLUDED (differs from the four other targets' rule).
+  # The parents were consumed from the Llama lane's bank ($SHARED/exp/objects/sdfbase/llama8b_full/, sha-verified
+  # against their sidecars on cluster A 2026-09-11) BEFORE that lane finished staging them into this bank (the two
+  # constitution LoRAs were staged by 18:14Z; the two subtractions were not). Rather than map `d1` / `it_d1` to ids
+  # another lane was still staging, the 1.0 anchor is a BYTE-IDENTICAL copy of the parent (same sha; nothing
+  # re-serialised; scale_lora_dose.py --anchor) under `d1__` / `d1it__`, and 0.5 is an ordinary scaled copy (no
+  # halfdose exists on this target). Consequence: the exactly-once invariant holds here with no repeated id, and
+  # once the Llama lane's `itdoc__` / `base__` / `derived*__` ids are all pinned, the anchor pins equal them sha
+  # for sha — two ids, one object, which the pins make legible. TWO cells per view in both families: the
+  # constitution LoRA and its control-subtracted difference (both lanes' subtractions exist on this target).
+  # Every copy records the parent sha it descends from, the parent's origin path and its state at consumption
+  # (dose_scaled_from.parent_origin / parent_consumed_state), and the three-level verification.

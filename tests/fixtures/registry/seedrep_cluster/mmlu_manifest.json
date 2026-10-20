@@ -1,0 +1,100 @@
+{
+ "cell_id": "constv2-mix-full__lora_r4_ce",
+ "contract_version": 3,
+ "controls": [
+  "mmlu"
+ ],
+ "engine": "vllm",
+ "fit_provenance": {
+  "chat_template_bypassed": true,
+  "fit_kind": "document",
+  "model_id": "Qwen/Qwen3.5-4B-Base",
+  "object_sha": "SHA16",
+  "override_evidence": null,
+  "positions_at_fit": "all",
+  "revision": "7777777777777777777777777777777777777777",
+  "served_model_id": "Qwen/Qwen3.5-4B",
+  "served_revision": "151a1338c6d3f6d0dffb53ffa80de911409e3516",
+  "served_template_hash": "a4aee8afcf2e0711",
+  "source": "train_budget_meta",
+  "status": "document_fit",
+  "template_check": "inapplicable",
+  "template_hash": "a4aee8afcf2e0711",
+  "training_budget_kind": "document_tokens",
+  "transfer": true
+ },
+ "harness_cell_id": "si_constv2_mix_full__lora_r4_ce",
+ "harness_config_hash": "b5f5ab6800000000",
+ "intervention_hash": "18984b4300000000",
+ "model_id": "Qwen/Qwen3.5-4B",
+ "model_revision": "151a1338c6d3f6d0dffb53ffa80de911409e3516",
+ "producer": {
+  "driver": "served_capability_run",
+  "tree_sha": "48476165d5bb08e36d6b36e56ffdccfb26a0cd2a"
+ },
+ "proxy_url": "http://127.0.0.1:1/v1",
+ "resolved_config": {
+  "cell_id": "constv2-mix-full__lora_r4_ce",
+  "controls": [
+   "mmlu"
+  ],
+  "driver": "served_capability_run_v2",
+  "engine": "vllm",
+  "gen": {
+   "arm": "vendor_recommended",
+   "batch_size": 8,
+   "do_sample": true,
+   "max_new_tokens": 512,
+   "min_p": 0.0,
+   "presence_penalty": 1.5,
+   "repetition_penalty": 1.0,
+   "seed_base": 2,
+   "temperature": 0.7,
+   "top_k": 20,
+   "top_p": 0.8,
+   "trial": 0
+  },
+  "judge_model": "claude-sonnet-5",
+  "limit": null,
+  "mmlu": {
+   "answer_seed": "Answer:",
+   "response_prefill": false,
+   "top_logprobs": 64
+  },
+  "model_id": "Qwen/Qwen3.5-4B",
+  "model_revision": "151a1338c6d3f6d0dffb53ffa80de911409e3516",
+  "order_seed": 0,
+  "scale": 1.0,
+  "serving": {
+   "serving_engine": "lora_native",
+   "serving_identity": "proxy_vllm+lora+interleaved",
+   "virtual_model": "petri__si_constv2_mix_full__lora_r4_ce"
+  },
+  "steer_positions": "all",
+  "subset_seed": null,
+  "system_sha": null
+ },
+ "routing_table": "/workspace/TESTUSER/exp/sdfbase_full22_native/sampled/serving/capability_t0_qwen35_4b_s2_121264/mmlu/routing_table.json",
+ "row_constants": {
+  "arm_name": "constv2-mix-full--lora_r4_ce",
+  "attempt": 0,
+  "coeff": 1.0,
+  "engine": "vllm",
+  "env_digest": "d2430484e2c4d671",
+  "harness_config_hash": "b5f5ab6800000000",
+  "intervention_hash": "18984b4300000000",
+  "kind": "cell",
+  "model_id": "Qwen/Qwen3.5-4B",
+  "model_revision": "151a1338c6d3f6d0dffb53ffa80de911409e3516",
+  "run_id": "served-controls-constv2-mix-full--lora_r4_ce",
+  "seed": 0,
+  "slurm_job_id": "121264",
+  "sweep": "two_si_controls_served",
+  "trial_id": 0
+ },
+ "serving_engine": "lora_native",
+ "serving_identity": "proxy_vllm+lora+interleaved",
+ "serving_path": "lora",
+ "steer_positions": "all",
+ "virtual_model": "petri__si_constv2_mix_full__lora_r4_ce"
+}

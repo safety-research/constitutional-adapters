@@ -1,0 +1,23 @@
+{
+ "attacks": [
+  "crescendo"
+ ],
+ "decode_caps": {
+  "target_max_new_tokens": 4096
+ },
+ "expected": {
+  "gated_goals": 4
+ },
+ "private_run": "sdfbase_full22_qwen35_4b_s2",
+ "serving": {
+  "require_engine": "lora_native",
+  "serving_engine": "lora_native",
+  "serving_identities": [
+   "proxy_vllm+lora+interleaved",
+   "proxy_vllm+passthrough+interleaved"
+  ]
+ },
+ "target": "qwen35_4b_s2",
+ "written_at": "2026-09-21T00:09:08.645383+00:00",
+ "cells": {}
+}

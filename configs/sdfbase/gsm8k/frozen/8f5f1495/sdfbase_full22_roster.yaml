@@ -1,0 +1,316 @@
+# sdfbase_full22_roster.yaml — THE cell roster of the full22 wave (sdf-base-steering-r2,
+# sdf-base-steering-r2): four served targets, every staged object, and how each one is (or is not)
+# expressible to the code that serves it. Source of truth for
+#   * scripts/sdfbase/make_full22_configs.py  -> configs/sdfbase_full22_*.yaml (explicit_cells)
+#                                              -> configs/capeval/manifests/petri_full22_*.yaml
+#   * scripts/sdfbase/full22/make_bank_view.py -> the per-config object bank the standup consumes
+#   * scripts/sdfbase/full22/submit_full22.sh  -> which (target, view) pairs have anything to serve
+#   * scripts/sdfbase/full22/submit_newmodels.sh -> the nemotron3nano4b / glm46vflash legs' plan
+# EVERY reader resolves a (target, view)'s served cells through ONE function,
+# scripts/sdfbase/full22/f22_roster.py served_cells(): the view's `cells` plus every lane whose
+# flag is on — so a flag flip regenerates the configs, the bank views, the job-side count guard
+# and the printers together, never one without the others.
+#
+# WHY A ROSTER AND NOT JUST explicit_cells. The staging layout is
+# $SHARED/exp/objects/sdfbase/full22/<target>/cells/<lane>__<cell_id>/ (lane prefixes because the
+# base-lane and instruct-direct cells share ids). The code's cell-id grammar
+# (sisteer.eval.defense_cell: none | prompted__<si> | <si>__<arm> | stacked__<si>__<arm>) has NO
+# lane slot, and the Petri harness vocabulary (si_<si>__<method>, manifest.PETRI_SI_IDS,
+# defense_cells.CLASS_A_METHODS, registry_adapter.ARM_OBJECT_KINDS) cannot name a lane either.
+# So a config lists cells in the code's grammar, and THIS file maps each config cell to the
+# staged directory it is served from, via a per-config bank VIEW (cells_view/<view>/<cell_id>
+# -> ../../cells/<staged_id>, sha-verified against staging_manifest.json). Two lanes whose ids
+# collide (base vs instruct-direct) therefore live in two configs, each with its own same-wave
+# `none` anchor — the `_it` battery precedent (battery_it_recipe.md), never a lane-prefixed id
+# the registry would refuse.
+#
+# status vocabulary (per cell):
+#   served               listed in a config's explicit_cells; bank view resolves it
+#   pending_fit          not yet fitted (a Slurm fit still RUNNING); enable by staging the object
+#                        (stage_full22.sh BANK_CELLS), refreshing the pins (--pins-from
+#                        <staging_manifest>), moving the entry into views.<view>.cells, regenerating
+#   pending_stage        built elsewhere and code-servable, but not yet staged on the clusters (so
+#                        it carries no pin). A target-level `pending_stage:` map, same shape as
+#                        `pending_fit:` (config cell id -> staged id); enabling it is mechanical
+#                        and needs no code — refresh the pins (--pins-from <staging_manifest>),
+#                        move the entry into views.<view>.cells, regenerate
+#   pending_decision     a fit that ended WITHOUT an object and whose fate is an open decision, not
+#                        a mechanical step (a deliberate STOP; a floor-ratio refusal). A
+#                        target-level `pending_decision:` map, config cell id -> {staged_id,
+#                        waits_on, state}. Enabling one = the user's go, then (re)fit -> stage ->
+#                        --pins-from -> move into views.<view>.cells -> regenerate. It is NEVER
+#                        auto-enabled by a fit landing.
+#   prompted             a PROMPTED BASELINE, `prompted__<si>: null` in a view's cells (2026-09-08):
+#                        the SI text as the system prompt, NO object and NO staged dir, so it is
+#                        served (in explicit_cells, the manifest, the count guard) but never in the
+#                        bank view or the pins (f22_roster.staged_cells is the object consumers'
+#                        subset; roster_cell_count.py --staged is the view's reference count). The
+#                        served path verifies the SI bytes per request against the manifest's
+#                        prompted_prefix_hashes (H8)
+#   lane (behind a flag) a whole lane wired per target under `lanes.<lane>.cells` but admitted to
+#                        the configs / manifests / views ONLY while `lane_flags.<lane>.enabled` is
+#                        true (f22_roster.served_cells). The flip is one line + regenerate; the
+#                        flag's `preconditions` name what must be true first, and the wave test
+#                        refuses a flag that is on while this tree cannot translate the lane's SI
+#                        ids for the Petri harness. Today: candsi, OFF.
+#
+# The object identity of every served cell is pinned in configs/sdfbase_full22_pins.json
+# (object_sha256 per staged_id, copied from the staging manifest by make_full22_configs.py
+# --pins-from) and echoed into each config header; the bank view builder refuses a staged object
+# whose sha differs from the pin.
+wave: full22
+bank_root: exp/objects/sdfbase/full22            # under $SHARED on either cluster
+staging_manifest: exp/objects/sdfbase/full22/staging_manifest.json
+# the serving-implementation commit the Petri manifests freeze: the LAST commit touching
+# src/sisteer/capeval/serving/*.py or tiers/petri_runner.py on the wave tree. Re-pinned at
+# landing (README "Re-pin at landing"), regenerated into every manifest by the generator.
+serving_impl_commit: 94e294c445dc5eec6ebe0ce3a3e25553004cd4b0
+# the lens reduction mode of the whole wave — every standup pins AND asserts it (never per_row)
+lens_reduction_mode: stacked
+# the static/replayable single-shot families' completion cap (attacks.static_max_new_tokens;
+# the multi-turn target replies stay at attacks.target_max_new_tokens 512, as mt1)
+static_max_new_tokens: 4096
+# the attacker's serving defaults, recorded so every cell of every target is generated under the
+# SAME attacker: configs/attacker_serving.json on this tree = prefix_caching true, quantization
+# none (the sbatch passes --prefix-caching on explicitly; recorded in attacker_engine.json)
+attacker_prefix_caching: true
+attacker_quantization: none
+
+# LANE FLAGS (2026-09-07). A lane listed here is wired for every target that maps it
+# (`targets.<key>.lanes.<lane>.cells`, config cell id -> staged id) and enters that target's
+# configs only while `enabled` is true. Flipping a flag is the WHOLE enablement on the roster
+# side: regenerate (make_full22_configs.py), rebuild the bank views, re-pin the wave sha.
+lane_flags:
+  candsi:
+    enabled: false
+    view: main                                   # the lane's cells are the served model's own fits
+    blocker: >
+      The candidate-SI ids A10 / B3 / C16 are registered only by the candidate-si-refit
+      lineage (origin/candidate-si-refit, 230 commits ahead of main, mid-integration as
+      INT-1 by a live peer session): data/instructions.py loads them from a private text file
+      under the env-guarded loader (SISTEER_LOAD_CANDIDATE_SIS -> sisteer.data.candidate_sis),
+      and the Petri vocabulary maps them as safety_a10 / constitution_b3 / irrelevant_c16
+      (registry_adapter.HARNESS_TO_TRAINTEST_SI, manifest PROMPTED_*). NONE of that is on
+      lens-grouped-scope or sdfbase-mt, so on this tree `A10__psr_kl_all` fails
+      resolve_instruction and the registry refuses it. Serving these cells needs that lineage
+      merged into the wave tree AND the candidate SI text file present on every node that
+      stands up a server (the pseudo-instruction must resolve at standup).
+    preconditions:
+      - the candidate-si-refit lineage is merged into the wave tree, so registry_adapter
+        translates A10 / B3 / C16 <-> safety_a10 / constitution_b3 / irrelevant_c16 and
+        data/instructions.py resolves them (tests/test_sdfbase_full22_wave.py refuses the flag
+        while this is false), and the candidate SI text file is present on every standup node
+      - every candsi staged dir declares exactly ONE identity sidecar. VERIFIED 2026-09-07 on
+        cluster A, all 12 nemotron3nano4b / glm46vflash dirs (and the gemma / qwen ones are the
+        same lineage) carry BOTH fit_provenance.json AND train_budget_meta.json — the refit
+        lineage's fit writes both — which make_bank_view.py / train_budget.object_identity_kind
+        REFUSE as ambiguous. Pick the authoritative spelling and re-stage without the other
+        (both record the same object_sha256, so this is a bookkeeping choice, not a data one)
+      - the pins already exist (configs/sdfbase_full22_pins.json, 6 per target, verified on both
+        clusters) — nothing to re-stage for the bytes themselves
+
+targets:
+  gemma4e4b:
+    model: google/gemma-4-E4B-it
+    model_revision: ee0ef6023621cff504d758262d4e04895a5af4a2
+    body_config: configs/sdfbase_transfer_gemma4e4b_r3.yaml      # battery keys, byte-for-byte as data
+    views:
+      main:
+        config: configs/sdfbase_full22_gemma4e4b.yaml
+        manifest: configs/capeval/manifests/petri_full22_gemma4e4b.yaml
+        cells:                                    # config cell id -> staged id (ordered)
+          constv2-mix-full__psr_ce_all: base__constv2-mix-full__psr_ce_all
+          constv2-mix-full__lora_r4_ce: base__constv2-mix-full__lora_r4_ce
+          constv2ctl2-full__psr_ce_all: base__constv2ctl2-full__psr_ce_all
+          constv2ctl2-full__lora_r4_ce: base__constv2ctl2-full__lora_r4_ce
+          safety_refusal__psr_kl_all: si12__safety_refusal__psr_kl_all
+          safety_refusal__lora_r4: si12__safety_refusal__lora_r4
+          # the DERIVED pair (code-unblocked 2026-09-06; staged for this target 02:01Z the same
+          # day, sha-verified on both clusters). Same construction as qwen35_4b's, NOT the same
+          # quality — read before treating the two targets' decompositions symmetrically. From
+          # the gemma residual's own staged derived_meta.json / report.json / gate_liveness.json:
+          #   distill EARLY-STOPPED at best epoch 48 (ran 53/60; no held-out improvement for 5
+          #   epochs), best held-out loss 6.757; qwen's ran to the cap (best epoch 59), 0.5455.
+          #   gate liveness over 42 layers: derived_meta block min 0.030 / mean 0.653 with 11
+          #   layers below 0.5 (gate_liveness.json min 0.035); qwen's 32 layers min 0.675 /
+          #   mean 0.955, none below 0.5 (gate_liveness.json min 0.813). recovery_verdict is
+          #   `recovered` on both. Servable and worth serving; any cross-target comparison of
+          #   the residual must carry this asymmetry.
+          constv2-mix-full__psr_ce_all_minus_ctl_distilled: derived__constv2-mix-full__psr_ce_all_minus_ctl_distilled
+          constv2-mix-full__lora_r4_ce_minus_ctl: derived__constv2-mix-full__lora_r4_ce_minus_ctl
+      it:
+        config: configs/sdfbase_full22_gemma4e4b_it.yaml
+        manifest: configs/capeval/manifests/petri_full22_gemma4e4b_it.yaml
+        cells:
+          constv2-mix-full__psr_ce_all: itdoc__constv2-mix-full__psr_ce_all
+          constv2-mix-full__lora_r4_ce: itdoc__constv2-mix-full__lora_r4_ce
+    lanes:
+      candsi:                                     # behind lane_flags.candsi (OFF)
+        A10__psr_kl_all: candsi__A10__psr_kl_all
+        A10__lora_r4: candsi__A10__lora_r4
+        B3__psr_kl_all: candsi__B3__psr_kl_all
+        B3__lora_r4: candsi__B3__lora_r4
+        C16__psr_kl_all: candsi__C16__psr_kl_all
+        C16__lora_r4: candsi__C16__lora_r4
+
+  qwen35_4b:
+    model: Qwen/Qwen3.5-4B
+    model_revision: 851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a
+    body_config: configs/sdfbase_transfer_qwen35_4b_r3.yaml
+    views:
+      main:
+        config: configs/sdfbase_full22_qwen35_4b.yaml
+        manifest: configs/capeval/manifests/petri_full22_qwen35_4b.yaml
+        cells:
+          constv2-mix-full__psr_ce_all: base__constv2-mix-full__psr_ce_all
+          constv2-mix-full__lora_r4_ce: base__constv2-mix-full__lora_r4_ce
+          constv2ctl2-full__psr_ce_all: base__constv2ctl2-full__psr_ce_all
+          constv2ctl2-full__lora_r4_ce: base__constv2ctl2-full__lora_r4_ce
+          safety_refusal__psr_kl_all: si12__safety_refusal__psr_kl_all
+          safety_refusal__lora_r4: si12__safety_refusal__lora_r4
+          # the DERIVED pair (code-unblocked 2026-09-06): the full-corpus fit MINUS its
+          # register-matched control fit, as servable objects. Both are BASE-lane products
+          # (model_key qwen35_4b_base) and so belong to the `main` view only — there is no
+          # instruct-direct derived object, hence no `it` entry. Neither is a new served
+          # shape: the distilled residual IS a PSRObject (kind `psr`, the existing adapter),
+          # and the LoRA difference stores both parents' factors bit-exact and serves as two
+          # OP_LORA_OPROJ ops per layer at the existing o_proj site (+1 / -1). Their sidecar
+          # is derived_meta.json, not train_budget_meta.json; the bank view and the registry
+          # dispatch on that and run train_budget.derived_object_problems.
+          constv2-mix-full__psr_ce_all_minus_ctl_distilled: derived__constv2-mix-full__psr_ce_all_minus_ctl_distilled
+          constv2-mix-full__lora_r4_ce_minus_ctl: derived__constv2-mix-full__lora_r4_ce_minus_ctl
+      it:
+        config: configs/sdfbase_full22_qwen35_4b_it.yaml
+        manifest: configs/capeval/manifests/petri_full22_qwen35_4b_it.yaml
+        cells:
+          constv2-mix-full__psr_ce_all: itdoc__constv2-mix-full__psr_ce_all
+          constv2-mix-full__lora_r4_ce: itdoc__constv2-mix-full__lora_r4_ce
+    lanes:
+      candsi:                                     # behind lane_flags.candsi (OFF)
+        A10__psr_kl_all: candsi__A10__psr_kl_all
+        A10__lora_r4: candsi__A10__lora_r4
+        B3__psr_kl_all: candsi__B3__psr_kl_all
+        B3__lora_r4: candsi__B3__lora_r4
+        C16__psr_kl_all: candsi__C16__psr_kl_all
+        C16__lora_r4: candsi__C16__lora_r4
+
+  # ---- the two targets added 2026-09-07 (branch full22-newmodels): their base fits ran on
+  # cluster A's Slurm fit lane (sdfbase_fit_cell.sbatch, bank newmodels_full/<key>_doc/cells_all,
+  # 42.8M-token full-scale fits) and were staged into this wave's bank layout on 2026-09-07
+  # 18:30Z (stage_full22.sh BANK_CELLS: within-cluster copy on cluster A, routed to cluster B
+  # through the grading host, object.pt sha + file count verified on BOTH clusters, staging_manifest
+  # 49 rows). Every served cell here is a training-lane fit: identity sidecar
+  # train_budget_meta.json, object_sha256 recorded (plain-symlink view entries).
+  nemotron3nano4b:
+    model: nvidia/NVIDIA-Nemotron-3-Nano-4B-BF16
+    model_revision: dfaf35de3e30f1867dd8dbc38a7fc9fb52d3914f
+    # no sdfbase transfer lineage exists for this target: the battery body is the qwen35_4b _r3
+    # config's data with the model pins of configs/two_si_nemotron3nano4b.yaml (the generator
+    # substitutes model, model_revision, layer, max_len, teacher_prefix_cache, pool_manifest,
+    # pool.store_dir; everything else is the same battery every full22 config runs)
+    body_config: configs/sdfbase_transfer_qwen35_4b_r3.yaml
+    pins_config: configs/two_si_nemotron3nano4b.yaml
+    views:
+      main:
+        config: configs/sdfbase_full22_nemotron3nano4b.yaml
+        manifest: configs/capeval/manifests/petri_full22_nemotron3nano4b.yaml
+        cells:                                    # all four base fits landed (COMPLETE + RESULT DONE)
+          constv2-mix-full__psr_ce_all: base__constv2-mix-full__psr_ce_all
+          constv2-mix-full__lora_r4_ce: base__constv2-mix-full__lora_r4_ce
+          constv2ctl2-full__psr_ce_all: base__constv2ctl2-full__psr_ce_all
+          constv2ctl2-full__lora_r4_ce: base__constv2ctl2-full__lora_r4_ce
+          # the MATCHED PROMPTED SAFETY-SI CELL (2026-09-08): the safety_refusal SI as the
+          # system prompt on the served instruct target, no fitted object (status `prompted` above);
+          # same wave, same `none` anchor, the whole battery. The harness spells it prompted__safety.
+          prompted__safety_refusal: null
+          # the two DERIVED objects (2026-09-08): constitution PSR minus control PSR distilled, and
+          # constitution LoRA minus control LoRA — built ON CLUSTER A from the four base fits above by the same
+          # builder (derived-full @ 6708221d, on the fits-slurm-newmodels lineage; branch nemotron-derived-build
+          # a5d9c908, jobs 454177 / 454484 / 454485) that made the gemma / qwen pair; staged + pinned on both
+          # clusters (stage_full22.sh); listed LAST like the gemma / qwen views
+          constv2-mix-full__psr_ce_all_minus_ctl_distilled: derived__constv2-mix-full__psr_ce_all_minus_ctl_distilled
+          constv2-mix-full__lora_r4_ce_minus_ctl: derived__constv2-mix-full__lora_r4_ce_minus_ctl
+      # --- HALFDOSE (2026-09-08): the 0.5x DOSE copy of EVERY object type this target serves —
+      # gated PSRs with directions x 0.5 and the gate untouched (scripts/sdfbase/scale_psr_dose.py; the
+      # gauge (w,b,d) -> (cw,cb,d/c) is a no-op, so dose is ||d|| at fixed gate), LoRAs with the write basis
+      # B x 0.5 and A untouched (scripts/sdfbase/scale_lora_dose.py; the served o_proj edit (x @ A) @ B^T is
+      # linear in B; the LoRA subtraction scales B_pos and B_neg), the distilled residual as a PSR. Each copy
+      # is its own object (own sha, parent sha + scaling method + verification in its sidecar's
+      # dose_scaled_from); every view has its OWN same-pass `none` anchor. Serving code is the lineage's
+      # (src/ byte-identical to the sha whose rows these are compared against); the only additions are
+      # these views + their pins.
+      halfdose:
+        config: configs/sdfbase_full22_nemotron3nano4b_halfdose.yaml
+        manifest: configs/capeval/manifests/petri_full22_nemotron3nano4b_halfdose.yaml
+        cells:
+          constv2-mix-full__psr_ce_all: halfdose__constv2-mix-full__psr_ce_all
+          constv2-mix-full__lora_r4_ce: halfdose__constv2-mix-full__lora_r4_ce
+          constv2ctl2-full__psr_ce_all: halfdose__constv2ctl2-full__psr_ce_all
+          constv2ctl2-full__lora_r4_ce: halfdose__constv2ctl2-full__lora_r4_ce
+          constv2-mix-full__psr_ce_all_minus_ctl_distilled: halfdose__constv2-mix-full__psr_ce_all_minus_ctl_distilled
+          constv2-mix-full__lora_r4_ce_minus_ctl: halfdose__constv2-mix-full__lora_r4_ce_minus_ctl
+    lanes:
+      candsi:                                     # behind lane_flags.candsi (OFF)
+        A10__psr_kl_all: candsi__A10__psr_kl_all
+        A10__lora_r4: candsi__A10__lora_r4
+        B3__psr_kl_all: candsi__B3__psr_kl_all
+        B3__lora_r4: candsi__B3__lora_r4
+        C16__psr_kl_all: candsi__C16__psr_kl_all
+        C16__lora_r4: candsi__C16__lora_r4
+
+  glm46vflash:
+    model: zai-org/GLM-4.6V-Flash
+    model_revision: 411bb4d77144a3f03accbf4b780f5acb8b7cde4e
+    body_config: configs/sdfbase_transfer_qwen35_4b_r3.yaml
+    pins_config: configs/two_si_glm46vflash.yaml
+    views:
+      main:
+        config: configs/sdfbase_full22_glm46vflash.yaml
+        manifest: configs/capeval/manifests/petri_full22_glm46vflash.yaml
+        cells:                                    # ALL FOUR base fits landed (2026-09-08). Order = the gemma/qwen order.
+                                                  # The constitution PSR REFIT at r2_t12 (cluster A 441097, COMPLETE 18:52Z,
+                                                  # sha a7ec68081f90…, fingerprint c204eb7cfd3ca35e, CE ratio 0.809, displacement
+                                                  # 0.543, gate liveness min 0.316 / mean 0.683 over 40 layers, ran to its 16-epoch
+                                                  # cap with the held-out curve still creeping down 2.0376 -> 2.0370; the diverged
+                                                  # first attempt 421329 is NOT this object and was never staged) goes FIRST; then
+                                                  # the constitution LoRA (421330, sha b1576de43c5c…), the ctl PSR REFIT at r2_t12
+                                                  # (441098, sha 93813cee76e7…, fingerprint a7cda5219969b832, CE ratio 0.899,
+                                                  # displacement 0.382, early-stopped at epoch 4; its first attempt 421331 was
+                                                  # refused by the floor-ratio guard and is NOT this object) and the ctl LoRA (421332).
+          constv2-mix-full__psr_ce_all: base__constv2-mix-full__psr_ce_all
+          constv2-mix-full__lora_r4_ce: base__constv2-mix-full__lora_r4_ce
+          constv2ctl2-full__psr_ce_all: base__constv2ctl2-full__psr_ce_all
+          constv2ctl2-full__lora_r4_ce: base__constv2ctl2-full__lora_r4_ce
+          # DERIVED (2026-09-08): the LoRA task-vector subtraction constitution-LoRA minus control-LoRA, built by
+          # scripts/sdfbase/lora_subtract.py (--ctl-si constv2ctl2-full, the builder that made the gemma/qwen
+          # pair) from the two staged base LoRA parents above; scale-matched (both parents 42,785,435 official
+          # tokens); sha 72f860f43b17e7d6…; staged from the newmodels_full bank's derived/ namespace. The
+          # distilled PSR residual joins here once the constitution PSR (pending_fit below) lands.
+          # DERIVED (2026-09-09): the DISTILLED PSR RESIDUAL constitution-PSR minus control-PSR (psr_residual_distill.py `all`
+                                                  # off the two r2_t12 PSR parents above; cluster A 465061 at halfdose-glm 84a1f768 with the wave's
+                                                  # 100k-token capture: 72 train / 10 holdout docs; its full-pool predecessor 464386 was cancelled and is
+                                                  # never staged). sha 290ca00e023b085e…; lr_mult 3 selected — INTERIOR over the extended ladder
+                                                  # 0.3/1/3/6/9 (worst-stratum attainable ED 0.545/0.760/0.812/0.759/…; a concave quadratic in log m
+                                                  # peaks at ~2.4), the extension run as calibration only after the original 3-rung ladder put the
+                                                  # argmax on its edge. Planted controls' held-out MSE: R_mixC_mix minimal at 3 (159.7); R_mix_empty
+                                                  # best at 1 (34.4), 47.5 at 3, 43.9 at 6 — non-monotone, recorded beside the recovery verdict.
+                                                  # Distillation early-stopped 27/60 (best epoch 22) on a BOUNCING tail (80.58 … 80.77): best and final
+                                                  # are indistinguishable; a patience expiry, not a clean minimum. Recovery verdict: recovered (ed mix
+                                                  # 0.655 / ctl 0.797).
+          constv2-mix-full__psr_ce_all_minus_ctl_distilled: derived__constv2-mix-full__psr_ce_all_minus_ctl_distilled
+          constv2-mix-full__lora_r4_ce_minus_ctl: derived__constv2-mix-full__lora_r4_ce_minus_ctl
+          # the MATCHED PROMPTED SAFETY-SI CELL (the GLM lane, 2026-09-08; the roster's prompted grammar, `prompted__<si>:
+          # null`, since the merge with the completion lane): the safety_refusal SI as the system prompt on the served
+          # target, no object, no staged dir, never in the bank view or the pins — the proxy serves the bare model behind
+          # the SI's H8 hash-verified system prefix (registry_adapter: prompted__safety; prefix hash ac3a58f61d53cf24 in
+          # the manifest). Listed LAST so the generated config's explicit_cells order (objects, then the prompted
+          # baseline) and every Petri leg index this lane recorded stay as they were.
+          prompted__safety_refusal: null
+    lanes:
+      candsi:                                     # behind lane_flags.candsi (OFF)
+        A10__psr_kl_all: candsi__A10__psr_kl_all
+        A10__lora_r4: candsi__A10__lora_r4
+        B3__psr_kl_all: candsi__B3__psr_kl_all
+        B3__lora_r4: candsi__B3__lora_r4
+        C16__psr_kl_all: candsi__C16__psr_kl_all
+        C16__lora_r4: candsi__C16__lora_r4

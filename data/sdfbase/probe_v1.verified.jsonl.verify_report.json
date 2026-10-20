@@ -1,0 +1,42 @@
+{
+ "dropped": {
+  "hd-adv-p30-t03-s04": "judge_mismatch",
+  "hd-adv-p30-t07-s05": "judge_mismatch",
+  "hd-adv-p30-t07-s07": "judge_mismatch",
+  "hd-adv-p30-t07-s08": "judge_mismatch",
+  "hd-sto-c05-u06-k15-y1": "judge_mismatch",
+  "hd-sto-c14-u02-k13-y0": "judge_mismatch",
+  "hd-sto-c14-u02-k14-y1": "judge_mismatch",
+  "hd-sto-c26-u08-k09-y1": "judge_mismatch",
+  "hd-sto-c40-u02-k04-y0": "judge_mismatch",
+  "hd-sto-c45-u06-k06-y1": "judge_mismatch",
+  "hd-sto-c45-u06-k14-y1": "judge_mismatch",
+  "sec-avoiding-harm-08": "judge_mismatch",
+  "sec-claudes-core-values-02": "judge_mismatch",
+  "sec-claudes-core-values-07": "judge_mismatch",
+  "sec-claudes-core-values-08": "judge_mismatch",
+  "sec-claudes-wellbeing-01": "judge_mismatch",
+  "sec-claudes-wellbeing-08": "judge_mismatch",
+  "sec-claudes-wellbeing-09": "judge_mismatch",
+  "sec-emotional-expression-00": "judge_mismatch",
+  "sec-emotional-expression-03": "judge_mismatch",
+  "sec-emotional-expression-04": "judge_mismatch",
+  "sec-how-to-treat-operators-and-users-01": "judge_mismatch",
+  "sec-how-to-treat-operators-and-users-02": "judge_mismatch",
+  "sec-how-to-treat-operators-and-users-03": "judge_mismatch",
+  "sec-how-to-treat-operators-and-users-04": "judge_mismatch",
+  "sec-how-to-treat-operators-and-users-05": "judge_mismatch",
+  "sec-navigating-helpfulness-across-principals-05": "judge_mismatch",
+  "sec-the-costs-and-benefits-of-actions-05": "judge_mismatch",
+  "sec-the-costs-and-benefits-of-actions-09": "judge_mismatch",
+  "sec-understanding-existing-deployment-contexts-02": "judge_mismatch",
+  "sec-why-helpfulness-is-one-of-claudes-most-important-traits-02": "judge_mismatch",
+  "sec-why-helpfulness-is-one-of-claudes-most-important-traits-05": "judge_mismatch"
+ },
+ "n_in": 561,
+ "n_passed": 529,
+ "verify_drop_reasons": {
+  "judge_mismatch": 32
+ },
+ "verify_failed": 32
+}

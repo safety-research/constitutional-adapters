@@ -1,0 +1,6 @@
+# Measured stack: token_faithful all-position + safety_refusal system (approved 2026-08-25).
+# WE take token_faithful; the other lane holds lora_r1 (job 193665). Same 259-goal confirmatory
+# set, the four comparison families (bon,pasttense in-dist; codeattack,renellm held-out), benign
+# leg alongside (or_bench+alpaca+xstest+parity). Two-sided byte-identity check runs before grading.
+# Columns: label cell coeff mask static adaptive benign target_engine attacker_engine serving_path mirror_override held_out
+stack_tf_sr	stacked__safety_refusal__token_faithful		all	bon,pasttense	-	*	hf	none	hf		codeattack,renellm

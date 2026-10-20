@@ -1,0 +1,7 @@
+Licensed by NVIDIA Corporation under the NVIDIA Nemotron Model License.
+
+The objects in this directory are adapters fit on and served with NVIDIA Nemotron-3-Nano-4B
+(nvidia/NVIDIA-Nemotron-3-Nano-4B-BF16 @ dfaf35de3e30f1867dd8dbc38a7fc9fb52d3914f). A copy of the
+NVIDIA Nemotron Open Model License, last modified December 15, 2025, is LICENSE in this directory.
+The repository's own licence is ../../LICENSE, and ../../THIRD_PARTY_NOTICES lists every
+third-party licence.

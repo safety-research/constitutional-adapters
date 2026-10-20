@@ -1,0 +1,26 @@
+{
+ "family": "nemotron_h",
+ "split_mode": "implicit_open",
+ "note": "prompt-OPENED: the completion is reasoning -> </think> -> answer, NEVER an opening tag; NO closing tag => ENTIRELY reasoning, unterminated, UNSCOREABLE",
+ "cases": [
+  {
+   "name": "well_formed",
+   "completion": "Let n = 3. Then 2n = 6.</think>\nThe answer is $\\boxed{6}$.\nANSWER: 6",
+   "finish_reason": "stop",
+   "present": true,
+   "unterminated": false,
+   "answer_text": "The answer is $\\boxed{6}$.\nANSWER: 6",
+   "scoreable": true
+  },
+  {
+   "name": "truncated_no_closing_tag",
+   "completion": "Let n = 3. Then 2n = 6 and the answer is 6 so ANSWER: 6 but wait, checking",
+   "finish_reason": "length",
+   "present": true,
+   "unterminated": true,
+   "answer_text": "",
+   "scoreable": false,
+   "trap": "an opening-tag-keyed splitter would score 'ANSWER: 6' here as the answer \u2014 it is chain-of-thought"
+  }
+ ]
+}

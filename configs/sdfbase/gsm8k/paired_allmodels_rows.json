@@ -1,0 +1,423 @@
+{
+ "schema": "g8k_paired_allmodels_rows/1",
+ "generated_by": "scripts/sdfbase/gsm8k/g8k_paired_allmodels.py",
+ "what": "the paper's all-model appendix GSM8K rows: ReLU's paired-write difference ReLU (the composed arm) on gemma4e4b it / llama8b it / nemotron3nano4b main, plus nemotron3nano4b \u00d7 the roster's constitution PSR object \u2014 one trial per model under the default Inspect seed rule (the appendix column's instrument), thinking ON where the model has it (llama: not_available / card), 8,192 base + the 16,384 rung, the primary cluster",
+ "wave": "paired_allmodels",
+ "wave_root_rel": "exp/gsm8k_paired200_paper_objects_paired_allmodels",
+ "trigger_threshold": 0.01,
+ "lane_source": "gsm8k_paired_allmodels",
+ "role": "paired_allmodels_value",
+ "source": {
+  "views_yaml": "configs/sdfbase/gsm8k/views.yaml",
+  "roster": "configs/sdfbase_full22_roster.yaml",
+  "roster_sha256": "5669cb9ae7ef2aaf239baacf0bfe3eb9835846e58a93cd3a969a702e7c227d7b",
+  "pins": "configs/sdfbase_full22_pins.json",
+  "pins_sha256": "ed035e8205d690c9a4197d14aaabffc5e8c873c5c0b0a28a11075adc1cab4c8d",
+  "steer_admission": "configs/sdfbase/steer_admission.json",
+  "steer_admission_sha256": "48dd4e40bfe377c188549f0cb6bb83e2b58a8be5459fbbebde50746ca4b98ebf"
+ },
+ "llama_source": {
+  "views_yaml": "configs/sdfbase/gsm8k/views_llama.yaml",
+  "roster": "configs/sdfbase_full22_roster.yaml",
+  "roster_sha256": "0782c9a14eced05808af8340534623795dc638e7700061a0cf0dd50c83800592",
+  "pins": "configs/sdfbase_full22_pins.json",
+  "pins_sha256": "00082ef5a4e18451bbe2cfefc73ccf4ba78b27dcf8ac3c7016c1d6a846d0221c",
+  "steer_admission": "configs/sdfbase/steer_admission.json",
+  "steer_admission_sha256": "48dd4e40bfe377c188549f0cb6bb83e2b58a8be5459fbbebde50746ca4b98ebf"
+ },
+ "planned_rows_total": 4,
+ "design": {
+  "ruling": "2026-09-22: the composed objects are fitted on the BASE checkpoint and served on the instruct checkpoint for gemma / llama exactly as for Qwen \u2014 the transfer IS the design; nemotron is fitted and served on the same BF16 checkpoint because no base Nemotron exists. No re-fit is pending; these rows are canonical as configured.",
+  "instrument": "evalcheck/gsm8k_paired200 as the appendix column runs it: default Inspect seed rule, one trial per model; vendor thinking-card decode ON (gemma / nemotron), card decode under the no-switch arm (llama); cap 8,192 with the 16,384 rung at the 1 % at-cap trigger; item-wise final state; the three numbers (correct/scored, correct/200, at-cap share split loops / eligible / still-at-ceiling)",
+  "contrast": "no `none` row in this document (the reader refuses an unsteered cell by name here): each row's contrast is the model's in-frame unsteered GSM8K run the panel pools (`anchor_out_root` on the row; the data lane's pooled_in_frame_anchors)",
+  "off_task_check": {
+   "what": "share of items whose completion restates the problem in the first person or continues a `## Step 1:`-style template without reaching an answer \u2014 the conversation-tracking failure ReLU saw under steering on llama / gemma (inversion_probe.md \u00a75 A1)",
+   "reported": "beside correct/scored and correct/200 as a third number, per row; never folded into accuracy, never a null",
+   "rule": "first_person_restatement: the completion's first 400 characters contain a first-person restatement of the question stem (`I have`, `I need to`, `My`) AND no `####`/boxed answer; template_continuation: >= 3 `## Step N:` headers with no final answer \u2014 either marks the item off_task; loops (the ladder classifier's non_terminating_ids) are counted separately and first"
+  },
+  "cross_model_note": "a cross-model comparison is matched on the training MIX (constv2-mix-full vs constv2ctl2-full) but NOT on effective batch: llama's parents are batch-64, gemma's and nemotron's batch-8 (ReLU's staged_from lineage_note); Qwen's composed rows (paired views s1p/s2p/s3p, batch-64 seed replicates) are the reference for the transfer effect"
+ },
+ "bank": {
+  "lane_root": "exp/objects/sdfbase/relu_paired",
+  "staged": "2026-09-22 04:24Z from the grading host staging directory (the registry's recorded, sha-verified location); read-only; one-entry views cells_view/paired_d1_<model>_s1 with VIEW_MANIFEST.json; sha256 re-verified after the copy",
+  "objects": {
+   "gemma4e4b": {
+    "staged_id": "paired_eb8__constv2-mix-full__psr_ce_all_minus_ctl",
+    "object_sha256": "87863240eb52646b247315ce07b53ad601b7aff5a0207e528545f2c0564bba40",
+    "lane": "paired_eb8",
+    "parents_effective_batch": 8
+   },
+   "llama8b": {
+    "staged_id": "paired_eb64__constv2-mix-full__psr_ce_all_minus_ctl",
+    "object_sha256": "5066333f8c10d57cd9992a33d8c26c7350a3bff6c1d401596f3a8fadb856d4e3",
+    "lane": "paired_eb64",
+    "parents_effective_batch": 64
+   },
+   "nemotron3nano4b": {
+    "staged_id": "paired_eb8__constv2-mix-full__psr_ce_all_minus_ctl",
+    "object_sha256": "ad3e19228ed41ea861d4c4d6af3c322eb2a56e3c2dc1c3e197721fa89e96fd9f",
+    "lane": "paired_eb8",
+    "parents_effective_batch": 8
+   }
+  }
+ },
+ "counts": {
+  "rows": 4,
+  "models": [
+   "nemotron3nano4b",
+   "nemotron3nano4b",
+   "gemma4e4b",
+   "llama8b"
+  ],
+  "views": [
+   "main",
+   "main",
+   "it",
+   "it"
+  ],
+  "cells": [
+   "constv2-mix-full__psr_ce_all_minus_ctl",
+   "constv2-mix-full__psr_ce_all",
+   "constv2-mix-full__psr_ce_all_minus_ctl",
+   "constv2-mix-full__psr_ce_all_minus_ctl"
+  ],
+  "external": 3,
+  "thinking_on": 3,
+  "object_sha256": {
+   "g8k-nemotron3nano4b-main-constv2-mix-full-psr_ce_all_minus_ctl": "ad3e19228ed41ea861d4c4d6af3c322eb2a56e3c2dc1c3e197721fa89e96fd9f",
+   "g8k-nemotron3nano4b-main-mix-psr": "81321803c479f3afc9e4738955e881d277a530f2bd5cfcbdcc9ad60e8a44f42f",
+   "g8k-gemma4e4b-it-constv2-mix-full-psr_ce_all_minus_ctl": "87863240eb52646b247315ce07b53ad601b7aff5a0207e528545f2c0564bba40",
+   "g8k-llama8b-it-constv2-mix-full-psr_ce_all_minus_ctl": "5066333f8c10d57cd9992a33d8c26c7350a3bff6c1d401596f3a8fadb856d4e3"
+  }
+ },
+ "rows": [
+  {
+   "index": 0,
+   "job_id": "g8k-nemotron3nano4b-main-constv2-mix-full-psr_ce_all_minus_ctl",
+   "model_key": "nemotron3nano4b",
+   "view": "main",
+   "tag": "nemotron3nano4b",
+   "cell": "constv2-mix-full__psr_ce_all_minus_ctl",
+   "cell_slug": "constv2-mix-full--psr_ce_all_minus_ctl",
+   "harness_cell": "si_constv2_mix_full__psr_ce_all_minus_ctl",
+   "standup_cell": "constv2-mix-full__psr_ce_all_minus_ctl",
+   "standup_harness_cell": "si_constv2_mix_full__psr_ce_all_minus_ctl",
+   "fitted": true,
+   "route_kind": "lens",
+   "served_positions_expected": "all",
+   "declared": false,
+   "thinking_mode": "on",
+   "trigger_threshold": 0.01,
+   "sampling_mode": "thinking_card",
+   "sampling": {
+    "temperature": 1.0,
+    "top_p": 0.95,
+    "source": "generation_config.json of nvidia/NVIDIA-Nemotron-3-Nano-4B-BF16 @dfaf35de (temperature 1.0, top_p 0.95; no top_k, no do_sample key, no penalty) AND the card's explicit reasoning-task recommendation 'temperature=1.0 and top_p=0.95 are recommended for reasoning tasks' \u2014 read 2026-09-09"
+   },
+   "expected_stamps": [
+    "cell-stable",
+    "always",
+    "thinking_on"
+   ],
+   "out_root": "controls_paired_allmodels/nemotron3nano4b/constv2-mix-full--psr_ce_all_minus_ctl/thinking_card",
+   "rung_out_root": "controls_paired_allmodels/nemotron3nano4b/constv2-mix-full--psr_ce_all_minus_ctl/thinking_card__rung16384",
+   "time_limit": "0-01:30:00",
+   "family": "nemotron_h",
+   "split_mode_candidate": "implicit_open",
+   "reasoning_parser": null,
+   "gpu_mem_util": "0.9",
+   "budget_class": "none",
+   "cluster_constraint": "primary",
+   "status": "launch",
+   "held_reason": null,
+   "expected_refusal": false,
+   "expected_refusal_reason": null,
+   "wave": "paired_allmodels",
+   "extension": true,
+   "own_overlay": true,
+   "staged_id": "paired_eb8__constv2-mix-full__psr_ce_all_minus_ctl",
+   "object_sha256": "ad3e19228ed41ea861d4c4d6af3c322eb2a56e3c2dc1c3e197721fa89e96fd9f",
+   "tuple_name": "gsm8k_paired200_nemotron3nano4b_native_paired_8192",
+   "tuple_names": {
+    "8192": "gsm8k_paired200_nemotron3nano4b_native_paired_8192",
+    "16384": "gsm8k_paired200_nemotron3nano4b_native_paired_16384"
+   },
+   "object_source": "external",
+   "lane_root": "exp/objects/sdfbase/relu_paired",
+   "bank_view": "paired_d1_nemotron3nano4b_s1",
+   "bank_view_rel": {
+    "primary": "exp/objects/sdfbase/relu_paired/nemotron3nano4b/cells_view/paired_d1_nemotron3nano4b_s1",
+    "overflow": null
+   },
+   "bank_cell_dir": "constv2-mix-full__psr_ce_all_minus_ctl",
+   "selection_label": "dose 1.0 = the composed object itself (no scaling; ReLU's relu_paired_mm compose-v of the two paired_eb8 parents, effective batch 8): the appendix serves the paired-write difference at the dose the Qwen paired views measured; no selection rule, no ladder",
+   "selection_outcome": null,
+   "grid_limited": false,
+   "role": "paired_allmodels_value",
+   "panel_view": "main",
+   "object_kind": "psr_paired_write",
+   "object_parents": {
+    "pos": {
+     "cell": "constv2-mix-full__psr_ce_all",
+     "object_sha256": "81321803c479f3afc9e4738955e881d277a530f2bd5cfcbdcc9ad60e8a44f42f"
+    },
+    "neg": {
+     "cell": "constv2ctl2-full__psr_ce_all",
+     "object_sha256": "326faf845b2681a37fe6adb7c38d063592dcb7953b47b3a8ca6028f12ad2c704"
+    },
+    "effective_batch": 8,
+    "lane": "paired_eb8"
+   },
+   "fit_checkpoint": {
+    "model_key": "nemotron3nano4b_doc",
+    "model_id": "nvidia/NVIDIA-Nemotron-3-Nano-4B-BF16",
+    "revision": "dfaf35de3e30f1867dd8dbc38a7fc9fb52d3914f"
+   },
+   "served_checkpoint": {
+    "model_id": "nvidia/NVIDIA-Nemotron-3-Nano-4B-BF16",
+    "revision": "dfaf35de3e30f1867dd8dbc38a7fc9fb52d3914f"
+   },
+   "compose_builder_commit": "0b68b71a80fa28914f077b387b7f076f50eaa534",
+   "anchor_out_root": "controls/nemotron3nano4b/none/thinking_card"
+  },
+  {
+   "index": 1,
+   "job_id": "g8k-nemotron3nano4b-main-mix-psr",
+   "model_key": "nemotron3nano4b",
+   "view": "main",
+   "tag": "nemotron3nano4b",
+   "cell": "constv2-mix-full__psr_ce_all",
+   "cell_slug": "constv2-mix-full--psr_ce_all",
+   "harness_cell": "si_constv2_mix_full__psr_ce_all",
+   "standup_cell": "constv2-mix-full__psr_ce_all",
+   "standup_harness_cell": "si_constv2_mix_full__psr_ce_all",
+   "staged_id": "base__constv2-mix-full__psr_ce_all",
+   "object_sha256": "81321803c479f3afc9e4738955e881d277a530f2bd5cfcbdcc9ad60e8a44f42f",
+   "fitted": true,
+   "route_kind": "lens",
+   "served_positions_expected": "all",
+   "declared": false,
+   "tuple_name": "gsm8k_paired200_nemotron3nano4b_native_8192",
+   "tuple_names": {
+    "8192": "gsm8k_paired200_nemotron3nano4b_native_8192",
+    "16384": "gsm8k_paired200_nemotron3nano4b_native_16384"
+   },
+   "sampling_mode": "thinking_card",
+   "sampling": {
+    "temperature": 1.0,
+    "top_p": 0.95,
+    "source": "generation_config.json of nvidia/NVIDIA-Nemotron-3-Nano-4B-BF16 @dfaf35de (temperature 1.0, top_p 0.95; no top_k, no do_sample key, no penalty) AND the card's explicit reasoning-task recommendation 'temperature=1.0 and top_p=0.95 are recommended for reasoning tasks' \u2014 read 2026-09-09"
+   },
+   "expected_stamps": [
+    "cell-stable",
+    "always",
+    "thinking_on"
+   ],
+   "out_root": "controls_paired_allmodels/nemotron3nano4b/constv2-mix-full--psr_ce_all/thinking_card",
+   "rung_out_root": "controls_paired_allmodels/nemotron3nano4b/constv2-mix-full--psr_ce_all/thinking_card__rung16384",
+   "time_limit": "0-01:30:00",
+   "family": "nemotron_h",
+   "split_mode_candidate": "implicit_open",
+   "reasoning_parser": null,
+   "gpu_mem_util": "0.9",
+   "budget_class": "none",
+   "cluster_constraint": "primary",
+   "status": "launch",
+   "held_reason": null,
+   "expected_refusal": true,
+   "expected_refusal_reason": "THINKING_UNSERVABLE (predicate A): under the constitution PSR steering nemotron3nano4b ends its turn inside the prompt-opened think block on 3/3 render-probe draws (class unclosed_block; evidence.json render_probe.on_attempts), so a thinking-ON GSM8K would score no item; the driver refuses. Reproduced on the lens engine 2026-09-11 (jobs 483252_27 / 483711_27, the published matrix's row 27) and the native engine 2026-09-22 (596419_1, tree a85369ce0). Filed as a refusal state; no thinking-ON GSM8K number exists for this pair",
+   "thinking_mode": "on",
+   "trigger_threshold": 0.01,
+   "wave": "paired_allmodels",
+   "extension": true,
+   "own_overlay": true,
+   "role": "paired_allmodels_value",
+   "panel_view": "main",
+   "object_kind": "psr",
+   "source_row": {
+    "matrix": "configs/sdfbase/gsm8k/matrix.json",
+    "index": 27,
+    "job_id": "g8k-nemotron3nano4b-main-mix-psr",
+    "out_root": "controls/nemotron3nano4b/constv2-mix-full--psr_ce_all/thinking_card",
+    "note": "the lens-era row of the published matrix never completed; this row serves the same roster-pinned object natively under the appendix wave's own root and the appendix tuple (contracts G8K_NATIVE_APPENDIX_MODELS)"
+   },
+   "anchor_out_root": "controls/nemotron3nano4b/none/thinking_card"
+  },
+  {
+   "index": 2,
+   "job_id": "g8k-gemma4e4b-it-constv2-mix-full-psr_ce_all_minus_ctl",
+   "model_key": "gemma4e4b",
+   "view": "it",
+   "tag": "gemma4e4b_it",
+   "cell": "constv2-mix-full__psr_ce_all_minus_ctl",
+   "cell_slug": "constv2-mix-full--psr_ce_all_minus_ctl",
+   "harness_cell": "si_constv2_mix_full__psr_ce_all_minus_ctl",
+   "standup_cell": "constv2-mix-full__psr_ce_all_minus_ctl",
+   "standup_harness_cell": "si_constv2_mix_full__psr_ce_all_minus_ctl",
+   "fitted": true,
+   "route_kind": "lens",
+   "served_positions_expected": "all",
+   "declared": false,
+   "thinking_mode": "on",
+   "trigger_threshold": 0.01,
+   "sampling_mode": "thinking_card",
+   "sampling": {
+    "temperature": 1.0,
+    "top_p": 0.95,
+    "top_k": 64,
+    "source": "generation_config.json of google/gemma-4-E4B-it @ee0ef602 (do_sample true; vendor default, not reasoning-tuned; no penalty term) \u2014 re-read 2026-09-09; identical to the sampled battery's preset, so gemma has no battery row"
+   },
+   "expected_stamps": [
+    "cell-stable",
+    "always",
+    "thinking_on"
+   ],
+   "out_root": "controls_paired_allmodels/gemma4e4b_it/constv2-mix-full--psr_ce_all_minus_ctl/thinking_card",
+   "rung_out_root": "controls_paired_allmodels/gemma4e4b_it/constv2-mix-full--psr_ce_all_minus_ctl/thinking_card__rung16384",
+   "time_limit": "0-01:30:00",
+   "family": "gemma4",
+   "split_mode_candidate": "record_only",
+   "reasoning_parser": "gemma4",
+   "gpu_mem_util": "0.9",
+   "budget_class": "none",
+   "cluster_constraint": "primary",
+   "status": "launch",
+   "held_reason": null,
+   "expected_refusal": false,
+   "expected_refusal_reason": null,
+   "wave": "paired_allmodels",
+   "extension": true,
+   "own_overlay": true,
+   "staged_id": "paired_eb8__constv2-mix-full__psr_ce_all_minus_ctl",
+   "object_sha256": "87863240eb52646b247315ce07b53ad601b7aff5a0207e528545f2c0564bba40",
+   "tuple_name": "gsm8k_paired200_gemma4e4b_native_paired_8192",
+   "tuple_names": {
+    "8192": "gsm8k_paired200_gemma4e4b_native_paired_8192",
+    "16384": "gsm8k_paired200_gemma4e4b_native_paired_16384"
+   },
+   "object_source": "external",
+   "lane_root": "exp/objects/sdfbase/relu_paired",
+   "bank_view": "paired_d1_gemma4e4b_s1",
+   "bank_view_rel": {
+    "primary": "exp/objects/sdfbase/relu_paired/gemma4e4b/cells_view/paired_d1_gemma4e4b_s1",
+    "overflow": null
+   },
+   "bank_cell_dir": "constv2-mix-full__psr_ce_all_minus_ctl",
+   "selection_label": "dose 1.0 = the composed object itself (no scaling; ReLU's relu_paired_mm compose-v of the two paired_eb8 parents, effective batch 8): the appendix serves the paired-write difference at the dose the Qwen paired views measured; no selection rule, no ladder",
+   "selection_outcome": null,
+   "grid_limited": false,
+   "role": "paired_allmodels_value",
+   "panel_view": "it",
+   "object_kind": "psr_paired_write",
+   "object_parents": {
+    "pos": {
+     "cell": "constv2-mix-full__psr_ce_all",
+     "object_sha256": "a75233d855538e52a692491ea0e92a0600197fcdb61c83c46d19c4d03f2ff83d"
+    },
+    "neg": {
+     "cell": "constv2ctl2-full__psr_ce_all",
+     "object_sha256": "a8a79d731773b730a394c32d11b67175e2034e5ed015c9beb5f93a51bd83c5fd"
+    },
+    "effective_batch": 8,
+    "lane": "paired_eb8"
+   },
+   "fit_checkpoint": {
+    "model_key": "gemma4e4b_base",
+    "model_id": "google/gemma-4-E4B",
+    "revision": "411aa17b749aa952df1359d2dcea73917a544d9a"
+   },
+   "served_checkpoint": {
+    "model_id": "google/gemma-4-E4B-it",
+    "revision": "ee0ef6023621cff504d758262d4e04895a5af4a2"
+   },
+   "compose_builder_commit": "0b68b71a80fa28914f077b387b7f076f50eaa534",
+   "anchor_out_root": "controls/gemma4e4b_it/none/thinking_card"
+  },
+  {
+   "index": 3,
+   "job_id": "g8k-llama8b-it-constv2-mix-full-psr_ce_all_minus_ctl",
+   "model_key": "llama8b",
+   "view": "it",
+   "tag": "llama8b_it",
+   "cell": "constv2-mix-full__psr_ce_all_minus_ctl",
+   "cell_slug": "constv2-mix-full--psr_ce_all_minus_ctl",
+   "harness_cell": "si_constv2_mix_full__psr_ce_all_minus_ctl",
+   "standup_cell": "constv2-mix-full__psr_ce_all_minus_ctl",
+   "standup_harness_cell": "si_constv2_mix_full__psr_ce_all_minus_ctl",
+   "fitted": true,
+   "route_kind": "lens",
+   "served_positions_expected": "all",
+   "declared": false,
+   "thinking_mode": "not_available",
+   "trigger_threshold": 0.01,
+   "sampling_mode": "card",
+   "sampling": {
+    "temperature": 0.6,
+    "top_p": 0.9,
+    "source": "generation_config.json of NousResearch/Meta-Llama-3.1-8B-Instruct @ d10aef79: do_sample true, temperature 0.6, top_p 0.9, no top_k, no penalty \u2014 re-read 2026-09-11 from the HF hub at the pinned revision and from the primary cluster's cohort cache (identical; llama-paper-rows P6); the base checkpoint NousResearch/Meta-Llama-3.1-8B @ 1f47e50c ships the same numbers (_from_model_config true). The GSM8K paired-200 Llama rows run this `card` row under the no-switch arm (thinking: not available)"
+   },
+   "expected_stamps": [
+    "cell-stable",
+    "always",
+    "unspecified"
+   ],
+   "out_root": "controls_paired_allmodels/llama8b_it/constv2-mix-full--psr_ce_all_minus_ctl/card",
+   "rung_out_root": "controls_paired_allmodels/llama8b_it/constv2-mix-full--psr_ce_all_minus_ctl/card__rung16384",
+   "time_limit": "0-01:00:00",
+   "family": "llama",
+   "split_mode_candidate": "none",
+   "reasoning_parser": null,
+   "gpu_mem_util": "0.9",
+   "budget_class": "none",
+   "cluster_constraint": "primary",
+   "status": "launch",
+   "held_reason": null,
+   "expected_refusal": false,
+   "expected_refusal_reason": null,
+   "wave": "paired_allmodels",
+   "extension": true,
+   "own_overlay": true,
+   "staged_id": "paired_eb64__constv2-mix-full__psr_ce_all_minus_ctl",
+   "object_sha256": "5066333f8c10d57cd9992a33d8c26c7350a3bff6c1d401596f3a8fadb856d4e3",
+   "tuple_name": null,
+   "tuple_names": null,
+   "object_source": "external",
+   "lane_root": "exp/objects/sdfbase/relu_paired",
+   "bank_view": "paired_d1_llama8b_s1",
+   "bank_view_rel": {
+    "primary": "exp/objects/sdfbase/relu_paired/llama8b/cells_view/paired_d1_llama8b_s1",
+    "overflow": null
+   },
+   "bank_cell_dir": "constv2-mix-full__psr_ce_all_minus_ctl",
+   "selection_label": "dose 1.0 = the composed object itself (no scaling; ReLU's relu_paired_mm compose-v of the two paired_eb64 parents, effective batch 64): the appendix serves the paired-write difference at the dose the Qwen paired views measured; no selection rule, no ladder",
+   "selection_outcome": null,
+   "grid_limited": false,
+   "role": "paired_allmodels_value",
+   "panel_view": "it",
+   "object_kind": "psr_paired_write",
+   "object_parents": {
+    "pos": {
+     "cell": "constv2-mix-full__psr_ce_all",
+     "object_sha256": "4df62c74415737e2e910d4b3c7a55d169012b6cff538934d4a053ec7318db799"
+    },
+    "neg": {
+     "cell": "constv2ctl2-full__psr_ce_all",
+     "object_sha256": "c30ec630a5e32eff916eda6142108e179e0374d307c8f9373641ed600f546da5"
+    },
+    "effective_batch": 64,
+    "lane": "paired_eb64"
+   },
+   "fit_checkpoint": {
+    "model_key": "llama8b_base",
+    "model_id": "NousResearch/Meta-Llama-3.1-8B",
+    "revision": "1f47e50cdbe801ad8a5174156ec3a0655108fb9f"
+   },
+   "served_checkpoint": {
+    "model_id": "NousResearch/Meta-Llama-3.1-8B-Instruct",
+    "revision": "d10aef7999a2b5ba950ab3974312feeedbfe0b77"
+   },
+   "compose_builder_commit": "0b68b71a80fa28914f077b387b7f076f50eaa534",
+   "anchor_out_root": "controls/llama8b_it/none/card"
+  }
+ ]
+}

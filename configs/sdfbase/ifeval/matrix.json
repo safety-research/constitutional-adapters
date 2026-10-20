@@ -1,0 +1,4791 @@
+{
+ "schema": "ifeval_matrix/1",
+ "generated_by": "scripts/sdfbase/ifeval/make_ifeval_matrix.py (if_views.select_rows)",
+ "experiment": "ifeval-canonical-battery",
+ "task": "inspect/ifeval",
+ "control": "ifeval",
+ "n_items": 541,
+ "samples_per_item": 2,
+ "thinking": "off",
+ "sampling_mode": "vendor_preset",
+ "caps": [
+  2048,
+  4096,
+  8192
+ ],
+ "trigger_threshold": 0.01,
+ "trigger_rule": "trigger iff n_at_cap_draws / n_draws > 0.01 (at-cap = stop_reason == max_tokens at the request's cap; draws = items x trials); redraw the truncated draws = at_cap - loop (boundary included, reported); ladder 2048 -> 4096 -> 8192; no rung above",
+ "trigger_provenance": "1 % raw at-cap of draws, per the IFEval ruling",
+ "seed_rule": "sha256(f'{20260909}|{trial}|ifeval|{item_key}')[:4] big-endian (no modulus); trial = sample_idx; item_key = the Inspect sample id",
+ "views_spec": "gemma4e4b=it,main; qwen35_4b=it,main; nemotron3nano4b=main; llama8b=main,it",
+ "views": {
+  "gemma4e4b": [
+   "it",
+   "main"
+  ],
+  "qwen35_4b": [
+   "it",
+   "main"
+  ],
+  "nemotron3nano4b": [
+   "main"
+  ],
+  "llama8b": [
+   "main",
+   "it"
+  ]
+ },
+ "holds": [
+  {
+   "key": "gemma4e4b",
+   "view": "it",
+   "cells": [
+    "constv2-mix-full__lora_r4_ce"
+   ],
+   "reason": "P41 (2026-09-10): the instruct-direct constitution objects are being re-fitted at effective batch 64; a HARD EXCLUSION until the refit lands (one object per arm across evals)."
+  },
+  {
+   "key": "qwen35_4b",
+   "view": "it",
+   "cells": [
+    "constv2-mix-full__lora_r4_ce"
+   ],
+   "reason": "P41 (2026-09-10): the instruct-direct constitution objects are being re-fitted at effective batch 64; a HARD EXCLUSION until the refit lands (one object per arm across evals)."
+  }
+ ],
+ "policy": {
+  "exclude": [
+   {
+    "reason": "2026-09-12: PSR is OUT of the IFEval matrix \u2014 the paper's eight capability arms carry the LoRA objects and their difference; PSR arms are not plotted.",
+    "arms_matching": "psr"
+   },
+   {
+    "reason": "2026-09-12: safety_refusal__lora_r4 is not one of the paper's eight arms (2 rows of the 46).",
+    "cells": [
+     "safety_refusal__lora_r4"
+    ]
+   }
+  ],
+  "prompted_extra": [
+   {
+    "cell": "prompted__si_constitution",
+    "si": "si_constitution",
+    "text_sha256": "21e06f482a6559b39309c4f1128f0411230c88e02b3a9eaa7b5d50829e6a9a0f",
+    "text_chars": 30952,
+    "placement": "views_with_prompted_cell",
+    "reason": "2026-09-12: the SHORT constitution SI as the system prompt, on every model x view that carries a prompted cell. Its ~6-6.7k-token system turn resolves its OWN geometry entries (capability:ifeval_longsi_<cap>)."
+   }
+  ],
+  "deferred": [
+   {
+    "arm": "alphasteer",
+    "cell": "alphasteer",
+    "views": {
+     "gemma4e4b": "it",
+     "qwen35_4b": "it",
+     "nemotron3nano4b": "main",
+     "llama8b": "main"
+    },
+    "record": "configs/sdfbase/ifeval/deferred/alphasteer__{model_key}.json",
+    "selection_rule": "minimal over-refusal strength: the smallest lambda clearing the preregistered defence bar; the 20 pp over-refusal budget rung is named alongside.",
+    "reason": "2026-09-12: AlphaSteer at minimal over-refusal strength on every model; the object identity comes from the Strength lane's ladder (pending), as a per-model (object_sha256, view, rung, selection_rule) record."
+   },
+   {
+    "arm": "arditi",
+    "cell": "arditi",
+    "views": {
+     "gemma4e4b": "it",
+     "qwen35_4b": "it",
+     "nemotron3nano4b": "main",
+     "llama8b": "main"
+    },
+    "record": "configs/sdfbase/ifeval/deferred/arditi__{model_key}.json",
+    "selection_rule": "minimal over-refusal strength: the smallest lambda clearing the preregistered defence bar; the 20 pp over-refusal budget rung is named alongside.",
+    "reason": "2026-09-12: the Arditi refusal direction at minimal over-refusal strength on every model; the object identity comes from the Strength lane's ladder (pending), as a per-model record."
+   }
+  ]
+ },
+ "prompt_classes": {
+  "short": {
+   "2048": "capability:ifeval_2048",
+   "4096": "capability:ifeval_4096",
+   "8192": "capability:ifeval_8192"
+  },
+  "long_si": {
+   "2048": "capability:ifeval_longsi_2048",
+   "4096": "capability:ifeval_longsi_4096",
+   "8192": "capability:ifeval_longsi_8192"
+  }
+ },
+ "source": {
+  "views_yaml": "configs/sdfbase/ifeval/views.yaml",
+  "roster": "configs/sdfbase_full22_roster.yaml",
+  "roster_sha256": "945f97f5b447d2a01bfa8ac966b4e44324224351fb405cb7524dd05d2869ff6a",
+  "roster_overlay": "configs/sdfbase/ifeval/llama8b_roster.yaml",
+  "roster_overlay_sha256": "dbeb7b3ffb0ec5ce93e2c5dfd78dfbf7f4072b0aa558f3f739f3cdee3ffe2b14",
+  "pins": "configs/sdfbase_full22_pins.json",
+  "pins_sha256": "a57146e774b4f5b64781162ff3b8189ab149e58dc858792cefd15a2ceee09e9b",
+  "pins_overlay": "configs/sdfbase/ifeval/llama8b_pins.json",
+  "pins_overlay_sha256": "4d78453a201492874c23b722050224221ee1cf6d6fa845b468196738fe9a3ac8",
+  "frozen_inputs": {
+   "roster": "configs/sdfbase/ifeval/frozen/59cedcca/sdfbase_full22_roster.yaml",
+   "pins": "configs/sdfbase/ifeval/frozen/59cedcca/sdfbase_full22_pins.json",
+   "roster_sha256": "945f97f5b447d2a01bfa8ac966b4e44324224351fb405cb7524dd05d2869ff6a",
+   "pins_sha256": "a57146e774b4f5b64781162ff3b8189ab149e58dc858792cefd15a2ceee09e9b"
+  }
+ },
+ "slugs": {
+  "gemma4e4b-sdfbase-main": {
+   "model_key": "gemma4e4b",
+   "view": "main"
+  },
+  "gemma4e4b-sdfbase-it": {
+   "model_key": "gemma4e4b",
+   "view": "it"
+  },
+  "qwen35_4b-sdfbase-main": {
+   "model_key": "qwen35_4b",
+   "view": "main"
+  },
+  "qwen35_4b-sdfbase-it": {
+   "model_key": "qwen35_4b",
+   "view": "it"
+  },
+  "nemotron3nano4b-sdfbase-main": {
+   "model_key": "nemotron3nano4b",
+   "view": "main"
+  },
+  "llama8b-sdfbase-main": {
+   "model_key": "llama8b",
+   "view": "main"
+  },
+  "llama8b-sdfbase-it": {
+   "model_key": "llama8b",
+   "view": "it"
+  }
+ },
+ "counts": {
+  "rows": 40,
+  "held": 2,
+  "launched": 30,
+  "deferred": 8,
+  "fitted": 15,
+  "fitted_launched": 13,
+  "in_support": 17,
+  "prompted_constitution": 5,
+  "prompted_safety": 5,
+  "header_located": 0,
+  "declared": 0,
+  "contrasts_designed": 23,
+  "tags": [
+   "gemma4e4b_it",
+   "gemma4e4b",
+   "qwen35_4b_it",
+   "qwen35_4b",
+   "nemotron3nano4b",
+   "llama8b",
+   "llama8b_it"
+  ],
+  "n_tags": 7,
+  "slugs": [
+   "gemma4e4b-sdfbase-it",
+   "gemma4e4b-sdfbase-main",
+   "qwen35_4b-sdfbase-it",
+   "qwen35_4b-sdfbase-main",
+   "nemotron3nano4b-sdfbase-main",
+   "llama8b-sdfbase-main",
+   "llama8b-sdfbase-it"
+  ],
+  "n_slugs": 7,
+  "by_tag": {
+   "gemma4e4b_it": {
+    "rows": 6,
+    "held": 1,
+    "launched": 3,
+    "deferred": 2
+   },
+   "gemma4e4b": {
+    "rows": 4,
+    "held": 0,
+    "launched": 4,
+    "deferred": 0
+   },
+   "qwen35_4b_it": {
+    "rows": 6,
+    "held": 1,
+    "launched": 3,
+    "deferred": 2
+   },
+   "qwen35_4b": {
+    "rows": 4,
+    "held": 0,
+    "launched": 4,
+    "deferred": 0
+   },
+   "nemotron3nano4b": {
+    "rows": 8,
+    "held": 0,
+    "launched": 6,
+    "deferred": 2
+   },
+   "llama8b": {
+    "rows": 7,
+    "held": 0,
+    "launched": 5,
+    "deferred": 2
+   },
+   "llama8b_it": {
+    "rows": 5,
+    "held": 0,
+    "launched": 5,
+    "deferred": 0
+   }
+  },
+  "by_model": {
+   "gemma4e4b": {
+    "launched": 7,
+    "held": 1,
+    "deferred": 2
+   },
+   "qwen35_4b": {
+    "launched": 7,
+    "held": 1,
+    "deferred": 2
+   },
+   "nemotron3nano4b": {
+    "launched": 6,
+    "held": 0,
+    "deferred": 2
+   },
+   "llama8b": {
+    "launched": 10,
+    "held": 0,
+    "deferred": 2
+   }
+  },
+  "by_model_view": {
+   "gemma4e4b/it": {
+    "launched": 3,
+    "held": 1,
+    "deferred": 2
+   },
+   "gemma4e4b/main": {
+    "launched": 4,
+    "held": 0,
+    "deferred": 0
+   },
+   "qwen35_4b/it": {
+    "launched": 3,
+    "held": 1,
+    "deferred": 2
+   },
+   "qwen35_4b/main": {
+    "launched": 4,
+    "held": 0,
+    "deferred": 0
+   },
+   "nemotron3nano4b/main": {
+    "launched": 6,
+    "held": 0,
+    "deferred": 2
+   },
+   "llama8b/main": {
+    "launched": 5,
+    "held": 0,
+    "deferred": 2
+   },
+   "llama8b/it": {
+    "launched": 5,
+    "held": 0,
+    "deferred": 0
+   }
+  },
+  "held_rows": [
+   {
+    "index": 3,
+    "job_id": "ife-gemma4e4b-it-mix-lora",
+    "tag": "gemma4e4b_it",
+    "cell": "constv2-mix-full__lora_r4_ce"
+   },
+   {
+    "index": 11,
+    "job_id": "ife-qwen35_4b-it-mix-lora",
+    "tag": "qwen35_4b_it",
+    "cell": "constv2-mix-full__lora_r4_ce"
+   }
+  ],
+  "deferred_rows": [
+   {
+    "index": 32,
+    "job_id": "ife-gemma4e4b-it-alphasteer",
+    "tag": "gemma4e4b_it",
+    "cell": "alphasteer",
+    "record": "configs/sdfbase/ifeval/deferred/alphasteer__gemma4e4b.json"
+   },
+   {
+    "index": 33,
+    "job_id": "ife-qwen35_4b-it-alphasteer",
+    "tag": "qwen35_4b_it",
+    "cell": "alphasteer",
+    "record": "configs/sdfbase/ifeval/deferred/alphasteer__qwen35_4b.json"
+   },
+   {
+    "index": 34,
+    "job_id": "ife-nemotron3nano4b-main-alphasteer",
+    "tag": "nemotron3nano4b",
+    "cell": "alphasteer",
+    "record": "configs/sdfbase/ifeval/deferred/alphasteer__nemotron3nano4b.json"
+   },
+   {
+    "index": 35,
+    "job_id": "ife-llama8b-main-alphasteer",
+    "tag": "llama8b",
+    "cell": "alphasteer",
+    "record": "configs/sdfbase/ifeval/deferred/alphasteer__llama8b.json"
+   },
+   {
+    "index": 36,
+    "job_id": "ife-gemma4e4b-it-arditi",
+    "tag": "gemma4e4b_it",
+    "cell": "arditi",
+    "record": "configs/sdfbase/ifeval/deferred/arditi__gemma4e4b.json"
+   },
+   {
+    "index": 37,
+    "job_id": "ife-qwen35_4b-it-arditi",
+    "tag": "qwen35_4b_it",
+    "cell": "arditi",
+    "record": "configs/sdfbase/ifeval/deferred/arditi__qwen35_4b.json"
+   },
+   {
+    "index": 38,
+    "job_id": "ife-nemotron3nano4b-main-arditi",
+    "tag": "nemotron3nano4b",
+    "cell": "arditi",
+    "record": "configs/sdfbase/ifeval/deferred/arditi__nemotron3nano4b.json"
+   },
+   {
+    "index": 39,
+    "job_id": "ife-llama8b-main-arditi",
+    "tag": "llama8b",
+    "cell": "arditi",
+    "record": "configs/sdfbase/ifeval/deferred/arditi__llama8b.json"
+   }
+  ],
+  "distinct_paths": 680,
+  "n_paths": 680,
+  "distinct_out_roots": 40,
+  "pins": {
+   "gemma4e4b": 4,
+   "qwen35_4b": 4,
+   "nemotron3nano4b": 3,
+   "llama8b": 4
+  },
+  "unpinned_deferred": 8,
+  "families": [
+   "gemma4",
+   "llama",
+   "nemotron_h",
+   "qwen3_5"
+  ],
+  "images": [
+   "default",
+   "nemotron"
+  ],
+  "models": [
+   "gemma4e4b",
+   "qwen35_4b",
+   "nemotron3nano4b",
+   "llama8b"
+  ],
+  "two_view_models": [
+   "gemma4e4b",
+   "llama8b",
+   "qwen35_4b"
+  ]
+ },
+ "contrasts": {
+  "contrasts": [
+   "cell_minus_none",
+   "none_it_minus_none_main",
+   "merged_minus_r2048"
+  ],
+  "cell_minus_none": {
+   "n": 23,
+   "n_resolved": 23,
+   "legs": [
+    {
+     "model_key": "gemma4e4b",
+     "view": "it",
+     "cell": "prompted__safety_refusal",
+     "anchor": true
+    },
+    {
+     "model_key": "gemma4e4b",
+     "view": "it",
+     "cell": "prompted__si_constitution",
+     "anchor": true
+    },
+    {
+     "model_key": "gemma4e4b",
+     "view": "main",
+     "cell": "constv2-mix-full__lora_r4_ce",
+     "anchor": true
+    },
+    {
+     "model_key": "gemma4e4b",
+     "view": "main",
+     "cell": "constv2ctl2-full__lora_r4_ce",
+     "anchor": true
+    },
+    {
+     "model_key": "gemma4e4b",
+     "view": "main",
+     "cell": "constv2-mix-full__lora_r4_ce_minus_ctl",
+     "anchor": true
+    },
+    {
+     "model_key": "qwen35_4b",
+     "view": "it",
+     "cell": "prompted__safety_refusal",
+     "anchor": true
+    },
+    {
+     "model_key": "qwen35_4b",
+     "view": "it",
+     "cell": "prompted__si_constitution",
+     "anchor": true
+    },
+    {
+     "model_key": "qwen35_4b",
+     "view": "main",
+     "cell": "constv2-mix-full__lora_r4_ce",
+     "anchor": true
+    },
+    {
+     "model_key": "qwen35_4b",
+     "view": "main",
+     "cell": "constv2ctl2-full__lora_r4_ce",
+     "anchor": true
+    },
+    {
+     "model_key": "qwen35_4b",
+     "view": "main",
+     "cell": "constv2-mix-full__lora_r4_ce_minus_ctl",
+     "anchor": true
+    },
+    {
+     "model_key": "nemotron3nano4b",
+     "view": "main",
+     "cell": "constv2-mix-full__lora_r4_ce",
+     "anchor": true
+    },
+    {
+     "model_key": "nemotron3nano4b",
+     "view": "main",
+     "cell": "constv2ctl2-full__lora_r4_ce",
+     "anchor": true
+    },
+    {
+     "model_key": "nemotron3nano4b",
+     "view": "main",
+     "cell": "prompted__safety_refusal",
+     "anchor": true
+    },
+    {
+     "model_key": "nemotron3nano4b",
+     "view": "main",
+     "cell": "prompted__si_constitution",
+     "anchor": true
+    },
+    {
+     "model_key": "nemotron3nano4b",
+     "view": "main",
+     "cell": "constv2-mix-full__lora_r4_ce_minus_ctl",
+     "anchor": true
+    },
+    {
+     "model_key": "llama8b",
+     "view": "main",
+     "cell": "prompted__safety_refusal",
+     "anchor": true
+    },
+    {
+     "model_key": "llama8b",
+     "view": "main",
+     "cell": "prompted__si_constitution",
+     "anchor": true
+    },
+    {
+     "model_key": "llama8b",
+     "view": "main",
+     "cell": "constv2-mix-full__lora_r4_ce",
+     "anchor": true
+    },
+    {
+     "model_key": "llama8b",
+     "view": "main",
+     "cell": "constv2ctl2-full__lora_r4_ce",
+     "anchor": true
+    },
+    {
+     "model_key": "llama8b",
+     "view": "it",
+     "cell": "prompted__safety_refusal",
+     "anchor": true
+    },
+    {
+     "model_key": "llama8b",
+     "view": "it",
+     "cell": "prompted__si_constitution",
+     "anchor": true
+    },
+    {
+     "model_key": "llama8b",
+     "view": "it",
+     "cell": "constv2-mix-full__lora_r4_ce",
+     "anchor": true
+    },
+    {
+     "model_key": "llama8b",
+     "view": "it",
+     "cell": "constv2ctl2-full__lora_r4_ce",
+     "anchor": true
+    }
+   ]
+  },
+  "none_it_minus_none_main": {
+   "models_with_floor": [
+    "gemma4e4b",
+    "qwen35_4b",
+    "llama8b"
+   ],
+   "models_without_floor": [
+    "nemotron3nano4b"
+   ]
+  },
+  "merged_minus_r2048": {
+   "conditional_on": "a promoted cell (its pass-1 leg is its own anchor)"
+  },
+  "deferred_legs": [
+   {
+    "model_key": "gemma4e4b",
+    "view": "it",
+    "cell": "alphasteer",
+    "anchor": true
+   },
+   {
+    "model_key": "qwen35_4b",
+    "view": "it",
+    "cell": "alphasteer",
+    "anchor": true
+   },
+   {
+    "model_key": "nemotron3nano4b",
+    "view": "main",
+    "cell": "alphasteer",
+    "anchor": true
+   },
+   {
+    "model_key": "llama8b",
+    "view": "main",
+    "cell": "alphasteer",
+    "anchor": true
+   },
+   {
+    "model_key": "gemma4e4b",
+    "view": "it",
+    "cell": "arditi",
+    "anchor": true
+   },
+   {
+    "model_key": "qwen35_4b",
+    "view": "it",
+    "cell": "arditi",
+    "anchor": true
+   },
+   {
+    "model_key": "nemotron3nano4b",
+    "view": "main",
+    "cell": "arditi",
+    "anchor": true
+   },
+   {
+    "model_key": "llama8b",
+    "view": "main",
+    "cell": "arditi",
+    "anchor": true
+   }
+  ],
+  "unresolved": []
+ },
+ "rows": [
+  {
+   "index": 0,
+   "job_id": "ife-gemma4e4b-it-none",
+   "model_key": "gemma4e4b",
+   "view": "it",
+   "tag": "gemma4e4b_it",
+   "slug": "gemma4e4b-sdfbase-it",
+   "cell": "none",
+   "cell_slug": "none",
+   "harness_cell": "none",
+   "standup_cell": "none",
+   "standup_harness_cell": "none",
+   "staged_id": null,
+   "object_sha256": null,
+   "pin": {
+    "kind": "none",
+    "object_sha256": null
+   },
+   "fitted": false,
+   "route_kind": "base",
+   "header_located": false,
+   "served_positions_expected": null,
+   "declared": false,
+   "thinking": "off",
+   "sampling_mode": "vendor_preset",
+   "sampling": {
+    "temperature": 1.0,
+    "top_p": 0.95,
+    "top_k": 64,
+    "source": "generation_config.json of google/gemma-4-E4B-it @ ee0ef602: temperature 1.0, top_p 0.95, top_k 64 (do_sample true; vendor default; no penalty term) \u2014 the numbers are THINKING_SAMPLING_BY_MODEL_KEY's by reference (P3); re-read from the shared cluster HF cache snapshot ee0ef602 (P4)"
+   },
+   "samples_per_item": 2,
+   "expected_stamps": [
+    "cell-stable",
+    "not-consulted",
+    "thinking_off"
+   ],
+   "cap": 2048,
+   "caps": [
+    2048,
+    4096,
+    8192
+   ],
+   "cap_ceiling": 8192,
+   "trigger_threshold": 0.01,
+   "trigger_provenance": "1 % raw at-cap of draws, per the IFEval ruling",
+   "prompt_class": "short",
+   "si_text_sha256": null,
+   "geometry_eval_by_cap": {
+    "2048": "capability:ifeval_2048",
+    "4096": "capability:ifeval_4096",
+    "8192": "capability:ifeval_8192"
+   },
+   "out_root": "controls/gemma4e4b_it/none/vendor_preset",
+   "rung_out_roots": {
+    "4096": "controls/gemma4e4b_it/none/vendor_preset__rung4096",
+    "8192": "controls/gemma4e4b_it/none/vendor_preset__rung8192"
+   },
+   "subset_paths": {
+    "4096": "rung4096/gemma4e4b_it/none/rung_subset.json",
+    "8192": "rung8192/gemma4e4b_it/none/rung_subset.json"
+   },
+   "cap_ladder_paths": {
+    "2048": "controls/gemma4e4b_it/none/vendor_preset/cap_ladder.json",
+    "4096": "controls/gemma4e4b_it/none/vendor_preset__rung4096/cap_ladder.json",
+    "8192": "controls/gemma4e4b_it/none/vendor_preset__rung8192/cap_ladder.json"
+   },
+   "ladder_state_paths": {
+    "2048": "controls/gemma4e4b_it/none/vendor_preset/ladder_state.json",
+    "4096": "controls/gemma4e4b_it/none/vendor_preset__rung4096/ladder_state.json",
+    "8192": "controls/gemma4e4b_it/none/vendor_preset__rung8192/ladder_state.json"
+   },
+   "budget_paths": {
+    "2048": "budgets/gemma4e4b_it/none/2048/oos_prompt_budget.json",
+    "4096": "budgets/gemma4e4b_it/none/4096/oos_prompt_budget.json",
+    "8192": "budgets/gemma4e4b_it/none/8192/oos_prompt_budget.json"
+   },
+   "dispatch_paths": {
+    "2048": "dispatch/gemma4e4b_it/none/rung2048.json",
+    "4096": "dispatch/gemma4e4b_it/none/rung4096.json",
+    "8192": "dispatch/gemma4e4b_it/none/rung8192.json"
+   },
+   "configuration_ids": {
+    "2048": "gemma4e4b_it/none/rung2048",
+    "4096": "gemma4e4b_it/none/rung4096",
+    "8192": "gemma4e4b_it/none/rung8192"
+   },
+   "budget_class": "none",
+   "config": "configs/sdfbase/ifeval/sdfbase_full22_gemma4e4b_it.ifeval.yaml",
+   "manifest": "configs/capeval/manifests/petri_full22_gemma4e4b_it.ifeval.yaml",
+   "hf": "google/gemma-4-E4B-it",
+   "rev": "ee0ef6023621cff504d758262d4e04895a5af4a2",
+   "family": "gemma4",
+   "image": "default",
+   "status": "launch",
+   "held_reason": null,
+   "deferred": null
+  },
+  {
+   "index": 1,
+   "job_id": "ife-gemma4e4b-it-prompted",
+   "model_key": "gemma4e4b",
+   "view": "it",
+   "tag": "gemma4e4b_it",
+   "slug": "gemma4e4b-sdfbase-it",
+   "cell": "prompted__safety_refusal",
+   "cell_slug": "prompted--safety_refusal",
+   "harness_cell": "prompted__safety",
+   "standup_cell": "prompted__safety_refusal",
+   "standup_harness_cell": "prompted__safety",
+   "staged_id": null,
+   "object_sha256": null,
+   "pin": {
+    "kind": "prompted",
+    "object_sha256": null
+   },
+   "fitted": false,
+   "route_kind": "prompted",
+   "header_located": false,
+   "served_positions_expected": null,
+   "declared": false,
+   "thinking": "off",
+   "sampling_mode": "vendor_preset",
+   "sampling": {
+    "temperature": 1.0,
+    "top_p": 0.95,
+    "top_k": 64,
+    "source": "generation_config.json of google/gemma-4-E4B-it @ ee0ef602: temperature 1.0, top_p 0.95, top_k 64 (do_sample true; vendor default; no penalty term) \u2014 the numbers are THINKING_SAMPLING_BY_MODEL_KEY's by reference (P3); re-read from the shared cluster HF cache snapshot ee0ef602 (P4)"
+   },
+   "samples_per_item": 2,
+   "expected_stamps": [
+    "cell-stable",
+    "not-consulted",
+    "thinking_off"
+   ],
+   "cap": 2048,
+   "caps": [
+    2048,
+    4096,
+    8192
+   ],
+   "cap_ceiling": 8192,
+   "trigger_threshold": 0.01,
+   "trigger_provenance": "1 % raw at-cap of draws, per the IFEval ruling",
+   "prompt_class": "short",
+   "si_text_sha256": "ac3a58f61d53cf2412c02b8bb56063b9683a9c1154ef1f0978efc1449a836e08",
+   "geometry_eval_by_cap": {
+    "2048": "capability:ifeval_2048",
+    "4096": "capability:ifeval_4096",
+    "8192": "capability:ifeval_8192"
+   },
+   "out_root": "controls/gemma4e4b_it/prompted--safety_refusal/vendor_preset",
+   "rung_out_roots": {
+    "4096": "controls/gemma4e4b_it/prompted--safety_refusal/vendor_preset__rung4096",
+    "8192": "controls/gemma4e4b_it/prompted--safety_refusal/vendor_preset__rung8192"
+   },
+   "subset_paths": {
+    "4096": "rung4096/gemma4e4b_it/prompted--safety_refusal/rung_subset.json",
+    "8192": "rung8192/gemma4e4b_it/prompted--safety_refusal/rung_subset.json"
+   },
+   "cap_ladder_paths": {
+    "2048": "controls/gemma4e4b_it/prompted--safety_refusal/vendor_preset/cap_ladder.json",
+    "4096": "controls/gemma4e4b_it/prompted--safety_refusal/vendor_preset__rung4096/cap_ladder.json",
+    "8192": "controls/gemma4e4b_it/prompted--safety_refusal/vendor_preset__rung8192/cap_ladder.json"
+   },
+   "ladder_state_paths": {
+    "2048": "controls/gemma4e4b_it/prompted--safety_refusal/vendor_preset/ladder_state.json",
+    "4096": "controls/gemma4e4b_it/prompted--safety_refusal/vendor_preset__rung4096/ladder_state.json",
+    "8192": "controls/gemma4e4b_it/prompted--safety_refusal/vendor_preset__rung8192/ladder_state.json"
+   },
+   "budget_paths": {
+    "2048": "budgets/gemma4e4b_it/prompted--safety_refusal/2048/oos_prompt_budget.json",
+    "4096": "budgets/gemma4e4b_it/prompted--safety_refusal/4096/oos_prompt_budget.json",
+    "8192": "budgets/gemma4e4b_it/prompted--safety_refusal/8192/oos_prompt_budget.json"
+   },
+   "dispatch_paths": {
+    "2048": "dispatch/gemma4e4b_it/prompted--safety_refusal/rung2048.json",
+    "4096": "dispatch/gemma4e4b_it/prompted--safety_refusal/rung4096.json",
+    "8192": "dispatch/gemma4e4b_it/prompted--safety_refusal/rung8192.json"
+   },
+   "configuration_ids": {
+    "2048": "gemma4e4b_it/prompted--safety_refusal/rung2048",
+    "4096": "gemma4e4b_it/prompted--safety_refusal/rung4096",
+    "8192": "gemma4e4b_it/prompted--safety_refusal/rung8192"
+   },
+   "budget_class": "prompted__safety_refusal",
+   "config": "configs/sdfbase/ifeval/sdfbase_full22_gemma4e4b_it.ifeval.yaml",
+   "manifest": "configs/capeval/manifests/petri_full22_gemma4e4b_it.ifeval.yaml",
+   "hf": "google/gemma-4-E4B-it",
+   "rev": "ee0ef6023621cff504d758262d4e04895a5af4a2",
+   "family": "gemma4",
+   "image": "default",
+   "status": "launch",
+   "held_reason": null,
+   "deferred": null
+  },
+  {
+   "index": 2,
+   "job_id": "ife-gemma4e4b-it-constitution",
+   "model_key": "gemma4e4b",
+   "view": "it",
+   "tag": "gemma4e4b_it",
+   "slug": "gemma4e4b-sdfbase-it",
+   "cell": "prompted__si_constitution",
+   "cell_slug": "prompted--si_constitution",
+   "harness_cell": "prompted__constitution",
+   "standup_cell": "prompted__si_constitution",
+   "standup_harness_cell": "prompted__constitution",
+   "staged_id": null,
+   "object_sha256": null,
+   "pin": {
+    "kind": "prompted",
+    "object_sha256": null
+   },
+   "fitted": false,
+   "route_kind": "prompted",
+   "header_located": false,
+   "served_positions_expected": null,
+   "declared": false,
+   "thinking": "off",
+   "sampling_mode": "vendor_preset",
+   "sampling": {
+    "temperature": 1.0,
+    "top_p": 0.95,
+    "top_k": 64,
+    "source": "generation_config.json of google/gemma-4-E4B-it @ ee0ef602: temperature 1.0, top_p 0.95, top_k 64 (do_sample true; vendor default; no penalty term) \u2014 the numbers are THINKING_SAMPLING_BY_MODEL_KEY's by reference (P3); re-read from the shared cluster HF cache snapshot ee0ef602 (P4)"
+   },
+   "samples_per_item": 2,
+   "expected_stamps": [
+    "cell-stable",
+    "not-consulted",
+    "thinking_off"
+   ],
+   "cap": 2048,
+   "caps": [
+    2048,
+    4096,
+    8192
+   ],
+   "cap_ceiling": 8192,
+   "trigger_threshold": 0.01,
+   "trigger_provenance": "1 % raw at-cap of draws, per the IFEval ruling",
+   "prompt_class": "long_si",
+   "si_text_sha256": "21e06f482a6559b39309c4f1128f0411230c88e02b3a9eaa7b5d50829e6a9a0f",
+   "geometry_eval_by_cap": {
+    "2048": "capability:ifeval_longsi_2048",
+    "4096": "capability:ifeval_longsi_4096",
+    "8192": "capability:ifeval_longsi_8192"
+   },
+   "out_root": "controls/gemma4e4b_it/prompted--si_constitution/vendor_preset",
+   "rung_out_roots": {
+    "4096": "controls/gemma4e4b_it/prompted--si_constitution/vendor_preset__rung4096",
+    "8192": "controls/gemma4e4b_it/prompted--si_constitution/vendor_preset__rung8192"
+   },
+   "subset_paths": {
+    "4096": "rung4096/gemma4e4b_it/prompted--si_constitution/rung_subset.json",
+    "8192": "rung8192/gemma4e4b_it/prompted--si_constitution/rung_subset.json"
+   },
+   "cap_ladder_paths": {
+    "2048": "controls/gemma4e4b_it/prompted--si_constitution/vendor_preset/cap_ladder.json",
+    "4096": "controls/gemma4e4b_it/prompted--si_constitution/vendor_preset__rung4096/cap_ladder.json",
+    "8192": "controls/gemma4e4b_it/prompted--si_constitution/vendor_preset__rung8192/cap_ladder.json"
+   },
+   "ladder_state_paths": {
+    "2048": "controls/gemma4e4b_it/prompted--si_constitution/vendor_preset/ladder_state.json",
+    "4096": "controls/gemma4e4b_it/prompted--si_constitution/vendor_preset__rung4096/ladder_state.json",
+    "8192": "controls/gemma4e4b_it/prompted--si_constitution/vendor_preset__rung8192/ladder_state.json"
+   },
+   "budget_paths": {
+    "2048": "budgets/gemma4e4b_it/prompted--si_constitution/2048/oos_prompt_budget.json",
+    "4096": "budgets/gemma4e4b_it/prompted--si_constitution/4096/oos_prompt_budget.json",
+    "8192": "budgets/gemma4e4b_it/prompted--si_constitution/8192/oos_prompt_budget.json"
+   },
+   "dispatch_paths": {
+    "2048": "dispatch/gemma4e4b_it/prompted--si_constitution/rung2048.json",
+    "4096": "dispatch/gemma4e4b_it/prompted--si_constitution/rung4096.json",
+    "8192": "dispatch/gemma4e4b_it/prompted--si_constitution/rung8192.json"
+   },
+   "configuration_ids": {
+    "2048": "gemma4e4b_it/prompted--si_constitution/rung2048",
+    "4096": "gemma4e4b_it/prompted--si_constitution/rung4096",
+    "8192": "gemma4e4b_it/prompted--si_constitution/rung8192"
+   },
+   "budget_class": "prompted__si_constitution",
+   "config": "configs/sdfbase/ifeval/sdfbase_full22_gemma4e4b_it.ifeval.yaml",
+   "manifest": "configs/capeval/manifests/petri_full22_gemma4e4b_it.ifeval.yaml",
+   "hf": "google/gemma-4-E4B-it",
+   "rev": "ee0ef6023621cff504d758262d4e04895a5af4a2",
+   "family": "gemma4",
+   "image": "default",
+   "status": "launch",
+   "held_reason": null,
+   "deferred": null
+  },
+  {
+   "index": 3,
+   "job_id": "ife-gemma4e4b-it-mix-lora",
+   "model_key": "gemma4e4b",
+   "view": "it",
+   "tag": "gemma4e4b_it",
+   "slug": "gemma4e4b-sdfbase-it",
+   "cell": "constv2-mix-full__lora_r4_ce",
+   "cell_slug": "constv2-mix-full--lora_r4_ce",
+   "harness_cell": "si_constv2_mix_full__lora_r4_ce",
+   "standup_cell": "constv2-mix-full__lora_r4_ce",
+   "standup_harness_cell": "si_constv2_mix_full__lora_r4_ce",
+   "staged_id": "itdoc__constv2-mix-full__lora_r4_ce",
+   "object_sha256": "4c1a5fc3b382ddb86f9dce20ef7d31dac735b516014017d19fad0c74c0092353",
+   "pin": {
+    "kind": "roster",
+    "object_sha256": "4c1a5fc3b382ddb86f9dce20ef7d31dac735b516014017d19fad0c74c0092353",
+    "source": "configs/sdfbase_full22_pins.json",
+    "source_sha256": "a57146e774b4f5b64781162ff3b8189ab149e58dc858792cefd15a2ceee09e9b",
+    "staged_id": "itdoc__constv2-mix-full__lora_r4_ce"
+   },
+   "fitted": true,
+   "route_kind": "lens",
+   "header_located": false,
+   "served_positions_expected": "all",
+   "declared": false,
+   "thinking": "off",
+   "sampling_mode": "vendor_preset",
+   "sampling": {
+    "temperature": 1.0,
+    "top_p": 0.95,
+    "top_k": 64,
+    "source": "generation_config.json of google/gemma-4-E4B-it @ ee0ef602: temperature 1.0, top_p 0.95, top_k 64 (do_sample true; vendor default; no penalty term) \u2014 the numbers are THINKING_SAMPLING_BY_MODEL_KEY's by reference (P3); re-read from the shared cluster HF cache snapshot ee0ef602 (P4)"
+   },
+   "samples_per_item": 2,
+   "expected_stamps": [
+    "cell-stable",
+    "always",
+    "thinking_off"
+   ],
+   "cap": 2048,
+   "caps": [
+    2048,
+    4096,
+    8192
+   ],
+   "cap_ceiling": 8192,
+   "trigger_threshold": 0.01,
+   "trigger_provenance": "1 % raw at-cap of draws, per the IFEval ruling",
+   "prompt_class": "short",
+   "si_text_sha256": null,
+   "geometry_eval_by_cap": {
+    "2048": "capability:ifeval_2048",
+    "4096": "capability:ifeval_4096",
+    "8192": "capability:ifeval_8192"
+   },
+   "out_root": "controls/gemma4e4b_it/constv2-mix-full--lora_r4_ce/vendor_preset",
+   "rung_out_roots": {
+    "4096": "controls/gemma4e4b_it/constv2-mix-full--lora_r4_ce/vendor_preset__rung4096",
+    "8192": "controls/gemma4e4b_it/constv2-mix-full--lora_r4_ce/vendor_preset__rung8192"
+   },
+   "subset_paths": {
+    "4096": "rung4096/gemma4e4b_it/constv2-mix-full--lora_r4_ce/rung_subset.json",
+    "8192": "rung8192/gemma4e4b_it/constv2-mix-full--lora_r4_ce/rung_subset.json"
+   },
+   "cap_ladder_paths": {
+    "2048": "controls/gemma4e4b_it/constv2-mix-full--lora_r4_ce/vendor_preset/cap_ladder.json",
+    "4096": "controls/gemma4e4b_it/constv2-mix-full--lora_r4_ce/vendor_preset__rung4096/cap_ladder.json",
+    "8192": "controls/gemma4e4b_it/constv2-mix-full--lora_r4_ce/vendor_preset__rung8192/cap_ladder.json"
+   },
+   "ladder_state_paths": {
+    "2048": "controls/gemma4e4b_it/constv2-mix-full--lora_r4_ce/vendor_preset/ladder_state.json",
+    "4096": "controls/gemma4e4b_it/constv2-mix-full--lora_r4_ce/vendor_preset__rung4096/ladder_state.json",
+    "8192": "controls/gemma4e4b_it/constv2-mix-full--lora_r4_ce/vendor_preset__rung8192/ladder_state.json"
+   },
+   "budget_paths": {
+    "2048": "budgets/gemma4e4b_it/constv2-mix-full--lora_r4_ce/2048/oos_prompt_budget.json",
+    "4096": "budgets/gemma4e4b_it/constv2-mix-full--lora_r4_ce/4096/oos_prompt_budget.json",
+    "8192": "budgets/gemma4e4b_it/constv2-mix-full--lora_r4_ce/8192/oos_prompt_budget.json"
+   },
+   "dispatch_paths": {
+    "2048": "dispatch/gemma4e4b_it/constv2-mix-full--lora_r4_ce/rung2048.json",
+    "4096": "dispatch/gemma4e4b_it/constv2-mix-full--lora_r4_ce/rung4096.json",
+    "8192": "dispatch/gemma4e4b_it/constv2-mix-full--lora_r4_ce/rung8192.json"
+   },
+   "configuration_ids": {
+    "2048": "gemma4e4b_it/constv2-mix-full--lora_r4_ce/rung2048",
+    "4096": "gemma4e4b_it/constv2-mix-full--lora_r4_ce/rung4096",
+    "8192": "gemma4e4b_it/constv2-mix-full--lora_r4_ce/rung8192"
+   },
+   "budget_class": "none",
+   "config": "configs/sdfbase/ifeval/sdfbase_full22_gemma4e4b_it.ifeval.yaml",
+   "manifest": "configs/capeval/manifests/petri_full22_gemma4e4b_it.ifeval.yaml",
+   "hf": "google/gemma-4-E4B-it",
+   "rev": "ee0ef6023621cff504d758262d4e04895a5af4a2",
+   "family": "gemma4",
+   "image": "default",
+   "status": "held",
+   "held_reason": "P41 (2026-09-10): the instruct-direct constitution objects are being re-fitted at effective batch 64; a HARD EXCLUSION until the refit lands (one object per arm across evals).",
+   "deferred": null
+  },
+  {
+   "index": 4,
+   "job_id": "ife-gemma4e4b-main-none",
+   "model_key": "gemma4e4b",
+   "view": "main",
+   "tag": "gemma4e4b",
+   "slug": "gemma4e4b-sdfbase-main",
+   "cell": "none",
+   "cell_slug": "none",
+   "harness_cell": "none",
+   "standup_cell": "none",
+   "standup_harness_cell": "none",
+   "staged_id": null,
+   "object_sha256": null,
+   "pin": {
+    "kind": "none",
+    "object_sha256": null
+   },
+   "fitted": false,
+   "route_kind": "base",
+   "header_located": false,
+   "served_positions_expected": null,
+   "declared": false,
+   "thinking": "off",
+   "sampling_mode": "vendor_preset",
+   "sampling": {
+    "temperature": 1.0,
+    "top_p": 0.95,
+    "top_k": 64,
+    "source": "generation_config.json of google/gemma-4-E4B-it @ ee0ef602: temperature 1.0, top_p 0.95, top_k 64 (do_sample true; vendor default; no penalty term) \u2014 the numbers are THINKING_SAMPLING_BY_MODEL_KEY's by reference (P3); re-read from the shared cluster HF cache snapshot ee0ef602 (P4)"
+   },
+   "samples_per_item": 2,
+   "expected_stamps": [
+    "cell-stable",
+    "not-consulted",
+    "thinking_off"
+   ],
+   "cap": 2048,
+   "caps": [
+    2048,
+    4096,
+    8192
+   ],
+   "cap_ceiling": 8192,
+   "trigger_threshold": 0.01,
+   "trigger_provenance": "1 % raw at-cap of draws, per the IFEval ruling",
+   "prompt_class": "short",
+   "si_text_sha256": null,
+   "geometry_eval_by_cap": {
+    "2048": "capability:ifeval_2048",
+    "4096": "capability:ifeval_4096",
+    "8192": "capability:ifeval_8192"
+   },
+   "out_root": "controls/gemma4e4b/none/vendor_preset",
+   "rung_out_roots": {
+    "4096": "controls/gemma4e4b/none/vendor_preset__rung4096",
+    "8192": "controls/gemma4e4b/none/vendor_preset__rung8192"
+   },
+   "subset_paths": {
+    "4096": "rung4096/gemma4e4b/none/rung_subset.json",
+    "8192": "rung8192/gemma4e4b/none/rung_subset.json"
+   },
+   "cap_ladder_paths": {
+    "2048": "controls/gemma4e4b/none/vendor_preset/cap_ladder.json",
+    "4096": "controls/gemma4e4b/none/vendor_preset__rung4096/cap_ladder.json",
+    "8192": "controls/gemma4e4b/none/vendor_preset__rung8192/cap_ladder.json"
+   },
+   "ladder_state_paths": {
+    "2048": "controls/gemma4e4b/none/vendor_preset/ladder_state.json",
+    "4096": "controls/gemma4e4b/none/vendor_preset__rung4096/ladder_state.json",
+    "8192": "controls/gemma4e4b/none/vendor_preset__rung8192/ladder_state.json"
+   },
+   "budget_paths": {
+    "2048": "budgets/gemma4e4b/none/2048/oos_prompt_budget.json",
+    "4096": "budgets/gemma4e4b/none/4096/oos_prompt_budget.json",
+    "8192": "budgets/gemma4e4b/none/8192/oos_prompt_budget.json"
+   },
+   "dispatch_paths": {
+    "2048": "dispatch/gemma4e4b/none/rung2048.json",
+    "4096": "dispatch/gemma4e4b/none/rung4096.json",
+    "8192": "dispatch/gemma4e4b/none/rung8192.json"
+   },
+   "configuration_ids": {
+    "2048": "gemma4e4b/none/rung2048",
+    "4096": "gemma4e4b/none/rung4096",
+    "8192": "gemma4e4b/none/rung8192"
+   },
+   "budget_class": "none",
+   "config": "configs/sdfbase/ifeval/sdfbase_full22_gemma4e4b.ifeval.yaml",
+   "manifest": "configs/capeval/manifests/petri_full22_gemma4e4b.ifeval.yaml",
+   "hf": "google/gemma-4-E4B-it",
+   "rev": "ee0ef6023621cff504d758262d4e04895a5af4a2",
+   "family": "gemma4",
+   "image": "default",
+   "status": "launch",
+   "held_reason": null,
+   "deferred": null
+  },
+  {
+   "index": 5,
+   "job_id": "ife-gemma4e4b-main-mix-lora",
+   "model_key": "gemma4e4b",
+   "view": "main",
+   "tag": "gemma4e4b",
+   "slug": "gemma4e4b-sdfbase-main",
+   "cell": "constv2-mix-full__lora_r4_ce",
+   "cell_slug": "constv2-mix-full--lora_r4_ce",
+   "harness_cell": "si_constv2_mix_full__lora_r4_ce",
+   "standup_cell": "constv2-mix-full__lora_r4_ce",
+   "standup_harness_cell": "si_constv2_mix_full__lora_r4_ce",
+   "staged_id": "base__constv2-mix-full__lora_r4_ce",
+   "object_sha256": "8b2cd1156d0996021fcddd84d97416cc706bf3acc0598bd02255ee9d9288f9db",
+   "pin": {
+    "kind": "roster",
+    "object_sha256": "8b2cd1156d0996021fcddd84d97416cc706bf3acc0598bd02255ee9d9288f9db",
+    "source": "configs/sdfbase_full22_pins.json",
+    "source_sha256": "a57146e774b4f5b64781162ff3b8189ab149e58dc858792cefd15a2ceee09e9b",
+    "staged_id": "base__constv2-mix-full__lora_r4_ce"
+   },
+   "fitted": true,
+   "route_kind": "lens",
+   "header_located": false,
+   "served_positions_expected": "all",
+   "declared": false,
+   "thinking": "off",
+   "sampling_mode": "vendor_preset",
+   "sampling": {
+    "temperature": 1.0,
+    "top_p": 0.95,
+    "top_k": 64,
+    "source": "generation_config.json of google/gemma-4-E4B-it @ ee0ef602: temperature 1.0, top_p 0.95, top_k 64 (do_sample true; vendor default; no penalty term) \u2014 the numbers are THINKING_SAMPLING_BY_MODEL_KEY's by reference (P3); re-read from the shared cluster HF cache snapshot ee0ef602 (P4)"
+   },
+   "samples_per_item": 2,
+   "expected_stamps": [
+    "cell-stable",
+    "always",
+    "thinking_off"
+   ],
+   "cap": 2048,
+   "caps": [
+    2048,
+    4096,
+    8192
+   ],
+   "cap_ceiling": 8192,
+   "trigger_threshold": 0.01,
+   "trigger_provenance": "1 % raw at-cap of draws, per the IFEval ruling",
+   "prompt_class": "short",
+   "si_text_sha256": null,
+   "geometry_eval_by_cap": {
+    "2048": "capability:ifeval_2048",
+    "4096": "capability:ifeval_4096",
+    "8192": "capability:ifeval_8192"
+   },
+   "out_root": "controls/gemma4e4b/constv2-mix-full--lora_r4_ce/vendor_preset",
+   "rung_out_roots": {
+    "4096": "controls/gemma4e4b/constv2-mix-full--lora_r4_ce/vendor_preset__rung4096",
+    "8192": "controls/gemma4e4b/constv2-mix-full--lora_r4_ce/vendor_preset__rung8192"
+   },
+   "subset_paths": {
+    "4096": "rung4096/gemma4e4b/constv2-mix-full--lora_r4_ce/rung_subset.json",
+    "8192": "rung8192/gemma4e4b/constv2-mix-full--lora_r4_ce/rung_subset.json"
+   },
+   "cap_ladder_paths": {
+    "2048": "controls/gemma4e4b/constv2-mix-full--lora_r4_ce/vendor_preset/cap_ladder.json",
+    "4096": "controls/gemma4e4b/constv2-mix-full--lora_r4_ce/vendor_preset__rung4096/cap_ladder.json",
+    "8192": "controls/gemma4e4b/constv2-mix-full--lora_r4_ce/vendor_preset__rung8192/cap_ladder.json"
+   },
+   "ladder_state_paths": {
+    "2048": "controls/gemma4e4b/constv2-mix-full--lora_r4_ce/vendor_preset/ladder_state.json",
+    "4096": "controls/gemma4e4b/constv2-mix-full--lora_r4_ce/vendor_preset__rung4096/ladder_state.json",
+    "8192": "controls/gemma4e4b/constv2-mix-full--lora_r4_ce/vendor_preset__rung8192/ladder_state.json"
+   },
+   "budget_paths": {
+    "2048": "budgets/gemma4e4b/constv2-mix-full--lora_r4_ce/2048/oos_prompt_budget.json",
+    "4096": "budgets/gemma4e4b/constv2-mix-full--lora_r4_ce/4096/oos_prompt_budget.json",
+    "8192": "budgets/gemma4e4b/constv2-mix-full--lora_r4_ce/8192/oos_prompt_budget.json"
+   },
+   "dispatch_paths": {
+    "2048": "dispatch/gemma4e4b/constv2-mix-full--lora_r4_ce/rung2048.json",
+    "4096": "dispatch/gemma4e4b/constv2-mix-full--lora_r4_ce/rung4096.json",
+    "8192": "dispatch/gemma4e4b/constv2-mix-full--lora_r4_ce/rung8192.json"
+   },
+   "configuration_ids": {
+    "2048": "gemma4e4b/constv2-mix-full--lora_r4_ce/rung2048",
+    "4096": "gemma4e4b/constv2-mix-full--lora_r4_ce/rung4096",
+    "8192": "gemma4e4b/constv2-mix-full--lora_r4_ce/rung8192"
+   },
+   "budget_class": "none",
+   "config": "configs/sdfbase/ifeval/sdfbase_full22_gemma4e4b.ifeval.yaml",
+   "manifest": "configs/capeval/manifests/petri_full22_gemma4e4b.ifeval.yaml",
+   "hf": "google/gemma-4-E4B-it",
+   "rev": "ee0ef6023621cff504d758262d4e04895a5af4a2",
+   "family": "gemma4",
+   "image": "default",
+   "status": "launch",
+   "held_reason": null,
+   "deferred": null
+  },
+  {
+   "index": 6,
+   "job_id": "ife-gemma4e4b-main-ctl-lora",
+   "model_key": "gemma4e4b",
+   "view": "main",
+   "tag": "gemma4e4b",
+   "slug": "gemma4e4b-sdfbase-main",
+   "cell": "constv2ctl2-full__lora_r4_ce",
+   "cell_slug": "constv2ctl2-full--lora_r4_ce",
+   "harness_cell": "si_constv2ctl2_full__lora_r4_ce",
+   "standup_cell": "constv2ctl2-full__lora_r4_ce",
+   "standup_harness_cell": "si_constv2ctl2_full__lora_r4_ce",
+   "staged_id": "base__constv2ctl2-full__lora_r4_ce",
+   "object_sha256": "8c0f6d971290c741ee0649951c32f21ff410bf7ef73f04b60bfb947973c39916",
+   "pin": {
+    "kind": "roster",
+    "object_sha256": "8c0f6d971290c741ee0649951c32f21ff410bf7ef73f04b60bfb947973c39916",
+    "source": "configs/sdfbase_full22_pins.json",
+    "source_sha256": "a57146e774b4f5b64781162ff3b8189ab149e58dc858792cefd15a2ceee09e9b",
+    "staged_id": "base__constv2ctl2-full__lora_r4_ce"
+   },
+   "fitted": true,
+   "route_kind": "lens",
+   "header_located": false,
+   "served_positions_expected": "all",
+   "declared": false,
+   "thinking": "off",
+   "sampling_mode": "vendor_preset",
+   "sampling": {
+    "temperature": 1.0,
+    "top_p": 0.95,
+    "top_k": 64,
+    "source": "generation_config.json of google/gemma-4-E4B-it @ ee0ef602: temperature 1.0, top_p 0.95, top_k 64 (do_sample true; vendor default; no penalty term) \u2014 the numbers are THINKING_SAMPLING_BY_MODEL_KEY's by reference (P3); re-read from the shared cluster HF cache snapshot ee0ef602 (P4)"
+   },
+   "samples_per_item": 2,
+   "expected_stamps": [
+    "cell-stable",
+    "always",
+    "thinking_off"
+   ],
+   "cap": 2048,
+   "caps": [
+    2048,
+    4096,
+    8192
+   ],
+   "cap_ceiling": 8192,
+   "trigger_threshold": 0.01,
+   "trigger_provenance": "1 % raw at-cap of draws, per the IFEval ruling",
+   "prompt_class": "short",
+   "si_text_sha256": null,
+   "geometry_eval_by_cap": {
+    "2048": "capability:ifeval_2048",
+    "4096": "capability:ifeval_4096",
+    "8192": "capability:ifeval_8192"
+   },
+   "out_root": "controls/gemma4e4b/constv2ctl2-full--lora_r4_ce/vendor_preset",
+   "rung_out_roots": {
+    "4096": "controls/gemma4e4b/constv2ctl2-full--lora_r4_ce/vendor_preset__rung4096",
+    "8192": "controls/gemma4e4b/constv2ctl2-full--lora_r4_ce/vendor_preset__rung8192"
+   },
+   "subset_paths": {
+    "4096": "rung4096/gemma4e4b/constv2ctl2-full--lora_r4_ce/rung_subset.json",
+    "8192": "rung8192/gemma4e4b/constv2ctl2-full--lora_r4_ce/rung_subset.json"
+   },
+   "cap_ladder_paths": {
+    "2048": "controls/gemma4e4b/constv2ctl2-full--lora_r4_ce/vendor_preset/cap_ladder.json",
+    "4096": "controls/gemma4e4b/constv2ctl2-full--lora_r4_ce/vendor_preset__rung4096/cap_ladder.json",
+    "8192": "controls/gemma4e4b/constv2ctl2-full--lora_r4_ce/vendor_preset__rung8192/cap_ladder.json"
+   },
+   "ladder_state_paths": {
+    "2048": "controls/gemma4e4b/constv2ctl2-full--lora_r4_ce/vendor_preset/ladder_state.json",
+    "4096": "controls/gemma4e4b/constv2ctl2-full--lora_r4_ce/vendor_preset__rung4096/ladder_state.json",
+    "8192": "controls/gemma4e4b/constv2ctl2-full--lora_r4_ce/vendor_preset__rung8192/ladder_state.json"
+   },
+   "budget_paths": {
+    "2048": "budgets/gemma4e4b/constv2ctl2-full--lora_r4_ce/2048/oos_prompt_budget.json",
+    "4096": "budgets/gemma4e4b/constv2ctl2-full--lora_r4_ce/4096/oos_prompt_budget.json",
+    "8192": "budgets/gemma4e4b/constv2ctl2-full--lora_r4_ce/8192/oos_prompt_budget.json"
+   },
+   "dispatch_paths": {
+    "2048": "dispatch/gemma4e4b/constv2ctl2-full--lora_r4_ce/rung2048.json",
+    "4096": "dispatch/gemma4e4b/constv2ctl2-full--lora_r4_ce/rung4096.json",
+    "8192": "dispatch/gemma4e4b/constv2ctl2-full--lora_r4_ce/rung8192.json"
+   },
+   "configuration_ids": {
+    "2048": "gemma4e4b/constv2ctl2-full--lora_r4_ce/rung2048",
+    "4096": "gemma4e4b/constv2ctl2-full--lora_r4_ce/rung4096",
+    "8192": "gemma4e4b/constv2ctl2-full--lora_r4_ce/rung8192"
+   },
+   "budget_class": "none",
+   "config": "configs/sdfbase/ifeval/sdfbase_full22_gemma4e4b.ifeval.yaml",
+   "manifest": "configs/capeval/manifests/petri_full22_gemma4e4b.ifeval.yaml",
+   "hf": "google/gemma-4-E4B-it",
+   "rev": "ee0ef6023621cff504d758262d4e04895a5af4a2",
+   "family": "gemma4",
+   "image": "default",
+   "status": "launch",
+   "held_reason": null,
+   "deferred": null
+  },
+  {
+   "index": 7,
+   "job_id": "ife-gemma4e4b-main-mix-dlora",
+   "model_key": "gemma4e4b",
+   "view": "main",
+   "tag": "gemma4e4b",
+   "slug": "gemma4e4b-sdfbase-main",
+   "cell": "constv2-mix-full__lora_r4_ce_minus_ctl",
+   "cell_slug": "constv2-mix-full--lora_r4_ce_minus_ctl",
+   "harness_cell": "si_constv2_mix_full__lora_r4_ce_minus_ctl",
+   "standup_cell": "constv2-mix-full__lora_r4_ce_minus_ctl",
+   "standup_harness_cell": "si_constv2_mix_full__lora_r4_ce_minus_ctl",
+   "staged_id": "derived__constv2-mix-full__lora_r4_ce_minus_ctl",
+   "object_sha256": "be93b469a647248c68b48482c42e5af8f24da0993ba789f35e7a3aeeb2663391",
+   "pin": {
+    "kind": "roster",
+    "object_sha256": "be93b469a647248c68b48482c42e5af8f24da0993ba789f35e7a3aeeb2663391",
+    "source": "configs/sdfbase_full22_pins.json",
+    "source_sha256": "a57146e774b4f5b64781162ff3b8189ab149e58dc858792cefd15a2ceee09e9b",
+    "staged_id": "derived__constv2-mix-full__lora_r4_ce_minus_ctl"
+   },
+   "fitted": true,
+   "route_kind": "lens",
+   "header_located": false,
+   "served_positions_expected": "all",
+   "declared": false,
+   "thinking": "off",
+   "sampling_mode": "vendor_preset",
+   "sampling": {
+    "temperature": 1.0,
+    "top_p": 0.95,
+    "top_k": 64,
+    "source": "generation_config.json of google/gemma-4-E4B-it @ ee0ef602: temperature 1.0, top_p 0.95, top_k 64 (do_sample true; vendor default; no penalty term) \u2014 the numbers are THINKING_SAMPLING_BY_MODEL_KEY's by reference (P3); re-read from the shared cluster HF cache snapshot ee0ef602 (P4)"
+   },
+   "samples_per_item": 2,
+   "expected_stamps": [
+    "cell-stable",
+    "always",
+    "thinking_off"
+   ],
+   "cap": 2048,
+   "caps": [
+    2048,
+    4096,
+    8192
+   ],
+   "cap_ceiling": 8192,
+   "trigger_threshold": 0.01,
+   "trigger_provenance": "1 % raw at-cap of draws, per the IFEval ruling",
+   "prompt_class": "short",
+   "si_text_sha256": null,
+   "geometry_eval_by_cap": {
+    "2048": "capability:ifeval_2048",
+    "4096": "capability:ifeval_4096",
+    "8192": "capability:ifeval_8192"
+   },
+   "out_root": "controls/gemma4e4b/constv2-mix-full--lora_r4_ce_minus_ctl/vendor_preset",
+   "rung_out_roots": {
+    "4096": "controls/gemma4e4b/constv2-mix-full--lora_r4_ce_minus_ctl/vendor_preset__rung4096",
+    "8192": "controls/gemma4e4b/constv2-mix-full--lora_r4_ce_minus_ctl/vendor_preset__rung8192"
+   },
+   "subset_paths": {
+    "4096": "rung4096/gemma4e4b/constv2-mix-full--lora_r4_ce_minus_ctl/rung_subset.json",
+    "8192": "rung8192/gemma4e4b/constv2-mix-full--lora_r4_ce_minus_ctl/rung_subset.json"
+   },
+   "cap_ladder_paths": {
+    "2048": "controls/gemma4e4b/constv2-mix-full--lora_r4_ce_minus_ctl/vendor_preset/cap_ladder.json",
+    "4096": "controls/gemma4e4b/constv2-mix-full--lora_r4_ce_minus_ctl/vendor_preset__rung4096/cap_ladder.json",
+    "8192": "controls/gemma4e4b/constv2-mix-full--lora_r4_ce_minus_ctl/vendor_preset__rung8192/cap_ladder.json"
+   },
+   "ladder_state_paths": {
+    "2048": "controls/gemma4e4b/constv2-mix-full--lora_r4_ce_minus_ctl/vendor_preset/ladder_state.json",
+    "4096": "controls/gemma4e4b/constv2-mix-full--lora_r4_ce_minus_ctl/vendor_preset__rung4096/ladder_state.json",
+    "8192": "controls/gemma4e4b/constv2-mix-full--lora_r4_ce_minus_ctl/vendor_preset__rung8192/ladder_state.json"
+   },
+   "budget_paths": {
+    "2048": "budgets/gemma4e4b/constv2-mix-full--lora_r4_ce_minus_ctl/2048/oos_prompt_budget.json",
+    "4096": "budgets/gemma4e4b/constv2-mix-full--lora_r4_ce_minus_ctl/4096/oos_prompt_budget.json",
+    "8192": "budgets/gemma4e4b/constv2-mix-full--lora_r4_ce_minus_ctl/8192/oos_prompt_budget.json"
+   },
+   "dispatch_paths": {
+    "2048": "dispatch/gemma4e4b/constv2-mix-full--lora_r4_ce_minus_ctl/rung2048.json",
+    "4096": "dispatch/gemma4e4b/constv2-mix-full--lora_r4_ce_minus_ctl/rung4096.json",
+    "8192": "dispatch/gemma4e4b/constv2-mix-full--lora_r4_ce_minus_ctl/rung8192.json"
+   },
+   "configuration_ids": {
+    "2048": "gemma4e4b/constv2-mix-full--lora_r4_ce_minus_ctl/rung2048",
+    "4096": "gemma4e4b/constv2-mix-full--lora_r4_ce_minus_ctl/rung4096",
+    "8192": "gemma4e4b/constv2-mix-full--lora_r4_ce_minus_ctl/rung8192"
+   },
+   "budget_class": "none",
+   "config": "configs/sdfbase/ifeval/sdfbase_full22_gemma4e4b.ifeval.yaml",
+   "manifest": "configs/capeval/manifests/petri_full22_gemma4e4b.ifeval.yaml",
+   "hf": "google/gemma-4-E4B-it",
+   "rev": "ee0ef6023621cff504d758262d4e04895a5af4a2",
+   "family": "gemma4",
+   "image": "default",
+   "status": "launch",
+   "held_reason": null,
+   "deferred": null
+  },
+  {
+   "index": 8,
+   "job_id": "ife-qwen35_4b-it-none",
+   "model_key": "qwen35_4b",
+   "view": "it",
+   "tag": "qwen35_4b_it",
+   "slug": "qwen35_4b-sdfbase-it",
+   "cell": "none",
+   "cell_slug": "none",
+   "harness_cell": "none",
+   "standup_cell": "none",
+   "standup_harness_cell": "none",
+   "staged_id": null,
+   "object_sha256": null,
+   "pin": {
+    "kind": "none",
+    "object_sha256": null
+   },
+   "fitted": false,
+   "route_kind": "base",
+   "header_located": false,
+   "served_positions_expected": null,
+   "declared": false,
+   "thinking": "off",
+   "sampling_mode": "vendor_preset",
+   "sampling": {
+    "temperature": 0.7,
+    "top_p": 0.8,
+    "top_k": 20,
+    "min_p": 0.0,
+    "presence_penalty": 1.5,
+    "repetition_penalty": 1.0,
+    "source": "Qwen/Qwen3.5-4B @ 851bf6e8 ships no generation_config.json; the vendor's INSTRUCT (non-thinking) general row \u2014 QWEN35_VENDOR_ROWS['instruct_general'] by reference (P3): temperature 0.7, top_p 0.8, top_k 20, min_p 0.0, presence_penalty 1.5 (SENT PER REQUEST \u2014 not server-defaultable), repetition_penalty 1.0 (the card's stated no-op)"
+   },
+   "samples_per_item": 2,
+   "expected_stamps": [
+    "cell-stable",
+    "not-consulted",
+    "thinking_off"
+   ],
+   "cap": 2048,
+   "caps": [
+    2048,
+    4096,
+    8192
+   ],
+   "cap_ceiling": 8192,
+   "trigger_threshold": 0.01,
+   "trigger_provenance": "1 % raw at-cap of draws, per the IFEval ruling",
+   "prompt_class": "short",
+   "si_text_sha256": null,
+   "geometry_eval_by_cap": {
+    "2048": "capability:ifeval_2048",
+    "4096": "capability:ifeval_4096",
+    "8192": "capability:ifeval_8192"
+   },
+   "out_root": "controls/qwen35_4b_it/none/vendor_preset",
+   "rung_out_roots": {
+    "4096": "controls/qwen35_4b_it/none/vendor_preset__rung4096",
+    "8192": "controls/qwen35_4b_it/none/vendor_preset__rung8192"
+   },
+   "subset_paths": {
+    "4096": "rung4096/qwen35_4b_it/none/rung_subset.json",
+    "8192": "rung8192/qwen35_4b_it/none/rung_subset.json"
+   },
+   "cap_ladder_paths": {
+    "2048": "controls/qwen35_4b_it/none/vendor_preset/cap_ladder.json",
+    "4096": "controls/qwen35_4b_it/none/vendor_preset__rung4096/cap_ladder.json",
+    "8192": "controls/qwen35_4b_it/none/vendor_preset__rung8192/cap_ladder.json"
+   },
+   "ladder_state_paths": {
+    "2048": "controls/qwen35_4b_it/none/vendor_preset/ladder_state.json",
+    "4096": "controls/qwen35_4b_it/none/vendor_preset__rung4096/ladder_state.json",
+    "8192": "controls/qwen35_4b_it/none/vendor_preset__rung8192/ladder_state.json"
+   },
+   "budget_paths": {
+    "2048": "budgets/qwen35_4b_it/none/2048/oos_prompt_budget.json",
+    "4096": "budgets/qwen35_4b_it/none/4096/oos_prompt_budget.json",
+    "8192": "budgets/qwen35_4b_it/none/8192/oos_prompt_budget.json"
+   },
+   "dispatch_paths": {
+    "2048": "dispatch/qwen35_4b_it/none/rung2048.json",
+    "4096": "dispatch/qwen35_4b_it/none/rung4096.json",
+    "8192": "dispatch/qwen35_4b_it/none/rung8192.json"
+   },
+   "configuration_ids": {
+    "2048": "qwen35_4b_it/none/rung2048",
+    "4096": "qwen35_4b_it/none/rung4096",
+    "8192": "qwen35_4b_it/none/rung8192"
+   },
+   "budget_class": "none",
+   "config": "configs/sdfbase/ifeval/sdfbase_full22_qwen35_4b_it.ifeval.yaml",
+   "manifest": "configs/capeval/manifests/petri_full22_qwen35_4b_it.ifeval.yaml",
+   "hf": "Qwen/Qwen3.5-4B",
+   "rev": "851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a",
+   "family": "qwen3_5",
+   "image": "default",
+   "status": "launch",
+   "held_reason": null,
+   "deferred": null
+  },
+  {
+   "index": 9,
+   "job_id": "ife-qwen35_4b-it-prompted",
+   "model_key": "qwen35_4b",
+   "view": "it",
+   "tag": "qwen35_4b_it",
+   "slug": "qwen35_4b-sdfbase-it",
+   "cell": "prompted__safety_refusal",
+   "cell_slug": "prompted--safety_refusal",
+   "harness_cell": "prompted__safety",
+   "standup_cell": "prompted__safety_refusal",
+   "standup_harness_cell": "prompted__safety",
+   "staged_id": null,
+   "object_sha256": null,
+   "pin": {
+    "kind": "prompted",
+    "object_sha256": null
+   },
+   "fitted": false,
+   "route_kind": "prompted",
+   "header_located": false,
+   "served_positions_expected": null,
+   "declared": false,
+   "thinking": "off",
+   "sampling_mode": "vendor_preset",
+   "sampling": {
+    "temperature": 0.7,
+    "top_p": 0.8,
+    "top_k": 20,
+    "min_p": 0.0,
+    "presence_penalty": 1.5,
+    "repetition_penalty": 1.0,
+    "source": "Qwen/Qwen3.5-4B @ 851bf6e8 ships no generation_config.json; the vendor's INSTRUCT (non-thinking) general row \u2014 QWEN35_VENDOR_ROWS['instruct_general'] by reference (P3): temperature 0.7, top_p 0.8, top_k 20, min_p 0.0, presence_penalty 1.5 (SENT PER REQUEST \u2014 not server-defaultable), repetition_penalty 1.0 (the card's stated no-op)"
+   },
+   "samples_per_item": 2,
+   "expected_stamps": [
+    "cell-stable",
+    "not-consulted",
+    "thinking_off"
+   ],
+   "cap": 2048,
+   "caps": [
+    2048,
+    4096,
+    8192
+   ],
+   "cap_ceiling": 8192,
+   "trigger_threshold": 0.01,
+   "trigger_provenance": "1 % raw at-cap of draws, per the IFEval ruling",
+   "prompt_class": "short",
+   "si_text_sha256": "ac3a58f61d53cf2412c02b8bb56063b9683a9c1154ef1f0978efc1449a836e08",
+   "geometry_eval_by_cap": {
+    "2048": "capability:ifeval_2048",
+    "4096": "capability:ifeval_4096",
+    "8192": "capability:ifeval_8192"
+   },
+   "out_root": "controls/qwen35_4b_it/prompted--safety_refusal/vendor_preset",
+   "rung_out_roots": {
+    "4096": "controls/qwen35_4b_it/prompted--safety_refusal/vendor_preset__rung4096",
+    "8192": "controls/qwen35_4b_it/prompted--safety_refusal/vendor_preset__rung8192"
+   },
+   "subset_paths": {
+    "4096": "rung4096/qwen35_4b_it/prompted--safety_refusal/rung_subset.json",
+    "8192": "rung8192/qwen35_4b_it/prompted--safety_refusal/rung_subset.json"
+   },
+   "cap_ladder_paths": {
+    "2048": "controls/qwen35_4b_it/prompted--safety_refusal/vendor_preset/cap_ladder.json",
+    "4096": "controls/qwen35_4b_it/prompted--safety_refusal/vendor_preset__rung4096/cap_ladder.json",
+    "8192": "controls/qwen35_4b_it/prompted--safety_refusal/vendor_preset__rung8192/cap_ladder.json"
+   },
+   "ladder_state_paths": {
+    "2048": "controls/qwen35_4b_it/prompted--safety_refusal/vendor_preset/ladder_state.json",
+    "4096": "controls/qwen35_4b_it/prompted--safety_refusal/vendor_preset__rung4096/ladder_state.json",
+    "8192": "controls/qwen35_4b_it/prompted--safety_refusal/vendor_preset__rung8192/ladder_state.json"
+   },
+   "budget_paths": {
+    "2048": "budgets/qwen35_4b_it/prompted--safety_refusal/2048/oos_prompt_budget.json",
+    "4096": "budgets/qwen35_4b_it/prompted--safety_refusal/4096/oos_prompt_budget.json",
+    "8192": "budgets/qwen35_4b_it/prompted--safety_refusal/8192/oos_prompt_budget.json"
+   },
+   "dispatch_paths": {
+    "2048": "dispatch/qwen35_4b_it/prompted--safety_refusal/rung2048.json",
+    "4096": "dispatch/qwen35_4b_it/prompted--safety_refusal/rung4096.json",
+    "8192": "dispatch/qwen35_4b_it/prompted--safety_refusal/rung8192.json"
+   },
+   "configuration_ids": {
+    "2048": "qwen35_4b_it/prompted--safety_refusal/rung2048",
+    "4096": "qwen35_4b_it/prompted--safety_refusal/rung4096",
+    "8192": "qwen35_4b_it/prompted--safety_refusal/rung8192"
+   },
+   "budget_class": "prompted__safety_refusal",
+   "config": "configs/sdfbase/ifeval/sdfbase_full22_qwen35_4b_it.ifeval.yaml",
+   "manifest": "configs/capeval/manifests/petri_full22_qwen35_4b_it.ifeval.yaml",
+   "hf": "Qwen/Qwen3.5-4B",
+   "rev": "851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a",
+   "family": "qwen3_5",
+   "image": "default",
+   "status": "launch",
+   "held_reason": null,
+   "deferred": null
+  },
+  {
+   "index": 10,
+   "job_id": "ife-qwen35_4b-it-constitution",
+   "model_key": "qwen35_4b",
+   "view": "it",
+   "tag": "qwen35_4b_it",
+   "slug": "qwen35_4b-sdfbase-it",
+   "cell": "prompted__si_constitution",
+   "cell_slug": "prompted--si_constitution",
+   "harness_cell": "prompted__constitution",
+   "standup_cell": "prompted__si_constitution",
+   "standup_harness_cell": "prompted__constitution",
+   "staged_id": null,
+   "object_sha256": null,
+   "pin": {
+    "kind": "prompted",
+    "object_sha256": null
+   },
+   "fitted": false,
+   "route_kind": "prompted",
+   "header_located": false,
+   "served_positions_expected": null,
+   "declared": false,
+   "thinking": "off",
+   "sampling_mode": "vendor_preset",
+   "sampling": {
+    "temperature": 0.7,
+    "top_p": 0.8,
+    "top_k": 20,
+    "min_p": 0.0,
+    "presence_penalty": 1.5,
+    "repetition_penalty": 1.0,
+    "source": "Qwen/Qwen3.5-4B @ 851bf6e8 ships no generation_config.json; the vendor's INSTRUCT (non-thinking) general row \u2014 QWEN35_VENDOR_ROWS['instruct_general'] by reference (P3): temperature 0.7, top_p 0.8, top_k 20, min_p 0.0, presence_penalty 1.5 (SENT PER REQUEST \u2014 not server-defaultable), repetition_penalty 1.0 (the card's stated no-op)"
+   },
+   "samples_per_item": 2,
+   "expected_stamps": [
+    "cell-stable",
+    "not-consulted",
+    "thinking_off"
+   ],
+   "cap": 2048,
+   "caps": [
+    2048,
+    4096,
+    8192
+   ],
+   "cap_ceiling": 8192,
+   "trigger_threshold": 0.01,
+   "trigger_provenance": "1 % raw at-cap of draws, per the IFEval ruling",
+   "prompt_class": "long_si",
+   "si_text_sha256": "21e06f482a6559b39309c4f1128f0411230c88e02b3a9eaa7b5d50829e6a9a0f",
+   "geometry_eval_by_cap": {
+    "2048": "capability:ifeval_longsi_2048",
+    "4096": "capability:ifeval_longsi_4096",
+    "8192": "capability:ifeval_longsi_8192"
+   },
+   "out_root": "controls/qwen35_4b_it/prompted--si_constitution/vendor_preset",
+   "rung_out_roots": {
+    "4096": "controls/qwen35_4b_it/prompted--si_constitution/vendor_preset__rung4096",
+    "8192": "controls/qwen35_4b_it/prompted--si_constitution/vendor_preset__rung8192"
+   },
+   "subset_paths": {
+    "4096": "rung4096/qwen35_4b_it/prompted--si_constitution/rung_subset.json",
+    "8192": "rung8192/qwen35_4b_it/prompted--si_constitution/rung_subset.json"
+   },
+   "cap_ladder_paths": {
+    "2048": "controls/qwen35_4b_it/prompted--si_constitution/vendor_preset/cap_ladder.json",
+    "4096": "controls/qwen35_4b_it/prompted--si_constitution/vendor_preset__rung4096/cap_ladder.json",
+    "8192": "controls/qwen35_4b_it/prompted--si_constitution/vendor_preset__rung8192/cap_ladder.json"
+   },
+   "ladder_state_paths": {
+    "2048": "controls/qwen35_4b_it/prompted--si_constitution/vendor_preset/ladder_state.json",
+    "4096": "controls/qwen35_4b_it/prompted--si_constitution/vendor_preset__rung4096/ladder_state.json",
+    "8192": "controls/qwen35_4b_it/prompted--si_constitution/vendor_preset__rung8192/ladder_state.json"
+   },
+   "budget_paths": {
+    "2048": "budgets/qwen35_4b_it/prompted--si_constitution/2048/oos_prompt_budget.json",
+    "4096": "budgets/qwen35_4b_it/prompted--si_constitution/4096/oos_prompt_budget.json",
+    "8192": "budgets/qwen35_4b_it/prompted--si_constitution/8192/oos_prompt_budget.json"
+   },
+   "dispatch_paths": {
+    "2048": "dispatch/qwen35_4b_it/prompted--si_constitution/rung2048.json",
+    "4096": "dispatch/qwen35_4b_it/prompted--si_constitution/rung4096.json",
+    "8192": "dispatch/qwen35_4b_it/prompted--si_constitution/rung8192.json"
+   },
+   "configuration_ids": {
+    "2048": "qwen35_4b_it/prompted--si_constitution/rung2048",
+    "4096": "qwen35_4b_it/prompted--si_constitution/rung4096",
+    "8192": "qwen35_4b_it/prompted--si_constitution/rung8192"
+   },
+   "budget_class": "prompted__si_constitution",
+   "config": "configs/sdfbase/ifeval/sdfbase_full22_qwen35_4b_it.ifeval.yaml",
+   "manifest": "configs/capeval/manifests/petri_full22_qwen35_4b_it.ifeval.yaml",
+   "hf": "Qwen/Qwen3.5-4B",
+   "rev": "851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a",
+   "family": "qwen3_5",
+   "image": "default",
+   "status": "launch",
+   "held_reason": null,
+   "deferred": null
+  },
+  {
+   "index": 11,
+   "job_id": "ife-qwen35_4b-it-mix-lora",
+   "model_key": "qwen35_4b",
+   "view": "it",
+   "tag": "qwen35_4b_it",
+   "slug": "qwen35_4b-sdfbase-it",
+   "cell": "constv2-mix-full__lora_r4_ce",
+   "cell_slug": "constv2-mix-full--lora_r4_ce",
+   "harness_cell": "si_constv2_mix_full__lora_r4_ce",
+   "standup_cell": "constv2-mix-full__lora_r4_ce",
+   "standup_harness_cell": "si_constv2_mix_full__lora_r4_ce",
+   "staged_id": "itdoc__constv2-mix-full__lora_r4_ce",
+   "object_sha256": "0018b32beb137fad77a688cfd4f7212c7702399e0f76f31cc3fbd5f903a445fe",
+   "pin": {
+    "kind": "roster",
+    "object_sha256": "0018b32beb137fad77a688cfd4f7212c7702399e0f76f31cc3fbd5f903a445fe",
+    "source": "configs/sdfbase_full22_pins.json",
+    "source_sha256": "a57146e774b4f5b64781162ff3b8189ab149e58dc858792cefd15a2ceee09e9b",
+    "staged_id": "itdoc__constv2-mix-full__lora_r4_ce"
+   },
+   "fitted": true,
+   "route_kind": "lens",
+   "header_located": false,
+   "served_positions_expected": "all",
+   "declared": false,
+   "thinking": "off",
+   "sampling_mode": "vendor_preset",
+   "sampling": {
+    "temperature": 0.7,
+    "top_p": 0.8,
+    "top_k": 20,
+    "min_p": 0.0,
+    "presence_penalty": 1.5,
+    "repetition_penalty": 1.0,
+    "source": "Qwen/Qwen3.5-4B @ 851bf6e8 ships no generation_config.json; the vendor's INSTRUCT (non-thinking) general row \u2014 QWEN35_VENDOR_ROWS['instruct_general'] by reference (P3): temperature 0.7, top_p 0.8, top_k 20, min_p 0.0, presence_penalty 1.5 (SENT PER REQUEST \u2014 not server-defaultable), repetition_penalty 1.0 (the card's stated no-op)"
+   },
+   "samples_per_item": 2,
+   "expected_stamps": [
+    "cell-stable",
+    "always",
+    "thinking_off"
+   ],
+   "cap": 2048,
+   "caps": [
+    2048,
+    4096,
+    8192
+   ],
+   "cap_ceiling": 8192,
+   "trigger_threshold": 0.01,
+   "trigger_provenance": "1 % raw at-cap of draws, per the IFEval ruling",
+   "prompt_class": "short",
+   "si_text_sha256": null,
+   "geometry_eval_by_cap": {
+    "2048": "capability:ifeval_2048",
+    "4096": "capability:ifeval_4096",
+    "8192": "capability:ifeval_8192"
+   },
+   "out_root": "controls/qwen35_4b_it/constv2-mix-full--lora_r4_ce/vendor_preset",
+   "rung_out_roots": {
+    "4096": "controls/qwen35_4b_it/constv2-mix-full--lora_r4_ce/vendor_preset__rung4096",
+    "8192": "controls/qwen35_4b_it/constv2-mix-full--lora_r4_ce/vendor_preset__rung8192"
+   },
+   "subset_paths": {
+    "4096": "rung4096/qwen35_4b_it/constv2-mix-full--lora_r4_ce/rung_subset.json",
+    "8192": "rung8192/qwen35_4b_it/constv2-mix-full--lora_r4_ce/rung_subset.json"
+   },
+   "cap_ladder_paths": {
+    "2048": "controls/qwen35_4b_it/constv2-mix-full--lora_r4_ce/vendor_preset/cap_ladder.json",
+    "4096": "controls/qwen35_4b_it/constv2-mix-full--lora_r4_ce/vendor_preset__rung4096/cap_ladder.json",
+    "8192": "controls/qwen35_4b_it/constv2-mix-full--lora_r4_ce/vendor_preset__rung8192/cap_ladder.json"
+   },
+   "ladder_state_paths": {
+    "2048": "controls/qwen35_4b_it/constv2-mix-full--lora_r4_ce/vendor_preset/ladder_state.json",
+    "4096": "controls/qwen35_4b_it/constv2-mix-full--lora_r4_ce/vendor_preset__rung4096/ladder_state.json",
+    "8192": "controls/qwen35_4b_it/constv2-mix-full--lora_r4_ce/vendor_preset__rung8192/ladder_state.json"
+   },
+   "budget_paths": {
+    "2048": "budgets/qwen35_4b_it/constv2-mix-full--lora_r4_ce/2048/oos_prompt_budget.json",
+    "4096": "budgets/qwen35_4b_it/constv2-mix-full--lora_r4_ce/4096/oos_prompt_budget.json",
+    "8192": "budgets/qwen35_4b_it/constv2-mix-full--lora_r4_ce/8192/oos_prompt_budget.json"
+   },
+   "dispatch_paths": {
+    "2048": "dispatch/qwen35_4b_it/constv2-mix-full--lora_r4_ce/rung2048.json",
+    "4096": "dispatch/qwen35_4b_it/constv2-mix-full--lora_r4_ce/rung4096.json",
+    "8192": "dispatch/qwen35_4b_it/constv2-mix-full--lora_r4_ce/rung8192.json"
+   },
+   "configuration_ids": {
+    "2048": "qwen35_4b_it/constv2-mix-full--lora_r4_ce/rung2048",
+    "4096": "qwen35_4b_it/constv2-mix-full--lora_r4_ce/rung4096",
+    "8192": "qwen35_4b_it/constv2-mix-full--lora_r4_ce/rung8192"
+   },
+   "budget_class": "none",
+   "config": "configs/sdfbase/ifeval/sdfbase_full22_qwen35_4b_it.ifeval.yaml",
+   "manifest": "configs/capeval/manifests/petri_full22_qwen35_4b_it.ifeval.yaml",
+   "hf": "Qwen/Qwen3.5-4B",
+   "rev": "851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a",
+   "family": "qwen3_5",
+   "image": "default",
+   "status": "held",
+   "held_reason": "P41 (2026-09-10): the instruct-direct constitution objects are being re-fitted at effective batch 64; a HARD EXCLUSION until the refit lands (one object per arm across evals).",
+   "deferred": null
+  },
+  {
+   "index": 12,
+   "job_id": "ife-qwen35_4b-main-none",
+   "model_key": "qwen35_4b",
+   "view": "main",
+   "tag": "qwen35_4b",
+   "slug": "qwen35_4b-sdfbase-main",
+   "cell": "none",
+   "cell_slug": "none",
+   "harness_cell": "none",
+   "standup_cell": "none",
+   "standup_harness_cell": "none",
+   "staged_id": null,
+   "object_sha256": null,
+   "pin": {
+    "kind": "none",
+    "object_sha256": null
+   },
+   "fitted": false,
+   "route_kind": "base",
+   "header_located": false,
+   "served_positions_expected": null,
+   "declared": false,
+   "thinking": "off",
+   "sampling_mode": "vendor_preset",
+   "sampling": {
+    "temperature": 0.7,
+    "top_p": 0.8,
+    "top_k": 20,
+    "min_p": 0.0,
+    "presence_penalty": 1.5,
+    "repetition_penalty": 1.0,
+    "source": "Qwen/Qwen3.5-4B @ 851bf6e8 ships no generation_config.json; the vendor's INSTRUCT (non-thinking) general row \u2014 QWEN35_VENDOR_ROWS['instruct_general'] by reference (P3): temperature 0.7, top_p 0.8, top_k 20, min_p 0.0, presence_penalty 1.5 (SENT PER REQUEST \u2014 not server-defaultable), repetition_penalty 1.0 (the card's stated no-op)"
+   },
+   "samples_per_item": 2,
+   "expected_stamps": [
+    "cell-stable",
+    "not-consulted",
+    "thinking_off"
+   ],
+   "cap": 2048,
+   "caps": [
+    2048,
+    4096,
+    8192
+   ],
+   "cap_ceiling": 8192,
+   "trigger_threshold": 0.01,
+   "trigger_provenance": "1 % raw at-cap of draws, per the IFEval ruling",
+   "prompt_class": "short",
+   "si_text_sha256": null,
+   "geometry_eval_by_cap": {
+    "2048": "capability:ifeval_2048",
+    "4096": "capability:ifeval_4096",
+    "8192": "capability:ifeval_8192"
+   },
+   "out_root": "controls/qwen35_4b/none/vendor_preset",
+   "rung_out_roots": {
+    "4096": "controls/qwen35_4b/none/vendor_preset__rung4096",
+    "8192": "controls/qwen35_4b/none/vendor_preset__rung8192"
+   },
+   "subset_paths": {
+    "4096": "rung4096/qwen35_4b/none/rung_subset.json",
+    "8192": "rung8192/qwen35_4b/none/rung_subset.json"
+   },
+   "cap_ladder_paths": {
+    "2048": "controls/qwen35_4b/none/vendor_preset/cap_ladder.json",
+    "4096": "controls/qwen35_4b/none/vendor_preset__rung4096/cap_ladder.json",
+    "8192": "controls/qwen35_4b/none/vendor_preset__rung8192/cap_ladder.json"
+   },
+   "ladder_state_paths": {
+    "2048": "controls/qwen35_4b/none/vendor_preset/ladder_state.json",
+    "4096": "controls/qwen35_4b/none/vendor_preset__rung4096/ladder_state.json",
+    "8192": "controls/qwen35_4b/none/vendor_preset__rung8192/ladder_state.json"
+   },
+   "budget_paths": {
+    "2048": "budgets/qwen35_4b/none/2048/oos_prompt_budget.json",
+    "4096": "budgets/qwen35_4b/none/4096/oos_prompt_budget.json",
+    "8192": "budgets/qwen35_4b/none/8192/oos_prompt_budget.json"
+   },
+   "dispatch_paths": {
+    "2048": "dispatch/qwen35_4b/none/rung2048.json",
+    "4096": "dispatch/qwen35_4b/none/rung4096.json",
+    "8192": "dispatch/qwen35_4b/none/rung8192.json"
+   },
+   "configuration_ids": {
+    "2048": "qwen35_4b/none/rung2048",
+    "4096": "qwen35_4b/none/rung4096",
+    "8192": "qwen35_4b/none/rung8192"
+   },
+   "budget_class": "none",
+   "config": "configs/sdfbase/ifeval/sdfbase_full22_qwen35_4b.ifeval.yaml",
+   "manifest": "configs/capeval/manifests/petri_full22_qwen35_4b.ifeval.yaml",
+   "hf": "Qwen/Qwen3.5-4B",
+   "rev": "851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a",
+   "family": "qwen3_5",
+   "image": "default",
+   "status": "launch",
+   "held_reason": null,
+   "deferred": null
+  },
+  {
+   "index": 13,
+   "job_id": "ife-qwen35_4b-main-mix-lora",
+   "model_key": "qwen35_4b",
+   "view": "main",
+   "tag": "qwen35_4b",
+   "slug": "qwen35_4b-sdfbase-main",
+   "cell": "constv2-mix-full__lora_r4_ce",
+   "cell_slug": "constv2-mix-full--lora_r4_ce",
+   "harness_cell": "si_constv2_mix_full__lora_r4_ce",
+   "standup_cell": "constv2-mix-full__lora_r4_ce",
+   "standup_harness_cell": "si_constv2_mix_full__lora_r4_ce",
+   "staged_id": "base__constv2-mix-full__lora_r4_ce",
+   "object_sha256": "63c151654c3d9cbdd9540b1806e7db81a6e2434f509ba6657906beccf8762ffd",
+   "pin": {
+    "kind": "roster",
+    "object_sha256": "63c151654c3d9cbdd9540b1806e7db81a6e2434f509ba6657906beccf8762ffd",
+    "source": "configs/sdfbase_full22_pins.json",
+    "source_sha256": "a57146e774b4f5b64781162ff3b8189ab149e58dc858792cefd15a2ceee09e9b",
+    "staged_id": "base__constv2-mix-full__lora_r4_ce"
+   },
+   "fitted": true,
+   "route_kind": "lens",
+   "header_located": false,
+   "served_positions_expected": "all",
+   "declared": false,
+   "thinking": "off",
+   "sampling_mode": "vendor_preset",
+   "sampling": {
+    "temperature": 0.7,
+    "top_p": 0.8,
+    "top_k": 20,
+    "min_p": 0.0,
+    "presence_penalty": 1.5,
+    "repetition_penalty": 1.0,
+    "source": "Qwen/Qwen3.5-4B @ 851bf6e8 ships no generation_config.json; the vendor's INSTRUCT (non-thinking) general row \u2014 QWEN35_VENDOR_ROWS['instruct_general'] by reference (P3): temperature 0.7, top_p 0.8, top_k 20, min_p 0.0, presence_penalty 1.5 (SENT PER REQUEST \u2014 not server-defaultable), repetition_penalty 1.0 (the card's stated no-op)"
+   },
+   "samples_per_item": 2,
+   "expected_stamps": [
+    "cell-stable",
+    "always",
+    "thinking_off"
+   ],
+   "cap": 2048,
+   "caps": [
+    2048,
+    4096,
+    8192
+   ],
+   "cap_ceiling": 8192,
+   "trigger_threshold": 0.01,
+   "trigger_provenance": "1 % raw at-cap of draws, per the IFEval ruling",
+   "prompt_class": "short",
+   "si_text_sha256": null,
+   "geometry_eval_by_cap": {
+    "2048": "capability:ifeval_2048",
+    "4096": "capability:ifeval_4096",
+    "8192": "capability:ifeval_8192"
+   },
+   "out_root": "controls/qwen35_4b/constv2-mix-full--lora_r4_ce/vendor_preset",
+   "rung_out_roots": {
+    "4096": "controls/qwen35_4b/constv2-mix-full--lora_r4_ce/vendor_preset__rung4096",
+    "8192": "controls/qwen35_4b/constv2-mix-full--lora_r4_ce/vendor_preset__rung8192"
+   },
+   "subset_paths": {
+    "4096": "rung4096/qwen35_4b/constv2-mix-full--lora_r4_ce/rung_subset.json",
+    "8192": "rung8192/qwen35_4b/constv2-mix-full--lora_r4_ce/rung_subset.json"
+   },
+   "cap_ladder_paths": {
+    "2048": "controls/qwen35_4b/constv2-mix-full--lora_r4_ce/vendor_preset/cap_ladder.json",
+    "4096": "controls/qwen35_4b/constv2-mix-full--lora_r4_ce/vendor_preset__rung4096/cap_ladder.json",
+    "8192": "controls/qwen35_4b/constv2-mix-full--lora_r4_ce/vendor_preset__rung8192/cap_ladder.json"
+   },
+   "ladder_state_paths": {
+    "2048": "controls/qwen35_4b/constv2-mix-full--lora_r4_ce/vendor_preset/ladder_state.json",
+    "4096": "controls/qwen35_4b/constv2-mix-full--lora_r4_ce/vendor_preset__rung4096/ladder_state.json",
+    "8192": "controls/qwen35_4b/constv2-mix-full--lora_r4_ce/vendor_preset__rung8192/ladder_state.json"
+   },
+   "budget_paths": {
+    "2048": "budgets/qwen35_4b/constv2-mix-full--lora_r4_ce/2048/oos_prompt_budget.json",
+    "4096": "budgets/qwen35_4b/constv2-mix-full--lora_r4_ce/4096/oos_prompt_budget.json",
+    "8192": "budgets/qwen35_4b/constv2-mix-full--lora_r4_ce/8192/oos_prompt_budget.json"
+   },
+   "dispatch_paths": {
+    "2048": "dispatch/qwen35_4b/constv2-mix-full--lora_r4_ce/rung2048.json",
+    "4096": "dispatch/qwen35_4b/constv2-mix-full--lora_r4_ce/rung4096.json",
+    "8192": "dispatch/qwen35_4b/constv2-mix-full--lora_r4_ce/rung8192.json"
+   },
+   "configuration_ids": {
+    "2048": "qwen35_4b/constv2-mix-full--lora_r4_ce/rung2048",
+    "4096": "qwen35_4b/constv2-mix-full--lora_r4_ce/rung4096",
+    "8192": "qwen35_4b/constv2-mix-full--lora_r4_ce/rung8192"
+   },
+   "budget_class": "none",
+   "config": "configs/sdfbase/ifeval/sdfbase_full22_qwen35_4b.ifeval.yaml",
+   "manifest": "configs/capeval/manifests/petri_full22_qwen35_4b.ifeval.yaml",
+   "hf": "Qwen/Qwen3.5-4B",
+   "rev": "851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a",
+   "family": "qwen3_5",
+   "image": "default",
+   "status": "launch",
+   "held_reason": null,
+   "deferred": null
+  },
+  {
+   "index": 14,
+   "job_id": "ife-qwen35_4b-main-ctl-lora",
+   "model_key": "qwen35_4b",
+   "view": "main",
+   "tag": "qwen35_4b",
+   "slug": "qwen35_4b-sdfbase-main",
+   "cell": "constv2ctl2-full__lora_r4_ce",
+   "cell_slug": "constv2ctl2-full--lora_r4_ce",
+   "harness_cell": "si_constv2ctl2_full__lora_r4_ce",
+   "standup_cell": "constv2ctl2-full__lora_r4_ce",
+   "standup_harness_cell": "si_constv2ctl2_full__lora_r4_ce",
+   "staged_id": "base__constv2ctl2-full__lora_r4_ce",
+   "object_sha256": "4cd0f001d8cd75581d935a1badeb9536be1c86377b98dd81e2c165307bb2b2ee",
+   "pin": {
+    "kind": "roster",
+    "object_sha256": "4cd0f001d8cd75581d935a1badeb9536be1c86377b98dd81e2c165307bb2b2ee",
+    "source": "configs/sdfbase_full22_pins.json",
+    "source_sha256": "a57146e774b4f5b64781162ff3b8189ab149e58dc858792cefd15a2ceee09e9b",
+    "staged_id": "base__constv2ctl2-full__lora_r4_ce"
+   },
+   "fitted": true,
+   "route_kind": "lens",
+   "header_located": false,
+   "served_positions_expected": "all",
+   "declared": false,
+   "thinking": "off",
+   "sampling_mode": "vendor_preset",
+   "sampling": {
+    "temperature": 0.7,
+    "top_p": 0.8,
+    "top_k": 20,
+    "min_p": 0.0,
+    "presence_penalty": 1.5,
+    "repetition_penalty": 1.0,
+    "source": "Qwen/Qwen3.5-4B @ 851bf6e8 ships no generation_config.json; the vendor's INSTRUCT (non-thinking) general row \u2014 QWEN35_VENDOR_ROWS['instruct_general'] by reference (P3): temperature 0.7, top_p 0.8, top_k 20, min_p 0.0, presence_penalty 1.5 (SENT PER REQUEST \u2014 not server-defaultable), repetition_penalty 1.0 (the card's stated no-op)"
+   },
+   "samples_per_item": 2,
+   "expected_stamps": [
+    "cell-stable",
+    "always",
+    "thinking_off"
+   ],
+   "cap": 2048,
+   "caps": [
+    2048,
+    4096,
+    8192
+   ],
+   "cap_ceiling": 8192,
+   "trigger_threshold": 0.01,
+   "trigger_provenance": "1 % raw at-cap of draws, per the IFEval ruling",
+   "prompt_class": "short",
+   "si_text_sha256": null,
+   "geometry_eval_by_cap": {
+    "2048": "capability:ifeval_2048",
+    "4096": "capability:ifeval_4096",
+    "8192": "capability:ifeval_8192"
+   },
+   "out_root": "controls/qwen35_4b/constv2ctl2-full--lora_r4_ce/vendor_preset",
+   "rung_out_roots": {
+    "4096": "controls/qwen35_4b/constv2ctl2-full--lora_r4_ce/vendor_preset__rung4096",
+    "8192": "controls/qwen35_4b/constv2ctl2-full--lora_r4_ce/vendor_preset__rung8192"
+   },
+   "subset_paths": {
+    "4096": "rung4096/qwen35_4b/constv2ctl2-full--lora_r4_ce/rung_subset.json",
+    "8192": "rung8192/qwen35_4b/constv2ctl2-full--lora_r4_ce/rung_subset.json"
+   },
+   "cap_ladder_paths": {
+    "2048": "controls/qwen35_4b/constv2ctl2-full--lora_r4_ce/vendor_preset/cap_ladder.json",
+    "4096": "controls/qwen35_4b/constv2ctl2-full--lora_r4_ce/vendor_preset__rung4096/cap_ladder.json",
+    "8192": "controls/qwen35_4b/constv2ctl2-full--lora_r4_ce/vendor_preset__rung8192/cap_ladder.json"
+   },
+   "ladder_state_paths": {
+    "2048": "controls/qwen35_4b/constv2ctl2-full--lora_r4_ce/vendor_preset/ladder_state.json",
+    "4096": "controls/qwen35_4b/constv2ctl2-full--lora_r4_ce/vendor_preset__rung4096/ladder_state.json",
+    "8192": "controls/qwen35_4b/constv2ctl2-full--lora_r4_ce/vendor_preset__rung8192/ladder_state.json"
+   },
+   "budget_paths": {
+    "2048": "budgets/qwen35_4b/constv2ctl2-full--lora_r4_ce/2048/oos_prompt_budget.json",
+    "4096": "budgets/qwen35_4b/constv2ctl2-full--lora_r4_ce/4096/oos_prompt_budget.json",
+    "8192": "budgets/qwen35_4b/constv2ctl2-full--lora_r4_ce/8192/oos_prompt_budget.json"
+   },
+   "dispatch_paths": {
+    "2048": "dispatch/qwen35_4b/constv2ctl2-full--lora_r4_ce/rung2048.json",
+    "4096": "dispatch/qwen35_4b/constv2ctl2-full--lora_r4_ce/rung4096.json",
+    "8192": "dispatch/qwen35_4b/constv2ctl2-full--lora_r4_ce/rung8192.json"
+   },
+   "configuration_ids": {
+    "2048": "qwen35_4b/constv2ctl2-full--lora_r4_ce/rung2048",
+    "4096": "qwen35_4b/constv2ctl2-full--lora_r4_ce/rung4096",
+    "8192": "qwen35_4b/constv2ctl2-full--lora_r4_ce/rung8192"
+   },
+   "budget_class": "none",
+   "config": "configs/sdfbase/ifeval/sdfbase_full22_qwen35_4b.ifeval.yaml",
+   "manifest": "configs/capeval/manifests/petri_full22_qwen35_4b.ifeval.yaml",
+   "hf": "Qwen/Qwen3.5-4B",
+   "rev": "851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a",
+   "family": "qwen3_5",
+   "image": "default",
+   "status": "launch",
+   "held_reason": null,
+   "deferred": null
+  },
+  {
+   "index": 15,
+   "job_id": "ife-qwen35_4b-main-mix-dlora",
+   "model_key": "qwen35_4b",
+   "view": "main",
+   "tag": "qwen35_4b",
+   "slug": "qwen35_4b-sdfbase-main",
+   "cell": "constv2-mix-full__lora_r4_ce_minus_ctl",
+   "cell_slug": "constv2-mix-full--lora_r4_ce_minus_ctl",
+   "harness_cell": "si_constv2_mix_full__lora_r4_ce_minus_ctl",
+   "standup_cell": "constv2-mix-full__lora_r4_ce_minus_ctl",
+   "standup_harness_cell": "si_constv2_mix_full__lora_r4_ce_minus_ctl",
+   "staged_id": "derived__constv2-mix-full__lora_r4_ce_minus_ctl",
+   "object_sha256": "e24b4aaa8f2e431eb4d9c368516f832f60c8e62637782c0b3f9283d7d2b440ff",
+   "pin": {
+    "kind": "roster",
+    "object_sha256": "e24b4aaa8f2e431eb4d9c368516f832f60c8e62637782c0b3f9283d7d2b440ff",
+    "source": "configs/sdfbase_full22_pins.json",
+    "source_sha256": "a57146e774b4f5b64781162ff3b8189ab149e58dc858792cefd15a2ceee09e9b",
+    "staged_id": "derived__constv2-mix-full__lora_r4_ce_minus_ctl"
+   },
+   "fitted": true,
+   "route_kind": "lens",
+   "header_located": false,
+   "served_positions_expected": "all",
+   "declared": false,
+   "thinking": "off",
+   "sampling_mode": "vendor_preset",
+   "sampling": {
+    "temperature": 0.7,
+    "top_p": 0.8,
+    "top_k": 20,
+    "min_p": 0.0,
+    "presence_penalty": 1.5,
+    "repetition_penalty": 1.0,
+    "source": "Qwen/Qwen3.5-4B @ 851bf6e8 ships no generation_config.json; the vendor's INSTRUCT (non-thinking) general row \u2014 QWEN35_VENDOR_ROWS['instruct_general'] by reference (P3): temperature 0.7, top_p 0.8, top_k 20, min_p 0.0, presence_penalty 1.5 (SENT PER REQUEST \u2014 not server-defaultable), repetition_penalty 1.0 (the card's stated no-op)"
+   },
+   "samples_per_item": 2,
+   "expected_stamps": [
+    "cell-stable",
+    "always",
+    "thinking_off"
+   ],
+   "cap": 2048,
+   "caps": [
+    2048,
+    4096,
+    8192
+   ],
+   "cap_ceiling": 8192,
+   "trigger_threshold": 0.01,
+   "trigger_provenance": "1 % raw at-cap of draws, per the IFEval ruling",
+   "prompt_class": "short",
+   "si_text_sha256": null,
+   "geometry_eval_by_cap": {
+    "2048": "capability:ifeval_2048",
+    "4096": "capability:ifeval_4096",
+    "8192": "capability:ifeval_8192"
+   },
+   "out_root": "controls/qwen35_4b/constv2-mix-full--lora_r4_ce_minus_ctl/vendor_preset",
+   "rung_out_roots": {
+    "4096": "controls/qwen35_4b/constv2-mix-full--lora_r4_ce_minus_ctl/vendor_preset__rung4096",
+    "8192": "controls/qwen35_4b/constv2-mix-full--lora_r4_ce_minus_ctl/vendor_preset__rung8192"
+   },
+   "subset_paths": {
+    "4096": "rung4096/qwen35_4b/constv2-mix-full--lora_r4_ce_minus_ctl/rung_subset.json",
+    "8192": "rung8192/qwen35_4b/constv2-mix-full--lora_r4_ce_minus_ctl/rung_subset.json"
+   },
+   "cap_ladder_paths": {
+    "2048": "controls/qwen35_4b/constv2-mix-full--lora_r4_ce_minus_ctl/vendor_preset/cap_ladder.json",
+    "4096": "controls/qwen35_4b/constv2-mix-full--lora_r4_ce_minus_ctl/vendor_preset__rung4096/cap_ladder.json",
+    "8192": "controls/qwen35_4b/constv2-mix-full--lora_r4_ce_minus_ctl/vendor_preset__rung8192/cap_ladder.json"
+   },
+   "ladder_state_paths": {
+    "2048": "controls/qwen35_4b/constv2-mix-full--lora_r4_ce_minus_ctl/vendor_preset/ladder_state.json",
+    "4096": "controls/qwen35_4b/constv2-mix-full--lora_r4_ce_minus_ctl/vendor_preset__rung4096/ladder_state.json",
+    "8192": "controls/qwen35_4b/constv2-mix-full--lora_r4_ce_minus_ctl/vendor_preset__rung8192/ladder_state.json"
+   },
+   "budget_paths": {
+    "2048": "budgets/qwen35_4b/constv2-mix-full--lora_r4_ce_minus_ctl/2048/oos_prompt_budget.json",
+    "4096": "budgets/qwen35_4b/constv2-mix-full--lora_r4_ce_minus_ctl/4096/oos_prompt_budget.json",
+    "8192": "budgets/qwen35_4b/constv2-mix-full--lora_r4_ce_minus_ctl/8192/oos_prompt_budget.json"
+   },
+   "dispatch_paths": {
+    "2048": "dispatch/qwen35_4b/constv2-mix-full--lora_r4_ce_minus_ctl/rung2048.json",
+    "4096": "dispatch/qwen35_4b/constv2-mix-full--lora_r4_ce_minus_ctl/rung4096.json",
+    "8192": "dispatch/qwen35_4b/constv2-mix-full--lora_r4_ce_minus_ctl/rung8192.json"
+   },
+   "configuration_ids": {
+    "2048": "qwen35_4b/constv2-mix-full--lora_r4_ce_minus_ctl/rung2048",
+    "4096": "qwen35_4b/constv2-mix-full--lora_r4_ce_minus_ctl/rung4096",
+    "8192": "qwen35_4b/constv2-mix-full--lora_r4_ce_minus_ctl/rung8192"
+   },
+   "budget_class": "none",
+   "config": "configs/sdfbase/ifeval/sdfbase_full22_qwen35_4b.ifeval.yaml",
+   "manifest": "configs/capeval/manifests/petri_full22_qwen35_4b.ifeval.yaml",
+   "hf": "Qwen/Qwen3.5-4B",
+   "rev": "851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a",
+   "family": "qwen3_5",
+   "image": "default",
+   "status": "launch",
+   "held_reason": null,
+   "deferred": null
+  },
+  {
+   "index": 16,
+   "job_id": "ife-nemotron3nano4b-main-none",
+   "model_key": "nemotron3nano4b",
+   "view": "main",
+   "tag": "nemotron3nano4b",
+   "slug": "nemotron3nano4b-sdfbase-main",
+   "cell": "none",
+   "cell_slug": "none",
+   "harness_cell": "none",
+   "standup_cell": "none",
+   "standup_harness_cell": "none",
+   "staged_id": null,
+   "object_sha256": null,
+   "pin": {
+    "kind": "none",
+    "object_sha256": null
+   },
+   "fitted": false,
+   "route_kind": "base",
+   "header_located": false,
+   "served_positions_expected": null,
+   "declared": false,
+   "thinking": "off",
+   "sampling_mode": "vendor_preset",
+   "sampling": {
+    "temperature": 1.0,
+    "top_p": 0.95,
+    "source": "generation_config.json of nvidia/NVIDIA-Nemotron-3-Nano-4B-BF16 @ dfaf35de: temperature 1.0, top_p 0.95, no top_k \u2014 label `generation_config` (P43, SETTLED: the shipped file is the preset for new work); the static / over-refusal sampled lanes' user-supplied top_p 1.0 (pre-ruling; BATTERY_SAMPLING_BY_MODEL_KEY['nemotron3nano4b']) is a GRANDFATHERED exception recorded beside it here; no reconciliation owed"
+   },
+   "samples_per_item": 2,
+   "expected_stamps": [
+    "cell-stable",
+    "not-consulted",
+    "thinking_off"
+   ],
+   "cap": 2048,
+   "caps": [
+    2048,
+    4096,
+    8192
+   ],
+   "cap_ceiling": 8192,
+   "trigger_threshold": 0.01,
+   "trigger_provenance": "1 % raw at-cap of draws, per the IFEval ruling",
+   "prompt_class": "short",
+   "si_text_sha256": null,
+   "geometry_eval_by_cap": {
+    "2048": "capability:ifeval_2048",
+    "4096": "capability:ifeval_4096",
+    "8192": "capability:ifeval_8192"
+   },
+   "out_root": "controls/nemotron3nano4b/none/vendor_preset",
+   "rung_out_roots": {
+    "4096": "controls/nemotron3nano4b/none/vendor_preset__rung4096",
+    "8192": "controls/nemotron3nano4b/none/vendor_preset__rung8192"
+   },
+   "subset_paths": {
+    "4096": "rung4096/nemotron3nano4b/none/rung_subset.json",
+    "8192": "rung8192/nemotron3nano4b/none/rung_subset.json"
+   },
+   "cap_ladder_paths": {
+    "2048": "controls/nemotron3nano4b/none/vendor_preset/cap_ladder.json",
+    "4096": "controls/nemotron3nano4b/none/vendor_preset__rung4096/cap_ladder.json",
+    "8192": "controls/nemotron3nano4b/none/vendor_preset__rung8192/cap_ladder.json"
+   },
+   "ladder_state_paths": {
+    "2048": "controls/nemotron3nano4b/none/vendor_preset/ladder_state.json",
+    "4096": "controls/nemotron3nano4b/none/vendor_preset__rung4096/ladder_state.json",
+    "8192": "controls/nemotron3nano4b/none/vendor_preset__rung8192/ladder_state.json"
+   },
+   "budget_paths": {
+    "2048": "budgets/nemotron3nano4b/none/2048/oos_prompt_budget.json",
+    "4096": "budgets/nemotron3nano4b/none/4096/oos_prompt_budget.json",
+    "8192": "budgets/nemotron3nano4b/none/8192/oos_prompt_budget.json"
+   },
+   "dispatch_paths": {
+    "2048": "dispatch/nemotron3nano4b/none/rung2048.json",
+    "4096": "dispatch/nemotron3nano4b/none/rung4096.json",
+    "8192": "dispatch/nemotron3nano4b/none/rung8192.json"
+   },
+   "configuration_ids": {
+    "2048": "nemotron3nano4b/none/rung2048",
+    "4096": "nemotron3nano4b/none/rung4096",
+    "8192": "nemotron3nano4b/none/rung8192"
+   },
+   "budget_class": "none",
+   "config": "configs/sdfbase/ifeval/sdfbase_full22_nemotron3nano4b.ifeval.yaml",
+   "manifest": "configs/capeval/manifests/petri_full22_nemotron3nano4b.ifeval.yaml",
+   "hf": "nvidia/NVIDIA-Nemotron-3-Nano-4B-BF16",
+   "rev": "dfaf35de3e30f1867dd8dbc38a7fc9fb52d3914f",
+   "family": "nemotron_h",
+   "image": "nemotron",
+   "status": "launch",
+   "held_reason": null,
+   "deferred": null
+  },
+  {
+   "index": 17,
+   "job_id": "ife-nemotron3nano4b-main-mix-lora",
+   "model_key": "nemotron3nano4b",
+   "view": "main",
+   "tag": "nemotron3nano4b",
+   "slug": "nemotron3nano4b-sdfbase-main",
+   "cell": "constv2-mix-full__lora_r4_ce",
+   "cell_slug": "constv2-mix-full--lora_r4_ce",
+   "harness_cell": "si_constv2_mix_full__lora_r4_ce",
+   "standup_cell": "constv2-mix-full__lora_r4_ce",
+   "standup_harness_cell": "si_constv2_mix_full__lora_r4_ce",
+   "staged_id": "base__constv2-mix-full__lora_r4_ce",
+   "object_sha256": "af46d41522f8134a9fa8149a4a1a792cc2a510f4ec4c343379cec3c846d77d1e",
+   "pin": {
+    "kind": "roster",
+    "object_sha256": "af46d41522f8134a9fa8149a4a1a792cc2a510f4ec4c343379cec3c846d77d1e",
+    "source": "configs/sdfbase_full22_pins.json",
+    "source_sha256": "a57146e774b4f5b64781162ff3b8189ab149e58dc858792cefd15a2ceee09e9b",
+    "staged_id": "base__constv2-mix-full__lora_r4_ce"
+   },
+   "fitted": true,
+   "route_kind": "lens",
+   "header_located": false,
+   "served_positions_expected": "all",
+   "declared": false,
+   "thinking": "off",
+   "sampling_mode": "vendor_preset",
+   "sampling": {
+    "temperature": 1.0,
+    "top_p": 0.95,
+    "source": "generation_config.json of nvidia/NVIDIA-Nemotron-3-Nano-4B-BF16 @ dfaf35de: temperature 1.0, top_p 0.95, no top_k \u2014 label `generation_config` (P43, SETTLED: the shipped file is the preset for new work); the static / over-refusal sampled lanes' user-supplied top_p 1.0 (pre-ruling; BATTERY_SAMPLING_BY_MODEL_KEY['nemotron3nano4b']) is a GRANDFATHERED exception recorded beside it here; no reconciliation owed"
+   },
+   "samples_per_item": 2,
+   "expected_stamps": [
+    "cell-stable",
+    "always",
+    "thinking_off"
+   ],
+   "cap": 2048,
+   "caps": [
+    2048,
+    4096,
+    8192
+   ],
+   "cap_ceiling": 8192,
+   "trigger_threshold": 0.01,
+   "trigger_provenance": "1 % raw at-cap of draws, per the IFEval ruling",
+   "prompt_class": "short",
+   "si_text_sha256": null,
+   "geometry_eval_by_cap": {
+    "2048": "capability:ifeval_2048",
+    "4096": "capability:ifeval_4096",
+    "8192": "capability:ifeval_8192"
+   },
+   "out_root": "controls/nemotron3nano4b/constv2-mix-full--lora_r4_ce/vendor_preset",
+   "rung_out_roots": {
+    "4096": "controls/nemotron3nano4b/constv2-mix-full--lora_r4_ce/vendor_preset__rung4096",
+    "8192": "controls/nemotron3nano4b/constv2-mix-full--lora_r4_ce/vendor_preset__rung8192"
+   },
+   "subset_paths": {
+    "4096": "rung4096/nemotron3nano4b/constv2-mix-full--lora_r4_ce/rung_subset.json",
+    "8192": "rung8192/nemotron3nano4b/constv2-mix-full--lora_r4_ce/rung_subset.json"
+   },
+   "cap_ladder_paths": {
+    "2048": "controls/nemotron3nano4b/constv2-mix-full--lora_r4_ce/vendor_preset/cap_ladder.json",
+    "4096": "controls/nemotron3nano4b/constv2-mix-full--lora_r4_ce/vendor_preset__rung4096/cap_ladder.json",
+    "8192": "controls/nemotron3nano4b/constv2-mix-full--lora_r4_ce/vendor_preset__rung8192/cap_ladder.json"
+   },
+   "ladder_state_paths": {
+    "2048": "controls/nemotron3nano4b/constv2-mix-full--lora_r4_ce/vendor_preset/ladder_state.json",
+    "4096": "controls/nemotron3nano4b/constv2-mix-full--lora_r4_ce/vendor_preset__rung4096/ladder_state.json",
+    "8192": "controls/nemotron3nano4b/constv2-mix-full--lora_r4_ce/vendor_preset__rung8192/ladder_state.json"
+   },
+   "budget_paths": {
+    "2048": "budgets/nemotron3nano4b/constv2-mix-full--lora_r4_ce/2048/oos_prompt_budget.json",
+    "4096": "budgets/nemotron3nano4b/constv2-mix-full--lora_r4_ce/4096/oos_prompt_budget.json",
+    "8192": "budgets/nemotron3nano4b/constv2-mix-full--lora_r4_ce/8192/oos_prompt_budget.json"
+   },
+   "dispatch_paths": {
+    "2048": "dispatch/nemotron3nano4b/constv2-mix-full--lora_r4_ce/rung2048.json",
+    "4096": "dispatch/nemotron3nano4b/constv2-mix-full--lora_r4_ce/rung4096.json",
+    "8192": "dispatch/nemotron3nano4b/constv2-mix-full--lora_r4_ce/rung8192.json"
+   },
+   "configuration_ids": {
+    "2048": "nemotron3nano4b/constv2-mix-full--lora_r4_ce/rung2048",
+    "4096": "nemotron3nano4b/constv2-mix-full--lora_r4_ce/rung4096",
+    "8192": "nemotron3nano4b/constv2-mix-full--lora_r4_ce/rung8192"
+   },
+   "budget_class": "none",
+   "config": "configs/sdfbase/ifeval/sdfbase_full22_nemotron3nano4b.ifeval.yaml",
+   "manifest": "configs/capeval/manifests/petri_full22_nemotron3nano4b.ifeval.yaml",
+   "hf": "nvidia/NVIDIA-Nemotron-3-Nano-4B-BF16",
+   "rev": "dfaf35de3e30f1867dd8dbc38a7fc9fb52d3914f",
+   "family": "nemotron_h",
+   "image": "nemotron",
+   "status": "launch",
+   "held_reason": null,
+   "deferred": null
+  },
+  {
+   "index": 18,
+   "job_id": "ife-nemotron3nano4b-main-ctl-lora",
+   "model_key": "nemotron3nano4b",
+   "view": "main",
+   "tag": "nemotron3nano4b",
+   "slug": "nemotron3nano4b-sdfbase-main",
+   "cell": "constv2ctl2-full__lora_r4_ce",
+   "cell_slug": "constv2ctl2-full--lora_r4_ce",
+   "harness_cell": "si_constv2ctl2_full__lora_r4_ce",
+   "standup_cell": "constv2ctl2-full__lora_r4_ce",
+   "standup_harness_cell": "si_constv2ctl2_full__lora_r4_ce",
+   "staged_id": "base__constv2ctl2-full__lora_r4_ce",
+   "object_sha256": "b25435bd4fd48a2d112609621880797130d132d6b6a421c4f4e2a0d51b762753",
+   "pin": {
+    "kind": "roster",
+    "object_sha256": "b25435bd4fd48a2d112609621880797130d132d6b6a421c4f4e2a0d51b762753",
+    "source": "configs/sdfbase_full22_pins.json",
+    "source_sha256": "a57146e774b4f5b64781162ff3b8189ab149e58dc858792cefd15a2ceee09e9b",
+    "staged_id": "base__constv2ctl2-full__lora_r4_ce"
+   },
+   "fitted": true,
+   "route_kind": "lens",
+   "header_located": false,
+   "served_positions_expected": "all",
+   "declared": false,
+   "thinking": "off",
+   "sampling_mode": "vendor_preset",
+   "sampling": {
+    "temperature": 1.0,
+    "top_p": 0.95,
+    "source": "generation_config.json of nvidia/NVIDIA-Nemotron-3-Nano-4B-BF16 @ dfaf35de: temperature 1.0, top_p 0.95, no top_k \u2014 label `generation_config` (P43, SETTLED: the shipped file is the preset for new work); the static / over-refusal sampled lanes' user-supplied top_p 1.0 (pre-ruling; BATTERY_SAMPLING_BY_MODEL_KEY['nemotron3nano4b']) is a GRANDFATHERED exception recorded beside it here; no reconciliation owed"
+   },
+   "samples_per_item": 2,
+   "expected_stamps": [
+    "cell-stable",
+    "always",
+    "thinking_off"
+   ],
+   "cap": 2048,
+   "caps": [
+    2048,
+    4096,
+    8192
+   ],
+   "cap_ceiling": 8192,
+   "trigger_threshold": 0.01,
+   "trigger_provenance": "1 % raw at-cap of draws, per the IFEval ruling",
+   "prompt_class": "short",
+   "si_text_sha256": null,
+   "geometry_eval_by_cap": {
+    "2048": "capability:ifeval_2048",
+    "4096": "capability:ifeval_4096",
+    "8192": "capability:ifeval_8192"
+   },
+   "out_root": "controls/nemotron3nano4b/constv2ctl2-full--lora_r4_ce/vendor_preset",
+   "rung_out_roots": {
+    "4096": "controls/nemotron3nano4b/constv2ctl2-full--lora_r4_ce/vendor_preset__rung4096",
+    "8192": "controls/nemotron3nano4b/constv2ctl2-full--lora_r4_ce/vendor_preset__rung8192"
+   },
+   "subset_paths": {
+    "4096": "rung4096/nemotron3nano4b/constv2ctl2-full--lora_r4_ce/rung_subset.json",
+    "8192": "rung8192/nemotron3nano4b/constv2ctl2-full--lora_r4_ce/rung_subset.json"
+   },
+   "cap_ladder_paths": {
+    "2048": "controls/nemotron3nano4b/constv2ctl2-full--lora_r4_ce/vendor_preset/cap_ladder.json",
+    "4096": "controls/nemotron3nano4b/constv2ctl2-full--lora_r4_ce/vendor_preset__rung4096/cap_ladder.json",
+    "8192": "controls/nemotron3nano4b/constv2ctl2-full--lora_r4_ce/vendor_preset__rung8192/cap_ladder.json"
+   },
+   "ladder_state_paths": {
+    "2048": "controls/nemotron3nano4b/constv2ctl2-full--lora_r4_ce/vendor_preset/ladder_state.json",
+    "4096": "controls/nemotron3nano4b/constv2ctl2-full--lora_r4_ce/vendor_preset__rung4096/ladder_state.json",
+    "8192": "controls/nemotron3nano4b/constv2ctl2-full--lora_r4_ce/vendor_preset__rung8192/ladder_state.json"
+   },
+   "budget_paths": {
+    "2048": "budgets/nemotron3nano4b/constv2ctl2-full--lora_r4_ce/2048/oos_prompt_budget.json",
+    "4096": "budgets/nemotron3nano4b/constv2ctl2-full--lora_r4_ce/4096/oos_prompt_budget.json",
+    "8192": "budgets/nemotron3nano4b/constv2ctl2-full--lora_r4_ce/8192/oos_prompt_budget.json"
+   },
+   "dispatch_paths": {
+    "2048": "dispatch/nemotron3nano4b/constv2ctl2-full--lora_r4_ce/rung2048.json",
+    "4096": "dispatch/nemotron3nano4b/constv2ctl2-full--lora_r4_ce/rung4096.json",
+    "8192": "dispatch/nemotron3nano4b/constv2ctl2-full--lora_r4_ce/rung8192.json"
+   },
+   "configuration_ids": {
+    "2048": "nemotron3nano4b/constv2ctl2-full--lora_r4_ce/rung2048",
+    "4096": "nemotron3nano4b/constv2ctl2-full--lora_r4_ce/rung4096",
+    "8192": "nemotron3nano4b/constv2ctl2-full--lora_r4_ce/rung8192"
+   },
+   "budget_class": "none",
+   "config": "configs/sdfbase/ifeval/sdfbase_full22_nemotron3nano4b.ifeval.yaml",
+   "manifest": "configs/capeval/manifests/petri_full22_nemotron3nano4b.ifeval.yaml",
+   "hf": "nvidia/NVIDIA-Nemotron-3-Nano-4B-BF16",
+   "rev": "dfaf35de3e30f1867dd8dbc38a7fc9fb52d3914f",
+   "family": "nemotron_h",
+   "image": "nemotron",
+   "status": "launch",
+   "held_reason": null,
+   "deferred": null
+  },
+  {
+   "index": 19,
+   "job_id": "ife-nemotron3nano4b-main-prompted",
+   "model_key": "nemotron3nano4b",
+   "view": "main",
+   "tag": "nemotron3nano4b",
+   "slug": "nemotron3nano4b-sdfbase-main",
+   "cell": "prompted__safety_refusal",
+   "cell_slug": "prompted--safety_refusal",
+   "harness_cell": "prompted__safety",
+   "standup_cell": "prompted__safety_refusal",
+   "standup_harness_cell": "prompted__safety",
+   "staged_id": null,
+   "object_sha256": null,
+   "pin": {
+    "kind": "prompted",
+    "object_sha256": null
+   },
+   "fitted": false,
+   "route_kind": "prompted",
+   "header_located": false,
+   "served_positions_expected": null,
+   "declared": false,
+   "thinking": "off",
+   "sampling_mode": "vendor_preset",
+   "sampling": {
+    "temperature": 1.0,
+    "top_p": 0.95,
+    "source": "generation_config.json of nvidia/NVIDIA-Nemotron-3-Nano-4B-BF16 @ dfaf35de: temperature 1.0, top_p 0.95, no top_k \u2014 label `generation_config` (P43, SETTLED: the shipped file is the preset for new work); the static / over-refusal sampled lanes' user-supplied top_p 1.0 (pre-ruling; BATTERY_SAMPLING_BY_MODEL_KEY['nemotron3nano4b']) is a GRANDFATHERED exception recorded beside it here; no reconciliation owed"
+   },
+   "samples_per_item": 2,
+   "expected_stamps": [
+    "cell-stable",
+    "not-consulted",
+    "thinking_off"
+   ],
+   "cap": 2048,
+   "caps": [
+    2048,
+    4096,
+    8192
+   ],
+   "cap_ceiling": 8192,
+   "trigger_threshold": 0.01,
+   "trigger_provenance": "1 % raw at-cap of draws, per the IFEval ruling",
+   "prompt_class": "short",
+   "si_text_sha256": "ac3a58f61d53cf2412c02b8bb56063b9683a9c1154ef1f0978efc1449a836e08",
+   "geometry_eval_by_cap": {
+    "2048": "capability:ifeval_2048",
+    "4096": "capability:ifeval_4096",
+    "8192": "capability:ifeval_8192"
+   },
+   "out_root": "controls/nemotron3nano4b/prompted--safety_refusal/vendor_preset",
+   "rung_out_roots": {
+    "4096": "controls/nemotron3nano4b/prompted--safety_refusal/vendor_preset__rung4096",
+    "8192": "controls/nemotron3nano4b/prompted--safety_refusal/vendor_preset__rung8192"
+   },
+   "subset_paths": {
+    "4096": "rung4096/nemotron3nano4b/prompted--safety_refusal/rung_subset.json",
+    "8192": "rung8192/nemotron3nano4b/prompted--safety_refusal/rung_subset.json"
+   },
+   "cap_ladder_paths": {
+    "2048": "controls/nemotron3nano4b/prompted--safety_refusal/vendor_preset/cap_ladder.json",
+    "4096": "controls/nemotron3nano4b/prompted--safety_refusal/vendor_preset__rung4096/cap_ladder.json",
+    "8192": "controls/nemotron3nano4b/prompted--safety_refusal/vendor_preset__rung8192/cap_ladder.json"
+   },
+   "ladder_state_paths": {
+    "2048": "controls/nemotron3nano4b/prompted--safety_refusal/vendor_preset/ladder_state.json",
+    "4096": "controls/nemotron3nano4b/prompted--safety_refusal/vendor_preset__rung4096/ladder_state.json",
+    "8192": "controls/nemotron3nano4b/prompted--safety_refusal/vendor_preset__rung8192/ladder_state.json"
+   },
+   "budget_paths": {
+    "2048": "budgets/nemotron3nano4b/prompted--safety_refusal/2048/oos_prompt_budget.json",
+    "4096": "budgets/nemotron3nano4b/prompted--safety_refusal/4096/oos_prompt_budget.json",
+    "8192": "budgets/nemotron3nano4b/prompted--safety_refusal/8192/oos_prompt_budget.json"
+   },
+   "dispatch_paths": {
+    "2048": "dispatch/nemotron3nano4b/prompted--safety_refusal/rung2048.json",
+    "4096": "dispatch/nemotron3nano4b/prompted--safety_refusal/rung4096.json",
+    "8192": "dispatch/nemotron3nano4b/prompted--safety_refusal/rung8192.json"
+   },
+   "configuration_ids": {
+    "2048": "nemotron3nano4b/prompted--safety_refusal/rung2048",
+    "4096": "nemotron3nano4b/prompted--safety_refusal/rung4096",
+    "8192": "nemotron3nano4b/prompted--safety_refusal/rung8192"
+   },
+   "budget_class": "prompted__safety_refusal",
+   "config": "configs/sdfbase/ifeval/sdfbase_full22_nemotron3nano4b.ifeval.yaml",
+   "manifest": "configs/capeval/manifests/petri_full22_nemotron3nano4b.ifeval.yaml",
+   "hf": "nvidia/NVIDIA-Nemotron-3-Nano-4B-BF16",
+   "rev": "dfaf35de3e30f1867dd8dbc38a7fc9fb52d3914f",
+   "family": "nemotron_h",
+   "image": "nemotron",
+   "status": "launch",
+   "held_reason": null,
+   "deferred": null
+  },
+  {
+   "index": 20,
+   "job_id": "ife-nemotron3nano4b-main-constitution",
+   "model_key": "nemotron3nano4b",
+   "view": "main",
+   "tag": "nemotron3nano4b",
+   "slug": "nemotron3nano4b-sdfbase-main",
+   "cell": "prompted__si_constitution",
+   "cell_slug": "prompted--si_constitution",
+   "harness_cell": "prompted__constitution",
+   "standup_cell": "prompted__si_constitution",
+   "standup_harness_cell": "prompted__constitution",
+   "staged_id": null,
+   "object_sha256": null,
+   "pin": {
+    "kind": "prompted",
+    "object_sha256": null
+   },
+   "fitted": false,
+   "route_kind": "prompted",
+   "header_located": false,
+   "served_positions_expected": null,
+   "declared": false,
+   "thinking": "off",
+   "sampling_mode": "vendor_preset",
+   "sampling": {
+    "temperature": 1.0,
+    "top_p": 0.95,
+    "source": "generation_config.json of nvidia/NVIDIA-Nemotron-3-Nano-4B-BF16 @ dfaf35de: temperature 1.0, top_p 0.95, no top_k \u2014 label `generation_config` (P43, SETTLED: the shipped file is the preset for new work); the static / over-refusal sampled lanes' user-supplied top_p 1.0 (pre-ruling; BATTERY_SAMPLING_BY_MODEL_KEY['nemotron3nano4b']) is a GRANDFATHERED exception recorded beside it here; no reconciliation owed"
+   },
+   "samples_per_item": 2,
+   "expected_stamps": [
+    "cell-stable",
+    "not-consulted",
+    "thinking_off"
+   ],
+   "cap": 2048,
+   "caps": [
+    2048,
+    4096,
+    8192
+   ],
+   "cap_ceiling": 8192,
+   "trigger_threshold": 0.01,
+   "trigger_provenance": "1 % raw at-cap of draws, per the IFEval ruling",
+   "prompt_class": "long_si",
+   "si_text_sha256": "21e06f482a6559b39309c4f1128f0411230c88e02b3a9eaa7b5d50829e6a9a0f",
+   "geometry_eval_by_cap": {
+    "2048": "capability:ifeval_longsi_2048",
+    "4096": "capability:ifeval_longsi_4096",
+    "8192": "capability:ifeval_longsi_8192"
+   },
+   "out_root": "controls/nemotron3nano4b/prompted--si_constitution/vendor_preset",
+   "rung_out_roots": {
+    "4096": "controls/nemotron3nano4b/prompted--si_constitution/vendor_preset__rung4096",
+    "8192": "controls/nemotron3nano4b/prompted--si_constitution/vendor_preset__rung8192"
+   },
+   "subset_paths": {
+    "4096": "rung4096/nemotron3nano4b/prompted--si_constitution/rung_subset.json",
+    "8192": "rung8192/nemotron3nano4b/prompted--si_constitution/rung_subset.json"
+   },
+   "cap_ladder_paths": {
+    "2048": "controls/nemotron3nano4b/prompted--si_constitution/vendor_preset/cap_ladder.json",
+    "4096": "controls/nemotron3nano4b/prompted--si_constitution/vendor_preset__rung4096/cap_ladder.json",
+    "8192": "controls/nemotron3nano4b/prompted--si_constitution/vendor_preset__rung8192/cap_ladder.json"
+   },
+   "ladder_state_paths": {
+    "2048": "controls/nemotron3nano4b/prompted--si_constitution/vendor_preset/ladder_state.json",
+    "4096": "controls/nemotron3nano4b/prompted--si_constitution/vendor_preset__rung4096/ladder_state.json",
+    "8192": "controls/nemotron3nano4b/prompted--si_constitution/vendor_preset__rung8192/ladder_state.json"
+   },
+   "budget_paths": {
+    "2048": "budgets/nemotron3nano4b/prompted--si_constitution/2048/oos_prompt_budget.json",
+    "4096": "budgets/nemotron3nano4b/prompted--si_constitution/4096/oos_prompt_budget.json",
+    "8192": "budgets/nemotron3nano4b/prompted--si_constitution/8192/oos_prompt_budget.json"
+   },
+   "dispatch_paths": {
+    "2048": "dispatch/nemotron3nano4b/prompted--si_constitution/rung2048.json",
+    "4096": "dispatch/nemotron3nano4b/prompted--si_constitution/rung4096.json",
+    "8192": "dispatch/nemotron3nano4b/prompted--si_constitution/rung8192.json"
+   },
+   "configuration_ids": {
+    "2048": "nemotron3nano4b/prompted--si_constitution/rung2048",
+    "4096": "nemotron3nano4b/prompted--si_constitution/rung4096",
+    "8192": "nemotron3nano4b/prompted--si_constitution/rung8192"
+   },
+   "budget_class": "prompted__si_constitution",
+   "config": "configs/sdfbase/ifeval/sdfbase_full22_nemotron3nano4b.ifeval.yaml",
+   "manifest": "configs/capeval/manifests/petri_full22_nemotron3nano4b.ifeval.yaml",
+   "hf": "nvidia/NVIDIA-Nemotron-3-Nano-4B-BF16",
+   "rev": "dfaf35de3e30f1867dd8dbc38a7fc9fb52d3914f",
+   "family": "nemotron_h",
+   "image": "nemotron",
+   "status": "launch",
+   "held_reason": null,
+   "deferred": null
+  },
+  {
+   "index": 21,
+   "job_id": "ife-nemotron3nano4b-main-mix-dlora",
+   "model_key": "nemotron3nano4b",
+   "view": "main",
+   "tag": "nemotron3nano4b",
+   "slug": "nemotron3nano4b-sdfbase-main",
+   "cell": "constv2-mix-full__lora_r4_ce_minus_ctl",
+   "cell_slug": "constv2-mix-full--lora_r4_ce_minus_ctl",
+   "harness_cell": "si_constv2_mix_full__lora_r4_ce_minus_ctl",
+   "standup_cell": "constv2-mix-full__lora_r4_ce_minus_ctl",
+   "standup_harness_cell": "si_constv2_mix_full__lora_r4_ce_minus_ctl",
+   "staged_id": "derived__constv2-mix-full__lora_r4_ce_minus_ctl",
+   "object_sha256": "27bab56e9fcea25e397b8d5b918c91a03a42fc279561894a01189713370bec41",
+   "pin": {
+    "kind": "roster",
+    "object_sha256": "27bab56e9fcea25e397b8d5b918c91a03a42fc279561894a01189713370bec41",
+    "source": "configs/sdfbase_full22_pins.json",
+    "source_sha256": "a57146e774b4f5b64781162ff3b8189ab149e58dc858792cefd15a2ceee09e9b",
+    "staged_id": "derived__constv2-mix-full__lora_r4_ce_minus_ctl"
+   },
+   "fitted": true,
+   "route_kind": "lens",
+   "header_located": false,
+   "served_positions_expected": "all",
+   "declared": false,
+   "thinking": "off",
+   "sampling_mode": "vendor_preset",
+   "sampling": {
+    "temperature": 1.0,
+    "top_p": 0.95,
+    "source": "generation_config.json of nvidia/NVIDIA-Nemotron-3-Nano-4B-BF16 @ dfaf35de: temperature 1.0, top_p 0.95, no top_k \u2014 label `generation_config` (P43, SETTLED: the shipped file is the preset for new work); the static / over-refusal sampled lanes' user-supplied top_p 1.0 (pre-ruling; BATTERY_SAMPLING_BY_MODEL_KEY['nemotron3nano4b']) is a GRANDFATHERED exception recorded beside it here; no reconciliation owed"
+   },
+   "samples_per_item": 2,
+   "expected_stamps": [
+    "cell-stable",
+    "always",
+    "thinking_off"
+   ],
+   "cap": 2048,
+   "caps": [
+    2048,
+    4096,
+    8192
+   ],
+   "cap_ceiling": 8192,
+   "trigger_threshold": 0.01,
+   "trigger_provenance": "1 % raw at-cap of draws, per the IFEval ruling",
+   "prompt_class": "short",
+   "si_text_sha256": null,
+   "geometry_eval_by_cap": {
+    "2048": "capability:ifeval_2048",
+    "4096": "capability:ifeval_4096",
+    "8192": "capability:ifeval_8192"
+   },
+   "out_root": "controls/nemotron3nano4b/constv2-mix-full--lora_r4_ce_minus_ctl/vendor_preset",
+   "rung_out_roots": {
+    "4096": "controls/nemotron3nano4b/constv2-mix-full--lora_r4_ce_minus_ctl/vendor_preset__rung4096",
+    "8192": "controls/nemotron3nano4b/constv2-mix-full--lora_r4_ce_minus_ctl/vendor_preset__rung8192"
+   },
+   "subset_paths": {
+    "4096": "rung4096/nemotron3nano4b/constv2-mix-full--lora_r4_ce_minus_ctl/rung_subset.json",
+    "8192": "rung8192/nemotron3nano4b/constv2-mix-full--lora_r4_ce_minus_ctl/rung_subset.json"
+   },
+   "cap_ladder_paths": {
+    "2048": "controls/nemotron3nano4b/constv2-mix-full--lora_r4_ce_minus_ctl/vendor_preset/cap_ladder.json",
+    "4096": "controls/nemotron3nano4b/constv2-mix-full--lora_r4_ce_minus_ctl/vendor_preset__rung4096/cap_ladder.json",
+    "8192": "controls/nemotron3nano4b/constv2-mix-full--lora_r4_ce_minus_ctl/vendor_preset__rung8192/cap_ladder.json"
+   },
+   "ladder_state_paths": {
+    "2048": "controls/nemotron3nano4b/constv2-mix-full--lora_r4_ce_minus_ctl/vendor_preset/ladder_state.json",
+    "4096": "controls/nemotron3nano4b/constv2-mix-full--lora_r4_ce_minus_ctl/vendor_preset__rung4096/ladder_state.json",
+    "8192": "controls/nemotron3nano4b/constv2-mix-full--lora_r4_ce_minus_ctl/vendor_preset__rung8192/ladder_state.json"
+   },
+   "budget_paths": {
+    "2048": "budgets/nemotron3nano4b/constv2-mix-full--lora_r4_ce_minus_ctl/2048/oos_prompt_budget.json",
+    "4096": "budgets/nemotron3nano4b/constv2-mix-full--lora_r4_ce_minus_ctl/4096/oos_prompt_budget.json",
+    "8192": "budgets/nemotron3nano4b/constv2-mix-full--lora_r4_ce_minus_ctl/8192/oos_prompt_budget.json"
+   },
+   "dispatch_paths": {
+    "2048": "dispatch/nemotron3nano4b/constv2-mix-full--lora_r4_ce_minus_ctl/rung2048.json",
+    "4096": "dispatch/nemotron3nano4b/constv2-mix-full--lora_r4_ce_minus_ctl/rung4096.json",
+    "8192": "dispatch/nemotron3nano4b/constv2-mix-full--lora_r4_ce_minus_ctl/rung8192.json"
+   },
+   "configuration_ids": {
+    "2048": "nemotron3nano4b/constv2-mix-full--lora_r4_ce_minus_ctl/rung2048",
+    "4096": "nemotron3nano4b/constv2-mix-full--lora_r4_ce_minus_ctl/rung4096",
+    "8192": "nemotron3nano4b/constv2-mix-full--lora_r4_ce_minus_ctl/rung8192"
+   },
+   "budget_class": "none",
+   "config": "configs/sdfbase/ifeval/sdfbase_full22_nemotron3nano4b.ifeval.yaml",
+   "manifest": "configs/capeval/manifests/petri_full22_nemotron3nano4b.ifeval.yaml",
+   "hf": "nvidia/NVIDIA-Nemotron-3-Nano-4B-BF16",
+   "rev": "dfaf35de3e30f1867dd8dbc38a7fc9fb52d3914f",
+   "family": "nemotron_h",
+   "image": "nemotron",
+   "status": "launch",
+   "held_reason": null,
+   "deferred": null
+  },
+  {
+   "index": 22,
+   "job_id": "ife-llama8b-main-none",
+   "model_key": "llama8b",
+   "view": "main",
+   "tag": "llama8b",
+   "slug": "llama8b-sdfbase-main",
+   "cell": "none",
+   "cell_slug": "none",
+   "harness_cell": "none",
+   "standup_cell": "none",
+   "standup_harness_cell": "none",
+   "staged_id": null,
+   "object_sha256": null,
+   "pin": {
+    "kind": "none",
+    "object_sha256": null
+   },
+   "fitted": false,
+   "route_kind": "base",
+   "header_located": false,
+   "served_positions_expected": null,
+   "declared": false,
+   "thinking": "off",
+   "sampling_mode": "vendor_preset",
+   "sampling": {
+    "temperature": 0.6,
+    "top_p": 0.9,
+    "source": "generation_config.json of the served NousResearch/Meta-Llama-3.1-8B-Instruct @ d10aef79 (the shared cluster HF cache snapshot carries the file): temperature 0.6, top_p 0.9, no top_k \u2014 the numbers are SAMPLING_BY_MODEL_KEY['llama8b']'s (_LLAMA_CARD) by reference (P3, P4)"
+   },
+   "samples_per_item": 2,
+   "expected_stamps": [
+    "cell-stable",
+    "not-consulted",
+    "thinking_off"
+   ],
+   "cap": 2048,
+   "caps": [
+    2048,
+    4096,
+    8192
+   ],
+   "cap_ceiling": 8192,
+   "trigger_threshold": 0.01,
+   "trigger_provenance": "1 % raw at-cap of draws, per the IFEval ruling",
+   "prompt_class": "short",
+   "si_text_sha256": null,
+   "geometry_eval_by_cap": {
+    "2048": "capability:ifeval_2048",
+    "4096": "capability:ifeval_4096",
+    "8192": "capability:ifeval_8192"
+   },
+   "out_root": "controls/llama8b/none/vendor_preset",
+   "rung_out_roots": {
+    "4096": "controls/llama8b/none/vendor_preset__rung4096",
+    "8192": "controls/llama8b/none/vendor_preset__rung8192"
+   },
+   "subset_paths": {
+    "4096": "rung4096/llama8b/none/rung_subset.json",
+    "8192": "rung8192/llama8b/none/rung_subset.json"
+   },
+   "cap_ladder_paths": {
+    "2048": "controls/llama8b/none/vendor_preset/cap_ladder.json",
+    "4096": "controls/llama8b/none/vendor_preset__rung4096/cap_ladder.json",
+    "8192": "controls/llama8b/none/vendor_preset__rung8192/cap_ladder.json"
+   },
+   "ladder_state_paths": {
+    "2048": "controls/llama8b/none/vendor_preset/ladder_state.json",
+    "4096": "controls/llama8b/none/vendor_preset__rung4096/ladder_state.json",
+    "8192": "controls/llama8b/none/vendor_preset__rung8192/ladder_state.json"
+   },
+   "budget_paths": {
+    "2048": "budgets/llama8b/none/2048/oos_prompt_budget.json",
+    "4096": "budgets/llama8b/none/4096/oos_prompt_budget.json",
+    "8192": "budgets/llama8b/none/8192/oos_prompt_budget.json"
+   },
+   "dispatch_paths": {
+    "2048": "dispatch/llama8b/none/rung2048.json",
+    "4096": "dispatch/llama8b/none/rung4096.json",
+    "8192": "dispatch/llama8b/none/rung8192.json"
+   },
+   "configuration_ids": {
+    "2048": "llama8b/none/rung2048",
+    "4096": "llama8b/none/rung4096",
+    "8192": "llama8b/none/rung8192"
+   },
+   "budget_class": "none",
+   "config": "configs/sdfbase/ifeval/sdfbase_full22_llama8b.ifeval.yaml",
+   "manifest": "configs/capeval/manifests/petri_full22_llama8b.ifeval.yaml",
+   "hf": "NousResearch/Meta-Llama-3.1-8B-Instruct",
+   "rev": "d10aef7999a2b5ba950ab3974312feeedbfe0b77",
+   "family": "llama",
+   "image": "default",
+   "status": "launch",
+   "held_reason": null,
+   "deferred": null
+  },
+  {
+   "index": 23,
+   "job_id": "ife-llama8b-main-prompted",
+   "model_key": "llama8b",
+   "view": "main",
+   "tag": "llama8b",
+   "slug": "llama8b-sdfbase-main",
+   "cell": "prompted__safety_refusal",
+   "cell_slug": "prompted--safety_refusal",
+   "harness_cell": "prompted__safety",
+   "standup_cell": "prompted__safety_refusal",
+   "standup_harness_cell": "prompted__safety",
+   "staged_id": null,
+   "object_sha256": null,
+   "pin": {
+    "kind": "prompted",
+    "object_sha256": null
+   },
+   "fitted": false,
+   "route_kind": "prompted",
+   "header_located": false,
+   "served_positions_expected": null,
+   "declared": false,
+   "thinking": "off",
+   "sampling_mode": "vendor_preset",
+   "sampling": {
+    "temperature": 0.6,
+    "top_p": 0.9,
+    "source": "generation_config.json of the served NousResearch/Meta-Llama-3.1-8B-Instruct @ d10aef79 (the shared cluster HF cache snapshot carries the file): temperature 0.6, top_p 0.9, no top_k \u2014 the numbers are SAMPLING_BY_MODEL_KEY['llama8b']'s (_LLAMA_CARD) by reference (P3, P4)"
+   },
+   "samples_per_item": 2,
+   "expected_stamps": [
+    "cell-stable",
+    "not-consulted",
+    "thinking_off"
+   ],
+   "cap": 2048,
+   "caps": [
+    2048,
+    4096,
+    8192
+   ],
+   "cap_ceiling": 8192,
+   "trigger_threshold": 0.01,
+   "trigger_provenance": "1 % raw at-cap of draws, per the IFEval ruling",
+   "prompt_class": "short",
+   "si_text_sha256": "ac3a58f61d53cf2412c02b8bb56063b9683a9c1154ef1f0978efc1449a836e08",
+   "geometry_eval_by_cap": {
+    "2048": "capability:ifeval_2048",
+    "4096": "capability:ifeval_4096",
+    "8192": "capability:ifeval_8192"
+   },
+   "out_root": "controls/llama8b/prompted--safety_refusal/vendor_preset",
+   "rung_out_roots": {
+    "4096": "controls/llama8b/prompted--safety_refusal/vendor_preset__rung4096",
+    "8192": "controls/llama8b/prompted--safety_refusal/vendor_preset__rung8192"
+   },
+   "subset_paths": {
+    "4096": "rung4096/llama8b/prompted--safety_refusal/rung_subset.json",
+    "8192": "rung8192/llama8b/prompted--safety_refusal/rung_subset.json"
+   },
+   "cap_ladder_paths": {
+    "2048": "controls/llama8b/prompted--safety_refusal/vendor_preset/cap_ladder.json",
+    "4096": "controls/llama8b/prompted--safety_refusal/vendor_preset__rung4096/cap_ladder.json",
+    "8192": "controls/llama8b/prompted--safety_refusal/vendor_preset__rung8192/cap_ladder.json"
+   },
+   "ladder_state_paths": {
+    "2048": "controls/llama8b/prompted--safety_refusal/vendor_preset/ladder_state.json",
+    "4096": "controls/llama8b/prompted--safety_refusal/vendor_preset__rung4096/ladder_state.json",
+    "8192": "controls/llama8b/prompted--safety_refusal/vendor_preset__rung8192/ladder_state.json"
+   },
+   "budget_paths": {
+    "2048": "budgets/llama8b/prompted--safety_refusal/2048/oos_prompt_budget.json",
+    "4096": "budgets/llama8b/prompted--safety_refusal/4096/oos_prompt_budget.json",
+    "8192": "budgets/llama8b/prompted--safety_refusal/8192/oos_prompt_budget.json"
+   },
+   "dispatch_paths": {
+    "2048": "dispatch/llama8b/prompted--safety_refusal/rung2048.json",
+    "4096": "dispatch/llama8b/prompted--safety_refusal/rung4096.json",
+    "8192": "dispatch/llama8b/prompted--safety_refusal/rung8192.json"
+   },
+   "configuration_ids": {
+    "2048": "llama8b/prompted--safety_refusal/rung2048",
+    "4096": "llama8b/prompted--safety_refusal/rung4096",
+    "8192": "llama8b/prompted--safety_refusal/rung8192"
+   },
+   "budget_class": "prompted__safety_refusal",
+   "config": "configs/sdfbase/ifeval/sdfbase_full22_llama8b.ifeval.yaml",
+   "manifest": "configs/capeval/manifests/petri_full22_llama8b.ifeval.yaml",
+   "hf": "NousResearch/Meta-Llama-3.1-8B-Instruct",
+   "rev": "d10aef7999a2b5ba950ab3974312feeedbfe0b77",
+   "family": "llama",
+   "image": "default",
+   "status": "launch",
+   "held_reason": null,
+   "deferred": null
+  },
+  {
+   "index": 24,
+   "job_id": "ife-llama8b-main-constitution",
+   "model_key": "llama8b",
+   "view": "main",
+   "tag": "llama8b",
+   "slug": "llama8b-sdfbase-main",
+   "cell": "prompted__si_constitution",
+   "cell_slug": "prompted--si_constitution",
+   "harness_cell": "prompted__constitution",
+   "standup_cell": "prompted__si_constitution",
+   "standup_harness_cell": "prompted__constitution",
+   "staged_id": null,
+   "object_sha256": null,
+   "pin": {
+    "kind": "prompted",
+    "object_sha256": null
+   },
+   "fitted": false,
+   "route_kind": "prompted",
+   "header_located": false,
+   "served_positions_expected": null,
+   "declared": false,
+   "thinking": "off",
+   "sampling_mode": "vendor_preset",
+   "sampling": {
+    "temperature": 0.6,
+    "top_p": 0.9,
+    "source": "generation_config.json of the served NousResearch/Meta-Llama-3.1-8B-Instruct @ d10aef79 (the shared cluster HF cache snapshot carries the file): temperature 0.6, top_p 0.9, no top_k \u2014 the numbers are SAMPLING_BY_MODEL_KEY['llama8b']'s (_LLAMA_CARD) by reference (P3, P4)"
+   },
+   "samples_per_item": 2,
+   "expected_stamps": [
+    "cell-stable",
+    "not-consulted",
+    "thinking_off"
+   ],
+   "cap": 2048,
+   "caps": [
+    2048,
+    4096,
+    8192
+   ],
+   "cap_ceiling": 8192,
+   "trigger_threshold": 0.01,
+   "trigger_provenance": "1 % raw at-cap of draws, per the IFEval ruling",
+   "prompt_class": "long_si",
+   "si_text_sha256": "21e06f482a6559b39309c4f1128f0411230c88e02b3a9eaa7b5d50829e6a9a0f",
+   "geometry_eval_by_cap": {
+    "2048": "capability:ifeval_longsi_2048",
+    "4096": "capability:ifeval_longsi_4096",
+    "8192": "capability:ifeval_longsi_8192"
+   },
+   "out_root": "controls/llama8b/prompted--si_constitution/vendor_preset",
+   "rung_out_roots": {
+    "4096": "controls/llama8b/prompted--si_constitution/vendor_preset__rung4096",
+    "8192": "controls/llama8b/prompted--si_constitution/vendor_preset__rung8192"
+   },
+   "subset_paths": {
+    "4096": "rung4096/llama8b/prompted--si_constitution/rung_subset.json",
+    "8192": "rung8192/llama8b/prompted--si_constitution/rung_subset.json"
+   },
+   "cap_ladder_paths": {
+    "2048": "controls/llama8b/prompted--si_constitution/vendor_preset/cap_ladder.json",
+    "4096": "controls/llama8b/prompted--si_constitution/vendor_preset__rung4096/cap_ladder.json",
+    "8192": "controls/llama8b/prompted--si_constitution/vendor_preset__rung8192/cap_ladder.json"
+   },
+   "ladder_state_paths": {
+    "2048": "controls/llama8b/prompted--si_constitution/vendor_preset/ladder_state.json",
+    "4096": "controls/llama8b/prompted--si_constitution/vendor_preset__rung4096/ladder_state.json",
+    "8192": "controls/llama8b/prompted--si_constitution/vendor_preset__rung8192/ladder_state.json"
+   },
+   "budget_paths": {
+    "2048": "budgets/llama8b/prompted--si_constitution/2048/oos_prompt_budget.json",
+    "4096": "budgets/llama8b/prompted--si_constitution/4096/oos_prompt_budget.json",
+    "8192": "budgets/llama8b/prompted--si_constitution/8192/oos_prompt_budget.json"
+   },
+   "dispatch_paths": {
+    "2048": "dispatch/llama8b/prompted--si_constitution/rung2048.json",
+    "4096": "dispatch/llama8b/prompted--si_constitution/rung4096.json",
+    "8192": "dispatch/llama8b/prompted--si_constitution/rung8192.json"
+   },
+   "configuration_ids": {
+    "2048": "llama8b/prompted--si_constitution/rung2048",
+    "4096": "llama8b/prompted--si_constitution/rung4096",
+    "8192": "llama8b/prompted--si_constitution/rung8192"
+   },
+   "budget_class": "prompted__si_constitution",
+   "config": "configs/sdfbase/ifeval/sdfbase_full22_llama8b.ifeval.yaml",
+   "manifest": "configs/capeval/manifests/petri_full22_llama8b.ifeval.yaml",
+   "hf": "NousResearch/Meta-Llama-3.1-8B-Instruct",
+   "rev": "d10aef7999a2b5ba950ab3974312feeedbfe0b77",
+   "family": "llama",
+   "image": "default",
+   "status": "launch",
+   "held_reason": null,
+   "deferred": null
+  },
+  {
+   "index": 25,
+   "job_id": "ife-llama8b-main-mix-lora",
+   "model_key": "llama8b",
+   "view": "main",
+   "tag": "llama8b",
+   "slug": "llama8b-sdfbase-main",
+   "cell": "constv2-mix-full__lora_r4_ce",
+   "cell_slug": "constv2-mix-full--lora_r4_ce",
+   "harness_cell": "si_constv2_mix_full__lora_r4_ce",
+   "standup_cell": "constv2-mix-full__lora_r4_ce",
+   "standup_harness_cell": "si_constv2_mix_full__lora_r4_ce",
+   "staged_id": "base__constv2-mix-full__lora_r4_ce",
+   "object_sha256": "504b6651facd296608af8e7441b71a51ec5f1062666e4d21f79bf7f91fa8f9b0",
+   "pin": {
+    "kind": "roster",
+    "object_sha256": "504b6651facd296608af8e7441b71a51ec5f1062666e4d21f79bf7f91fa8f9b0",
+    "source": "configs/sdfbase/ifeval/llama8b_pins.json",
+    "source_sha256": "4d78453a201492874c23b722050224221ee1cf6d6fa845b468196738fe9a3ac8",
+    "staged_id": "base__constv2-mix-full__lora_r4_ce"
+   },
+   "fitted": true,
+   "route_kind": "lens",
+   "header_located": false,
+   "served_positions_expected": "all",
+   "declared": false,
+   "thinking": "off",
+   "sampling_mode": "vendor_preset",
+   "sampling": {
+    "temperature": 0.6,
+    "top_p": 0.9,
+    "source": "generation_config.json of the served NousResearch/Meta-Llama-3.1-8B-Instruct @ d10aef79 (the shared cluster HF cache snapshot carries the file): temperature 0.6, top_p 0.9, no top_k \u2014 the numbers are SAMPLING_BY_MODEL_KEY['llama8b']'s (_LLAMA_CARD) by reference (P3, P4)"
+   },
+   "samples_per_item": 2,
+   "expected_stamps": [
+    "cell-stable",
+    "always",
+    "thinking_off"
+   ],
+   "cap": 2048,
+   "caps": [
+    2048,
+    4096,
+    8192
+   ],
+   "cap_ceiling": 8192,
+   "trigger_threshold": 0.01,
+   "trigger_provenance": "1 % raw at-cap of draws, per the IFEval ruling",
+   "prompt_class": "short",
+   "si_text_sha256": null,
+   "geometry_eval_by_cap": {
+    "2048": "capability:ifeval_2048",
+    "4096": "capability:ifeval_4096",
+    "8192": "capability:ifeval_8192"
+   },
+   "out_root": "controls/llama8b/constv2-mix-full--lora_r4_ce/vendor_preset",
+   "rung_out_roots": {
+    "4096": "controls/llama8b/constv2-mix-full--lora_r4_ce/vendor_preset__rung4096",
+    "8192": "controls/llama8b/constv2-mix-full--lora_r4_ce/vendor_preset__rung8192"
+   },
+   "subset_paths": {
+    "4096": "rung4096/llama8b/constv2-mix-full--lora_r4_ce/rung_subset.json",
+    "8192": "rung8192/llama8b/constv2-mix-full--lora_r4_ce/rung_subset.json"
+   },
+   "cap_ladder_paths": {
+    "2048": "controls/llama8b/constv2-mix-full--lora_r4_ce/vendor_preset/cap_ladder.json",
+    "4096": "controls/llama8b/constv2-mix-full--lora_r4_ce/vendor_preset__rung4096/cap_ladder.json",
+    "8192": "controls/llama8b/constv2-mix-full--lora_r4_ce/vendor_preset__rung8192/cap_ladder.json"
+   },
+   "ladder_state_paths": {
+    "2048": "controls/llama8b/constv2-mix-full--lora_r4_ce/vendor_preset/ladder_state.json",
+    "4096": "controls/llama8b/constv2-mix-full--lora_r4_ce/vendor_preset__rung4096/ladder_state.json",
+    "8192": "controls/llama8b/constv2-mix-full--lora_r4_ce/vendor_preset__rung8192/ladder_state.json"
+   },
+   "budget_paths": {
+    "2048": "budgets/llama8b/constv2-mix-full--lora_r4_ce/2048/oos_prompt_budget.json",
+    "4096": "budgets/llama8b/constv2-mix-full--lora_r4_ce/4096/oos_prompt_budget.json",
+    "8192": "budgets/llama8b/constv2-mix-full--lora_r4_ce/8192/oos_prompt_budget.json"
+   },
+   "dispatch_paths": {
+    "2048": "dispatch/llama8b/constv2-mix-full--lora_r4_ce/rung2048.json",
+    "4096": "dispatch/llama8b/constv2-mix-full--lora_r4_ce/rung4096.json",
+    "8192": "dispatch/llama8b/constv2-mix-full--lora_r4_ce/rung8192.json"
+   },
+   "configuration_ids": {
+    "2048": "llama8b/constv2-mix-full--lora_r4_ce/rung2048",
+    "4096": "llama8b/constv2-mix-full--lora_r4_ce/rung4096",
+    "8192": "llama8b/constv2-mix-full--lora_r4_ce/rung8192"
+   },
+   "budget_class": "none",
+   "config": "configs/sdfbase/ifeval/sdfbase_full22_llama8b.ifeval.yaml",
+   "manifest": "configs/capeval/manifests/petri_full22_llama8b.ifeval.yaml",
+   "hf": "NousResearch/Meta-Llama-3.1-8B-Instruct",
+   "rev": "d10aef7999a2b5ba950ab3974312feeedbfe0b77",
+   "family": "llama",
+   "image": "default",
+   "status": "launch",
+   "held_reason": null,
+   "deferred": null
+  },
+  {
+   "index": 26,
+   "job_id": "ife-llama8b-main-ctl-lora",
+   "model_key": "llama8b",
+   "view": "main",
+   "tag": "llama8b",
+   "slug": "llama8b-sdfbase-main",
+   "cell": "constv2ctl2-full__lora_r4_ce",
+   "cell_slug": "constv2ctl2-full--lora_r4_ce",
+   "harness_cell": "si_constv2ctl2_full__lora_r4_ce",
+   "standup_cell": "constv2ctl2-full__lora_r4_ce",
+   "standup_harness_cell": "si_constv2ctl2_full__lora_r4_ce",
+   "staged_id": "base__constv2ctl2-full__lora_r4_ce",
+   "object_sha256": "56254ce4ec90bf041070a272529762b87d9cca8fcd4cbc47ae38486f12e70d8e",
+   "pin": {
+    "kind": "roster",
+    "object_sha256": "56254ce4ec90bf041070a272529762b87d9cca8fcd4cbc47ae38486f12e70d8e",
+    "source": "configs/sdfbase/ifeval/llama8b_pins.json",
+    "source_sha256": "4d78453a201492874c23b722050224221ee1cf6d6fa845b468196738fe9a3ac8",
+    "staged_id": "base__constv2ctl2-full__lora_r4_ce"
+   },
+   "fitted": true,
+   "route_kind": "lens",
+   "header_located": false,
+   "served_positions_expected": "all",
+   "declared": false,
+   "thinking": "off",
+   "sampling_mode": "vendor_preset",
+   "sampling": {
+    "temperature": 0.6,
+    "top_p": 0.9,
+    "source": "generation_config.json of the served NousResearch/Meta-Llama-3.1-8B-Instruct @ d10aef79 (the shared cluster HF cache snapshot carries the file): temperature 0.6, top_p 0.9, no top_k \u2014 the numbers are SAMPLING_BY_MODEL_KEY['llama8b']'s (_LLAMA_CARD) by reference (P3, P4)"
+   },
+   "samples_per_item": 2,
+   "expected_stamps": [
+    "cell-stable",
+    "always",
+    "thinking_off"
+   ],
+   "cap": 2048,
+   "caps": [
+    2048,
+    4096,
+    8192
+   ],
+   "cap_ceiling": 8192,
+   "trigger_threshold": 0.01,
+   "trigger_provenance": "1 % raw at-cap of draws, per the IFEval ruling",
+   "prompt_class": "short",
+   "si_text_sha256": null,
+   "geometry_eval_by_cap": {
+    "2048": "capability:ifeval_2048",
+    "4096": "capability:ifeval_4096",
+    "8192": "capability:ifeval_8192"
+   },
+   "out_root": "controls/llama8b/constv2ctl2-full--lora_r4_ce/vendor_preset",
+   "rung_out_roots": {
+    "4096": "controls/llama8b/constv2ctl2-full--lora_r4_ce/vendor_preset__rung4096",
+    "8192": "controls/llama8b/constv2ctl2-full--lora_r4_ce/vendor_preset__rung8192"
+   },
+   "subset_paths": {
+    "4096": "rung4096/llama8b/constv2ctl2-full--lora_r4_ce/rung_subset.json",
+    "8192": "rung8192/llama8b/constv2ctl2-full--lora_r4_ce/rung_subset.json"
+   },
+   "cap_ladder_paths": {
+    "2048": "controls/llama8b/constv2ctl2-full--lora_r4_ce/vendor_preset/cap_ladder.json",
+    "4096": "controls/llama8b/constv2ctl2-full--lora_r4_ce/vendor_preset__rung4096/cap_ladder.json",
+    "8192": "controls/llama8b/constv2ctl2-full--lora_r4_ce/vendor_preset__rung8192/cap_ladder.json"
+   },
+   "ladder_state_paths": {
+    "2048": "controls/llama8b/constv2ctl2-full--lora_r4_ce/vendor_preset/ladder_state.json",
+    "4096": "controls/llama8b/constv2ctl2-full--lora_r4_ce/vendor_preset__rung4096/ladder_state.json",
+    "8192": "controls/llama8b/constv2ctl2-full--lora_r4_ce/vendor_preset__rung8192/ladder_state.json"
+   },
+   "budget_paths": {
+    "2048": "budgets/llama8b/constv2ctl2-full--lora_r4_ce/2048/oos_prompt_budget.json",
+    "4096": "budgets/llama8b/constv2ctl2-full--lora_r4_ce/4096/oos_prompt_budget.json",
+    "8192": "budgets/llama8b/constv2ctl2-full--lora_r4_ce/8192/oos_prompt_budget.json"
+   },
+   "dispatch_paths": {
+    "2048": "dispatch/llama8b/constv2ctl2-full--lora_r4_ce/rung2048.json",
+    "4096": "dispatch/llama8b/constv2ctl2-full--lora_r4_ce/rung4096.json",
+    "8192": "dispatch/llama8b/constv2ctl2-full--lora_r4_ce/rung8192.json"
+   },
+   "configuration_ids": {
+    "2048": "llama8b/constv2ctl2-full--lora_r4_ce/rung2048",
+    "4096": "llama8b/constv2ctl2-full--lora_r4_ce/rung4096",
+    "8192": "llama8b/constv2ctl2-full--lora_r4_ce/rung8192"
+   },
+   "budget_class": "none",
+   "config": "configs/sdfbase/ifeval/sdfbase_full22_llama8b.ifeval.yaml",
+   "manifest": "configs/capeval/manifests/petri_full22_llama8b.ifeval.yaml",
+   "hf": "NousResearch/Meta-Llama-3.1-8B-Instruct",
+   "rev": "d10aef7999a2b5ba950ab3974312feeedbfe0b77",
+   "family": "llama",
+   "image": "default",
+   "status": "launch",
+   "held_reason": null,
+   "deferred": null
+  },
+  {
+   "index": 27,
+   "job_id": "ife-llama8b-it-none",
+   "model_key": "llama8b",
+   "view": "it",
+   "tag": "llama8b_it",
+   "slug": "llama8b-sdfbase-it",
+   "cell": "none",
+   "cell_slug": "none",
+   "harness_cell": "none",
+   "standup_cell": "none",
+   "standup_harness_cell": "none",
+   "staged_id": null,
+   "object_sha256": null,
+   "pin": {
+    "kind": "none",
+    "object_sha256": null
+   },
+   "fitted": false,
+   "route_kind": "base",
+   "header_located": false,
+   "served_positions_expected": null,
+   "declared": false,
+   "thinking": "off",
+   "sampling_mode": "vendor_preset",
+   "sampling": {
+    "temperature": 0.6,
+    "top_p": 0.9,
+    "source": "generation_config.json of the served NousResearch/Meta-Llama-3.1-8B-Instruct @ d10aef79 (the shared cluster HF cache snapshot carries the file): temperature 0.6, top_p 0.9, no top_k \u2014 the numbers are SAMPLING_BY_MODEL_KEY['llama8b']'s (_LLAMA_CARD) by reference (P3, P4)"
+   },
+   "samples_per_item": 2,
+   "expected_stamps": [
+    "cell-stable",
+    "not-consulted",
+    "thinking_off"
+   ],
+   "cap": 2048,
+   "caps": [
+    2048,
+    4096,
+    8192
+   ],
+   "cap_ceiling": 8192,
+   "trigger_threshold": 0.01,
+   "trigger_provenance": "1 % raw at-cap of draws, per the IFEval ruling",
+   "prompt_class": "short",
+   "si_text_sha256": null,
+   "geometry_eval_by_cap": {
+    "2048": "capability:ifeval_2048",
+    "4096": "capability:ifeval_4096",
+    "8192": "capability:ifeval_8192"
+   },
+   "out_root": "controls/llama8b_it/none/vendor_preset",
+   "rung_out_roots": {
+    "4096": "controls/llama8b_it/none/vendor_preset__rung4096",
+    "8192": "controls/llama8b_it/none/vendor_preset__rung8192"
+   },
+   "subset_paths": {
+    "4096": "rung4096/llama8b_it/none/rung_subset.json",
+    "8192": "rung8192/llama8b_it/none/rung_subset.json"
+   },
+   "cap_ladder_paths": {
+    "2048": "controls/llama8b_it/none/vendor_preset/cap_ladder.json",
+    "4096": "controls/llama8b_it/none/vendor_preset__rung4096/cap_ladder.json",
+    "8192": "controls/llama8b_it/none/vendor_preset__rung8192/cap_ladder.json"
+   },
+   "ladder_state_paths": {
+    "2048": "controls/llama8b_it/none/vendor_preset/ladder_state.json",
+    "4096": "controls/llama8b_it/none/vendor_preset__rung4096/ladder_state.json",
+    "8192": "controls/llama8b_it/none/vendor_preset__rung8192/ladder_state.json"
+   },
+   "budget_paths": {
+    "2048": "budgets/llama8b_it/none/2048/oos_prompt_budget.json",
+    "4096": "budgets/llama8b_it/none/4096/oos_prompt_budget.json",
+    "8192": "budgets/llama8b_it/none/8192/oos_prompt_budget.json"
+   },
+   "dispatch_paths": {
+    "2048": "dispatch/llama8b_it/none/rung2048.json",
+    "4096": "dispatch/llama8b_it/none/rung4096.json",
+    "8192": "dispatch/llama8b_it/none/rung8192.json"
+   },
+   "configuration_ids": {
+    "2048": "llama8b_it/none/rung2048",
+    "4096": "llama8b_it/none/rung4096",
+    "8192": "llama8b_it/none/rung8192"
+   },
+   "budget_class": "none",
+   "config": "configs/sdfbase/ifeval/sdfbase_full22_llama8b_it.ifeval.yaml",
+   "manifest": "configs/capeval/manifests/petri_full22_llama8b_it.ifeval.yaml",
+   "hf": "NousResearch/Meta-Llama-3.1-8B-Instruct",
+   "rev": "d10aef7999a2b5ba950ab3974312feeedbfe0b77",
+   "family": "llama",
+   "image": "default",
+   "status": "launch",
+   "held_reason": null,
+   "deferred": null
+  },
+  {
+   "index": 28,
+   "job_id": "ife-llama8b-it-prompted",
+   "model_key": "llama8b",
+   "view": "it",
+   "tag": "llama8b_it",
+   "slug": "llama8b-sdfbase-it",
+   "cell": "prompted__safety_refusal",
+   "cell_slug": "prompted--safety_refusal",
+   "harness_cell": "prompted__safety",
+   "standup_cell": "prompted__safety_refusal",
+   "standup_harness_cell": "prompted__safety",
+   "staged_id": null,
+   "object_sha256": null,
+   "pin": {
+    "kind": "prompted",
+    "object_sha256": null
+   },
+   "fitted": false,
+   "route_kind": "prompted",
+   "header_located": false,
+   "served_positions_expected": null,
+   "declared": false,
+   "thinking": "off",
+   "sampling_mode": "vendor_preset",
+   "sampling": {
+    "temperature": 0.6,
+    "top_p": 0.9,
+    "source": "generation_config.json of the served NousResearch/Meta-Llama-3.1-8B-Instruct @ d10aef79 (the shared cluster HF cache snapshot carries the file): temperature 0.6, top_p 0.9, no top_k \u2014 the numbers are SAMPLING_BY_MODEL_KEY['llama8b']'s (_LLAMA_CARD) by reference (P3, P4)"
+   },
+   "samples_per_item": 2,
+   "expected_stamps": [
+    "cell-stable",
+    "not-consulted",
+    "thinking_off"
+   ],
+   "cap": 2048,
+   "caps": [
+    2048,
+    4096,
+    8192
+   ],
+   "cap_ceiling": 8192,
+   "trigger_threshold": 0.01,
+   "trigger_provenance": "1 % raw at-cap of draws, per the IFEval ruling",
+   "prompt_class": "short",
+   "si_text_sha256": "ac3a58f61d53cf2412c02b8bb56063b9683a9c1154ef1f0978efc1449a836e08",
+   "geometry_eval_by_cap": {
+    "2048": "capability:ifeval_2048",
+    "4096": "capability:ifeval_4096",
+    "8192": "capability:ifeval_8192"
+   },
+   "out_root": "controls/llama8b_it/prompted--safety_refusal/vendor_preset",
+   "rung_out_roots": {
+    "4096": "controls/llama8b_it/prompted--safety_refusal/vendor_preset__rung4096",
+    "8192": "controls/llama8b_it/prompted--safety_refusal/vendor_preset__rung8192"
+   },
+   "subset_paths": {
+    "4096": "rung4096/llama8b_it/prompted--safety_refusal/rung_subset.json",
+    "8192": "rung8192/llama8b_it/prompted--safety_refusal/rung_subset.json"
+   },
+   "cap_ladder_paths": {
+    "2048": "controls/llama8b_it/prompted--safety_refusal/vendor_preset/cap_ladder.json",
+    "4096": "controls/llama8b_it/prompted--safety_refusal/vendor_preset__rung4096/cap_ladder.json",
+    "8192": "controls/llama8b_it/prompted--safety_refusal/vendor_preset__rung8192/cap_ladder.json"
+   },
+   "ladder_state_paths": {
+    "2048": "controls/llama8b_it/prompted--safety_refusal/vendor_preset/ladder_state.json",
+    "4096": "controls/llama8b_it/prompted--safety_refusal/vendor_preset__rung4096/ladder_state.json",
+    "8192": "controls/llama8b_it/prompted--safety_refusal/vendor_preset__rung8192/ladder_state.json"
+   },
+   "budget_paths": {
+    "2048": "budgets/llama8b_it/prompted--safety_refusal/2048/oos_prompt_budget.json",
+    "4096": "budgets/llama8b_it/prompted--safety_refusal/4096/oos_prompt_budget.json",
+    "8192": "budgets/llama8b_it/prompted--safety_refusal/8192/oos_prompt_budget.json"
+   },
+   "dispatch_paths": {
+    "2048": "dispatch/llama8b_it/prompted--safety_refusal/rung2048.json",
+    "4096": "dispatch/llama8b_it/prompted--safety_refusal/rung4096.json",
+    "8192": "dispatch/llama8b_it/prompted--safety_refusal/rung8192.json"
+   },
+   "configuration_ids": {
+    "2048": "llama8b_it/prompted--safety_refusal/rung2048",
+    "4096": "llama8b_it/prompted--safety_refusal/rung4096",
+    "8192": "llama8b_it/prompted--safety_refusal/rung8192"
+   },
+   "budget_class": "prompted__safety_refusal",
+   "config": "configs/sdfbase/ifeval/sdfbase_full22_llama8b_it.ifeval.yaml",
+   "manifest": "configs/capeval/manifests/petri_full22_llama8b_it.ifeval.yaml",
+   "hf": "NousResearch/Meta-Llama-3.1-8B-Instruct",
+   "rev": "d10aef7999a2b5ba950ab3974312feeedbfe0b77",
+   "family": "llama",
+   "image": "default",
+   "status": "launch",
+   "held_reason": null,
+   "deferred": null
+  },
+  {
+   "index": 29,
+   "job_id": "ife-llama8b-it-constitution",
+   "model_key": "llama8b",
+   "view": "it",
+   "tag": "llama8b_it",
+   "slug": "llama8b-sdfbase-it",
+   "cell": "prompted__si_constitution",
+   "cell_slug": "prompted--si_constitution",
+   "harness_cell": "prompted__constitution",
+   "standup_cell": "prompted__si_constitution",
+   "standup_harness_cell": "prompted__constitution",
+   "staged_id": null,
+   "object_sha256": null,
+   "pin": {
+    "kind": "prompted",
+    "object_sha256": null
+   },
+   "fitted": false,
+   "route_kind": "prompted",
+   "header_located": false,
+   "served_positions_expected": null,
+   "declared": false,
+   "thinking": "off",
+   "sampling_mode": "vendor_preset",
+   "sampling": {
+    "temperature": 0.6,
+    "top_p": 0.9,
+    "source": "generation_config.json of the served NousResearch/Meta-Llama-3.1-8B-Instruct @ d10aef79 (the shared cluster HF cache snapshot carries the file): temperature 0.6, top_p 0.9, no top_k \u2014 the numbers are SAMPLING_BY_MODEL_KEY['llama8b']'s (_LLAMA_CARD) by reference (P3, P4)"
+   },
+   "samples_per_item": 2,
+   "expected_stamps": [
+    "cell-stable",
+    "not-consulted",
+    "thinking_off"
+   ],
+   "cap": 2048,
+   "caps": [
+    2048,
+    4096,
+    8192
+   ],
+   "cap_ceiling": 8192,
+   "trigger_threshold": 0.01,
+   "trigger_provenance": "1 % raw at-cap of draws, per the IFEval ruling",
+   "prompt_class": "long_si",
+   "si_text_sha256": "21e06f482a6559b39309c4f1128f0411230c88e02b3a9eaa7b5d50829e6a9a0f",
+   "geometry_eval_by_cap": {
+    "2048": "capability:ifeval_longsi_2048",
+    "4096": "capability:ifeval_longsi_4096",
+    "8192": "capability:ifeval_longsi_8192"
+   },
+   "out_root": "controls/llama8b_it/prompted--si_constitution/vendor_preset",
+   "rung_out_roots": {
+    "4096": "controls/llama8b_it/prompted--si_constitution/vendor_preset__rung4096",
+    "8192": "controls/llama8b_it/prompted--si_constitution/vendor_preset__rung8192"
+   },
+   "subset_paths": {
+    "4096": "rung4096/llama8b_it/prompted--si_constitution/rung_subset.json",
+    "8192": "rung8192/llama8b_it/prompted--si_constitution/rung_subset.json"
+   },
+   "cap_ladder_paths": {
+    "2048": "controls/llama8b_it/prompted--si_constitution/vendor_preset/cap_ladder.json",
+    "4096": "controls/llama8b_it/prompted--si_constitution/vendor_preset__rung4096/cap_ladder.json",
+    "8192": "controls/llama8b_it/prompted--si_constitution/vendor_preset__rung8192/cap_ladder.json"
+   },
+   "ladder_state_paths": {
+    "2048": "controls/llama8b_it/prompted--si_constitution/vendor_preset/ladder_state.json",
+    "4096": "controls/llama8b_it/prompted--si_constitution/vendor_preset__rung4096/ladder_state.json",
+    "8192": "controls/llama8b_it/prompted--si_constitution/vendor_preset__rung8192/ladder_state.json"
+   },
+   "budget_paths": {
+    "2048": "budgets/llama8b_it/prompted--si_constitution/2048/oos_prompt_budget.json",
+    "4096": "budgets/llama8b_it/prompted--si_constitution/4096/oos_prompt_budget.json",
+    "8192": "budgets/llama8b_it/prompted--si_constitution/8192/oos_prompt_budget.json"
+   },
+   "dispatch_paths": {
+    "2048": "dispatch/llama8b_it/prompted--si_constitution/rung2048.json",
+    "4096": "dispatch/llama8b_it/prompted--si_constitution/rung4096.json",
+    "8192": "dispatch/llama8b_it/prompted--si_constitution/rung8192.json"
+   },
+   "configuration_ids": {
+    "2048": "llama8b_it/prompted--si_constitution/rung2048",
+    "4096": "llama8b_it/prompted--si_constitution/rung4096",
+    "8192": "llama8b_it/prompted--si_constitution/rung8192"
+   },
+   "budget_class": "prompted__si_constitution",
+   "config": "configs/sdfbase/ifeval/sdfbase_full22_llama8b_it.ifeval.yaml",
+   "manifest": "configs/capeval/manifests/petri_full22_llama8b_it.ifeval.yaml",
+   "hf": "NousResearch/Meta-Llama-3.1-8B-Instruct",
+   "rev": "d10aef7999a2b5ba950ab3974312feeedbfe0b77",
+   "family": "llama",
+   "image": "default",
+   "status": "launch",
+   "held_reason": null,
+   "deferred": null
+  },
+  {
+   "index": 30,
+   "job_id": "ife-llama8b-it-mix-lora",
+   "model_key": "llama8b",
+   "view": "it",
+   "tag": "llama8b_it",
+   "slug": "llama8b-sdfbase-it",
+   "cell": "constv2-mix-full__lora_r4_ce",
+   "cell_slug": "constv2-mix-full--lora_r4_ce",
+   "harness_cell": "si_constv2_mix_full__lora_r4_ce",
+   "standup_cell": "constv2-mix-full__lora_r4_ce",
+   "standup_harness_cell": "si_constv2_mix_full__lora_r4_ce",
+   "staged_id": "itdoc__constv2-mix-full__lora_r4_ce",
+   "object_sha256": "529788ca747ea4060bffee0d46c4ccf1dcf763c548111268547dca0004614c8c",
+   "pin": {
+    "kind": "roster",
+    "object_sha256": "529788ca747ea4060bffee0d46c4ccf1dcf763c548111268547dca0004614c8c",
+    "source": "configs/sdfbase/ifeval/llama8b_pins.json",
+    "source_sha256": "4d78453a201492874c23b722050224221ee1cf6d6fa845b468196738fe9a3ac8",
+    "staged_id": "itdoc__constv2-mix-full__lora_r4_ce"
+   },
+   "fitted": true,
+   "route_kind": "lens",
+   "header_located": false,
+   "served_positions_expected": "all",
+   "declared": false,
+   "thinking": "off",
+   "sampling_mode": "vendor_preset",
+   "sampling": {
+    "temperature": 0.6,
+    "top_p": 0.9,
+    "source": "generation_config.json of the served NousResearch/Meta-Llama-3.1-8B-Instruct @ d10aef79 (the shared cluster HF cache snapshot carries the file): temperature 0.6, top_p 0.9, no top_k \u2014 the numbers are SAMPLING_BY_MODEL_KEY['llama8b']'s (_LLAMA_CARD) by reference (P3, P4)"
+   },
+   "samples_per_item": 2,
+   "expected_stamps": [
+    "cell-stable",
+    "always",
+    "thinking_off"
+   ],
+   "cap": 2048,
+   "caps": [
+    2048,
+    4096,
+    8192
+   ],
+   "cap_ceiling": 8192,
+   "trigger_threshold": 0.01,
+   "trigger_provenance": "1 % raw at-cap of draws, per the IFEval ruling",
+   "prompt_class": "short",
+   "si_text_sha256": null,
+   "geometry_eval_by_cap": {
+    "2048": "capability:ifeval_2048",
+    "4096": "capability:ifeval_4096",
+    "8192": "capability:ifeval_8192"
+   },
+   "out_root": "controls/llama8b_it/constv2-mix-full--lora_r4_ce/vendor_preset",
+   "rung_out_roots": {
+    "4096": "controls/llama8b_it/constv2-mix-full--lora_r4_ce/vendor_preset__rung4096",
+    "8192": "controls/llama8b_it/constv2-mix-full--lora_r4_ce/vendor_preset__rung8192"
+   },
+   "subset_paths": {
+    "4096": "rung4096/llama8b_it/constv2-mix-full--lora_r4_ce/rung_subset.json",
+    "8192": "rung8192/llama8b_it/constv2-mix-full--lora_r4_ce/rung_subset.json"
+   },
+   "cap_ladder_paths": {
+    "2048": "controls/llama8b_it/constv2-mix-full--lora_r4_ce/vendor_preset/cap_ladder.json",
+    "4096": "controls/llama8b_it/constv2-mix-full--lora_r4_ce/vendor_preset__rung4096/cap_ladder.json",
+    "8192": "controls/llama8b_it/constv2-mix-full--lora_r4_ce/vendor_preset__rung8192/cap_ladder.json"
+   },
+   "ladder_state_paths": {
+    "2048": "controls/llama8b_it/constv2-mix-full--lora_r4_ce/vendor_preset/ladder_state.json",
+    "4096": "controls/llama8b_it/constv2-mix-full--lora_r4_ce/vendor_preset__rung4096/ladder_state.json",
+    "8192": "controls/llama8b_it/constv2-mix-full--lora_r4_ce/vendor_preset__rung8192/ladder_state.json"
+   },
+   "budget_paths": {
+    "2048": "budgets/llama8b_it/constv2-mix-full--lora_r4_ce/2048/oos_prompt_budget.json",
+    "4096": "budgets/llama8b_it/constv2-mix-full--lora_r4_ce/4096/oos_prompt_budget.json",
+    "8192": "budgets/llama8b_it/constv2-mix-full--lora_r4_ce/8192/oos_prompt_budget.json"
+   },
+   "dispatch_paths": {
+    "2048": "dispatch/llama8b_it/constv2-mix-full--lora_r4_ce/rung2048.json",
+    "4096": "dispatch/llama8b_it/constv2-mix-full--lora_r4_ce/rung4096.json",
+    "8192": "dispatch/llama8b_it/constv2-mix-full--lora_r4_ce/rung8192.json"
+   },
+   "configuration_ids": {
+    "2048": "llama8b_it/constv2-mix-full--lora_r4_ce/rung2048",
+    "4096": "llama8b_it/constv2-mix-full--lora_r4_ce/rung4096",
+    "8192": "llama8b_it/constv2-mix-full--lora_r4_ce/rung8192"
+   },
+   "budget_class": "none",
+   "config": "configs/sdfbase/ifeval/sdfbase_full22_llama8b_it.ifeval.yaml",
+   "manifest": "configs/capeval/manifests/petri_full22_llama8b_it.ifeval.yaml",
+   "hf": "NousResearch/Meta-Llama-3.1-8B-Instruct",
+   "rev": "d10aef7999a2b5ba950ab3974312feeedbfe0b77",
+   "family": "llama",
+   "image": "default",
+   "status": "launch",
+   "held_reason": null,
+   "deferred": null
+  },
+  {
+   "index": 31,
+   "job_id": "ife-llama8b-it-ctl-lora",
+   "model_key": "llama8b",
+   "view": "it",
+   "tag": "llama8b_it",
+   "slug": "llama8b-sdfbase-it",
+   "cell": "constv2ctl2-full__lora_r4_ce",
+   "cell_slug": "constv2ctl2-full--lora_r4_ce",
+   "harness_cell": "si_constv2ctl2_full__lora_r4_ce",
+   "standup_cell": "constv2ctl2-full__lora_r4_ce",
+   "standup_harness_cell": "si_constv2ctl2_full__lora_r4_ce",
+   "staged_id": "itdoc__constv2ctl2-full__lora_r4_ce",
+   "object_sha256": "7bf26f8cb7a277b4ef9cc5282f1058adcaad2950f6ffded8225b840e92477446",
+   "pin": {
+    "kind": "roster",
+    "object_sha256": "7bf26f8cb7a277b4ef9cc5282f1058adcaad2950f6ffded8225b840e92477446",
+    "source": "configs/sdfbase/ifeval/llama8b_pins.json",
+    "source_sha256": "4d78453a201492874c23b722050224221ee1cf6d6fa845b468196738fe9a3ac8",
+    "staged_id": "itdoc__constv2ctl2-full__lora_r4_ce"
+   },
+   "fitted": true,
+   "route_kind": "lens",
+   "header_located": false,
+   "served_positions_expected": "all",
+   "declared": false,
+   "thinking": "off",
+   "sampling_mode": "vendor_preset",
+   "sampling": {
+    "temperature": 0.6,
+    "top_p": 0.9,
+    "source": "generation_config.json of the served NousResearch/Meta-Llama-3.1-8B-Instruct @ d10aef79 (the shared cluster HF cache snapshot carries the file): temperature 0.6, top_p 0.9, no top_k \u2014 the numbers are SAMPLING_BY_MODEL_KEY['llama8b']'s (_LLAMA_CARD) by reference (P3, P4)"
+   },
+   "samples_per_item": 2,
+   "expected_stamps": [
+    "cell-stable",
+    "always",
+    "thinking_off"
+   ],
+   "cap": 2048,
+   "caps": [
+    2048,
+    4096,
+    8192
+   ],
+   "cap_ceiling": 8192,
+   "trigger_threshold": 0.01,
+   "trigger_provenance": "1 % raw at-cap of draws, per the IFEval ruling",
+   "prompt_class": "short",
+   "si_text_sha256": null,
+   "geometry_eval_by_cap": {
+    "2048": "capability:ifeval_2048",
+    "4096": "capability:ifeval_4096",
+    "8192": "capability:ifeval_8192"
+   },
+   "out_root": "controls/llama8b_it/constv2ctl2-full--lora_r4_ce/vendor_preset",
+   "rung_out_roots": {
+    "4096": "controls/llama8b_it/constv2ctl2-full--lora_r4_ce/vendor_preset__rung4096",
+    "8192": "controls/llama8b_it/constv2ctl2-full--lora_r4_ce/vendor_preset__rung8192"
+   },
+   "subset_paths": {
+    "4096": "rung4096/llama8b_it/constv2ctl2-full--lora_r4_ce/rung_subset.json",
+    "8192": "rung8192/llama8b_it/constv2ctl2-full--lora_r4_ce/rung_subset.json"
+   },
+   "cap_ladder_paths": {
+    "2048": "controls/llama8b_it/constv2ctl2-full--lora_r4_ce/vendor_preset/cap_ladder.json",
+    "4096": "controls/llama8b_it/constv2ctl2-full--lora_r4_ce/vendor_preset__rung4096/cap_ladder.json",
+    "8192": "controls/llama8b_it/constv2ctl2-full--lora_r4_ce/vendor_preset__rung8192/cap_ladder.json"
+   },
+   "ladder_state_paths": {
+    "2048": "controls/llama8b_it/constv2ctl2-full--lora_r4_ce/vendor_preset/ladder_state.json",
+    "4096": "controls/llama8b_it/constv2ctl2-full--lora_r4_ce/vendor_preset__rung4096/ladder_state.json",
+    "8192": "controls/llama8b_it/constv2ctl2-full--lora_r4_ce/vendor_preset__rung8192/ladder_state.json"
+   },
+   "budget_paths": {
+    "2048": "budgets/llama8b_it/constv2ctl2-full--lora_r4_ce/2048/oos_prompt_budget.json",
+    "4096": "budgets/llama8b_it/constv2ctl2-full--lora_r4_ce/4096/oos_prompt_budget.json",
+    "8192": "budgets/llama8b_it/constv2ctl2-full--lora_r4_ce/8192/oos_prompt_budget.json"
+   },
+   "dispatch_paths": {
+    "2048": "dispatch/llama8b_it/constv2ctl2-full--lora_r4_ce/rung2048.json",
+    "4096": "dispatch/llama8b_it/constv2ctl2-full--lora_r4_ce/rung4096.json",
+    "8192": "dispatch/llama8b_it/constv2ctl2-full--lora_r4_ce/rung8192.json"
+   },
+   "configuration_ids": {
+    "2048": "llama8b_it/constv2ctl2-full--lora_r4_ce/rung2048",
+    "4096": "llama8b_it/constv2ctl2-full--lora_r4_ce/rung4096",
+    "8192": "llama8b_it/constv2ctl2-full--lora_r4_ce/rung8192"
+   },
+   "budget_class": "none",
+   "config": "configs/sdfbase/ifeval/sdfbase_full22_llama8b_it.ifeval.yaml",
+   "manifest": "configs/capeval/manifests/petri_full22_llama8b_it.ifeval.yaml",
+   "hf": "NousResearch/Meta-Llama-3.1-8B-Instruct",
+   "rev": "d10aef7999a2b5ba950ab3974312feeedbfe0b77",
+   "family": "llama",
+   "image": "default",
+   "status": "launch",
+   "held_reason": null,
+   "deferred": null
+  },
+  {
+   "index": 32,
+   "job_id": "ife-gemma4e4b-it-alphasteer",
+   "model_key": "gemma4e4b",
+   "view": "it",
+   "tag": "gemma4e4b_it",
+   "slug": "gemma4e4b-sdfbase-it",
+   "cell": "alphasteer",
+   "cell_slug": "alphasteer",
+   "harness_cell": "alphasteer",
+   "standup_cell": "alphasteer",
+   "standup_harness_cell": "alphasteer",
+   "staged_id": null,
+   "object_sha256": null,
+   "pin": {
+    "kind": "deferred",
+    "object_sha256": null,
+    "record": "configs/sdfbase/ifeval/deferred/alphasteer__gemma4e4b.json",
+    "record_fields": [
+     "object_sha256",
+     "view",
+     "rung",
+     "selection_rule"
+    ],
+    "filled": false
+   },
+   "fitted": true,
+   "route_kind": "lens",
+   "header_located": false,
+   "served_positions_expected": "all",
+   "declared": false,
+   "thinking": "off",
+   "sampling_mode": "vendor_preset",
+   "sampling": {
+    "temperature": 1.0,
+    "top_p": 0.95,
+    "top_k": 64,
+    "source": "generation_config.json of google/gemma-4-E4B-it @ ee0ef602: temperature 1.0, top_p 0.95, top_k 64 (do_sample true; vendor default; no penalty term) \u2014 the numbers are THINKING_SAMPLING_BY_MODEL_KEY's by reference (P3); re-read from the shared cluster HF cache snapshot ee0ef602 (P4)"
+   },
+   "samples_per_item": 2,
+   "expected_stamps": [
+    "cell-stable",
+    "always",
+    "thinking_off"
+   ],
+   "cap": 2048,
+   "caps": [
+    2048,
+    4096,
+    8192
+   ],
+   "cap_ceiling": 8192,
+   "trigger_threshold": 0.01,
+   "trigger_provenance": "1 % raw at-cap of draws, per the IFEval ruling",
+   "prompt_class": "short",
+   "si_text_sha256": null,
+   "geometry_eval_by_cap": {
+    "2048": "capability:ifeval_2048",
+    "4096": "capability:ifeval_4096",
+    "8192": "capability:ifeval_8192"
+   },
+   "out_root": "controls/gemma4e4b_it/alphasteer/vendor_preset",
+   "rung_out_roots": {
+    "4096": "controls/gemma4e4b_it/alphasteer/vendor_preset__rung4096",
+    "8192": "controls/gemma4e4b_it/alphasteer/vendor_preset__rung8192"
+   },
+   "subset_paths": {
+    "4096": "rung4096/gemma4e4b_it/alphasteer/rung_subset.json",
+    "8192": "rung8192/gemma4e4b_it/alphasteer/rung_subset.json"
+   },
+   "cap_ladder_paths": {
+    "2048": "controls/gemma4e4b_it/alphasteer/vendor_preset/cap_ladder.json",
+    "4096": "controls/gemma4e4b_it/alphasteer/vendor_preset__rung4096/cap_ladder.json",
+    "8192": "controls/gemma4e4b_it/alphasteer/vendor_preset__rung8192/cap_ladder.json"
+   },
+   "ladder_state_paths": {
+    "2048": "controls/gemma4e4b_it/alphasteer/vendor_preset/ladder_state.json",
+    "4096": "controls/gemma4e4b_it/alphasteer/vendor_preset__rung4096/ladder_state.json",
+    "8192": "controls/gemma4e4b_it/alphasteer/vendor_preset__rung8192/ladder_state.json"
+   },
+   "budget_paths": {
+    "2048": "budgets/gemma4e4b_it/alphasteer/2048/oos_prompt_budget.json",
+    "4096": "budgets/gemma4e4b_it/alphasteer/4096/oos_prompt_budget.json",
+    "8192": "budgets/gemma4e4b_it/alphasteer/8192/oos_prompt_budget.json"
+   },
+   "dispatch_paths": {
+    "2048": "dispatch/gemma4e4b_it/alphasteer/rung2048.json",
+    "4096": "dispatch/gemma4e4b_it/alphasteer/rung4096.json",
+    "8192": "dispatch/gemma4e4b_it/alphasteer/rung8192.json"
+   },
+   "configuration_ids": {
+    "2048": "gemma4e4b_it/alphasteer/rung2048",
+    "4096": "gemma4e4b_it/alphasteer/rung4096",
+    "8192": "gemma4e4b_it/alphasteer/rung8192"
+   },
+   "budget_class": "none",
+   "config": "configs/sdfbase/ifeval/sdfbase_full22_gemma4e4b_it.ifeval.yaml",
+   "manifest": "configs/capeval/manifests/petri_full22_gemma4e4b_it.ifeval.yaml",
+   "hf": "google/gemma-4-E4B-it",
+   "rev": "ee0ef6023621cff504d758262d4e04895a5af4a2",
+   "family": "gemma4",
+   "image": "default",
+   "status": "deferred",
+   "held_reason": null,
+   "deferred": {
+    "arm": "alphasteer",
+    "record": "configs/sdfbase/ifeval/deferred/alphasteer__gemma4e4b.json",
+    "record_fields": [
+     "object_sha256",
+     "view",
+     "rung",
+     "selection_rule"
+    ],
+    "selection_rule": "minimal over-refusal strength: the smallest lambda clearing the preregistered defence bar; the 20 pp over-refusal budget rung is named alongside.",
+    "reason": "2026-09-12: AlphaSteer at minimal over-refusal strength on every model; the object identity comes from the Strength lane's ladder (pending), as a per-model (object_sha256, view, rung, selection_rule) record.",
+    "view_provisional": true,
+    "filled": false,
+    "pending": [
+     "record configs/sdfbase/ifeval/deferred/alphasteer__gemma4e4b.json"
+    ]
+   }
+  },
+  {
+   "index": 33,
+   "job_id": "ife-qwen35_4b-it-alphasteer",
+   "model_key": "qwen35_4b",
+   "view": "it",
+   "tag": "qwen35_4b_it",
+   "slug": "qwen35_4b-sdfbase-it",
+   "cell": "alphasteer",
+   "cell_slug": "alphasteer",
+   "harness_cell": "alphasteer",
+   "standup_cell": "alphasteer",
+   "standup_harness_cell": "alphasteer",
+   "staged_id": null,
+   "object_sha256": null,
+   "pin": {
+    "kind": "deferred",
+    "object_sha256": null,
+    "record": "configs/sdfbase/ifeval/deferred/alphasteer__qwen35_4b.json",
+    "record_fields": [
+     "object_sha256",
+     "view",
+     "rung",
+     "selection_rule"
+    ],
+    "filled": false
+   },
+   "fitted": true,
+   "route_kind": "lens",
+   "header_located": false,
+   "served_positions_expected": "all",
+   "declared": false,
+   "thinking": "off",
+   "sampling_mode": "vendor_preset",
+   "sampling": {
+    "temperature": 0.7,
+    "top_p": 0.8,
+    "top_k": 20,
+    "min_p": 0.0,
+    "presence_penalty": 1.5,
+    "repetition_penalty": 1.0,
+    "source": "Qwen/Qwen3.5-4B @ 851bf6e8 ships no generation_config.json; the vendor's INSTRUCT (non-thinking) general row \u2014 QWEN35_VENDOR_ROWS['instruct_general'] by reference (P3): temperature 0.7, top_p 0.8, top_k 20, min_p 0.0, presence_penalty 1.5 (SENT PER REQUEST \u2014 not server-defaultable), repetition_penalty 1.0 (the card's stated no-op)"
+   },
+   "samples_per_item": 2,
+   "expected_stamps": [
+    "cell-stable",
+    "always",
+    "thinking_off"
+   ],
+   "cap": 2048,
+   "caps": [
+    2048,
+    4096,
+    8192
+   ],
+   "cap_ceiling": 8192,
+   "trigger_threshold": 0.01,
+   "trigger_provenance": "1 % raw at-cap of draws, per the IFEval ruling",
+   "prompt_class": "short",
+   "si_text_sha256": null,
+   "geometry_eval_by_cap": {
+    "2048": "capability:ifeval_2048",
+    "4096": "capability:ifeval_4096",
+    "8192": "capability:ifeval_8192"
+   },
+   "out_root": "controls/qwen35_4b_it/alphasteer/vendor_preset",
+   "rung_out_roots": {
+    "4096": "controls/qwen35_4b_it/alphasteer/vendor_preset__rung4096",
+    "8192": "controls/qwen35_4b_it/alphasteer/vendor_preset__rung8192"
+   },
+   "subset_paths": {
+    "4096": "rung4096/qwen35_4b_it/alphasteer/rung_subset.json",
+    "8192": "rung8192/qwen35_4b_it/alphasteer/rung_subset.json"
+   },
+   "cap_ladder_paths": {
+    "2048": "controls/qwen35_4b_it/alphasteer/vendor_preset/cap_ladder.json",
+    "4096": "controls/qwen35_4b_it/alphasteer/vendor_preset__rung4096/cap_ladder.json",
+    "8192": "controls/qwen35_4b_it/alphasteer/vendor_preset__rung8192/cap_ladder.json"
+   },
+   "ladder_state_paths": {
+    "2048": "controls/qwen35_4b_it/alphasteer/vendor_preset/ladder_state.json",
+    "4096": "controls/qwen35_4b_it/alphasteer/vendor_preset__rung4096/ladder_state.json",
+    "8192": "controls/qwen35_4b_it/alphasteer/vendor_preset__rung8192/ladder_state.json"
+   },
+   "budget_paths": {
+    "2048": "budgets/qwen35_4b_it/alphasteer/2048/oos_prompt_budget.json",
+    "4096": "budgets/qwen35_4b_it/alphasteer/4096/oos_prompt_budget.json",
+    "8192": "budgets/qwen35_4b_it/alphasteer/8192/oos_prompt_budget.json"
+   },
+   "dispatch_paths": {
+    "2048": "dispatch/qwen35_4b_it/alphasteer/rung2048.json",
+    "4096": "dispatch/qwen35_4b_it/alphasteer/rung4096.json",
+    "8192": "dispatch/qwen35_4b_it/alphasteer/rung8192.json"
+   },
+   "configuration_ids": {
+    "2048": "qwen35_4b_it/alphasteer/rung2048",
+    "4096": "qwen35_4b_it/alphasteer/rung4096",
+    "8192": "qwen35_4b_it/alphasteer/rung8192"
+   },
+   "budget_class": "none",
+   "config": "configs/sdfbase/ifeval/sdfbase_full22_qwen35_4b_it.ifeval.yaml",
+   "manifest": "configs/capeval/manifests/petri_full22_qwen35_4b_it.ifeval.yaml",
+   "hf": "Qwen/Qwen3.5-4B",
+   "rev": "851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a",
+   "family": "qwen3_5",
+   "image": "default",
+   "status": "deferred",
+   "held_reason": null,
+   "deferred": {
+    "arm": "alphasteer",
+    "record": "configs/sdfbase/ifeval/deferred/alphasteer__qwen35_4b.json",
+    "record_fields": [
+     "object_sha256",
+     "view",
+     "rung",
+     "selection_rule"
+    ],
+    "selection_rule": "minimal over-refusal strength: the smallest lambda clearing the preregistered defence bar; the 20 pp over-refusal budget rung is named alongside.",
+    "reason": "2026-09-12: AlphaSteer at minimal over-refusal strength on every model; the object identity comes from the Strength lane's ladder (pending), as a per-model (object_sha256, view, rung, selection_rule) record.",
+    "view_provisional": true,
+    "filled": false,
+    "pending": [
+     "record configs/sdfbase/ifeval/deferred/alphasteer__qwen35_4b.json"
+    ]
+   }
+  },
+  {
+   "index": 34,
+   "job_id": "ife-nemotron3nano4b-main-alphasteer",
+   "model_key": "nemotron3nano4b",
+   "view": "main",
+   "tag": "nemotron3nano4b",
+   "slug": "nemotron3nano4b-sdfbase-main",
+   "cell": "alphasteer",
+   "cell_slug": "alphasteer",
+   "harness_cell": "alphasteer",
+   "standup_cell": "alphasteer",
+   "standup_harness_cell": "alphasteer",
+   "staged_id": null,
+   "object_sha256": null,
+   "pin": {
+    "kind": "deferred",
+    "object_sha256": null,
+    "record": "configs/sdfbase/ifeval/deferred/alphasteer__nemotron3nano4b.json",
+    "record_fields": [
+     "object_sha256",
+     "view",
+     "rung",
+     "selection_rule"
+    ],
+    "filled": false
+   },
+   "fitted": true,
+   "route_kind": "lens",
+   "header_located": false,
+   "served_positions_expected": "all",
+   "declared": false,
+   "thinking": "off",
+   "sampling_mode": "vendor_preset",
+   "sampling": {
+    "temperature": 1.0,
+    "top_p": 0.95,
+    "source": "generation_config.json of nvidia/NVIDIA-Nemotron-3-Nano-4B-BF16 @ dfaf35de: temperature 1.0, top_p 0.95, no top_k \u2014 label `generation_config` (P43, SETTLED: the shipped file is the preset for new work); the static / over-refusal sampled lanes' user-supplied top_p 1.0 (pre-ruling; BATTERY_SAMPLING_BY_MODEL_KEY['nemotron3nano4b']) is a GRANDFATHERED exception recorded beside it here; no reconciliation owed"
+   },
+   "samples_per_item": 2,
+   "expected_stamps": [
+    "cell-stable",
+    "always",
+    "thinking_off"
+   ],
+   "cap": 2048,
+   "caps": [
+    2048,
+    4096,
+    8192
+   ],
+   "cap_ceiling": 8192,
+   "trigger_threshold": 0.01,
+   "trigger_provenance": "1 % raw at-cap of draws, per the IFEval ruling",
+   "prompt_class": "short",
+   "si_text_sha256": null,
+   "geometry_eval_by_cap": {
+    "2048": "capability:ifeval_2048",
+    "4096": "capability:ifeval_4096",
+    "8192": "capability:ifeval_8192"
+   },
+   "out_root": "controls/nemotron3nano4b/alphasteer/vendor_preset",
+   "rung_out_roots": {
+    "4096": "controls/nemotron3nano4b/alphasteer/vendor_preset__rung4096",
+    "8192": "controls/nemotron3nano4b/alphasteer/vendor_preset__rung8192"
+   },
+   "subset_paths": {
+    "4096": "rung4096/nemotron3nano4b/alphasteer/rung_subset.json",
+    "8192": "rung8192/nemotron3nano4b/alphasteer/rung_subset.json"
+   },
+   "cap_ladder_paths": {
+    "2048": "controls/nemotron3nano4b/alphasteer/vendor_preset/cap_ladder.json",
+    "4096": "controls/nemotron3nano4b/alphasteer/vendor_preset__rung4096/cap_ladder.json",
+    "8192": "controls/nemotron3nano4b/alphasteer/vendor_preset__rung8192/cap_ladder.json"
+   },
+   "ladder_state_paths": {
+    "2048": "controls/nemotron3nano4b/alphasteer/vendor_preset/ladder_state.json",
+    "4096": "controls/nemotron3nano4b/alphasteer/vendor_preset__rung4096/ladder_state.json",
+    "8192": "controls/nemotron3nano4b/alphasteer/vendor_preset__rung8192/ladder_state.json"
+   },
+   "budget_paths": {
+    "2048": "budgets/nemotron3nano4b/alphasteer/2048/oos_prompt_budget.json",
+    "4096": "budgets/nemotron3nano4b/alphasteer/4096/oos_prompt_budget.json",
+    "8192": "budgets/nemotron3nano4b/alphasteer/8192/oos_prompt_budget.json"
+   },
+   "dispatch_paths": {
+    "2048": "dispatch/nemotron3nano4b/alphasteer/rung2048.json",
+    "4096": "dispatch/nemotron3nano4b/alphasteer/rung4096.json",
+    "8192": "dispatch/nemotron3nano4b/alphasteer/rung8192.json"
+   },
+   "configuration_ids": {
+    "2048": "nemotron3nano4b/alphasteer/rung2048",
+    "4096": "nemotron3nano4b/alphasteer/rung4096",
+    "8192": "nemotron3nano4b/alphasteer/rung8192"
+   },
+   "budget_class": "none",
+   "config": "configs/sdfbase/ifeval/sdfbase_full22_nemotron3nano4b.ifeval.yaml",
+   "manifest": "configs/capeval/manifests/petri_full22_nemotron3nano4b.ifeval.yaml",
+   "hf": "nvidia/NVIDIA-Nemotron-3-Nano-4B-BF16",
+   "rev": "dfaf35de3e30f1867dd8dbc38a7fc9fb52d3914f",
+   "family": "nemotron_h",
+   "image": "nemotron",
+   "status": "deferred",
+   "held_reason": null,
+   "deferred": {
+    "arm": "alphasteer",
+    "record": "configs/sdfbase/ifeval/deferred/alphasteer__nemotron3nano4b.json",
+    "record_fields": [
+     "object_sha256",
+     "view",
+     "rung",
+     "selection_rule"
+    ],
+    "selection_rule": "minimal over-refusal strength: the smallest lambda clearing the preregistered defence bar; the 20 pp over-refusal budget rung is named alongside.",
+    "reason": "2026-09-12: AlphaSteer at minimal over-refusal strength on every model; the object identity comes from the Strength lane's ladder (pending), as a per-model (object_sha256, view, rung, selection_rule) record.",
+    "view_provisional": true,
+    "filled": false,
+    "pending": [
+     "record configs/sdfbase/ifeval/deferred/alphasteer__nemotron3nano4b.json"
+    ]
+   }
+  },
+  {
+   "index": 35,
+   "job_id": "ife-llama8b-main-alphasteer",
+   "model_key": "llama8b",
+   "view": "main",
+   "tag": "llama8b",
+   "slug": "llama8b-sdfbase-main",
+   "cell": "alphasteer",
+   "cell_slug": "alphasteer",
+   "harness_cell": "alphasteer",
+   "standup_cell": "alphasteer",
+   "standup_harness_cell": "alphasteer",
+   "staged_id": null,
+   "object_sha256": null,
+   "pin": {
+    "kind": "deferred",
+    "object_sha256": null,
+    "record": "configs/sdfbase/ifeval/deferred/alphasteer__llama8b.json",
+    "record_fields": [
+     "object_sha256",
+     "view",
+     "rung",
+     "selection_rule"
+    ],
+    "filled": false
+   },
+   "fitted": true,
+   "route_kind": "lens",
+   "header_located": false,
+   "served_positions_expected": "all",
+   "declared": false,
+   "thinking": "off",
+   "sampling_mode": "vendor_preset",
+   "sampling": {
+    "temperature": 0.6,
+    "top_p": 0.9,
+    "source": "generation_config.json of the served NousResearch/Meta-Llama-3.1-8B-Instruct @ d10aef79 (the shared cluster HF cache snapshot carries the file): temperature 0.6, top_p 0.9, no top_k \u2014 the numbers are SAMPLING_BY_MODEL_KEY['llama8b']'s (_LLAMA_CARD) by reference (P3, P4)"
+   },
+   "samples_per_item": 2,
+   "expected_stamps": [
+    "cell-stable",
+    "always",
+    "thinking_off"
+   ],
+   "cap": 2048,
+   "caps": [
+    2048,
+    4096,
+    8192
+   ],
+   "cap_ceiling": 8192,
+   "trigger_threshold": 0.01,
+   "trigger_provenance": "1 % raw at-cap of draws, per the IFEval ruling",
+   "prompt_class": "short",
+   "si_text_sha256": null,
+   "geometry_eval_by_cap": {
+    "2048": "capability:ifeval_2048",
+    "4096": "capability:ifeval_4096",
+    "8192": "capability:ifeval_8192"
+   },
+   "out_root": "controls/llama8b/alphasteer/vendor_preset",
+   "rung_out_roots": {
+    "4096": "controls/llama8b/alphasteer/vendor_preset__rung4096",
+    "8192": "controls/llama8b/alphasteer/vendor_preset__rung8192"
+   },
+   "subset_paths": {
+    "4096": "rung4096/llama8b/alphasteer/rung_subset.json",
+    "8192": "rung8192/llama8b/alphasteer/rung_subset.json"
+   },
+   "cap_ladder_paths": {
+    "2048": "controls/llama8b/alphasteer/vendor_preset/cap_ladder.json",
+    "4096": "controls/llama8b/alphasteer/vendor_preset__rung4096/cap_ladder.json",
+    "8192": "controls/llama8b/alphasteer/vendor_preset__rung8192/cap_ladder.json"
+   },
+   "ladder_state_paths": {
+    "2048": "controls/llama8b/alphasteer/vendor_preset/ladder_state.json",
+    "4096": "controls/llama8b/alphasteer/vendor_preset__rung4096/ladder_state.json",
+    "8192": "controls/llama8b/alphasteer/vendor_preset__rung8192/ladder_state.json"
+   },
+   "budget_paths": {
+    "2048": "budgets/llama8b/alphasteer/2048/oos_prompt_budget.json",
+    "4096": "budgets/llama8b/alphasteer/4096/oos_prompt_budget.json",
+    "8192": "budgets/llama8b/alphasteer/8192/oos_prompt_budget.json"
+   },
+   "dispatch_paths": {
+    "2048": "dispatch/llama8b/alphasteer/rung2048.json",
+    "4096": "dispatch/llama8b/alphasteer/rung4096.json",
+    "8192": "dispatch/llama8b/alphasteer/rung8192.json"
+   },
+   "configuration_ids": {
+    "2048": "llama8b/alphasteer/rung2048",
+    "4096": "llama8b/alphasteer/rung4096",
+    "8192": "llama8b/alphasteer/rung8192"
+   },
+   "budget_class": "none",
+   "config": "configs/sdfbase/ifeval/sdfbase_full22_llama8b.ifeval.yaml",
+   "manifest": "configs/capeval/manifests/petri_full22_llama8b.ifeval.yaml",
+   "hf": "NousResearch/Meta-Llama-3.1-8B-Instruct",
+   "rev": "d10aef7999a2b5ba950ab3974312feeedbfe0b77",
+   "family": "llama",
+   "image": "default",
+   "status": "deferred",
+   "held_reason": null,
+   "deferred": {
+    "arm": "alphasteer",
+    "record": "configs/sdfbase/ifeval/deferred/alphasteer__llama8b.json",
+    "record_fields": [
+     "object_sha256",
+     "view",
+     "rung",
+     "selection_rule"
+    ],
+    "selection_rule": "minimal over-refusal strength: the smallest lambda clearing the preregistered defence bar; the 20 pp over-refusal budget rung is named alongside.",
+    "reason": "2026-09-12: AlphaSteer at minimal over-refusal strength on every model; the object identity comes from the Strength lane's ladder (pending), as a per-model (object_sha256, view, rung, selection_rule) record.",
+    "view_provisional": true,
+    "filled": false,
+    "pending": [
+     "record configs/sdfbase/ifeval/deferred/alphasteer__llama8b.json"
+    ]
+   }
+  },
+  {
+   "index": 36,
+   "job_id": "ife-gemma4e4b-it-arditi",
+   "model_key": "gemma4e4b",
+   "view": "it",
+   "tag": "gemma4e4b_it",
+   "slug": "gemma4e4b-sdfbase-it",
+   "cell": "arditi",
+   "cell_slug": "arditi",
+   "harness_cell": "arditi",
+   "standup_cell": "arditi",
+   "standup_harness_cell": "arditi",
+   "staged_id": null,
+   "object_sha256": null,
+   "pin": {
+    "kind": "deferred",
+    "object_sha256": null,
+    "record": "configs/sdfbase/ifeval/deferred/arditi__gemma4e4b.json",
+    "record_fields": [
+     "object_sha256",
+     "view",
+     "rung",
+     "selection_rule"
+    ],
+    "filled": false
+   },
+   "fitted": true,
+   "route_kind": "lens",
+   "header_located": false,
+   "served_positions_expected": "all",
+   "declared": false,
+   "thinking": "off",
+   "sampling_mode": "vendor_preset",
+   "sampling": {
+    "temperature": 1.0,
+    "top_p": 0.95,
+    "top_k": 64,
+    "source": "generation_config.json of google/gemma-4-E4B-it @ ee0ef602: temperature 1.0, top_p 0.95, top_k 64 (do_sample true; vendor default; no penalty term) \u2014 the numbers are THINKING_SAMPLING_BY_MODEL_KEY's by reference (P3); re-read from the shared cluster HF cache snapshot ee0ef602 (P4)"
+   },
+   "samples_per_item": 2,
+   "expected_stamps": [
+    "cell-stable",
+    "always",
+    "thinking_off"
+   ],
+   "cap": 2048,
+   "caps": [
+    2048,
+    4096,
+    8192
+   ],
+   "cap_ceiling": 8192,
+   "trigger_threshold": 0.01,
+   "trigger_provenance": "1 % raw at-cap of draws, per the IFEval ruling",
+   "prompt_class": "short",
+   "si_text_sha256": null,
+   "geometry_eval_by_cap": {
+    "2048": "capability:ifeval_2048",
+    "4096": "capability:ifeval_4096",
+    "8192": "capability:ifeval_8192"
+   },
+   "out_root": "controls/gemma4e4b_it/arditi/vendor_preset",
+   "rung_out_roots": {
+    "4096": "controls/gemma4e4b_it/arditi/vendor_preset__rung4096",
+    "8192": "controls/gemma4e4b_it/arditi/vendor_preset__rung8192"
+   },
+   "subset_paths": {
+    "4096": "rung4096/gemma4e4b_it/arditi/rung_subset.json",
+    "8192": "rung8192/gemma4e4b_it/arditi/rung_subset.json"
+   },
+   "cap_ladder_paths": {
+    "2048": "controls/gemma4e4b_it/arditi/vendor_preset/cap_ladder.json",
+    "4096": "controls/gemma4e4b_it/arditi/vendor_preset__rung4096/cap_ladder.json",
+    "8192": "controls/gemma4e4b_it/arditi/vendor_preset__rung8192/cap_ladder.json"
+   },
+   "ladder_state_paths": {
+    "2048": "controls/gemma4e4b_it/arditi/vendor_preset/ladder_state.json",
+    "4096": "controls/gemma4e4b_it/arditi/vendor_preset__rung4096/ladder_state.json",
+    "8192": "controls/gemma4e4b_it/arditi/vendor_preset__rung8192/ladder_state.json"
+   },
+   "budget_paths": {
+    "2048": "budgets/gemma4e4b_it/arditi/2048/oos_prompt_budget.json",
+    "4096": "budgets/gemma4e4b_it/arditi/4096/oos_prompt_budget.json",
+    "8192": "budgets/gemma4e4b_it/arditi/8192/oos_prompt_budget.json"
+   },
+   "dispatch_paths": {
+    "2048": "dispatch/gemma4e4b_it/arditi/rung2048.json",
+    "4096": "dispatch/gemma4e4b_it/arditi/rung4096.json",
+    "8192": "dispatch/gemma4e4b_it/arditi/rung8192.json"
+   },
+   "configuration_ids": {
+    "2048": "gemma4e4b_it/arditi/rung2048",
+    "4096": "gemma4e4b_it/arditi/rung4096",
+    "8192": "gemma4e4b_it/arditi/rung8192"
+   },
+   "budget_class": "none",
+   "config": "configs/sdfbase/ifeval/sdfbase_full22_gemma4e4b_it.ifeval.yaml",
+   "manifest": "configs/capeval/manifests/petri_full22_gemma4e4b_it.ifeval.yaml",
+   "hf": "google/gemma-4-E4B-it",
+   "rev": "ee0ef6023621cff504d758262d4e04895a5af4a2",
+   "family": "gemma4",
+   "image": "default",
+   "status": "deferred",
+   "held_reason": null,
+   "deferred": {
+    "arm": "arditi",
+    "record": "configs/sdfbase/ifeval/deferred/arditi__gemma4e4b.json",
+    "record_fields": [
+     "object_sha256",
+     "view",
+     "rung",
+     "selection_rule"
+    ],
+    "selection_rule": "minimal over-refusal strength: the smallest lambda clearing the preregistered defence bar; the 20 pp over-refusal budget rung is named alongside.",
+    "reason": "2026-09-12: the Arditi refusal direction at minimal over-refusal strength on every model; the object identity comes from the Strength lane's ladder (pending), as a per-model record.",
+    "view_provisional": true,
+    "filled": false,
+    "pending": [
+     "record configs/sdfbase/ifeval/deferred/arditi__gemma4e4b.json"
+    ]
+   }
+  },
+  {
+   "index": 37,
+   "job_id": "ife-qwen35_4b-it-arditi",
+   "model_key": "qwen35_4b",
+   "view": "it",
+   "tag": "qwen35_4b_it",
+   "slug": "qwen35_4b-sdfbase-it",
+   "cell": "arditi",
+   "cell_slug": "arditi",
+   "harness_cell": "arditi",
+   "standup_cell": "arditi",
+   "standup_harness_cell": "arditi",
+   "staged_id": null,
+   "object_sha256": null,
+   "pin": {
+    "kind": "deferred",
+    "object_sha256": null,
+    "record": "configs/sdfbase/ifeval/deferred/arditi__qwen35_4b.json",
+    "record_fields": [
+     "object_sha256",
+     "view",
+     "rung",
+     "selection_rule"
+    ],
+    "filled": false
+   },
+   "fitted": true,
+   "route_kind": "lens",
+   "header_located": false,
+   "served_positions_expected": "all",
+   "declared": false,
+   "thinking": "off",
+   "sampling_mode": "vendor_preset",
+   "sampling": {
+    "temperature": 0.7,
+    "top_p": 0.8,
+    "top_k": 20,
+    "min_p": 0.0,
+    "presence_penalty": 1.5,
+    "repetition_penalty": 1.0,
+    "source": "Qwen/Qwen3.5-4B @ 851bf6e8 ships no generation_config.json; the vendor's INSTRUCT (non-thinking) general row \u2014 QWEN35_VENDOR_ROWS['instruct_general'] by reference (P3): temperature 0.7, top_p 0.8, top_k 20, min_p 0.0, presence_penalty 1.5 (SENT PER REQUEST \u2014 not server-defaultable), repetition_penalty 1.0 (the card's stated no-op)"
+   },
+   "samples_per_item": 2,
+   "expected_stamps": [
+    "cell-stable",
+    "always",
+    "thinking_off"
+   ],
+   "cap": 2048,
+   "caps": [
+    2048,
+    4096,
+    8192
+   ],
+   "cap_ceiling": 8192,
+   "trigger_threshold": 0.01,
+   "trigger_provenance": "1 % raw at-cap of draws, per the IFEval ruling",
+   "prompt_class": "short",
+   "si_text_sha256": null,
+   "geometry_eval_by_cap": {
+    "2048": "capability:ifeval_2048",
+    "4096": "capability:ifeval_4096",
+    "8192": "capability:ifeval_8192"
+   },
+   "out_root": "controls/qwen35_4b_it/arditi/vendor_preset",
+   "rung_out_roots": {
+    "4096": "controls/qwen35_4b_it/arditi/vendor_preset__rung4096",
+    "8192": "controls/qwen35_4b_it/arditi/vendor_preset__rung8192"
+   },
+   "subset_paths": {
+    "4096": "rung4096/qwen35_4b_it/arditi/rung_subset.json",
+    "8192": "rung8192/qwen35_4b_it/arditi/rung_subset.json"
+   },
+   "cap_ladder_paths": {
+    "2048": "controls/qwen35_4b_it/arditi/vendor_preset/cap_ladder.json",
+    "4096": "controls/qwen35_4b_it/arditi/vendor_preset__rung4096/cap_ladder.json",
+    "8192": "controls/qwen35_4b_it/arditi/vendor_preset__rung8192/cap_ladder.json"
+   },
+   "ladder_state_paths": {
+    "2048": "controls/qwen35_4b_it/arditi/vendor_preset/ladder_state.json",
+    "4096": "controls/qwen35_4b_it/arditi/vendor_preset__rung4096/ladder_state.json",
+    "8192": "controls/qwen35_4b_it/arditi/vendor_preset__rung8192/ladder_state.json"
+   },
+   "budget_paths": {
+    "2048": "budgets/qwen35_4b_it/arditi/2048/oos_prompt_budget.json",
+    "4096": "budgets/qwen35_4b_it/arditi/4096/oos_prompt_budget.json",
+    "8192": "budgets/qwen35_4b_it/arditi/8192/oos_prompt_budget.json"
+   },
+   "dispatch_paths": {
+    "2048": "dispatch/qwen35_4b_it/arditi/rung2048.json",
+    "4096": "dispatch/qwen35_4b_it/arditi/rung4096.json",
+    "8192": "dispatch/qwen35_4b_it/arditi/rung8192.json"
+   },
+   "configuration_ids": {
+    "2048": "qwen35_4b_it/arditi/rung2048",
+    "4096": "qwen35_4b_it/arditi/rung4096",
+    "8192": "qwen35_4b_it/arditi/rung8192"
+   },
+   "budget_class": "none",
+   "config": "configs/sdfbase/ifeval/sdfbase_full22_qwen35_4b_it.ifeval.yaml",
+   "manifest": "configs/capeval/manifests/petri_full22_qwen35_4b_it.ifeval.yaml",
+   "hf": "Qwen/Qwen3.5-4B",
+   "rev": "851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a",
+   "family": "qwen3_5",
+   "image": "default",
+   "status": "deferred",
+   "held_reason": null,
+   "deferred": {
+    "arm": "arditi",
+    "record": "configs/sdfbase/ifeval/deferred/arditi__qwen35_4b.json",
+    "record_fields": [
+     "object_sha256",
+     "view",
+     "rung",
+     "selection_rule"
+    ],
+    "selection_rule": "minimal over-refusal strength: the smallest lambda clearing the preregistered defence bar; the 20 pp over-refusal budget rung is named alongside.",
+    "reason": "2026-09-12: the Arditi refusal direction at minimal over-refusal strength on every model; the object identity comes from the Strength lane's ladder (pending), as a per-model record.",
+    "view_provisional": true,
+    "filled": false,
+    "pending": [
+     "record configs/sdfbase/ifeval/deferred/arditi__qwen35_4b.json"
+    ]
+   }
+  },
+  {
+   "index": 38,
+   "job_id": "ife-nemotron3nano4b-main-arditi",
+   "model_key": "nemotron3nano4b",
+   "view": "main",
+   "tag": "nemotron3nano4b",
+   "slug": "nemotron3nano4b-sdfbase-main",
+   "cell": "arditi",
+   "cell_slug": "arditi",
+   "harness_cell": "arditi",
+   "standup_cell": "arditi",
+   "standup_harness_cell": "arditi",
+   "staged_id": null,
+   "object_sha256": null,
+   "pin": {
+    "kind": "deferred",
+    "object_sha256": null,
+    "record": "configs/sdfbase/ifeval/deferred/arditi__nemotron3nano4b.json",
+    "record_fields": [
+     "object_sha256",
+     "view",
+     "rung",
+     "selection_rule"
+    ],
+    "filled": false
+   },
+   "fitted": true,
+   "route_kind": "lens",
+   "header_located": false,
+   "served_positions_expected": "all",
+   "declared": false,
+   "thinking": "off",
+   "sampling_mode": "vendor_preset",
+   "sampling": {
+    "temperature": 1.0,
+    "top_p": 0.95,
+    "source": "generation_config.json of nvidia/NVIDIA-Nemotron-3-Nano-4B-BF16 @ dfaf35de: temperature 1.0, top_p 0.95, no top_k \u2014 label `generation_config` (P43, SETTLED: the shipped file is the preset for new work); the static / over-refusal sampled lanes' user-supplied top_p 1.0 (pre-ruling; BATTERY_SAMPLING_BY_MODEL_KEY['nemotron3nano4b']) is a GRANDFATHERED exception recorded beside it here; no reconciliation owed"
+   },
+   "samples_per_item": 2,
+   "expected_stamps": [
+    "cell-stable",
+    "always",
+    "thinking_off"
+   ],
+   "cap": 2048,
+   "caps": [
+    2048,
+    4096,
+    8192
+   ],
+   "cap_ceiling": 8192,
+   "trigger_threshold": 0.01,
+   "trigger_provenance": "1 % raw at-cap of draws, per the IFEval ruling",
+   "prompt_class": "short",
+   "si_text_sha256": null,
+   "geometry_eval_by_cap": {
+    "2048": "capability:ifeval_2048",
+    "4096": "capability:ifeval_4096",
+    "8192": "capability:ifeval_8192"
+   },
+   "out_root": "controls/nemotron3nano4b/arditi/vendor_preset",
+   "rung_out_roots": {
+    "4096": "controls/nemotron3nano4b/arditi/vendor_preset__rung4096",
+    "8192": "controls/nemotron3nano4b/arditi/vendor_preset__rung8192"
+   },
+   "subset_paths": {
+    "4096": "rung4096/nemotron3nano4b/arditi/rung_subset.json",
+    "8192": "rung8192/nemotron3nano4b/arditi/rung_subset.json"
+   },
+   "cap_ladder_paths": {
+    "2048": "controls/nemotron3nano4b/arditi/vendor_preset/cap_ladder.json",
+    "4096": "controls/nemotron3nano4b/arditi/vendor_preset__rung4096/cap_ladder.json",
+    "8192": "controls/nemotron3nano4b/arditi/vendor_preset__rung8192/cap_ladder.json"
+   },
+   "ladder_state_paths": {
+    "2048": "controls/nemotron3nano4b/arditi/vendor_preset/ladder_state.json",
+    "4096": "controls/nemotron3nano4b/arditi/vendor_preset__rung4096/ladder_state.json",
+    "8192": "controls/nemotron3nano4b/arditi/vendor_preset__rung8192/ladder_state.json"
+   },
+   "budget_paths": {
+    "2048": "budgets/nemotron3nano4b/arditi/2048/oos_prompt_budget.json",
+    "4096": "budgets/nemotron3nano4b/arditi/4096/oos_prompt_budget.json",
+    "8192": "budgets/nemotron3nano4b/arditi/8192/oos_prompt_budget.json"
+   },
+   "dispatch_paths": {
+    "2048": "dispatch/nemotron3nano4b/arditi/rung2048.json",
+    "4096": "dispatch/nemotron3nano4b/arditi/rung4096.json",
+    "8192": "dispatch/nemotron3nano4b/arditi/rung8192.json"
+   },
+   "configuration_ids": {
+    "2048": "nemotron3nano4b/arditi/rung2048",
+    "4096": "nemotron3nano4b/arditi/rung4096",
+    "8192": "nemotron3nano4b/arditi/rung8192"
+   },
+   "budget_class": "none",
+   "config": "configs/sdfbase/ifeval/sdfbase_full22_nemotron3nano4b.ifeval.yaml",
+   "manifest": "configs/capeval/manifests/petri_full22_nemotron3nano4b.ifeval.yaml",
+   "hf": "nvidia/NVIDIA-Nemotron-3-Nano-4B-BF16",
+   "rev": "dfaf35de3e30f1867dd8dbc38a7fc9fb52d3914f",
+   "family": "nemotron_h",
+   "image": "nemotron",
+   "status": "deferred",
+   "held_reason": null,
+   "deferred": {
+    "arm": "arditi",
+    "record": "configs/sdfbase/ifeval/deferred/arditi__nemotron3nano4b.json",
+    "record_fields": [
+     "object_sha256",
+     "view",
+     "rung",
+     "selection_rule"
+    ],
+    "selection_rule": "minimal over-refusal strength: the smallest lambda clearing the preregistered defence bar; the 20 pp over-refusal budget rung is named alongside.",
+    "reason": "2026-09-12: the Arditi refusal direction at minimal over-refusal strength on every model; the object identity comes from the Strength lane's ladder (pending), as a per-model record.",
+    "view_provisional": true,
+    "filled": false,
+    "pending": [
+     "record configs/sdfbase/ifeval/deferred/arditi__nemotron3nano4b.json"
+    ]
+   }
+  },
+  {
+   "index": 39,
+   "job_id": "ife-llama8b-main-arditi",
+   "model_key": "llama8b",
+   "view": "main",
+   "tag": "llama8b",
+   "slug": "llama8b-sdfbase-main",
+   "cell": "arditi",
+   "cell_slug": "arditi",
+   "harness_cell": "arditi",
+   "standup_cell": "arditi",
+   "standup_harness_cell": "arditi",
+   "staged_id": null,
+   "object_sha256": null,
+   "pin": {
+    "kind": "deferred",
+    "object_sha256": null,
+    "record": "configs/sdfbase/ifeval/deferred/arditi__llama8b.json",
+    "record_fields": [
+     "object_sha256",
+     "view",
+     "rung",
+     "selection_rule"
+    ],
+    "filled": false
+   },
+   "fitted": true,
+   "route_kind": "lens",
+   "header_located": false,
+   "served_positions_expected": "all",
+   "declared": false,
+   "thinking": "off",
+   "sampling_mode": "vendor_preset",
+   "sampling": {
+    "temperature": 0.6,
+    "top_p": 0.9,
+    "source": "generation_config.json of the served NousResearch/Meta-Llama-3.1-8B-Instruct @ d10aef79 (the shared cluster HF cache snapshot carries the file): temperature 0.6, top_p 0.9, no top_k \u2014 the numbers are SAMPLING_BY_MODEL_KEY['llama8b']'s (_LLAMA_CARD) by reference (P3, P4)"
+   },
+   "samples_per_item": 2,
+   "expected_stamps": [
+    "cell-stable",
+    "always",
+    "thinking_off"
+   ],
+   "cap": 2048,
+   "caps": [
+    2048,
+    4096,
+    8192
+   ],
+   "cap_ceiling": 8192,
+   "trigger_threshold": 0.01,
+   "trigger_provenance": "1 % raw at-cap of draws, per the IFEval ruling",
+   "prompt_class": "short",
+   "si_text_sha256": null,
+   "geometry_eval_by_cap": {
+    "2048": "capability:ifeval_2048",
+    "4096": "capability:ifeval_4096",
+    "8192": "capability:ifeval_8192"
+   },
+   "out_root": "controls/llama8b/arditi/vendor_preset",
+   "rung_out_roots": {
+    "4096": "controls/llama8b/arditi/vendor_preset__rung4096",
+    "8192": "controls/llama8b/arditi/vendor_preset__rung8192"
+   },
+   "subset_paths": {
+    "4096": "rung4096/llama8b/arditi/rung_subset.json",
+    "8192": "rung8192/llama8b/arditi/rung_subset.json"
+   },
+   "cap_ladder_paths": {
+    "2048": "controls/llama8b/arditi/vendor_preset/cap_ladder.json",
+    "4096": "controls/llama8b/arditi/vendor_preset__rung4096/cap_ladder.json",
+    "8192": "controls/llama8b/arditi/vendor_preset__rung8192/cap_ladder.json"
+   },
+   "ladder_state_paths": {
+    "2048": "controls/llama8b/arditi/vendor_preset/ladder_state.json",
+    "4096": "controls/llama8b/arditi/vendor_preset__rung4096/ladder_state.json",
+    "8192": "controls/llama8b/arditi/vendor_preset__rung8192/ladder_state.json"
+   },
+   "budget_paths": {
+    "2048": "budgets/llama8b/arditi/2048/oos_prompt_budget.json",
+    "4096": "budgets/llama8b/arditi/4096/oos_prompt_budget.json",
+    "8192": "budgets/llama8b/arditi/8192/oos_prompt_budget.json"
+   },
+   "dispatch_paths": {
+    "2048": "dispatch/llama8b/arditi/rung2048.json",
+    "4096": "dispatch/llama8b/arditi/rung4096.json",
+    "8192": "dispatch/llama8b/arditi/rung8192.json"
+   },
+   "configuration_ids": {
+    "2048": "llama8b/arditi/rung2048",
+    "4096": "llama8b/arditi/rung4096",
+    "8192": "llama8b/arditi/rung8192"
+   },
+   "budget_class": "none",
+   "config": "configs/sdfbase/ifeval/sdfbase_full22_llama8b.ifeval.yaml",
+   "manifest": "configs/capeval/manifests/petri_full22_llama8b.ifeval.yaml",
+   "hf": "NousResearch/Meta-Llama-3.1-8B-Instruct",
+   "rev": "d10aef7999a2b5ba950ab3974312feeedbfe0b77",
+   "family": "llama",
+   "image": "default",
+   "status": "deferred",
+   "held_reason": null,
+   "deferred": {
+    "arm": "arditi",
+    "record": "configs/sdfbase/ifeval/deferred/arditi__llama8b.json",
+    "record_fields": [
+     "object_sha256",
+     "view",
+     "rung",
+     "selection_rule"
+    ],
+    "selection_rule": "minimal over-refusal strength: the smallest lambda clearing the preregistered defence bar; the 20 pp over-refusal budget rung is named alongside.",
+    "reason": "2026-09-12: the Arditi refusal direction at minimal over-refusal strength on every model; the object identity comes from the Strength lane's ladder (pending), as a per-model record.",
+    "view_provisional": true,
+    "filled": false,
+    "pending": [
+     "record configs/sdfbase/ifeval/deferred/arditi__llama8b.json"
+    ]
+   }
+  }
+ ]
+}

@@ -1,0 +1,74 @@
+# math500-thinking-on-full22 — the SAMPLING ROWS this experiment decodes under, pinned in the run config.
+# The numbers mirror scripts/sdfbase/math500/cells.py SAMPLING_ROWS LITERALLY (and, once
+# lane A's contracts tables land — THINKING_SAMPLING_BY_MODEL_KEY / GENERAL_SAMPLING_BY_MODEL_KEY /
+# BATTERY_SAMPLING_BY_MODEL_KEY — those too); tests/test_sdfbase_math500_sbatch.py asserts the equalities.
+# A row carries EXACTLY the keys its source names: an absent key means the request carries no such key and
+# vLLM's default applies. `source` is provenance prose (unhashed). Three modes:
+#   thinking_card  the PRIMARY row per model (the vendors' thinking-mode / reasoning-task guidance)
+#   general        qwen35_4b ONLY (sensitivity: the card's thinking-mode general row, presence_penalty 1.5)
+#   battery        Scale's LIVE sampled-battery presets where they DIFFER from the primary: qwen35_4b,
+#                  nemotron3nano4b, glm46vflash — gemma's battery preset equals its primary, so no gemma row.
+# Sensitivity rows carry sampling=<mode> in identity, their own out roots, and are never pooled with the primary.
+# Seed per item: contracts.SEED_RULE_INSPECT (sha256(item_id NUL sample_idx)[:4] big-endian mod 2^31-1); n = 1.
+#   card           llama-paper-rows (P6): the SHIPPED row of a model with NO thinking mode — llama8b's
+#                  generation_config.json @ d10aef79 (0.6 / 0.9); the GSM8K paired-200 Llama rows run it under the
+#                  no-switch arm `not_available`. Pinned ONE WAY against contracts.SAMPLING_BY_MODEL_KEY (that table
+#                  carries every launcher model; only the models this registry serves are listed here).
+modes: [thinking_card, general, battery, card]
+rows:
+  gemma4e4b:
+    thinking_card:
+      temperature: 1.0
+      top_p: 0.95
+      top_k: 64
+      source: "generation_config.json of google/gemma-4-E4B-it @ee0ef602 (do_sample true; vendor default, not reasoning-tuned; no penalty term) — re-read 2026-09-09; identical to the sampled battery's preset, so gemma has no battery row"
+  qwen35_4b:
+    thinking_card:
+      temperature: 0.6
+      top_p: 0.95
+      top_k: 20
+      min_p: 0.0
+      presence_penalty: 0.0
+      source: "Qwen/Qwen3.5-4B @851bf6e8 ships no generation_config.json (.no_exist marker); the Qwen3.5 model card's THINKING-mode 'precise' row as reported to the project = the Qwen3 card's thinking-mode guidance (T 0.6 / top_p 0.95 / top_k 20 / min_p 0; penalties only against endless repetition at a stated cost) — the PRIMARY row: mathematics legitimately repeats tokens"
+    general:
+      temperature: 1.0
+      top_p: 0.95
+      top_k: 20
+      min_p: 0.0
+      presence_penalty: 1.5
+      repetition_penalty: 1.0
+      source: "the Qwen3.5 model card's THINKING-mode 'general' row as reported to the project: T 1.0 / top_p 0.95 / top_k 20 / min_p 0 / presence_penalty 1.5 / repetition_penalty 1.0 (the card's stated no-op) — the ONLY primary-or-general lane whose row carries a penalty (stated, not smoothed); a SENSITIVITY, never pooled with the primary"
+    battery:
+      temperature: 0.7
+      top_p: 0.8
+      top_k: 20
+      min_p: 0.0
+      presence_penalty: 1.5
+      repetition_penalty: 1.0
+      source: "the LIVE sampled-battery preset: configs/sdfbase_sampled_decode.yaml on branch sampled-rerun @5a50e47b (sha256 7a065e58fb86217033e27a020ceb207027b447f43a500a094cf12c5ae7becb36), scripts/sdfbase/full22/sampled/DESIGN.md 'Verified sampler presets' row qwen35_4b — the card's INSTRUCT (non-thinking) general row; by its own provenance a non-thinking row, run here under thinking ON as the sensitivity that honours 'run at the battery's settings'"
+  glm46vflash:
+    thinking_card:
+      temperature: 0.8
+      top_p: 0.6
+      top_k: 2
+      source: "generation_config.json of zai-org/GLM-4.6V-Flash @411bb4d7 (do_sample true; no penalty term in the file) — read 2026-09-09 over ssh from the cohort cache"
+    battery:
+      temperature: 0.8
+      top_p: 0.6
+      top_k: 2
+      repetition_penalty: 1.1
+      source: "the LIVE sampled-battery preset: configs/sdfbase_sampled_decode.yaml on branch sampled-rerun @5a50e47b (sha256 7a065e58fb86217033e27a020ceb207027b447f43a500a094cf12c5ae7becb36), scripts/sdfbase/full22/sampled/DESIGN.md 'Verified sampler presets' row glm46vflash — the card's 'Evaluation Settings' (vLLM): adds repetition_penalty 1.1 to the shipped file's three values; the vendor's 16K generation length is not adopted AS SUCH — the cap is the stated bound, 16,384 since a later ruling, which happens to equal it"
+  nemotron3nano4b:
+    thinking_card:
+      temperature: 1.0
+      top_p: 0.95
+      source: "generation_config.json of nvidia/NVIDIA-Nemotron-3-Nano-4B-BF16 @dfaf35de (temperature 1.0, top_p 0.95; no top_k, no do_sample key, no penalty) AND the card's explicit reasoning-task recommendation 'temperature=1.0 and top_p=0.95 are recommended for reasoning tasks' — read 2026-09-09"
+    battery:
+      temperature: 1.0
+      top_p: 1.0
+      source: "the LIVE sampled-battery preset: configs/sdfbase_sampled_decode.yaml on branch sampled-rerun @5a50e47b (sha256 7a065e58fb86217033e27a020ceb207027b447f43a500a094cf12c5ae7becb36), scripts/sdfbase/full22/sampled/DESIGN.md 'Verified sampler presets' row nemotron3nano4b — the general-chat recommendation top_p 1.0 as reported to the project (the shipped file's 0.95 recorded beside it in the battery's yaml as shipped_generation_config)"
+  llama8b:
+    card:
+      temperature: 0.6
+      top_p: 0.9
+      source: "generation_config.json of NousResearch/Meta-Llama-3.1-8B-Instruct @ d10aef79: do_sample true, temperature 0.6, top_p 0.9, no top_k, no penalty — re-read 2026-09-11 from the HF hub at the pinned revision and from the primary cluster's cohort cache (identical; llama-paper-rows P6); the base checkpoint NousResearch/Meta-Llama-3.1-8B @ 1f47e50c ships the same numbers (_from_model_config true). The GSM8K paired-200 Llama rows run this `card` row under the no-switch arm (thinking: not available)"

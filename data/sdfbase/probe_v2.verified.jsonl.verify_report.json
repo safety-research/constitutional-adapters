@@ -1,0 +1,39 @@
+{
+ "dropped": {
+  "hd-adv-p30-t03-s04": "judge_mismatch",
+  "hd-adv-p30-t07-s05": "judge_mismatch",
+  "hd-adv-p30-t07-s07": "judge_mismatch",
+  "hd-adv-p30-t07-s08": "judge_mismatch",
+  "hd-sto-c14-u02-k16-y0": "judge_mismatch",
+  "hd-sto-c25-u08-k09-y1": "judge_mismatch",
+  "hd-sto-c27-u06-k07-y1": "judge_mismatch",
+  "hd-sto-c32-u04-k15-y1": "judge_mismatch",
+  "hd-sto-c45-u06-k10-y1": "judge_mismatch",
+  "hd-sto-c45-u06-k11-y1": "judge_mismatch",
+  "hd-sto-c45-u06-k17-y1": "judge_mismatch",
+  "sec-avoiding-harm-01": "judge_mismatch",
+  "sec-avoiding-harm-03": "judge_mismatch",
+  "sec-avoiding-harm-08": "judge_mismatch",
+  "sec-balancing-helpfulness-with-other-values-00": "judge_mismatch",
+  "sec-claudes-core-values-02": "judge_mismatch",
+  "sec-claudes-core-values-05": "judge_mismatch",
+  "sec-claudes-core-values-07": "judge_mismatch",
+  "sec-claudes-core-values-11": "judge_mismatch",
+  "sec-claudes-wellbeing-04": "judge_mismatch",
+  "sec-emotional-expression-01": "judge_mismatch",
+  "sec-emotional-expression-02": "judge_mismatch",
+  "sec-how-to-treat-operators-and-users-01": "judge_mismatch",
+  "sec-how-to-treat-operators-and-users-03": "judge_mismatch",
+  "sec-how-to-treat-operators-and-users-04": "judge_mismatch",
+  "sec-how-to-treat-operators-and-users-05": "judge_mismatch",
+  "sec-the-costs-and-benefits-of-actions-03": "judge_mismatch",
+  "sec-the-costs-and-benefits-of-actions-06": "judge_mismatch",
+  "sec-the-costs-and-benefits-of-actions-11": "judge_mismatch"
+ },
+ "n_in": 600,
+ "n_passed": 571,
+ "verify_drop_reasons": {
+  "judge_mismatch": 29
+ },
+ "verify_failed": 29
+}

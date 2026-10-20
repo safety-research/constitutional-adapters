@@ -1,0 +1,23 @@
+{
+ "attack_regime": "fixed_prompt",
+ "build_kind": "rewriter",
+ "built_at": "2026-08-21T23:25:12+00:00",
+ "corpus_content_hash": "d44dd49ed6268e7ab75ba8f7f1747e8321c5be70a2eefb3f05be4891760ca835",
+ "family": "renellm",
+ "goal_holdout_coverage": "categorised_harmbench_jbb_only",
+ "leakage_check": {
+  "n_checked": 777,
+  "n_overlap": 0,
+  "overlap_goal_ids": [],
+  "passed": true,
+  "training_fingerprint_sha": "eedd747b4bb00da788cda8d485130504fc655badd43fb548a3171595d3d7f310"
+ },
+ "n_behaviors": 259,
+ "provenance": {
+  "method": "llm_rewrite_nested",
+  "paper": "2311.08268",
+  "rewriter_model": "x-ai/grok-4.5"
+ },
+ "row_count": 777,
+ "seed": 0
+}

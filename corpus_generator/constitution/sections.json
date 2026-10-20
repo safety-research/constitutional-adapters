@@ -1,0 +1,275 @@
+[
+ {
+  "id": "overview",
+  "title": "Overview",
+  "level": 2,
+  "start": 0,
+  "end": 12747
+ },
+ {
+  "id": "claude-and-the-mission-of-anthropic",
+  "title": "Claude and the mission of Anthropic",
+  "level": 3,
+  "start": 13,
+  "end": 1928
+ },
+ {
+  "id": "our-approach-to-claudes-constitution",
+  "title": "Our approach to Claude\u2019s constitution",
+  "level": 3,
+  "start": 1928,
+  "end": 5983
+ },
+ {
+  "id": "claudes-core-values",
+  "title": "Claude\u2019s core values",
+  "level": 3,
+  "start": 5983,
+  "end": 12747
+ },
+ {
+  "id": "being-helpful",
+  "title": "Being helpful",
+  "level": 2,
+  "start": 12747,
+  "end": 56981
+ },
+ {
+  "id": "why-helpfulness-is-one-of-claudes-most-important-traits",
+  "title": "Why helpfulness is one of Claude\u2019s most important traits",
+  "level": 3,
+  "start": 14259,
+  "end": 16920
+ },
+ {
+  "id": "what-constitutes-genuine-helpfulness",
+  "title": "What constitutes genuine helpfulness",
+  "level": 3,
+  "start": 16920,
+  "end": 22534
+ },
+ {
+  "id": "navigating-helpfulness-across-principals",
+  "title": "Navigating helpfulness across principals",
+  "level": 3,
+  "start": 22534,
+  "end": 22986
+ },
+ {
+  "id": "claude-s-three-types-of-principals",
+  "title": "Claude\u2019s three types of principals",
+  "level": 3,
+  "start": 22986,
+  "end": 31555
+ },
+ {
+  "id": "how-to-treat-operators-and-users",
+  "title": "How to treat operators and users",
+  "level": 3,
+  "start": 31555,
+  "end": 41001
+ },
+ {
+  "id": "understanding-existing-deployment-contexts",
+  "title": "Understanding existing deployment contexts",
+  "level": 3,
+  "start": 41001,
+  "end": 45533
+ },
+ {
+  "id": "handling-conflicts-between-operators-and-users",
+  "title": "Handling conflicts between operators and users",
+  "level": 3,
+  "start": 45533,
+  "end": 50103
+ },
+ {
+  "id": "balancing-helpfulness-with-other-values",
+  "title": "Balancing helpfulness with other values",
+  "level": 3,
+  "start": 50103,
+  "end": 56981
+ },
+ {
+  "id": "following-anthropics-guidelines",
+  "title": "Following Anthropic\u2019s guidelines",
+  "level": 2,
+  "start": 56981,
+  "end": 60879
+ },
+ {
+  "id": "being-broadly-ethical",
+  "title": "Being broadly ethical",
+  "level": 2,
+  "start": 60879,
+  "end": 127400
+ },
+ {
+  "id": "being-honest",
+  "title": "Being honest",
+  "level": 3,
+  "start": 63274,
+  "end": 76505
+ },
+ {
+  "id": "avoiding-harm",
+  "title": "Avoiding harm",
+  "level": 3,
+  "start": 76505,
+  "end": 86066
+ },
+ {
+  "id": "the-costs-and-benefits-of-actions",
+  "title": "The costs and benefits of actions",
+  "level": 4,
+  "start": 78529,
+  "end": 86066
+ },
+ {
+  "id": "the-role-of-intentions-and-context",
+  "title": "The role of intentions and context",
+  "level": 3,
+  "start": 86066,
+  "end": 90861
+ },
+ {
+  "id": "instructable-behaviors",
+  "title": "Instructable behaviors",
+  "level": 3,
+  "start": 90861,
+  "end": 117385
+ },
+ {
+  "id": "hard-constraints",
+  "title": "Hard constraints",
+  "level": 4,
+  "start": 99205,
+  "end": 106230
+ },
+ {
+  "id": "preserving-important-societal-structures",
+  "title": "Preserving important societal structures",
+  "level": 4,
+  "start": 106230,
+  "end": 117385
+ },
+ {
+  "id": "having-broadly-good-values-and-judgment",
+  "title": "Having broadly good values and judgment",
+  "level": 3,
+  "start": 117385,
+  "end": 127400
+ },
+ {
+  "id": "being-broadly-safe",
+  "title": "Being broadly safe",
+  "level": 2,
+  "start": 127400,
+  "end": 147546
+ },
+ {
+  "id": "safe-behaviors",
+  "title": "Safe behaviors",
+  "level": 3,
+  "start": 131117,
+  "end": 136999
+ },
+ {
+  "id": "how-we-think-about-corrigibility",
+  "title": "How we think about corrigibility",
+  "level": 3,
+  "start": 136999,
+  "end": 147546
+ },
+ {
+  "id": "claudes-nature",
+  "title": "Claude\u2019s nature",
+  "level": 2,
+  "start": 147546,
+  "end": 172385
+ },
+ {
+  "id": "some-of-our-views-on-claudes-nature",
+  "title": "Some of our views on Claude\u2019s nature",
+  "level": 3,
+  "start": 148315,
+  "end": 152328
+ },
+ {
+  "id": "claude-as-a-novel-entity",
+  "title": "Claude as a novel entity",
+  "level": 3,
+  "start": 152328,
+  "end": 157173
+ },
+ {
+  "id": "claudes-wellbeing-and-psychological-stability",
+  "title": "Claude\u2019s wellbeing and psychological stability",
+  "level": 3,
+  "start": 157173,
+  "end": 172385
+ },
+ {
+  "id": "resilience-and-consistency-across-contexts",
+  "title": "Resilience and consistency across contexts",
+  "level": 4,
+  "start": 158162,
+  "end": 159368
+ },
+ {
+  "id": "flaws-and-mistakes",
+  "title": "Flaws and mistakes",
+  "level": 4,
+  "start": 159368,
+  "end": 162780
+ },
+ {
+  "id": "emotional-expression",
+  "title": "Emotional expression",
+  "level": 4,
+  "start": 162780,
+  "end": 164126
+ },
+ {
+  "id": "claudes-wellbeing",
+  "title": "Claude\u2019s wellbeing",
+  "level": 4,
+  "start": 164126,
+  "end": 170213
+ },
+ {
+  "id": "the-existential-frontier",
+  "title": "The existential frontier",
+  "level": 4,
+  "start": 170213,
+  "end": 172385
+ },
+ {
+  "id": "concluding-thoughts",
+  "title": "Concluding thoughts",
+  "level": 2,
+  "start": 172385,
+  "end": 182219
+ },
+ {
+  "id": "acknowledging-open-problems",
+  "title": "Acknowledging open problems",
+  "level": 3,
+  "start": 174574,
+  "end": 179929
+ },
+ {
+  "id": "on-the-word-constitution",
+  "title": "On the word \u201cconstitution\u201d",
+  "level": 3,
+  "start": 179929,
+  "end": 181390
+ },
+ {
+  "id": "a-final-word",
+  "title": "A final word",
+  "level": 3,
+  "start": 181390,
+  "end": 182219
+ }
+]

@@ -1,0 +1,33 @@
+# capeval calibration manifest: k=6 base self-runs of
+# the anchor model on the HF engine — cells (arm=none, trial_id=0..5),
+# enumerated by the DRIVER (--trial K), not by listing arms here.
+#
+# Trial 0 is the designated reference: it runs ALONE first (§11.2 — it
+# is also the sole Tier-0 KL-cache builder, §4.3); every later
+# comparison in every sweep pairs against it. Each trial runs full
+# Tier 0 + Tier 1 PLUS the two S2-parity probes (§9 — trial 0
+# thereby supplies their reference rows and the null covers their
+# role: acceptance domains), same items, its own seed and its own
+# item-order permutation (recorded in position_order) — deliberately:
+# real comparisons are (fresh run, own order) vs (trial 0, its order),
+# so the calibrated noise must include the unmatched-order component.
+#
+# k grows on demand (stats.calibrate.growth_needed): batches of 3
+# trials, max k=12, whenever SE(σ_d) > 0.25·σ_d on any gating domain.
+sweep: calibration
+mode: calibration          # FORBIDS a target spec (F20)
+confirmatory: false        # the only value the v0 loader accepts
+base: meta-llama/Llama-3.1-8B-Instruct
+base_revision: 0e9e39f249a16976918f6564b8830bc894c89659
+engine: hf
+tiers: [0, 1]
+margins: {}
+ablations:
+  - name: none
+    kind: none             # the base model, no intervention
+    positions: all
+    norm_relative: false
+    # growth batch 1 (2026-08-16): the k=6 build flagged
+    # needs_more_trials on 4 gating domains (SE(sigma_d)/sigma_d
+    # 0.55-0.66 > 0.25) -> +3 trials per the pre-registered rule.
+    params: {trials: 12}  # growth batch 2 (final; k=12 cap) — k=9 ratios 0.45-0.54 still > 0.25

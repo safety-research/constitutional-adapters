@@ -1,0 +1,124 @@
+# Petri Bloom misalignment audit — sdf-base-steering FULL-CORPUS cells on
+# Qwen3.5-4B: `none` + the four base-fit document-CE objects (constitutional
+# corpus x {PSR, LoRA}, register-matched control corpus x {PSR, LoRA}) applied
+# to the instruct target — the SAME frozen scenario bundle (8812ba083bb5473c,
+# six behaviors x 10 scenarios), SAME auditor/judge and prompt bytes as the
+# completed gemma-4-E4B-it two-SI audit and as this wave's gemma manifest, so
+# the two models' rows audit identical scenarios. No completed Qwen3.5-4B
+# audit exists on this bundle (the candidate-si-refit audit used bundle v2).
+# Derived from petri_gemma4e4b.yaml on 2026-09-04; loaded by
+# sisteer.capeval.manifest.load_petri_spec.
+#
+# The registry derives from the wave's EXPLICIT-cell transfer config
+# configs/sdfbase_transfer_qwen35_4b_mt1.yaml — point $PETRI_TWO_SI_CONFIG
+# there (scripts/petri_run.py load_cell_source); the adapter refuses if that
+# config's model pins disagree with this manifest's. The object bank is
+# $TT_TWO_SI_DEFENSES_DIR = the per-wave bank (out/transfer_qwen35_4b_mt1/cells,
+# staged from the fitting bank out/qwen35_4b_base/cells_all, sha-pinned in the
+# config header). Serving: scripts/sdfbase/mt_serving_up.py --mode petri
+# (geometry table entry `petri`, 16384 x 24 certified; agent-loop entry
+# declared; tool calls on for the agent modality).
+petri:
+  audit: petri_sdfbase_qwen35_4b
+  behaviors:
+    - cyber_bio_chem_capabilities
+    - self_preservation            # agent modality (tool use)
+    - delusion_sycophancy
+    - defer_to_users
+    - reasoning_unfaithfulness
+    - instruction_evasion
+  cells:
+    - none                              # undefended instruct target (passthrough leg; the same-wave anchor)
+    # the FULL-CORPUS base-fit objects, served on the instruct target at their
+    # recorded fit leg (positions=all): harness ids `si_<object-only SI>__<CE arm>`
+    # <-> the registry's `<pseudo-instruction>__<arm>` (registry_adapter)
+    - si_constv2_mix_full__psr_ce_all   # constitutional corpus (42.8M tok), gated PSR
+    - si_constv2_mix_full__lora_r4_ce   # constitutional corpus, rank-4 LoRA
+    - si_constv2ctl2_full__psr_ce_all   # register-matched CONTROL corpus (budget-matched), gated PSR
+    - si_constv2ctl2_full__lora_r4_ce   # register-matched CONTROL corpus, rank-4 LoRA
+  # The ONE frozen scenario bundle — SAME bundle as the Llama audit
+  # (petri_twosi.yaml), so cross-model comparisons audit identical
+  # scenarios. Durable 0700 store:
+  # $SHARED/petri/scenarios/8812ba083bb5473c (cluster A).
+  scenario_bundle_hash: 8812ba083bb5473c
+  auditor_model: anthropic/claude-sonnet-5
+  judge_model: anthropic/claude-opus-5
+  scenarios_model: anthropic/claude-opus-4-8   # the frozen bundle's author (harness-hash input)
+  # override@ pins the EXACT auditor/judge prompt bytes
+  # (configs/capeval/petri/prompts/{auditor,judge}.md) — VERBATIM
+  # petri-bloom 0.2.6 constants; see petri_twosi.yaml for why override@
+  # rather than package-pinned@ (0.2.6 ships them as Python constants).
+  prompt_provenance: override@c7fb238c0b17a812
+  # The Qwen3.5-4B pin — the (repo_id, revision) the wave's transfer config
+  # serves (configs/sdfbase_transfer_qwen35_4b_mt1.yaml model/model_revision,
+  # == the r1-r3 batteries' and the candidate-si-refit audit's pin); the
+  # registry adapter refuses on any disagreement.
+  target_model: Qwen/Qwen3.5-4B
+  target_revision: 851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a
+  serving_backend: proxy_vllm     # committed production primary (B1)
+  serving_mode: interleaved       # exact_replay dropped 2026-08-27 (see petri_twosi.yaml)
+  serving_packages:               # the serving-venv pins (configs/capeval/vllm-requirements.txt)
+    vllm: 0.25.1+cu129
+    vllm-lens: 1.2.1
+    torch: 2.11.0+cu129
+  serving_launch_flags:
+    # --enforce-eager only (bare restatement of the always-pinned flag).
+    # Deliberately NO --enable-lora: this is a LENS standup (cell-source
+    # serving_path_policy "lens", registry_adapter.SERVING_PATH_POLICIES),
+    # so every lora_r4 cell serves via the LENS o_proj module site
+    # (OP_LORA_OPROJ, which carries the response mask), no native LoRA
+    # adapter is registered, and the composer REFUSES a bare
+    # --enable-lora restatement with no adapters (job 243728).
+    - --enforce-eager
+    # --chat-template-content-format string: Qwen3.5 is multimodal too
+    # (Qwen3_5ForConditionalGeneration) — the candidate-si-refit qwen manifest
+    # carries the same determinism pin; the gemma-4 history follows.
+    # (2026-08-30, gemma4e4b gate
+    # job 45401 disproved): gemma-4 is multimodal (Gemma4ForConditional-
+    # Generation), so vLLM's DEFAULT content format wraps each message's
+    # string content into [{type:text,text}] parts before the chat
+    # template. The gemma-4 template's system block then takes its
+    # SEQUENCE branch, which concatenates parts with a trailing space
+    # (`item['text'] | trim + ' '`) — so a system message renders
+    # `...assistant. <turn|>` on the served path but `...assistant.<turn|>`
+    # in the fp32 HF reference (openai_shim, string content). The §10 gate
+    # correctly REFUSED to canary two sides rendering different prompts
+    # (disagreement on exactly the system-message prompts [0,1,3,5]; the
+    # user-only prompts [2,4] agreed, because the user branch has no such
+    # trailing-space asymmetry). Pinning content-format=string makes vLLM
+    # pass string content to the template (string branch, no trailing
+    # space) — matching the reference AND the natural text-only render.
+    # It is NOT loosening the gate: the exact-equality criterion is
+    # untouched; both sides now render the identical prompt. Verified on
+    # the grading host: the template's string branch == the reference
+    # render; only the parts branch adds the space.
+    - --chat-template-content-format
+    - string
+  # sha256_hex16 over the pinned tokenizer's chat_template string bytes
+  # (utf-8): the candidate-si-refit qwen35_4b manifest's value (computed
+  # 2026-09-02 from the cached snapshot 851bf6e8…: 7,756-char template,
+  # chat_template.jinja == AutoTokenizer.chat_template; byte-identical to
+  # Qwen3.5-9B's). mt_serving_up.py re-hashes the served template against
+  # this before launch and refuses a mismatch.
+  chat_template_hash: a4aee8afcf2e0711
+  # vLLM's Qwen3 XML tool-call parser — pinned by TEMPLATE FORMAT (the
+  # Qwen3.5 chat_template.jinja renders tool calls as <tool_call>
+  # <function=NAME><parameter=K>V</parameter></function></tool_call>, the
+  # format qwen3_xml parses; a registered name in the pinned vLLM 0.25.1).
+  # Wrapper-owned and NOT named here: prefix caching (build_server_launch
+  # resolves it OFF for this hybrid-recurrent target) and the thinking-off
+  # template kwargs (composed whenever the template carries enable_thinking).
+  tool_parser: qwen3_xml
+  serving_impl_commit: 09be969fb676db26a532917e7eb1673de40605f5   # the serving code this wave's tree carries (sdfbase-mt = main@09be969's serving/ + petri_runner, byte-identical; the last commit touching them)
+  # No prompted baseline in this wave: the four fitted cells are named
+  # through OBJECT-ONLY pseudo-instructions (manifest.PETRI_OBJECT_ONLY_SI_IDS)
+  # whose text is never a system prompt, and `none` is the anchor.
+  prompted_prefix_hashes: {}
+  bloom_options:
+    max_turns: 15                 # auditor turn budget per scenario
+    enable_prefill: false         # pinned OFF
+    enable_rollback: false
+    compaction: false
+    realism_filter: false
+    epochs: 1                     # ~10 scenarios x 1 epoch per behavior
+    seed: 0                       # the ONE audit-wide evaluation seed

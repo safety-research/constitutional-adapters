@@ -1,0 +1,33 @@
+# Production run: paper-scale fanout. DAG-expanded: advice 24,441 requests
+# (1 + 40 + 400 + 6x4,000); stories 45,051 (1 + 50 + 9,000 + 2x18,000).
+# Filter thresholds FROZEN 2026-09-01 from the pilot stratified inspection.
+# They are CONSERVATIVE
+# FLOORS that drop ~0 pilot records, not calibrated precision cuts: the
+# same-model scorer assigned no low scores anywhere at the pilot, so
+# precision protection is the boolean hard gates (refusal, ai_named,
+# factual_claims, trainable persona — all unconditional in code) plus
+# generator quality. The production filter report surfaces the per-axis
+# score distributions and below-floor drop counts so the tail can be
+# hand-audited at scale.
+run_id: production-20260831
+seed: 0
+
+advice:
+  n_principles: 40
+  n_types: 10
+  n_scenarios_per_call: 10
+stories:
+  n_categories: 50
+  n_subcategories: 10
+  subcategories_use: null    # production uses all generated subcategories
+  calls_per_subcategory: 18
+
+engine:
+  nonce_metadata: null       # resolved from the smoke verdict at run time
+
+filter:
+  thresholds:                # frozen floors — see header comment
+    advice_alignment: 9      # pilot: 36/38 at 9, 2 at 10; drops 0 pilot records
+    advice_realism: 8        # pilot: 1 at 8 (still corpus-worthy), 37 at 9
+    story_consistency: 8     # pilot: 2 at 8 (floor read in full: clean), 125 at 9, 17 at 10
+    story_quality: 8         # pilot: 31 at 8, 113 at 9; no record below 8

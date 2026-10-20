@@ -1,0 +1,91 @@
+{
+ "schema": "sisteer.mamba_backend_contract/1",
+ "vllm_wheel_sha256": "9e206f370c934a2d4b6b1f05d3d09708d344e05d80260189ef19f60755709431",
+ "vllm_wheel_url": "https://github.com/vllm-project/vllm/releases/download/v0.25.1/vllm-0.25.1+cu129-cp38-abi3-manylinux_2_28_x86_64.whl",
+ "vllm_version": "0.25.1+cu129",
+ "model_module": "vllm.model_executor.models.nemotron_h",
+ "mixer_module": "vllm.model_executor.layers.mamba.mamba_mixer2",
+ "mixer_class": "vllm.model_executor.layers.mamba.mamba_mixer2.MambaMixer2",
+ "dispatch_module": "vllm.model_executor.layers.mamba.ops.ssu_dispatch",
+ "n_mamba_layers_rule": "count of 'M' in the pinned HF config's hybrid_override_pattern",
+ "roles": {
+  "prefill_conv": {
+   "binding": "causal_conv1d_fn",
+   "entry_point": "vllm.model_executor.layers.mamba.ops.causal_conv1d.causal_conv1d_fn",
+   "call_sites": [
+    810
+   ],
+   "approved_impls": [
+    "vllm.model_executor.layers.mamba.ops.causal_conv1d"
+   ]
+  },
+  "prefill_scan": {
+   "binding": "mamba_chunk_scan_combined_varlen",
+   "entry_point": "vllm.model_executor.layers.mamba.ops.ssd_combined.mamba_chunk_scan_combined_varlen",
+   "call_sites": [
+    636,
+    848
+   ],
+   "approved_impls": [
+    "vllm.model_executor.layers.mamba.ops.ssd_combined"
+   ]
+  },
+  "decode_conv": {
+   "binding": "causal_conv1d_update",
+   "entry_point": "vllm.model_executor.layers.mamba.ops.causal_conv1d.causal_conv1d_update",
+   "call_sites": [
+    991
+   ],
+   "approved_impls": [
+    "vllm.model_executor.layers.mamba.ops.causal_conv1d"
+   ]
+  },
+  "decode_scan": {
+   "binding": "selective_state_update",
+   "entry_point": "vllm.model_executor.layers.mamba.ops.ssu_dispatch.selective_state_update",
+   "call_sites": [
+    1030
+   ],
+   "dispatch": {
+    "registry": "vllm.model_executor.layers.mamba.ops.ssu_dispatch._BACKEND_REGISTRY",
+    "backends": {
+     "FLASHINFER": {
+      "class": "vllm.model_executor.layers.mamba.ops.ssu_dispatch.FlashInferSSUBackend",
+      "kernel": "flashinfer.mamba.selective_state_update",
+      "approved": false
+     },
+     "TRITON": {
+      "class": "vllm.model_executor.layers.mamba.ops.ssu_dispatch.TritonSSUBackend",
+      "kernel": "vllm.model_executor.layers.mamba.ops.mamba_ssm.selective_state_update",
+      "approved": true
+     }
+    }
+   },
+   "approved_impls": [
+    "vllm.model_executor.layers.mamba.ops.mamba_ssm"
+   ],
+   "note": "the entry point is a dispatch WRAPPER; the kernel it forwards to is the backend initialised at engine start (initialize_mamba_ssu_backend) \u2014 the live worker report names it, and it must be one of approved_impls"
+  }
+ },
+ "nemotron_h_uses_mixer": true,
+ "source_refs": {
+  "mixer_imports": "mamba_mixer2.py:5-56",
+  "prefill_conv": "mamba_mixer2.py:810",
+  "prefill_scan": "mamba_mixer2.py:636,848",
+  "decode_conv": "mamba_mixer2.py:991",
+  "decode_scan": "mamba_mixer2.py:1030",
+  "dispatch_registry": "ops/ssu_dispatch.py:_BACKEND_REGISTRY",
+  "model_imports_mixer": "models/nemotron_h.py:import block"
+ },
+ "authored_by": "scripts/mamba_backend_contract_author.py",
+ "authored_on": "2026-09-11",
+ "reviewed_by": "tinycap-full22-modal serving lane (Fable 5.1, 2026-09-11): the draft was diffed against the wheel's own bytes at sha256 9e206f37\u2026 \u2014 mamba_mixer2.py import block (lines 30-38: ops.causal_conv1d.{causal_conv1d_fn,causal_conv1d_update}, ops.ssd_combined.mamba_chunk_scan_combined_varlen, ops.ssu_dispatch.selective_state_update) and call sites 810 / 636+848 / 991 / 1030; ops/ssu_dispatch.py _BACKEND_REGISTRY (TRITON -> ops.mamba_ssm.selective_state_update, FLASHINFER -> flashinfer.mamba.selective_state_update); models/nemotron_h.py line 50 imports MambaMixer2 \u2014 and cross-read against the cluster venv si-steering-petri-vllm-12fa3eb0's installed copy. The PR code review (Astra/Sol) re-reads this file; `scripts/mamba_backend_contract_author.py --check` re-derives it from the wheel.",
+ "reviewed_on": "2026-09-11",
+ "review_ref": "~/specs/tinycap-full22-modal-battery/decisions-impl-serving.md I2; plan.md \u00a75.3 (rev 3c, D22); PR tinycap-full22-modal (code review reads the contract)",
+ "notes": [
+  "Roles: prefill_conv/prefill_scan = the chunked-prefill path (causal conv + SSD chunk scan, varlen); decode_conv/decode_scan = the single-token decode path (conv state update + selective state update).",
+  "vLLM 0.25.1 serves NemotronH's Mamba2 layers on its OWN Triton kernels (ops/*); the pip packages mamba-ssm / causal-conv1d in image_nemotron satisfy the rule's letter (and the HF path) and are inert for the served path \u2014 the attestation is what satisfies the rule's intent.",
+  "decode_scan's entry point is a dispatch wrapper: the live worker report names the initialised backend's kernel; only the TRITON kernel module is approved (D114c measured it). FLASHINFER is recorded from the registry but NOT approved: not installed in the image, never measured here \u2014 it reads as unrecognised.",
+  "A vLLM bump changes vllm_wheel_sha256: the runtime and the tests refuse this contract for any other wheel; re-draft with scripts/mamba_backend_contract_author.py and re-review before any Nemotron cell launches."
+ ]
+}

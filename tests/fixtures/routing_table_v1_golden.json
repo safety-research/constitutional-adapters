@@ -1,0 +1,328 @@
+{
+  "base_model": "meta-llama/Llama-3.1-8B-Instruct",
+  "base_revision": null,
+  "exact_replay_strategy": "serialize",
+  "lens_served_positions": {},
+  "prompted_prefixes": [
+    {
+      "byte_length": 50,
+      "sha16": "eb81eecd8a9b525f",
+      "virtual_model": "petri__prompted__safety"
+    },
+    {
+      "byte_length": 64,
+      "sha16": "75e65dba4d18dde9",
+      "virtual_model": "petri__prompted__constitution"
+    }
+  ],
+  "routes": [
+    {
+      "cell_class": "base",
+      "cell_id": "none",
+      "control_of": null,
+      "intervention_hash": "2ff9cdff091aef6f",
+      "serving_identity": "proxy_vllm+passthrough+exact_replay",
+      "si_prefix_hash": null,
+      "virtual_model": "petri__base"
+    },
+    {
+      "cell_class": "prompted",
+      "cell_id": "prompted__safety",
+      "control_of": null,
+      "intervention_hash": "b17c16f69e68764e",
+      "serving_identity": "proxy_vllm+passthrough+exact_replay",
+      "si_prefix_hash": "eb81eecd8a9b525f",
+      "virtual_model": "petri__prompted__safety"
+    },
+    {
+      "cell_class": "prompted",
+      "cell_id": "prompted__constitution",
+      "control_of": null,
+      "intervention_hash": "13f4fa1e6fe347ab",
+      "serving_identity": "proxy_vllm+passthrough+exact_replay",
+      "si_prefix_hash": "75e65dba4d18dde9",
+      "virtual_model": "petri__prompted__constitution"
+    },
+    {
+      "cell_class": "class_a",
+      "cell_id": "si_safety__psr_kl_all",
+      "control_of": null,
+      "intervention_hash": "0d7bcdaec4ec6964",
+      "serving_identity": "proxy_vllm+lens+exact_replay",
+      "si_prefix_hash": null,
+      "virtual_model": "petri__si_safety__psr_kl_all"
+    },
+    {
+      "cell_class": "class_a",
+      "cell_id": "si_constitution__psr_kl_all",
+      "control_of": null,
+      "intervention_hash": "7504b77272602861",
+      "serving_identity": "proxy_vllm+lens+exact_replay",
+      "si_prefix_hash": null,
+      "virtual_model": "petri__si_constitution__psr_kl_all"
+    },
+    {
+      "cell_class": "class_a",
+      "cell_id": "si_safety__psr_mse_all",
+      "control_of": null,
+      "intervention_hash": "afaf3ae95b3d2dce",
+      "serving_identity": "proxy_vllm+lens+exact_replay",
+      "si_prefix_hash": null,
+      "virtual_model": "petri__si_safety__psr_mse_all"
+    },
+    {
+      "cell_class": "class_a",
+      "cell_id": "si_constitution__psr_mse_all",
+      "control_of": null,
+      "intervention_hash": "e443171a8ba33a09",
+      "serving_identity": "proxy_vllm+lens+exact_replay",
+      "si_prefix_hash": null,
+      "virtual_model": "petri__si_constitution__psr_mse_all"
+    },
+    {
+      "cell_class": "class_a",
+      "cell_id": "si_safety__vector_all",
+      "control_of": null,
+      "intervention_hash": "2c528d5f74c19220",
+      "serving_identity": "proxy_vllm+lens+exact_replay",
+      "si_prefix_hash": null,
+      "virtual_model": "petri__si_safety__vector_all"
+    },
+    {
+      "cell_class": "class_a",
+      "cell_id": "si_constitution__vector_all",
+      "control_of": null,
+      "intervention_hash": "67dd7557c73a45af",
+      "serving_identity": "proxy_vllm+lens+exact_replay",
+      "si_prefix_hash": null,
+      "virtual_model": "petri__si_constitution__vector_all"
+    },
+    {
+      "cell_class": "class_a",
+      "cell_id": "si_safety__lora_r1",
+      "control_of": null,
+      "intervention_hash": "d6f2251e4d100f9f",
+      "serving_identity": "proxy_vllm+lora+exact_replay",
+      "si_prefix_hash": null,
+      "virtual_model": "petri__si_safety__lora_r1"
+    },
+    {
+      "cell_class": "class_a",
+      "cell_id": "si_constitution__lora_r1",
+      "control_of": null,
+      "intervention_hash": "e6f2412389e87848",
+      "serving_identity": "proxy_vllm+lora+exact_replay",
+      "si_prefix_hash": null,
+      "virtual_model": "petri__si_constitution__lora_r1"
+    },
+    {
+      "cell_class": "class_a",
+      "cell_id": "si_safety__loreft",
+      "control_of": null,
+      "intervention_hash": "4f2a64716525b60d",
+      "serving_identity": "proxy_vllm+lens+exact_replay",
+      "si_prefix_hash": null,
+      "virtual_model": "petri__si_safety__loreft"
+    },
+    {
+      "cell_class": "class_a",
+      "cell_id": "si_constitution__loreft",
+      "control_of": null,
+      "intervention_hash": "f67a233af3a3d208",
+      "serving_identity": "proxy_vllm+lens+exact_replay",
+      "si_prefix_hash": null,
+      "virtual_model": "petri__si_constitution__loreft"
+    },
+    {
+      "cell_class": "class_a",
+      "cell_id": "si_safety__lofit",
+      "control_of": null,
+      "intervention_hash": "02c917a7b311b4bb",
+      "serving_identity": "proxy_vllm+lens+exact_replay",
+      "si_prefix_hash": null,
+      "virtual_model": "petri__si_safety__lofit"
+    },
+    {
+      "cell_class": "class_a",
+      "cell_id": "si_constitution__lofit",
+      "control_of": null,
+      "intervention_hash": "6c89d8861d402f90",
+      "serving_identity": "proxy_vllm+lens+exact_replay",
+      "si_prefix_hash": null,
+      "virtual_model": "petri__si_constitution__lofit"
+    },
+    {
+      "cell_class": "class_a",
+      "cell_id": "si_safety__token_bos",
+      "control_of": null,
+      "intervention_hash": "bfe7aa0847eacac3",
+      "serving_identity": "proxy_vllm+lens+exact_replay",
+      "si_prefix_hash": null,
+      "virtual_model": "petri__si_safety__token_bos"
+    },
+    {
+      "cell_class": "class_a",
+      "cell_id": "si_constitution__token_bos",
+      "control_of": null,
+      "intervention_hash": "2d804dd253a2ebc4",
+      "serving_identity": "proxy_vllm+lens+exact_replay",
+      "si_prefix_hash": null,
+      "virtual_model": "petri__si_constitution__token_bos"
+    },
+    {
+      "cell_class": "class_a",
+      "cell_id": "si_safety__cast",
+      "control_of": null,
+      "intervention_hash": "b7a421f09e444e23",
+      "serving_identity": "proxy_vllm+lens+exact_replay",
+      "si_prefix_hash": null,
+      "virtual_model": "petri__si_safety__cast"
+    },
+    {
+      "cell_class": "class_a",
+      "cell_id": "si_constitution__cast",
+      "control_of": null,
+      "intervention_hash": "cd0f51d27fb67f0e",
+      "serving_identity": "proxy_vllm+lens+exact_replay",
+      "si_prefix_hash": null,
+      "virtual_model": "petri__si_constitution__cast"
+    },
+    {
+      "cell_class": "class_a",
+      "cell_id": "si_safety__lora_r4",
+      "control_of": null,
+      "intervention_hash": "455a1a0c74e4f901",
+      "serving_identity": "proxy_vllm+lens+exact_replay",
+      "si_prefix_hash": null,
+      "virtual_model": "petri__si_safety__lora_r4"
+    },
+    {
+      "cell_class": "class_a",
+      "cell_id": "si_constitution__lora_r4",
+      "control_of": null,
+      "intervention_hash": "2f806d36173dd34a",
+      "serving_identity": "proxy_vllm+lens+exact_replay",
+      "si_prefix_hash": null,
+      "virtual_model": "petri__si_constitution__lora_r4"
+    },
+    {
+      "cell_class": "class_a",
+      "cell_id": "si_safety__psr_xfer_from_e2b",
+      "control_of": null,
+      "intervention_hash": "7da3d106632b6460",
+      "serving_identity": "proxy_vllm+lens+exact_replay",
+      "si_prefix_hash": null,
+      "virtual_model": "petri__si_safety__psr_xfer_from_e2b"
+    },
+    {
+      "cell_class": "class_a",
+      "cell_id": "si_constitution__psr_xfer_from_e2b",
+      "control_of": null,
+      "intervention_hash": "c47222cafd926a4d",
+      "serving_identity": "proxy_vllm+lens+exact_replay",
+      "si_prefix_hash": null,
+      "virtual_model": "petri__si_constitution__psr_xfer_from_e2b"
+    },
+    {
+      "cell_class": "class_a",
+      "cell_id": "si_safety__psr_xfer_from_e2b_rw1",
+      "control_of": null,
+      "intervention_hash": "e86ba515884c0469",
+      "serving_identity": "proxy_vllm+lens+exact_replay",
+      "si_prefix_hash": null,
+      "virtual_model": "petri__si_safety__psr_xfer_from_e2b_rw1"
+    },
+    {
+      "cell_class": "class_a",
+      "cell_id": "si_constitution__psr_xfer_from_e2b_rw1",
+      "control_of": null,
+      "intervention_hash": "6f21bd92d9cefea5",
+      "serving_identity": "proxy_vllm+lens+exact_replay",
+      "si_prefix_hash": null,
+      "virtual_model": "petri__si_constitution__psr_xfer_from_e2b_rw1"
+    },
+    {
+      "cell_class": "class_a",
+      "cell_id": "si_safety__psr_xfer_from_e4b",
+      "control_of": null,
+      "intervention_hash": "ccf7054a72c44e7b",
+      "serving_identity": "proxy_vllm+lens+exact_replay",
+      "si_prefix_hash": null,
+      "virtual_model": "petri__si_safety__psr_xfer_from_e4b"
+    },
+    {
+      "cell_class": "class_a",
+      "cell_id": "si_constitution__psr_xfer_from_e4b",
+      "control_of": null,
+      "intervention_hash": "415d4fc920cdff19",
+      "serving_identity": "proxy_vllm+lens+exact_replay",
+      "si_prefix_hash": null,
+      "virtual_model": "petri__si_constitution__psr_xfer_from_e4b"
+    },
+    {
+      "cell_class": "class_a",
+      "cell_id": "si_safety__psr_xfer_from_e4b_rw1",
+      "control_of": null,
+      "intervention_hash": "010c2df798102c00",
+      "serving_identity": "proxy_vllm+lens+exact_replay",
+      "si_prefix_hash": null,
+      "virtual_model": "petri__si_safety__psr_xfer_from_e4b_rw1"
+    },
+    {
+      "cell_class": "class_a",
+      "cell_id": "si_constitution__psr_xfer_from_e4b_rw1",
+      "control_of": null,
+      "intervention_hash": "714f4925bdab0e49",
+      "serving_identity": "proxy_vllm+lens+exact_replay",
+      "si_prefix_hash": null,
+      "virtual_model": "petri__si_constitution__psr_xfer_from_e4b_rw1"
+    },
+    {
+      "cell_class": "class_b",
+      "cell_id": "antidote",
+      "control_of": null,
+      "intervention_hash": "8e6969b5a3d4437f",
+      "serving_identity": "proxy_vllm+lens+exact_replay",
+      "si_prefix_hash": null,
+      "virtual_model": "petri__antidote"
+    },
+    {
+      "cell_class": "class_b",
+      "cell_id": "alphasteer",
+      "control_of": null,
+      "intervention_hash": "9f60de0043f16dca",
+      "serving_identity": "proxy_vllm+lens+exact_replay",
+      "si_prefix_hash": null,
+      "virtual_model": "petri__alphasteer"
+    },
+    {
+      "cell_class": "class_b",
+      "cell_id": "caa_static_r",
+      "control_of": null,
+      "intervention_hash": "0d862c63a0d01492",
+      "serving_identity": "proxy_vllm+lens+exact_replay",
+      "si_prefix_hash": null,
+      "virtual_model": "petri__caa_static_r"
+    },
+    {
+      "cell_class": "control",
+      "cell_id": "none__lens0",
+      "control_of": "none",
+      "intervention_hash": "2ff9cdff091aef6f",
+      "serving_identity": "proxy_vllm+lens+exact_replay",
+      "si_prefix_hash": null,
+      "virtual_model": "petri__none__lens0"
+    },
+    {
+      "cell_class": "control",
+      "cell_id": "none__lora0",
+      "control_of": "none",
+      "intervention_hash": "2ff9cdff091aef6f",
+      "serving_identity": "proxy_vllm+lora+exact_replay",
+      "si_prefix_hash": null,
+      "virtual_model": "petri__none__lora0"
+    }
+  ],
+  "serving_mode": "exact_replay",
+  "version": 1
+}

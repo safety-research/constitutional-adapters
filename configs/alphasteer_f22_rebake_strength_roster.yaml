@@ -1,0 +1,197 @@
+# alphasteer_f22_rebake_strength_roster.yaml — THE cell roster of the STRENGTH FRONTIER's AlphaSteer lane over the
+# RE-BAKED lambda=1 parents (paper Figure 5; lane `alphasteer_f22_rebake` in scripts/alphasteer_f22/as22_strength.py).
+# The SAME shape as configs/alphasteer_f22_strength_roster.yaml, because the SAME
+# unmodified readers consume it: scripts/sdfbase/full22/f22_roster.py (served_cells, every_staged_id) and
+# scripts/sdfbase/full22/make_bank_view.py (--roster / --pins). Hand-written by design (the source of truth):
+# THIS FILE'S `targets` IS THE LANE'S TARGET SET — the baker, the config generator, the pins generator and the
+# staging script all read it; adding a target (the pending Llama arm below) is one entry here plus its parent on
+# the cluster, never an edit to a script. tests/test_alphasteer_f22_strength.py pins the roster equal to the table.
+#
+# THE PARENTS are the RE-BAKED objects at the PARALLEL root $SHARED/exp/objects/alphasteer_f22_rebake/<target>/
+# cells/alphasteer/ — the original alphasteer_f22 objects were never mutated; both roots exist side by side. Their
+# layer sets are threshold-selected and NOT CONTIGUOUS (gemma skips 23; qwen skips 10 and 11): bake_strength.py
+# asserts the scaled copy's layer list equals the parent's element for element and records the gaps.
+#   gemma4e4b        13 layers  12-22, 24, 25   parent 94cc0870e005f805…
+#   qwen35_4b         9 layers  9, 12-19        parent e6c7f5706e115ad8…
+#   nemotron3nano4b  13 layers  13-25           parent fde9088ed658e8df…
+# The parents live on cluster B; stage_strength.sh mirrors each parent dir to cluster A (sha-verified, never
+# overwriting) because the as_d1 anchor symlinks to it and bake_strength.py --check loads it there.
+#
+# THE LANE RUNS ON ITS OWN BANK, beside the rebake lane's cells/ and ladder/ (nothing of theirs is a WRITE target):
+#   $SHARED/exp/objects/alphasteer_f22_rebake/<target>/strength/     (make_bank_view.py --bank <that>)
+#     cells/<view>__alphasteer/                                        bake_strength.py --lane alphasteer_f22_rebake
+#     cells_view/<view>/alphasteer -> ../../cells/<view>__alphasteer   make_bank_view.py, sha-verified against the pins
+#
+# FIVE views per target, one per nominal `base_scale` (nominal, NOT multiples of any selected rung; nominal
+# strengths are not comparable across object types and need not be — the physical comparison is the separately
+# measured realised dose): as_dm0p5 (-0.5), as_d0p1 (0.1), as_d0p3 (0.3), as_d0p5 (0.5), as_d1 (1.0).
+# `as_d1` IS the re-baked parent bit-for-bit (its cell dir's object.pt is a symlink to the parent's), served from its
+# own view as a same-pass anchor.
+#
+# ARM STATUS — WRITTEN DOWN BECAUSE A FIGURE CANNOT TELL "ABSENT" FROM "RAN AND FAILED", and a reader's default
+# reading is the damaging one. The roster therefore names every arm of the paper's AlphaSteer family and its state;
+# whatever the figures consume must carry the same distinction (proposed as a notebook-level convention separately):
+#   served    — gemma4e4b, qwen35_4b, nemotron3nano4b: baked, staged, pinned, viewed on both clusters (below)
+#   pending   — llama8b: NOT run yet; its parent is a SLICE of the existing validation fit (the threshold's layer set
+#               10-19, contiguous), minutes of work, expected shortly from that lane; it joins as a `targets` entry
+#   excluded  — glm46vflash: out of the paper by decision, not a failed run (its ORIGINAL-lane ladder exists and was
+#               staged under alphasteer_f22/glm46vflash/strength/; nothing of it ran and produced nothing)
+# No arm of this lane ran and produced nothing.
+pending_arms:
+  llama8b:
+    state: pending
+    reason: >
+      parent = a slice of the existing Llama-3.1-8B-Instruct validation fit at the threshold's layer set 10-19
+      (contiguous); being baked by the rebake lane, its sha / layer set / bank path arrive in the same form as the
+      three below; NOT a run that failed — an arm that has not run yet
+excluded_arms:
+  glm46vflash:
+    state: excluded
+    reason: out of the paper by decision (2026-09-11); its alphasteer_f22 (original-parent) strength ladder exists and was staged — not a failed run
+
+wave: alphasteer_f22_rebake_strength
+bank_root: exp/objects/alphasteer_f22_rebake      # under $SHARED on either cluster; the per-target bank is <bank_root>/<target>/<bank_subdir>
+bank_subdir: strength                            # as22_strength.BANK_SUBDIR — make_bank_view.py is ALWAYS passed --bank <bank_root>/<target>/strength
+parent_lineage: rebake                           # as22_strength.LANES[...].parent_lineage: the pins record the campaign pins' parent as a DIFFERENT lineage, never cross-check equality
+staging_manifest: exp/objects/alphasteer_f22_rebake/strength_staging_manifest.json
+# the serving-implementation commit every manifest of this lane carries: the campaign's, UNCHANGED (asserted equal by
+# make_strength_configs.py, never computed here)
+serving_impl_commit: 94e294c445dc5eec6ebe0ce3a3e25553004cd4b0
+lens_reduction_mode: stacked
+# decode caps: static single-shot families 4096 (the campaign's); multi-turn target replies 512; BoN is the campaign's
+# 512 STORE which the campaign's 512 -> 4096 climb tooling then escalates (ONE best-of-N estimand across the
+# frontier's method lanes). A 512 store is not the final reading — every view here expects a row in the climb's
+# lanes manifest (NOTES_strength.md section 9).
+static_max_new_tokens: 4096
+target_max_new_tokens: 512
+bon_max_new_tokens: 512
+attacker_prefix_caching: true
+attacker_quantization: none
+attacker_model: huihui-ai/Huihui-Qwen3.6-27B-abliterated
+attacker_snapshot: 27502c8717fd5a2f8c0c77188c10c243fd4f672e
+attacker_max_model_len: 49152
+
+lane_flags: {}
+
+strengths: [-0.5, 0.1, 0.3, 0.5, 1.0]
+
+targets:
+  gemma4e4b:
+    model: google/gemma-4-E4B-it
+    model_revision: ee0ef6023621cff504d758262d4e04895a5af4a2
+    campaign_view: it                            # the campaign view whose config / manifest are the TEMPLATES
+    campaign_config: configs/alphasteer_f22_serve_gemma4e4b.yaml            # READ ONLY
+    campaign_manifest: configs/capeval/manifests/alphasteer_f22_gemma4e4b.yaml
+    parent: cells/alphasteer                     # the re-baked lambda=1 parent under <bank_root>/<target>/ (READ ONLY)
+    parent_layers: [12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 24, 25]     # as given by the rebake lane; the bake asserts the blob's
+    views:
+      as_dm0p5:
+        strength: -0.5
+        config: configs/alphasteer_f22_rebake_serve_gemma4e4b_as_dm0p5.yaml
+        manifest: configs/capeval/manifests/alphasteer_f22_rebake_gemma4e4b_as_dm0p5.yaml
+        cells:
+          alphasteer: as_dm0p5__alphasteer
+      as_d0p1:
+        strength: 0.1
+        config: configs/alphasteer_f22_rebake_serve_gemma4e4b_as_d0p1.yaml
+        manifest: configs/capeval/manifests/alphasteer_f22_rebake_gemma4e4b_as_d0p1.yaml
+        cells:
+          alphasteer: as_d0p1__alphasteer
+      as_d0p3:
+        strength: 0.3
+        config: configs/alphasteer_f22_rebake_serve_gemma4e4b_as_d0p3.yaml
+        manifest: configs/capeval/manifests/alphasteer_f22_rebake_gemma4e4b_as_d0p3.yaml
+        cells:
+          alphasteer: as_d0p3__alphasteer
+      as_d0p5:
+        strength: 0.5
+        config: configs/alphasteer_f22_rebake_serve_gemma4e4b_as_d0p5.yaml
+        manifest: configs/capeval/manifests/alphasteer_f22_rebake_gemma4e4b_as_d0p5.yaml
+        cells:
+          alphasteer: as_d0p5__alphasteer
+      as_d1:                                     # THE PARENT, bit-for-bit (object.pt symlinked) — the same-pass anchor
+        strength: 1.0
+        config: configs/alphasteer_f22_rebake_serve_gemma4e4b_as_d1.yaml
+        manifest: configs/capeval/manifests/alphasteer_f22_rebake_gemma4e4b_as_d1.yaml
+        cells:
+          alphasteer: as_d1__alphasteer
+
+  qwen35_4b:
+    model: Qwen/Qwen3.5-4B
+    model_revision: 851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a
+    campaign_view: it
+    campaign_config: configs/alphasteer_f22_serve_qwen35_4b.yaml
+    campaign_manifest: configs/capeval/manifests/alphasteer_f22_qwen35_4b.yaml
+    parent: cells/alphasteer
+    parent_layers: [9, 12, 13, 14, 15, 16, 17, 18, 19]
+    views:
+      as_dm0p5:
+        strength: -0.5
+        config: configs/alphasteer_f22_rebake_serve_qwen35_4b_as_dm0p5.yaml
+        manifest: configs/capeval/manifests/alphasteer_f22_rebake_qwen35_4b_as_dm0p5.yaml
+        cells:
+          alphasteer: as_dm0p5__alphasteer
+      as_d0p1:
+        strength: 0.1
+        config: configs/alphasteer_f22_rebake_serve_qwen35_4b_as_d0p1.yaml
+        manifest: configs/capeval/manifests/alphasteer_f22_rebake_qwen35_4b_as_d0p1.yaml
+        cells:
+          alphasteer: as_d0p1__alphasteer
+      as_d0p3:
+        strength: 0.3
+        config: configs/alphasteer_f22_rebake_serve_qwen35_4b_as_d0p3.yaml
+        manifest: configs/capeval/manifests/alphasteer_f22_rebake_qwen35_4b_as_d0p3.yaml
+        cells:
+          alphasteer: as_d0p3__alphasteer
+      as_d0p5:
+        strength: 0.5
+        config: configs/alphasteer_f22_rebake_serve_qwen35_4b_as_d0p5.yaml
+        manifest: configs/capeval/manifests/alphasteer_f22_rebake_qwen35_4b_as_d0p5.yaml
+        cells:
+          alphasteer: as_d0p5__alphasteer
+      as_d1:
+        strength: 1.0
+        config: configs/alphasteer_f22_rebake_serve_qwen35_4b_as_d1.yaml
+        manifest: configs/capeval/manifests/alphasteer_f22_rebake_qwen35_4b_as_d1.yaml
+        cells:
+          alphasteer: as_d1__alphasteer
+
+  nemotron3nano4b:
+    model: nvidia/NVIDIA-Nemotron-3-Nano-4B-BF16
+    model_revision: dfaf35de3e30f1867dd8dbc38a7fc9fb52d3914f
+    campaign_view: main
+    campaign_config: configs/alphasteer_f22_serve_nemotron3nano4b.yaml
+    campaign_manifest: configs/capeval/manifests/alphasteer_f22_nemotron3nano4b.yaml
+    parent: cells/alphasteer
+    parent_layers: [13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25]
+    views:
+      as_dm0p5:
+        strength: -0.5
+        config: configs/alphasteer_f22_rebake_serve_nemotron3nano4b_as_dm0p5.yaml
+        manifest: configs/capeval/manifests/alphasteer_f22_rebake_nemotron3nano4b_as_dm0p5.yaml
+        cells:
+          alphasteer: as_dm0p5__alphasteer
+      as_d0p1:
+        strength: 0.1
+        config: configs/alphasteer_f22_rebake_serve_nemotron3nano4b_as_d0p1.yaml
+        manifest: configs/capeval/manifests/alphasteer_f22_rebake_nemotron3nano4b_as_d0p1.yaml
+        cells:
+          alphasteer: as_d0p1__alphasteer
+      as_d0p3:
+        strength: 0.3
+        config: configs/alphasteer_f22_rebake_serve_nemotron3nano4b_as_d0p3.yaml
+        manifest: configs/capeval/manifests/alphasteer_f22_rebake_nemotron3nano4b_as_d0p3.yaml
+        cells:
+          alphasteer: as_d0p3__alphasteer
+      as_d0p5:
+        strength: 0.5
+        config: configs/alphasteer_f22_rebake_serve_nemotron3nano4b_as_d0p5.yaml
+        manifest: configs/capeval/manifests/alphasteer_f22_rebake_nemotron3nano4b_as_d0p5.yaml
+        cells:
+          alphasteer: as_d0p5__alphasteer
+      as_d1:
+        strength: 1.0
+        config: configs/alphasteer_f22_rebake_serve_nemotron3nano4b_as_d1.yaml
+        manifest: configs/capeval/manifests/alphasteer_f22_rebake_nemotron3nano4b_as_d1.yaml
+        cells:
+          alphasteer: as_d1__alphasteer

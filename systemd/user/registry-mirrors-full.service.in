@@ -1,0 +1,34 @@
+# registry-mirrors-full.service — results registry. Rendered for the site and installed into ~/.config/systemd/user/ by the registry installer.
+# The WEEKLY full verify of the cluster mirrors (2026-09-28): `mirrors sync --kind ssh --full` writes one manifest, rsyncs the
+# delta to every cluster, then hashes EVERY entry on each — as a CPU-only Slurm step on that cluster (`srun`, partition/QoS
+# from the [[clusters]] entry, 4 CPUs, 16G, --time sized from the entry count; never on the login node) — and switches
+# CHECKSUMS.CURRENT + writes a mirror_ack when clean. The 5-min registry-mirrors.service verifies INCREMENTALLY between these
+# (the delta since the destination's CHECKSUMS.CURRENT, the gz twins, a 2,000-file random sample; presence of every entry
+# from one directory walk). Secret-free: ssh goes through the agent socket (--kind ssh).
+# Bounded: Type=oneshot with TimeoutStartSec (queue wait + a ~20-min hash pass per cluster, padded); Restart=on-failure with a
+# 1 h RestartSec under a 2-per-day start limit, so a transient ssh or queue failure gets ONE retry and a persistent one trips the
+# limit (visible in the journal and on the status page) instead of looping or waiting a week.
+[Unit]
+Description=Results registry: weekly FULL verify of the cluster record-log mirrors (every entry hashed, under Slurm)
+After=network-online.target
+# never beside the 5-min sync: both would rsync and switch the same pointer
+Conflicts=registry-mirrors.service
+StartLimitIntervalSec=1d
+StartLimitBurst=2
+
+[Service]
+Type=oneshot
+Nice=10
+IOSchedulingClass=best-effort
+IOSchedulingPriority=6
+Environment=PYTHONPATH=@REPO@/src
+Environment=REGISTRY_ROOT=@REGISTRY_ROOT@
+Environment=PYTHONUNBUFFERED=1
+Environment=SSH_AUTH_SOCK=%h/.ssh/agent.sock
+ExecStart=@PYTHON@ -m sisteer.registry.cli mirrors sync --kind ssh --full
+Restart=on-failure
+RestartSec=1h
+TimeoutStartSec=3h
+SyslogIdentifier=registry-mirrors-full
+StandardOutput=journal
+StandardError=journal

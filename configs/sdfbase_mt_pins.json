@@ -1,0 +1,33 @@
+{
+  "_comment": "sdfbase-mt wave object identity pins. fit_fingerprint = the spawn manifest row (fit_calls_cont4_full.json for constv2-mix-full, fit_calls_ctl2.json for constv2ctl2-full). object_sha256 is filled by $STAGE/sdfbase/mt/mt_stage_bank.py at staging from the fitting bank's COMPLETE marker (null = not yet published / not yet staged); the launch gate re-verifies every sha against the LIVE marker. QWEN ONLY (scope change 2026-09-04): gemma4e4b_base is not part of this wave.",
+  "qwen35_4b": {
+    "constv2-mix-full__psr_ce_all": {
+      "fit_fingerprint": "d18859220126bb9a1869ec6e63e8877475e7618244c1059343b255a0842f5927",
+      "object_sha256": "793108d2acc458061cd92580322be6e0f38b339dca9567f2fe8e58eb4a8dbe4b",
+      "source": "out/qwen35_4b_base/cells_all/constv2-mix-full__psr_ce_all",
+      "spawn_manifest": "fit_calls_cont4_full.json",
+      "pinned_at": "2026-09-04T15:52:14+00:00"
+    },
+    "constv2-mix-full__lora_r4_ce": {
+      "fit_fingerprint": "0591cf7fc51a1de18da2fd01c1b646719f79c56be675d41b861eec42a65ec9e7",
+      "object_sha256": "63c151654c3d9cbdd9540b1806e7db81a6e2434f509ba6657906beccf8762ffd",
+      "source": "out/qwen35_4b_base/cells_all/constv2-mix-full__lora_r4_ce",
+      "spawn_manifest": "fit_calls_cont4_full.json",
+      "pinned_at": "2026-09-04T15:52:14+00:00"
+    },
+    "constv2ctl2-full__psr_ce_all": {
+      "fit_fingerprint": "ab96d7e715de6adf7f537ad4a30e3c08e7bec246a705781f396cbf57f4337882",
+      "object_sha256": "7001f2b59599181b42259cb8cae60f4d1b388a1c63b094cd4c6dc34d5cc07912",
+      "source": "out/qwen35_4b_base/cells_all/constv2ctl2-full__psr_ce_all",
+      "spawn_manifest": "fit_calls_ctl2.json",
+      "pinned_at": "2026-09-04T15:52:14+00:00"
+    },
+    "constv2ctl2-full__lora_r4_ce": {
+      "fit_fingerprint": "45fa21b303834bd796d24cc9a6b47b64676a9093a1d32006a98ee1f3e52b2a50",
+      "object_sha256": "4cd0f001d8cd75581d935a1badeb9536be1c86377b98dd81e2c165307bb2b2ee",
+      "source": "out/qwen35_4b_base/cells_all/constv2ctl2-full__lora_r4_ce",
+      "spawn_manifest": "fit_calls_ctl2.json",
+      "pinned_at": "2026-09-04T15:52:14+00:00"
+    }
+  }
+}

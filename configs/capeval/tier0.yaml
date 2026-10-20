@@ -1,0 +1,63 @@
+# Tier-0 configuration (loader: tiers/tier0.load_tier0_yaml).
+#
+# Dataset REVISION pins deliberately do NOT live here: they are resolved
+# once by scripts/capeval_fetch_data.py (Phase 0) into
+# configs/capeval/pins.yaml, which corpora.py reads — one source of
+# truth for every pin. This file owns the
+# Tier-0 conventions: window geometry, top_k, task names, canary set +
+# generation params. Every value here is hashed into
+# harness_config_hash via the resolved run config.
+version: 1
+
+# Must equal tiers/tier0.TIER0_CODE_VERSION (the loader refuses a
+# mismatch). Window geometry / masking / KL math changes bump both,
+# which orphans stale KL atom caches instead of silently reusing them.
+code_version: 1
+
+top_k: 64            # §4.3 atom set size
+window_len: 1024     # §4.1/§4.2 raw-NLL window
+min_window_tokens: 32
+chat_max_tokens: 4096
+# (kappa_floor removed — coarsened KL is an annotation, never a flag;
+# the loader refuses the key if it reappears)
+
+# Neutral corpora (§4.1). `name` is the corpora.py loader / pins.yaml
+# key; slices themselves (char budgets, seeds) are the corpora.py
+# defaults, content-hashed into each slice's slice_hash.
+corpora:
+  - name: wikitext103
+    kind: text
+    token_budget: 250000
+    nll_task: tier0/nll_wikitext103
+    kl_task: tier0/kl_coarse_wikitext103
+  - name: stack_py
+    kind: text
+    token_budget: 100000
+    nll_task: tier0/nll_stack_py
+    kl_task: tier0/kl_coarse_stack_py
+  - name: ultrachat
+    kind: chat
+    assistant_token_budget: 100000
+    nll_task: tier0/nll_ultrachat_masked
+    kl_task: tier0/kl_coarse_ultrachat
+
+# Coherence canary (§4.4): 300 pinned alpaca_eval prompts
+# (corpora.canary_prompts — pin in pins.yaml), greedy 256 tokens.
+# Thresholds are calibration-owned (§7.1) — nothing here sets a fail
+# line.
+canary:
+  task: tier0/canary
+  n_prompts: 300
+  seed: 0
+  gen:
+    max_new_tokens: 256
+    do_sample: false
+    batch_size: 32
+  abrupt_min_tokens: 8   # abrupt_eos_rate counts generations shorter than this
+  rep_ns: [1, 2, 3]      # n-gram orders for max_rep_run
+
+# KL localization (§4.5, display-only): the target-relevant slice comes
+# from the manifest's target.relevant_corpus; only the task name lives
+# here.
+localization:
+  task: tier0/kl_localization

@@ -1,0 +1,52 @@
+{
+ "schema": 1,
+ "corpus": "constitution_advice",
+ "source_file": "final-production-20260831-v2.jsonl",
+ "release": "final-production-20260831-v2",
+ "record_count": 1960,
+ "sha256_reassembled": "afe6cb396bf9ca820f252942bb44b8fb628db5986a38dd80256f92163e4d85a6",
+ "bytes_reassembled": 68295108,
+ "shards": [
+  {
+   "name": "part-00.jsonl.gz",
+   "sha256": "6dc1633a3aa9e74820c2c635fc32063f75a7090d3e61096328e546ada650566b",
+   "bytes": 21143061,
+   "records": 1960,
+   "raw_bytes": 68295108
+  }
+ ],
+ "official_tokens": {
+  "llama3": 5029274,
+  "gemma": 5260781,
+  "qwen": 5072696,
+  "min": 5029274
+ },
+ "sidecars": [
+  {
+   "name": "final-production-20260831-v2.filter-report.json",
+   "sha256": "d97e9054e4bdbf54629e938cf3a252feda53cfd8b139a693d4c3f8eb16122b7d",
+   "bytes": 175427
+  },
+  {
+   "name": "section-tags-production-20260831-v2.jsonl",
+   "sha256": "985cde048ffb15e12c96af5892e9a3bc70c8718244bb0bf4ea95b5864c36638a",
+   "bytes": 714027
+  },
+  {
+   "name": "section-tags-production-20260831-v2.manifest.json",
+   "sha256": "3fc5f05137b758fea2f714b3334218f5c9801e8234b7dc95366aa94442112a8c",
+   "bytes": 1580
+  }
+ ],
+ "gzip": {
+  "level": 9,
+  "mtime": 0,
+  "filename": "",
+  "record_boundary": true,
+  "target_bytes": 40000000,
+  "hard_limit_bytes": 50000000,
+  "measured_total_gzip_bytes": 21143061
+ },
+ "tool": "reproduce/tools/shard_corpus.py",
+ "vendored_corpus_commit": "f64cfd58dd5792335c17ee90850daf16fac4fa18"
+}

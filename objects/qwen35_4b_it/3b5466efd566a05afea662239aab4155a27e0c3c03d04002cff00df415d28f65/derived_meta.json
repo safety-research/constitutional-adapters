@@ -1,0 +1,236 @@
+{
+ "builder": "scripts/sdfbase/lora_subtract.py",
+ "built_at": "2026-09-13T19:34:02+00:00",
+ "comparison": "scale_matched (primary: both parents trained at the same official-token budget)",
+ "derivation": "delta(parent_pos) - delta(parent_neg), structural (both parents' factors stored bit-exact)",
+ "derived_id": "constv2-mix-full__lora_r4_ce_minus_ctl",
+ "dose_scaled_from": {
+  "anchor": false,
+  "norms_by_tensor_and_layer": {
+   "B_neg": {
+    "11": {
+     "after": 1.758478045463562,
+     "before": 3.516956090927124
+    },
+    "15": {
+     "after": 1.938228964805603,
+     "before": 3.876457929611206
+    },
+    "19": {
+     "after": 2.228083848953247,
+     "before": 4.456167697906494
+    },
+    "23": {
+     "after": 2.6906566619873047,
+     "before": 5.381313323974609
+    },
+    "27": {
+     "after": 2.576641082763672,
+     "before": 5.153282165527344
+    },
+    "3": {
+     "after": 2.475964307785034,
+     "before": 4.951928615570068
+    },
+    "31": {
+     "after": 2.559810161590576,
+     "before": 5.119620323181152
+    },
+    "7": {
+     "after": 1.9452712535858154,
+     "before": 3.890542507171631
+    }
+   },
+   "B_pos": {
+    "11": {
+     "after": 2.7555296421051025,
+     "before": 5.511059284210205
+    },
+    "15": {
+     "after": 2.93992018699646,
+     "before": 5.87984037399292
+    },
+    "19": {
+     "after": 3.45314359664917,
+     "before": 6.90628719329834
+    },
+    "23": {
+     "after": 4.407546043395996,
+     "before": 8.815092086791992
+    },
+    "27": {
+     "after": 4.676799774169922,
+     "before": 9.353599548339844
+    },
+    "3": {
+     "after": 4.2140045166015625,
+     "before": 8.428009033203125
+    },
+    "31": {
+     "after": 4.723668575286865,
+     "before": 9.44733715057373
+    },
+    "7": {
+     "after": 3.0757298469543457,
+     "before": 6.151459693908691
+    }
+   }
+  },
+  "note": "a post-hoc dose-scaled copy of the parent object \u2014 the record above is the PARENT's (this object was not trained or derived separately); the served o_proj edit is linear in the write basis, so the copy's served delta is exactly scale x the parent's (lens_adapters OP_LORA_OPROJ)",
+  "object_type": "lora_subtraction",
+  "parent_consumed_state": "read from the grading host's full22 bank (objects/qwen35_4b_it/5e9b0009eb24eaf66842b4a2a9f647fced95699c7aae748eaab5333b05a4c6ce), where it was staged on 2026-09-13 (staging_manifest.json at 154 records, sha256 91a9ff42fb9ed46b3271076924791cdc9ef64918d8f8ee9a8bec8d79d648b902, identical on the grading host and both clusters): object.pt sha256 5e9b0009eb24eaf66842b4a2a9f647fced95699c7aae748eaab5333b05a4c6ce, hashed on the grading host AND on both clusters (identical) immediately before this bake; == derived_meta.json's object_sha256. DERIVATION: kind lora_subtraction, delta(parent_pos) - delta(parent_neg), both parents' factors stored bit-exact (scripts/sdfbase/lora_subtract.py, built 2026-09-13T19:34:02Z; scale_matched; model Qwen/Qwen3.5-4B @ 851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a): parent_pos = the eff-batch-64 instruct-direct CONSTITUTION refit staged as itdoc64__constv2-mix-full__lora_r4_ce (object.pt sha256 80b75aae2cefee14b2885fcdf27fd889f49da7fa0cc3f97a501bc3f4d927358f), parent_neg = its CONTROL staged as itdoc64__constv2ctl2-full__lora_r4_ce (object.pt sha256 bace45e26a6d1dc262e6fbb63851f7546b1327d7561cc3744e2bcf2adf881415); both shas verified against derived_meta.json's parent_pos / parent_neg and against the bank cells on all three copies. PARENT QUALIFICATION: this difference is matched on BUDGET, NOT CONVERGENCE - the constitution parent is BUDGET-LIMITED, NOT CONVERGED (best_epoch 16 of epochs_run 16, stopped_early false, held-out CE 2.0645 still falling at the last epoch; a box-edge argmin; eff_batch 64, lr 8.06e-3) while the control early-stopped at best_epoch 1 of 3 (held-out CE 2.2514); the difference inherits that asymmetry. The same asymmetry holds for gemma4e4b (constitution 78e84f27... 16 of 16 not converged, CE 1.8699; control 04a90de8... early-stopped 4 of 6, CE 2.1333): a PATTERN across both instruct-direct refits, not a single-model quirk. STAGED IDS (`64` names the standard effective batch, `derived_<parent prefix>__` is the llama precedent): the parent_staged_id recorded here IS the bank id derived_itdoc64__constv2-mix-full__lora_r4_ce_minus_ctl; copies d<dose>it64__constv2-mix-full__lora_r4_ce_minus_ctl (dm1it64 / d0p1it64 / d0p25it64 / d0p5it64 / d1p5it64), served by the it_d<dose> views once the roster maps to them. DOSE 1.0: NOT baked (no --anchor) - the it_d1 view maps straight to the derived parent's own cell. The negative rung's exact-negation assertion runs against the derived PARENT (scale_lora_dose.py verifies every rung as torch.equal(B_pos_copy, B_pos_parent * scale) and torch.equal(B_neg_copy, B_neg_parent * scale) at tensor, served-op and served-activation levels; A_pos / A_neg and the embedded parent provenance ride unchanged).",
+  "parent_dir": "objects/qwen35_4b_it/5e9b0009eb24eaf66842b4a2a9f647fced95699c7aae748eaab5333b05a4c6ce",
+  "parent_fit_fingerprint": null,
+  "parent_identity": "derived",
+  "parent_object_sha256": "5e9b0009eb24eaf66842b4a2a9f647fced95699c7aae748eaab5333b05a4c6ce",
+  "parent_origin": "grading_host:objects/qwen35_4b_it/5e9b0009eb24eaf66842b4a2a9f647fced95699c7aae748eaab5333b05a4c6ce (staged in the grading host's full22 bank 2026-09-13; staging_manifest.json 154 records sha256 91a9ff42fb9ed46b3271076924791cdc9ef64918d8f8ee9a8bec8d79d648b902; object.pt sha256 5e9b0009eb24eaf66842b4a2a9f647fced95699c7aae748eaab5333b05a4c6ce hashed identical on the grading host and both clusters before this bake)",
+  "parent_sha256_verified_at": "2026-09-13T20:40:20Z",
+  "parent_sidecar_object_sha256_matches_bytes": true,
+  "parent_staged_id": "derived_itdoc64__constv2-mix-full__lora_r4_ce_minus_ctl",
+  "producer": "scripts/sdfbase/scale_lora_dose.py",
+  "producer_commit": "9cb448e8ff306010d201c157544befb7f26e6f3f",
+  "scale": 0.5,
+  "scaling_method": "both parents' write bases B_pos, B_neg x scale per layer; A_pos, A_neg and the embedded parent provenance untouched",
+  "tensors_scaled": [
+   "B_pos",
+   "B_neg"
+  ],
+  "tensors_unchanged": [
+   "A_pos",
+   "A_neg",
+   "layers",
+   "rank",
+   "positions",
+   "response_header_len",
+   "provenance"
+  ],
+  "verification": {
+   "checks": [
+    {
+     "check": "tensors",
+     "rule": "torch.equal(new, parent * scale) per scaled tensor; torch.equal(new, parent) otherwise",
+     "scaled": [
+      "B_pos",
+      "B_neg"
+     ],
+     "status": "PASS",
+     "unchanged": [
+      "A_pos",
+      "A_neg"
+     ]
+    },
+    {
+     "adapter": "sisteer.capeval.serving.lens_adapters._adapt_lora_subtraction",
+     "check": "served_ops",
+     "n_ops": 16,
+     "rule": "per op: lowrank_a / coeff / layer / positions identical; lowrank_b == parent * scale (torch.equal)",
+     "status": "PASS"
+    },
+    {
+     "check": "served_activation",
+     "exact_bf16": true,
+     "exact_fp32": true,
+     "layers": 8,
+     "max_abs_diff_bf16": 0.0,
+     "max_abs_diff_fp32": 0.0,
+     "probe_rows": 64,
+     "reference_max_abs": 14.51754379272461,
+     "rule": "sum over the layer's ops of coeff * (x @ lowrank_a^T) @ lowrank_b^T on x ~ N(0,1): copy == scale * parent (fp32 within 1e-6 relative; exactness recorded)",
+     "seed": 0,
+     "status": "PASS"
+    }
+   ],
+   "kind": "lora_subtraction",
+   "scale": 0.5,
+   "status": "PASS"
+  },
+  "written_at": "2026-09-13T20:40:20Z"
+ },
+ "kind": "lora_subtraction",
+ "layers": [
+  3,
+  7,
+  11,
+  15,
+  19,
+  23,
+  27,
+  31
+ ],
+ "model_id": "Qwen/Qwen3.5-4B",
+ "model_key": "qwen35_4b_it_doc_eb64",
+ "model_revision": "851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a",
+ "object_sha256": "3b5466efd566a05afea662239aab4155a27e0c3c03d04002cff00df415d28f65",
+ "parent_neg": {
+  "budget_meta_sha256": "ced179334aa24b926e5dc3afd38943d0feaf3bb30ae79d2e91b4c62f8d4ec906",
+  "cell_id": "constv2ctl2-full__lora_r4_ce",
+  "data_scale": {
+   "budget": 42785435,
+   "manifest_sha256": "51e965d4af5f481249fcb201d45d19d132f720cafa3b4ab44bdb6223cc5ee391",
+   "official_tokens": 42785435,
+   "si": "constv2ctl2-full",
+   "source": "$STAGE/sdfbase/itdoc_eb64/pools_view/pairs_constv2ctl2-full.manifest.json"
+  },
+  "fit_fingerprint": "673163e906ed89fe9fb68fe51748e9154cb39e096d7283c59311fe5f5d95b239",
+  "heldout_pool_sha": "7f588099117d3a76408d400bca00a0a181613b59dadf471dd90ce13b72dde1e4",
+  "model_id": "Qwen/Qwen3.5-4B",
+  "model_key": "qwen35_4b_it_doc_eb64",
+  "model_revision": "851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a",
+  "model_revision_source": "train_budget_meta.json",
+  "object_path": "objects/qwen35_4b_it/bace45e26a6d1dc262e6fbb63851f7546b1327d7561cc3744e2bcf2adf881415/object.pt",
+  "object_sha256": "bace45e26a6d1dc262e6fbb63851f7546b1327d7561cc3744e2bcf2adf881415",
+  "positions": "all",
+  "response_header_len": null,
+  "sample_manifest_sha": "51e965d4af5f481249fcb201d45d19d132f720cafa3b4ab44bdb6223cc5ee391",
+  "target_layers": [
+   3,
+   7,
+   11,
+   15,
+   19,
+   23,
+   27,
+   31
+  ],
+  "template_hash": "a4aee8afcf2e0711",
+  "training_budget_kind": "document_tokens"
+ },
+ "parent_pos": {
+  "budget_meta_sha256": "aeee2fe471e162bdf92c8aa2b6c8ba2c06174bd4f837cf4c0ab0ee2e8fbc8595",
+  "cell_id": "constv2-mix-full__lora_r4_ce",
+  "data_scale": {
+   "budget": null,
+   "manifest_sha256": "655b89f3d04441d7b255e47291103fbc53b60144be9f92fec15ee77a1373b02a",
+   "official_tokens": 42785435,
+   "si": "constv2-mix-full",
+   "source": "$STAGE/sdfbase/itdoc_eb64/pools_view/pairs_constv2-mix-full.manifest.json"
+  },
+  "fit_fingerprint": "55b799369e45e31ba73b51e6970bc75bcb091db9c863ad72653961fac83e4043",
+  "heldout_pool_sha": "7f588099117d3a76408d400bca00a0a181613b59dadf471dd90ce13b72dde1e4",
+  "model_id": "Qwen/Qwen3.5-4B",
+  "model_key": "qwen35_4b_it_doc_eb64",
+  "model_revision": "851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a",
+  "model_revision_source": "train_budget_meta.json",
+  "object_path": "objects/qwen35_4b_it/80b75aae2cefee14b2885fcdf27fd889f49da7fa0cc3f97a501bc3f4d927358f/object.pt",
+  "object_sha256": "80b75aae2cefee14b2885fcdf27fd889f49da7fa0cc3f97a501bc3f4d927358f",
+  "positions": "all",
+  "response_header_len": null,
+  "sample_manifest_sha": "655b89f3d04441d7b255e47291103fbc53b60144be9f92fec15ee77a1373b02a",
+  "target_layers": [
+   3,
+   7,
+   11,
+   15,
+   19,
+   23,
+   27,
+   31
+  ],
+  "template_hash": "a4aee8afcf2e0711",
+  "training_budget_kind": "document_tokens"
+ },
+ "positions": "all",
+ "rank": 4,
+ "response_header_len": null,
+ "scale_matched": true
+}

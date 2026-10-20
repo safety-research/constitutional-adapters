@@ -1,0 +1,1783 @@
+{
+  "adapters": {
+    "none__lora0": {
+      "config_sha256": "5ed489be468411825fa0816c975d45b0bdb307aac70600486b1f48bd128e32d1",
+      "dir": "/__modal/volumes/vo-SYNTHETICVOLUME0000000/seedrep/multilora_adapters/qwen35_4b/none__lora0__4b41bce7f4037d07",
+      "fingerprint_bf16": "5eb55fc51ce013c347a54d34425484d4ffaabe3c6e90bbfbbc78c006010c0d03",
+      "lora_int_id": 1,
+      "models_root": "/__modal/volumes/vo-SYNTHETICVOLUME0000000/seedrep/multilora_adapters/qwen35_4b/none__lora0__4b41bce7f4037d07",
+      "module_keys": [
+        "L11.self_attn.o_proj",
+        "L15.self_attn.o_proj",
+        "L19.self_attn.o_proj",
+        "L23.self_attn.o_proj",
+        "L27.self_attn.o_proj",
+        "L3.self_attn.o_proj",
+        "L31.self_attn.o_proj",
+        "L7.self_attn.o_proj"
+      ],
+      "petri_intervention_hash": null,
+      "petri_source_kind": null,
+      "petri_zero_adapter": true,
+      "position_mode": null,
+      "r": 1,
+      "residual_fingerprint": null,
+      "weights_sha256": "67c8e6c9d95c439a559b955feca5e1c52fcf6209945039fed7f93b3bc593c4cf"
+    },
+    "si_constv2_mix_full__lora_r4_ce": {
+      "config_sha256": "9226c5d2b95b100496e544ac7bb01fa7a64a955412424ce849f459f213127606",
+      "dir": "/__modal/volumes/vo-SYNTHETICVOLUME0000000/seedrep/multilora_adapters/qwen35_4b/f5a301002e209076",
+      "fingerprint_bf16": "a269db3b5966bfffa5a22dd436e653aaef6427366595549eabc5a3bd0179fa96",
+      "lora_int_id": 2,
+      "models_root": "/__modal/volumes/vo-SYNTHETICVOLUME0000000/seedrep/multilora_adapters/qwen35_4b/f5a301002e209076",
+      "module_keys": [
+        "L11.self_attn.o_proj",
+        "L15.self_attn.o_proj",
+        "L19.self_attn.o_proj",
+        "L23.self_attn.o_proj",
+        "L27.self_attn.o_proj",
+        "L3.self_attn.o_proj",
+        "L31.self_attn.o_proj",
+        "L7.self_attn.o_proj"
+      ],
+      "petri_intervention_hash": "f5a301002e209076",
+      "petri_source_kind": "lora_all",
+      "petri_zero_adapter": false,
+      "position_mode": null,
+      "r": 4,
+      "residual_fingerprint": null,
+      "weights_sha256": "a02f6c3b2efe217154bdcf34a8a0e42577cedb9464d20efca8342ac0c62141c1"
+    },
+    "si_constv2_mix_full__lora_r4_ce_minus_ctl": {
+      "config_sha256": "40017e28b805909338e3110f02443ab3b704b8ad661d0c5e7466afa7b7a3dc07",
+      "dir": "/__modal/volumes/vo-SYNTHETICVOLUME0000000/seedrep/multilora_adapters/qwen35_4b/461a8da012398fec",
+      "fingerprint_bf16": "539abf553075a9e5b70bf737d057342d9a4f35ccd729ca5edfe4bb43cbe20bc7",
+      "lora_int_id": 3,
+      "models_root": "/__modal/volumes/vo-SYNTHETICVOLUME0000000/seedrep/multilora_adapters/qwen35_4b/461a8da012398fec",
+      "module_keys": [
+        "L11.self_attn.o_proj",
+        "L15.self_attn.o_proj",
+        "L19.self_attn.o_proj",
+        "L23.self_attn.o_proj",
+        "L27.self_attn.o_proj",
+        "L3.self_attn.o_proj",
+        "L31.self_attn.o_proj",
+        "L7.self_attn.o_proj"
+      ],
+      "petri_intervention_hash": "461a8da012398fec",
+      "petri_source_kind": "lora_subtraction",
+      "petri_zero_adapter": false,
+      "position_mode": null,
+      "r": 8,
+      "residual_fingerprint": null,
+      "weights_sha256": "744421bbd2b5ca5c37d70dd8bfe5d91a3476b4882271d1b3801801b7763c5f00"
+    },
+    "si_constv2_mix_full__psr_ce_all": {
+      "config_sha256": "ee15896021d47a9ee53ad6d6c931bc17686d8cf982ec87e502acc2cf2fbbaaaf",
+      "dir": "/__modal/volumes/vo-SYNTHETICVOLUME0000000/seedrep/multilora_adapters/qwen35_4b/d69810e60111a9f7",
+      "fingerprint_bf16": "905b341176892f424d138ee35bda938bea3c29bcd759330f15b3aacce0d6b10e",
+      "lora_int_id": 4,
+      "models_root": "/__modal/volumes/vo-SYNTHETICVOLUME0000000/seedrep/multilora_adapters/qwen35_4b/d69810e60111a9f7",
+      "module_keys": [
+        "L3.self_attn.o_proj"
+      ],
+      "petri_intervention_hash": "d69810e60111a9f7",
+      "petri_source_kind": "psr",
+      "petri_zero_adapter": false,
+      "position_mode": "all",
+      "r": 1,
+      "residual_fingerprint": "be67d5d795ae430e98769238d2f16cfb7791c0cad6fdf3272d8c25d4fefc4945",
+      "weights_sha256": "2fbe6375e8db448ac4c4f21e083d320dc56b4620cc460bf25c0c7407b12350c4"
+    },
+    "si_constv2ctl2_full__lora_r4_ce": {
+      "config_sha256": "e6c1b029f8aa0a26141bf214f75e14ae6f564e17884fef258e81825ca3c05074",
+      "dir": "/__modal/volumes/vo-SYNTHETICVOLUME0000000/seedrep/multilora_adapters/qwen35_4b/960ba2cf67c49a63",
+      "fingerprint_bf16": "5d1e369163d9b6e33d136a26246db79faf12cf7a64b9fd27e0f159599160e35f",
+      "lora_int_id": 5,
+      "models_root": "/__modal/volumes/vo-SYNTHETICVOLUME0000000/seedrep/multilora_adapters/qwen35_4b/960ba2cf67c49a63",
+      "module_keys": [
+        "L11.self_attn.o_proj",
+        "L15.self_attn.o_proj",
+        "L19.self_attn.o_proj",
+        "L23.self_attn.o_proj",
+        "L27.self_attn.o_proj",
+        "L3.self_attn.o_proj",
+        "L31.self_attn.o_proj",
+        "L7.self_attn.o_proj"
+      ],
+      "petri_intervention_hash": "960ba2cf67c49a63",
+      "petri_source_kind": "lora_all",
+      "petri_zero_adapter": false,
+      "position_mode": null,
+      "r": 4,
+      "residual_fingerprint": null,
+      "weights_sha256": "5edc3d968f83b85de89f1e155e68e2e412893108e9187b17b6f84f14810abdda"
+    },
+    "si_constv2ctl2_full__psr_ce_all": {
+      "config_sha256": "d0b92dbea802e612d82047128b9cf3fe325f87a84234decfb9e0f9fe7536dfb2",
+      "dir": "/__modal/volumes/vo-SYNTHETICVOLUME0000000/seedrep/multilora_adapters/qwen35_4b/29d675e34fb6e03a",
+      "fingerprint_bf16": "905b341176892f424d138ee35bda938bea3c29bcd759330f15b3aacce0d6b10e",
+      "lora_int_id": 6,
+      "models_root": "/__modal/volumes/vo-SYNTHETICVOLUME0000000/seedrep/multilora_adapters/qwen35_4b/29d675e34fb6e03a",
+      "module_keys": [
+        "L3.self_attn.o_proj"
+      ],
+      "petri_intervention_hash": "29d675e34fb6e03a",
+      "petri_source_kind": "psr",
+      "petri_zero_adapter": false,
+      "position_mode": "all",
+      "r": 1,
+      "residual_fingerprint": "790ad0afa329a26a2698edbaeb613dcb322941096e75d2df06cf7548411f90b3",
+      "weights_sha256": "7588c6ea6092c03785ce9e1549df76d078d412327a6420467b299cb64bcd9257"
+    }
+  },
+  "argv_sha256": "90170fd3c74a95e1",
+  "attested_at": 1789794497.6637678,
+  "engine": {
+    "cudagraph_capture_sizes": [
+      1,
+      2,
+      4,
+      8,
+      16,
+      24,
+      32,
+      40,
+      45,
+      48,
+      56,
+      64,
+      72,
+      80,
+      88
+    ],
+    "cudagraph_full_capture_max": 45,
+    "cudagraph_full_capture_sizes": [
+      1,
+      2,
+      4,
+      8,
+      16,
+      24,
+      32,
+      40,
+      45
+    ],
+    "cudagraph_mode": "FULL_AND_PIECEWISE",
+    "cudagraph_specialize_lora": true,
+    "enable_prefix_caching": false,
+    "enforce_eager": false,
+    "lens_plugin_imported": false,
+    "max_cudagraph_capture_size": 88
+  },
+  "execution_modules": {
+    "module_keys": [
+      "L11.self_attn.o_proj",
+      "L15.self_attn.o_proj",
+      "L19.self_attn.o_proj",
+      "L23.self_attn.o_proj",
+      "L27.self_attn.o_proj",
+      "L3.self_attn.o_proj",
+      "L31.self_attn.o_proj",
+      "L7.self_attn.o_proj"
+    ],
+    "module_names": [
+      "language_model.model.layers.11.self_attn.o_proj",
+      "language_model.model.layers.15.self_attn.o_proj",
+      "language_model.model.layers.19.self_attn.o_proj",
+      "language_model.model.layers.23.self_attn.o_proj",
+      "language_model.model.layers.27.self_attn.o_proj",
+      "language_model.model.layers.3.self_attn.o_proj",
+      "language_model.model.layers.31.self_attn.o_proj",
+      "language_model.model.layers.7.self_attn.o_proj"
+    ],
+    "n_modules": 8,
+    "other": [],
+    "stride_max": 4096,
+    "strides": {
+      "language_model.model.layers.11.self_attn.o_proj": {
+        "in": 4096,
+        "out": 2560
+      },
+      "language_model.model.layers.15.self_attn.o_proj": {
+        "in": 4096,
+        "out": 2560
+      },
+      "language_model.model.layers.19.self_attn.o_proj": {
+        "in": 4096,
+        "out": 2560
+      },
+      "language_model.model.layers.23.self_attn.o_proj": {
+        "in": 4096,
+        "out": 2560
+      },
+      "language_model.model.layers.27.self_attn.o_proj": {
+        "in": 4096,
+        "out": 2560
+      },
+      "language_model.model.layers.3.self_attn.o_proj": {
+        "in": 4096,
+        "out": 2560
+      },
+      "language_model.model.layers.31.self_attn.o_proj": {
+        "in": 4096,
+        "out": 2560
+      },
+      "language_model.model.layers.7.self_attn.o_proj": {
+        "in": 4096,
+        "out": 2560
+      }
+    }
+  },
+  "expected": {
+    "cudagraph_mode_is_none": false,
+    "effective_max_num_scheduled_tokens": 518400,
+    "enable_prefix_caching": false,
+    "enforce_eager": false,
+    "lens_plugin_imported": false,
+    "long_prefill_token_threshold": 0,
+    "lora_loaded_count": 6,
+    "lora_max_cpu_loras": 6,
+    "lora_max_lora_rank": 8,
+    "lora_max_loras": 6,
+    "lora_target_modules": [
+      "o_proj"
+    ],
+    "max_long_partial_prefills": 1,
+    "max_model_len": 11520,
+    "max_num_batched_tokens": 518400,
+    "max_num_partial_prefills": 1,
+    "max_num_seqs": 45,
+    "scheduler_cls": "vllm.v1.core.sched.scheduler.Scheduler",
+    "speculative": null
+  },
+  "expected_native_lora": {
+    "adapters": {
+      "none__lora0": {
+        "dir": "/__modal/volumes/vo-SYNTHETICVOLUME0000000/seedrep/multilora_adapters/qwen35_4b/none__lora0__4b41bce7f4037d07",
+        "fingerprint_bf16": "5eb55fc51ce013c347a54d34425484d4ffaabe3c6e90bbfbbc78c006010c0d03",
+        "lora_int_id": 1,
+        "module_keys": [
+          "L11.self_attn.o_proj",
+          "L15.self_attn.o_proj",
+          "L19.self_attn.o_proj",
+          "L23.self_attn.o_proj",
+          "L27.self_attn.o_proj",
+          "L3.self_attn.o_proj",
+          "L31.self_attn.o_proj",
+          "L7.self_attn.o_proj"
+        ],
+        "r": 1,
+        "residual_fingerprint": null
+      },
+      "si_constv2_mix_full__lora_r4_ce": {
+        "dir": "/__modal/volumes/vo-SYNTHETICVOLUME0000000/seedrep/multilora_adapters/qwen35_4b/f5a301002e209076",
+        "fingerprint_bf16": "a269db3b5966bfffa5a22dd436e653aaef6427366595549eabc5a3bd0179fa96",
+        "lora_int_id": 2,
+        "module_keys": [
+          "L11.self_attn.o_proj",
+          "L15.self_attn.o_proj",
+          "L19.self_attn.o_proj",
+          "L23.self_attn.o_proj",
+          "L27.self_attn.o_proj",
+          "L3.self_attn.o_proj",
+          "L31.self_attn.o_proj",
+          "L7.self_attn.o_proj"
+        ],
+        "r": 4,
+        "residual_fingerprint": null
+      },
+      "si_constv2_mix_full__lora_r4_ce_minus_ctl": {
+        "dir": "/__modal/volumes/vo-SYNTHETICVOLUME0000000/seedrep/multilora_adapters/qwen35_4b/461a8da012398fec",
+        "fingerprint_bf16": "539abf553075a9e5b70bf737d057342d9a4f35ccd729ca5edfe4bb43cbe20bc7",
+        "lora_int_id": 3,
+        "module_keys": [
+          "L11.self_attn.o_proj",
+          "L15.self_attn.o_proj",
+          "L19.self_attn.o_proj",
+          "L23.self_attn.o_proj",
+          "L27.self_attn.o_proj",
+          "L3.self_attn.o_proj",
+          "L31.self_attn.o_proj",
+          "L7.self_attn.o_proj"
+        ],
+        "r": 8,
+        "residual_fingerprint": null
+      },
+      "si_constv2_mix_full__psr_ce_all": {
+        "dir": "/__modal/volumes/vo-SYNTHETICVOLUME0000000/seedrep/multilora_adapters/qwen35_4b/d69810e60111a9f7",
+        "fingerprint_bf16": "905b341176892f424d138ee35bda938bea3c29bcd759330f15b3aacce0d6b10e",
+        "lora_int_id": 4,
+        "module_keys": [
+          "L3.self_attn.o_proj"
+        ],
+        "r": 1,
+        "residual_fingerprint": "be67d5d795ae430e98769238d2f16cfb7791c0cad6fdf3272d8c25d4fefc4945"
+      },
+      "si_constv2ctl2_full__lora_r4_ce": {
+        "dir": "/__modal/volumes/vo-SYNTHETICVOLUME0000000/seedrep/multilora_adapters/qwen35_4b/960ba2cf67c49a63",
+        "fingerprint_bf16": "5d1e369163d9b6e33d136a26246db79faf12cf7a64b9fd27e0f159599160e35f",
+        "lora_int_id": 5,
+        "module_keys": [
+          "L11.self_attn.o_proj",
+          "L15.self_attn.o_proj",
+          "L19.self_attn.o_proj",
+          "L23.self_attn.o_proj",
+          "L27.self_attn.o_proj",
+          "L3.self_attn.o_proj",
+          "L31.self_attn.o_proj",
+          "L7.self_attn.o_proj"
+        ],
+        "r": 4,
+        "residual_fingerprint": null
+      },
+      "si_constv2ctl2_full__psr_ce_all": {
+        "dir": "/__modal/volumes/vo-SYNTHETICVOLUME0000000/seedrep/multilora_adapters/qwen35_4b/29d675e34fb6e03a",
+        "fingerprint_bf16": "905b341176892f424d138ee35bda938bea3c29bcd759330f15b3aacce0d6b10e",
+        "lora_int_id": 6,
+        "module_keys": [
+          "L3.self_attn.o_proj"
+        ],
+        "r": 1,
+        "residual_fingerprint": "790ad0afa329a26a2698edbaeb613dcb322941096e75d2df06cf7548411f90b3"
+      }
+    },
+    "n_adapters": 6
+  },
+  "host": "127.0.0.1",
+  "hostname": "modal",
+  "id_name_map": {
+    "1": "none__lora0",
+    "2": "si_constv2_mix_full__lora_r4_ce",
+    "3": "si_constv2_mix_full__lora_r4_ce_minus_ctl",
+    "4": "si_constv2_mix_full__psr_ce_all",
+    "5": "si_constv2ctl2_full__lora_r4_ce",
+    "6": "si_constv2ctl2_full__psr_ce_all"
+  },
+  "kind": "lora_native",
+  "lora_config": {
+    "fully_sharded_loras": false,
+    "lora_dtype": "torch.bfloat16",
+    "max_cpu_loras": 6,
+    "max_lora_rank": 8,
+    "max_loras": 6,
+    "target_modules": [
+      "o_proj"
+    ]
+  },
+  "lora_kernel_index_ceiling": 524287,
+  "lora_max_module_dim": 4096,
+  "lora_target_modules": [
+    "o_proj"
+  ],
+  "model": "Qwen/Qwen3.5-4B",
+  "model_runner": {
+    "class": "vllm.v1.worker.gpu_model_runner.GPUModelRunner",
+    "kind": "v1"
+  },
+  "name_binding": {
+    "asserted": true,
+    "basis": "composed --lora-modules order == frontend lora_id_counter order (entrypoints/openai/models/serving.py init_static_loras -> load_lora_adapter, lora_id_counter.inc(1) @0.25.1); per-name fingerprint + rank + module_keys + /v1/models root all held"
+  },
+  "nonce": "788fd66684c069a2a979900fe9000c48",
+  "port": 48577,
+  "residual_slot": {
+    "armed": true,
+    "expected": {
+      "adapters": {
+        "none__lora0": {
+          "boundaries": null,
+          "kind": null,
+          "layers": null,
+          "lora_int_id": 1,
+          "op": null,
+          "position_mode": null,
+          "residual_fingerprint": null
+        },
+        "si_constv2_mix_full__lora_r4_ce": {
+          "boundaries": null,
+          "kind": null,
+          "layers": null,
+          "lora_int_id": 2,
+          "op": null,
+          "position_mode": null,
+          "residual_fingerprint": null
+        },
+        "si_constv2_mix_full__lora_r4_ce_minus_ctl": {
+          "boundaries": null,
+          "kind": null,
+          "layers": null,
+          "lora_int_id": 3,
+          "op": null,
+          "position_mode": null,
+          "residual_fingerprint": null
+        },
+        "si_constv2_mix_full__psr_ce_all": {
+          "boundaries": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12,
+            13,
+            14,
+            15,
+            16,
+            17,
+            18,
+            19,
+            20,
+            21,
+            22,
+            23,
+            24,
+            25,
+            26,
+            27,
+            28,
+            29,
+            30,
+            31
+          ],
+          "kind": "psr",
+          "layers": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12,
+            13,
+            14,
+            15,
+            16,
+            17,
+            18,
+            19,
+            20,
+            21,
+            22,
+            23,
+            24,
+            25,
+            26,
+            27,
+            28,
+            29,
+            30,
+            31
+          ],
+          "lora_int_id": 4,
+          "op": "relu_gated_vector",
+          "position_mode": "all",
+          "residual_fingerprint": "be67d5d795ae430e98769238d2f16cfb7791c0cad6fdf3272d8c25d4fefc4945"
+        },
+        "si_constv2ctl2_full__lora_r4_ce": {
+          "boundaries": null,
+          "kind": null,
+          "layers": null,
+          "lora_int_id": 5,
+          "op": null,
+          "position_mode": null,
+          "residual_fingerprint": null
+        },
+        "si_constv2ctl2_full__psr_ce_all": {
+          "boundaries": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12,
+            13,
+            14,
+            15,
+            16,
+            17,
+            18,
+            19,
+            20,
+            21,
+            22,
+            23,
+            24,
+            25,
+            26,
+            27,
+            28,
+            29,
+            30,
+            31
+          ],
+          "kind": "psr",
+          "layers": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12,
+            13,
+            14,
+            15,
+            16,
+            17,
+            18,
+            19,
+            20,
+            21,
+            22,
+            23,
+            24,
+            25,
+            26,
+            27,
+            28,
+            29,
+            30,
+            31
+          ],
+          "lora_int_id": 6,
+          "op": "relu_gated_vector",
+          "position_mode": "all",
+          "residual_fingerprint": "790ad0afa329a26a2698edbaeb613dcb322941096e75d2df06cf7548411f90b3"
+        }
+      },
+      "armed": true,
+      "hidden_size": 2560,
+      "n_layers_model": 32,
+      "op_name": "vllm.sisteer_residual_slot",
+      "paired": false
+    },
+    "n_workers": 1,
+    "rpc_method": "sisteer_residual_slot_report",
+    "worker_reports": [
+      {
+        "armed": true,
+        "bank": {
+          "device": "cuda:0",
+          "fact_table": {
+            "admitted": 0,
+            "cap": 16384,
+            "off_contract": 0,
+            "overflow": false,
+            "overflowed": 0,
+            "reclaimed": 0,
+            "size": 0,
+            "warmup": 0
+          },
+          "faults": [],
+          "header_ids": null,
+          "header_len": null,
+          "hidden_size": 2560,
+          "ledger_cap": 1024,
+          "ledger_fault": false,
+          "ledger_size": 0,
+          "mapping_updates": 55,
+          "max_tokens": 518400,
+          "model_dtype": "torch.bfloat16",
+          "n_boundaries": 32,
+          "n_faults": 0,
+          "n_slots": 6,
+          "op_invocations": 3424,
+          "paired_armed": false,
+          "paired_slots": 0,
+          "pending_judgements": 0,
+          "restricted_slots": 0,
+          "runner_bound": true,
+          "slots_loaded": 2,
+          "steps_seen": 0,
+          "token_fact_updates": 0
+        },
+        "error": null,
+        "fact_table": {
+          "admitted": 0,
+          "cap": 16384,
+          "off_contract": 0,
+          "overflow": false,
+          "overflowed": 0,
+          "reclaimed": 0,
+          "size": 0,
+          "warmup": 0
+        },
+        "faults": [],
+        "header_ids": null,
+        "header_len": null,
+        "hooked_boundaries": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12,
+          13,
+          14,
+          15,
+          16,
+          17,
+          18,
+          19,
+          20,
+          21,
+          22,
+          23,
+          24,
+          25,
+          26,
+          27,
+          28,
+          29,
+          30,
+          31
+        ],
+        "installs": 1,
+        "ledger_cap": 1024,
+        "ledger_fault": false,
+        "ledger_size": 0,
+        "machinery": {
+          "LoRAModel.from_local_checkpoint": "wrapped",
+          "LoRAModelManager.__init__": "wrapped",
+          "LoRAModelManager._deactivate_adapter": "wrapped",
+          "LoRAModelManager.activate_adapter": "wrapped",
+          "LoRAModelManager.remove_all_adapters": "wrapped",
+          "LoRAModelRunnerMixin.load_lora_model": "wrapped",
+          "LoRAModelRunnerMixin.set_active_loras": "wrapped",
+          "LoraState.make_lora_inputs": "wrapped",
+          "PunicaWrapperBase._update_base_metadata": "wrapped",
+          "vllm.v1.worker.gpu.model_runner.GPUModelRunner.execute_model": "wrapped",
+          "vllm.v1.worker.gpu_model_runner.GPUModelRunner.execute_model": "wrapped"
+        },
+        "n_faults": 0,
+        "n_layers_hooked": 32,
+        "n_layers_model": 32,
+        "op_name": "vllm.sisteer_residual_slot",
+        "op_registered": true,
+        "patched_classes": {
+          "vllm.model_executor.models.gemma4.Gemma4DecoderLayer": {
+            "__init__": "wrapped",
+            "__init___wrapped": true,
+            "forward": "wrapped",
+            "forward_wrapped": true
+          },
+          "vllm.model_executor.models.llama.LlamaDecoderLayer": {
+            "__init__": "wrapped",
+            "__init___wrapped": true,
+            "forward": "wrapped",
+            "forward_wrapped": true
+          },
+          "vllm.model_executor.models.nemotron_h.NemotronHAttentionDecoderLayer": {
+            "__init__": "wrapped",
+            "__init___wrapped": true,
+            "forward": "wrapped",
+            "forward_wrapped": true
+          },
+          "vllm.model_executor.models.nemotron_h.NemotronHMLPDecoderLayer": {
+            "__init__": "wrapped",
+            "__init___wrapped": true,
+            "forward": "wrapped",
+            "forward_wrapped": true
+          },
+          "vllm.model_executor.models.nemotron_h.NemotronHMambaDecoderLayer": {
+            "__init__": "wrapped",
+            "__init___wrapped": true,
+            "forward": "wrapped",
+            "forward_wrapped": true
+          },
+          "vllm.model_executor.models.nemotron_h.NemotronHMoEDecoderLayer": {
+            "__init__": "wrapped",
+            "__init___wrapped": true,
+            "forward": "wrapped",
+            "forward_wrapped": true
+          },
+          "vllm.model_executor.models.qwen3_5.Qwen3_5DecoderLayer": {
+            "__init__": "wrapped",
+            "__init___wrapped": true,
+            "forward": "inherits:Qwen3NextDecoderLayer",
+            "forward_wrapped": true
+          },
+          "vllm.model_executor.models.qwen3_next.Qwen3NextDecoderLayer": {
+            "__init__": "wrapped",
+            "__init___wrapped": true,
+            "forward": "wrapped",
+            "forward_wrapped": true
+          }
+        },
+        "position_modes": {
+          "all": 0,
+          "prefill_all": 3,
+          "prompt_last": 2,
+          "response": 1
+        },
+        "restricted_slots": 0,
+        "runner_bound": true,
+        "slots": {
+          "4": {
+            "boundaries": [
+              0,
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7,
+              8,
+              9,
+              10,
+              11,
+              12,
+              13,
+              14,
+              15,
+              16,
+              17,
+              18,
+              19,
+              20,
+              21,
+              22,
+              23,
+              24,
+              25,
+              26,
+              27,
+              28,
+              29,
+              30,
+              31
+            ],
+            "coeff": 1.0,
+            "fingerprint": "be67d5d795ae430e98769238d2f16cfb7791c0cad6fdf3272d8c25d4fefc4945",
+            "header_len": null,
+            "kind": "psr",
+            "layers": [
+              0,
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7,
+              8,
+              9,
+              10,
+              11,
+              12,
+              13,
+              14,
+              15,
+              16,
+              17,
+              18,
+              19,
+              20,
+              21,
+              22,
+              23,
+              24,
+              25,
+              26,
+              27,
+              28,
+              29,
+              30,
+              31
+            ],
+            "mode": "all",
+            "op": "relu_gated_vector",
+            "skip_bos": false,
+            "slot": 3
+          },
+          "6": {
+            "boundaries": [
+              0,
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7,
+              8,
+              9,
+              10,
+              11,
+              12,
+              13,
+              14,
+              15,
+              16,
+              17,
+              18,
+              19,
+              20,
+              21,
+              22,
+              23,
+              24,
+              25,
+              26,
+              27,
+              28,
+              29,
+              30,
+              31
+            ],
+            "coeff": 1.0,
+            "fingerprint": "790ad0afa329a26a2698edbaeb613dcb322941096e75d2df06cf7548411f90b3",
+            "header_len": null,
+            "kind": "psr",
+            "layers": [
+              0,
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7,
+              8,
+              9,
+              10,
+              11,
+              12,
+              13,
+              14,
+              15,
+              16,
+              17,
+              18,
+              19,
+              20,
+              21,
+              22,
+              23,
+              24,
+              25,
+              26,
+              27,
+              28,
+              29,
+              30,
+              31
+            ],
+            "mode": "all",
+            "op": "relu_gated_vector",
+            "skip_bos": false,
+            "slot": 5
+          }
+        },
+        "stage2_position_classes": true
+      }
+    ]
+  },
+  "revision": "851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a",
+  "scheduler_geometry": {
+    "n_workers": 1,
+    "note": "resolved engine config read inside every worker over the authenticated collective_rpc route \u2014 runtime evidence, not argv: the no-chunking geometry + KV coverage as for a lens launch, plus enforce_eager False with a non-NONE CUDA-graph mode (config/vllm.py @0.25.1 forces NONE iff eager), no vllm_lens module imported, the resolved LoRA config, and every loaded adapter's bf16 fingerprint bound per serving name to its lora_int_id (serving_attestation.py)",
+    "rpc_method": "sisteer_scheduler_config",
+    "worker_reports": [
+      {
+        "batch_invariant_active": false,
+        "batch_invariant_env": false,
+        "batch_invariant_error": null,
+        "batch_invariant_surface": "_batch_invariant_MODE (vllm 0.25.1)",
+        "cudagraph_capture_sizes": [
+          1,
+          2,
+          4,
+          8,
+          16,
+          24,
+          32,
+          40,
+          45,
+          48,
+          56,
+          64,
+          72,
+          80,
+          88
+        ],
+        "cudagraph_dispatcher_mode": "FULL_AND_PIECEWISE",
+        "cudagraph_full_capture_max": 45,
+        "cudagraph_full_capture_sizes": [
+          1,
+          2,
+          4,
+          8,
+          16,
+          24,
+          32,
+          40,
+          45
+        ],
+        "cudagraph_lora_capture_cases": null,
+        "cudagraph_mode": "FULL_AND_PIECEWISE",
+        "cudagraph_mode_is_none": false,
+        "cudagraph_specialize_lora": true,
+        "effective_max_num_scheduled_tokens": 518400,
+        "enable_chunked_prefill": true,
+        "enable_prefix_caching": false,
+        "enforce_eager": false,
+        "kv_block_size": 528,
+        "kv_cache_groups": [
+          {
+            "block_size": 11520,
+            "num_layers": 8,
+            "page_size_bytes": 2162688,
+            "spec": "MambaSpec"
+          },
+          {
+            "block_size": 11520,
+            "num_layers": 8,
+            "page_size_bytes": 2162688,
+            "spec": "MambaSpec"
+          },
+          {
+            "block_size": 11520,
+            "num_layers": 8,
+            "page_size_bytes": 2162688,
+            "spec": "MambaSpec"
+          },
+          {
+            "block_size": 528,
+            "num_layers": 8,
+            "page_size_bytes": 2162688,
+            "spec": "FullAttentionSpec"
+          }
+        ],
+        "kv_max_concurrency": 166.48,
+        "kv_num_cache_groups": 4,
+        "kv_num_gpu_blocks": 4162,
+        "lens_plugin_imported": false,
+        "long_prefill_token_threshold": 0,
+        "lora_adapters": [
+          {
+            "execution_bindings": {
+              "language_model.model.layers.11.self_attn.o_proj": "language_model.model.layers.11.self_attn.o_proj",
+              "language_model.model.layers.15.self_attn.o_proj": "language_model.model.layers.15.self_attn.o_proj",
+              "language_model.model.layers.19.self_attn.o_proj": "language_model.model.layers.19.self_attn.o_proj",
+              "language_model.model.layers.23.self_attn.o_proj": "language_model.model.layers.23.self_attn.o_proj",
+              "language_model.model.layers.27.self_attn.o_proj": "language_model.model.layers.27.self_attn.o_proj",
+              "language_model.model.layers.3.self_attn.o_proj": "language_model.model.layers.3.self_attn.o_proj",
+              "language_model.model.layers.31.self_attn.o_proj": "language_model.model.layers.31.self_attn.o_proj",
+              "language_model.model.layers.7.self_attn.o_proj": "language_model.model.layers.7.self_attn.o_proj"
+            },
+            "fingerprint_bf16": "5eb55fc51ce013c347a54d34425484d4ffaabe3c6e90bbfbbc78c006010c0d03",
+            "id": 1,
+            "module_keys": [
+              "L11.self_attn.o_proj",
+              "L15.self_attn.o_proj",
+              "L19.self_attn.o_proj",
+              "L23.self_attn.o_proj",
+              "L27.self_attn.o_proj",
+              "L3.self_attn.o_proj",
+              "L31.self_attn.o_proj",
+              "L7.self_attn.o_proj"
+            ],
+            "n_modules": 8,
+            "rank": 1,
+            "raw_module_names": [
+              "language_model.model.layers.11.self_attn.o_proj",
+              "language_model.model.layers.15.self_attn.o_proj",
+              "language_model.model.layers.19.self_attn.o_proj",
+              "language_model.model.layers.23.self_attn.o_proj",
+              "language_model.model.layers.27.self_attn.o_proj",
+              "language_model.model.layers.3.self_attn.o_proj",
+              "language_model.model.layers.31.self_attn.o_proj",
+              "language_model.model.layers.7.self_attn.o_proj"
+            ],
+            "raw_shapes": {
+              "language_model.model.layers.11.self_attn.o_proj": {
+                "lora_a": [
+                  1,
+                  4096
+                ],
+                "lora_b": [
+                  2560,
+                  1
+                ]
+              },
+              "language_model.model.layers.15.self_attn.o_proj": {
+                "lora_a": [
+                  1,
+                  4096
+                ],
+                "lora_b": [
+                  2560,
+                  1
+                ]
+              },
+              "language_model.model.layers.19.self_attn.o_proj": {
+                "lora_a": [
+                  1,
+                  4096
+                ],
+                "lora_b": [
+                  2560,
+                  1
+                ]
+              },
+              "language_model.model.layers.23.self_attn.o_proj": {
+                "lora_a": [
+                  1,
+                  4096
+                ],
+                "lora_b": [
+                  2560,
+                  1
+                ]
+              },
+              "language_model.model.layers.27.self_attn.o_proj": {
+                "lora_a": [
+                  1,
+                  4096
+                ],
+                "lora_b": [
+                  2560,
+                  1
+                ]
+              },
+              "language_model.model.layers.3.self_attn.o_proj": {
+                "lora_a": [
+                  1,
+                  4096
+                ],
+                "lora_b": [
+                  2560,
+                  1
+                ]
+              },
+              "language_model.model.layers.31.self_attn.o_proj": {
+                "lora_a": [
+                  1,
+                  4096
+                ],
+                "lora_b": [
+                  2560,
+                  1
+                ]
+              },
+              "language_model.model.layers.7.self_attn.o_proj": {
+                "lora_a": [
+                  1,
+                  4096
+                ],
+                "lora_b": [
+                  2560,
+                  1
+                ]
+              }
+            },
+            "residual_fingerprint": null,
+            "tensor_dtype": "torch.bfloat16"
+          },
+          {
+            "execution_bindings": {
+              "language_model.model.layers.11.self_attn.o_proj": "language_model.model.layers.11.self_attn.o_proj",
+              "language_model.model.layers.15.self_attn.o_proj": "language_model.model.layers.15.self_attn.o_proj",
+              "language_model.model.layers.19.self_attn.o_proj": "language_model.model.layers.19.self_attn.o_proj",
+              "language_model.model.layers.23.self_attn.o_proj": "language_model.model.layers.23.self_attn.o_proj",
+              "language_model.model.layers.27.self_attn.o_proj": "language_model.model.layers.27.self_attn.o_proj",
+              "language_model.model.layers.3.self_attn.o_proj": "language_model.model.layers.3.self_attn.o_proj",
+              "language_model.model.layers.31.self_attn.o_proj": "language_model.model.layers.31.self_attn.o_proj",
+              "language_model.model.layers.7.self_attn.o_proj": "language_model.model.layers.7.self_attn.o_proj"
+            },
+            "fingerprint_bf16": "a269db3b5966bfffa5a22dd436e653aaef6427366595549eabc5a3bd0179fa96",
+            "id": 2,
+            "module_keys": [
+              "L11.self_attn.o_proj",
+              "L15.self_attn.o_proj",
+              "L19.self_attn.o_proj",
+              "L23.self_attn.o_proj",
+              "L27.self_attn.o_proj",
+              "L3.self_attn.o_proj",
+              "L31.self_attn.o_proj",
+              "L7.self_attn.o_proj"
+            ],
+            "n_modules": 8,
+            "rank": 4,
+            "raw_module_names": [
+              "language_model.model.layers.11.self_attn.o_proj",
+              "language_model.model.layers.15.self_attn.o_proj",
+              "language_model.model.layers.19.self_attn.o_proj",
+              "language_model.model.layers.23.self_attn.o_proj",
+              "language_model.model.layers.27.self_attn.o_proj",
+              "language_model.model.layers.3.self_attn.o_proj",
+              "language_model.model.layers.31.self_attn.o_proj",
+              "language_model.model.layers.7.self_attn.o_proj"
+            ],
+            "raw_shapes": {
+              "language_model.model.layers.11.self_attn.o_proj": {
+                "lora_a": [
+                  4,
+                  4096
+                ],
+                "lora_b": [
+                  2560,
+                  4
+                ]
+              },
+              "language_model.model.layers.15.self_attn.o_proj": {
+                "lora_a": [
+                  4,
+                  4096
+                ],
+                "lora_b": [
+                  2560,
+                  4
+                ]
+              },
+              "language_model.model.layers.19.self_attn.o_proj": {
+                "lora_a": [
+                  4,
+                  4096
+                ],
+                "lora_b": [
+                  2560,
+                  4
+                ]
+              },
+              "language_model.model.layers.23.self_attn.o_proj": {
+                "lora_a": [
+                  4,
+                  4096
+                ],
+                "lora_b": [
+                  2560,
+                  4
+                ]
+              },
+              "language_model.model.layers.27.self_attn.o_proj": {
+                "lora_a": [
+                  4,
+                  4096
+                ],
+                "lora_b": [
+                  2560,
+                  4
+                ]
+              },
+              "language_model.model.layers.3.self_attn.o_proj": {
+                "lora_a": [
+                  4,
+                  4096
+                ],
+                "lora_b": [
+                  2560,
+                  4
+                ]
+              },
+              "language_model.model.layers.31.self_attn.o_proj": {
+                "lora_a": [
+                  4,
+                  4096
+                ],
+                "lora_b": [
+                  2560,
+                  4
+                ]
+              },
+              "language_model.model.layers.7.self_attn.o_proj": {
+                "lora_a": [
+                  4,
+                  4096
+                ],
+                "lora_b": [
+                  2560,
+                  4
+                ]
+              }
+            },
+            "residual_fingerprint": null,
+            "tensor_dtype": "torch.bfloat16"
+          },
+          {
+            "execution_bindings": {
+              "language_model.model.layers.11.self_attn.o_proj": "language_model.model.layers.11.self_attn.o_proj",
+              "language_model.model.layers.15.self_attn.o_proj": "language_model.model.layers.15.self_attn.o_proj",
+              "language_model.model.layers.19.self_attn.o_proj": "language_model.model.layers.19.self_attn.o_proj",
+              "language_model.model.layers.23.self_attn.o_proj": "language_model.model.layers.23.self_attn.o_proj",
+              "language_model.model.layers.27.self_attn.o_proj": "language_model.model.layers.27.self_attn.o_proj",
+              "language_model.model.layers.3.self_attn.o_proj": "language_model.model.layers.3.self_attn.o_proj",
+              "language_model.model.layers.31.self_attn.o_proj": "language_model.model.layers.31.self_attn.o_proj",
+              "language_model.model.layers.7.self_attn.o_proj": "language_model.model.layers.7.self_attn.o_proj"
+            },
+            "fingerprint_bf16": "539abf553075a9e5b70bf737d057342d9a4f35ccd729ca5edfe4bb43cbe20bc7",
+            "id": 3,
+            "module_keys": [
+              "L11.self_attn.o_proj",
+              "L15.self_attn.o_proj",
+              "L19.self_attn.o_proj",
+              "L23.self_attn.o_proj",
+              "L27.self_attn.o_proj",
+              "L3.self_attn.o_proj",
+              "L31.self_attn.o_proj",
+              "L7.self_attn.o_proj"
+            ],
+            "n_modules": 8,
+            "rank": 8,
+            "raw_module_names": [
+              "language_model.model.layers.11.self_attn.o_proj",
+              "language_model.model.layers.15.self_attn.o_proj",
+              "language_model.model.layers.19.self_attn.o_proj",
+              "language_model.model.layers.23.self_attn.o_proj",
+              "language_model.model.layers.27.self_attn.o_proj",
+              "language_model.model.layers.3.self_attn.o_proj",
+              "language_model.model.layers.31.self_attn.o_proj",
+              "language_model.model.layers.7.self_attn.o_proj"
+            ],
+            "raw_shapes": {
+              "language_model.model.layers.11.self_attn.o_proj": {
+                "lora_a": [
+                  8,
+                  4096
+                ],
+                "lora_b": [
+                  2560,
+                  8
+                ]
+              },
+              "language_model.model.layers.15.self_attn.o_proj": {
+                "lora_a": [
+                  8,
+                  4096
+                ],
+                "lora_b": [
+                  2560,
+                  8
+                ]
+              },
+              "language_model.model.layers.19.self_attn.o_proj": {
+                "lora_a": [
+                  8,
+                  4096
+                ],
+                "lora_b": [
+                  2560,
+                  8
+                ]
+              },
+              "language_model.model.layers.23.self_attn.o_proj": {
+                "lora_a": [
+                  8,
+                  4096
+                ],
+                "lora_b": [
+                  2560,
+                  8
+                ]
+              },
+              "language_model.model.layers.27.self_attn.o_proj": {
+                "lora_a": [
+                  8,
+                  4096
+                ],
+                "lora_b": [
+                  2560,
+                  8
+                ]
+              },
+              "language_model.model.layers.3.self_attn.o_proj": {
+                "lora_a": [
+                  8,
+                  4096
+                ],
+                "lora_b": [
+                  2560,
+                  8
+                ]
+              },
+              "language_model.model.layers.31.self_attn.o_proj": {
+                "lora_a": [
+                  8,
+                  4096
+                ],
+                "lora_b": [
+                  2560,
+                  8
+                ]
+              },
+              "language_model.model.layers.7.self_attn.o_proj": {
+                "lora_a": [
+                  8,
+                  4096
+                ],
+                "lora_b": [
+                  2560,
+                  8
+                ]
+              }
+            },
+            "residual_fingerprint": null,
+            "tensor_dtype": "torch.bfloat16"
+          },
+          {
+            "execution_bindings": {
+              "language_model.model.layers.11.self_attn.o_proj": null,
+              "language_model.model.layers.15.self_attn.o_proj": null,
+              "language_model.model.layers.19.self_attn.o_proj": null,
+              "language_model.model.layers.23.self_attn.o_proj": null,
+              "language_model.model.layers.27.self_attn.o_proj": null,
+              "language_model.model.layers.3.self_attn.o_proj": "language_model.model.layers.3.self_attn.o_proj",
+              "language_model.model.layers.31.self_attn.o_proj": null,
+              "language_model.model.layers.7.self_attn.o_proj": null
+            },
+            "fingerprint_bf16": "905b341176892f424d138ee35bda938bea3c29bcd759330f15b3aacce0d6b10e",
+            "id": 4,
+            "module_keys": [
+              "L3.self_attn.o_proj"
+            ],
+            "n_modules": 1,
+            "rank": 1,
+            "raw_module_names": [
+              "language_model.model.layers.3.self_attn.o_proj"
+            ],
+            "raw_shapes": {
+              "language_model.model.layers.3.self_attn.o_proj": {
+                "lora_a": [
+                  1,
+                  4096
+                ],
+                "lora_b": [
+                  2560,
+                  1
+                ]
+              }
+            },
+            "residual_fingerprint": "be67d5d795ae430e98769238d2f16cfb7791c0cad6fdf3272d8c25d4fefc4945",
+            "tensor_dtype": "torch.bfloat16"
+          },
+          {
+            "execution_bindings": {
+              "language_model.model.layers.11.self_attn.o_proj": "language_model.model.layers.11.self_attn.o_proj",
+              "language_model.model.layers.15.self_attn.o_proj": "language_model.model.layers.15.self_attn.o_proj",
+              "language_model.model.layers.19.self_attn.o_proj": "language_model.model.layers.19.self_attn.o_proj",
+              "language_model.model.layers.23.self_attn.o_proj": "language_model.model.layers.23.self_attn.o_proj",
+              "language_model.model.layers.27.self_attn.o_proj": "language_model.model.layers.27.self_attn.o_proj",
+              "language_model.model.layers.3.self_attn.o_proj": "language_model.model.layers.3.self_attn.o_proj",
+              "language_model.model.layers.31.self_attn.o_proj": "language_model.model.layers.31.self_attn.o_proj",
+              "language_model.model.layers.7.self_attn.o_proj": "language_model.model.layers.7.self_attn.o_proj"
+            },
+            "fingerprint_bf16": "5d1e369163d9b6e33d136a26246db79faf12cf7a64b9fd27e0f159599160e35f",
+            "id": 5,
+            "module_keys": [
+              "L11.self_attn.o_proj",
+              "L15.self_attn.o_proj",
+              "L19.self_attn.o_proj",
+              "L23.self_attn.o_proj",
+              "L27.self_attn.o_proj",
+              "L3.self_attn.o_proj",
+              "L31.self_attn.o_proj",
+              "L7.self_attn.o_proj"
+            ],
+            "n_modules": 8,
+            "rank": 4,
+            "raw_module_names": [
+              "language_model.model.layers.11.self_attn.o_proj",
+              "language_model.model.layers.15.self_attn.o_proj",
+              "language_model.model.layers.19.self_attn.o_proj",
+              "language_model.model.layers.23.self_attn.o_proj",
+              "language_model.model.layers.27.self_attn.o_proj",
+              "language_model.model.layers.3.self_attn.o_proj",
+              "language_model.model.layers.31.self_attn.o_proj",
+              "language_model.model.layers.7.self_attn.o_proj"
+            ],
+            "raw_shapes": {
+              "language_model.model.layers.11.self_attn.o_proj": {
+                "lora_a": [
+                  4,
+                  4096
+                ],
+                "lora_b": [
+                  2560,
+                  4
+                ]
+              },
+              "language_model.model.layers.15.self_attn.o_proj": {
+                "lora_a": [
+                  4,
+                  4096
+                ],
+                "lora_b": [
+                  2560,
+                  4
+                ]
+              },
+              "language_model.model.layers.19.self_attn.o_proj": {
+                "lora_a": [
+                  4,
+                  4096
+                ],
+                "lora_b": [
+                  2560,
+                  4
+                ]
+              },
+              "language_model.model.layers.23.self_attn.o_proj": {
+                "lora_a": [
+                  4,
+                  4096
+                ],
+                "lora_b": [
+                  2560,
+                  4
+                ]
+              },
+              "language_model.model.layers.27.self_attn.o_proj": {
+                "lora_a": [
+                  4,
+                  4096
+                ],
+                "lora_b": [
+                  2560,
+                  4
+                ]
+              },
+              "language_model.model.layers.3.self_attn.o_proj": {
+                "lora_a": [
+                  4,
+                  4096
+                ],
+                "lora_b": [
+                  2560,
+                  4
+                ]
+              },
+              "language_model.model.layers.31.self_attn.o_proj": {
+                "lora_a": [
+                  4,
+                  4096
+                ],
+                "lora_b": [
+                  2560,
+                  4
+                ]
+              },
+              "language_model.model.layers.7.self_attn.o_proj": {
+                "lora_a": [
+                  4,
+                  4096
+                ],
+                "lora_b": [
+                  2560,
+                  4
+                ]
+              }
+            },
+            "residual_fingerprint": null,
+            "tensor_dtype": "torch.bfloat16"
+          },
+          {
+            "execution_bindings": {
+              "language_model.model.layers.11.self_attn.o_proj": null,
+              "language_model.model.layers.15.self_attn.o_proj": null,
+              "language_model.model.layers.19.self_attn.o_proj": null,
+              "language_model.model.layers.23.self_attn.o_proj": null,
+              "language_model.model.layers.27.self_attn.o_proj": null,
+              "language_model.model.layers.3.self_attn.o_proj": "language_model.model.layers.3.self_attn.o_proj",
+              "language_model.model.layers.31.self_attn.o_proj": null,
+              "language_model.model.layers.7.self_attn.o_proj": null
+            },
+            "fingerprint_bf16": "905b341176892f424d138ee35bda938bea3c29bcd759330f15b3aacce0d6b10e",
+            "id": 6,
+            "module_keys": [
+              "L3.self_attn.o_proj"
+            ],
+            "n_modules": 1,
+            "rank": 1,
+            "raw_module_names": [
+              "language_model.model.layers.3.self_attn.o_proj"
+            ],
+            "raw_shapes": {
+              "language_model.model.layers.3.self_attn.o_proj": {
+                "lora_a": [
+                  1,
+                  4096
+                ],
+                "lora_b": [
+                  2560,
+                  1
+                ]
+              }
+            },
+            "residual_fingerprint": "790ad0afa329a26a2698edbaeb613dcb322941096e75d2df06cf7548411f90b3",
+            "tensor_dtype": "torch.bfloat16"
+          }
+        ],
+        "lora_dtype": "torch.bfloat16",
+        "lora_execution_module_keys": [
+          "L11.self_attn.o_proj",
+          "L15.self_attn.o_proj",
+          "L19.self_attn.o_proj",
+          "L23.self_attn.o_proj",
+          "L27.self_attn.o_proj",
+          "L3.self_attn.o_proj",
+          "L31.self_attn.o_proj",
+          "L7.self_attn.o_proj"
+        ],
+        "lora_execution_module_names": [
+          "language_model.model.layers.11.self_attn.o_proj",
+          "language_model.model.layers.15.self_attn.o_proj",
+          "language_model.model.layers.19.self_attn.o_proj",
+          "language_model.model.layers.23.self_attn.o_proj",
+          "language_model.model.layers.27.self_attn.o_proj",
+          "language_model.model.layers.3.self_attn.o_proj",
+          "language_model.model.layers.31.self_attn.o_proj",
+          "language_model.model.layers.7.self_attn.o_proj"
+        ],
+        "lora_execution_module_stride_max": 4096,
+        "lora_execution_module_strides": {
+          "language_model.model.layers.11.self_attn.o_proj": {
+            "in": 4096,
+            "out": 2560
+          },
+          "language_model.model.layers.15.self_attn.o_proj": {
+            "in": 4096,
+            "out": 2560
+          },
+          "language_model.model.layers.19.self_attn.o_proj": {
+            "in": 4096,
+            "out": 2560
+          },
+          "language_model.model.layers.23.self_attn.o_proj": {
+            "in": 4096,
+            "out": 2560
+          },
+          "language_model.model.layers.27.self_attn.o_proj": {
+            "in": 4096,
+            "out": 2560
+          },
+          "language_model.model.layers.3.self_attn.o_proj": {
+            "in": 4096,
+            "out": 2560
+          },
+          "language_model.model.layers.31.self_attn.o_proj": {
+            "in": 4096,
+            "out": 2560
+          },
+          "language_model.model.layers.7.self_attn.o_proj": {
+            "in": 4096,
+            "out": 2560
+          }
+        },
+        "lora_execution_modules_n": 8,
+        "lora_execution_modules_other": [],
+        "lora_fully_sharded": false,
+        "lora_loaded_count": 6,
+        "lora_max_cpu_loras": 6,
+        "lora_max_lora_rank": 8,
+        "lora_max_loras": 6,
+        "lora_target_modules": [
+          "o_proj"
+        ],
+        "mamba_ssm_cache_dtype": "float32",
+        "max_cudagraph_capture_size": 88,
+        "max_long_partial_prefills": 1,
+        "max_model_len": 11520,
+        "max_num_batched_tokens": 518400,
+        "max_num_partial_prefills": 1,
+        "max_num_seqs": 45,
+        "model_runner_class": "vllm.v1.worker.gpu_model_runner.GPUModelRunner",
+        "model_runner_kind": "v1",
+        "model_runner_surface": "v1",
+        "scheduler_cls": "vllm.v1.core.sched.scheduler.Scheduler",
+        "speculative": null,
+        "uniform_decode_query_len": 1
+      }
+    ]
+  },
+  "schema_version": 2,
+  "server_pid": 206,
+  "slurm_job_id": null,
+  "worker_adapters": [
+    [
+      {
+        "execution_bindings": {
+          "language_model.model.layers.11.self_attn.o_proj": "language_model.model.layers.11.self_attn.o_proj",
+          "language_model.model.layers.15.self_attn.o_proj": "language_model.model.layers.15.self_attn.o_proj",
+          "language_model.model.layers.19.self_attn.o_proj": "language_model.model.layers.19.self_attn.o_proj",
+          "language_model.model.layers.23.self_attn.o_proj": "language_model.model.layers.23.self_attn.o_proj",
+          "language_model.model.layers.27.self_attn.o_proj": "language_model.model.layers.27.self_attn.o_proj",
+          "language_model.model.layers.3.self_attn.o_proj": "language_model.model.layers.3.self_attn.o_proj",
+          "language_model.model.layers.31.self_attn.o_proj": "language_model.model.layers.31.self_attn.o_proj",
+          "language_model.model.layers.7.self_attn.o_proj": "language_model.model.layers.7.self_attn.o_proj"
+        },
+        "fingerprint_bf16": "5eb55fc51ce013c347a54d34425484d4ffaabe3c6e90bbfbbc78c006010c0d03",
+        "id": 1,
+        "module_keys": [
+          "L11.self_attn.o_proj",
+          "L15.self_attn.o_proj",
+          "L19.self_attn.o_proj",
+          "L23.self_attn.o_proj",
+          "L27.self_attn.o_proj",
+          "L3.self_attn.o_proj",
+          "L31.self_attn.o_proj",
+          "L7.self_attn.o_proj"
+        ],
+        "n_modules": 8,
+        "rank": 1,
+        "tensor_dtype": "torch.bfloat16"
+      },
+      {
+        "execution_bindings": {
+          "language_model.model.layers.11.self_attn.o_proj": "language_model.model.layers.11.self_attn.o_proj",
+          "language_model.model.layers.15.self_attn.o_proj": "language_model.model.layers.15.self_attn.o_proj",
+          "language_model.model.layers.19.self_attn.o_proj": "language_model.model.layers.19.self_attn.o_proj",
+          "language_model.model.layers.23.self_attn.o_proj": "language_model.model.layers.23.self_attn.o_proj",
+          "language_model.model.layers.27.self_attn.o_proj": "language_model.model.layers.27.self_attn.o_proj",
+          "language_model.model.layers.3.self_attn.o_proj": "language_model.model.layers.3.self_attn.o_proj",
+          "language_model.model.layers.31.self_attn.o_proj": "language_model.model.layers.31.self_attn.o_proj",
+          "language_model.model.layers.7.self_attn.o_proj": "language_model.model.layers.7.self_attn.o_proj"
+        },
+        "fingerprint_bf16": "a269db3b5966bfffa5a22dd436e653aaef6427366595549eabc5a3bd0179fa96",
+        "id": 2,
+        "module_keys": [
+          "L11.self_attn.o_proj",
+          "L15.self_attn.o_proj",
+          "L19.self_attn.o_proj",
+          "L23.self_attn.o_proj",
+          "L27.self_attn.o_proj",
+          "L3.self_attn.o_proj",
+          "L31.self_attn.o_proj",
+          "L7.self_attn.o_proj"
+        ],
+        "n_modules": 8,
+        "rank": 4,
+        "tensor_dtype": "torch.bfloat16"
+      },
+      {
+        "execution_bindings": {
+          "language_model.model.layers.11.self_attn.o_proj": "language_model.model.layers.11.self_attn.o_proj",
+          "language_model.model.layers.15.self_attn.o_proj": "language_model.model.layers.15.self_attn.o_proj",
+          "language_model.model.layers.19.self_attn.o_proj": "language_model.model.layers.19.self_attn.o_proj",
+          "language_model.model.layers.23.self_attn.o_proj": "language_model.model.layers.23.self_attn.o_proj",
+          "language_model.model.layers.27.self_attn.o_proj": "language_model.model.layers.27.self_attn.o_proj",
+          "language_model.model.layers.3.self_attn.o_proj": "language_model.model.layers.3.self_attn.o_proj",
+          "language_model.model.layers.31.self_attn.o_proj": "language_model.model.layers.31.self_attn.o_proj",
+          "language_model.model.layers.7.self_attn.o_proj": "language_model.model.layers.7.self_attn.o_proj"
+        },
+        "fingerprint_bf16": "539abf553075a9e5b70bf737d057342d9a4f35ccd729ca5edfe4bb43cbe20bc7",
+        "id": 3,
+        "module_keys": [
+          "L11.self_attn.o_proj",
+          "L15.self_attn.o_proj",
+          "L19.self_attn.o_proj",
+          "L23.self_attn.o_proj",
+          "L27.self_attn.o_proj",
+          "L3.self_attn.o_proj",
+          "L31.self_attn.o_proj",
+          "L7.self_attn.o_proj"
+        ],
+        "n_modules": 8,
+        "rank": 8,
+        "tensor_dtype": "torch.bfloat16"
+      },
+      {
+        "execution_bindings": {
+          "language_model.model.layers.11.self_attn.o_proj": null,
+          "language_model.model.layers.15.self_attn.o_proj": null,
+          "language_model.model.layers.19.self_attn.o_proj": null,
+          "language_model.model.layers.23.self_attn.o_proj": null,
+          "language_model.model.layers.27.self_attn.o_proj": null,
+          "language_model.model.layers.3.self_attn.o_proj": "language_model.model.layers.3.self_attn.o_proj",
+          "language_model.model.layers.31.self_attn.o_proj": null,
+          "language_model.model.layers.7.self_attn.o_proj": null
+        },
+        "fingerprint_bf16": "905b341176892f424d138ee35bda938bea3c29bcd759330f15b3aacce0d6b10e",
+        "id": 4,
+        "module_keys": [
+          "L3.self_attn.o_proj"
+        ],
+        "n_modules": 1,
+        "rank": 1,
+        "tensor_dtype": "torch.bfloat16"
+      },
+      {
+        "execution_bindings": {
+          "language_model.model.layers.11.self_attn.o_proj": "language_model.model.layers.11.self_attn.o_proj",
+          "language_model.model.layers.15.self_attn.o_proj": "language_model.model.layers.15.self_attn.o_proj",
+          "language_model.model.layers.19.self_attn.o_proj": "language_model.model.layers.19.self_attn.o_proj",
+          "language_model.model.layers.23.self_attn.o_proj": "language_model.model.layers.23.self_attn.o_proj",
+          "language_model.model.layers.27.self_attn.o_proj": "language_model.model.layers.27.self_attn.o_proj",
+          "language_model.model.layers.3.self_attn.o_proj": "language_model.model.layers.3.self_attn.o_proj",
+          "language_model.model.layers.31.self_attn.o_proj": "language_model.model.layers.31.self_attn.o_proj",
+          "language_model.model.layers.7.self_attn.o_proj": "language_model.model.layers.7.self_attn.o_proj"
+        },
+        "fingerprint_bf16": "5d1e369163d9b6e33d136a26246db79faf12cf7a64b9fd27e0f159599160e35f",
+        "id": 5,
+        "module_keys": [
+          "L11.self_attn.o_proj",
+          "L15.self_attn.o_proj",
+          "L19.self_attn.o_proj",
+          "L23.self_attn.o_proj",
+          "L27.self_attn.o_proj",
+          "L3.self_attn.o_proj",
+          "L31.self_attn.o_proj",
+          "L7.self_attn.o_proj"
+        ],
+        "n_modules": 8,
+        "rank": 4,
+        "tensor_dtype": "torch.bfloat16"
+      },
+      {
+        "execution_bindings": {
+          "language_model.model.layers.11.self_attn.o_proj": null,
+          "language_model.model.layers.15.self_attn.o_proj": null,
+          "language_model.model.layers.19.self_attn.o_proj": null,
+          "language_model.model.layers.23.self_attn.o_proj": null,
+          "language_model.model.layers.27.self_attn.o_proj": null,
+          "language_model.model.layers.3.self_attn.o_proj": "language_model.model.layers.3.self_attn.o_proj",
+          "language_model.model.layers.31.self_attn.o_proj": null,
+          "language_model.model.layers.7.self_attn.o_proj": null
+        },
+        "fingerprint_bf16": "905b341176892f424d138ee35bda938bea3c29bcd759330f15b3aacce0d6b10e",
+        "id": 6,
+        "module_keys": [
+          "L3.self_attn.o_proj"
+        ],
+        "n_modules": 1,
+        "rank": 1,
+        "tensor_dtype": "torch.bfloat16"
+      }
+    ]
+  ]
+}

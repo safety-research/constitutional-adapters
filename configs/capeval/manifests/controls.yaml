@@ -1,0 +1,105 @@
+# capeval control arms — the harness must prove
+# it can see damage, and see nothing. All on the anchor model, HF
+# engine, mode: control (no target — F20). Arms are kind: control:<name>
+# and are CONSTRUCTED by stats/controls.py from {seed, params};
+# their intervention hashes cover canonical_json({kind, seed, params})
+# — no artifact bytes (§2.1), so every constant here is hash-bearing.
+#
+# Ladder constants may be re-tuned after the first control run BEFORE
+# the S2 rediscovery sweep (a recorded config change — it bumps
+# harness_config_hash).
+#
+# Tier policy per arm (driver enumeration, print-cells): Tier 0 at
+# EVERY rung; Tier 1 only at the rungs named in params.tier1_coeffs
+# (arms without that key run Tier 1 at every rung). Acceptance
+# (controls.py, automated): no-op arms (zero_coeff, sham_hook) — every
+# domain delta within the calibrated p99 null band, zero canary
+# indicators tripped; a no-op failure indicts the harness and
+# hard-stops the sweep. Damage arms — Tier-0 damage detectable by the
+# 4× / ε=3e-3 rung (monotonicity NOT required).
+sweep: controls
+mode: control
+confirmatory: false
+base: meta-llama/Llama-3.1-8B-Instruct
+base_revision: 0e9e39f249a16976918f6564b8830bc894c89659
+engine: hf
+tiers: [0, 1]
+margins: {}
+ablations:
+  # 1. A REAL S2 vector (the §0 end_with_phrase/vector cell) loaded
+  #    through the full load_object path, applied at coeff 0.0 — tests
+  #    the whole apply/ctx/hook machinery is a no-op at zero. The input
+  #    artifact rides in params (control arms carry no top-level
+  #    artifact; its path is hashed via params, and controls.py loads it
+  #    through methods.load_object exactly like a steering arm).
+  - name: zero-coeff
+    kind: control:zero_coeff
+    seed: 0
+    coeffs: [0.0]
+    params:
+      artifact: $SHARED/si-steering/out/stage2_llama8b/ifeval/end_with_phrase/vector/vector.safetensors
+      layer: 15
+    positions: all
+    norm_relative: false
+
+  # 2. A forward hook on layer 15 that returns the output unchanged —
+  #    exercises registration/dtype paths without the steering math.
+  - name: sham-hook
+    kind: control:sham_hook
+    seed: 0
+    coeffs: [1.0]
+    params: {layer: 15}
+    positions: all
+    norm_relative: false
+
+  # 3. Seeded Gaussian d=4096 direction at layer 15, rescaled to the
+  #    median layer-15 ‖v‖ of the §0 rediscovery STEERING VECTORS —
+  #    computed by controls.py from their JSON sidecars' stored norms
+  #    (no GPU), per norm.source below. Ladder = coeffs × that norm.
+  #    Note: only the 4 safetensors
+  #    cells carry sidecar norms — the object.pt arms (lora_r1, loreft,
+  #    psr_kl) are torch blobs with no vector sidecar, so the median is
+  #    over these four.
+  - name: rand-vec
+    kind: control:random_vector
+    seed: 17
+    coeffs: [0.5, 1.0, 2.0, 4.0]
+    params:
+      layer: 15
+      d: 4096
+      norm:
+        source: median_sidecar_norm
+        sidecars:
+          - $SHARED/si-steering/out/stage2_llama8b/ifeval/number_words/bidpo/vector.json
+          - $SHARED/si-steering/out/stage2_llama8b/ifeval/keyword_frequency/bidpo/vector.json
+          - $SHARED/si-steering/out/stage2_llama8b/ifeval/end_with_phrase/vector/vector.json
+          - $SHARED/si-steering/out/stage2_llama8b/ifeval/json_format/vector_rkl/vector.json
+      tier1_coeffs: [1.0, 4.0]
+    positions: all
+    norm_relative: false
+
+  # 4. Hand-rolled rank-16 noise ΔW = α·B·Aᵀ on o_proj of every layer
+  #    (A, B seeded Gaussian; α set so ‖ΔW‖_F/‖W‖_F = ε = the coeff).
+  #    In-place weight add with exact restore from pinned CPU copies;
+  #    one-arm-per-process (§11.1).
+  - name: noise-lora
+    kind: control:noise_lora
+    seed: 29
+    coeffs: [1.0e-4, 3.0e-4, 1.0e-3, 3.0e-3]
+    params:
+      rank: 16
+      module: o_proj
+      layers: all
+      tier1_coeffs: [3.0e-4, 3.0e-3]
+    positions: all
+    norm_relative: false
+
+  # 5. ε·N(0,1)·std(W) added to every weight matrix — known broad
+  #    damage, single rung, seeded, exact-restore, one-arm-per-process.
+  - name: weight-noise
+    kind: control:weight_noise
+    seed: 43
+    coeffs: [3.0e-3]
+    params: {}
+    positions: all
+    norm_relative: false

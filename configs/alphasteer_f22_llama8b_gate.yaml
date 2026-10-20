@@ -1,0 +1,45 @@
+# alphasteer-full22 Phase D — the Llama layer-rule validation (the campaign's
+# STOP GATE). Read by scripts/alphasteer_llama_gate.py, which applies the
+# F.9-AUROC rule to the AUTHORS' RELEASED Llama-3.1 matrices and scores
+# recovery of the paper's published layer set, then (only if the gate PASSES)
+# refits all 32 layers ourselves through scripts/alphasteer_screen.py as the
+# rejection-side reading reported BESIDE the gate.
+#
+# The model pin, dtype, kernel and the class_b prompt lists are the shipped
+# Llama config's (configs/two_si.yaml, D.3) so the capture is the campaign's
+# capture; two_si.yaml itself stays byte-identical (it carries no
+# class_b.alphasteer block by test). tests/test_alphasteer_llama_gate.py holds
+# this file equal to that pin.
+model: NousResearch/Meta-Llama-3.1-8B-Instruct
+model_revision: d10aef7999a2b5ba950ab3974312feeedbfe0b77  # the two_si.yaml pin; cluster A shared HF cache
+dtype: bfloat16
+attn_implementation: sdpa
+layer: 15                  # the single-layer pin; ignored here (all-layer capture), kept for driver parity
+
+class_b:
+  benign_prompts_path: $SHARED/exp/jailbreak/contrast/benign_alphasteer.json
+  harmful_prompts_path: $SHARED/exp/jailbreak/contrast/harmful_alphasteer.json
+  benign_sha256: 24f1a69fcb46d8eaac0993be9365268d59c3ea910feb4044a3897cb0fa242298
+  harmful_sha256: 7c6983fca61e13181613c14b18753ecae10cfd2b156f0a4b0104136fb641c5cf
+  min_prompts: 500
+  layer: 15
+  batch_size: 8
+  # The F.9 rule block (fit_class_b.alphasteer_layer_rule): every threshold
+  # defaults to the library constants the gate and the fits share, so the
+  # gate cannot validate a rule the fits do not run.
+  alphasteer:
+    layer_rule: f9_auroc
+    model_key: llama8b
+    screen_path: $SHARED/exp/objects/alphasteer_f22/llama8b/screen_f9.json
+    leakage_report_path: $SHARED/exp/objects/alphasteer_f22/leakage_report.json
+
+# Phase D's own inputs/outputs (a top-level block: class_b.alphasteer refuses
+# unknown keys by design).
+llama_gate:
+  # The authors' released matrices: fp32 [32, 4096, 4096]; exactly 10
+  # non-zero slices at the paper's layers [8..14, 16, 18, 19], the other 22
+  # exactly 0.0 (re-verified at load — a different file refuses).
+  released_matrix_path: $SHARED/AlphaSteer/data/steering_matrix/steering_matrix_llama3.1.pt
+  # The verdict Phase B's submission gate and every Phase B body read.
+  gate_out: $SHARED/exp/objects/alphasteer_f22/llama_gate.json
+  recovery_threshold: 7

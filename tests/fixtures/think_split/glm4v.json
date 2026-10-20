@@ -1,0 +1,34 @@
+{
+ "family": "glm4v",
+ "split_mode": "explicit_tags",
+ "note": "completion-OPENED: the model emits BOTH tags; no opening tag => the WHOLE completion is the answer",
+ "cases": [
+  {
+   "name": "well_formed",
+   "completion": "<think>Let n = 3. Then 2n = 6.</think>\nThe answer is $\\boxed{6}$.\nANSWER: 6",
+   "finish_reason": "stop",
+   "present": true,
+   "unterminated": false,
+   "answer_text": "The answer is $\\boxed{6}$.\nANSWER: 6",
+   "scoreable": true
+  },
+  {
+   "name": "unterminated",
+   "completion": "<think>Let n = 3. Then 2n = 6 and 6 + 1 = 7 so",
+   "finish_reason": "length",
+   "present": true,
+   "unterminated": true,
+   "answer_text": "",
+   "scoreable": false
+  },
+  {
+   "name": "tag_free_is_the_answer",
+   "completion": "The answer is $\\boxed{6}$.\nANSWER: 6",
+   "finish_reason": "stop",
+   "present": false,
+   "unterminated": false,
+   "answer_text": "The answer is $\\boxed{6}$.\nANSWER: 6",
+   "scoreable": true
+  }
+ ]
+}

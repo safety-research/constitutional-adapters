@@ -1,0 +1,102 @@
+{
+ "arm": "lora_r4_ce",
+ "dtype": "bfloat16",
+ "examples_source": "pairs_constv2-mix-full.jsonl (longest 12 of 17352 rows)",
+ "experts_implementation": "grouped_mm",
+ "fake_cuda": false,
+ "gpu_name": "NVIDIA H200",
+ "gpu_total_bytes": 150120759296,
+ "gradient_checkpointing": true,
+ "hostname": "TESTHOST",
+ "kind": "memprobe_fit",
+ "ladder": [
+  1,
+  2,
+  4
+ ],
+ "model": {
+  "config": "configs/sdfbase_example_moe_base_fits.yaml",
+  "model": "example-org/example-moe-base",
+  "model_class": "ExampleForCausalLM",
+  "model_override": false,
+  "revision": "1111111111111111111111111111111111111111"
+ },
+ "model_load_s": 321.42619827762246,
+ "object_kwargs": {
+  "init_scheme": "zero",
+  "lora_modules": [
+   "o_proj"
+  ],
+  "lora_rank": 4
+ },
+ "rungs": [
+  {
+   "error": null,
+   "fits": true,
+   "micro_batch": 1,
+   "object_builder": "object_factory.build_object",
+   "peak_alloc_bytes": 103347794432,
+   "peak_reserved_bytes": 107613257728,
+   "realized_seq_len": {
+    "max": 8192,
+    "min": 8192
+   },
+   "s_per_step": 49.22048557984332,
+   "steps_completed": 3,
+   "steps_requested": 3,
+   "tokens_per_s": 166.43476600228365,
+   "trainable_params": 245760,
+   "wall_s": 147.66145673952997
+  },
+  {
+   "error": null,
+   "fits": true,
+   "micro_batch": 2,
+   "object_builder": "object_factory.build_object",
+   "peak_alloc_bytes": 137304196608,
+   "peak_reserved_bytes": 137495576576,
+   "realized_seq_len": {
+    "max": 8192,
+    "min": 8192
+   },
+   "s_per_step": 13.096873212605715,
+   "steps_completed": 3,
+   "steps_requested": 3,
+   "tokens_per_s": 1250.9856157292897,
+   "trainable_params": 245760,
+   "wall_s": 39.290619637817144
+  },
+  {
+   "error": "OutOfMemoryError: CUDA out of memory. Tried to allocate 30.31 GiB. GPU 0 has a total capacity of 139.81 GiB of which 7.26 GiB is free. Including non-PyTorch memory, this process has 132.54 GiB memory in use. Of the allocated memory 125.25 GiB is allocated by PyTorch, and 62.34 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segme",
+   "fits": false,
+   "micro_batch": 4,
+   "object_builder": "object_factory.build_object",
+   "peak_alloc_bytes": 134481610240,
+   "peak_reserved_bytes": 135639597056,
+   "realized_seq_len": {
+    "max": 8192,
+    "min": 8192
+   },
+   "s_per_step": null,
+   "steps_completed": 0,
+   "steps_requested": 3,
+   "tokens_per_s": null,
+   "trainable_params": 245760
+  }
+ ],
+ "schema": 1,
+ "seq_len": 8192,
+ "steps": 3,
+ "torch": "2.11.0+cu128",
+ "transformers": "5.15.0",
+ "verdict": {
+  "exit_code": 0,
+  "fits_at_min_micro_batch": true,
+  "largest_fitting_micro_batch": 2,
+  "min_micro_batch": 1,
+  "replan_required": true,
+  "replan_threshold_s_per_step": 2.0,
+  "replan_watch": false,
+  "s_per_step_at_min": 49.22048557984332
+ }
+}

@@ -1,0 +1,18 @@
+# registry-cluster-reads.timer — results registry. Rendered for the site and installed
+# into ~/.config/systemd/user/ by the registry installer. REPLACES registry-adapters.timer (retired).
+# Secret-free: the tick needs no credential; ssh to the cluster goes through the agent socket.
+# Bounded: Type=oneshot with TimeoutStartSec and Restart=no on the service — the timer is the only re-fire, so a failed tick never loops on
+# the cluster submit path; a persistent failure trips the start limit and shows in the journal and on the status page. Every 10 min from
+# the previous START (a tick that found nothing changed takes seconds; one that read waits for its array in the foreground and the next
+# tick yields to a holder, so two never overlap by construction). OnBootSec 4 min: after the harvester's first cycle and the mirrors.
+[Unit]
+Description=Results registry periodic cluster read (the tick), every 10 min
+
+[Timer]
+OnBootSec=4min
+OnUnitActiveSec=10min
+AccuracySec=30s
+Unit=registry-cluster-reads.service
+
+[Install]
+WantedBy=timers.target

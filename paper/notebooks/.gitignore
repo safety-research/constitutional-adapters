@@ -1,0 +1,4 @@
+_cache/
+figures/
+__pycache__/
+*.html

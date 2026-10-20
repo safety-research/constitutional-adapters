@@ -1,0 +1,109 @@
+# configs/sdfbase/gsm8k/views_itdoc.yaml — the INSTRUCT-DIRECT rows of the GSM8K paired-200 instrument (2026-09-13):
+# a THIRD matrix under a NEW wave root, never the published 42-row matrix (a frozen schema-1 artifact whose
+# `source.roster_sha256` pins the roster it was built from) and never the Llama matrix.
+#
+# The matrix (configs/sdfbase/gsm8k/matrix_itdoc.json) is GENERATED from this file + the roster + pins FROZEN at the commit
+# `frozen_inputs:` names below — 4e200b68 (the merge that served the batch-64 control LoRA + LoRA subtraction on qwen35_4b/it:
+# +2 roster cells, 6 pins) until 2026-09-14, ece9e8ce (the gemma itdoc64 roster) since the gemma hold lifted — by
+#   python scripts/sdfbase/gsm8k/make_gsm8k_matrix.py --matrix-name itdoc        (--check pins byte-identity)
+# through the ONE selector scripts/sdfbase/gsm8k/g8k_views.py select_rows over the two chat-checkpoint models' `it` views.
+#
+# THE ROWS: per model on the `it` view,
+#   * the CONSTITUTION cell `constv2-mix-full__lora_r4_ce` on the BATCH-8 object AS SERVED TODAY (the roster's `itdoc__…` id, the pin
+#     file's pin; qwen 0018b32b…, gemma 4c1a5fc3…) — the paper's instruct-direct constitution cell, which has NO paired-200 GSM8K row
+#     anywhere (held in the published matrix on the premise that the batch-64 re-fit would replace it; the repoint was
+#     withdrawn, so the served object IS the cell). A roster-served row: object_generation `batch8`.
+#   * the CONTROL LoRA `constv2ctl2-full__lora_r4_ce` <- `itdoc64__…` and the LoRA DIFFERENCE `constv2-mix-full__lora_r4_ce_minus_ctl`
+#     <- `derived_itdoc64__…`: the batch-64 objects, rows generated from the it-doc ADMISSION RECORD
+#     (configs/sdfbase/itdoc_admission.json, `itdoc:` below; object_generation `batch64`), launchable only when the record binds a
+#     bank whose manifest, symlink, bytes on BOTH clusters and (target, staged id) pin in the frozen pin file all name the record's id.
+#   Six rows: qwen35_4b's three launch now; gemma4e4b's constitution row launches now (its batch-8 object is served and pinned), its
+#   control + difference are HELD by the record until the lane's gemma commit puts their ids on main's roster + pins + bank views
+#   (done 2026-09-14: the gemma roster landed, both clusters' gemma `it` views rebuilt — all eight rows launch; see the gemma `itdoc:` entry).
+# Every OTHER cell of the two `it` views is EXCLUDED here (fallback (B) of the schema): the bare anchor, the prompted baselines and
+# the PSR object have their published legs (COMPLETE at 8f5f1495) or are out of the panel; this matrix carries no TAG overlay — the
+# `it` TAG overlays belong to the published matrix — so EVERY row serves through its OWN pair (`row_overlays: true`).
+schema: g8k_matrix/2
+wave_root_rel: exp/gsm8k_paired200_paper_objects_itdoc
+# THE LADDER TRIGGER (2026-09-12): 1 % RAW at-cap, harmonised across the battery (the GSM8K 3 % exception is retired).
+trigger_threshold: 0.01
+# IMMUTABLE INPUTS: the roster + pins AS MERGED AT 4e200b68, copied under configs/sdfbase/gsm8k/frozen/4e200b68/ and
+# asserted by the generator — `git show 4e200b68:configs/sdfbase_full22_roster.yaml` restores an edited copy. A later roster (the
+# gemma commit) is a NEW frozen copy and a regenerated matrix: the gemma rows' hold lifts through the record, never by editing rows.
+# 2026-09-14 (merged as ece9e8ce): the gemma commit landed — main's roster maps gemma4e4b's `it` control + difference cells to
+# `itdoc64__` / `derived_itdoc64__`; the pin file is byte-identical to 4e200b68's (its three gemma itdoc64 pins were already there) —
+# so this is the NEW frozen copy the rule above names; the 4e200b68 copy stays under frozen/ for the rows that ran from it.
+frozen_inputs:
+  roster: configs/sdfbase/gsm8k/frozen/ece9e8ce/sdfbase_full22_roster.yaml
+  pins: configs/sdfbase/gsm8k/frozen/ece9e8ce/sdfbase_full22_pins.json
+  roster_sha256: 89a2991c849c1f4c4720741d705dfcce76a84ec11c8f309dd1454211131136f8
+  pins_sha256: 5ed8df94435b525ad3748a7f54b7e942f21645333f05b5668dc5f14cdc64e25d
+# every row of this matrix is the `itdoc` wave (controls_itdoc/ under the wave root; the roster-served constitution rows included — a
+# base-pass row without it would read as the COMPLETE published wave), serves through its OWN overlay pair, and names the generation
+# of the object it serves
+wave: itdoc
+row_overlays: true
+object_generation: true
+views:
+  qwen35_4b: [it]
+  gemma4e4b: [it]
+holds: []
+exclude:
+  - key: qwen35_4b
+    view: it
+    cells: [none, prompted__safety_refusal, constv2-mix-full__psr_ce_all]
+    reason: >
+      not this wave's rows — the bare anchor and the prompted safety baseline have their published `it` legs (COMPLETE at
+      8f5f1495; the analysis pairs this wave's cells against them across trees) and the PSR object is out of the panel by the ruling of 2026-09-12. The prompted constitution SI on the `it` view IS this wave's (the `extensions:` block below).
+  - key: gemma4e4b
+    view: it
+    cells: [none, prompted__safety_refusal, constv2-mix-full__psr_ce_all]
+    reason: >
+      not this wave's rows — the bare anchor and the prompted safety baseline have their published `it` legs (COMPLETE at
+      8f5f1495; the analysis pairs this wave's cells against them across trees) and the PSR object is out of the panel by the ruling of 2026-09-12. The prompted constitution SI on the `it` view IS this wave's (the `extensions:` block below).
+# EXTENSIONS (2026-09-13): the SHORT constitution SI as the system prompt on the INSTRUCT-DIRECT
+# view of each chat checkpoint — prompted routes (no object, no pin), the long-SI class's own measured geometry (the `_f22` entries:
+# capability:gen_long_gsm8k_longsi_f22 at 8,192; capability:gen_long_gsm8k_rung_longsi_f22 at the 16,384 rung), EXACTLY as the ext
+# rows 43 / 45 did on the `main` view. Why here: Figures 2 / 3 / 5 read the instruct-direct lane for gemma / qwen, so the main-view rows
+# 43 / 45 do not fill that capability cell. Rows of THIS wave (own indices after the six above, `controls_itdoc/`, their OWN overlay pair
+# `sdfbase_full22_<TAG>.gsm8k_prompted--si_constitution.yaml`, explicit_cells [none, prompted__si_constitution]; the SI sha16
+# 21e06f482a6559b3 is asserted on their budget artifacts at launch).
+extensions:
+  - key: gemma4e4b
+    view: it
+    cells: [prompted__si_constitution]
+    reason: >
+      E3-14 (the coordinator 2026-09-13 16:47 local): the SHORT constitution SI on gemma4e4b's instruct-direct view — the capability
+      cell Figures 2 / 3 / 5 read for this family; the `main`-view row 43 does not fill it.
+    since: 2026-09-13
+  - key: qwen35_4b
+    view: it
+    cells: [prompted__si_constitution]
+    reason: >
+      E3-14 (the coordinator 2026-09-13 16:47 local): the SHORT constitution SI on qwen35_4b's instruct-direct view — the capability
+      cell Figures 2 / 3 / 5 read for this family; the `main`-view row 45 does not fill it.
+    since: 2026-09-13
+# IT-DOC (the batch-64 objects; the it-doc ADMISSION RECORD configs/sdfbase/itdoc_admission.json keyed (lane, target, view, cell) -> sha):
+# the control LoRA and the LoRA difference per model — a row launches iff its record entry carries the pin + the record's staged id + a
+# complete bank binding + no hold reason, AND the frozen pin file's (target, staged id) names the same sha; else HELD with the
+# record's reason. The constitution cell is NOT an it-doc row of this matrix: the served object is the batch-8 one (above).
+itdoc:
+  - key: qwen35_4b
+    view: it
+    cells: [constv2ctl2-full__lora_r4_ce, constv2-mix-full__lora_r4_ce_minus_ctl]
+    reason: >
+      the batch-64 control LoRA (bace45e2…, early-stopped at epoch 1 of 3) and the LoRA difference
+      (5e9b0009…, constitution 80b75aae… minus control, scale-matched) — staged under the ruled ids, served by both clusters' `it`
+      views since 2026-09-13 ~21:20Z, pinned on main at 4e200b68 (PR #102). The qualification (a budget-limited constitution numerator
+      against an early-stopped control) rides every row.
+    since: 2026-09-13
+  - key: gemma4e4b
+    view: it
+    cells: [constv2ctl2-full__lora_r4_ce, constv2-mix-full__lora_r4_ce_minus_ctl]
+    reason: >
+      the batch-64 control LoRA (04a90de8…, early-stopped at epoch 4 of 6) and the LoRA difference
+      (8b7d1030…, constitution 78e84f27… minus control, scale-matched) — staged under the ruled ids in both clusters' bank cells/;
+      SERVABLE since 2026-09-14: the gemma `it` bank views on both clusters bind the two cells to the ruled ids (VIEW_MANIFEST rewritten
+      2026-09-14T01:16Z primary / 02:15Z overflow, bytes hashed == the pins), the roster maps them (PR #107, ece9e8ce) and the pin file
+      names them (since 4e200b68) — the record's hold lifted from those reads.
+    since: 2026-09-13

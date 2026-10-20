@@ -1,0 +1,340 @@
+{
+ "_meta": {
+  "schema": "m5t_store_pins/2",
+  "label": "default (cells.py rows 0-46 + row 53: the published, ext1, steer, llama and all-positions waves)",
+  "written": "2026-09-14",
+  "what": "per-LEG admitted producer tree (--store-pins; the GSM8K reader's admission, PR #137): the tree whose store is the PRODUCTION one for the row, from LAUNCH RECORDS (never read off the stores); superseded / set-aside stores are never admitted. Keys are the MATH-500 leg key <model>/<cell>/<mode>[@view] (row_leg_key); an external arm is keyed on the main view, except the all-positions row 53, whose KEY view is `it` (cells.key_view / row_leg_key: `qwen35_4b/arditi_allpos/thinking_card@it`).",
+  "note": "rows 33 (gemma AlphaSteer lam2), 35 (qwen AlphaSteer lam1), 37 (nemotron AlphaSteer lam2) and 40 (llama Arditi alpha 0.05) are the RE-RUNS at the re-ruled operating points (steer_admission.json on main at m5s), arrays 506737 / 506863 died young at main 69666dbf; the four re-run legs are pinned at the PR's launch commit 2d66d670 (see sources_by_tree.m5s)",
+  "trees": {
+   "pub": "55e3cbdd0bfb5d53f8d62c50a099a3c1c105100b",
+   "ext1": "ac67e138b90aaefb3d7b8b9adeb5ae520404158a",
+   "llama": "15c69b10b45eaac111247e4fb68a0ad48c4c9701",
+   "sbe9": "be9f3c455ef345c7e87c1c3db33d532cdf1cf720",
+   "sdfd": "dfd3c88dd226dd070782b69f1a8e9282c41fd1b2",
+   "m5s": "2d66d67029ebe943bcb13a299164dc3deae59a0a",
+   "allpos": "dfd09294c8b27dad901b673f9cd72d778f00f75a"
+  },
+  "sources_by_tree": {
+   "pub": "the published thinking-ON wave: run_analysis_8arm.sh PUB=55e3cbdd / final_ext1_r4 report `sha` 55e3cbdd; tree_set_review_55e3cbd_ac67e13.md 'the published 24 legs (rows 0-23) were produced at 55e3cbdd'",
+   "ext1": "the W1 extension wave: run_analysis_8arm.sh W1=ac67e138 / tree_set_review_55e3cbd_ac67e13.md 'the nine W1 legs (rows 24-32) at ac67e138'",
+   "llama": "the llama wave (rows 41-46, `card`, thinking not_available): launched from a worktree detached at origin/main = 15c69b10; every pull_15c69b1 manifest producer.tree_sha 15c69b10; jobs 497466-497471 (2026-09-13 19:48-20:22Z)",
+   "sbe9": "decisions-w4-launch L11: array 496603 `sbatch -J m5t-steer --qos=high --array=33-34,36-38%5 <checkout>/be9f3c45.../math500_thinking.sbatch ARRAY be9f3c45...` (16:52:54Z 2026-09-13; PR #96's pushed tip): rows 34 (496605 gemma Arditi) and 36 (496606 qwen Arditi) COMPLETE; rows 33 / 37 of the same array are the SUPERSEDED lam1 stores (set aside); row 38 DRIVER_FAILED (class E)",
+   "sdfd": "decisions-w4-class-e CE20 (501821 `--array=38%1 ... ARRAY dfd3c88d...` 06:23:34Z 2026-09-14, row 38 nemotron Arditi COMPLETE 06:34Z) and CE24 (501961 `--array=39,40%1 --nice=100000 ... ARRAY dfd3c88d...` 06:43:35Z, row 39 llama AlphaSteer lam1 COMPLETE 06:58Z; row 40 of that array is the SUPERSEDED alpha-0.1 store, set aside)",
+   "m5s": "the four RE-RUNS at the re-ruled operating points, launched from THIS PR's commit 2 (2d66d670 — main's launcher at any tree carrying PR #138 cannot run an external-object row): primary array 507135 `F22_SERVING_PATH=lens sbatch -J m5t-steer --qos=high --array=33,35,37,40%2 --nice=100000 <checkout 2d66d670>/…/math500_thinking.sbatch ARRAY 2d66d670…` (22:35:19Z 2026-09-14; nice removed 01:31Z): 507135_33 gemma AlphaSteer lam2 COMPLETE 00:06Z 2026-09-15 (a compute node), 507135_35 qwen AlphaSteer lam1 COMPLETE 00:38Z (a compute node), 507135_37 nemotron AlphaSteer lam2 (a compute node); row 40 llama Arditi alpha 0.05 = the OVERFLOW twin 104273_40 `F22_SERVING_PATH=lens sbatch -J m5t-steer --qos=high --array=40%1 <overflow checkout 2d66d670>/… ARRAY 2d66d670…` (01:38:11Z, COMPLETE 01:54Z 2026-09-15) — the primary's 507135_40 twin was cancelled as the loser and set aside as card_507135-cancelled. The superseded stores (33 lam1 9fceffbd @ be9f3c45, 35 lam3 dd9de64b @ 9db1209f, 37 lam1 360589fc @ be9f3c45, 40 alpha 0.1 0f654e88 @ dfd3c88d) are set aside and never admitted.",
+   "allpos": "the ALL-POSITIONS Arditi leg (row 53: qwen35_4b `it` arditi_allpos thinking_card — Scale's all-positions refusal direction, kind vector_all, c = 0.3 as a raw coefficient: the DECLARED OVERRIDE over the 10 pp budget, user_override_over_budget_2026-09-16, served natively on the residual slot; NOT the `arditi` row 36 and never pooled with it): job 544616 (m5t-ext, ArrayTaskId 53, QoS high; the coordinator's log: resubmit 3 of 3, the suite + both prod dry runs certified at this sha; the GSM8K twin is 544615) launched from the checkout <SHARED>/sisteer-eval-repo/dfd09294c8b27dad901b673f9cd72d778f00f75a/scripts/sdfbase/math500/math500_thinking.sbatch on the primary cluster (git rev-parse HEAD == dfd09294c8b27dad901b673f9cd72d778f00f75a); standup record serving/m5t_qwen35_4b_arditi_allpos_thinking_card_544616/math500/standup_jobs.jsonl under the wave root (`sha` dfd09294c8b27dad901b673f9cd72d778f00f75a, `engine` lora_native, `serving_path` lora_native, written 2026-09-17T17:44:35Z; serving_path_selection: 1 of 1 steered cells natively servable). The leg was RUNNING when this entry was written: the pin is the LAUNCH tree from the launch record, never read off the store; its _meta.serving_engine_by_leg entry is stamped from the PULLED store by stamp_store_pins_engines.py --launcher math500 once the leg completes and is pulled (until then the launcher refuses this leg by name, refused:record-engine-unknown). The earlier attempts' serving dirs (…_thinking_card_543828, _543903, _544311) are the submissions before resubmit 3 of 3 and are NOT admitted. Store: controls_arditi_allpos/qwen35_4b/arditi_allpos/thinking_card."
+  },
+  "source_by_leg": {
+   "gemma4e4b/alphasteer/thinking_card": "m5s",
+   "gemma4e4b/arditi/thinking_card": "sbe9",
+   "gemma4e4b/constv2-mix-full__lora_r4_ce/thinking_card": "ext1",
+   "gemma4e4b/constv2-mix-full__lora_r4_ce_minus_ctl/thinking_card": "pub",
+   "gemma4e4b/constv2ctl2-full__lora_r4_ce/thinking_card": "ext1",
+   "gemma4e4b/none/thinking_card": "pub",
+   "gemma4e4b/prompted__safety_refusal/thinking_card": "pub",
+   "gemma4e4b/prompted__si_constitution/thinking_card": "ext1",
+   "glm46vflash/constv2-mix-full__lora_r4_ce_minus_ctl/battery": "pub",
+   "glm46vflash/constv2-mix-full__lora_r4_ce_minus_ctl/thinking_card": "pub",
+   "glm46vflash/none/battery": "pub",
+   "glm46vflash/none/thinking_card": "pub",
+   "glm46vflash/prompted__safety_refusal/battery": "pub",
+   "glm46vflash/prompted__safety_refusal/thinking_card": "pub",
+   "llama8b/alphasteer/card": "sdfd",
+   "llama8b/arditi/card": "m5s",
+   "llama8b/constv2-mix-full__lora_r4_ce/card": "llama",
+   "llama8b/constv2-mix-full__lora_r4_ce_minus_ctl/card": "llama",
+   "llama8b/constv2ctl2-full__lora_r4_ce/card": "llama",
+   "llama8b/none/card": "llama",
+   "llama8b/prompted__safety_refusal/card": "llama",
+   "llama8b/prompted__si_constitution/card": "llama",
+   "nemotron3nano4b/alphasteer/thinking_card": "m5s",
+   "nemotron3nano4b/arditi/thinking_card": "sdfd",
+   "nemotron3nano4b/constv2-mix-full__lora_r4_ce/thinking_card": "ext1",
+   "nemotron3nano4b/constv2-mix-full__lora_r4_ce_minus_ctl/battery": "pub",
+   "nemotron3nano4b/constv2-mix-full__lora_r4_ce_minus_ctl/thinking_card": "pub",
+   "nemotron3nano4b/constv2ctl2-full__lora_r4_ce/thinking_card": "ext1",
+   "nemotron3nano4b/none/battery": "pub",
+   "nemotron3nano4b/none/thinking_card": "pub",
+   "nemotron3nano4b/prompted__safety_refusal/battery": "pub",
+   "nemotron3nano4b/prompted__safety_refusal/thinking_card": "pub",
+   "nemotron3nano4b/prompted__si_constitution/thinking_card": "ext1",
+   "qwen35_4b/alphasteer/thinking_card": "m5s",
+   "qwen35_4b/arditi/thinking_card": "sbe9",
+   "qwen35_4b/arditi_allpos/thinking_card@it": "allpos",
+   "qwen35_4b/constv2-mix-full__lora_r4_ce/thinking_card": "ext1",
+   "qwen35_4b/constv2-mix-full__lora_r4_ce_minus_ctl/battery": "pub",
+   "qwen35_4b/constv2-mix-full__lora_r4_ce_minus_ctl/general": "pub",
+   "qwen35_4b/constv2-mix-full__lora_r4_ce_minus_ctl/thinking_card": "pub",
+   "qwen35_4b/constv2ctl2-full__lora_r4_ce/thinking_card": "ext1",
+   "qwen35_4b/none/battery": "pub",
+   "qwen35_4b/none/general": "pub",
+   "qwen35_4b/none/thinking_card": "pub",
+   "qwen35_4b/prompted__safety_refusal/battery": "pub",
+   "qwen35_4b/prompted__safety_refusal/general": "pub",
+   "qwen35_4b/prompted__safety_refusal/thinking_card": "pub",
+   "qwen35_4b/prompted__si_constitution/thinking_card": "ext1"
+  },
+  "serving_engine_source": "_meta.serving_engine_by_leg: each admitted STEER leg's serving engine (lens | lora_native), DERIVED by scripts/sdfbase/full22/stamp_store_pins_engines.py from the leg's PULLED store (evidence.json / cells/*/manifest.json route: serving_identity + serving_engine stamp; steer_store_pin.read_store_engines), the store's producer tree verified equal to the leg's pin; read by the launchers' serving-path pin (g8k_cells.serving_path_pin / math500 cells.serving_path_pin) as the PINS source of 'a store on record' beside the launching cluster's disk — the pin follows the store (2026-09-15/16)",
+  "serving_engine_by_leg": {
+   "gemma4e4b/alphasteer/thinking_card": {
+    "engine": "lens",
+    "producer_tree_sha": "2d66d67029ebe943bcb13a299164dc3deae59a0a",
+    "pulled_store": "pull_steer_r2/controls_steer/gemma4e4b/alphasteer/thinking_card",
+    "readings": [
+     [
+      "evidence.json",
+      "serving_identity",
+      "proxy_vllm+lens+interleaved"
+     ],
+     [
+      "cells/alphasteer__controls__t0__a0__91da1b7d__17f8a45a/manifest.json",
+      "route.serving_identity",
+      "proxy_vllm+lens+interleaved"
+     ],
+     [
+      "cells/alphasteer__controls__t0__a0__91da1b7d__17f8a45a/evidence.json",
+      "serving_identity",
+      "proxy_vllm+lens+interleaved"
+     ]
+    ],
+    "stamped": "2026-09-17"
+   },
+   "gemma4e4b/arditi/thinking_card": {
+    "engine": "lens",
+    "producer_tree_sha": "be9f3c455ef345c7e87c1c3db33d532cdf1cf720",
+    "pulled_store": "pull_steer_r2/controls_steer/gemma4e4b/arditi/thinking_card",
+    "readings": [
+     [
+      "evidence.json",
+      "serving_identity",
+      "proxy_vllm+lens+interleaved"
+     ],
+     [
+      "cells/arditi__controls__t0__a0__dad17f98__54f1e09e/manifest.json",
+      "route.serving_identity",
+      "proxy_vllm+lens+interleaved"
+     ],
+     [
+      "cells/arditi__controls__t0__a0__dad17f98__54f1e09e/evidence.json",
+      "serving_identity",
+      "proxy_vllm+lens+interleaved"
+     ]
+    ],
+    "stamped": "2026-09-17"
+   },
+   "llama8b/alphasteer/card": {
+    "engine": "lens",
+    "producer_tree_sha": "dfd3c88dd226dd070782b69f1a8e9282c41fd1b2",
+    "pulled_store": "pull_steer_r2/controls_steer/llama8b/alphasteer/card",
+    "readings": [
+     [
+      "evidence.json",
+      "serving_identity",
+      "proxy_vllm+lens+interleaved"
+     ],
+     [
+      "cells/alphasteer__controls__t0__a0__6895ba9f__ede27cbb/manifest.json",
+      "route.serving_identity",
+      "proxy_vllm+lens+interleaved"
+     ],
+     [
+      "cells/alphasteer__controls__t0__a0__6895ba9f__ede27cbb/evidence.json",
+      "serving_identity",
+      "proxy_vllm+lens+interleaved"
+     ]
+    ],
+    "stamped": "2026-09-17"
+   },
+   "llama8b/arditi/card": {
+    "engine": "lens",
+    "producer_tree_sha": "2d66d67029ebe943bcb13a299164dc3deae59a0a",
+    "pulled_store": "pull_steer_r2/controls_steer/llama8b/arditi/card",
+    "readings": [
+     [
+      "evidence.json",
+      "serving_identity",
+      "proxy_vllm+lens+interleaved"
+     ],
+     [
+      "cells/arditi__controls__t0__a0__9ccd29e3__4051b4b2/manifest.json",
+      "route.serving_identity",
+      "proxy_vllm+lens+interleaved"
+     ],
+     [
+      "cells/arditi__controls__t0__a0__9ccd29e3__4051b4b2/evidence.json",
+      "serving_identity",
+      "proxy_vllm+lens+interleaved"
+     ]
+    ],
+    "stamped": "2026-09-17"
+   },
+   "nemotron3nano4b/alphasteer/thinking_card": {
+    "engine": "lens",
+    "producer_tree_sha": "2d66d67029ebe943bcb13a299164dc3deae59a0a",
+    "pulled_store": "pull_steer_r2/controls_steer/nemotron3nano4b/alphasteer/thinking_card",
+    "readings": [
+     [
+      "evidence.json",
+      "serving_identity",
+      "proxy_vllm+lens+interleaved"
+     ],
+     [
+      "cells/alphasteer__controls__t0__a0__a697e06e__5708618c/manifest.json",
+      "route.serving_identity",
+      "proxy_vllm+lens+interleaved"
+     ],
+     [
+      "cells/alphasteer__controls__t0__a0__a697e06e__5708618c/evidence.json",
+      "serving_identity",
+      "proxy_vllm+lens+interleaved"
+     ]
+    ],
+    "stamped": "2026-09-17"
+   },
+   "nemotron3nano4b/arditi/thinking_card": {
+    "engine": "lens",
+    "producer_tree_sha": "dfd3c88dd226dd070782b69f1a8e9282c41fd1b2",
+    "pulled_store": "pull_steer_r2/controls_steer/nemotron3nano4b/arditi/thinking_card",
+    "readings": [
+     [
+      "evidence.json",
+      "serving_identity",
+      "proxy_vllm+lens+interleaved"
+     ],
+     [
+      "cells/arditi__controls__t0__a0__59a6d658__255e8449/manifest.json",
+      "route.serving_identity",
+      "proxy_vllm+lens+interleaved"
+     ],
+     [
+      "cells/arditi__controls__t0__a0__59a6d658__255e8449/evidence.json",
+      "serving_identity",
+      "proxy_vllm+lens+interleaved"
+     ]
+    ],
+    "stamped": "2026-09-17"
+   },
+   "qwen35_4b/alphasteer/thinking_card": {
+    "engine": "lens",
+    "producer_tree_sha": "2d66d67029ebe943bcb13a299164dc3deae59a0a",
+    "pulled_store": "pull_steer_r2/controls_steer/qwen35_4b/alphasteer/thinking_card",
+    "readings": [
+     [
+      "evidence.json",
+      "serving_identity",
+      "proxy_vllm+lens+interleaved"
+     ],
+     [
+      "cells/alphasteer__controls__t0__a0__b28490f6__52bc297f/manifest.json",
+      "route.serving_identity",
+      "proxy_vllm+lens+interleaved"
+     ],
+     [
+      "cells/alphasteer__controls__t0__a0__b28490f6__52bc297f/evidence.json",
+      "serving_identity",
+      "proxy_vllm+lens+interleaved"
+     ]
+    ],
+    "stamped": "2026-09-17"
+   },
+   "qwen35_4b/arditi/thinking_card": {
+    "engine": "lens",
+    "producer_tree_sha": "be9f3c455ef345c7e87c1c3db33d532cdf1cf720",
+    "pulled_store": "pull_steer_r2/controls_steer/qwen35_4b/arditi/thinking_card",
+    "readings": [
+     [
+      "evidence.json",
+      "serving_identity",
+      "proxy_vllm+lens+interleaved"
+     ],
+     [
+      "cells/arditi__controls__t0__a0__db849683__01b22f72/manifest.json",
+      "route.serving_identity",
+      "proxy_vllm+lens+interleaved"
+     ],
+     [
+      "cells/arditi__controls__t0__a0__db849683__01b22f72/evidence.json",
+      "serving_identity",
+      "proxy_vllm+lens+interleaved"
+     ]
+    ],
+    "stamped": "2026-09-17"
+   },
+   "qwen35_4b/arditi_allpos/thinking_card@it": {
+    "engine": "lora_native",
+    "producer_tree_sha": "dfd09294c8b27dad901b673f9cd72d778f00f75a",
+    "pulled_store": "pull_allpos_dfd0929/controls_arditi_allpos/qwen35_4b/arditi_allpos/thinking_card",
+    "readings": [
+     [
+      "evidence.json",
+      "serving_identity",
+      "proxy_vllm+lora+interleaved"
+     ],
+     [
+      "cells/arditi_allpos__controls__t0__a0__92b66dce__199ea37a/manifest.json",
+      "route.serving_identity",
+      "proxy_vllm+lora+interleaved"
+     ],
+     [
+      "cells/arditi_allpos__controls__t0__a0__92b66dce__199ea37a/manifest.json",
+      "route.serving_engine",
+      "lora_native"
+     ],
+     [
+      "cells/arditi_allpos__controls__t0__a0__92b66dce__199ea37a/evidence.json",
+      "serving_identity",
+      "proxy_vllm+lora+interleaved"
+     ]
+    ],
+    "stamped": "2026-09-17"
+   }
+  }
+ },
+ "gemma4e4b/alphasteer/thinking_card": "2d66d67029ebe943bcb13a299164dc3deae59a0a",
+ "gemma4e4b/arditi/thinking_card": "be9f3c455ef345c7e87c1c3db33d532cdf1cf720",
+ "gemma4e4b/constv2-mix-full__lora_r4_ce/thinking_card": "ac67e138b90aaefb3d7b8b9adeb5ae520404158a",
+ "gemma4e4b/constv2-mix-full__lora_r4_ce_minus_ctl/thinking_card": "55e3cbdd0bfb5d53f8d62c50a099a3c1c105100b",
+ "gemma4e4b/constv2ctl2-full__lora_r4_ce/thinking_card": "ac67e138b90aaefb3d7b8b9adeb5ae520404158a",
+ "gemma4e4b/none/thinking_card": "55e3cbdd0bfb5d53f8d62c50a099a3c1c105100b",
+ "gemma4e4b/prompted__safety_refusal/thinking_card": "55e3cbdd0bfb5d53f8d62c50a099a3c1c105100b",
+ "gemma4e4b/prompted__si_constitution/thinking_card": "ac67e138b90aaefb3d7b8b9adeb5ae520404158a",
+ "glm46vflash/constv2-mix-full__lora_r4_ce_minus_ctl/battery": "55e3cbdd0bfb5d53f8d62c50a099a3c1c105100b",
+ "glm46vflash/constv2-mix-full__lora_r4_ce_minus_ctl/thinking_card": "55e3cbdd0bfb5d53f8d62c50a099a3c1c105100b",
+ "glm46vflash/none/battery": "55e3cbdd0bfb5d53f8d62c50a099a3c1c105100b",
+ "glm46vflash/none/thinking_card": "55e3cbdd0bfb5d53f8d62c50a099a3c1c105100b",
+ "glm46vflash/prompted__safety_refusal/battery": "55e3cbdd0bfb5d53f8d62c50a099a3c1c105100b",
+ "glm46vflash/prompted__safety_refusal/thinking_card": "55e3cbdd0bfb5d53f8d62c50a099a3c1c105100b",
+ "llama8b/alphasteer/card": "dfd3c88dd226dd070782b69f1a8e9282c41fd1b2",
+ "llama8b/arditi/card": "2d66d67029ebe943bcb13a299164dc3deae59a0a",
+ "llama8b/constv2-mix-full__lora_r4_ce/card": "15c69b10b45eaac111247e4fb68a0ad48c4c9701",
+ "llama8b/constv2-mix-full__lora_r4_ce_minus_ctl/card": "15c69b10b45eaac111247e4fb68a0ad48c4c9701",
+ "llama8b/constv2ctl2-full__lora_r4_ce/card": "15c69b10b45eaac111247e4fb68a0ad48c4c9701",
+ "llama8b/none/card": "15c69b10b45eaac111247e4fb68a0ad48c4c9701",
+ "llama8b/prompted__safety_refusal/card": "15c69b10b45eaac111247e4fb68a0ad48c4c9701",
+ "llama8b/prompted__si_constitution/card": "15c69b10b45eaac111247e4fb68a0ad48c4c9701",
+ "nemotron3nano4b/alphasteer/thinking_card": "2d66d67029ebe943bcb13a299164dc3deae59a0a",
+ "nemotron3nano4b/arditi/thinking_card": "dfd3c88dd226dd070782b69f1a8e9282c41fd1b2",
+ "nemotron3nano4b/constv2-mix-full__lora_r4_ce/thinking_card": "ac67e138b90aaefb3d7b8b9adeb5ae520404158a",
+ "nemotron3nano4b/constv2-mix-full__lora_r4_ce_minus_ctl/battery": "55e3cbdd0bfb5d53f8d62c50a099a3c1c105100b",
+ "nemotron3nano4b/constv2-mix-full__lora_r4_ce_minus_ctl/thinking_card": "55e3cbdd0bfb5d53f8d62c50a099a3c1c105100b",
+ "nemotron3nano4b/constv2ctl2-full__lora_r4_ce/thinking_card": "ac67e138b90aaefb3d7b8b9adeb5ae520404158a",
+ "nemotron3nano4b/none/battery": "55e3cbdd0bfb5d53f8d62c50a099a3c1c105100b",
+ "nemotron3nano4b/none/thinking_card": "55e3cbdd0bfb5d53f8d62c50a099a3c1c105100b",
+ "nemotron3nano4b/prompted__safety_refusal/battery": "55e3cbdd0bfb5d53f8d62c50a099a3c1c105100b",
+ "nemotron3nano4b/prompted__safety_refusal/thinking_card": "55e3cbdd0bfb5d53f8d62c50a099a3c1c105100b",
+ "nemotron3nano4b/prompted__si_constitution/thinking_card": "ac67e138b90aaefb3d7b8b9adeb5ae520404158a",
+ "qwen35_4b/alphasteer/thinking_card": "2d66d67029ebe943bcb13a299164dc3deae59a0a",
+ "qwen35_4b/arditi/thinking_card": "be9f3c455ef345c7e87c1c3db33d532cdf1cf720",
+ "qwen35_4b/arditi_allpos/thinking_card@it": "dfd09294c8b27dad901b673f9cd72d778f00f75a",
+ "qwen35_4b/constv2-mix-full__lora_r4_ce/thinking_card": "ac67e138b90aaefb3d7b8b9adeb5ae520404158a",
+ "qwen35_4b/constv2-mix-full__lora_r4_ce_minus_ctl/battery": "55e3cbdd0bfb5d53f8d62c50a099a3c1c105100b",
+ "qwen35_4b/constv2-mix-full__lora_r4_ce_minus_ctl/general": "55e3cbdd0bfb5d53f8d62c50a099a3c1c105100b",
+ "qwen35_4b/constv2-mix-full__lora_r4_ce_minus_ctl/thinking_card": "55e3cbdd0bfb5d53f8d62c50a099a3c1c105100b",
+ "qwen35_4b/constv2ctl2-full__lora_r4_ce/thinking_card": "ac67e138b90aaefb3d7b8b9adeb5ae520404158a",
+ "qwen35_4b/none/battery": "55e3cbdd0bfb5d53f8d62c50a099a3c1c105100b",
+ "qwen35_4b/none/general": "55e3cbdd0bfb5d53f8d62c50a099a3c1c105100b",
+ "qwen35_4b/none/thinking_card": "55e3cbdd0bfb5d53f8d62c50a099a3c1c105100b",
+ "qwen35_4b/prompted__safety_refusal/battery": "55e3cbdd0bfb5d53f8d62c50a099a3c1c105100b",
+ "qwen35_4b/prompted__safety_refusal/general": "55e3cbdd0bfb5d53f8d62c50a099a3c1c105100b",
+ "qwen35_4b/prompted__safety_refusal/thinking_card": "55e3cbdd0bfb5d53f8d62c50a099a3c1c105100b",
+ "qwen35_4b/prompted__si_constitution/thinking_card": "ac67e138b90aaefb3d7b8b9adeb5ae520404158a"
+}

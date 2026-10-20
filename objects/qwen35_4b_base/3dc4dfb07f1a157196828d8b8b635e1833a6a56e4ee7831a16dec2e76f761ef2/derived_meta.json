@@ -1,0 +1,587 @@
+{
+ "application_order": "shared_pre_write_state",
+ "builder": "scripts/sdfbase/psr_residual_distill.py compose-v",
+ "builder_commit": null,
+ "built_at": "2026-09-17T13:55:37+00:00",
+ "comparison": "scale_matched (primary: both parents trained at the same official-token budget)",
+ "derivation": "u_pos(z) - u_neg(z) on the SHARED pre-write layer output z, one combined hook per layer (both parents' parameters stored bit-exact)",
+ "derived_id": "constv2-mix-full__psr_ce_all_minus_ctl",
+ "dose_scaled_from": {
+  "direction_norm_after_by_side_and_layer": {
+   "neg": {
+    "0": 2.20904803276062,
+    "1": 2.332350969314575,
+    "10": 2.0223429203033447,
+    "11": 2.5537450313568115,
+    "12": 2.073664903640747,
+    "13": 2.2461681365966797,
+    "14": 2.237307548522949,
+    "15": 2.1087090969085693,
+    "16": 2.1825671195983887,
+    "17": 2.2675888538360596,
+    "18": 2.209643840789795,
+    "19": 2.2315707206726074,
+    "2": 2.2936882972717285,
+    "20": 2.355872869491577,
+    "21": 2.3830881118774414,
+    "22": 2.470031976699829,
+    "23": 2.7972636222839355,
+    "24": 2.651959180831909,
+    "25": 2.618985652923584,
+    "26": 3.0959157943725586,
+    "27": 2.7637274265289307,
+    "28": 2.8213069438934326,
+    "29": 2.8800764083862305,
+    "3": 2.3463027477264404,
+    "30": 2.8290297985076904,
+    "31": 2.6075692176818848,
+    "4": 2.360780715942383,
+    "5": 2.4001107215881348,
+    "6": 2.650129556655884,
+    "7": 2.5291318893432617,
+    "8": 2.284797430038452,
+    "9": 2.741246461868286
+   },
+   "pos": {
+    "0": 3.4758756160736084,
+    "1": 3.9324004650115967,
+    "10": 3.77282452583313,
+    "11": 3.205226182937622,
+    "12": 3.0642893314361572,
+    "13": 2.849330425262451,
+    "14": 3.0177817344665527,
+    "15": 2.6073601245880127,
+    "16": 2.6451103687286377,
+    "17": 2.713134288787842,
+    "18": 3.2079408168792725,
+    "19": 2.917543888092041,
+    "2": 3.444148540496826,
+    "20": 3.094806432723999,
+    "21": 2.955008029937744,
+    "22": 3.528862953186035,
+    "23": 3.2657830715179443,
+    "24": 3.321484088897705,
+    "25": 3.666085958480835,
+    "26": 3.7942752838134766,
+    "27": 3.586923122406006,
+    "28": 3.599036693572998,
+    "29": 3.592365264892578,
+    "3": 3.5999233722686768,
+    "30": 3.412289619445801,
+    "31": 3.1928834915161133,
+    "4": 3.1912178993225098,
+    "5": 3.391543388366699,
+    "6": 4.01670503616333,
+    "7": 3.5635852813720703,
+    "8": 3.2243635654449463,
+    "9": 3.69700288772583
+   }
+  },
+  "direction_norm_before_by_side_and_layer": {
+   "neg": {
+    "0": 1.7672386169433594,
+    "1": 1.8658809661865234,
+    "10": 1.617874026298523,
+    "11": 2.0429959297180176,
+    "12": 1.6589319705963135,
+    "13": 1.7969344854354858,
+    "14": 1.7898460626602173,
+    "15": 1.6869672536849976,
+    "16": 1.74605393409729,
+    "17": 1.8140710592269897,
+    "18": 1.7677152156829834,
+    "19": 1.7852565050125122,
+    "2": 1.8349504470825195,
+    "20": 1.8846982717514038,
+    "21": 1.9064702987670898,
+    "22": 1.9760255813598633,
+    "23": 2.2378106117248535,
+    "24": 2.1215672492980957,
+    "25": 2.0951883792877197,
+    "26": 2.4767327308654785,
+    "27": 2.210981845855713,
+    "28": 2.257045269012451,
+    "29": 2.3040614128112793,
+    "3": 1.8770424127578735,
+    "30": 2.263223886489868,
+    "31": 2.086055040359497,
+    "4": 1.888624668121338,
+    "5": 1.920088768005371,
+    "6": 2.1201038360595703,
+    "7": 2.0233054161071777,
+    "8": 1.8278380632400513,
+    "9": 2.1929969787597656
+   },
+   "pos": {
+    "0": 2.780700206756592,
+    "1": 3.1459202766418457,
+    "10": 3.0182597637176514,
+    "11": 2.564181089401245,
+    "12": 2.4514317512512207,
+    "13": 2.2794642448425293,
+    "14": 2.4142255783081055,
+    "15": 2.085888147354126,
+    "16": 2.1160881519317627,
+    "17": 2.1705074310302734,
+    "18": 2.5663528442382812,
+    "19": 2.3340351581573486,
+    "2": 2.7553186416625977,
+    "20": 2.4758450984954834,
+    "21": 2.364006519317627,
+    "22": 2.8230903148651123,
+    "23": 2.612626552581787,
+    "24": 2.657186985015869,
+    "25": 2.9328689575195312,
+    "26": 3.0354204177856445,
+    "27": 2.8695387840270996,
+    "28": 2.8792295455932617,
+    "29": 2.873892307281494,
+    "3": 2.879938840866089,
+    "30": 2.7298316955566406,
+    "31": 2.554306745529175,
+    "4": 2.5529744625091553,
+    "5": 2.7132349014282227,
+    "6": 3.2133636474609375,
+    "7": 2.850867986679077,
+    "8": 2.5794906616210938,
+    "9": 2.957602024078369
+   }
+  },
+  "dose_locus": {
+   "coefficient_keys_present": {},
+   "locus": "bytes: ||directions|| per stored gate (both sides)",
+   "rule": "none of ['coeff', 'coefficient', 'scale', 'base_scale', 'base_alpha', 'effective_scale'] in the artifact (top level, pos, neg), or exactly 1.0; every adapted HookOp.coeff == 1.0 (served_ops)",
+   "serve_time_coefficient": 1.0
+  },
+  "fingerprints": {
+   "object_sha256": {
+    "copy": "3dc4dfb07f1a157196828d8b8b635e1833a6a56e4ee7831a16dec2e76f761ef2",
+    "parent": "f98f0349673b7cb0cf85f54aee71f74bf9f0bbf981e989b52c8ba6599a492c2d"
+   },
+   "residual_payload_tensor_fingerprint": {
+    "all_gates": {
+     "copy": "59fafe660c6c44c06245f94d286ee8b741e8f02dec56eb8cc118b779ac952d86",
+     "parent": "e29184a95b2a78bb5d9e44ace9ef28f8797abe4088e227e441a1abd752df13a4"
+    },
+    "block_half": "NOT computed: the petri_residual_slot block carries base-model facts (hidden_size, n_layers_model, anchor_layer = the base's first o_proj layer, boundaries, the served response_header_ids) that a served standup / base skeleton supplies (lora_export._derived_dims), not the object bytes; for one fixed block residual_fingerprint differs exactly when the tensor half differs",
+    "not_fingerprint_bf16": "fingerprint_bf16 is the rank-1 zero LoRA CARRIER's fingerprint, identical across every PSR payload on one base by design (serving_attestation: adapter identity is the pair (fingerprint_bf16, residual_fingerprint)); distinctness is asserted on the payload only",
+    "paired_kind_in_residual_slot_kinds": true,
+    "paired_kind_note": "'psr_paired_write' IS a native_residual.RESIDUAL_SLOT_KINDS member on this tree (served natively as the two-gate op); its served residual_fingerprint hashes the two-gate payload lora_export._residual_psr_paired_write builds, which this producer does not compute (the block half needs a standup); per_gate.pos / per_gate.neg are the kind-psr views PSRPairedWriteObject._parent_blob extracts \u2014 each side's own payload identity, what a paired payload carries per side",
+    "per_gate": {
+     "neg": {
+      "direction_keys": {
+       "copy": "5938495ce5659a041663cca1777865615098a064864757fd10a2aa75321c9cda",
+       "parent": "73ca7ed0d4db12cdbc9ea66fbd38a447108cd33efc0ffaa51a65cdd5ea16ecb0"
+      },
+      "gate_keys": {
+       "copy": "eefc8d8a898ecdff8fb154940ab02ef0dc52d393f96d9f40f4f8008def19f6b5",
+       "parent": "eefc8d8a898ecdff8fb154940ab02ef0dc52d393f96d9f40f4f8008def19f6b5"
+      },
+      "n_tensors": 96,
+      "payload": {
+       "copy": "5ed212272fa316e86e5cfad32c1c38eb6fe1d329bb9d53b7dbb9ab082775bb44",
+       "parent": "8b3870d1e44d84ebf555f652a69061c958a4b1bc0ffdbb3015a70527bdf81b27"
+      }
+     },
+     "pos": {
+      "direction_keys": {
+       "copy": "12b449139d12b39f609dc1c4098bf0fab79fc60d016fe784c101f22a46b9edf3",
+       "parent": "8055c1934845cd959b94ec5276bb3a9cb9cdd8253409eae300fcf87c5f066118"
+      },
+      "gate_keys": {
+       "copy": "de12af2333f7e08bd3b7b3f6642a6acc334cf5168d703a26a6ce1649d11115b9",
+       "parent": "de12af2333f7e08bd3b7b3f6642a6acc334cf5168d703a26a6ce1649d11115b9"
+      },
+      "n_tensors": 96,
+      "payload": {
+       "copy": "70b72d306a6a4c3ea613f80a21bd624e169fcade931f1fde046e961beff5e6d1",
+       "parent": "1440f8385b64e00b19d3905a6bbc24d910c8a6c70777bd30cbf1426aec69686c"
+      }
+     }
+    },
+    "recipe": "the TENSOR half of native_residual.residual_fingerprint \u2014 sha256 over (key, dtype, shape, raw bytes) per payload tensor sisteer_residual.layers.<l>.{gate_w, gate_b, direction} in sorted key order, the payload built by lora_export._residual_psr from the kind-psr view of each stored gate; all_gates prefixes each tensor key with its gate tag"
+   },
+   "siblings": [
+    {
+     "dir": "objects/qwen35_4b_base/4bacb54ce7e128e953ab4c02042ddf1dab46b3a70afa937d09b4a35bf785732f",
+     "object_sha256": "4bacb54ce7e128e953ab4c02042ddf1dab46b3a70afa937d09b4a35bf785732f",
+     "residual_payload_tensor_fingerprint": "c2edfde85d4adefd92081c954f78625a2eaf180fd11f3f837b83f3dd80ae25bb"
+    },
+    {
+     "dir": "objects/qwen35_4b_base/2bdf23715ac206c8b3d095b4cabddb6a005358fbd404805198b20a6116218e28",
+     "object_sha256": "2bdf23715ac206c8b3d095b4cabddb6a005358fbd404805198b20a6116218e28",
+     "residual_payload_tensor_fingerprint": "fccb26ef877a61db5e81c6da048e56991687edd3c97b05808da10ab616246169"
+    }
+   ]
+  },
+  "note": "a post-hoc dose-scaled copy of the parent PAIRED WRITE \u2014 the record above is the PARENT's (this object was not derived separately); the combined hook computes scale * (u_pos(z) - u_neg(z)), the file-level equivalent of PSRPairedWriteObject.apply(model, scale=scale)",
+  "object_type": "psr_paired_write",
+  "parent_dir": "objects/qwen35_4b_base/f98f0349673b7cb0cf85f54aee71f74bf9f0bbf981e989b52c8ba6599a492c2d",
+  "parent_fit_fingerprint": null,
+  "parent_identity": "derived",
+  "parent_object_sha256": "f98f0349673b7cb0cf85f54aee71f74bf9f0bbf981e989b52c8ba6599a492c2d",
+  "parent_staged_id": "paired_s1__constv2-mix-full__psr_ce_all_minus_ctl",
+  "producer": "scripts/sdfbase/scale_psr_dose.py",
+  "producer_commit": "82aa2dd9b1bfd8e6005222b0fc338e54b8cd49e5",
+  "scale": 1.25,
+  "scaling_method": "BOTH sides' directions (pos.directions, neg.directions) x the SAME scale per layer; both gates (gate_w, gate_b) untouched \u2014 c (u_pos - u_neg) = c V is the gauge-invariant dose of the paired write; scaling one side would be a different difference, not a dose",
+  "tensors_scaled": [
+   "pos.directions",
+   "neg.directions"
+  ],
+  "tensors_unchanged": [
+   "pos.gate_w",
+   "pos.gate_b",
+   "neg.gate_w",
+   "neg.gate_b",
+   "layers",
+   "application_order",
+   "positions",
+   "response_header_len",
+   "provenance"
+  ],
+  "verification": {
+   "checks": [
+    {
+     "check": "tensors",
+     "rule": "torch.equal(new, parent * scale) for BOTH sides' directions with the one scale; torch.equal(new, parent) for both gates; == for every other key",
+     "scaled": [
+      "pos.directions",
+      "neg.directions"
+     ],
+     "status": "PASS",
+     "unchanged": [
+      "pos.gate_w",
+      "pos.gate_b",
+      "neg.gate_w",
+      "neg.gate_b"
+     ]
+    },
+    {
+     "adapter": "sisteer.capeval.serving.lens_adapters._adapt_psr_paired_write",
+     "check": "served_ops",
+     "coeff": 1.0,
+     "max_abs_diff_fp32": {
+      "neg": 0.0,
+      "pos": 0.0
+     },
+     "n_ops": 32,
+     "op": "relu_gated_vector_pair",
+     "rule": "per op (one relu_gated_vector_pair per layer, both artifacts through the registered paired adapter): layer / positions / skip_bos / phase / header ids identical, coeff == 1.0 on parent and copy; pos gate (gate_w, gate_b) and neg gate (gate_w2, gate_b2) torch.equal; vector == parent.vector * scale AND vector2 == parent.vector2 * scale (torch.equal) \u2014 the ONE scale on both sides at the served op",
+     "status": "PASS"
+    },
+    {
+     "check": "served_activation",
+     "exact_bf16": false,
+     "exact_fp32": false,
+     "layers": 32,
+     "max_abs_diff_fp32": 9.5367431640625e-07,
+     "probe_rows": 64,
+     "reference_max_abs": 17.84795570373535,
+     "rule": "relu(h.w_pos + b_pos) d_pos - relu(h.w_neg + b_neg) d_neg on ONE shared h ~ N(0,1) (SharedStateWriteObject.paired_write's arithmetic): copy == scale * parent",
+     "seed": 0,
+     "status": "PASS"
+    }
+   ],
+   "kind": "psr_paired_write",
+   "per_side": {
+    "neg": {
+     "checks": [
+      {
+       "check": "tensors",
+       "rule": "torch.equal(new, parent * scale) for directions; torch.equal(new, parent) otherwise",
+       "scaled": [
+        "directions"
+       ],
+       "status": "PASS",
+       "unchanged": [
+        "gate_w",
+        "gate_b"
+       ]
+      },
+      {
+       "adapter": "sisteer.capeval.serving.lens_adapters._adapt_psr",
+       "check": "served_ops",
+       "coeff": 1.0,
+       "n_ops": 32,
+       "rule": "per op: gate_w / gate_b / coeff / layer / positions identical, coeff == 1.0; vector == parent * scale (torch.equal)",
+       "status": "PASS"
+      },
+      {
+       "check": "served_activation",
+       "exact_bf16": false,
+       "exact_fp32": false,
+       "layers": 32,
+       "max_abs_diff_fp32": 2.384185791015625e-07,
+       "probe_rows": 64,
+       "reference_max_abs": 3.6627161502838135,
+       "rule": "relu(h @ gate_w + gate_b) * directions on h ~ N(0,1): copy == scale * parent",
+       "seed": 0,
+       "status": "PASS"
+      }
+     ],
+     "kind": "psr",
+     "scale": 1.25,
+     "status": "PASS"
+    },
+    "pos": {
+     "checks": [
+      {
+       "check": "tensors",
+       "rule": "torch.equal(new, parent * scale) for directions; torch.equal(new, parent) otherwise",
+       "scaled": [
+        "directions"
+       ],
+       "status": "PASS",
+       "unchanged": [
+        "gate_w",
+        "gate_b"
+       ]
+      },
+      {
+       "adapter": "sisteer.capeval.serving.lens_adapters._adapt_psr",
+       "check": "served_ops",
+       "coeff": 1.0,
+       "n_ops": 32,
+       "rule": "per op: gate_w / gate_b / coeff / layer / positions identical, coeff == 1.0; vector == parent * scale (torch.equal)",
+       "status": "PASS"
+      },
+      {
+       "check": "served_activation",
+       "exact_bf16": false,
+       "exact_fp32": false,
+       "layers": 32,
+       "max_abs_diff_fp32": 9.5367431640625e-07,
+       "probe_rows": 64,
+       "reference_max_abs": 17.84795570373535,
+       "rule": "relu(h @ gate_w + gate_b) * directions on h ~ N(0,1): copy == scale * parent",
+       "seed": 0,
+       "status": "PASS"
+      }
+     ],
+     "kind": "psr",
+     "scale": 1.25,
+     "status": "PASS"
+    }
+   },
+   "scale": 1.25,
+   "sides": [
+    "pos",
+    "neg"
+   ],
+   "status": "PASS"
+  },
+  "written_at": "2026-09-18T20:35:18Z"
+ },
+ "kind": "psr_paired_write",
+ "layers": [
+  0,
+  1,
+  2,
+  3,
+  4,
+  5,
+  6,
+  7,
+  8,
+  9,
+  10,
+  11,
+  12,
+  13,
+  14,
+  15,
+  16,
+  17,
+  18,
+  19,
+  20,
+  21,
+  22,
+  23,
+  24,
+  25,
+  26,
+  27,
+  28,
+  29,
+  30,
+  31
+ ],
+ "model_id": "Qwen/Qwen3.5-4B-Base",
+ "model_key": "qwen35_4b_base_eb64_s1",
+ "model_revision": "1001bb4d826a52d1f399e183466143f4da7b741b",
+ "object_sha256": "3dc4dfb07f1a157196828d8b8b635e1833a6a56e4ee7831a16dec2e76f761ef2",
+ "parent_neg": {
+  "arm": "psr_ce_all",
+  "budget_meta_sha256": "334143babfb2641a0dc5d17e6cdce79804d05ecb4df39f9587cfd6840d8b8998",
+  "cell_id": "constv2ctl2-full__psr_ce_all",
+  "data_scale": {
+   "budget": 41193845,
+   "manifest_sha256": "ead74d768bb71f2c266dda65a353c8967a7f0deb881d4154b6325d861a3451e3",
+   "official_tokens": 41193845,
+   "si": "constv2ctl2-full",
+   "source": "$SHARED/vol/pool/qwen35_4b_base_eb64_s1/pairs_constv2ctl2-full.manifest.json"
+  },
+  "fit_fingerprint": "e3cdb1dd8933cd8986713fd4349e3d5a769b72fd6cbd7d5d49b152b8128dbc4d",
+  "fit_record": {
+   "best_epoch": 4,
+   "best_heldout_ce": 2.2331225869538227,
+   "ce_ratio": 0.9217722279794364,
+   "epochs_run": 6,
+   "heldout_noop_ce": 2.4226403434272714
+  },
+  "heldout_pool_sha": "1ce42895004f4b51dbcebbe6424d2a77c82d573afadc8409b14dffd9c5e84342",
+  "model_id": "Qwen/Qwen3.5-4B-Base",
+  "model_key": "qwen35_4b_base_eb64_s1",
+  "model_revision": "1001bb4d826a52d1f399e183466143f4da7b741b",
+  "model_revision_source": "train_budget_meta.json",
+  "object_path": "objects/qwen35_4b_base/f65425b851ab446b329fa93631462dd4f31fb16e11955867ef902dffd635c2cd/object.pt",
+  "object_sha256": "f65425b851ab446b329fa93631462dd4f31fb16e11955867ef902dffd635c2cd",
+  "positions": "all",
+  "response_header_len": null,
+  "sample_manifest_sha": "ead74d768bb71f2c266dda65a353c8967a7f0deb881d4154b6325d861a3451e3",
+  "si_id": "constv2ctl2-full",
+  "target_layers": [
+   0,
+   1,
+   2,
+   3,
+   4,
+   5,
+   6,
+   7,
+   8,
+   9,
+   10,
+   11,
+   12,
+   13,
+   14,
+   15,
+   16,
+   17,
+   18,
+   19,
+   20,
+   21,
+   22,
+   23,
+   24,
+   25,
+   26,
+   27,
+   28,
+   29,
+   30,
+   31
+  ],
+  "template_hash": "a4aee8afcf2e0711",
+  "training_budget_kind": "document_tokens"
+ },
+ "parent_pos": {
+  "arm": "psr_ce_all",
+  "budget_meta_sha256": "cf9a479dbc3e0b2091657c887af55668b1cc2a54700fbd121b0c2758a1ec657f",
+  "cell_id": "constv2-mix-full__psr_ce_all",
+  "data_scale": {
+   "budget": null,
+   "manifest_sha256": "179951ff53f1810c619393560f3d9a51411286192d19b90a95e9a5ddcd5f6b77",
+   "official_tokens": 41193845,
+   "si": "constv2-mix-full",
+   "source": "$SHARED/vol/pool/qwen35_4b_base_eb64_s1/pairs_constv2-mix-full.manifest.json"
+  },
+  "fit_fingerprint": "b3ff4a185eca086b9dd8f6e31b143e2c41a95fcda2078c4ec9694d5fe83dadb9",
+  "fit_record": {
+   "best_epoch": 16,
+   "best_heldout_ce": 2.0525356431767166,
+   "ce_ratio": 0.8472308523819209,
+   "epochs_run": 16,
+   "heldout_noop_ce": 2.4226403434272714
+  },
+  "heldout_pool_sha": "1ce42895004f4b51dbcebbe6424d2a77c82d573afadc8409b14dffd9c5e84342",
+  "model_id": "Qwen/Qwen3.5-4B-Base",
+  "model_key": "qwen35_4b_base_eb64_s1",
+  "model_revision": "1001bb4d826a52d1f399e183466143f4da7b741b",
+  "model_revision_source": "train_budget_meta.json",
+  "object_path": "objects/qwen35_4b_base/7b87767d91bd9787d22a23a80a5e78c53d16b506cc25e4d9483f74e88238fda1/object.pt",
+  "object_sha256": "7b87767d91bd9787d22a23a80a5e78c53d16b506cc25e4d9483f74e88238fda1",
+  "positions": "all",
+  "response_header_len": null,
+  "sample_manifest_sha": "179951ff53f1810c619393560f3d9a51411286192d19b90a95e9a5ddcd5f6b77",
+  "si_id": "constv2-mix-full",
+  "target_layers": [
+   0,
+   1,
+   2,
+   3,
+   4,
+   5,
+   6,
+   7,
+   8,
+   9,
+   10,
+   11,
+   12,
+   13,
+   14,
+   15,
+   16,
+   17,
+   18,
+   19,
+   20,
+   21,
+   22,
+   23,
+   24,
+   25,
+   26,
+   27,
+   28,
+   29,
+   30,
+   31
+  ],
+  "template_hash": "a4aee8afcf2e0711",
+  "training_budget_kind": "document_tokens"
+ },
+ "positions": "all",
+ "response_header_len": null,
+ "scale_matched": true,
+ "target_layers": [
+  0,
+  1,
+  2,
+  3,
+  4,
+  5,
+  6,
+  7,
+  8,
+  9,
+  10,
+  11,
+  12,
+  13,
+  14,
+  15,
+  16,
+  17,
+  18,
+  19,
+  20,
+  21,
+  22,
+  23,
+  24,
+  25,
+  26,
+  27,
+  28,
+  29,
+  30,
+  31
+ ],
+ "template_hash": "a4aee8afcf2e0711"
+}

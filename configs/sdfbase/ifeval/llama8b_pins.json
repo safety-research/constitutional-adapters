@@ -1,0 +1,53 @@
+{
+  "_comment": "ifeval-canonical-battery PINS OVERLAY for the llama8b target (plan section 7): object.pt sha256 per staged id, read 2026-09-11 over ssh from the shared cluster bank (sha256sum of each object.pt). The base__ four equal the full22 staging_manifest.json rows (target llama8b, lane base; verified on both clusters); the itdoc__ four are the raw instruct-direct fits (staged: false) the launcher's Llama staging path copies to the volume and sha-verifies. Merged over configs/sdfbase_full22_pins.json by scripts/sdfbase/ifeval/if_views.py and recorded with its sha256 in the matrix's source block.",
+  "llama8b": {
+    "base__constv2-mix-full__psr_ce_all": {
+      "object_sha256": "4df62c74415737e2e910d4b3c7a55d169012b6cff538934d4a053ec7318db799",
+      "source": "shared:exp/objects/sdfbase/llama8b_full/llama8b_base/cells_all/constv2-mix-full__psr_ce_all",
+      "staged": true,
+      "staged_path": "shared:exp/objects/sdfbase/full22/llama8b/cells/base__constv2-mix-full__psr_ce_all"
+    },
+    "base__constv2-mix-full__lora_r4_ce": {
+      "object_sha256": "504b6651facd296608af8e7441b71a51ec5f1062666e4d21f79bf7f91fa8f9b0",
+      "source": "shared:exp/objects/sdfbase/llama8b_full/llama8b_base/cells_all/constv2-mix-full__lora_r4_ce",
+      "staged": true,
+      "staged_path": "shared:exp/objects/sdfbase/full22/llama8b/cells/base__constv2-mix-full__lora_r4_ce"
+    },
+    "base__constv2ctl2-full__psr_ce_all": {
+      "object_sha256": "c30ec630a5e32eff916eda6142108e179e0374d307c8f9373641ed600f546da5",
+      "source": "shared:exp/objects/sdfbase/llama8b_full/llama8b_base/cells_all/constv2ctl2-full__psr_ce_all",
+      "staged": true,
+      "staged_path": "shared:exp/objects/sdfbase/full22/llama8b/cells/base__constv2ctl2-full__psr_ce_all"
+    },
+    "base__constv2ctl2-full__lora_r4_ce": {
+      "object_sha256": "56254ce4ec90bf041070a272529762b87d9cca8fcd4cbc47ae38486f12e70d8e",
+      "source": "shared:exp/objects/sdfbase/llama8b_full/llama8b_base/cells_all/constv2ctl2-full__lora_r4_ce",
+      "staged": true,
+      "staged_path": "shared:exp/objects/sdfbase/full22/llama8b/cells/base__constv2ctl2-full__lora_r4_ce"
+    },
+    "itdoc__constv2-mix-full__psr_ce_all": {
+      "object_sha256": "24c4baa06eb70ead4ab714ef7f44343367d36feab489f8ff9d565c3a0c6d669a",
+      "source": "shared:exp/objects/sdfbase/llama8b_full/llama8b_it_doc/cells_all/constv2-mix-full__psr_ce_all",
+      "staged": false,
+      "staged_path": null
+    },
+    "itdoc__constv2-mix-full__lora_r4_ce": {
+      "object_sha256": "529788ca747ea4060bffee0d46c4ccf1dcf763c548111268547dca0004614c8c",
+      "source": "shared:exp/objects/sdfbase/llama8b_full/llama8b_it_doc/cells_all/constv2-mix-full__lora_r4_ce",
+      "staged": false,
+      "staged_path": null
+    },
+    "itdoc__constv2ctl2-full__psr_ce_all": {
+      "object_sha256": "c1132f52e6256606f3f18cd88b1e2484459f2795dd35d8a2a0400926b6c8abfb",
+      "source": "shared:exp/objects/sdfbase/llama8b_full/llama8b_it_doc/cells_all/constv2ctl2-full__psr_ce_all",
+      "staged": false,
+      "staged_path": null
+    },
+    "itdoc__constv2ctl2-full__lora_r4_ce": {
+      "object_sha256": "7bf26f8cb7a277b4ef9cc5282f1058adcaad2950f6ffded8225b840e92477446",
+      "source": "shared:exp/objects/sdfbase/llama8b_full/llama8b_it_doc/cells_all/constv2ctl2-full__lora_r4_ce",
+      "staged": false,
+      "staged_path": null
+    }
+  }
+}

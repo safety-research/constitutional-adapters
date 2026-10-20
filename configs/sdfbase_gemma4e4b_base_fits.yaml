@@ -1,0 +1,104 @@
+# sdfbase_gemma4e4b_base_fits.yaml — GENERATED, do not hand-edit.
+# Regenerate: python scripts/sdfbase/make_sdfbase_configs.py [--fold-memprobe m.json] [--fold-hpo w.json]
+# (this generator writes ONLY configs/sdfbase_*.yaml)
+#
+# model: google/gemma-4-E4B @ 411aa17b749aa952df1359d2dcea73917a544d9a (BASE model — no chat template is
+#   ever applied: data_mode: documents renders flat text via docs_to_ce_examples)
+# budget schema: training_budget_kind: document_tokens; completion_tokens: null
+#   EXPLICITLY (never the legacy 512 default — false provenance the budget
+#   check would read as the real training cap).
+# teacher_prefix_cache: false at CONFIG level (the key the driver reads; default
+#   True otherwise) — no CE teacher exists to cache, and the qwen lane's
+#   gradient_checkpointing refuses to run with the cache on.
+# floor: floor_ratio_max: null (the SI-teacher probe is meaningless for CE) with
+#   the CE-native bar ce_floor_ratio_max: 1.1 — a degeneration guard, not a
+#   did-it-help gate (cells that merely fail to help land at ~1.0 and publish).
+# batch_size_by_arm: MEASURED (memprobe folded)
+#   accum_steps = ceil(8 / bs) — effective batch 8.
+# train_kwargs lr/warmup_frac/max_grad_norm: HPO winners folded
+model: google/gemma-4-E4B
+model_revision: 411aa17b749aa952df1359d2dcea73917a544d9a
+dtype: bfloat16
+attn_implementation: sdpa
+layer: 20
+max_len: 8192
+data_mode: documents
+training_budget_kind: document_tokens
+sequence_max_len: 8192
+completion_tokens: null
+teacher_prefix_cache: false
+si_ids:
+- constv2-mix-1k
+- constv2-mix-10k
+- constv2-mix-100k
+- constv2-mix-1m
+- constv2-mix-10m
+- constv2-mix-full
+- constv2-adv-1k
+- constv2-adv-100k
+- constv2ctl-100k
+- constv2ctl2-full
+batch_size_by_arm:
+  psr_ce_all: 1
+  lora_r4_ce: 1
+train_kwargs:
+  default:
+    holdout_frac: 0.0
+    heldout_pool: /vol/pool/gemma4e4b_base/pairs_constv2-heldout.jsonl
+    early_stop_min_epochs: 1
+    early_stop_min_delta: 0.0
+    positions: all
+    probe_n: null
+  psr_ce_all:
+    lr: 0.0005090166227896833
+    lr_schedule: warmup_cosine
+    warmup_frac: 0.05
+    max_grad_norm: 0.09952642211488621
+    weight_decay: 0.01
+    gate_reg: 0.1
+    accum_steps: 8
+    floor_ratio_max: null
+    ce_floor_ratio_max: 1.1
+  lora_r4_ce:
+    lr: 3.3112191589205456e-05
+    lr_schedule: warmup_cosine
+    warmup_frac: 0.15
+    max_grad_norm: 0.021605699038122903
+    weight_decay: 0.01
+    lora_rank: 4
+    accum_steps: 8
+    floor_ratio_max: null
+    ce_floor_ratio_max: 1.1
+train_kwargs_by_si:
+  constv2-mix-1k:
+    epochs: 200
+    early_stop_patience: 20
+  constv2-mix-10k:
+    epochs: 120
+    early_stop_patience: 12
+  constv2-mix-100k:
+    epochs: 60
+    early_stop_patience: 6
+  constv2-mix-1m:
+    epochs: 24
+    early_stop_patience: 3
+  constv2-mix-10m:
+    epochs: 8
+    early_stop_patience: 2
+  constv2-mix-full:
+    epochs: 4
+    early_stop_patience: 1
+  constv2-adv-1k:
+    epochs: 200
+    early_stop_patience: 20
+  constv2-adv-100k:
+    epochs: 60
+    early_stop_patience: 6
+  constv2ctl-100k:
+    epochs: 60
+    early_stop_patience: 6
+  constv2ctl2-full:
+    epochs: 16
+    early_stop_patience: 2
+wandb_fits: true
+wandb_project: sdf-base-steering

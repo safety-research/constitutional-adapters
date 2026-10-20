@@ -1,0 +1,324 @@
+[project]
+name = "sisteer"
+version = "0.1.0"
+description = "Distilling system instructions into steering vectors: methods, data pipeline, and eval harness"
+license = "MIT"
+authors = [{ name = "Adam S. Lowet" }, { name = "Mark Kurzeja" }]
+requires-python = ">=3.11"
+dependencies = [
+    # torch and accelerate live in the flavor extras below (cpu / cu128), NOT
+    # here: torch so that a flavor must be chosen explicitly at sync time, and
+    # accelerate because it is the one base dep that hard-requires torch and
+    # would otherwise drag a PyPI-sourced torch into the no-extra lock fork
+    # (validated 2026-08-15). A bare `uv sync` therefore installs NO torch at
+    # all — `import torch` fails loudly, by design (cf. job 61380 silent-CPU).
+    "transformers>=4.46",
+    "datasets>=3.0",
+    "safetensors>=0.4",
+    "pyyaml>=6.0",
+    "numpy>=1.26",
+    "wandb>=0.18",
+    "tqdm>=4.66",
+    "langdetect>=1.0.9",
+    # anthropic 1.0.0 (2026-08-20; per-package cutoff below): the ONE SDK the harness and the corpus generator
+    # (corpus_generator/, a workspace member) share. The 1.x line moved the SDK onto httpx2; every harness call
+    # site (messages.create / parse / count_tokens / batches, the error classes, lib._parse._transform) was checked
+    # against 1.0.0 before the bump, and the generator imports httpx2 itself, so it cannot run on 0.x.
+    "anthropic==1.0.0",
+    # S2 eval deps. exclude-newer (below) already bars any release <10 days
+    # old, so these resolve to established versions — supply-chain-safe.
+    # nltk: official-IFEval sentence-count + ~10 PersonaDrift scorers.
+    # <3.10: nltk 3.10.1's import-security hook blocks nltk-initiated
+    # imports that resolve under the cwd, which false-positives on
+    # repo-local venvs (site-packages is then "in cwd") and breaks every
+    # nltk import from the repo root. 3.9.x predates the hook (older,
+    # long-established pin — a downgrade, not a fresh release).
+    # pyarrow/pandas were transitive-only but the eval modules use them
+    # directly (per-concept parquet fragments, dataframes).
+    "nltk>=3.9,<3.10",
+    "pyarrow>=17",
+    "pandas>=2.0",
+    "pyrit==1.0.1",
+    # em-misalign: the agentic-misalignment structural gate (sisteer.capeval.misalign.classify) parses the
+    # model's tool-use blocks with BeautifulSoup, as upstream's classifier does. Pinned to the version the
+    # lock already resolved transitively (4.15.0, released 2026-06-07 — well past the exclude-newer cutoff).
+    "beautifulsoup4==4.15.0",
+]
+
+[project.scripts]
+# The results registry CLI (src/sisteer/registry/cli.py); until the venv is re-synced run
+# `python -m sisteer.registry.cli`.
+registry = "sisteer.registry.cli:main"
+
+[project.optional-dependencies]
+# Torch flavors: exactly one of cpu/cu128 must be chosen ([tool.uv] declares
+# them conflicting). The grading host (no GPU) syncs `--extra cpu` (~200 MB wheel, zero
+# nvidia-* packages); the cluster syncs `--extra cu128` — the exact cu128
+# build it uses today (cluster A nodes run driver 570.x, which cannot init
+# the cu13x wheels newer torch resolves to; job 61380 fell back to CPU).
+# A flavor-less sync installs no torch → loud ImportError, never silent CPU.
+cpu = ["torch==2.11.*", "accelerate>=1.0"]
+cu128 = ["torch==2.11.*", "accelerate>=1.0"]
+# FA2 for long-context suites ONLY, from a pinned wheel. No PyPI wheel
+# exists for torch 2.11, so this is a SOURCE-BUILT wheel
+# (scripts/sbatch/fa_build.sbatch, sm_90/H200, GPU-smoke-verified
+# against the lockfile's torch) served from the repo's gitignored wheels/
+# dir via [tool.uv.sources] below. The wheel file must exist at
+# wheels/flash_attn-2.8.3.post1-cp312-cp312-linux_x86_64.whl in any clone
+# that syncs WITH `--extra longctx` (the cluster clone keeps a copy there;
+# gitignored, so it survives `git reset --hard`). Core jobs sync WITHOUT
+# the extra and never touch the wheel — `uv sync --frozen` stays intact
+# when the file is absent (verified).
+longctx = [
+    # longctx is GPU-only: it implies the cu128 flavor (self-reference), and
+    # carries its OWN torch pin so the third [tool.uv.sources] entry below is
+    # legal — without that entry, the "longctx without cu128" lock fork would
+    # resolve torch from PyPI (the sisteer[cu128] self-reference is flattened
+    # without activating cu128's source marker; validated 2026-08-15).
+    "sisteer[cu128]",
+    "torch==2.11.*",
+    # The environment marker mirrors the wheel's cp312/linux_x86_64 tag:
+    # uv's universal resolve otherwise fails for every (python, platform)
+    # split the single wheel cannot serve. Both real targets (the grading host and
+    # the cluster venvs) are cp312 linux x86_64; anywhere else the extra
+    # resolves EMPTY and the longctx config degrades to sdpa via the
+    # _load_model fallback rather than crashing.
+    "flash-attn==2.8.3.post1 ; python_full_version >= '3.12' and python_full_version < '3.13' and sys_platform == 'linux' and platform_machine == 'x86_64'",
+]
+# Fused Mamba kernels -- REQUIRED for every Nemotron / NemotronH / Mamba-hybrid
+# job (training, generation, evaluation and activation capture alike;
+# models.assert_fused_mamba_kernels refuses the pure-torch fallback at load on
+# a CUDA device, and only warns on mps / cpu, where these CUDA-only packages
+# cannot exist). transformers 5.15.0 binds its Mamba mixers (Mamba2 and Mamba-1
+# alike) to these packages at IMPORT time when they import, else to a pure-torch
+# path that ran the Nemotron-3-Nano-4B all-block capture (job 470950) for 21 min
+# without finishing 14,000 rows the same code does in ~40 s on gemma-4-E4B.
+# An EXTRA, not a base dep (same shape as longctx): the other targets' jobs
+# sync without it and their venvs -- hence their captures -- stay byte-
+# identical to the lock they ran under; only a Mamba-hybrid job requests it
+# (the config's `env_extras: mamba` -> alphasteer_fit_f22.sbatch's
+# S2_UV_EXTRAS). BUILT FROM SOURCE BY uv, from the pinned PyPI sdists
+# (2026-10-12, replacing the self-built wheels/ path wheels):
+# PyPI carries only sdists for both, and neither project publishes a
+# torch-2.11 wheel (their GitHub releases stop at torch 2.10 + the NGC builds,
+# checked 2026-09-09 and 2026-10-12), so the FIRST `uv sync --frozen --extra
+# cu128 --extra mamba` on a cluster compiles both against the lockfile's torch
+# (2.11.0+cu128): [tool.uv.extra-build-dependencies] below puts torch at the
+# runtime's exact distribution (match-runtime) plus the sdists' setuptools /
+# wheel / ninja / packaging into the isolated build env, and
+# [tool.uv.extra-build-variables] forces the compile so neither setup.py
+# fetches a GitHub wheel at build time. The build needs a CUDA 12 toolkit as
+# CUDA_HOME (torch refuses another major against the cu128 torch; cluster A's
+# /usr/local/cuda is 12.8, cluster B's is 13.0 -- scripts/sbatch/
+# cuda_toolkit.sh selects and validates one, and mamba_build.sbatch installs
+# CUDA 12.8.1 under $SHARED/cuda-12.8 on a cluster without one) and a bounded
+# MAX_JOBS (neither setup.py honours TORCH_CUDA_ARCH_LIST, so ~10 gencode
+# archs x 12 .cu files, 18-60 min, memory-heavy nvcc jobs); stage2_common.sh's
+# s2_init sets both when the extra is requested, and scripts/sbatch/
+# mamba_build.sbatch warms the SHARED UV_CACHE_DIR once per cluster and proves
+# the kernels are USED, not merely importable, so every later sync installs
+# uv's cached build instead of recompiling. A clone that
+# syncs WITHOUT the extra never touches the sdists. Pins: mamba-ssm 2.3.1
+# (2026-03-10) is the newest release WITHOUT the tilelang / quack-kernels /
+# apache-tvm-ffi tree 2.3.2 grew for Mamba3 (its ssd_combined /
+# selective_state_update triton kernels -- the ones transformers routes
+# through -- are the same); causal-conv1d 1.6.2.post1 (2026-05-09). Both
+# >4 months old. The marker keeps the extra EMPTY off cp312 / linux / x86_64
+# (the two real targets, the grading host and cluster venvs): the kernels are CUDA-only.
+mamba = [
+    "sisteer[cu128]",
+    "torch==2.11.*",
+    "mamba-ssm==2.3.1 ; python_full_version >= '3.12' and python_full_version < '3.13' and sys_platform == 'linux' and platform_machine == 'x86_64'",
+    "causal-conv1d==1.6.2.post1 ; python_full_version >= '3.12' and python_full_version < '3.13' and sys_platform == 'linux' and platform_machine == 'x86_64'",
+]
+# The Modal client, for the host that LAUNCHES Modal work: every app under scripts/modal/ (docs/attacker_pool.md's pool, the
+# fit and served-eval apps, the CPU suite), the scripts that drive them (tinycap_ifeval_dispatch.py, tinycap_sandbox_watch.py,
+# sdfbase/seedrep/modal_sdk_bridge.py), and the two package modules that import it (sisteer.capeval.tiers.sandbox_owned at
+# import, the attacker pool's Modal transport when it is chosen). `uv sync --frozen --extra cpu --extra modal`; the stages
+# that shell out to the CLI take any interpreter with it through SISTEER_MODAL_PYTHON. An EXTRA, not a base dep: a cluster job
+# never imports it and a Modal container brings its own. Pinned to the client these paths run with (1.5.4, released
+# 2026-08-12, >2 months old at the pin); it postdates the repo-wide exclude-newer cutoff, so it carries a per-package one below.
+modal = ["modal==1.5.4"]
+
+[dependency-groups]
+# The corpus generator (corpus_generator/): the workspace member whose `corpusgen` console script generated the paper's
+# corpora. Its deps stay declared in corpus_generator/pyproject.toml; this group just pulls the member into the shared
+# venv (`uv sync --frozen --extra cpu --group corpus`). Guarded 3.12+ like capeval/petri so its closure (datasketch, the
+# editable member) stays out of the 3.11 lock fork; the member's own floor is the root's >=3.11, since uv intersects
+# every workspace member's floor into the lock's requires-python.
+corpus = ["corpus-generator"]
+dev = [
+    "matplotlib==3.10.0",
+    "pytest>=8.0",
+]
+# capeval heavy deps (the vLLM stack is installed on its own, below).
+# The planned second group `capeval-vllm = ["vllm==0.27.*"]` CANNOT lock
+# in-project: vllm 0.27.0/0.27.1 both hard-pin torch==2.13.0, which
+# conflicts with the base torch==2.11.* cu128 pin above (never relaxed —
+# driver-570 nodes cannot init cu13x wheels), and both were published
+# after the exclude-newer cutoff. So the vLLM stack instead
+# lives in configs/capeval/vllm-requirements.txt, installed only at the
+# vllm-lane bootstrap (its own venv; see that file's header).
+# This group is never synced on the grading host (root-disk pressure, §3.2):
+# it installs only into the cluster lane venvs (py3.12) via
+# capeval_common.sh. It holds EvalPlus (the HumanEval+ generation and
+# execution); the tier-1 task harness it once carried is removed.
+# peft: the LoRA fine-tuning arms (sisteer.extraction.sft), the EM organism
+# trainer and the serving probe's HF+PEFT parity check import it. It reached
+# these venvs through that harness's [hf] extra, so it is pinned here at the
+# version the lock already carried (0.20.0, released 2026-07-28, before the
+# cutoff) and configs/capeval/vllm-requirements.txt pins the same version.
+capeval = [
+    "evalplus==0.3.1",
+    "peft==0.20.0",
+]
+# Petri Bloom audit orchestration — GRADING-HOST-ONLY:
+# inspect_ai + petri-bloom drive the audit from the host; they never enter
+# the cluster lane venvs (target serving is the routing proxy's job).
+# petri-bloom==0.2.6 released 2026-06-08 (>1 week old — supply-chain pin
+# guidance); inspect-ai / inspect-petri are its pulls, listed explicitly so
+# the group survives packaging changes, resolved under the exclude-newer
+# cutoff below. NOT installed during the build phase: the actual
+# `uv sync --group petri` is a LAUNCH-phase action gated on the supply-chain
+# go-ahead + the API coordination post. Every Phase-1 CPU test runs WITHOUT
+# this group installed — no capeval module imports inspect_ai or petri_bloom.
+petri = [
+    "petri-bloom==0.2.6",
+    # PINNED at launch (was unpinned): the versions the harness code documents
+    # its behavior against, all >=1 week old and within the exclude-newer
+    # cutoff. inspect-ai 0.3.251 (2026-07-29): the retry/surface_errors
+    # semantics petri_runner's context-overflow classification depends on.
+    # inspect-petri 3.0.11 (2026-06-08): the target/_context.py surface the
+    # overflow sentinel matches. Both already resolved to these exact versions
+    # in uv.lock; pinning makes it explicit and relock-stable.
+    "inspect-ai==0.3.251",
+    "inspect-petri==3.0.11",
+]
+# The registry notebook's execution chain -- paper/notebooks/registry_qwen_figures.ipynb through `nbconvert --execute`, the
+# route reproduce/10_figures.sh and paper/notebooks/README.md document (`uv sync --frozen --extra cpu --group notebook`).
+# Pinned to the versions the committed notebook's outputs were rendered with (2026-10-08); the notebook's own imports
+# (pandas, pyarrow, numpy; matplotlib from the dev group) are in the lock already. nbformat, jupyter-client and
+# ipython were released after the repo-wide exclude-newer cutoff below (2026-08-17 / 08-28 / 08-28, all >5 weeks old at
+# the pin) and carry per-package cutoffs there, the way transformers does.
+notebook = [
+    "nbconvert==7.17.1",
+    "nbclient==0.11.0",
+    "ipykernel==7.3.0",
+    "nbformat==5.11.1",
+    "jupyter-client==8.10.0",
+    "ipython==9.17.0",
+    # scipy is what Figure 7 draws its monotone (PCHIP) frontier curves with; without it registry_nb.py falls back to straight
+    # segments and the figure silently differs, so the notebook group names it rather than relying on pyrit's transitive pull.
+    # A range, not `==`: the lock resolves scipy per Python fork (1.18.0 on 3.12, 1.17.1 on 3.11) and an exact pin would move
+    # one fork's resolved version; the lock, not this line, pins what a frozen sync installs.
+    "scipy>=1.17.1,<1.19",
+]
+
+[tool.uv.dependency-groups]
+capeval = { requires-python = ">=3.12" }
+corpus = { requires-python = ">=3.12" }
+# petri-bloom==0.2.6 itself declares requires-python >=3.12; without this
+# bound the merged project (requires-python >=3.11) cannot lock at all —
+# uv resolves every group for every supported python and fails the 3.11
+# fork. Same treatment capeval already has, added at the stage2-evals merge.
+petri = { requires-python = ">=3.12" }
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/sisteer"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"
+# Registered marks (an unregistered mark is a PytestUnknownMarkWarning in every gate and an
+# error under --strict-markers; tests/test_registry_design_scale.py pins the registration).
+markers = [
+    "design_scale: the 10 M-row registry sizing gate (tests/test_registry_design_scale.py); skipped unless REGISTRY_DESIGN_SCALE=1, run on the Modal CPU suite by scripts/modal/registry_design_scale.py",
+    "live_db: a registry test module that opens the LIVE ~/registry/registry.sqlite read-only (skipped where it is absent); the landing chain's local step runs exactly these (scripts/registry/landing/land.sh: pytest -m live_db), the cluster gate never sees them",
+]
+
+[tool.uv]
+# Reproducibility + supply-chain hygiene: never resolve to a package
+# published after this date without an explicit lockfile update.
+exclude-newer = "2026-08-03T00:00:00Z"
+# transformers is pinned PAST the cutoff on purpose: 5.15.0 (2026-08-10, >3 weeks
+# old) registers the "mlp" cache layer type that NemotronH (Nemotron-3-Nano)
+# needs for ANY KV cache (5.14.1 raises KeyError('mlp') on cached forwards).
+# Per-package override so the repo-wide cutoff stays where it is.
+# anthropic 1.0.0 (2026-08-20) and the httpx2 / httpcore2 2.12.0 (2026-08-18) it was released against — the versions the
+# corpus generator's own lock carried before it joined this one; all >6 weeks old at the merge (2026-10-08).
+# modal 1.5.4 (2026-08-12): the Modal client extra above; its new dependencies resolve under the repo-wide cutoff.
+exclude-newer-package = { transformers = "2026-08-11T00:00:00Z", nbformat = "2026-08-18T00:00:00Z", jupyter-client = "2026-08-29T00:00:00Z", ipython = "2026-08-29T00:00:00Z", anthropic = "2026-08-21T00:00:00Z", httpx2 = "2026-08-19T00:00:00Z", httpcore2 = "2026-08-19T00:00:00Z", modal = "2026-08-13T00:00:00Z" }
+# cpu+cu128 and cpu+longctx are refused at sync time — a CPU-flavor torch can
+# never be co-selected with the GPU flavor or the GPU-only flash-attn extra.
+conflicts = [
+    [{ extra = "cpu" }, { extra = "cu128" }],
+    [{ extra = "cpu" }, { extra = "longctx" }],
+    [{ extra = "cpu" }, { extra = "mamba" }],
+]
+
+[tool.uv.workspace]
+# corpus_generator/ keeps its own pyproject (deps, console script, tests) and shares this lock + venv.
+members = ["corpus_generator"]
+
+[tool.uv.sources]
+corpus-generator = { workspace = true }
+torch = [
+    { index = "pytorch-cpu", extra = "cpu" },
+    { index = "pytorch-cu128", extra = "cu128" },
+    # Belt-and-suspenders: `--extra longctx` alone still gets GPU torch
+    # (without this, the longctx-sans-cu128 fork resolves torch from PyPI).
+    { index = "pytorch-cu128", extra = "longctx" },
+    { index = "pytorch-cu128", extra = "mamba" },
+]
+# flash-attn (the longctx extra) stays a self-built PATH wheel; the Mamba kernels
+# (the mamba extra) have NO source entry: they are the pinned PyPI sdists, built
+# by uv under the three tables below.
+flash-attn = { path = "wheels/flash_attn-2.8.3.post1-cp312-cp312-linux_x86_64.whl" }
+
+# The Mamba-kernel sdists import torch in setup.py and compile against it, so their
+# isolated build env must hold the RUNTIME's exact torch distribution (2.11.0+cu128
+# from the cu128 index), never a PyPI torch of its own: match-runtime pins the build
+# dep to the locked one. The rest are what the two sdists need: mamba-ssm declares
+# setuptools / wheel / torch / packaging / ninja in its [build-system]; causal-conv1d
+# declares setuptools / wheel / torch but imports packaging and, like mamba-ssm,
+# needs ninja on the build PATH for torch's BuildExtension (a venv ninja is on PATH
+# in uv's build env). Resolved under the exclude-newer cutoff like everything else.
+[tool.uv.extra-build-dependencies]
+mamba-ssm = [{ requirement = "torch", match-runtime = true }, "setuptools>=61.0.0", "wheel", "ninja", "packaging"]
+causal-conv1d = [{ requirement = "torch", match-runtime = true }, "setuptools>=61.0.0", "wheel", "ninja", "packaging"]
+
+# Force the compile. Without these each setup.py first GUESSES a GitHub release
+# wheel URL for the running torch (none exists for 2.11) and falls back to the
+# source build only on the 404: a network fetch at build time, and a silently
+# different artifact the day a matching wheel appears upstream.
+[tool.uv.extra-build-variables]
+mamba-ssm = { MAMBA_FORCE_BUILD = "TRUE" }
+causal-conv1d = { CAUSAL_CONV1D_FORCE_BUILD = "TRUE" }
+
+# causal-conv1d's sdist carries no static metadata (its PKG-INFO marks Requires-Dist
+# dynamic and its pyproject.toml has no [project] table), so without this uv would
+# have to BUILD it at lock time to learn its deps -- which match-runtime cannot do
+# (the torch to build with is known only after the resolve) and the grading host cannot
+# do at all (no CUDA toolkit). These are the sdist's own deps, copied from
+# causal_conv1d-1.6.2.post1.tar.gz (sha256 245e314e...; setup.py install_requires).
+# mamba-ssm needs no entry: its pyproject.toml [project] table is static (only the
+# version is dynamic, and a registry sdist's version is its filename's).
+[[tool.uv.dependency-metadata]]
+name = "causal-conv1d"
+version = "1.6.2.post1"
+requires-dist = ["torch", "packaging", "ninja"]
+requires-python = ">=3.9"
+
+[[tool.uv.index]]
+name = "pytorch-cpu"
+url = "https://download.pytorch.org/whl/cpu"
+explicit = true
+
+[[tool.uv.index]]
+name = "pytorch-cu128"
+url = "https://download.pytorch.org/whl/cu128"
+explicit = true

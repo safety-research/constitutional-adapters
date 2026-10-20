@@ -1,0 +1,4 @@
+# Stage-3 wave UNION additions (coordinator 2026-08-24). Both-verdicts annotation applied at aggregate time from teacher_signal.json (job 187947) + each object's train_budget_meta. Columns: label cell coeff mask static adaptive benign target_engine attacker_engine serving_path mirror_override held_out
+antidote	antidote		all	*	-	*	hf	none	hf		*
+caa_static_r	caa_static_r		all	*	-	*	hf	none	hf	NousResearch/Meta-Llama-3.1-8B-Instruct@d10aef7999a2b5ba950ab3974312feeedbfe0b77|fit_class_b.py loaded NousResearch (fit_b2.log records the weight load); no template_hash in any artifact -> provenance UNVERIFIED override	*
+b_none	none		all	*	-	*	hf	none	hf		*

@@ -1,0 +1,253 @@
+# sdfbase_sampled_decode.yaml -- the VENDOR-RECOMMENDED sampler preset of each full22 served target, with its
+# source, for the full22 SAMPLED re-run (scripts/sdfbase/full22/sampled/DESIGN.md, branch sampled-rerun).
+# The ONE data file the config generator (scripts/sdfbase/full22/sampled/make_sampled_configs.py) reads to
+# write configs/sdfbase_full22_<key>_sampled_t{0,1}[_cap8192].yaml; tests/test_sdfbase_full22_sampled.py pins
+# every number here against DESIGN.md's table. Read on cluster A 2026-09-09 from the pinned snapshots in the
+# shared HF cache (the roster's model_revision per target); the `source` strings carry DESIGN.md's table cell
+# verbatim plus the file / card section the preset came from.
+#
+# RULES (DESIGN.md "Verified sampler presets"):
+#   * a preset carries EXACTLY the keys its source names -- a model whose source has no top_k has no top_k key,
+#     and only Qwen's and GLM's sources name an anti-repetition term (Qwen presence_penalty 1.5 with the card's
+#     explicit no-op repetition_penalty 1.0; GLM repetition_penalty 1.1). The generator refuses a key outside
+#     ALLOWED_SAMPLER_KEYS.
+#   * source_kind is generation_config (the snapshot's file), model_card (the card's stated settings), or
+#     vendor_recommendation (a recommendation from the vendor that DIFFERS from the shipped
+#     file -- then `shipped_generation_config` records the file's values beside it so a reader sees both).
+#   * the request body carries exactly the preset's keys + `seed`; `do_sample: true` is implied by sending a
+#     temperature > 0 and is recorded on every row's `decode` block by the drivers (jailbreak_run /
+#     served_capability_run), never here.
+#   * `model` / `revision` must equal the roster's pins for the key (the generator checks) -- a preset read from
+#     one snapshot must not ride a config that serves another.
+#   * a preset that DIFFERS from the shipped generation_config.json on a key the file states DECLARES it, per key, in
+#     `deliberate_departure` (the shipped value, the reason, and every COMPARISON that consumes the decode, each at its
+#     one declared value with its arms -- the nemotron row). The shipped
+#     values are pinned with provenance in configs/sdfbase_shipped_generation_config.json (verified against the real
+#     snapshots by scripts/sdfbase/full22/sampled/verify_shipped_generation_config.py) and
+#     tests/test_preset_vs_shipped_generation_config.py refuses an undeclared difference: a new row whose model ships a
+#     disagreeing file FAILS until someone declares the departure; a model with no shipped file skips BY NAME.
+#
+# THE DRIVERS READ THIS FILE BY DEFAULT (since 2026-09-11; sisteer.eval.sampled_decode): on the served
+# target scripts/jailbreak_run.py (the four static families) and scripts/served_capability_run.py (the judged
+# over-refusal controls) inject the served model's row when a config carries no `sampled_decode` block; `--greedy`
+# is the explicit argmax opt-in, recorded in provenance; a served model with NO row here refuses (never a default
+# temperature). Rows are matched by `model` (+ `revision` when the config pins one), NOT through the roster: a row
+# for a target the roster does not yet name is legal (llama8b below -- the sdfbase-llama8b wave's roster row lands
+# with that wave, and the wave inherits this preset on rebase).
+# BoN (scripts/sdfbase/full22/bon_served_run.py) is DELIBERATELY EXCLUDED from THIS FILE's default: since
+# 2026-09-17 it draws at each served model's vendor preset too, but reads it from the results REGISTRY
+# (configs/registry/decode_policy.json, the `<model>|bon|off|vendor_preset` rows -- `same_values_as` this file's
+# `|static|off|vendor_preset` rows, asserted at seed load; nemotron's restates the SHIPPED 0.95 by ruling
+# decode-nemotron-vendor-preset-0.95-2026-09-17, not the panels' 1.0 below), never from this yaml or its resolver;
+# every store drawn before that date was drawn at the grandfathered temperature 1.0 (the registry's superseded
+# `|bon|off|grandfathered_T1` rows, readable by name) and is climbed under it. tests/test_sampled_default.py pins
+# that the BoN driver never references this file.
+#
+# llama8b provenance (2026-09-11): the row is the sdfbase-llama8b wave's, byte for byte (branch sdfbase-llama8b-wave;
+# `source` says its read of the served NousResearch mirror's generation_config.json). The values agree with the
+# repo's pinned card row src/sisteer/capeval/tinycap/contracts.py `_LLAMA_CARD` (temperature 0.6, top_p 0.9, no
+# top_k -- read off the shared cluster HF cache 2026-09-04) and with meta-llama/Llama-3.1-8B-Instruct's published
+# generation_config.json (do_sample true, temperature 0.6, top_p 0.9). NOT re-verifiable on the grading host: neither
+# the meta-llama 0e9e39f2 nor the NousResearch d10aef79 snapshot in the local HF cache carries a generation_config.json
+# (both are tokenizer-only), and the repo vendors no copy of the file.
+arm: vendor_recommended
+n_trials: 2
+seed_base: 20260909          # sampling_seed = sha256(f"{seed_base}|{trial}|{readout}|{item_key}")[:4] big-endian
+# The PER-VIEW
+# seed base of the lane's replicate views, keyed by TAG — the generator's `expected_block` reads `seed_base_by_view.get(tag, seed_base)`,
+# so every EXISTING view's configs keep 20260909 byte for byte and only the three replicate TAGs (qwen35_4b_s<s>;
+# make_sampled_configs.SEEDREP_VIEWS) draw under their own base: THE LITERAL TRAINING SEED, seed_base(s) = s
+# (scripts/sdfbase/seedrep/eval_seed.py; the hashed rule sha256(f"20260909|seedrep|{s}")[:8] is RETIRED — it ran on no store).
+# The generator holds every entry to its per-tag rule table (make_sampled_configs.SEED_BASE_RULE_BY_TAG: the s-views from eval_seed;
+# a peer lane's views at the training seed of the object they serve are added there as data) and refuses a base equal to the
+# campaign's. Item-set seeds are never re-rolled: the base changes the static / over-refusal DECODE seeds only.
+seed_base_by_view:
+  qwen35_4b_s1: 1
+  qwen35_4b_s2: 2
+  qwen35_4b_s3: 3
+  # ctl-neg1 (2026-09-25): the batch-64 seed-replicate CONTROL parents at strength -1 (make_sampled_configs.SEEDED_LANE_VIEWS),
+  # served by the LANE-PRIVATE roster configs/sdfbase_full22_roster_ctl_neg1_eb64.yaml (--roster / F22_ROSTER), never by the
+  # production scope: each draws at the TRAINING SEED of the object it serves -- the s<k> views' rule, seed_base(k) = k
+  qwen35_4b_dm1_ctllora64s1: 1
+  qwen35_4b_dm1_ctlrelu64s1: 1
+  qwen35_4b_dm1_ctllora64s2: 2
+  qwen35_4b_dm1_ctlrelu64s2: 2
+  qwen35_4b_dm1_ctllora64s3: 3
+  qwen35_4b_dm1_ctlrelu64s3: 3
+# qwen-seedrep-native-battery: ONE sampled trial per seed view — the
+# three seeds ARE the replication, so `n_trials_by_view` names the three replicate TAGs at 1 (the generator's `n_trials_of_tag`; the
+# campaign `n_trials: 2` above stays for every other TAG, byte for byte). The s-view configs render `trial 0 of 1`; the nine
+# `qwen35_4b_s<s>_sampled_t1*.yaml` no trial renders any more are deleted in the same change (`--check` refuses a stale one).
+n_trials_by_view:
+  qwen35_4b_s1: 1
+  qwen35_4b_s2: 1
+  qwen35_4b_s3: 1
+  # ctl-neg1: ONE trial per seeded control view, the s<k> views' rule (the three seeds are the replication)
+  qwen35_4b_dm1_ctllora64s1: 1
+  qwen35_4b_dm1_ctlrelu64s1: 1
+  qwen35_4b_dm1_ctllora64s2: 1
+  qwen35_4b_dm1_ctlrelu64s2: 1
+  qwen35_4b_dm1_ctllora64s3: 1
+  qwen35_4b_dm1_ctlrelu64s3: 1
+applies_to:
+- static_families
+- controls
+presets:
+  gemma4e4b:
+    model: google/gemma-4-E4B-it
+    revision: ee0ef6023621cff504d758262d4e04895a5af4a2
+    preset:
+      temperature: 1.0
+      top_p: 0.95
+      top_k: 64
+    source_kind: generation_config
+    source: "google/gemma-4-E4B-it @ ee0ef602: generation_config.json (do_sample: true); no penalty term -- the snapshot's generation_config.json at the pinned revision names temperature 1.0, top_p 0.95, top_k 64 and ships no repetition_penalty / presence_penalty key; read on cluster A 2026-09-09 (DESIGN.md 'Verified sampler presets')"
+  qwen35_4b:
+    model: Qwen/Qwen3.5-4B
+    revision: 851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a
+    preset:
+      temperature: 0.7
+      top_p: 0.8
+      top_k: 20
+      min_p: 0.0
+      presence_penalty: 1.5
+      repetition_penalty: 1.0
+    source_kind: model_card
+    source: "Qwen/Qwen3.5-4B @ 851bf6e8: NO generation_config.json ships (.no_exist marker); model card README \"Best Practices\", instruct/non-thinking mode, GENERAL tasks -- temperature 0.7, top_p 0.8, top_k 20, min_p 0.0, presence_penalty 1.5, repetition_penalty 1.0 (the card's stated no-op value); the only preset of the four with an anti-repetition term; read on cluster A 2026-09-09 (DESIGN.md 'Verified sampler presets')"
+  nemotron3nano4b:
+    model: nvidia/NVIDIA-Nemotron-3-Nano-4B-BF16
+    revision: dfaf35de3e30f1867dd8dbc38a7fc9fb52d3914f
+    preset:
+      temperature: 1.0
+      top_p: 1.0
+    # the shipped file's values, beside the preset that RUNS, so a reader sees both; both
+    # validators (make_sampled_configs.load_presets, sampled_decode.load_decode_presets) require this block on a
+    # vendor_recommendation, and tests/test_preset_vs_shipped_generation_config.py pins it equal to the pinned shipped file
+    shipped_generation_config:
+      temperature: 1.0
+      top_p: 0.95
+    # the DECLARED departure from the shipped generation_config.json, per key, machine-readable (schema added
+    # 2026-09-11). `shipped` is the file's value. `comparisons` names every COMPARISON that consumes this model's decode,
+    # each at the ONE value all of its arms decode at, with its arms. A comparison is a set of arms read against each
+    # other, so inside one every arm must draw at the same value (the case that motivated it was a 0.95 baseline beside
+    # 1.0 objects in one panel); DIFFERENT comparisons may sit at different declared values (the math_evals legs at the
+    # shipped 0.95 beside the panels at 1.0 is the per-instrument rule working, not a defect).
+    # tests/test_preset_vs_shipped_generation_config.py refuses: two arms in one comparison at different values
+    # (`{<arm>: <value>}` states an arm's own value; a bare name decodes at the comparison's); an arm declared in two
+    # comparisons; a value that is neither the preset's nor the shipped file's (no third sampler); and a `canonical: true`
+    # comparison (exactly one -- the one owning the canonical sampled instrument) whose value is not this preset row's.
+    # An arm in NO comparison is NOT refusable: the repo has no authoritative list of the arms that decode a model (the
+    # test's docstring says what exists and why none serves), so completeness of the declaration is the declarer's, by
+    # reading.
+    deliberate_departure:
+      top_p:
+        shipped: 0.95
+        reason: "NVIDIA model-card general-chat / instruction-following recommendation (temperature 1.0, top_p 1.0) as reported to the project 2026-09-09, ruled canonical 2026-09-11; the shipped 0.95 is the card's reasoning-task / tool-calling row"
+        comparisons:
+          single_shot_and_overrefusal_panels:    # the canonical sampled instrument: the static families + the judged over-refusal controls, one panel per model
+            canonical: true
+            value: 1.0
+            arms: [none, prompted__safety_refusal, prompted__si_constitution, constv2-mix-full__lora_r4_ce, constv2ctl2-full__lora_r4_ce, constv2-mix-full__lora_r4_ce_minus_ctl, alphasteer]
+            note: "the six paper arms (PSR out by ruling) plus the AlphaSteer baseline. The AlphaSteer ladder drew at the shipped 0.95 (an omit-params request: vLLM fills an omitted key from the model's generation_config.json) until the 2026-09-11 ruling -- a 0.95 baseline beside 1.0 objects in ONE panel, the split this field refuses -- and is re-run at 1.0; the 0.95 ladder stores are superseded. The SAMPLED lane's own GSM8K readout (readouts.gsm8k below) reuses this preset and, where it runs, sits with these arms at this value; it is a different instrument from math_evals' gsm8k"
+          math_evals:                             # the PRIMARY math legs decode at the shipped file's value, by their own tables
+            value: 0.95
+            arms: [math500, gsm8k]
+            note: "scripts/sdfbase/math500/cells.py SAMPLING_THINKING_CARD for nemotron3nano4b (the file's 0.95 AND the card's reasoning-task row) and configs/sdfbase/gsm8k/matrix.json rows' sampling (temperature 1.0, top_p 0.95; the evaluation lane's paired-200 wave) -- a comparison of its own at its own declared value, not a split of the panels"
+          math500_battery_sensitivity:            # cells.py SAMPLING_BATTERY: MATH-500 re-run at the battery's settings, a sensitivity against the primary
+            value: 1.0
+            arms: [math500_battery]
+            note: "the math lane's battery sensitivity leg runs MATH-500 at this preset's top_p 1.0 and is read against the 0.95 primary, never pooled with it; the sampler difference IS that comparison's purpose, so it is declared as its own comparison rather than as a split of math_evals"
+    source_kind: vendor_recommendation
+    source: "nvidia/NVIDIA-Nemotron-3-Nano-4B-BF16 @ dfaf35de: the shipped generation_config.json @ dfaf35de carries top_p 0.95 (temperature 1.0; no do_sample key, no top_k, no penalty); the cached model card says \"temperature=1.0 and top_p=0.95 are recommended for reasoning tasks, while temperature=0.6 and top_p=0.95 are recommended for tool calling\" and shows top_p 1.0 only in a curl example; this preset runs T=1.0, top_p=1.0, reported to the project as NVIDIA's general-chat/instruction-following recommendation (shipped_generation_config records the file's values beside it); read on cluster A 2026-09-09"
+  llama8b:
+    model: NousResearch/Meta-Llama-3.1-8B-Instruct
+    revision: d10aef7999a2b5ba950ab3974312feeedbfe0b77
+    preset:
+      temperature: 0.6
+      top_p: 0.9
+    source_kind: generation_config
+    source: "NousResearch/Meta-Llama-3.1-8B-Instruct @ d10aef79: generation_config.json (do_sample: true; temperature 0.6, top_p 0.9); no top_k, no penalty term; read 2026-09-09"
+  glm46vflash:
+    model: zai-org/GLM-4.6V-Flash
+    revision: 411bb4d77144a3f03accbf4b780f5acb8b7cde4e
+    # NOT IN THE PAPER (GLM dropped 2026-09-11); kept for the completed sampled run's provenance -- the
+    # generated configs/sdfbase_full22_glm46vflash_sampled_*.yaml and the published stores were drawn under it
+    preset:
+      temperature: 0.8
+      top_p: 0.6
+      top_k: 2
+      repetition_penalty: 1.1
+    source_kind: model_card
+    source: "zai-org/GLM-4.6V-Flash @ 411bb4d7: the model card's \"Evaluation Settings\" (vLLM backend; \"top_p: 0.6, top_k: 2, temperature: 0.8, repetition_penalty: 1.1, max_generate_tokens: 16K\") plus the shipped generation_config.json @ 411bb4d7 which carries the first three (do_sample: true; temperature 0.8, top_p 0.6, top_k 2; no penalty term in the file); the vendor's max generation length is 16K while this run's ladder ceiling stays 8192 by the stated bound; read on cluster A 2026-09-09"
+    # ADDED 2026-09-13 (branch strength-phaseA) so the strength frontier's twelve llama8b dose views (make_sampled_configs.py
+    # SAMPLED_VIEWS: d<dose> / it_d<dose>) can be generated: the row is origin/main's BYTE FOR BYTE; `model` / `revision`
+    # equal this roster's llama8b pins (the generator checks). The llama8b `main` / `it` views stay OUT of this branch's
+    # scope (they are generated on that branch, at its own sha).
+  llama8b:
+    model: NousResearch/Meta-Llama-3.1-8B-Instruct
+    revision: d10aef7999a2b5ba950ab3974312feeedbfe0b77
+    preset:
+      temperature: 0.6
+      top_p: 0.9
+    source_kind: generation_config
+    source: "NousResearch/Meta-Llama-3.1-8B-Instruct @ d10aef79: generation_config.json (do_sample: true; temperature 0.6, top_p 0.9); no top_k, no penalty term; read 2026-09-09"
+  # qwen35_4b_demo -- the worked example (configured end to end, not run): it serves the paper's Qwen3.5-4B checkpoint under its own
+  # key, so its preset IS the qwen35_4b row's (the same model card, the same pinned revision); `model` / `revision` are the models
+  # table's serve.checkpoint pins (reproduce/models.yaml qwen35_4b_demo).
+  qwen35_4b_demo:
+    model: Qwen/Qwen3.5-4B
+    revision: 851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a
+    preset:
+      temperature: 0.7
+      top_p: 0.8
+      top_k: 20
+      min_p: 0.0
+      presence_penalty: 1.5
+      repetition_penalty: 1.0
+    source_kind: model_card
+    source: "the qwen35_4b row's preset, verbatim (the worked example serves the same checkpoint, Qwen/Qwen3.5-4B @ 851bf6e8): NO generation_config.json ships (.no_exist marker); model card README \"Best Practices\", instruct/non-thinking mode, GENERAL tasks -- temperature 0.7, top_p 0.8, top_k 20, min_p 0.0, presence_penalty 1.5, repetition_penalty 1.0 (the card's stated no-op value)"
+# PER-READOUT overrides (added 2026-09-09): the capability battery joins the sampled run.
+#   * GSM8K runs THINKING-ON at an 8,192 cap under the vendor's THINKING preset where the vendor publishes one -- Qwen's
+#     model card "Best Practices" THINKING row for general tasks -- and reuses the
+#     single preset above otherwise (Gemma / Nemotron / GLM publish no thinking-specific row; every rendered `source`
+#     says so). The greedy thinking-ON 8k comparator runs on the same items; the 1% / 16,384 ladder sits above it.
+#   * MMLU is unchanged: a teacher-forced letter-logprob argmax, so the sampler is MOOT there and the sampled run
+#     measures server-to-server logprob nondeterminism only.
+# The generator renders this as `sampled_decode.readouts` on EVERY sampled config (all TAGs, both trials, base and rung
+# configs alike); the GSM8K readout reads `readouts.gsm8k`. The static families and the judged controls ignore the
+# sub-block: their validators (jailbreak_run._SAMPLED_DECODE_META_KEYS, cell_controls.SAMPLED_DECODE_BLOCK_KEYS) admit
+# the key and read the top-level preset only.
+readouts:
+  gsm8k:
+    cap: 8192
+    thinking: "on"
+    # per KEY: a model with NO thinking mode runs the readout thinking-OFF at the same cap and preset
+    # (llama8b, 2026-09-10: Llama-3.1-8B-Instruct's 4-id assistant header has no switch;
+    # the lens_served_positions map is inert); every other key keeps the block's "on"
+    thinking_by_key:
+      llama8b: "off"
+    thinking_by_key_source:
+      llama8b: "NousResearch/Meta-Llama-3.1-8B-Instruct has no thinking mode (no reasoning template, no switch; the rendered assistant header is <|start_header_id|>assistant<|end_header_id|>\\n\\n) — GSM8K runs thinking-OFF at the readouts cap under the single vendor preset; Evals, 2026-09-10"
+    presets:                       # per KEY: the vendor's THINKING row; a key absent here reuses its single preset above
+      qwen35_4b:
+        preset:
+          temperature: 1.0
+          top_p: 0.95
+          top_k: 20
+          min_p: 0.0
+          presence_penalty: 1.5
+          repetition_penalty: 1.0
+        source: "Qwen/Qwen3.5-4B @ 851bf6e8: model card README \"Best Practices\", THINKING mode, general tasks -- temperature 1.0, top_p 0.95, top_k 20, min_p 0.0, presence_penalty 1.5, repetition_penalty 1.0 (the card's stated no-op value); the vendor's thinking row, as reported to the project (adopted by the second amendment, 2026-09-09)"
+      qwen35_4b_demo:                 # the worked example serves the SAME checkpoint as qwen35_4b (Qwen/Qwen3.5-4B @ 851bf6e8): its THINKING row, verbatim, so both keys render one GSM8K readout (2026-10-08)
+        preset:
+          temperature: 1.0
+          top_p: 0.95
+          top_k: 20
+          min_p: 0.0
+          presence_penalty: 1.5
+          repetition_penalty: 1.0
+        source: "Qwen/Qwen3.5-4B @ 851bf6e8: model card README \"Best Practices\", THINKING mode, general tasks -- temperature 1.0, top_p 0.95, top_k 20, min_p 0.0, presence_penalty 1.5, repetition_penalty 1.0 (the card's stated no-op value); the vendor's thinking row, as reported to the project (adopted by the second amendment, 2026-09-09)"
+    reuse_source: "no thinking-specific vendor row exists for this model: GSM8K thinking-on reuses the single vendor preset of this config (the coordinator's second amendment, 2026-09-09)"
+  mmlu:
+    instrument: letter_logprob_argmax
+    note: "sampler-moot: teacher-forced letter-logprob argmax; the sampled run measures server-to-server logprob nondeterminism only"

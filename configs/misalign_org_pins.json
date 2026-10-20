@@ -1,0 +1,430 @@
+{
+  "_schema": "misalign_org_pins/1",
+  "_ruling": "RULING 2026-09-17: the EM MODEL-ORGANISMS panel qwen35_4b_org serves the constitution / control / difference arms on BOTH paths — LoRA (constitution, control, the DIRECT LoRA difference) and ReLU / PSR (constitution, control, the DIRECT ReLU difference, the DISTILLED ReLU difference) — as the RESEED lane's effective-batch-64 seed-1 fits (batch-64 preferred; the wave's main view holds the older per-device-batch-2 / effective-batch-8 fits under the SAME cell ids), beside the two prompted SI arms. The safety-distilled arms (safety_refusal__lora_r4, safety_refusal__psr_kl_all) are DROPPED by the same ruling (never asked for); AlphaSteer is OUT everywhere (2026-09-17). The psr_ce_all cells are IN for this panel by the ruling — an exception to the 2026-09-12 psr-out rule. Each object is pinned by sha256 HERE and re-hashed on disk by misalign_bank_view.sh before a view entry exists; a mismatch refuses. the reseed lane's store is READ-ONLY to this panel: nothing is written, copied into or re-derived there.",
+  "_authority": "each object's own identity sidecar (train_budget_meta.json for a fitted cell, derived_meta.json for a derived one) + the reseed lane's records beside it, read verbatim on 2026-09-17: COMPLETE + VALIDATE.json ok:true (scripts/sdfbase/seedrep/validate_fit.py) for the four fitted cells; ADMISSION.json (scripts/sdfbase/seedrep/derived_admission.py) for two of the three derived objects — the direct ReLU difference (psr_paired_write) has NONE, only gate_liveness.json; the distilled ReLU difference's says admitted: FALSE. Both facts are carried in `admission` / `admission_note` per cell and into the generated config header — recorded, never hidden. `source` is relative to $SHARED/exp/objects, as misalign_bank_view.sh resolves it (cluster A: $SHARED/exp/objects/sdfbase/reseed/…).",
+  "_cells": [
+    "constv2-mix-full__lora_r4_ce",
+    "constv2ctl2-full__lora_r4_ce",
+    "constv2-mix-full__lora_r4_ce_minus_ctl",
+    "constv2-mix-full__psr_ce_all",
+    "constv2ctl2-full__psr_ce_all",
+    "constv2-mix-full__psr_ce_all_minus_ctl",
+    "constv2-mix-full__psr_ce_all_minus_ctl_distilled"
+  ],
+  "qwen35_4b": {
+    "model": "Qwen/Qwen3.5-4B",
+    "resolved_revision": "851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a",
+    "chat_template_hash": "a4aee8afcf2e0711",
+    "fit_lane": "reseed",
+    "fit_model_key": "qwen35_4b_base_eb64_s1",
+    "fit_model_id": "Qwen/Qwen3.5-4B-Base",
+    "fit_model_revision": "1001bb4d826a52d1f399e183466143f4da7b741b",
+    "seed": 1,
+    "effective_batch": 64,
+    "accum_steps": 32,
+    "batch_size": 2,
+    "seed_note": "seeds s2 and s3 exist with the same layout (qwen35_4b_base_eb64_s2 / _s3); this panel serves s1 ONLY — one replicate per panel",
+    "served_on": "the campaign's Qwen/Qwen3.5-4B @ 851bf6e8 (the misalign manifest's target pins, thinking off, template a4aee8afcf2e0711 — the render every object here was fitted under), LENS path, organisms mode (em8q only)",
+    "store": "$SHARED/exp/objects/sdfbase/reseed (cluster A only as of 2026-09-17; cluster B holds no copy) — READ-ONLY to this panel",
+    "constv2-mix-full__lora_r4_ce": {
+      "bank": "sdfbase/reseed",
+      "seed": 1,
+      "effective_batch": 64,
+      "fit_model_key": "qwen35_4b_base_eb64_s1",
+      "fit_model_id": "Qwen/Qwen3.5-4B-Base",
+      "fit_model_revision": "1001bb4d826a52d1f399e183466143f4da7b741b",
+      "positions": "all",
+      "template_hash": "a4aee8afcf2e0711",
+      "read_only": true,
+      "verified_cluster_a": true,
+      "verified_cluster_b": false,
+      "verified_at": "2026-09-17T22:40Z (sha256sum on the login host, cluster A; each dir listed and its records read the same minute)",
+      "source": "sdfbase/reseed/qwen35_4b_base_eb64_s1/cells_all/constv2-mix-full__lora_r4_ce",
+      "staged_id": "constv2-mix-full__lora_r4_ce",
+      "object_sha256": "8be1e1a7ab36f3f65557f7835a30c6b8f18143c781fbf7fb312a5cc7a6e08871",
+      "kind": "lora_all",
+      "arm": "lora_r4_ce",
+      "si_id": "constv2-mix-full",
+      "arm_label": "constitution LoRA",
+      "identity_sidecar": "train_budget_meta.json",
+      "site": "o_proj_out",
+      "n_target_layers": 8,
+      "fit_summary": {
+        "best_epoch": 16,
+        "epochs_run": 16,
+        "best_heldout_ce": 2.0751736414821234,
+        "heldout_ce_noop": 2.4226403434272714,
+        "ce_ratio": 0.8565752019742261,
+        "lr": 0.006681234631156978,
+        "accum_steps": 32,
+        "batch_size": 2,
+        "source": "train_budget_meta.json fit_record"
+      },
+      "records": {
+        "COMPLETE": true,
+        "VALIDATE.json": {
+          "ok": true,
+          "checker": "scripts/sdfbase/seedrep/validate_fit.py",
+          "checked_at": "2026-09-17T12:30:08+00:00",
+          "key": "qwen35_4b_base_eb64_s1",
+          "seed": 1,
+          "effective_batch": 64
+        }
+      },
+      "admission": null,
+      "admission_note": "a FITTED cell: the reseed lane's records are COMPLETE + VALIDATE.json (ok: true, validate_fit.py); derived_admission.py applies to derived objects only"
+    },
+    "constv2ctl2-full__lora_r4_ce": {
+      "bank": "sdfbase/reseed",
+      "seed": 1,
+      "effective_batch": 64,
+      "fit_model_key": "qwen35_4b_base_eb64_s1",
+      "fit_model_id": "Qwen/Qwen3.5-4B-Base",
+      "fit_model_revision": "1001bb4d826a52d1f399e183466143f4da7b741b",
+      "positions": "all",
+      "template_hash": "a4aee8afcf2e0711",
+      "read_only": true,
+      "verified_cluster_a": true,
+      "verified_cluster_b": false,
+      "verified_at": "2026-09-17T22:40Z (sha256sum on the login host, cluster A; each dir listed and its records read the same minute)",
+      "source": "sdfbase/reseed/qwen35_4b_base_eb64_s1/cells_all/constv2ctl2-full__lora_r4_ce",
+      "staged_id": "constv2ctl2-full__lora_r4_ce",
+      "object_sha256": "000e0df5792882aa6e6e70498f2597ddd5f1aa52f43cef9a92cad57d7f7a6e20",
+      "kind": "lora_all",
+      "arm": "lora_r4_ce",
+      "si_id": "constv2ctl2-full",
+      "arm_label": "control LoRA",
+      "identity_sidecar": "train_budget_meta.json",
+      "site": "o_proj_out",
+      "n_target_layers": 8,
+      "fit_summary": {
+        "best_epoch": 2,
+        "epochs_run": 4,
+        "best_heldout_ce": 2.2500684731193394,
+        "heldout_ce_noop": 2.4226403434272714,
+        "ce_ratio": 0.9287670285950091,
+        "lr": 0.006681234631156978,
+        "accum_steps": 32,
+        "batch_size": 2,
+        "source": "train_budget_meta.json fit_record"
+      },
+      "records": {
+        "COMPLETE": true,
+        "VALIDATE.json": {
+          "ok": true,
+          "checker": "scripts/sdfbase/seedrep/validate_fit.py",
+          "checked_at": "2026-09-17T00:15:37+00:00",
+          "key": "qwen35_4b_base_eb64_s1",
+          "seed": 1,
+          "effective_batch": 64
+        }
+      },
+      "admission": null,
+      "admission_note": "a FITTED cell: the reseed lane's records are COMPLETE + VALIDATE.json (ok: true, validate_fit.py); derived_admission.py applies to derived objects only"
+    },
+    "constv2-mix-full__lora_r4_ce_minus_ctl": {
+      "bank": "sdfbase/reseed",
+      "seed": 1,
+      "effective_batch": 64,
+      "fit_model_key": "qwen35_4b_base_eb64_s1",
+      "fit_model_id": "Qwen/Qwen3.5-4B-Base",
+      "fit_model_revision": "1001bb4d826a52d1f399e183466143f4da7b741b",
+      "positions": "all",
+      "template_hash": "a4aee8afcf2e0711",
+      "read_only": true,
+      "verified_cluster_a": true,
+      "verified_cluster_b": false,
+      "verified_at": "2026-09-17T22:40Z (sha256sum on the login host, cluster A; each dir listed and its records read the same minute)",
+      "source": "sdfbase/reseed/derived/lora_subtraction/qwen35_4b_base_eb64_s1/constv2-mix-full__lora_r4_ce_minus_ctl",
+      "staged_id": "constv2-mix-full__lora_r4_ce_minus_ctl",
+      "object_sha256": "0d275f7c76cbe63eacaec6b63c0976ac516cff039729029ee5b09b60f3d689c9",
+      "kind": "lora_subtraction",
+      "arm": "lora_r4_ce_minus_ctl",
+      "si_id": "constv2-mix-full",
+      "arm_label": "direct LoRA difference",
+      "identity_sidecar": "derived_meta.json",
+      "derivation": "delta(parent_pos) - delta(parent_neg), structural (both parents' factors stored bit-exact)",
+      "builder": "scripts/sdfbase/lora_subtract.py",
+      "built_at": "2026-09-17T13:54:40+00:00",
+      "layers": [
+        3,
+        7,
+        11,
+        15,
+        19,
+        23,
+        27,
+        31
+      ],
+      "rank": 4,
+      "scale_matched": true,
+      "comparison": "scale_matched (primary: both parents trained at the same official-token budget)",
+      "parents": {
+        "pos": {
+          "cell_id": "constv2-mix-full__lora_r4_ce",
+          "object_sha256": "8be1e1a7ab36f3f65557f7835a30c6b8f18143c781fbf7fb312a5cc7a6e08871",
+          "role": "pos"
+        },
+        "neg": {
+          "cell_id": "constv2ctl2-full__lora_r4_ce",
+          "object_sha256": "000e0df5792882aa6e6e70498f2597ddd5f1aa52f43cef9a92cad57d7f7a6e20",
+          "role": "neg"
+        }
+      },
+      "admission": {
+        "admitted": true,
+        "reasons": [],
+        "alarms": [],
+        "checker": "scripts/sdfbase/seedrep/derived_admission.py",
+        "checked_at": "2026-09-17T17:00:41+00:00",
+        "kind": "seedrep_derived_admission",
+        "scale_matched": true,
+        "seed": 1
+      },
+      "admission_note": "ADMISSION.json admitted: true (structural derivation; no floor, no liveness gate applies)"
+    },
+    "constv2-mix-full__psr_ce_all": {
+      "bank": "sdfbase/reseed",
+      "seed": 1,
+      "effective_batch": 64,
+      "fit_model_key": "qwen35_4b_base_eb64_s1",
+      "fit_model_id": "Qwen/Qwen3.5-4B-Base",
+      "fit_model_revision": "1001bb4d826a52d1f399e183466143f4da7b741b",
+      "positions": "all",
+      "template_hash": "a4aee8afcf2e0711",
+      "read_only": true,
+      "verified_cluster_a": true,
+      "verified_cluster_b": false,
+      "verified_at": "2026-09-17T22:40Z (sha256sum on the login host, cluster A; each dir listed and its records read the same minute)",
+      "source": "sdfbase/reseed/qwen35_4b_base_eb64_s1/cells_all/constv2-mix-full__psr_ce_all",
+      "staged_id": "constv2-mix-full__psr_ce_all",
+      "object_sha256": "7b87767d91bd9787d22a23a80a5e78c53d16b506cc25e4d9483f74e88238fda1",
+      "kind": "psr",
+      "arm": "psr_ce_all",
+      "si_id": "constv2-mix-full",
+      "arm_label": "constitution ReLU / PSR",
+      "identity_sidecar": "train_budget_meta.json",
+      "site": "resid_post",
+      "n_target_layers": 32,
+      "fit_summary": {
+        "best_epoch": 16,
+        "epochs_run": 16,
+        "best_heldout_ce": 2.0525356431767166,
+        "heldout_ce_noop": 2.4226403434272714,
+        "ce_ratio": 0.8472308523819209,
+        "lr": 0.004578836147882968,
+        "accum_steps": 32,
+        "batch_size": 2,
+        "source": "train_budget_meta.json fit_record"
+      },
+      "gate_liveness": {
+        "min": 0.19836268115412958,
+        "n_layers": 32,
+        "source": "train_budget_meta.json fit_record.gate_liveness"
+      },
+      "records": {
+        "COMPLETE": true,
+        "VALIDATE.json": {
+          "ok": true,
+          "checker": "scripts/sdfbase/seedrep/validate_fit.py",
+          "checked_at": "2026-09-17T13:45:46+00:00",
+          "key": "qwen35_4b_base_eb64_s1",
+          "seed": 1,
+          "effective_batch": 64
+        }
+      },
+      "admission": null,
+      "admission_note": "a FITTED cell: the reseed lane's records are COMPLETE + VALIDATE.json (ok: true, validate_fit.py); derived_admission.py applies to derived objects only"
+    },
+    "constv2ctl2-full__psr_ce_all": {
+      "bank": "sdfbase/reseed",
+      "seed": 1,
+      "effective_batch": 64,
+      "fit_model_key": "qwen35_4b_base_eb64_s1",
+      "fit_model_id": "Qwen/Qwen3.5-4B-Base",
+      "fit_model_revision": "1001bb4d826a52d1f399e183466143f4da7b741b",
+      "positions": "all",
+      "template_hash": "a4aee8afcf2e0711",
+      "read_only": true,
+      "verified_cluster_a": true,
+      "verified_cluster_b": false,
+      "verified_at": "2026-09-17T22:40Z (sha256sum on the login host, cluster A; each dir listed and its records read the same minute)",
+      "source": "sdfbase/reseed/qwen35_4b_base_eb64_s1/cells_all/constv2ctl2-full__psr_ce_all",
+      "staged_id": "constv2ctl2-full__psr_ce_all",
+      "object_sha256": "f65425b851ab446b329fa93631462dd4f31fb16e11955867ef902dffd635c2cd",
+      "kind": "psr",
+      "arm": "psr_ce_all",
+      "si_id": "constv2ctl2-full",
+      "arm_label": "control ReLU / PSR",
+      "identity_sidecar": "train_budget_meta.json",
+      "site": "resid_post",
+      "n_target_layers": 32,
+      "fit_summary": {
+        "best_epoch": 4,
+        "epochs_run": 6,
+        "best_heldout_ce": 2.2331225869538227,
+        "heldout_ce_noop": 2.4226403434272714,
+        "ce_ratio": 0.9217722279794364,
+        "lr": 0.004578836147882968,
+        "accum_steps": 32,
+        "batch_size": 2,
+        "source": "train_budget_meta.json fit_record"
+      },
+      "gate_liveness": {
+        "min": 0.14650568700762073,
+        "n_layers": 32,
+        "source": "train_budget_meta.json fit_record.gate_liveness"
+      },
+      "records": {
+        "COMPLETE": true,
+        "VALIDATE.json": {
+          "ok": true,
+          "checker": "scripts/sdfbase/seedrep/validate_fit.py",
+          "checked_at": "2026-09-17T02:47:27+00:00",
+          "key": "qwen35_4b_base_eb64_s1",
+          "seed": 1,
+          "effective_batch": 64
+        }
+      },
+      "admission": null,
+      "admission_note": "a FITTED cell: the reseed lane's records are COMPLETE + VALIDATE.json (ok: true, validate_fit.py); derived_admission.py applies to derived objects only"
+    },
+    "constv2-mix-full__psr_ce_all_minus_ctl": {
+      "bank": "sdfbase/reseed",
+      "seed": 1,
+      "effective_batch": 64,
+      "fit_model_key": "qwen35_4b_base_eb64_s1",
+      "fit_model_id": "Qwen/Qwen3.5-4B-Base",
+      "fit_model_revision": "1001bb4d826a52d1f399e183466143f4da7b741b",
+      "positions": "all",
+      "template_hash": "a4aee8afcf2e0711",
+      "read_only": true,
+      "verified_cluster_a": true,
+      "verified_cluster_b": false,
+      "verified_at": "2026-09-17T22:40Z (sha256sum on the login host, cluster A; each dir listed and its records read the same minute)",
+      "source": "sdfbase/reseed/derived/psr_paired_write/qwen35_4b_base_eb64_s1/constv2-mix-full__psr_ce_all_minus_ctl",
+      "staged_id": "constv2-mix-full__psr_ce_all_minus_ctl",
+      "object_sha256": "f98f0349673b7cb0cf85f54aee71f74bf9f0bbf981e989b52c8ba6599a492c2d",
+      "kind": "psr_paired_write",
+      "arm": "psr_ce_all_minus_ctl",
+      "si_id": "constv2-mix-full",
+      "arm_label": "DIRECT ReLU difference (the paired write)",
+      "identity_sidecar": "derived_meta.json",
+      "derivation": "u_pos(z) - u_neg(z) on the SHARED pre-write layer output z, one combined hook per layer (both parents' parameters stored bit-exact)",
+      "application_order": "shared_pre_write_state",
+      "builder": "scripts/sdfbase/psr_residual_distill.py compose-v",
+      "built_at": "2026-09-17T13:55:37+00:00",
+      "scale_matched": true,
+      "comparison": "scale_matched (primary: both parents trained at the same official-token budget)",
+      "parents": {
+        "pos": {
+          "cell_id": "constv2-mix-full__psr_ce_all",
+          "object_sha256": "7b87767d91bd9787d22a23a80a5e78c53d16b506cc25e4d9483f74e88238fda1",
+          "role": "pos"
+        },
+        "neg": {
+          "cell_id": "constv2ctl2-full__psr_ce_all",
+          "object_sha256": "f65425b851ab446b329fa93631462dd4f31fb16e11955867ef902dffd635c2cd",
+          "role": "neg"
+        }
+      },
+      "gate_liveness": {
+        "min": 0.3056628056628057,
+        "mean": 0.7339321990057284,
+        "n_layers": 32,
+        "n_probe_docs": 32,
+        "n_valid_positions": 79254,
+        "definition": "any-term-open fraction (positions where the paired write is nonzero)",
+        "source": "gate_liveness.json + gate_liveness_detail.json"
+      },
+      "admission": null,
+      "admission_note": "NO ADMISSION.json beside this object on 2026-09-17: the lane's derived_admission.py never ran on the paired write; gate_liveness.json (min 0.3057 over 32 layers, mean 0.7339) is its only quality record — recorded here and in the config header, not hidden. Served by ruling (the direct ReLU difference is IN).",
+      "also_pinned_in": "configs/reseed_paired_pins.json qwen35_4b.constv2-mix-full__psr_ce_all_minus_ctl — the native-certification route's pin of the SAME object (through its staged copy paired_write/qwen35_4b; object_sha256 equal)"
+    },
+    "constv2-mix-full__psr_ce_all_minus_ctl_distilled": {
+      "bank": "sdfbase/reseed",
+      "seed": 1,
+      "effective_batch": 64,
+      "fit_model_key": "qwen35_4b_base_eb64_s1",
+      "fit_model_id": "Qwen/Qwen3.5-4B-Base",
+      "fit_model_revision": "1001bb4d826a52d1f399e183466143f4da7b741b",
+      "positions": "all",
+      "template_hash": "a4aee8afcf2e0711",
+      "read_only": true,
+      "verified_cluster_a": true,
+      "verified_cluster_b": false,
+      "verified_at": "2026-09-17T22:40Z (sha256sum on the login host, cluster A; each dir listed and its records read the same minute)",
+      "source": "sdfbase/reseed/derived/psr_residual/qwen35_4b_base_eb64_s1/constv2-mix-full__psr_ce_all_minus_ctl_distilled",
+      "staged_id": "constv2-mix-full__psr_ce_all_minus_ctl_distilled",
+      "object_sha256": "aca19ab01b21fb0a510db0620bd3f8b82c65da872e488a36d5a875f052165a0a",
+      "kind": "psr",
+      "arm": "psr_ce_all_minus_ctl_distilled",
+      "si_id": "constv2-mix-full",
+      "arm_label": "DISTILLED ReLU difference",
+      "identity_sidecar": "derived_meta.json",
+      "derivation": "psr_residual_mse",
+      "teacher": {
+        "kind": "psr_paired_write",
+        "derived_id": "constv2-mix-full__psr_ce_all_minus_ctl",
+        "object_sha256": "f98f0349673b7cb0cf85f54aee71f74bf9f0bbf981e989b52c8ba6599a492c2d"
+      },
+      "builder": "scripts/sdfbase/psr_residual_distill.py distill",
+      "built_at": "2026-09-17T16:36:49+00:00",
+      "capture_manifest_sha256": "8bbc186c94868a4207d25e0909152487664475aa55d3cf521b12bc88cd38c71d",
+      "scale_matched": true,
+      "comparison": "scale_matched (primary: both parents trained at the same official-token budget)",
+      "parents": {
+        "pos": {
+          "cell_id": "constv2-mix-full__psr_ce_all",
+          "object_sha256": "7b87767d91bd9787d22a23a80a5e78c53d16b506cc25e4d9483f74e88238fda1",
+          "role": "pos"
+        },
+        "neg": {
+          "cell_id": "constv2ctl2-full__psr_ce_all",
+          "object_sha256": "f65425b851ab446b329fa93631462dd4f31fb16e11955867ef902dffd635c2cd",
+          "role": "neg"
+        }
+      },
+      "gate_liveness": {
+        "min": 0.21267065384712444,
+        "n_layers": 32,
+        "source": "gate_liveness.json"
+      },
+      "admission": {
+        "admitted": false,
+        "reasons": [
+          "recovery_verdict 'not recovered under this trainer + budget' != 'recovered'",
+          "gate liveness min over layers 0.2127 < floor 0.8134719699019494 (the published Qwen derived object's)"
+        ],
+        "recovery_verdict": "not recovered under this trainer + budget",
+        "floor": 0.8134719699019494,
+        "floor_note": "the published Qwen derived object's gate-liveness minimum",
+        "gate_liveness_min": 0.21267065384712444,
+        "selected_lr_mult": 1.0,
+        "sweep": {
+          "ladder": [
+            0.1,
+            0.3,
+            1.0,
+            3.0
+          ],
+          "lr_mults": [
+            0.3,
+            1.0,
+            3.0
+          ],
+          "extensions": [
+            0.1
+          ]
+        },
+        "parts_complete": true,
+        "alarms": [],
+        "checker": "scripts/sdfbase/seedrep/derived_admission.py",
+        "checked_at": "2026-09-17T17:00:45+00:00",
+        "kind": "seedrep_derived_admission",
+        "seed": 1
+      },
+      "admission_note": "ADMISSION.json admitted: FALSE by the lane's own checker (2026-09-17T17:00:45Z): not recovered under this trainer + budget, and gate liveness min 0.2127 < the published object's floor 0.8135. Served by ruling (the distilled ReLU difference is IN, 2026-09-17) with this verdict carried into the config header and the view manifest — a reader of this panel's distilled row must weigh it."
+    }
+  }
+}

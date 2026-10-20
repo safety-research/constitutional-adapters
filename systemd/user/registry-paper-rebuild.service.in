@@ -1,0 +1,28 @@
+# registry-paper-rebuild.service — results registry. Rendered for the site and installed into ~/.config/systemd/user/ by the registry installer.
+# Secret-free: the registry needs no credential; ssh (when used) goes through the agent socket.
+# Bounded: Type=oneshot with TimeoutStartSec, Restart=on-failure with RestartSec, and a start-rate limit sized to ~2x the
+# healthy cadence, so a persistent failure trips the limit (visible in the journal and on the status page) instead of
+# looping. Locks: only the registry's own (<root>/harvester.lock, snapshots/.readers.lock) — never the paper builder's.
+[Unit]
+Description=Results registry: rebuild the paper when the paper-input head advances (scripts/registry/paper_rebuild.sh)
+# Every 2 min. Takes the paper builder's OWN lock non-blocking; refuses on roster gaps; keeps the previous
+# page on any failure. Installed by the registry installer but enabled only with --with-paper-rebuild.
+After=network-online.target
+StartLimitIntervalSec=1h
+StartLimitBurst=6
+
+[Service]
+Type=oneshot
+Nice=10
+IOSchedulingClass=best-effort
+IOSchedulingPriority=6
+Environment=PYTHONPATH=@REPO@/src
+Environment=REGISTRY_ROOT=@REGISTRY_ROOT@
+Environment=PYTHONUNBUFFERED=1
+ExecStart=@REPO@/scripts/registry/paper_rebuild.sh
+Restart=on-failure
+RestartSec=2min
+TimeoutStartSec=2h
+SyslogIdentifier=registry-paper-rebuild
+StandardOutput=journal
+StandardError=journal

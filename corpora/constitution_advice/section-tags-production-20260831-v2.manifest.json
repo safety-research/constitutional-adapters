@@ -1,0 +1,43 @@
+{
+ "corpus": "advice",
+ "release": "production-20260831-v2",
+ "source": {
+  "path": "corpora/constitution_advice/final-production-20260831-v2.jsonl",
+  "sha256": "afe6cb396bf9ca820f252942bb44b8fb628db5986a38dd80256f92163e4d85a6",
+  "records": 1960
+ },
+ "limit": null,
+ "constitution_sha256": "82f88c5532e4939e1f9f8494c22917f5ca38fb846dfefc97867bd72fa001c3e7",
+ "index_sha256": "71055b1c478c3f17cc64ebb91c89db5a04f93e2446c2dc06ec3e6510d5ba8bea",
+ "index_model": "claude-opus-5",
+ "template_hashes": {
+  "section_tags/tag_system.md": "f461a8ca1932d5c05e5b76f86806b66e541deeebd2ffd56ce3f8c993e091e6b4",
+  "section_tags/tag_user.md": "f64aa1f1e41988b82a1fcc7c3cd52ba0442d3d89967357979e9faf04a8ba5b88"
+ },
+ "system_block_sha256": "41df5ec7f2069daf56563bc7b9c473008e1c35292e8caf9aa7e96a39ac696cc2",
+ "model": "claude-opus-5",
+ "params": {
+  "max_tokens": 3000,
+  "structured_output": true,
+  "sampling": "api-default",
+  "thinking": "api-default (adaptive; ~650 tokens/call observed in the pilot)"
+ },
+ "engine": "live",
+ "n_records": 1960,
+ "n_requests_issued": 1960,
+ "status_counts": {
+  "ok": 1960
+ },
+ "n_none": 0,
+ "n_repaired_leniently": 0,
+ "lenient_repairs": {},
+ "n_by_repair_round": {
+  "0": 1960
+ },
+ "started_at": "2026-09-14T21:28:06+00:00",
+ "ended_at": "2026-09-14T21:30:02+00:00",
+ "wall_clock_s": 116.0,
+ "tags_path": "corpora/constitution_advice/section-tags-production-20260831-v2.jsonl",
+ "tags_sha256": "985cde048ffb15e12c96af5892e9a3bc70c8718244bb0bf4ea95b5864c36638a",
+ "wave_root": "$HOME/corpus_generator/data/runs/section-tags/production-20260831-v2/advice"
+}

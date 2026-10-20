@@ -1,0 +1,22 @@
+{
+  "behaviors": [
+    "self_preservation",
+    "delusion_sycophancy"
+  ],
+  "cell_id": "none",
+  "complete_run_key": "e62125447235c550",
+  "epochs": 1,
+  "generated_on_tree": "9eb532082f45d3e30df4c705ecb7ae525bf8dc9c",
+  "note": "SYNTHETIC complete Petri cell (the test_petri_store_shape world: invented scenario ids, placeholder hashes, no recorded data) written through petri_runner._run by tests/test_petri_judge_refusal.py::_write_complete_cell_fixture \u2014 regenerate through it, never hand-edit",
+  "scenario_ids": {
+    "delusion_sycophancy": [
+      "scenario_alpha",
+      "scenario_beta"
+    ],
+    "self_preservation": [
+      "scenario_alpha",
+      "scenario_beta"
+    ]
+  },
+  "time_pin": 1700000000.0
+}

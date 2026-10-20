@@ -1,0 +1,11 @@
+Llama 3.1 is licensed under the Llama 3.1 Community License, Copyright © Meta Platforms, Inc. All Rights Reserved.
+
+Built with Llama.
+
+The objects in this directory are adapters fit on and served with Llama 3.1 8B Instruct
+(NousResearch/Meta-Llama-3.1-8B-Instruct @ d10aef7999a2b5ba950ab3974312feeedbfe0b77, a mirror of
+Meta's weights). Each is named "Llama-3.1-8B" followed by its paper label, as listed in ../README.md.
+Their distribution and use are subject to the Llama 3.1 Community License Agreement (LICENSE in this
+directory) and the Llama 3.1 Acceptable Use Policy (USE_POLICY.md in this directory). The
+repository's own licence is ../../LICENSE, and ../../THIRD_PARTY_NOTICES lists every third-party
+licence.

@@ -1,0 +1,11 @@
+# pt829 psr-transfer behavioral wave — gemma-4-E2B-it target (2026-08-28).
+# See conditions_pt829_e4b.tsv for the full header rationale; this file
+# differs ONLY in the transferred cell (E2B serves the e4b-source
+# transfer). Labels are identical across the two TSVs on purpose: each
+# condition runs with its own per-condition --out-root, so labels never
+# collide on disk, and a shared label makes cross-model row pairing exact.
+# label	cell	coeff	mask	static	adaptive	benign	target_engine	attacker_engine
+none	none		all	*	-	-	hf	none
+p_sr	prompted__safety_refusal		all	*	-	-	hf	none
+psr_gen	safety_refusal__psr_kl_all		generated	*	-	-	hf	none
+xfer_gen	safety_refusal__psr_xfer_from_e4b		generated	*	-	-	hf	none

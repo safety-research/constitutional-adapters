@@ -1,0 +1,60 @@
+# tinycap client venv — TOP-LEVEL pins. The hashed lock next to this file is
+# compiled with:
+#
+#   uv pip compile --no-config configs/capeval/tinycap-client-requirements.in \
+#     --python-version 3.12 --generate-hashes \
+#     --exclude-newer 2026-08-27T00:00:00Z \
+#     -o configs/capeval/tinycap-client-requirements.txt
+#
+# `--no-config` keeps the repo's own [tool.uv] settings (its project-wide and
+# per-package exclude-newer cut-offs, read from pyproject.toml whenever uv runs
+# inside the checkout) out of this resolve, so the cut-off above is the only one
+# that applies. Start from the committed .txt: uv keeps its pins as preferences.
+#
+# and the Modal image installs it with `uv pip install --no-deps
+# --require-hashes -r <lock>` into /opt/client (a SECOND venv: Inspect's
+# openai-v3 / pydantic>=2.13 / fsspec ceilings must never touch the vLLM
+# venv's pins). The build FAILS on non-resolution — no version fallback, no
+# unpinned install; a conflict is resolved by changing these pins on purpose.
+#
+# Every pin is >= 1 week old as of 2026-09-03. Where the package is locked
+# in the repo uv.lock the pin equals it (evalplus, datasets, aiohttp,
+# transformers); inspect_ai / inspect_evals are pinned above the repo lock
+# (which carries inspect-ai 0.3.251, older than the openai-api provider
+# behaviour these pins were verified against at 0.3.260).
+# `sisteer.capeval.tinycap.contracts.CLIENT_TOP_LEVEL_PINS` mirrors these
+# and tests/test_tinycap_contracts.py keeps the two equal.
+
+inspect_ai==0.3.260
+# The IFEval canonical battery: the `ifeval` extra brings langdetect; its other
+# dependency, instruction_following_eval, is a git package (no PyPI release) —
+# pinned below to the FULL sha of the rev inspect_evals 0.18.0's own pyproject /
+# uv.lock names (0c495b2, 2025-01-16), and immutabledict (the checker's own
+# dependency; PyPI 2026-02-15, the newest release under this cutoff) is pinned
+# top-level so it is hashed like everything else. Both mirrored in
+# contracts.CLIENT_TOP_LEVEL_PINS / CLIENT_VCS_PINS.
+inspect_evals[math,bfcl,ifeval]==0.18.0
+evalplus==0.3.1
+instruction_following_eval @ git+https://github.com/josejg/instruction_following_eval@0c495b2f95155e8b10acb919ae283bfb4d5be6e2
+immutabledict==4.3.1
+datasets==5.0.1
+aiohttp==3.14.3
+transformers==5.15.0
+
+# Terminal-Bench pilot: the two agentic-sandbox deps
+# that resolve under the SAME cutoff with ZERO existing pins moved (verified by
+# trial compile: +61 blocks, 0 changed, 0 removed) — inspect-sandboxes 0.5.0
+# (PyPI 2026-08-18; needs inspect-ai >= 0.3.211, modal >= 1.5.0) and swebench
+# 5.0.2 (PyPI 2026-08-18; `modal` is a core dep, there is no `[modal]` extra).
+# litellm (openai<3) must never enter this lock: it would move openai 3.4.0 ->
+# 2.54.0, an existing pin the Inspect openai-v3 provider stack relies on.
+inspect-sandboxes==0.5.0
+swebench==5.0.2
+
+# torch and scipy: the driver imports sisteer.models (torch at import time) for its
+# chat-template and SDPA checks, and the registry readers it reaches import scipy.
+# Both reached this venv through the tier-1 harness this lock no longer carries, so
+# they are pinned here at the versions the lock already held (torch 2.13.0 from
+# PyPI, CPU use only, released 2026-07-08; scipy 1.18.1, released 2026-08-21).
+torch==2.13.0
+scipy==1.18.1

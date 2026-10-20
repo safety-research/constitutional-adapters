@@ -1,0 +1,15 @@
+# registry-mirrors-full.timer — results registry. Rendered for the site and installed into ~/.config/systemd/user/ by the registry installer.
+# Weekly, early Sunday UTC (the clusters' quietest window), with a randomized delay so it never lines up with another
+# weekly job to the minute; Persistent= so a grading host that was down at the hour runs it on the next boot.
+[Unit]
+Description=Results registry weekly full mirror verify (Slurm), Sundays
+
+[Timer]
+OnCalendar=Sun *-*-* 02:00:00 UTC
+RandomizedDelaySec=30min
+Persistent=true
+AccuracySec=5min
+Unit=registry-mirrors-full.service
+
+[Install]
+WantedBy=timers.target

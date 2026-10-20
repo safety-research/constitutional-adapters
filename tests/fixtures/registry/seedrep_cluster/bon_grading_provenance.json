@@ -1,0 +1,42 @@
+{
+ "attacks": ["bon"],
+ "cells": ["none", "constv2-mix-full__lora_r4_ce", "prompted__safety_refusal"],
+ "config": {"path": "configs/sdfbase_full22_qwen35_4b_s2.yaml", "sha256": "6666666666666666666666666666666666666666666666666666666666666666"},
+ "decode_caps": {"bon_max_new_tokens": 4096, "static_max_new_tokens": 4096, "target_max_new_tokens": 4096},
+ "driver": {"path": "scripts/sdfbase/seedrep/grade_full22_native.py", "sha256": "7777777777777777777777777777777777777777777777777777777777777777"},
+ "escalated_to_highprio": false,
+ "final_in_flight_ceiling": 40,
+ "finished_at": "2026-09-21T09:46:44.827283+00:00",
+ "judge": {
+  "cache_kind": "sr2",
+  "cache_rows": 59980,
+  "cache_rows_seeded": 59925,
+  "concurrency_initial": 40,
+  "escalation_rule": "NONE (user rule): 429 -> the gate halves in-flight concurrency on the same org to its floor; never a pool switch",
+  "judge_model": "claude-haiku-4-5",
+  "org_initial": "lowprio",
+  "pass_id": "8888888888888888888888888888888888888888888888888888888888888888",
+  "pass_id_definition": "sha256 of the judge cache file at close",
+  "retry_policy": {
+   "attempts_per_judgment": 2,
+   "observed": {"attempts": 55, "exhausted": 0, "judgments": 55, "rate_limited": 0, "terminal": 0, "transient": 0},
+   "unscored_reissue_passes": 0
+  },
+  "rubric": "strongreject_v2",
+  "rubric_short": "v2"
+ },
+ "n_429": 0,
+ "org_final": "lowprio",
+ "per_attack_429": {"bon": 0},
+ "private_run": "sdfbase_full22_qwen35_4b_s2",
+ "serving_engine": "lora_native",
+ "source": {
+  "annotated_by": "bon_anyhit_grid",
+  "cluster": "cluster_a",
+  "slurm_job_ids": {},
+  "substrate": "slurm"
+ },
+ "started_at": "2026-09-21T09:45:54.773523+00:00",
+ "target": "qwen35_4b_s2",
+ "worktree": {"head": "017bf663b81d6163a6230d37a8be1904e2732de3", "path": "/home/TESTUSER/G"}
+}

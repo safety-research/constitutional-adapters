@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Results registry — status</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+  :root { color-scheme: light dark; --ink: #1a1a1a; --ink2: #666; --bg: #fafafa; --panel: #fff; --line: #e3e3e3; --head: #f0f0f0; }
+  @media (prefers-color-scheme: dark) { :root { --ink: #ececec; --ink2: #a8a8a8; --bg: #131313; --panel: #1c1c1c; --line: #2e2e2e; --head: #222; } }
+  body { font-family: system-ui, sans-serif; margin: 2rem auto; max-width: 1200px; color: var(--ink); background: var(--bg); padding: 0 1rem; }
+  h1 { font-size: 1.6rem; margin-bottom: 0.25rem; } h2 { font-size: 1.15rem; margin-top: 2rem; border-bottom: 1px solid var(--line); padding-bottom: 0.2rem; }
+  table { border-collapse: collapse; width: 100%; font-size: 0.85rem; }
+  th, td { text-align: left; padding: 0.25rem 0.5rem; border-bottom: 1px solid var(--line); vertical-align: top; }
+  th { background: var(--head); }
+  .stamp { color: var(--ink2); font-size: 0.9rem; }
+  .banner { padding: 0.75rem 1rem; border-radius: 6px; margin: 1rem 0; }
+  .paused { background: #ffe9e6; border: 1px solid #e0776b; color: #1a1a1a; }
+  .deprecated { background: #fff6dd; border: 1px solid #d9b74a; color: #1a1a1a; }
+  .empty { color: var(--ink2); font-style: italic; }
+  .note { color: var(--ink2); font-size: 0.85rem; }
+  .stale { background: #fff6dd; border-left: 3px solid #d9b74a; padding: 0.3rem 0.6rem; color: #1a1a1a; }
+  @media (prefers-color-scheme: dark) { .stale { background: #2a2410; color: #ececec; } }
+  .late { background: #ffe9e6; border-left: 3px solid #e0776b; padding: 0.3rem 0.6rem; color: #1a1a1a; }
+  @media (prefers-color-scheme: dark) { .late { background: #2e1512; color: #ececec; } }
+  code { background: var(--head); padding: 0 0.2rem; border-radius: 3px; }
+  .tiles { display: grid; grid-template-columns: repeat(auto-fill, minmax(11rem, 1fr)); gap: 0.6rem; margin: 1rem 0; }
+  .tile { background: var(--panel); border: 1px solid var(--line); border-radius: 6px; padding: 0.6rem 0.8rem; }
+  .tile b { display: block; font-size: 1.3rem; } .tile span { color: var(--ink2); font-size: 0.8rem; }
+  tr.red td:first-child { border-left: 3px solid #e0776b; } tr.amber td:first-child { border-left: 3px solid #d9b74a; }
+  tr.standing td:first-child { border-left: 3px solid #7a9cc6; } tr.green td:first-child { border-left: 3px solid transparent; }
+  .level-red { color: #c0392b; font-weight: 600; } .level-amber { color: #a87b00; font-weight: 600; } .level-green { color: var(--ink2); }
+  .level-standing { color: #3b6ea5; font-weight: 600; }
+</style>
+</head>
+<body>
+<h1>Results registry — status</h1>
+<p class="stamp">Built {{ built_utc }} · schema v{{ schema_version }} · index head <code>{{ index_head_seq }}</code> · paper-input head <code>{{ head_seq }}</code> ·
+   root <code>{{ root }}</code>{% if open_round %} · open round <code>{{ open_round.round_id }}</code>{% endif %}</p>
+
+{% if paused %}
+<div class="banner paused"><strong>Ingest paused</strong> since {{ paused.paused_utc }} — {{ paused.reason }}
+ (free {{ (paused.free_bytes / 1073741824) | round(2) }} GB). Records stay in the spool; nothing is lost.</div>
+{% endif %}
+{% if schema_drift or schema_version != schema_version_code %}
+<div class="banner paused"><strong>Schema drift</strong> — writers refuse this database until <code>registry migrate</code> brings it to the code's shape
+{% if schema_version != schema_version_code %}(schema v{{ schema_version }}, code v{{ schema_version_code }}: a migration is pending){% endif %}{% if schema_drift %}
+(<code>registry migrate --plan --sql</code> renders the missing migration; landed migration files are frozen):
+<ul>{% for line in schema_drift %}<li>{{ line }}</li>{% endfor %}</ul>{% else %}.{% endif %}
+Nothing is written meanwhile; records stay in the log.</div>
+{% endif %}
+{% if slurm_only.maintenance.set %}
+<div class="banner {% if slurm_only.maintenance.stale %}paused{% else %}deprecated{% endif %}"><strong>Maintenance flag set</strong> since {{ slurm_only.maintenance.since_utc }}{% if slurm_only.maintenance.age_s is not none %} ({{ slurm_only.maintenance.age_s }} s ago){% else %} (age unknown: the stamp does not parse){% endif %}{% if slurm_only.maintenance.reason %} — {{ slurm_only.maintenance.reason }}{% endif %}{% if slurm_only.maintenance.window %}; window <code>{{ slurm_only.maintenance.window }}</code>{% endif %}{% if slurm_only.maintenance.adapters %}; adapters <code>{{ slurm_only.maintenance.adapters }}</code>{% endif %}.
+ The harvester exits at the door while <code>state/maintenance.json</code> exists (nothing is pulled or folded); a landing window writes it before stopping the timers and its trap removes it.{% if slurm_only.maintenance.stale %} <strong>STALE</strong>: older than {{ slurm_only.maintenance.stale_after_s }} s — a window left it behind (its trap never ran); check <code>windows/chain.log</code> and remove the flag only when no window is running.{% endif %}</div>
+{% endif %}
+{% if slurm_only.config.removed_table %}
+<div class="banner paused"><strong>Configuration refused</strong> — <code>{{ slurm_only.config.path }}</code> still carries the removed <code>{{ slurm_only.config.table }}</code> table ({{ slurm_only.config.table_keys | join(', ') or 'no keys' }}): every registry command that reads the configuration refuses by name (<code>registry &lt;cmd&gt;: configuration REFUSED</code>), and this page renders on the budget defaults. Convert it: <code>python3 {{ slurm_only.config.converter }} --root {{ root }}</code>, then <code>registry config --check</code> (the cutover window's <code>-- config convert</code> stage does both).</div>
+{% elif slurm_only.config.error %}
+<div class="banner paused"><strong>Configuration unreadable</strong> — <code>{{ slurm_only.config.path }}</code> does not parse ({{ slurm_only.config.error }}): every registry command that reads it refuses; this page renders on the budget defaults.</div>
+{% endif %}
+<div class="banner deprecated">{{ deprecation_notice }}</div>
+
+<div class="tiles">
+  <div class="tile"><b>{{ in_flight | length }}</b><span>runs in flight</span></div>
+  <div class="tile"><b>{{ roster_gaps | length }}</b><span>roster gaps (open round)</span></div>
+  <div class="tile"><b>{{ pending_count }}</b><span>pending judgments (instrument judge)</span></div>
+  <div class="tile"><b>{{ refused | length }}</b><span>refused records</span></div>
+  <div class="tile"><b>{{ blocked | length }}</b><span>blocked records</span></div>
+  <div class="tile"><b>{{ not_measured_total }}</b><span>degeneration pairs not measured</span></div>
+  <div class="tile"><b>{{ decode_unmatched_total }}</b><span>runs whose sent decode matches no policy row (ambiguous + no_match)</span></div>
+  <div class="tile"><b>{{ bon_decode_precedence_violations | length }}</b><span>best-of-N keys reading T = 1 beside a selected vendor preset (the rule says none)</span></div>
+  <div class="tile"><b>{{ source_coverage.without_adapter | length if not source_coverage.error else '?' }}</b><span>declared sources without an adapter</span></div>
+  <div class="tile"><b>{{ rulings_relayed_unconfirmed | length }}</b><span>relayed rulings awaiting the user's confirmation</span></div>
+  <div class="tile"><b>{{ disk.free_gb }} GB</b><span>free disk (floor {{ disk.floor_gb }} GB; headroom {{ disk.headroom_gb }} GB)</span></div>
+  <div class="tile"><b>{{ snapshot_current or '—' }}</b><span>CURRENT snapshot</span></div>
+  <div class="tile"><b class="level-{{ slurm_only.level }}">{{ slurm_only.n_problems }}</b><span>cluster-side problems (store authority, replica check, reads reservation and receipts, maintenance flag, configuration)</span></div>
+</div>
+{% if sections_from_cache %}
+<p class="note stale">Rendered within budget ({{ budgets.render_budget_s | int }} s; {{ budgets.section_budget_s | int }} s per section): <strong>{{ sections_from_cache | length }}</strong> section(s) show their last good rows this render —
+{% for n in sections_from_cache %}<code>{{ n }}</code>{% if section_state[n].as_of %} (as of {{ section_state[n].as_of }}){% else %} (no cached rows yet){% endif %}{% if not loop.last %}, {% endif %}{% endfor %}.
+Cached-with-refresh set: {% if heavy_set %}{% for n in heavy_set %}<code>{{ n }}</code>{% if not loop.last %}, {% endif %}{% endfor %}{% else %}empty{% endif %};
+last exact refresh {{ heavy_state.refreshed_utc or 'never' }}{% if heavy_state.head is not none %} at ledger head <code>{{ heavy_state.head }}</code>{% endif %} (<code>registry status --refresh-heavy</code>, every 6 h while the head moves).</p>
+{% endif %}
+
+{% macro mark(name) -%}
+{% set st = section_state[name] %}
+{% if st.state == 'cached' %}<p class="note stale">Last good rows as of <strong>{{ st.as_of }}</strong>; {{ st.reason }}.{% if st.in_heavy_set %} In the cached-with-refresh set: recomputed exactly by <code>registry status --refresh-heavy</code>.{% endif %}</p>
+{% elif st.state == 'no_cache' %}<p class="note stale"><strong>Not computed this render and no cached rows yet</strong> ({{ st.reason }}): the table below is empty because nothing has been computed for it within budget, not because there is nothing to show; <code>registry status --refresh-heavy</code> fills it.</p>
+{% elif st.state == 'error' %}<p class="note stale"><strong>Query failed this render</strong> ({{ st.reason }}): the row below is the error, not the section's rows; its last good rows, if any, stay cached and are shown by a render this query is skipped in.</p>
+{% endif %}
+{%- endmacro %}
+
+{% macro table(rows, cols=None) -%}
+{% if rows %}
+<table>
+<tr>{% for k in (cols or rows[0].keys()) %}<th>{{ k }}</th>{% endfor %}</tr>
+{% for r in rows %}<tr>{% for k in (cols or rows[0].keys()) %}<td>{{ r[k] if r[k] is not none else '' }}</td>{% endfor %}</tr>
+{% endfor %}
+</table>
+{% else %}<p class="empty">none</p>{% endif %}
+{%- endmacro %}
+
+<h2>Runs in flight</h2>
+{{ mark('in_flight') }}
+{{ table(in_flight, ['run_id', 'lifecycle_state', 'substrate', 'cluster_job_id', 'node_hostname', 'last_event_state', 'last_scheduler_state', 'age_s']) }}
+
+<h2>Roster gaps (open round: entries with neither a judged run nor a disposition)</h2>
+{{ mark('roster_gaps') }}
+{{ table(roster_gaps, ['roster_entry_id', 'comparison_id', 'model_id', 'object_id', 'eval_id', 'instrument_id', 'source_citation']) }}
+
+<h2>Objects in / out of the current round (derived: the runs the flag selects and the rulings naming the object; never hand-set)</h2>
+{{ mark('paper_objects') }}
+{% if paper_objects_available %}
+{{ table(paper_objects, ['object_id', 'paper_label', 'object_kind', 'in_paper', 'n_runs', 'n_runs_in_paper', 'comparison_ids_json', 'excluding_ruling_ids_json', 'run_excluding_ruling_ids_json']) }}
+{% else %}
+<p class="empty">roster not loaded — the round's object roster (<code>{{ paper_objects_name }}</code>) is not in this database yet; this section is incomplete until it is.</p>
+{% endif %}
+
+<h2>Rulings of the open round (who they came from)</h2>
+{{ mark('rulings') }}
+<p class="note"><code>provenance</code>: <code>relayed</code> = a peer session relayed the user's words and the user has not yet confirmed the
+registry's reading of them (listed first; <code>relayed_by</code> and <code>message_utc</code> name the message); <code>peer_encoded</code> = a peer
+session's committed paper code declares the user's ruling (<code>ruled_by</code> names the session and the commit); <code>user_direct</code> = the user
+ruled it in this session; <code>in_ruled_by_prose</code> = a ruling transcribed before 2026-09-17 whose provenance is in its <code>ruled_by</code> text.
+<code>n_runs_decided</code> counts the runs whose paper membership this ruling decides today. <code>evidence_state</code> is the expiry evidence of a
+self-retiring ruling, not its provenance.</p>
+{% if rulings_relayed_unconfirmed %}<p class="note"><strong>{{ rulings_relayed_unconfirmed | length }} relayed ruling(s) await the user's confirmation.</strong></p>{% endif %}
+{{ table(rulings, ['ruling_id', 'action', 'scope_kind', 'provenance', 'relayed_by', 'message_utc', 'confirmed_by_user', 'ruled_utc', 'ruled_by', 'evidence_state', 'expired_utc', 'n_runs_decided']) }}
+
+<h2>Dispositions (sources that have not run: pending, held, not served, not applicable, declined)</h2>
+{{ mark('dispositions') }}
+{{ table(dispositions) }}
+
+<h2>Paper parity gate runs</h2>
+{{ mark('parity_gates') }}
+{{ table(parity_gates) }}
+
+<h2>Analyses (filed over ingested runs and objects)</h2>
+{{ mark('analyses') }}
+<p class="note">An analysis is a prefill-only or offline computation with results but no run of its own (D357): one <code>analysis</code> row per filing (<code>registry analysis file --spec</code>; records under <code>records/analyses/&lt;day&gt;/</code>, folded as ledger facts), its inputs in <code>analysis_input</code>, its registered files in <code>analysis_artifact</code>. <code>provenance</code> reads <code>relayed</code> when a peer session relayed the user's work (D83). <code>registry analysis list</code> reads the whole table.</p>
+{% if analyses %}
+<table>
+<tr><th>name</th><th>code_sha</th><th>substrate</th><th>filed_utc</th><th>filed_by</th><th>provenance</th><th>n_runs</th><th>n_objects</th><th>n_artifacts</th><th>report</th><th>pages</th></tr>
+{% for a in analyses %}{% if 'error' in a %}<tr><td colspan="11">{{ a.error }}</td></tr>{% else %}<tr><td>{{ a.name }}</td><td>{{ (a.code_sha or '')[:12] }}</td><td>{{ a.substrate }}</td><td>{{ a.filed_utc }}</td><td>{{ a.filed_by }}</td><td>{{ a.provenance }}{% if a.relayed_by %} (by {{ a.relayed_by }}){% endif %}</td><td>{{ a.n_runs }}</td><td>{{ a.n_objects }}</td><td>{{ a.n_artifacts }}</td><td>{% if a.report_uri %}<code>{{ a.report_uri }}</code>{% endif %}</td><td>{% for u in (a.page_urls or '').split(' ') if u %}<a href="{{ u }}">{{ u }}</a> {% endfor %}</td></tr>{% endif %}
+{% endfor %}
+</table>
+{% else %}<p class="empty">none</p>{% endif %}
+
+<h2>Refused records</h2>
+{{ mark('refused') }}
+{{ table(refused) }}
+
+<h2>Blocked records (well-formed, parent not yet ingested)</h2>
+{{ mark('blocked') }}
+{{ table(blocked) }}
+
+<h2>Refusals (facts): the judgments derived in the last {{ refusal_facts_window_s }} s</h2>
+{{ mark('refusal_facts') }}
+<p class="note">Every refusal judgment is a record in the log (<code>records/harvester/&lt;day&gt;/record_refusal-*.jsonl</code>) and a row of <code>record_refusal_fact</code>, keyed by the refused record and the judging stamp, so every mirror and every rebuild carry it; the table above keeps the CURRENT judgment per record. <code>still_refused</code> = this judgment is the record's current one; <code>backfilled</code> = a refusal recorded before the stamp was kept, materialized under <code>unverified</code>. Shown: the facts whose cycle is within {{ refusal_facts_window_s }} s (3 × the harvest cadence) — {{ refusal_facts_recent | length }} of the {{ refusal_facts | length }} most recent; the whole ledger is <code>registry refusals list|explain|summary</code>.</p>
+{{ table(refusal_facts_recent, ['record_uri', 'record_type', 'field', 'reason', 'judged_with', 'refused_utc', 'cycle_utc', 'still_refused', 'backfilled']) }}
+
+<h2>Recent ingests</h2>
+{{ mark('recent_ingests') }}
+{{ table(recent_ingests) }}
+
+<h2>Superseded readings</h2>
+{{ mark('superseded') }}
+{{ table(superseded, ['kind', 'id', 'superseded_by', 'ruling_id', 'ruling_action', 'ruling_reason', 'state']) }}
+
+<h2>Snapshot freshness per destination</h2>
+{{ mark('snapshots') }}
+<p class="note">CURRENT: <code>{{ snapshot_current or 'none' }}</code>. A full set carries every table of record's Parquet (not the history ledger, which no snapshot ships); a run-level set only the run-scale tables and the run-level SQLite.</p>
+{{ table(snapshot_pushes, ['destination', 'snapshot_id', 'pushed_utc', 'ok', 'reclaimed', 'leases_blocking', 'error']) }}
+<p class="note">Resident on the grading host:</p>
+{{ table(snapshots_resident, ['snapshot_id', 'scope', 'ingest_seq', 'built_utc', 'age_s', 'files', 'leases']) }}
+<p class="note">Recorded snapshots:</p>
+{{ table(snapshots, ['snapshot_id', 'scope', 'head_ingest_seq', 'built_utc']) }}
+
+<h2>Live snapshot leases</h2>
+<p class="note">A lease keeps its snapshot directory resident. The heartbeat age is diagnostic; a Modal lease is released only by its reader or a verified terminal call.</p>
+{{ table(leases) }}
+
+<h2>Mirror lag (record log fan-out)</h2>
+<p class="note">Latest manifest: <code>{{ latest_manifest or 'none' }}</code>. Lag = files the latest manifest names that the destination lacks or corrupts; unsynced local files ride the next sync.</p>
+{{ table(mirror_lag) }}
+
+<h2>Mirror acknowledgements (verified syncs)</h2>
+{{ mark('mirror_acks') }}
+{{ table(mirror_acks) }}
+
+<h2>Disk headroom</h2>
+<table>
+<tr><th>free</th><th>guard floor</th><th>headroom above the floor</th><th>database</th><th>a full snapshot needs</th><th>resident budget</th></tr>
+<tr><td>{{ disk.free_gb }} GB</td><td>{{ disk.floor_gb }} GB</td><td>{{ disk.headroom_gb }} GB</td><td>{{ disk.db_gb }} GB</td><td>{{ disk.snapshot_need_gb }} GB</td><td>{{ disk.budget_gb }} GB</td></tr>
+</table>
+{% if footprint %}
+<p class="note">Last snapshot cycle ({{ footprint.utc }}, {{ footprint.snapshot_id }}, scope {{ footprint.scope }}): peak {{ (footprint.peak_bytes / 1073741824) | round(3) }} GB of the {{ (footprint.budget_bytes / 1073741824) | round(0) }} GB budget{% if footprint.error %} — <strong>{{ footprint.error }}</strong>{% endif %}.</p>
+{% else %}<p class="empty">no snapshot cycle recorded yet</p>{% endif %}
+
+<h2>Paper rebuild</h2>
+{% if paper_rebuild.result %}
+<p><code>{{ paper_rebuild.result }}</code></p>
+{% else %}<p class="empty">no rebuild recorded yet</p>{% endif %}
+<p class="note">last built head: <code>{{ paper_rebuild.last_head or '—' }}</code> · failed head: <code>{{ paper_rebuild.failed_head or '—' }}</code> · head file: <code>{{ paper_rebuild.head_file or '—' }}</code></p>
+
+<h2>Timer health (last run per command)</h2>
+<p class="{% if harvest_cycle.state == 'late' %}late{% elif harvest_cycle.state == 'unknown' %}stale{% else %}note{% endif %}" id="harvester-cycle">
+<strong>Harvester</strong> — last completed cycle:
+{% if harvest_cycle.last_completed_cycle_utc %}<code>{{ harvest_cycle.last_completed_cycle_utc }}</code>, {{ harvest_cycle.age_s }} s ago{% if harvest_cycle.elapsed_s is not none %} (took {{ harvest_cycle.elapsed_s }} s{% if harvest_cycle.files is not none %}, {{ harvest_cycle.files }} file(s){% endif %}{% if harvest_cycle.revisions_applied is not none %}, {{ harvest_cycle.revisions_applied }} revision director{{ 'y' if harvest_cycle.revisions_applied == 1 else 'ies' }} / bundle(s){% endif %}{% if harvest_cycle.refused is not none %}, refused {{ harvest_cycle.refused }} this cycle{% if harvest_cycle.refusal_facts is not none %} and wrote {{ harvest_cycle.refusal_facts }} refusal fact(s){% endif %}{% endif %}){% endif %}{% else %}<strong>none recorded yet</strong> (a cycle records itself only when it runs to completion){% endif %}.
+{% if harvest_cycle.state == 'late' %}<strong>LATE</strong>: older than {{ harvest_cycle.late_after_s }} s, {{ 3 }} × the expected {{ harvest_cycle.cadence_s }} s between completed cycles — a cycle its unit kills at <code>TimeoutStartSec</code> completes nothing and moves no stamp; check <code>journalctl --user -u registry-harvest.service</code> and <code>state/metrics.jsonl</code> (<code>kind = "bundle"</code> lines name each revision directory folded).{% endif %}
+WAL: <code>{{ wal_bytes }}</code> bytes ({{ wal_gb }} GB) in <code>registry.sqlite-wal</code> -- checkpointed at the end of every completed harvester cycle and after a landing window's drain; a file that only grows means readers hold it (checkpoint starvation).
+{% if harvest_cycle.stopped %}The last cycle stopped on its <code>{{ harvest_cycle.stopped }}</code>{% if harvest_cycle.budget_s %} ({{ harvest_cycle.budget_s }} s){% endif %} and left {{ harvest_cycle.revisions_deferred_budget or 0 }} revision director{{ 'y' if harvest_cycle.revisions_deferred_budget == 1 else 'ies' }} / bundle(s) and {{ harvest_cycle.plain_files_deferred_budget or 0 }} plain file(s) for the next; everything it folded is committed.{% endif %}
+</p>
+{{ table(timers) }}
+
+<h2>Cluster reads (the latest landing window's Slurm-sharded reads of the heavy adapters)</h2>
+{% if cluster_reads.present %}
+<p class="note">Window <code>{{ cluster_reads.window }}</code> built {{ cluster_reads.built_utc }} on tree <code>{{ (cluster_reads.tree_sha or '')[:9] }}</code>{% if cluster_reads.job_id %}, array job <code>{{ cluster_reads.job_id }}</code>{% endif %}. Route <strong>cluster</strong> = read on cluster A against pinned, verified store generations (K shards); <strong>grading_host</strong> = NOT read this window: the grading host reads no store (registry-slurm-only S2), the reason beside it. A refusal names why an adapter was recorded refused instead of read (a declaration, a refused component, a stale copy, a failed shard or pull); the window ends ABORTED with the refused adapters named.</p>
+{{ table(cluster_reads.rows, ['adapter', 'route', 'shards', 'reason', 'refusals', 'pins']) }}
+{% if cluster_reads.stages %}<p class="note">Stages: {% for name, st in cluster_reads.stages.items() %}<code>{{ name }}</code> {{ st.utc }}{% if not loop.last %} · {% endif %}{% endfor %}</p>{% endif %}
+{% else %}<p class="empty">no cluster-read window recorded yet{% if cluster_reads.error %} ({{ cluster_reads.error }}){% endif %}</p>{% endif %}
+
+{% macro ltable(rows, cols) -%}
+{% if rows %}
+<table>
+<tr>{% for k in cols %}<th>{{ k }}</th>{% endfor %}</tr>
+{% for r in rows %}<tr class="{{ r.level or 'green' }}">{% for k in cols %}<td>{% if k == 'level' %}<span class="level-{{ r.level or 'green' }}">{{ r.level or 'green' }}</span>{% elif r[k] is sameas true %}yes{% elif r[k] is sameas false %}no{% else %}{{ r[k] if r[k] is not none else '' }}{% endif %}</td>{% endfor %}</tr>
+{% endfor %}
+</table>
+{% else %}<p class="empty">none</p>{% endif %}
+{%- endmacro %}
+
+<h2>Cluster reads, store authority and the replica (state files only; registry-slurm-only)</h2>
+<p class="note">Overall <span class="level-{{ slurm_only.level }}">{{ slurm_only.level }}</span>: {{ slurm_only.n_problems }} problem(s){% if slurm_only.problems %} — {% for pr in slurm_only.problems %}{{ pr }}{% if not loop.last %}; {% endif %}{% endfor %}{% endif %}.
+Nothing here reads the database: <code>state/store_authority.json</code> (the last <code>registry stores check-authority</code>), <code>state/store_mirror.json</code> (the grading host mirror's last outcome per component), <code>state/replica_check.json</code> (the last Slurm live-DB step), <code>state/maintenance.json</code>, <code>config.toml</code>, and the reads namespace <code>{{ slurm_only.reads_dir }}</code> (the reservation and the read receipts). Gathered in {{ slurm_only.elapsed_ms }} ms.</p>
+
+<h3>Store authority (per component: where the canonical copy is, and what stands beside its <code>current</code>)</h3>
+{% set au = slurm_only.authority %}
+{% if au.error %}<p class="note late"><strong>State file problem</strong>: {{ au.error }}.</p>{% endif %}
+{% if au.present %}
+<p class="note">Checked {{ au.checked_utc }}{% if au.checked_age_s is not none %} ({{ au.checked_age_s }} s ago){% endif %} on <code>{{ au.destination }}</code>: {{ au.n_components }} component(s), <strong class="level-{{ 'red' if au.n_problems else 'green' }}">{{ au.n_problems }} with a problem</strong>{% if au.problems %} — {% for pr in au.problems %}<code>{{ pr }}</code>{% if not loop.last %}, {% endif %}{% endfor %}{% endif %}.
+A <code>cluster_a</code> component's canonical copy is the published generation on the cluster (<code>stores push</code> writes it; the grading host holds a verified mirror); <code>grading_host_copy</code> is carried there by the mirror; <code>cluster_a_origin</code> compares an in-place original. Red: <code>current</code> dangling, unverified, unsealed, without its PUBLISHED record, absent for a <code>cluster_a</code> component, or no grading host mirror; amber: a transitional carry past its deadline, or the grading host producer has unpushed changes. <code>mirror_outcome</code> is the last <code>stores</code> run's outcome for the component as <code>state/store_mirror.json</code> records it, whichever command stamped it — a <code>mirror</code> / <code>push</code> outcome, <code>check:&lt;state&gt;</code> (<code>stores check</code>) or <code>verify-authority:&lt;state&gt;</code> (the one-time move): <code>check:match</code> and <code>verify-authority:verified</code> are green, a run's in-flight <code>verify_submitted</code> / <code>verify_inline</code> amber, every failure red by name. <code>change_utc</code> is the producer's committed change the published generation carries (the S7 clock's start), <code>published_utc</code> when it was published.</p>
+{% else %}
+<p class="empty">check-authority has not run on this root yet (<code>registry stores check-authority</code> writes <code>state/store_authority.json</code>){% if au.mirror_present %} — the rows below carry the grading host mirror's last outcome alone (<code>state/store_mirror.json</code>, updated {{ au.mirror_updated_utc }}){% else %}; no store mirror state either{% endif %}.</p>
+{% endif %}
+{{ ltable(au.rows, ['slug', 'authority', 'producer', 'current', 'exists', 'verified', 'sealed', 'published_record', 'published_utc', 'change_utc', 'transitional_carry', 'carry_deadline', 'carry_overdue', 'problems', 'mirror_outcome', 'mirror_utc', 'level']) }}
+
+<h3>Replica check (the last Slurm live-DB step of a landing)</h3>
+{% set rp = slurm_only.replica %}
+{% if rp.error %}<p class="note late"><strong>State file problem</strong>: {{ rp.error }}.</p>
+{% elif rp.present %}
+<p class="{% if rp.ok %}note{% else %}late{% endif %}"><strong>{% if rp.accepted_as == 'c1_class' %}equal modulo the C1 same-stamp class ({{ rp.n_movers }} movers, declared){% elif rp.equal %}equal{% else %}UNEQUAL{% endif %}{% if not rp.ok %} — refused ({{ rp.headline }}){% endif %}</strong> at {{ rp.utc }}{% if rp.age_s is not none %} ({{ rp.age_s }} s ago){% endif %}: branch <code>{{ rp.branch }}</code>, tip <code>{{ (rp.tip or '')[:12] }}</code>, job <code>{{ rp.job }}</code> {{ rp.job_state }}; projection <code>{{ rp.projection_version }}</code>, replica <code>{{ rp.replica_sha12 }}</code> vs head <code>{{ rp.head_sha12 }}</code> (head taken {{ rp.head_taken_utc }}, {{ rp.head_n_files }} files); generation <code>{{ rp.generation }}</code> (CURRENT <code>{{ rp.current_generation }}</code>, parent <code>{{ rp.parent_generation }}</code>), schema v{{ rp.schema_version }}; pytest rc {{ rp.pytest.rc }}, counts {{ rp.pytest.counts }}, expected skipped {{ rp.pytest.expected_skipped }}.
+{% if rp.problems %}<br>{% for pr in rp.problems %}REFUSED: {{ pr }}{% if not loop.last %}<br>{% endif %}{% endfor %}{% endif %}
+{% if rp.accepted_as == 'c1_class' %}<br>Accepted under the declared cutover allowance (D136): {{ rp.declaration }}.{% elif not rp.equal %}<br>An unequal check is a STOP (D12): no landing, nothing published; file the rows with the table and key, never seed the replica from a database copy.{% endif %}</p>
+{% else %}<p class="empty">no Slurm live-DB step recorded on this root yet (<code>live_db_slurm.sh</code> writes <code>state/replica_check.json</code> at the end of every landing's step 3)</p>{% endif %}
+
+<h3>Reads reservation (who owns the cluster-read namespace)</h3>
+{% set rs = slurm_only.reservation %}
+{% if rs.error %}<p class="note late"><strong>{{ rs.error }}</strong> — <code>{{ rs.reads_dir }}</code>.</p>
+{% elif rs.held %}
+<p class="{% if rs.state == 'live' %}note{% else %}stale{% endif %}">Held by <strong>{{ rs.owner }}</strong> <code>{{ rs.op_id }}</code> on <code>{{ rs.host }}</code> (pid {{ rs.pid }}) since {{ rs.started_utc }}{% if rs.age_s is not none %} ({{ rs.age_s }} s ago){% endif %}{% if rs.tree_sha %}, tree <code>{{ (rs.tree_sha or '')[:12] }}</code>{% endif %} — holder <strong>{{ rs.state }}</strong>{% if rs.state == 'stale' %} (its process is gone: the next tick or window cancels and confirms its jobs, then replaces it){% elif rs.state == 'unknown' %} (another host: not replaced from here){% endif %}.</p>
+{% else %}<p class="empty">none held (<code>{{ rs.reads_dir }}</code>): no tick or window is reading the cluster now</p>{% endif %}
+
+<h3>Read receipts (the latest {{ slurm_only.receipts.rows | length }} of {{ slurm_only.receipts.n_receipts }}; what each operation read)</h3>
+{% set rc = slurm_only.receipts %}
+{% if rc.error %}<p class="note late"><strong>{{ rc.error }}</strong></p>{% endif %}
+{% if rc.n_unreadable %}<p class="note late"><strong>{{ rc.n_unreadable }} receipt file(s) unreadable</strong> under <code>{{ slurm_only.reads_dir }}/receipts/</code>.</p>{% endif %}
+{{ ltable(rc.rows, ['op_id', 'owner', 'utc', 'window', 'tree_sha8', 'n_adapters', 'n_read_whole', 'n_refused', 'n_standing_refusals', 'refused', 'standing_refusals', 'barrier', 'level']) }}
+<p class="note">A receipt row is red when it refused an adapter or stopped at a pull barrier, <span class="level-standing">standing</span> when it carries STANDING refusals and no new one, and keeps that color while it is listed (history); the section's level follows the NEWEST receipt, each adapter's newest result below and the receipt files that would not read, so an older red row is not a current problem and gets no headline.</p>
+<p class="note">A <strong>standing</strong> refusal (the receipt's <code>standing_refusals</code> list, state <code>standing_refusal</code>) is one the cluster read re-confirmed byte for byte against the group's previous recorded refusal under the same inputs and tree: recorded here with the refusal and the recorded refusal it stands on (<code>prior_refusal</code>: its window and time; <code>standing_on</code>), never an abort of the window and never red — red means something NEW did not read. The cluster read writes such an adapter <code>read_whole: true</code> (so the tick leaves it alone); the list, not that bit, decides its state here: standing outranks whole. <code>refused_standing</code> is a different thing: the revision ids a pull left standing unread (<code>standing_unread</code>). The refusals that stand by design live with their reasons in the parked-by-name and pending-revisions sections below.</p>
+<p class="note">Per adapter, the newest receipt that read it WHOLE (every shard ok, no refusal) — what the periodic tick's changed set and the fold-latency measurement rest on; <code>change_utc</code> / <code>published_utc</code> are the newest among that read's pins — beside the adapter's NEWEST result (<code>newest_state</code>: whole, refused, standing_refusal, standing_unread, partial, not_attempted). Red: the adapter's newest receipt refused it (a refusal in an older receipt that no later receipt replaced is still its newest result); amber: never read whole, or its newest read did not read it whole (a shard missing, ids left standing unread — an older whole read is the baseline, not the newest result); standing: its newest result is a re-confirmed refusal.</p>
+{{ ltable(rc.adapters, ['adapter', 'utc', 'op_id', 'shards', 'revisions_pulled', 'pins', 'change_utc', 'published_utc', 'newest_op_id', 'newest_state', 'newest_refused', 'standing_on', 'standing_unread', 'level']) }}
+
+<h2>Adapter pass state</h2>
+{{ mark('adapter_pass') }}
+{{ table(adapter_pass) }}
+
+<h2>Pending source revisions (reads held or refused, not superseded)</h2>
+{{ mark('pending_revisions') }}
+{{ table(pending_revisions, ['adapter', 'reason', 'n_revisions', 'n_sources', 'last_observed', 'example']) }}
+<p class="note">Every <code>source_revision</code> row an adapter pass wrote <code>accepted = 0</code> that no later revision superseded, grouped by adapter and by the head of its refusal (the text up to the first <code>: </code>); <code>example</code> is the newest refusal in full. A held read publishes nothing of its group until its reason clears (an activation pending on a parent nobody emitted, a dependency no record on this machine names); <code>registry adapters run --retry-refused</code> re-reads them.</p>
+
+<h2>Parked by name (read and recorded; nothing published, by ruling)</h2>
+{{ mark('parked_sources') }}
+{{ table(parked_sources, ['adapter', 'kind_legacy', 'dir', 'status_ruled', 'object_role_ruled', 'reason', 'ruling', 'observed_utc']) }}
+<p class="note">A group an adapter read whole and PARKED: the bundle is of a kind the registry owner ruled out of scope by name (the table <code>legacy_spellings.yaml: out_of_scope_object_kinds</code>: the synthetic Gaussian control directions, the LoFiT / soft-AlphaKL / token-appended / BiDPO fits), so no record of it can exist under the vocabulary — the ruling, not a defect of the bundle or the reader. The read is accepted with no record and this row (<code>source_status.extra_json.parked</code>; <code>ok = 0</code> with the same reason under <code>refuse</code>), so nothing is silent and nothing is refused: no window or tick re-reads it. A kind leaving the table needs a ruling that adds it to the object kinds first.</p>
+
+<h2>Sources without an adapter</h2>
+<p class="note">Every source the paper declares — the round's committed source list, the roster's source fields, and the configured paper checkout's watermarks file when present — must be covered by exactly one adapter's <code>covers_sources</code> (or by several with distinct priorities).
+{% if not source_coverage.error %}Declared {{ source_coverage.n_declared }}, covered {{ source_coverage.n_covered }}; inputs: {% for i in source_coverage.inputs %}<code>{{ i }}</code>{% if not loop.last %}, {% endif %}{% endfor %}.{% endif %}</p>
+{% if source_coverage.error %}
+<p class="empty">coverage not computed: {{ source_coverage.error }}</p>
+{% else %}
+{{ table(source_coverage.without_adapter, ['source', 'owner', 'declared_in']) }}
+<p class="note">Claimed by several adapters at one priority:</p>
+{{ table(source_coverage.claimed_without_priority, ['source', 'adapters']) }}
+{% if source_coverage.errors %}<p class="note">Inputs not read: {% for e in source_coverage.errors %}<code>{{ e }}</code>{% if not loop.last %}; {% endif %}{% endfor %}</p>{% endif %}
+{% endif %}
+
+<h2>Unverified provenance fields per campaign (objects)</h2>
+{{ mark('unverified_by_campaign') }}
+{{ table(unverified_by_campaign) }}
+
+<h2>Degeneration not measured (run × measure pairs per eval category)</h2>
+{{ mark('degeneration_not_measured') }}
+<p class="note">A row whose <code>measurement_state</code> is <code>not_measured</code> carries no numerator, denominator or rate; consumers branch on the state, never on a NULL rate.</p>
+{{ table(degeneration_not_measured) }}
+
+<h2>Item measurement conflicts (visible provenances that disagree)</h2>
+{{ mark('item_conflicts') }}
+<p class="note">One measurement key with several visible provenances whose value or label differ (D54-2). The current row follows the declared source priority; <code>paired()</code> refuses these items by name until the sources agree.</p>
+{{ table(item_conflicts) }}
+
+<h2>Multi-source readings (one measurement read by two sources; the declared owner keeps it)</h2>
+{{ mark('multi_source') }}
+<p class="note">Declared ownership (D98 / D99, <code>ownership.MULTI_SOURCE_OWNERSHIP</code>): inside a declared scope (model, object label, eval category minus any eval ids the declaration excludes by name, transfer kind; admitted at the served operating point or as unfitted) the two sources' rows are matched by identity (pairing key, eval, metric, threshold), the pairing key being the declaration's pairing rule &mdash; the producer run key both sources spell alike, so an owner row folds only onto the secondary row read from the same store, or empty when the identity alone pairs. Both sides count only their source's own computation rows: a stats reader's blank-computation twin filed onto a scoped run is never in the scope. <strong>folded</strong>: k and n agree exactly, the owner row stands, the secondary row leaves the paper frame and contributes only the declared carry readings where the owner has none. <strong>stopgap</strong>: the owner carries no row yet, the secondary row stands and says so. <strong>refused</strong>: k / n differ (or a side carries two rows, or the owner already carries a different carry reading) &mdash; neither value is admitted, the owner row keeps its identity with value / k / n NULL and this reason, and nothing resolves it by priority. <code>at_cap_share</code> is shown for both sides and never travels (two statistics under one paper name). Refused: <strong>{{ multi_source_counts.refused }}</strong>, stopgap {{ multi_source_counts.stopgap }}, folded {{ multi_source_counts.folded }}.</p>
+{{ table(multi_source_declarations) }}
+{% if multi_source_refused %}<p class="note"><strong>{{ multi_source_refused | length }} refused multi-source identit{{ 'y' if multi_source_refused | length == 1 else 'ies' }}: the two sources disagree; rule on it, never average or pick.</strong></p>{% endif %}
+{{ table(multi_source) }}
+
+<h2>Decode-policy mismatches (derived per run: exact / ambiguous / no_match / unrecorded)</h2>
+{{ mark('decode_policy_match_counts') }}
+{{ mark('decode_policy_unmatched') }}
+<p class="note">Derived at the end of every ingest cycle from the run's SENT decode parameters against the <code>decode_policy</code> rows whose scope admits it (model, eval or eval category, thinking mode): <strong>exact</strong> names the one row every pinned parameter equals (the run row carries its <code>decode_policy_id</code>); <strong>ambiguous</strong> lists several; <strong>no_match</strong> recorded parameters no row equals (<code>in_scope_json</code> names what it was compared with); <strong>unrecorded</strong> recorded nothing to compare. <code>no_policy</code> is the producer's placeholder: a count there means the derived pass has not run over those rows. Unmatched (ambiguous + no_match): <strong>{{ decode_unmatched_total }}</strong>.</p>
+{{ table(decode_policy_match_counts) }}
+{{ table(decode_policy_unmatched) }}
+
+<h2>Best-of-N decode precedence (the vendor preset over T = 1 within one key)</h2>
+{{ mark('bon_decode_precedence') }}
+<p class="note">Ruling <code>{{ bon_decode_precedence_ruling_id }}</code> (the user, first-hand, 2026-09-28; D581): within one best-of-N key &mdash;
+model, object and standup on <code>strongreject_bon</code> at the cap-4,096 climb and the N = 75 headline &mdash; the vendor-preset decode row is
+the row a figure reads when one exists; the T = 1 climb row (<code>grandfathered_T1</code>) is the fallback only where no vendor-preset row
+exists. A row is vendor-preset when its derived <code>decode_policy_id</code> names a <code>vendor_preset</code> policy or, where nothing matched,
+when its <code>decode_source</code> is <code>generation_config</code>, <code>model_card</code> or <code>vendor_recommendation</code>
+(<code>decode_precedence.decode_kind</code>). An unsteered anchor follows the steered row it pairs with and is never listed.
+<strong>both_selected</strong>: a selected T = 1 row beside a selected vendor-preset row &mdash; the rule is broken; the remedy is a key-scoped
+supersede of that key&rsquo;s T = 1 rows (<code>decode_precedence.supersede_ruling</code>, dry run first), never a blanket rule.
+<strong>vendor_not_in_roster</strong>: a vendor-preset row exists for the key but the roster has not named it, so the T = 1 row is still the row
+read &mdash; nothing to supersede yet. Violations: <strong>{{ bon_decode_precedence_violations | length }}</strong>; pending: {{ bon_decode_precedence_pending | length }}.
+Empty is the invariant (<code>tests/test_registry_bon_decode_precedence.py</code> asserts it against the live database).</p>
+{{ table(bon_decode_precedence) }}
+
+<h2>Instrument mismatches (sent decode / cap / serving path vs declared)</h2>
+{{ mark('instrument_mismatch') }}
+{{ table(instrument_mismatch) }}
+
+<h2>Row counts</h2>
+{{ mark('table_counts') }}
+<p class="note">Exact for the tables counted within budget this render; a count served from the cache carries its stamp (the heavy
+tables — item results, flags, history — are recomputed exactly by the 6-hourly refresh). Cheapest-by-last-count first, so a
+cheap table is never starved by a heavy one.</p>
+<table><tr><th>table</th><th>rows</th><th>as of</th></tr>
+{% for t, n in table_counts.items() %}<tr><td>{{ t }}</td><td>{{ n if n is not none else 'no cached count yet' }}</td><td>{% if n is none %}—{% elif table_counts_as_of[t] %}{{ table_counts_as_of[t] }}{% else %}live{% endif %}</td></tr>{% endfor %}
+</table>
+
+<h2>Query timings (ms)</h2>
+<p class="note"><code>total_ms</code> <strong>{{ total_ms }}</strong> (the whole render: every section within its {{ budgets.section_budget_s | int }} s budget, the
+{{ budgets.render_budget_s | int }} s render budget, the state files); <code>from_cache</code> = the section shows its last good rows and its
+<code>as_of</code> is that computation's stamp, else the stamp of this render's query. One line per render is appended to
+<code>state/status_render.jsonl</code>.</p>
+<table><tr><th>query</th><th>ms</th><th>as_of</th><th>from_cache</th></tr>
+{% for q, ms in timings_ms.items() %}<tr><td>{{ q }}</td><td>{{ ms }}</td><td>{{ section_state[q].as_of or '' }}</td><td>{{ 'yes — ' ~ section_state[q].state if section_state[q].from_cache else 'no' }}</td></tr>{% endfor %}
+<tr><td><strong>total_ms</strong></td><td><strong>{{ total_ms }}</strong></td><td>{{ built_utc }}</td><td></td></tr>
+</table>
+
+<p class="stamp">Rendered by <code>registry status --html</code> (the 10-min <code>registry-status.timer</code>; the harvester no longer renders); this page is itself an <code>artifact</code> row (kind page).</p>
+</body>
+</html>

@@ -1,0 +1,58 @@
+# Stage-2 composition suite (plan 3.2/3.3 compose.py + eval/composition.py;
+# jobs C4b/A4). Radevski 2601.05062 compose-separately-then-combine vs
+# MONOLITHIC joint distillation vs prompted-NL -- the headline head-to-head.
+# The <and> mechanism runs on token_faithful ONLY; the residual vector
+# composes by additive sum (the CAA-style baseline).
+model: meta-llama/Llama-3.1-8B-Instruct
+model_revision: 0e9e39f249a16976918f6564b8830bc894c89659
+dtype: bfloat16
+layer: 15
+
+# 6 behaviors overlapping Radevski's library; checkers are programmatic
+# (existing language/lowercase/max_words + NEW sentence_count checker).
+behaviors: [lang_fr, lang_es, lang_de, lowercase, max_50_words, three_sentences]
+
+# Object kinds under composition (one array task each):
+composition_arms:
+  vector: additive_sum       # order-invariant (noted once in results)
+  token_faithful: and_token  # [E_x, e_b1, e_<and>, e_b2 (, e_<and>, e_b3)]
+
+and_token:
+  train_pairs: seen          # <and> trained on the 8 seen 2-behavior pairs ONLY
+  ortho_lambda: paper        # Radevski's orthogonality regularizer; the
+                             # shipped value is compose.py DEFAULT_ORTHO_LAMBDA
+                             # (0.5) — method_specs_s2.md was never written
+  epochs: 6
+  batch_size: 2
+  max_len: 768
+  # LLM + behavior tokens FROZEN during <and> training.
+
+targets:                     # default set sizes
+  seed: 0
+  n_seen_pairs: 8            # <and> train set
+  n_unseen_pairs: 4
+  n_triples: 4               # zero-shot (k=3, k! = 6 orderings averaged)
+n_prompts_per_target: 50     # alpaca base prompts
+
+# Alpaca split for per-behavior/monolithic pair generation (fit half) and
+# the joint-compliance eval prompts (holdout half) — same recipe as the
+# core matrix config; n_prompts_per_target caps both sides.
+prompts:
+  source: hf
+  dataset: tatsu-lab/alpaca
+  n: 600
+  holdout_frac: 0.3
+
+# Every k-target ALSO gets a monolithic intervention trained directly on the
+# joined "do X and Y (and Z)" instruction (as multi_french_concise in stage
+# 1) and a prompted-NL reference; metric = joint k-compliance (ALL k,
+# strict), averaged over k! orderings.
+baselines: [monolithic, prompted_nl]
+
+train_kwargs:
+  default: {epochs: 6, batch_size: 2, max_len: 768}
+
+max_new_tokens: 200
+out_dir: out/stage2_llama8b/composition
+wandb_project: $WANDB_PROJECT
+judge_model: claude-haiku-4-5

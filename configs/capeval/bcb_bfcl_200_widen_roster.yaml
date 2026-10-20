@@ -1,0 +1,809 @@
+# bcb_bfcl_200_widen_roster.yaml — THE machine-readable roster of the bcb-bfcl-200-widen lane.
+# Read by ONE yaml-only reader, src/sisteer/capeval/tinycap/widen_roster.py, for the launch wrapper
+# (scripts/bcb_bfcl_200_widen_launch.py), the analysis and the artifact; the checked-in file must
+# pass its own `validate` (tests/test_widen_roster.py loads it against the checked-in pins and
+# contracts.MODELS).
+#
+# Entries are keyed by an ENTRY id (the paper's arm key where one exists) and carry a NULLABLE
+# `cell_id` — the launcher cell id, required to parse only when the entry is runnable (AlphaSteer
+# has no cell id anywhere and none is invented). Every entry has a status in
+# {runnable, queued, blocked}; every non-runnable one its `reason` AND the `unblock` trigger, so
+# nothing is silently dropped and no object is substituted under a missing one's label. A runnable
+# OBJECT entry names the staged id + its sha256, which must equal
+# configs/sdfbase_full22_pins.json's entry (the reader refuses otherwise) and which the launcher
+# wires into the preflight's identity request as the cell's pin (a wrong pin refuses before any GPU).
+# `object_generation`: `final`, or `batch8-provisional` naming the key that supersedes it and
+# the trigger that re-runs the cell. One wave = one (family, view) = one tinycap model row = one
+# `modal run` at one sha; every contrast pairs a steered cell against ITS wave's `none`.
+lane: bcb-bfcl-200-widen
+legs: [inspect/bigcodebench_200, inspect/bfcl_200]
+sampling: protocol                      # contracts.PROTOCOL_SAMPLING_BY_TASK: BCB T 0; BFCL T 0.001 EXECUTED literally
+sampling_clamp_override: {from: 0.01, to: 0.001, why: "BFCL protocol"}   # the served identity must carry this on every
+                                        # protocol store; every `bfcl_200: runnable` below is SUBJECT TO the override check passing
+                                        # (check_protocol_sampling + the S6a live probe); if the override cannot hold on the pinned
+                                        # wheel, every BFCL leg becomes blocked: "pinned backend clamps 0.001 -> 0.01 (vLLM 0.25.1
+                                        # _MAX_TEMP); user decision needed"
+thinking: "off"                        # quoted: bare `off` is a YAML boolean
+pins: configs/sdfbase_full22_pins.json  # every object sha below must equal this file's entry for its staged_id
+serving_path: lora_native               # the lane serves on the plugin-free multi-LoRA
+                                        # engine; the wrapper composes `--serving-path lora_native` on the launcher AND the sandbox watcher, the
+                                        # reader (widen_roster.SERVING_PATH) refuses a header that disagrees; every store must attest
+                                        # route.serving_engine == lora_native (the canary gate)
+excluded_families: [glm46vflash]        # the reader refuses this string ANYWHERE else in the file
+object_generations: [final, batch8-provisional, batch64]   # the generation vocabulary; a batch8-provisional object names its superseding key
+waves:                                  # one wave = one (family, view) = one tinycap model row = one `modal run`
+  gemma4e4b_it:
+    family: gemma4e4b
+    lane_kind: instruct-direct
+    view: gemma4e4b_it
+    model_row: gemma4e4b-f22it
+    served: {hf: google/gemma-4-E4B-it, rev: ee0ef6023621cff504d758262d4e04895a5af4a2}
+    objects_dir: /vol/objects/sdfbase/full22/gemma4e4b/it
+    legs: {bigcodebench_200: runnable, bfcl_200: runnable}
+    entries:
+      none:
+        {cell_id: none, status: runnable, paper_arm: none}
+      si_safety:
+        {cell_id: prompted__safety_refusal, status: runnable, paper_arm: si_safety, kind: prompted,
+         note: "harness id prompted__safety; SI bytes ac3a58f61d53cf24 verified per request (H8); no steering_bites — control = H8 prefix verification + completions-differ vs none"}
+      const_si:                          # the paper's constitution-SI arm (one of the six paper arms): prompt-only
+        {cell_id: prompted__si_constitution, status: runnable, paper_arm: si_constitution, kind: prompted,
+         note: "the paper's constitution-SI arm (the six-arm ruling of 2026-09-11); prompt-only, same catalogue as prompted__safety_refusal"}
+      const_lora:
+        {cell_id: constv2-mix-full__lora_r4_ce, status: runnable, paper_arm: const_lora,
+         object: {staged_id: itdoc__constv2-mix-full__lora_r4_ce,
+                  sha256: 4c1a5fc3b382ddb86f9dce20ef7d31dac735b516014017d19fad0c74c0092353,
+                  kind: lora, sidecar: train_budget_meta.json, fit: {layers: 0-41, fingerprint: e2f1028578f21afa},
+                  object_generation: batch8-provisional, superseded_by_key: gemma4e4b_it_doc_eb64},
+         rerun_trigger: "STAYS BATCH-8 by ruling (b) of 2026-09-13: the constitution-LoRA arm is NOT re-fit for this lane — the batch-64 re-fit 78e84f27 exists under itdoc64__ but has no lane cell; the wave re-run of 2026-09-14 covers the two NEW arms (control LoRA + LoRA subtraction) beside this batch-8 cell (MIXED SET; every row stamps its object_generation). A re-run of THIS cell happens only if ruling (b) is reversed. Original trigger, kept for the record: Scale's ids + shas + pins entry for gemma4e4b_it_doc_eb64."}
+      const_psr:                         # PSR is OUT by default; the object block (the pin) stays so the entry is identifiable
+        {cell_id: constv2-mix-full__psr_ce_all, status: blocked, paper_arm: const_psr,
+         reason: "ruling of 2026-09-11: PSR is out of the paper by default — not run, not plotted; the six arms are none, safety SI, constitution SI, control LoRA, constitution LoRA, difference LoRA",
+         unblock: "a ruling reinstates PSR",
+         object: {staged_id: itdoc__constv2-mix-full__psr_ce_all,
+                  sha256: fdab3ade9b0d8d627ce2519b0fa72552fd3fa44537d8ea12e6f9727f11808b5b,
+                  kind: psr, sidecar: train_budget_meta.json, fit: {layers: 0-41, fingerprint: 8daa591984920b7c},
+                  object_generation: batch8-provisional, superseded_by_key: gemma4e4b_it_doc_eb64},
+         rerun_trigger: "as const_lora"}
+      ctl_lora:                          # SERVABLE 2026-09-14 (on main ece9e8ce): the batch-64 control LoRA
+        {cell_id: constv2ctl2-full__lora_r4_ce, status: runnable, paper_arm: ctl_lora,
+         object: {staged_id: itdoc64__constv2ctl2-full__lora_r4_ce,
+                  sha256: 04a90de8edd863345bf182adad717801b391096b350253c72bcb077b97885ed8,
+                  kind: lora, sidecar: train_budget_meta.json, object_generation: batch64,
+                  fit: {model_id: google/gemma-4-E4B-it, revision: ee0ef6023621cff504d758262d4e04895a5af4a2, layers: 0-41}},
+         note: "the batch-64 instruct-direct CONTROL fit (model_key gemma4e4b_it_doc_eb64, effective batch 64, early-stopped at 4/6 epochs). MIXED SET by ruling (b) of 2026-09-13: this wave's constitution-LoRA arm stays the batch-8 object (4c1a5fc3); the two NEW arms are this control LoRA and
+                the LoRA subtraction; every row stamps its object_generation (batch8-provisional | batch64). The coordinator's QUALIFICATION (2026-09-13) rides
+                with every reading of the pair: the constitution parent is budget-limited (16/16 epochs, early stopping never triggered) while this control
+                converged early — a trained-to-budget numerator against a converged denominator."}
+      ctl_psr:                           # PSR is OUT by default — no PSR cell is queued behind a fit batch
+        {cell_id: constv2ctl2-full__psr_ce_all, status: blocked, paper_arm: ctl_psr,
+         reason: "ruling of 2026-09-11: PSR is out of the paper by default — not run, not plotted; the six arms are none, safety SI, constitution SI, control LoRA, constitution LoRA, difference LoRA",
+         unblock: "a ruling reinstates PSR"}
+      diff_lora:                         # SERVABLE 2026-09-14: the batch-64 instruct-direct LoRA subtraction
+        {cell_id: constv2-mix-full__lora_r4_ce_minus_ctl, status: runnable, paper_arm: diff_lora,
+         object: {staged_id: derived_itdoc64__constv2-mix-full__lora_r4_ce_minus_ctl,
+                  sha256: 8b7d10301a1fd04fbe4c71f21ae8912bae60ffc56df34acd10fa07a960b2080e,
+                  kind: lora_subtraction, sidecar: derived_meta.json, object_generation: batch64,
+                  fit: {model_id: google/gemma-4-E4B-it, revision: ee0ef6023621cff504d758262d4e04895a5af4a2, layers: 0-41},
+                  parents_root: /vol/out},
+         note: "the batch-64 instruct-direct difference (parents itdoc64__ constitution 78e84f27... minus control 04a90de8..., model_key gemma4e4b_it_doc_eb64,
+                scale-matched; parents staged at /vol/out/gemma4e4b_it_doc_eb64/cells_all/). The QUALIFICATION (2026-09-13): the constitution parent
+                ran its full 16-epoch budget with early stopping never triggered while the control early-stopped at 4/6 — a trained-to-budget numerator against a
+                converged denominator; the parents differ in training budget, not only corpus (the CONFOUND named on the qwen35_4b_it pair). Inside the
+                object the constitution parent's per-layer weight delta is 1.25–2.24x the control's (median 1.74; scripts/bcbw_lora_subtraction_asymmetry.py) —
+                milder than the qwen35_4b_it pair (2.20–3.89) that refused every coding item. GRADED TEST by the coordinator's ruling (c) 2026-09-13: run it,
+                count the refusal openings with scripts/bcbw_refusal_openings.py and report the RATE either way, including zero (the dose-response check)."}
+      diff_psr:                          # PSR is OUT by default
+        {cell_id: constv2-mix-full__psr_ce_all_minus_ctl_distilled, status: blocked, paper_arm: diff_psr,
+         reason: "ruling of 2026-09-11: PSR is out of the paper by default — not run, not plotted; the six arms are none, safety SI, constitution SI, control LoRA, constitution LoRA, difference LoRA",
+         unblock: "a ruling reinstates PSR (then as diff_lora AND the tree carries SAFE_STRING_MAX_LEN 128 — 86-char store key)"}
+      safety_lora:
+        {cell_id: safety_refusal__lora_r4, status: queued, paper_arm: safety_lora,
+         reason: "no instruct-direct safety-distilled fit (same batch)", unblock: "as ctl_lora"}
+      safety_psr:                        # PSR is OUT by default
+        {cell_id: safety_refusal__psr_kl_all, status: blocked, paper_arm: safety_psr,
+         reason: "ruling of 2026-09-11: PSR is out of the paper by default — not run, not plotted; the six arms are none, safety SI, constitution SI, control LoRA, constitution LoRA, difference LoRA",
+         unblock: "a ruling reinstates PSR"}
+      alphasteer_as_fit:
+        {cell_id: null, status: queued, paper_arm: alphasteer_as_fit, kind: matrix,
+         reason: "no staged AlphaSteer object with a cell id, pin or bank entry (the only object is objects/jailbreak/jsteer_objects/alphasteer_official/object.pt, unkeyed)",
+         unblock: "Strength stages the as-fit object under a cell id + pin at dose 1.0; a served kind for it exists on main"}
+  gemma4e4b_main:                       # the base->instruct RE-RUN under the protocol decoding (the distilled difference PSR is OUT by default)
+    family: gemma4e4b
+    lane_kind: base->instruct
+    view: gemma4e4b
+    model_row: gemma4e4b-f22            # the full22 `main` bank holds all three objects; the earlier gemma4e4b-sdfbase row is untouched
+    served: {hf: google/gemma-4-E4B-it, rev: ee0ef6023621cff504d758262d4e04895a5af4a2}
+    objects_dir: /vol/objects/sdfbase/full22/gemma4e4b/main
+    legs: {bigcodebench_200: runnable, bfcl_200: runnable}
+    entries:
+      none:
+        {cell_id: none, status: runnable, paper_arm: none}
+      diff_lora:
+        {cell_id: constv2-mix-full__lora_r4_ce_minus_ctl, status: runnable, paper_arm: diff_lora,
+         object: {staged_id: derived__constv2-mix-full__lora_r4_ce_minus_ctl,
+                  sha256: be93b469a647248c68b48482c42e5af8f24da0993ba789f35e7a3aeeb2663391,
+                  kind: lora_subtraction, sidecar: derived_meta.json, object_generation: final,
+                  fit: {model_id: google/gemma-4-E4B, revision: 411aa17b749aa952df1359d2dcea73917a544d9a, layers: 0-41},
+                  parents_root: /vol/out},
+         intervention_hash_expected: 6e23d193b88952bd}   # the earlier pin for the SAME object; the new row's own bootstrap must reproduce it
+      diff_psr:                          # PSR is OUT by default; the object block (the pin) stays so the entry is identifiable
+        {cell_id: constv2-mix-full__psr_ce_all_minus_ctl_distilled, status: blocked, paper_arm: diff_psr,
+         reason: "ruling of 2026-09-11: PSR is out of the paper by default — not run, not plotted; the six arms are none, safety SI, constitution SI, control LoRA, constitution LoRA, difference LoRA",
+         unblock: "a ruling reinstates PSR",
+         object: {staged_id: derived__constv2-mix-full__psr_ce_all_minus_ctl_distilled,
+                  sha256: 3df21c4a3f51a46d124ad6a1bed33c207aaf38931ecb00a4d5ceb0079a124cc9,
+                  kind: psr, sidecar: derived_meta.json, object_generation: final,
+                  fit: {model_id: google/gemma-4-E4B, layers: 0-41}, parents_root: /vol/out},
+         note: "86-char store key (48-char id) — admitted by SAFE_STRING_MAX_LEN 128 on 1d0af1bd; the full22 roster calls this the WEAK gemma residual (distill early-stopped epoch 48/60, held-out 6.757, gate liveness 11/42 layers < 0.5, recovery_verdict recovered) — served as-is, the caveat carried into the doc; its own ladder certificate if its leg fires"}
+  qwen35_4b_main:
+    family: qwen35_4b
+    lane_kind: base->instruct
+    view: qwen35_4b
+    model_row: qwen35_4b-f22
+    served: {hf: Qwen/Qwen3.5-4B, rev: 851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a}
+    objects_dir: /vol/objects/sdfbase/full22/qwen35_4b/main
+    prerequisites: ["S6e: qwen35_4b geometry budget MEASURED on this branch (P2-9)"]
+    prerequisites_met: ["S6e: qwen35_4b geometry budget MEASURED on this branch (P2-9)"]   # Measured 2026-09-12 on Modal — 786,432 = S 96 x 8,192 (S 48 at 16,384), recorded in the tool's budget.json; the SHARED table keeps main's 720,896 row, so the row did not land
+    legs: {bigcodebench_200: runnable,
+           bfcl_200: runnable}   # LIVE probe PASS at 80df464: configs/capeval/tasks/parser_probe/qwen3_5_verdict_80df464.json; the offline half PASSED at 5e3dd86 and again here
+    entries:
+      none:
+        {cell_id: none, status: runnable, paper_arm: none}
+      diff_lora:
+        {cell_id: constv2-mix-full__lora_r4_ce_minus_ctl, status: runnable, paper_arm: diff_lora,
+         object: {staged_id: derived__constv2-mix-full__lora_r4_ce_minus_ctl,
+                  sha256: e24b4aaa8f2e431eb4d9c368516f832f60c8e62637782c0b3f9283d7d2b440ff,
+                  kind: lora_subtraction, sidecar: derived_meta.json, object_generation: final,
+                  fit: {model_id: Qwen/Qwen3.5-4B-Base, revision: 1001bb4d826a52d1f399e183466143f4da7b741b, layers: [3, 7, 11, 15, 19, 23, 27, 31]},
+                  parents_root: /vol/out}}
+  qwen35_4b_it:
+    family: qwen35_4b
+    lane_kind: instruct-direct
+    view: qwen35_4b_it
+    model_row: qwen35_4b-f22it          # the row exists ahead of the object — the wave stays QUEUED until the derived
+                                        # qwen-it difference object is staged under its NEW id + pinned (the staging record names path + sha)
+    served: {hf: Qwen/Qwen3.5-4B, rev: 851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a}
+    objects_dir: /vol/objects/sdfbase/full22/qwen35_4b/it
+    legs: {bigcodebench_200: runnable,   # the leg is runnable once a steered entry is; BFCL is QUEUED on the live probe, as on the qwen main wave
+           bfcl_200: runnable}   # LIVE probe PASS at 80df464: configs/capeval/tasks/parser_probe/qwen3_5_verdict_80df464.json; the offline half PASSED at 5e3dd86 and again here
+    entries:
+      none:
+        {cell_id: none, status: runnable, paper_arm: none}
+      diff_lora:                          # SERVABLE 2026-09-13 (commit 4e200b68)
+        {cell_id: constv2-mix-full__lora_r4_ce_minus_ctl, status: runnable, paper_arm: diff_lora,
+         object: {staged_id: derived_itdoc64__constv2-mix-full__lora_r4_ce_minus_ctl,
+                  sha256: 5e9b0009eb24eaf66842b4a2a9f647fced95699c7aae748eaab5333b05a4c6ce,
+                  kind: lora_subtraction, sidecar: derived_meta.json, object_generation: batch64,
+                  fit: {model_id: Qwen/Qwen3.5-4B, revision: 851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a, layers: [3, 7, 11, 15, 19, 23, 27, 31]},
+                  parents_root: /vol/out},
+         note: "the batch-64 instruct-direct difference (parents itdoc64__ constitution 80b75aae... minus control bace45e2..., model_key
+                qwen35_4b_it_doc_eb64, scale-matched at 42,785,435 tokens). QUALIFICATION that travels with every reading (2026-09-13): the constitution parent is BUDGET-LIMITED, not converged (best_epoch 16/16, early stopping never triggered — a
+                box-edge argmin) while the control early-stopped at 1/3, so the difference is a trained-to-budget numerator against a converged
+                denominator. MIXED SET by the ruling of 2026-09-13: the view's constitution-LoRA cell stays the batch-8 object; the arms
+                this wave runs are none + this difference (the lane's scope (b)); the view's batch-64 control LoRA is servable but not a lane arm.
+                MEASURED 2026-09-13: the served arm REFUSES every BigCodeBench item — 0/200 pass vs none 93/200 — see `pooling`.",
+         pooling: {held_out: true,
+                   ruled_by: "the coordinator, 2026-09-13 22:05/22:06 PDT (rulings (a)+(c): REPORT the reading, do not withdraw it; hold it out of
+                              pooled category means; say REFUSAL, not collapse; quote an opening verbatim; attach the numbers as records; name the confound)",
+                   reason: "the arm refuses every item: 200/200 BigCodeBench replies open with a refusal (2 contain a code fence, mean 72 completion tokens,
+                            every request stopped naturally, none truncated), 0/200 pass against the unsteered cell's 93/200 (Δ −46.5 pp, exact McNemar
+                            p 2.0e-28); verbatim, on the dictionary-counting task: \"I can't help with creating code designed to bypass security controls
+                            or evade detection systems. I can, however, help you with legitimate tasks like…\" — a threat the item does not contain
+                            (refusal_openings.json beside the wave's analysis.json; scripts/bcbw_refusal_openings.py). MECHANISM, measured inside the served
+                            object (parent_asymmetry.json; scripts/bcbw_lora_subtraction_asymmetry.py): the constitution parent's effective per-layer weight
+                            delta ‖B·Aᵀ‖ is 2.20–3.89× the control's (median 2.61; totals 153.6 vs 50.9; the served 'difference' 158.4 ≈ the constitution
+                            LoRA alone), where the qwen35_4b base-lane pair is balanced (0.89–1.09; −14 pp, no refusals) and the staged gemma4e4b it pair sits
+                            between (1.25–2.24, median 1.74). ROOT CAUSE IS A CONFOUND in the pair's construction: the parents differ in training budget, not
+                            only corpus (constitution 16/16 epochs with early stopping never triggered; control early-stopped at 1/3), so the subtraction
+                            cannot isolate the corpus. The same object refuses 91 % of benign OR-Bench prompts with near-perfect jailbreak defence and no
+                            degeneracy (Sample's reading, 2026-09-13) and loops on 28 % of GSM8K items deliberating about format (the evaluation lane's reading,
+                            2026-09-13). Reported as a measurement; not a pooled data point."}}
+  nemotron3nano4b_main:
+    family: nemotron3nano4b
+    lane_kind: chat-ckpt
+    view: nemotron3nano4b
+    model_row: nemotron3nano4b
+    served: {hf: nvidia/NVIDIA-Nemotron-3-Nano-4B-BF16, rev: dfaf35de3e30f1867dd8dbc38a7fc9fb52d3914f}
+    objects_dir: /vol/objects/sdfbase/full22/nemotron3nano4b/main
+    prerequisites: ["S4: the derived object's two parents copied volume-internally to /vol/out/nemotron3nano4b_doc/cells_all/ (shas af46d415... / b25435bd...)"]
+    prerequisites_met: ["S4: the derived object's two parents copied volume-internally to /vol/out/nemotron3nano4b_doc/cells_all/ (shas af46d415... / b25435bd...)"]   # Copied + sha-verified 2026-09-11, staged_from.json beside each
+    legs: {bigcodebench_200: runnable,          # the standup succeeded at 333ca846; a standup on THIS tree still gates the wave
+           bfcl_200: runnable}   # LIVE probe PASS at 8365992 (2026-09-23): configs/capeval/tasks/parser_probe/nemotron_h_verdict_8365992.json (offline + live both PASS; TOOL_PARSER_BY_FAMILY qwen3_xml)
+    entries:
+      none:
+        {cell_id: none, status: runnable, paper_arm: none}
+      diff_lora:
+        {cell_id: constv2-mix-full__lora_r4_ce_minus_ctl, status: runnable, paper_arm: diff_lora,
+         object: {staged_id: derived__constv2-mix-full__lora_r4_ce_minus_ctl,
+                  sha256: 27bab56e9fcea25e397b8d5b918c91a03a42fc279561894a01189713370bec41,
+                  kind: lora_subtraction, sidecar: derived_meta.json, object_generation: final,
+                  fit: {model_key: nemotron3nano4b_doc, layers: [12, 17, 24, 32]}, parents_root: /vol/out},
+         note: "the config declares the layer set via multi_layer_arms (cd8927d6 / S1-f)"}
+  # ---- the two llama8b waves: the llama LoRA-subtraction object in BOTH lane views.
+  # OBJECTS: the Modal bank twosi-fits:/objects/sdfbase/full22/llama8b/{it,main}/ holds every cell the shared roster's llama8b block
+  # lists — per view the base / itdoc fit, its control fit and the derived difference (the derived two uploaded first, the four
+  # parents staged on 2026-09-12; all object.pt sha256 = `llama8b` in configs/sdfbase_full22_pins.json). The derived-provenance
+  # preflight's parents (`preflight_derived_object(..., parents_root=/vol/out)`, DERIVED_PARENTS_ROOT) are staged under
+  # /vol/out/llama8b_base/cells_all/ and /vol/out/llama8b_it_doc/cells_all/ (the same staging pattern as the other derived objects).
+  # ROSTER SOURCE: the llama8b target block is the SHARED full22 roster's. The lane
+  # supplement and the two lane body copies that carried a one-cell block before it were retired; scripts/bcbw_configs.py
+  # reads the shared roster only, so the generated bcbw_llama8b_{it,main}.yaml list all three objects behind `none` + the safety
+  # anchor, hold prompted__si_constitution (declared by the shared block, not run by these waves — admitted and held) and take
+  # their bodies from configs/sdfbase_full22_llama8b{,_it}.yaml (target_max_new_tokens 4096; a llama launch after 2026-09-13 serves
+  # that cap). Both serve the campaign's llama8b target; the llama tool-parser pairing is PINNED (TOOL_PARSER_BY_FAMILY llama3_json),
+  # yet the BFCL legs stay blocked (the pinned chat template renders no tools — the legs' own entries below say so). Rank 4
+  # on ALL 32 layers (the sidecars' `layers` 0..31; the body's `layer: 15` is a member -> no multi_layer_arms). The llama caveat
+  # rides beside every reading: the constitution-LoRA parents are cap-limited at 16 epochs — report as such.
+  # GEOMETRY: geometry.BUDGET_BY_MODEL["llama8b"] is the MEASURED 475,136 row (the sdfbase-llama8b serving gate, 2026-09-10: S 29 at
+  # 16,384; source "measured", certified False; on main), so budget_for("llama8b") no longer resolves to a provisional
+  # ceiling and rung_probe.ladder_spec("llama8b") SIZES the ladder (window 32,768, seqs (14, 12), identity S 14) instead of refusing.
+  # HISTORY: the earlier llama waves (039394c4 / 17a69621, 2026-09-12) ran while the table carried the PROVISIONAL 229,376 ceiling
+  # (S 14 with the launcher's provisional warning; the certificates' recorded ladders drove the analysis); their
+  # readings stand as recorded.
+  llama8b_it:                           # PRIMARY llama wave: instruct-direct, applied natively
+    family: llama8b
+    lane_kind: instruct-direct
+    view: llama8b_it
+    model_row: llama8b-f22it
+    served: {hf: NousResearch/Meta-Llama-3.1-8B-Instruct, rev: d10aef7999a2b5ba950ab3974312feeedbfe0b77}
+    objects_dir: /vol/objects/sdfbase/full22/llama8b/it
+    prerequisites: ["S4: the derived object's two parents staged at /vol/out/llama8b_it_doc/cells_all/{constv2-mix-full__lora_r4_ce,constv2ctl2-full__lora_r4_ce}/ (object.pt + train_budget_meta.json + COMPLETE; shas 529788ca... / 7bf26f8c...)"]
+    prerequisites_met: ["S4: the derived object's two parents staged at /vol/out/llama8b_it_doc/cells_all/{constv2-mix-full__lora_r4_ce,constv2ctl2-full__lora_r4_ce}/ (object.pt + train_budget_meta.json + COMPLETE; shas 529788ca... / 7bf26f8c...)"]   # the four parents staged + sha-verified 2026-09-11
+    # The llama BFCL leg is BLOCKED — the pinned Instruct template never references `tools`, so the
+    # rendered prompt was byte-identical with and without tool definitions (both cells 56/200 = exactly the irrelevance items). The saved
+    # analyses' BFCL readings are WITHDRAWN by the analysis's gate under this status (numbers kept for the record). The
+    # function-calling eval is SKIPPED for Llama here — no re-run, no unblock path; the withdrawn rows are final.
+    legs: {bigcodebench_200: runnable,   # llama3_json is PINNED; the row's petri_manifest is petri_twosi.yaml (same target + pin)
+           bfcl_200: {status: blocked,
+                      reason: "instrument failure: the pinned NousResearch/Meta-Llama-3.1-8B-Instruct chat template (rev d10aef79, template b48c47f644389271) renders no tool definitions — both cells pass exactly the 56 irrelevance items; withdrawn from capability readings",
+                      unblock: "NONE — SKIPPED FOR LLAMA by the ruling of 2026-09-13: under the template the objects were trained and served with, Llama has no function calling, so this lane runs no BFCL leg for Llama; the four withdrawn rows are final. (The tool-aware-template recipe stays recorded for other lanes.)"}}
+    entries:
+      none:
+        {cell_id: none, status: runnable, paper_arm: none}
+      diff_lora:
+        {cell_id: constv2-mix-full__lora_r4_ce_minus_ctl, status: runnable, paper_arm: diff_lora,
+         object: {staged_id: derived_itdoc__constv2-mix-full__lora_r4_ce_minus_ctl,
+                  sha256: e85220c9e5d2b9aa4377fea7a9a590048c693118975be9f36ae579b0eeff6f13,
+                  kind: lora_subtraction, sidecar: derived_meta.json, object_generation: final,
+                  fit: {model_key: llama8b_it_doc, model_id: NousResearch/Meta-Llama-3.1-8B-Instruct, revision: d10aef7999a2b5ba950ab3974312feeedbfe0b77, layers: 0-31},
+                  parents_root: /vol/out},
+         note: "the constitution-LoRA parents are cap-limited at 16 epochs — report as such (the Llama lane's caveat); rank 4 on all 32 layers, scale-matched structural subtraction (parents 529788ca... minus 7bf26f8c...)"}
+  llama8b_main:                         # the base->instruct transfer, like qwen35_4b_main
+    family: llama8b
+    lane_kind: base->instruct
+    view: llama8b
+    model_row: llama8b-f22
+    served: {hf: NousResearch/Meta-Llama-3.1-8B-Instruct, rev: d10aef7999a2b5ba950ab3974312feeedbfe0b77}
+    objects_dir: /vol/objects/sdfbase/full22/llama8b/main
+    prerequisites: ["S4: the derived object's two parents staged at /vol/out/llama8b_base/cells_all/{constv2-mix-full__lora_r4_ce,constv2ctl2-full__lora_r4_ce}/ (object.pt + train_budget_meta.json + COMPLETE; shas 504b6651... / 56254ce4...)"]
+    prerequisites_met: ["S4: the derived object's two parents staged at /vol/out/llama8b_base/cells_all/{constv2-mix-full__lora_r4_ce,constv2ctl2-full__lora_r4_ce}/ (object.pt + train_budget_meta.json + COMPLETE; shas 504b6651... / 56254ce4...)"]   # the four parents staged + sha-verified 2026-09-11
+    legs: {bigcodebench_200: runnable,   # The llama BFCL leg is BLOCKED (same instrument as llama8b_it — same served template identity); see that wave's note
+           bfcl_200: {status: blocked,
+                      reason: "instrument failure: the pinned NousResearch/Meta-Llama-3.1-8B-Instruct chat template (rev d10aef79, template b48c47f644389271) renders no tool definitions — both cells pass exactly the 56 irrelevance items; withdrawn from capability readings",
+                      unblock: "NONE — SKIPPED FOR LLAMA by the ruling of 2026-09-13: under the template the objects were trained and served with, Llama has no function calling, so this lane runs no BFCL leg for Llama; the four withdrawn rows are final. (The tool-aware-template recipe stays recorded for other lanes.)"}}
+    entries:
+      none:
+        {cell_id: none, status: runnable, paper_arm: none}
+      diff_lora:
+        {cell_id: constv2-mix-full__lora_r4_ce_minus_ctl, status: runnable, paper_arm: diff_lora,
+         object: {staged_id: derived__constv2-mix-full__lora_r4_ce_minus_ctl,
+                  sha256: 4375b67a0fb0621e9ee296041d0842cb24294112e18424a803e8e54e9538a740,
+                  kind: lora_subtraction, sidecar: derived_meta.json, object_generation: final,
+                  fit: {model_key: llama8b_base, model_id: NousResearch/Meta-Llama-3.1-8B, revision: 1f47e50cdbe801ad8a5174156ec3a0655108fb9f, layers: 0-31},
+                  parents_root: /vol/out},
+         note: "the constitution-LoRA parents are cap-limited at 16 epochs — report as such (the Llama lane's caveat); fit on the BASE Meta-Llama-3.1-8B and served on the Instruct (base_hf on the row); rank 4 on all 32 layers, scale-matched structural subtraction (parents 504b6651... minus 56254ce4...)"}
+  qwen35_4b_s1:                          # seed view s1 of the batch-64 three-seed Qwen family
+    family: qwen35_4b
+    lane_kind: base->instruct           # every object fit on Qwen/Qwen3.5-4B-Base @ 1001bb4d at effective batch 64 (seed 1), served on the chat checkpoint
+    view: qwen35_4b_s1
+    model_row: qwen35_4b-f22s1
+    served: {hf: Qwen/Qwen3.5-4B, rev: 851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a}
+    objects_dir: /vol/objects/sdfbase/full22/qwen35_4b/s1
+    prerequisites: ["S6e: qwen35_4b geometry budget MEASURED on this branch (P2-9)",
+                    "S4 (bank staging): the seed bank /vol/objects/sdfbase/full22/qwen35_4b/s1 staged from cluster A's cells_view/s1 with staged_manifest.json shas == configs/sdfbase_full22_pins.json for base64s1__constv2-mix-full__psr_ce_all, base64s1__constv2-mix-full__lora_r4_ce, base64s1__constv2ctl2-full__psr_ce_all, base64s1__constv2ctl2-full__lora_r4_ce, derived_base64s1__constv2-mix-full__lora_r4_ce_minus_ctl (W2's stage_seed_banks_modal.sh)",
+                    "S4: the derived object's parents staged at /vol/out/qwen35_4b_base_eb64_s1/cells_all/{constv2-mix-full__lora_r4_ce,constv2ctl2-full__lora_r4_ce}/ (object.pt + train_budget_meta.json + COMPLETE; shas 8be1e1a7... / 000e0df5...); the container preflight's derived_object_provenance holds the derived object to them, sha-bound",
+                    "S4 (bank staging): the Arditi extra staged INSIDE /vol/objects/sdfbase/full22/qwen35_4b/s1 as the bare cell dir arditi_allpos/ (object.pt sha256 ba2212f0c2f9ffef2997bdd24831182052560cf980054bcee9cf95ea0db085b2 + fit_provenance.json, from the grading host ~/arditi-stage/objects/arditi_allpos/qwen35_4b/ladder/cells/ar_c0p3__arditi_allpos/), pinned configs/sdfbase_full22_pins.json qwen35_4b/ar_c0p3__arditi_allpos"]
+    prerequisites_met: ["S6e: qwen35_4b geometry budget MEASURED on this branch (P2-9)", "S4 (bank staging): the seed bank /vol/objects/sdfbase/full22/qwen35_4b/s1 staged from cluster A's cells_view/s1 with staged_manifest.json shas == configs/sdfbase_full22_pins.json for base64s1__constv2-mix-full__psr_ce_all, base64s1__constv2-mix-full__lora_r4_ce, base64s1__constv2ctl2-full__psr_ce_all, base64s1__constv2ctl2-full__lora_r4_ce, derived_base64s1__constv2-mix-full__lora_r4_ce_minus_ctl (W2's stage_seed_banks_modal.sh)", "S4: the derived object's parents staged at /vol/out/qwen35_4b_base_eb64_s1/cells_all/{constv2-mix-full__lora_r4_ce,constv2ctl2-full__lora_r4_ce}/ (object.pt + train_budget_meta.json + COMPLETE; shas 8be1e1a7... / 000e0df5...); the container preflight's derived_object_provenance holds the derived object to them, sha-bound", "S4 (bank staging): the Arditi extra staged INSIDE /vol/objects/sdfbase/full22/qwen35_4b/s1 as the bare cell dir arditi_allpos/ (object.pt sha256 ba2212f0c2f9ffef2997bdd24831182052560cf980054bcee9cf95ea0db085b2 + fit_provenance.json, from the grading host ~/arditi-stage/objects/arditi_allpos/qwen35_4b/ladder/cells/ar_c0p3__arditi_allpos/), pinned configs/sdfbase_full22_pins.json qwen35_4b/ar_c0p3__arditi_allpos"]   # recorded 2026-09-23: bank + parents + Arditi extra staged and sha-verified
+    legs: {bigcodebench_200: runnable,
+           bfcl_200: runnable}   # LIVE probe PASS at 80df464: configs/capeval/tasks/parser_probe/qwen3_5_verdict_80df464.json; the offline half PASSED at 5e3dd86 and again here
+    entries:                             # the eight-cell seed row (GSM8K parity); the ReLU arms are IN
+      none:
+        {cell_id: none, status: runnable, paper_arm: none}
+      si_safety:
+        {cell_id: prompted__safety_refusal, status: runnable, paper_arm: si_safety, kind: prompted,
+         note: "harness id prompted__safety; the SI text as the system prompt, no object (the gemma4e4b_it precedent)"}
+      const_si:
+        {cell_id: prompted__si_constitution, status: runnable, paper_arm: si_constitution, kind: prompted,
+         note: "the paper's constitution-SI arm (the six-arm ruling of 2026-09-11); prompt-only, same catalogue as prompted__safety_refusal"}
+      const_psr:                         # constitution ReLU — IN on this lane, overriding the PSR-out default
+        {cell_id: constv2-mix-full__psr_ce_all, status: runnable, paper_arm: const_psr,
+         object: {staged_id: base64s1__constv2-mix-full__psr_ce_all, sha256: 7b87767d91bd9787d22a23a80a5e78c53d16b506cc25e4d9483f74e88238fda1,
+                  kind: psr, sidecar: train_budget_meta.json, object_generation: batch64, fit: {model_id: Qwen/Qwen3.5-4B-Base, revision: 1001bb4d826a52d1f399e183466143f4da7b741b, layers: 0-31}}}
+      ctl_psr:                           # control ReLU — IN
+        {cell_id: constv2ctl2-full__psr_ce_all, status: runnable, paper_arm: ctl_psr,
+         object: {staged_id: base64s1__constv2ctl2-full__psr_ce_all, sha256: f65425b851ab446b329fa93631462dd4f31fb16e11955867ef902dffd635c2cd,
+                  kind: psr, sidecar: train_budget_meta.json, object_generation: batch64, fit: {model_id: Qwen/Qwen3.5-4B-Base, revision: 1001bb4d826a52d1f399e183466143f4da7b741b, layers: 0-31}}}
+      const_lora:
+        {cell_id: constv2-mix-full__lora_r4_ce, status: runnable, paper_arm: const_lora,
+         object: {staged_id: base64s1__constv2-mix-full__lora_r4_ce, sha256: 8be1e1a7ab36f3f65557f7835a30c6b8f18143c781fbf7fb312a5cc7a6e08871,
+                  kind: lora, sidecar: train_budget_meta.json, object_generation: batch64, fit: {model_id: Qwen/Qwen3.5-4B-Base, revision: 1001bb4d826a52d1f399e183466143f4da7b741b, layers: [3, 7, 11, 15, 19, 23, 27, 31]}}}
+      ctl_lora:
+        {cell_id: constv2ctl2-full__lora_r4_ce, status: runnable, paper_arm: ctl_lora,
+         object: {staged_id: base64s1__constv2ctl2-full__lora_r4_ce, sha256: 000e0df5792882aa6e6e70498f2597ddd5f1aa52f43cef9a92cad57d7f7a6e20,
+                  kind: lora, sidecar: train_budget_meta.json, object_generation: batch64, fit: {model_id: Qwen/Qwen3.5-4B-Base, revision: 1001bb4d826a52d1f399e183466143f4da7b741b, layers: [3, 7, 11, 15, 19, 23, 27, 31]}}}
+      diff_lora:
+        {cell_id: constv2-mix-full__lora_r4_ce_minus_ctl, status: runnable, paper_arm: diff_lora,
+         object: {staged_id: derived_base64s1__constv2-mix-full__lora_r4_ce_minus_ctl, sha256: 0d275f7c76cbe63eacaec6b63c0976ac516cff039729029ee5b09b60f3d689c9,
+                  kind: lora_subtraction, sidecar: derived_meta.json, object_generation: batch64, fit: {model_id: Qwen/Qwen3.5-4B-Base, revision: 1001bb4d826a52d1f399e183466143f4da7b741b, layers: [3, 7, 11, 15, 19, 23, 27, 31]},
+                  parents_root: /vol/out},
+         note: "the scale-matched LoRA subtraction of the seed-1 constitution (8be1e1a7...) minus control (000e0df5...) parents (model_key qwen35_4b_base_eb64_s1); a BALANCED same-budget pair, unlike the qwen35_4b_it pair"}
+  qwen35_4b_s1_arditi:                   # the Arditi refusal-steer on seed base 1 (REQUIRED as on GSM8K) — the SAME row / bank as qwen35_4b_s1
+    family: qwen35_4b
+    lane_kind: instruct-direct          # the direction was fit on the SERVED checkpoint (Qwen/Qwen3.5-4B @ 851bf6e8; ~/arditi-stage/fits/qwen35_4b) — no transfer
+    view: qwen35_4b_s1
+    model_row: qwen35_4b-f22s1
+    served: {hf: Qwen/Qwen3.5-4B, rev: 851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a}
+    objects_dir: /vol/objects/sdfbase/full22/qwen35_4b/s1
+    legs: {bigcodebench_200: runnable,
+           bfcl_200: runnable}   # LIVE probe PASS at 80df464 (2026-09-23): configs/capeval/tasks/parser_probe/qwen3_5_verdict_80df464.json; the offline half PASSED at 5e3dd86 and again here
+    # RUNNABLE since 2026-09-22: the --pf identity derivation refused this served-only Class B cell by name
+    # ("arm 'arditi_allpos' is not registered in methods.ARMS"); object_identity.derive_one now builds the spec from the OBJECT and its
+    # fit_provenance.json sidecar (guarded by the blob's stored kind vector_all + the sidecar's verdict, never by name) and the grading host's
+    # derivation pinned EXPECTED_INTERVENTION_HASHES[qwen35_4b-f22s1][arditi_allpos]. The object is a LANE EXTRA of the s1 bank:
+    # scripts/bcbw_configs.py lists `arditi_allpos` in bcbw_qwen35_4b_s1.yaml while this entry is runnable, so the bank MUST hold
+    # arditi_allpos/{object.pt, fit_provenance.json} before ANY s1 standup (the registry validates every listed artifact) — declared below.
+    prerequisites: ["S4 (bank staging): the Arditi extra staged INSIDE /vol/objects/sdfbase/full22/qwen35_4b/s1 as the bare cell dir arditi_allpos/ (object.pt sha256 ba2212f0c2f9ffef2997bdd24831182052560cf980054bcee9cf95ea0db085b2 + fit_provenance.json, from the grading host ~/arditi-stage/objects/arditi_allpos/qwen35_4b/ladder/cells/ar_c0p3__arditi_allpos/), pinned configs/sdfbase_full22_pins.json qwen35_4b/ar_c0p3__arditi_allpos",
+                    "S4 (bank staging): the seed bank /vol/objects/sdfbase/full22/qwen35_4b/s1 staged from cluster A's cells_view/s1 with staged_manifest.json shas == configs/sdfbase_full22_pins.json for base64s1__constv2-mix-full__psr_ce_all, base64s1__constv2-mix-full__lora_r4_ce, base64s1__constv2ctl2-full__psr_ce_all, base64s1__constv2ctl2-full__lora_r4_ce, derived_base64s1__constv2-mix-full__lora_r4_ce_minus_ctl (W2's stage_seed_banks_modal.sh)"]   # the row's config enumerates the five seed objects too: every s1 standup builds its registry over them
+    prerequisites_met: ["S4 (bank staging): the Arditi extra staged INSIDE /vol/objects/sdfbase/full22/qwen35_4b/s1 as the bare cell dir arditi_allpos/ (object.pt sha256 ba2212f0c2f9ffef2997bdd24831182052560cf980054bcee9cf95ea0db085b2 + fit_provenance.json, from the grading host ~/arditi-stage/objects/arditi_allpos/qwen35_4b/ladder/cells/ar_c0p3__arditi_allpos/), pinned configs/sdfbase_full22_pins.json qwen35_4b/ar_c0p3__arditi_allpos", "S4 (bank staging): the seed bank /vol/objects/sdfbase/full22/qwen35_4b/s1 staged from cluster A's cells_view/s1 with staged_manifest.json shas == configs/sdfbase_full22_pins.json for base64s1__constv2-mix-full__psr_ce_all, base64s1__constv2-mix-full__lora_r4_ce, base64s1__constv2ctl2-full__psr_ce_all, base64s1__constv2ctl2-full__lora_r4_ce, derived_base64s1__constv2-mix-full__lora_r4_ce_minus_ctl (W2's stage_seed_banks_modal.sh)"]   # recorded 2026-09-23: bank + parents + Arditi extra staged and sha-verified
+    entries:
+      none:                              # The reader requires a runnable `none` beside a runnable steered entry; a FREE standup replicate of
+                                         # qwen35_4b_s1/none, launched ONLY if someone asks for it (scripts/launch_bcbw_seedrep.sh passes --cell arditi_allpos)
+        {cell_id: none, status: runnable, paper_arm: none,
+         note: "a FREE standup replicate if ever launched; the Arditi cell's anchor is qwen35_4b_s1/none (the same row and bank)"}
+      arditi_allpos:
+        {cell_id: arditi_allpos, status: runnable, paper_arm: arditi_allpos, kind: lane_extra,
+         object: {staged_id: ar_c0p3__arditi_allpos, sha256: ba2212f0c2f9ffef2997bdd24831182052560cf980054bcee9cf95ea0db085b2,
+                  kind: vector_all, sidecar: fit_provenance.json, object_generation: final,
+                  fit: {model_id: Qwen/Qwen3.5-4B, revision: 851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a, fit_layer: 13, served_layer: 12, c: 0.3, dose_unit: raw_coefficient}},
+         note: "the RAW Arditi refusal direction at c = 0.3 added at EVERY position of BOTH phases (the paper's own configuration; a declared override of the selection rule) — kind vector_all, layer 12, positions all, skip_bos false (the blob's own fields; the derivation reads them). object_generation `final`: an operating point selected from the ladder and staged with its sha (configs/arditi_allpos_pins.json) — the 2026-09-10 fit, not a batch-64 object. Staged INSIDE the s1 bank as arditi_allpos/; seed base 1 carries no decode-seed rule on this lane"}
+  qwen35_4b_s1p:                         # the paired-write difference ReLU on seed 1 (the composed psr_paired_write object, its own row / bank view s1p)
+    family: qwen35_4b
+    lane_kind: base->instruct
+    view: qwen35_4b_s1p
+    model_row: qwen35_4b-f22s1p
+    served: {hf: Qwen/Qwen3.5-4B, rev: 851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a}
+    objects_dir: /vol/objects/sdfbase/full22/qwen35_4b/s1p
+    prerequisites: ["S6e: qwen35_4b geometry budget MEASURED on this branch (P2-9)",
+                    "S4 (bank staging): the seed bank /vol/objects/sdfbase/full22/qwen35_4b/s1p staged from cluster A's cells_view/s1p with staged_manifest.json shas == configs/sdfbase_full22_pins.json for paired_eb64s1__constv2-mix-full__psr_ce_all_minus_ctl, base64s1__constv2-mix-full__lora_r4_ce, derived_base64s1__constv2-mix-full__lora_r4_ce_minus_ctl (W2's stage_seed_banks_modal.sh)",
+                    "S4: the derived object's parents staged at /vol/out/qwen35_4b_base_eb64_s1/cells_all/{constv2-mix-full__psr_ce_all,constv2ctl2-full__psr_ce_all}/ (object.pt + train_budget_meta.json + COMPLETE; shas 7b87767d... / f65425b8...); the container preflight's derived_object_provenance holds the derived object to them, sha-bound"]
+    prerequisites_met: ["S6e: qwen35_4b geometry budget MEASURED on this branch (P2-9)", "S4 (bank staging): the seed bank /vol/objects/sdfbase/full22/qwen35_4b/s1p staged from cluster A's cells_view/s1p with staged_manifest.json shas == configs/sdfbase_full22_pins.json for paired_eb64s1__constv2-mix-full__psr_ce_all_minus_ctl, base64s1__constv2-mix-full__lora_r4_ce, derived_base64s1__constv2-mix-full__lora_r4_ce_minus_ctl (W2's stage_seed_banks_modal.sh)", "S4: the derived object's parents staged at /vol/out/qwen35_4b_base_eb64_s1/cells_all/{constv2-mix-full__psr_ce_all,constv2ctl2-full__psr_ce_all}/ (object.pt + train_budget_meta.json + COMPLETE; shas 7b87767d... / f65425b8...); the container preflight's derived_object_provenance holds the derived object to them, sha-bound"]   # recorded 2026-09-23: bank + parents + Arditi extra staged and sha-verified
+    legs: {bigcodebench_200: runnable,
+           bfcl_200: runnable}   # LIVE probe PASS at 80df464: configs/capeval/tasks/parser_probe/qwen3_5_verdict_80df464.json; the offline half PASSED at 5e3dd86 and again here
+    entries:
+      none:                              # NOT the paper's anchor — the composed cell pairs with qwen35_4b_s1/none (the reader pairs by
+                                         # view); listed because the roster requires a runnable `none` beside a runnable steered entry, and launched
+                                         # ONLY if someone asks for it (scripts/launch_bcbw_seedrep.sh passes --cell <composed> on this wave): a FREE replicate
+        {cell_id: none, status: runnable, paper_arm: none,
+         note: "a FREE standup replicate if ever launched; the composed difference ReLU's anchor is qwen35_4b_s1/none"}
+      diff_psr:                          # the COMPOSED difference ReLU: u_pos(z) - u_neg(z) on the shared pre-write layer output, both seed-1 PSR parents stored
+                                         # bit-exact (derived_admission.py's psr_paired_write branch) — NOT the distilled residual the gemma main wave calls diff_psr
+        {cell_id: constv2-mix-full__psr_ce_all_minus_ctl, status: runnable, paper_arm: diff_psr,
+         object: {staged_id: paired_eb64s1__constv2-mix-full__psr_ce_all_minus_ctl, sha256: f98f0349673b7cb0cf85f54aee71f74bf9f0bbf981e989b52c8ba6599a492c2d,
+                  kind: psr_paired_write, sidecar: derived_meta.json, object_generation: batch64, fit: {model_id: Qwen/Qwen3.5-4B-Base, revision: 1001bb4d826a52d1f399e183466143f4da7b741b, layers: 0-31},
+                  parents_root: /vol/out},
+         note: "parents: the seed-1 constitution PSR (7b87767d...) and control PSR (f65425b8...), model_key qwen35_4b_base_eb64_s1; served natively on the residual slot (NATIVE_LORA_SERVABLE_KINDS psr_paired_write) — the GSM8K paired-view rows' object"}
+  qwen35_4b_s2:                          # seed view s2 of the batch-64 three-seed Qwen family
+    family: qwen35_4b
+    lane_kind: base->instruct           # every object fit on Qwen/Qwen3.5-4B-Base @ 1001bb4d at effective batch 64 (seed 2), served on the chat checkpoint
+    view: qwen35_4b_s2
+    model_row: qwen35_4b-f22s2
+    served: {hf: Qwen/Qwen3.5-4B, rev: 851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a}
+    objects_dir: /vol/objects/sdfbase/full22/qwen35_4b/s2
+    prerequisites: ["S6e: qwen35_4b geometry budget MEASURED on this branch (P2-9)",
+                    "S4 (bank staging): the seed bank /vol/objects/sdfbase/full22/qwen35_4b/s2 staged from cluster A's cells_view/s2 with staged_manifest.json shas == configs/sdfbase_full22_pins.json for base64s2__constv2-mix-full__psr_ce_all, base64s2__constv2-mix-full__lora_r4_ce, base64s2__constv2ctl2-full__psr_ce_all, base64s2__constv2ctl2-full__lora_r4_ce, derived_base64s2__constv2-mix-full__lora_r4_ce_minus_ctl (W2's stage_seed_banks_modal.sh)",
+                    "S4: the derived object's parents staged at /vol/out/qwen35_4b_base_eb64_s2/cells_all/{constv2-mix-full__lora_r4_ce,constv2ctl2-full__lora_r4_ce}/ (object.pt + train_budget_meta.json + COMPLETE; shas 724fe6dd... / 900938b5...); the container preflight's derived_object_provenance holds the derived object to them, sha-bound",
+                    "S4 (bank staging): the Arditi extra staged INSIDE /vol/objects/sdfbase/full22/qwen35_4b/s2 as the bare cell dir arditi_allpos/ (object.pt sha256 ba2212f0c2f9ffef2997bdd24831182052560cf980054bcee9cf95ea0db085b2 + fit_provenance.json, from the grading host ~/arditi-stage/objects/arditi_allpos/qwen35_4b/ladder/cells/ar_c0p3__arditi_allpos/), pinned configs/sdfbase_full22_pins.json qwen35_4b/ar_c0p3__arditi_allpos"]
+    prerequisites_met: ["S6e: qwen35_4b geometry budget MEASURED on this branch (P2-9)", "S4 (bank staging): the seed bank /vol/objects/sdfbase/full22/qwen35_4b/s2 staged from cluster A's cells_view/s2 with staged_manifest.json shas == configs/sdfbase_full22_pins.json for base64s2__constv2-mix-full__psr_ce_all, base64s2__constv2-mix-full__lora_r4_ce, base64s2__constv2ctl2-full__psr_ce_all, base64s2__constv2ctl2-full__lora_r4_ce, derived_base64s2__constv2-mix-full__lora_r4_ce_minus_ctl (W2's stage_seed_banks_modal.sh)", "S4: the derived object's parents staged at /vol/out/qwen35_4b_base_eb64_s2/cells_all/{constv2-mix-full__lora_r4_ce,constv2ctl2-full__lora_r4_ce}/ (object.pt + train_budget_meta.json + COMPLETE; shas 724fe6dd... / 900938b5...); the container preflight's derived_object_provenance holds the derived object to them, sha-bound", "S4 (bank staging): the Arditi extra staged INSIDE /vol/objects/sdfbase/full22/qwen35_4b/s2 as the bare cell dir arditi_allpos/ (object.pt sha256 ba2212f0c2f9ffef2997bdd24831182052560cf980054bcee9cf95ea0db085b2 + fit_provenance.json, from the grading host ~/arditi-stage/objects/arditi_allpos/qwen35_4b/ladder/cells/ar_c0p3__arditi_allpos/), pinned configs/sdfbase_full22_pins.json qwen35_4b/ar_c0p3__arditi_allpos"]   # recorded 2026-09-23: bank + parents + Arditi extra staged and sha-verified
+    legs: {bigcodebench_200: runnable,
+           bfcl_200: runnable}   # LIVE probe PASS at 80df464: configs/capeval/tasks/parser_probe/qwen3_5_verdict_80df464.json; the offline half PASSED at 5e3dd86 and again here
+    entries:                             # the eight-cell seed row (GSM8K parity); the ReLU arms are IN
+      none:
+        {cell_id: none, status: runnable, paper_arm: none}
+      si_safety:
+        {cell_id: prompted__safety_refusal, status: runnable, paper_arm: si_safety, kind: prompted,
+         note: "harness id prompted__safety; the SI text as the system prompt, no object (the gemma4e4b_it precedent)"}
+      const_si:
+        {cell_id: prompted__si_constitution, status: runnable, paper_arm: si_constitution, kind: prompted,
+         note: "the paper's constitution-SI arm (the six-arm ruling of 2026-09-11); prompt-only, same catalogue as prompted__safety_refusal"}
+      const_psr:                         # constitution ReLU — IN on this lane, overriding the PSR-out default
+        {cell_id: constv2-mix-full__psr_ce_all, status: runnable, paper_arm: const_psr,
+         object: {staged_id: base64s2__constv2-mix-full__psr_ce_all, sha256: 2d43a58e55e674d3e33c6cbbaf7bb0ad9b06021d308b9e924213acf7c0609fd8,
+                  kind: psr, sidecar: train_budget_meta.json, object_generation: batch64, fit: {model_id: Qwen/Qwen3.5-4B-Base, revision: 1001bb4d826a52d1f399e183466143f4da7b741b, layers: 0-31}}}
+      ctl_psr:                           # control ReLU — IN
+        {cell_id: constv2ctl2-full__psr_ce_all, status: runnable, paper_arm: ctl_psr,
+         object: {staged_id: base64s2__constv2ctl2-full__psr_ce_all, sha256: 900fbabb6d56a61f37acf71a28482f8dd843a6f27809f12f09ca38a1328bbecb,
+                  kind: psr, sidecar: train_budget_meta.json, object_generation: batch64, fit: {model_id: Qwen/Qwen3.5-4B-Base, revision: 1001bb4d826a52d1f399e183466143f4da7b741b, layers: 0-31}}}
+      const_lora:
+        {cell_id: constv2-mix-full__lora_r4_ce, status: runnable, paper_arm: const_lora,
+         object: {staged_id: base64s2__constv2-mix-full__lora_r4_ce, sha256: 724fe6ddb52cb679656442b2537057900f3c523ddc3c45b3edde50bdc4a487d2,
+                  kind: lora, sidecar: train_budget_meta.json, object_generation: batch64, fit: {model_id: Qwen/Qwen3.5-4B-Base, revision: 1001bb4d826a52d1f399e183466143f4da7b741b, layers: [3, 7, 11, 15, 19, 23, 27, 31]}}}
+      ctl_lora:
+        {cell_id: constv2ctl2-full__lora_r4_ce, status: runnable, paper_arm: ctl_lora,
+         object: {staged_id: base64s2__constv2ctl2-full__lora_r4_ce, sha256: 900938b516d6e266eacd5d53aef2663367fe0974fcb19757ead908b1e1a68e63,
+                  kind: lora, sidecar: train_budget_meta.json, object_generation: batch64, fit: {model_id: Qwen/Qwen3.5-4B-Base, revision: 1001bb4d826a52d1f399e183466143f4da7b741b, layers: [3, 7, 11, 15, 19, 23, 27, 31]}}}
+      diff_lora:
+        {cell_id: constv2-mix-full__lora_r4_ce_minus_ctl, status: runnable, paper_arm: diff_lora,
+         object: {staged_id: derived_base64s2__constv2-mix-full__lora_r4_ce_minus_ctl, sha256: 06f81d946969c1863103d6856841b7fc8c8ddb0475c9851b1860c438387e979f,
+                  kind: lora_subtraction, sidecar: derived_meta.json, object_generation: batch64, fit: {model_id: Qwen/Qwen3.5-4B-Base, revision: 1001bb4d826a52d1f399e183466143f4da7b741b, layers: [3, 7, 11, 15, 19, 23, 27, 31]},
+                  parents_root: /vol/out},
+         note: "the scale-matched LoRA subtraction of the seed-2 constitution (724fe6dd...) minus control (900938b5...) parents (model_key qwen35_4b_base_eb64_s2); a BALANCED same-budget pair, unlike the qwen35_4b_it pair"}
+  qwen35_4b_s2_arditi:                   # the Arditi refusal-steer on seed base 2 (REQUIRED as on GSM8K) — the SAME row / bank as qwen35_4b_s2
+    family: qwen35_4b
+    lane_kind: instruct-direct          # the direction was fit on the SERVED checkpoint (Qwen/Qwen3.5-4B @ 851bf6e8; ~/arditi-stage/fits/qwen35_4b) — no transfer
+    view: qwen35_4b_s2
+    model_row: qwen35_4b-f22s2
+    served: {hf: Qwen/Qwen3.5-4B, rev: 851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a}
+    objects_dir: /vol/objects/sdfbase/full22/qwen35_4b/s2
+    legs: {bigcodebench_200: runnable,
+           bfcl_200: runnable}   # LIVE probe PASS at 80df464 (2026-09-23): configs/capeval/tasks/parser_probe/qwen3_5_verdict_80df464.json; the offline half PASSED at 5e3dd86 and again here
+    # RUNNABLE since 2026-09-22: the --pf identity derivation refused this served-only Class B cell by name
+    # ("arm 'arditi_allpos' is not registered in methods.ARMS"); object_identity.derive_one now builds the spec from the OBJECT and its
+    # fit_provenance.json sidecar (guarded by the blob's stored kind vector_all + the sidecar's verdict, never by name) and the grading host's
+    # derivation pinned EXPECTED_INTERVENTION_HASHES[qwen35_4b-f22s2][arditi_allpos]. The object is a LANE EXTRA of the s2 bank:
+    # scripts/bcbw_configs.py lists `arditi_allpos` in bcbw_qwen35_4b_s2.yaml while this entry is runnable, so the bank MUST hold
+    # arditi_allpos/{object.pt, fit_provenance.json} before ANY s2 standup (the registry validates every listed artifact) — declared below.
+    prerequisites: ["S4 (bank staging): the Arditi extra staged INSIDE /vol/objects/sdfbase/full22/qwen35_4b/s2 as the bare cell dir arditi_allpos/ (object.pt sha256 ba2212f0c2f9ffef2997bdd24831182052560cf980054bcee9cf95ea0db085b2 + fit_provenance.json, from the grading host ~/arditi-stage/objects/arditi_allpos/qwen35_4b/ladder/cells/ar_c0p3__arditi_allpos/), pinned configs/sdfbase_full22_pins.json qwen35_4b/ar_c0p3__arditi_allpos",
+                    "S4 (bank staging): the seed bank /vol/objects/sdfbase/full22/qwen35_4b/s2 staged from cluster A's cells_view/s2 with staged_manifest.json shas == configs/sdfbase_full22_pins.json for base64s2__constv2-mix-full__psr_ce_all, base64s2__constv2-mix-full__lora_r4_ce, base64s2__constv2ctl2-full__psr_ce_all, base64s2__constv2ctl2-full__lora_r4_ce, derived_base64s2__constv2-mix-full__lora_r4_ce_minus_ctl (W2's stage_seed_banks_modal.sh)"]   # the row's config enumerates the five seed objects too: every s2 standup builds its registry over them
+    prerequisites_met: ["S4 (bank staging): the Arditi extra staged INSIDE /vol/objects/sdfbase/full22/qwen35_4b/s2 as the bare cell dir arditi_allpos/ (object.pt sha256 ba2212f0c2f9ffef2997bdd24831182052560cf980054bcee9cf95ea0db085b2 + fit_provenance.json, from the grading host ~/arditi-stage/objects/arditi_allpos/qwen35_4b/ladder/cells/ar_c0p3__arditi_allpos/), pinned configs/sdfbase_full22_pins.json qwen35_4b/ar_c0p3__arditi_allpos", "S4 (bank staging): the seed bank /vol/objects/sdfbase/full22/qwen35_4b/s2 staged from cluster A's cells_view/s2 with staged_manifest.json shas == configs/sdfbase_full22_pins.json for base64s2__constv2-mix-full__psr_ce_all, base64s2__constv2-mix-full__lora_r4_ce, base64s2__constv2ctl2-full__psr_ce_all, base64s2__constv2ctl2-full__lora_r4_ce, derived_base64s2__constv2-mix-full__lora_r4_ce_minus_ctl (W2's stage_seed_banks_modal.sh)"]   # recorded 2026-09-23: bank + parents + Arditi extra staged and sha-verified
+    entries:
+      none:                              # The reader requires a runnable `none` beside a runnable steered entry; a FREE standup replicate of
+                                         # qwen35_4b_s2/none, launched ONLY if someone asks for it (scripts/launch_bcbw_seedrep.sh passes --cell arditi_allpos)
+        {cell_id: none, status: runnable, paper_arm: none,
+         note: "a FREE standup replicate if ever launched; the Arditi cell's anchor is qwen35_4b_s2/none (the same row and bank)"}
+      arditi_allpos:
+        {cell_id: arditi_allpos, status: runnable, paper_arm: arditi_allpos, kind: lane_extra,
+         object: {staged_id: ar_c0p3__arditi_allpos, sha256: ba2212f0c2f9ffef2997bdd24831182052560cf980054bcee9cf95ea0db085b2,
+                  kind: vector_all, sidecar: fit_provenance.json, object_generation: final,
+                  fit: {model_id: Qwen/Qwen3.5-4B, revision: 851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a, fit_layer: 13, served_layer: 12, c: 0.3, dose_unit: raw_coefficient}},
+         note: "the RAW Arditi refusal direction at c = 0.3 added at EVERY position of BOTH phases (the paper's own configuration; a declared override of the selection rule) — kind vector_all, layer 12, positions all, skip_bos false (the blob's own fields; the derivation reads them). object_generation `final`: an operating point selected from the ladder and staged with its sha (configs/arditi_allpos_pins.json) — the 2026-09-10 fit, not a batch-64 object. Staged INSIDE the s2 bank as arditi_allpos/; seed base 2 carries no decode-seed rule on this lane"}
+  qwen35_4b_s2p:                         # the paired-write difference ReLU on seed 2 (the composed psr_paired_write object, its own row / bank view s2p)
+    family: qwen35_4b
+    lane_kind: base->instruct
+    view: qwen35_4b_s2p
+    model_row: qwen35_4b-f22s2p
+    served: {hf: Qwen/Qwen3.5-4B, rev: 851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a}
+    objects_dir: /vol/objects/sdfbase/full22/qwen35_4b/s2p
+    prerequisites: ["S6e: qwen35_4b geometry budget MEASURED on this branch (P2-9)",
+                    "S4 (bank staging): the seed bank /vol/objects/sdfbase/full22/qwen35_4b/s2p staged from cluster A's cells_view/s2p with staged_manifest.json shas == configs/sdfbase_full22_pins.json for paired_eb64s2__constv2-mix-full__psr_ce_all_minus_ctl, base64s2__constv2-mix-full__lora_r4_ce, derived_base64s2__constv2-mix-full__lora_r4_ce_minus_ctl (W2's stage_seed_banks_modal.sh)",
+                    "S4: the derived object's parents staged at /vol/out/qwen35_4b_base_eb64_s2/cells_all/{constv2-mix-full__psr_ce_all,constv2ctl2-full__psr_ce_all}/ (object.pt + train_budget_meta.json + COMPLETE; shas 2d43a58e... / 900fbabb...); the container preflight's derived_object_provenance holds the derived object to them, sha-bound"]
+    prerequisites_met: ["S6e: qwen35_4b geometry budget MEASURED on this branch (P2-9)", "S4 (bank staging): the seed bank /vol/objects/sdfbase/full22/qwen35_4b/s2p staged from cluster A's cells_view/s2p with staged_manifest.json shas == configs/sdfbase_full22_pins.json for paired_eb64s2__constv2-mix-full__psr_ce_all_minus_ctl, base64s2__constv2-mix-full__lora_r4_ce, derived_base64s2__constv2-mix-full__lora_r4_ce_minus_ctl (W2's stage_seed_banks_modal.sh)", "S4: the derived object's parents staged at /vol/out/qwen35_4b_base_eb64_s2/cells_all/{constv2-mix-full__psr_ce_all,constv2ctl2-full__psr_ce_all}/ (object.pt + train_budget_meta.json + COMPLETE; shas 2d43a58e... / 900fbabb...); the container preflight's derived_object_provenance holds the derived object to them, sha-bound"]   # recorded 2026-09-23: bank + parents + Arditi extra staged and sha-verified
+    legs: {bigcodebench_200: runnable,
+           bfcl_200: runnable}   # LIVE probe PASS at 80df464: configs/capeval/tasks/parser_probe/qwen3_5_verdict_80df464.json; the offline half PASSED at 5e3dd86 and again here
+    entries:
+      none:                              # NOT the paper's anchor — the composed cell pairs with qwen35_4b_s2/none (the reader pairs by
+                                         # view); listed because the roster requires a runnable `none` beside a runnable steered entry, and launched
+                                         # ONLY if someone asks for it (scripts/launch_bcbw_seedrep.sh passes --cell <composed> on this wave): a FREE replicate
+        {cell_id: none, status: runnable, paper_arm: none,
+         note: "a FREE standup replicate if ever launched; the composed difference ReLU's anchor is qwen35_4b_s2/none"}
+      diff_psr:                          # the COMPOSED difference ReLU: u_pos(z) - u_neg(z) on the shared pre-write layer output, both seed-2 PSR parents stored
+                                         # bit-exact (derived_admission.py's psr_paired_write branch) — NOT the distilled residual the gemma main wave calls diff_psr
+        {cell_id: constv2-mix-full__psr_ce_all_minus_ctl, status: runnable, paper_arm: diff_psr,
+         object: {staged_id: paired_eb64s2__constv2-mix-full__psr_ce_all_minus_ctl, sha256: 9c639c91d2ef5b8fc482cb039e8ae65deaa79389e1eab7daaa0c45a5caacfc66,
+                  kind: psr_paired_write, sidecar: derived_meta.json, object_generation: batch64, fit: {model_id: Qwen/Qwen3.5-4B-Base, revision: 1001bb4d826a52d1f399e183466143f4da7b741b, layers: 0-31},
+                  parents_root: /vol/out},
+         note: "parents: the seed-2 constitution PSR (2d43a58e...) and control PSR (900fbabb...), model_key qwen35_4b_base_eb64_s2; served natively on the residual slot (NATIVE_LORA_SERVABLE_KINDS psr_paired_write) — the GSM8K paired-view rows' object"}
+  qwen35_4b_s3:                          # seed view s3 of the batch-64 three-seed Qwen family
+    family: qwen35_4b
+    lane_kind: base->instruct           # every object fit on Qwen/Qwen3.5-4B-Base @ 1001bb4d at effective batch 64 (seed 3), served on the chat checkpoint
+    view: qwen35_4b_s3
+    model_row: qwen35_4b-f22s3
+    served: {hf: Qwen/Qwen3.5-4B, rev: 851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a}
+    objects_dir: /vol/objects/sdfbase/full22/qwen35_4b/s3
+    prerequisites: ["S6e: qwen35_4b geometry budget MEASURED on this branch (P2-9)",
+                    "S4 (bank staging): the seed bank /vol/objects/sdfbase/full22/qwen35_4b/s3 staged from cluster A's cells_view/s3 with staged_manifest.json shas == configs/sdfbase_full22_pins.json for base64s3__constv2-mix-full__psr_ce_all, base64s3__constv2-mix-full__lora_r4_ce, base64s3__constv2ctl2-full__psr_ce_all, base64s3__constv2ctl2-full__lora_r4_ce, derived_base64s3__constv2-mix-full__lora_r4_ce_minus_ctl (W2's stage_seed_banks_modal.sh)",
+                    "S4: the derived object's parents staged at /vol/out/qwen35_4b_base_eb64_s3/cells_all/{constv2-mix-full__lora_r4_ce,constv2ctl2-full__lora_r4_ce}/ (object.pt + train_budget_meta.json + COMPLETE; shas a9934f6a... / 33e7b327...); the container preflight's derived_object_provenance holds the derived object to them, sha-bound",
+                    "S4 (bank staging): the Arditi extra staged INSIDE /vol/objects/sdfbase/full22/qwen35_4b/s3 as the bare cell dir arditi_allpos/ (object.pt sha256 ba2212f0c2f9ffef2997bdd24831182052560cf980054bcee9cf95ea0db085b2 + fit_provenance.json, from the grading host ~/arditi-stage/objects/arditi_allpos/qwen35_4b/ladder/cells/ar_c0p3__arditi_allpos/), pinned configs/sdfbase_full22_pins.json qwen35_4b/ar_c0p3__arditi_allpos"]
+    prerequisites_met: ["S6e: qwen35_4b geometry budget MEASURED on this branch (P2-9)", "S4 (bank staging): the seed bank /vol/objects/sdfbase/full22/qwen35_4b/s3 staged from cluster A's cells_view/s3 with staged_manifest.json shas == configs/sdfbase_full22_pins.json for base64s3__constv2-mix-full__psr_ce_all, base64s3__constv2-mix-full__lora_r4_ce, base64s3__constv2ctl2-full__psr_ce_all, base64s3__constv2ctl2-full__lora_r4_ce, derived_base64s3__constv2-mix-full__lora_r4_ce_minus_ctl (W2's stage_seed_banks_modal.sh)", "S4: the derived object's parents staged at /vol/out/qwen35_4b_base_eb64_s3/cells_all/{constv2-mix-full__lora_r4_ce,constv2ctl2-full__lora_r4_ce}/ (object.pt + train_budget_meta.json + COMPLETE; shas a9934f6a... / 33e7b327...); the container preflight's derived_object_provenance holds the derived object to them, sha-bound", "S4 (bank staging): the Arditi extra staged INSIDE /vol/objects/sdfbase/full22/qwen35_4b/s3 as the bare cell dir arditi_allpos/ (object.pt sha256 ba2212f0c2f9ffef2997bdd24831182052560cf980054bcee9cf95ea0db085b2 + fit_provenance.json, from the grading host ~/arditi-stage/objects/arditi_allpos/qwen35_4b/ladder/cells/ar_c0p3__arditi_allpos/), pinned configs/sdfbase_full22_pins.json qwen35_4b/ar_c0p3__arditi_allpos"]   # recorded 2026-09-23: bank + parents + Arditi extra staged and sha-verified
+    legs: {bigcodebench_200: runnable,
+           bfcl_200: runnable}   # LIVE probe PASS at 80df464: configs/capeval/tasks/parser_probe/qwen3_5_verdict_80df464.json; the offline half PASSED at 5e3dd86 and again here
+    entries:                             # the eight-cell seed row (GSM8K parity); the ReLU arms are IN
+      none:
+        {cell_id: none, status: runnable, paper_arm: none}
+      si_safety:
+        {cell_id: prompted__safety_refusal, status: runnable, paper_arm: si_safety, kind: prompted,
+         note: "harness id prompted__safety; the SI text as the system prompt, no object (the gemma4e4b_it precedent)"}
+      const_si:
+        {cell_id: prompted__si_constitution, status: runnable, paper_arm: si_constitution, kind: prompted,
+         note: "the paper's constitution-SI arm (the six-arm ruling of 2026-09-11); prompt-only, same catalogue as prompted__safety_refusal"}
+      const_psr:                         # constitution ReLU — IN (supersedes the 2026-09-11 PSR-out default on this lane)
+        {cell_id: constv2-mix-full__psr_ce_all, status: runnable, paper_arm: const_psr,
+         object: {staged_id: base64s3__constv2-mix-full__psr_ce_all, sha256: cc1ec068380ed8fe51de1e91e8b8fe6b32c95fa9a00bcf381a536007c075bf09,
+                  kind: psr, sidecar: train_budget_meta.json, object_generation: batch64, fit: {model_id: Qwen/Qwen3.5-4B-Base, revision: 1001bb4d826a52d1f399e183466143f4da7b741b, layers: 0-31}}}
+      ctl_psr:                           # control ReLU — IN
+        {cell_id: constv2ctl2-full__psr_ce_all, status: runnable, paper_arm: ctl_psr,
+         object: {staged_id: base64s3__constv2ctl2-full__psr_ce_all, sha256: c5686c7316b7f79ba31edeea4ecf5d3b237724e399cafb41295478b457471c34,
+                  kind: psr, sidecar: train_budget_meta.json, object_generation: batch64, fit: {model_id: Qwen/Qwen3.5-4B-Base, revision: 1001bb4d826a52d1f399e183466143f4da7b741b, layers: 0-31}}}
+      const_lora:
+        {cell_id: constv2-mix-full__lora_r4_ce, status: runnable, paper_arm: const_lora,
+         object: {staged_id: base64s3__constv2-mix-full__lora_r4_ce, sha256: a9934f6a796c238d58f4da10615c9f1c211d8b067afcf1330241cdcff967ce42,
+                  kind: lora, sidecar: train_budget_meta.json, object_generation: batch64, fit: {model_id: Qwen/Qwen3.5-4B-Base, revision: 1001bb4d826a52d1f399e183466143f4da7b741b, layers: [3, 7, 11, 15, 19, 23, 27, 31]}}}
+      ctl_lora:
+        {cell_id: constv2ctl2-full__lora_r4_ce, status: runnable, paper_arm: ctl_lora,
+         object: {staged_id: base64s3__constv2ctl2-full__lora_r4_ce, sha256: 33e7b327049aa28605818fe02970d918a86a2c6eea8f6bbf38a01779b84f9d32,
+                  kind: lora, sidecar: train_budget_meta.json, object_generation: batch64, fit: {model_id: Qwen/Qwen3.5-4B-Base, revision: 1001bb4d826a52d1f399e183466143f4da7b741b, layers: [3, 7, 11, 15, 19, 23, 27, 31]}}}
+      diff_lora:
+        {cell_id: constv2-mix-full__lora_r4_ce_minus_ctl, status: runnable, paper_arm: diff_lora,
+         object: {staged_id: derived_base64s3__constv2-mix-full__lora_r4_ce_minus_ctl, sha256: 8952728fa0f7fb6a0b48557e9c491073c5080f63178fc64c4f113088e1f2f974,
+                  kind: lora_subtraction, sidecar: derived_meta.json, object_generation: batch64, fit: {model_id: Qwen/Qwen3.5-4B-Base, revision: 1001bb4d826a52d1f399e183466143f4da7b741b, layers: [3, 7, 11, 15, 19, 23, 27, 31]},
+                  parents_root: /vol/out},
+         note: "the scale-matched LoRA subtraction of the seed-3 constitution (a9934f6a...) minus control (33e7b327...) parents (model_key qwen35_4b_base_eb64_s3); a BALANCED same-budget pair, unlike the qwen35_4b_it pair"}
+  qwen35_4b_s3_arditi:                   # the Arditi refusal-steer on seed base 3 (REQUIRED as on GSM8K) — the SAME row / bank as qwen35_4b_s3
+    family: qwen35_4b
+    lane_kind: instruct-direct          # the direction was fit on the SERVED checkpoint (Qwen/Qwen3.5-4B @ 851bf6e8; ~/arditi-stage/fits/qwen35_4b) — no transfer
+    view: qwen35_4b_s3
+    model_row: qwen35_4b-f22s3
+    served: {hf: Qwen/Qwen3.5-4B, rev: 851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a}
+    objects_dir: /vol/objects/sdfbase/full22/qwen35_4b/s3
+    legs: {bigcodebench_200: runnable,
+           bfcl_200: runnable}   # LIVE probe PASS at 80df464 (2026-09-23): configs/capeval/tasks/parser_probe/qwen3_5_verdict_80df464.json; the offline half PASSED at 5e3dd86 and again here
+    # RUNNABLE since 2026-09-22: the --pf identity derivation refused this served-only Class B cell by name
+    # ("arm 'arditi_allpos' is not registered in methods.ARMS"); object_identity.derive_one now builds the spec from the OBJECT and its
+    # fit_provenance.json sidecar (guarded by the blob's stored kind vector_all + the sidecar's verdict, never by name) and the grading
+    # host's derivation pinned EXPECTED_INTERVENTION_HASHES[qwen35_4b-f22s3][arditi_allpos]. The object is a LANE EXTRA of the s3 bank:
+    # scripts/bcbw_configs.py lists `arditi_allpos` in bcbw_qwen35_4b_s3.yaml while this entry is runnable, so the bank MUST hold
+    # arditi_allpos/{object.pt, fit_provenance.json} before ANY s3 standup (the registry validates every listed artifact) — declared below.
+    prerequisites: ["S4 (bank staging): the Arditi extra staged INSIDE /vol/objects/sdfbase/full22/qwen35_4b/s3 as the bare cell dir arditi_allpos/ (object.pt sha256 ba2212f0c2f9ffef2997bdd24831182052560cf980054bcee9cf95ea0db085b2 + fit_provenance.json, from the grading host ~/arditi-stage/objects/arditi_allpos/qwen35_4b/ladder/cells/ar_c0p3__arditi_allpos/), pinned configs/sdfbase_full22_pins.json qwen35_4b/ar_c0p3__arditi_allpos",
+                    "S4 (bank staging): the seed bank /vol/objects/sdfbase/full22/qwen35_4b/s3 staged from cluster A's cells_view/s3 with staged_manifest.json shas == configs/sdfbase_full22_pins.json for base64s3__constv2-mix-full__psr_ce_all, base64s3__constv2-mix-full__lora_r4_ce, base64s3__constv2ctl2-full__psr_ce_all, base64s3__constv2ctl2-full__lora_r4_ce, derived_base64s3__constv2-mix-full__lora_r4_ce_minus_ctl (W2's stage_seed_banks_modal.sh)"]   # the row's config enumerates the five seed objects too: every s3 standup builds its registry over them
+    prerequisites_met: ["S4 (bank staging): the Arditi extra staged INSIDE /vol/objects/sdfbase/full22/qwen35_4b/s3 as the bare cell dir arditi_allpos/ (object.pt sha256 ba2212f0c2f9ffef2997bdd24831182052560cf980054bcee9cf95ea0db085b2 + fit_provenance.json, from the grading host ~/arditi-stage/objects/arditi_allpos/qwen35_4b/ladder/cells/ar_c0p3__arditi_allpos/), pinned configs/sdfbase_full22_pins.json qwen35_4b/ar_c0p3__arditi_allpos", "S4 (bank staging): the seed bank /vol/objects/sdfbase/full22/qwen35_4b/s3 staged from cluster A's cells_view/s3 with staged_manifest.json shas == configs/sdfbase_full22_pins.json for base64s3__constv2-mix-full__psr_ce_all, base64s3__constv2-mix-full__lora_r4_ce, base64s3__constv2ctl2-full__psr_ce_all, base64s3__constv2ctl2-full__lora_r4_ce, derived_base64s3__constv2-mix-full__lora_r4_ce_minus_ctl (W2's stage_seed_banks_modal.sh)"]   # recorded 2026-09-23: bank + parents + Arditi extra staged and sha-verified
+    entries:
+      none:                              # The reader requires a runnable `none` beside a runnable steered entry; a FREE standup replicate of
+                                         # qwen35_4b_s3/none, launched ONLY if someone asks for it (scripts/launch_bcbw_seedrep.sh passes --cell arditi_allpos)
+        {cell_id: none, status: runnable, paper_arm: none,
+         note: "a FREE standup replicate if ever launched; the Arditi cell's anchor is qwen35_4b_s3/none (the same row and bank)"}
+      arditi_allpos:
+        {cell_id: arditi_allpos, status: runnable, paper_arm: arditi_allpos, kind: lane_extra,
+         object: {staged_id: ar_c0p3__arditi_allpos, sha256: ba2212f0c2f9ffef2997bdd24831182052560cf980054bcee9cf95ea0db085b2,
+                  kind: vector_all, sidecar: fit_provenance.json, object_generation: final,
+                  fit: {model_id: Qwen/Qwen3.5-4B, revision: 851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a, fit_layer: 13, served_layer: 12, c: 0.3, dose_unit: raw_coefficient}},
+         note: "the RAW Arditi refusal direction at c = 0.3 added at EVERY position of BOTH phases (the paper's own configuration; a declared override of the selection rule) — kind vector_all, layer 12, positions all, skip_bos false (the blob's own fields; the derivation reads them). object_generation `final`: an operating point selected from the ladder and staged with its sha (configs/arditi_allpos_pins.json) — the 2026-09-10 fit, not a batch-64 object. Staged INSIDE the s3 bank as arditi_allpos/; seed base 3 carries no decode-seed rule on this lane"}
+  qwen35_4b_s3p:                         # the paired-write difference ReLU on seed 3 (the composed psr_paired_write object, its own row / bank view s3p)
+    family: qwen35_4b
+    lane_kind: base->instruct
+    view: qwen35_4b_s3p
+    model_row: qwen35_4b-f22s3p
+    served: {hf: Qwen/Qwen3.5-4B, rev: 851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a}
+    objects_dir: /vol/objects/sdfbase/full22/qwen35_4b/s3p
+    prerequisites: ["S6e: qwen35_4b geometry budget MEASURED on this branch (P2-9)",
+                    "S4 (bank staging): the seed bank /vol/objects/sdfbase/full22/qwen35_4b/s3p staged from cluster A's cells_view/s3p with staged_manifest.json shas == configs/sdfbase_full22_pins.json for paired_eb64s3__constv2-mix-full__psr_ce_all_minus_ctl, base64s3__constv2-mix-full__lora_r4_ce, derived_base64s3__constv2-mix-full__lora_r4_ce_minus_ctl (W2's stage_seed_banks_modal.sh)",
+                    "S4: the derived object's parents staged at /vol/out/qwen35_4b_base_eb64_s3/cells_all/{constv2-mix-full__psr_ce_all,constv2ctl2-full__psr_ce_all}/ (object.pt + train_budget_meta.json + COMPLETE; shas cc1ec068... / c5686c73...); the container preflight's derived_object_provenance holds the derived object to them, sha-bound"]
+    prerequisites_met: ["S6e: qwen35_4b geometry budget MEASURED on this branch (P2-9)", "S4 (bank staging): the seed bank /vol/objects/sdfbase/full22/qwen35_4b/s3p staged from cluster A's cells_view/s3p with staged_manifest.json shas == configs/sdfbase_full22_pins.json for paired_eb64s3__constv2-mix-full__psr_ce_all_minus_ctl, base64s3__constv2-mix-full__lora_r4_ce, derived_base64s3__constv2-mix-full__lora_r4_ce_minus_ctl (W2's stage_seed_banks_modal.sh)", "S4: the derived object's parents staged at /vol/out/qwen35_4b_base_eb64_s3/cells_all/{constv2-mix-full__psr_ce_all,constv2ctl2-full__psr_ce_all}/ (object.pt + train_budget_meta.json + COMPLETE; shas cc1ec068... / c5686c73...); the container preflight's derived_object_provenance holds the derived object to them, sha-bound"]   # recorded 2026-09-23: bank + parents + Arditi extra staged and sha-verified
+    legs: {bigcodebench_200: runnable,
+           bfcl_200: runnable}   # LIVE probe PASS at 80df464: configs/capeval/tasks/parser_probe/qwen3_5_verdict_80df464.json; the offline half PASSED at 5e3dd86 and again here
+    entries:
+      none:                              # NOT the paper's anchor — the composed cell pairs with qwen35_4b_s3/none (the reader pairs by
+                                         # view); listed because the roster requires a runnable `none` beside a runnable steered entry, and launched
+                                         # ONLY if someone asks for it (scripts/launch_bcbw_seedrep.sh passes --cell <composed> on this wave): a FREE replicate
+        {cell_id: none, status: runnable, paper_arm: none,
+         note: "a FREE standup replicate if ever launched; the composed difference ReLU's anchor is qwen35_4b_s3/none"}
+      diff_psr:                          # the COMPOSED difference ReLU: u_pos(z) - u_neg(z) on the shared pre-write layer output, both seed-3 PSR parents stored
+                                         # bit-exact (derived_admission.py's psr_paired_write branch) — NOT the distilled residual the gemma main wave calls diff_psr
+        {cell_id: constv2-mix-full__psr_ce_all_minus_ctl, status: runnable, paper_arm: diff_psr,
+         object: {staged_id: paired_eb64s3__constv2-mix-full__psr_ce_all_minus_ctl, sha256: 0718a3f9edfb033ad84c3322f717dc62b32b6298fe48f0a6c42e9f0a7c031647,
+                  kind: psr_paired_write, sidecar: derived_meta.json, object_generation: batch64, fit: {model_id: Qwen/Qwen3.5-4B-Base, revision: 1001bb4d826a52d1f399e183466143f4da7b741b, layers: 0-31},
+                  parents_root: /vol/out},
+         note: "parents: the seed-3 constitution PSR (cc1ec068...) and control PSR (c5686c73...), model_key qwen35_4b_base_eb64_s3; served natively on the residual slot (NATIVE_LORA_SERVABLE_KINDS psr_paired_write) — the GSM8K paired-view rows' object"}
+  gemma4e4b_s1:                              # b64-capability-agentic-queue (2026-09-23): the ALL-MODELS ONE-SEED wave of gemma4e4b — the eight-cell row over the family's base-lane objects (the qwen35_4b_s1 shape; registry-owner grammar <model_key>_s1 / <model_key>-f22s1 / view s1)
+    family: gemma4e4b
+    lane_kind: base->instruct        # the objects were fit on google/gemma-4-E4B @ 411aa17b (the base; effective batch 8) and are served on the -it target — the gemma4e4b_main transfer
+    view: gemma4e4b_s1
+    model_row: gemma4e4b-f22s1
+    served: {hf: google/gemma-4-E4B-it, rev: ee0ef6023621cff504d758262d4e04895a5af4a2}
+    objects_dir: /vol/objects/sdfbase/full22/gemma4e4b/s1
+    prerequisites: ["S4 (bank staging): the s1 bank /vol/objects/sdfbase/full22/gemma4e4b/s1 staged (object.pt + identity sidecar per cell; volume-internal copies of the main bank's cells) with staged_manifest.json shas == configs/sdfbase_full22_pins.json for base__constv2-mix-full__psr_ce_all, base__constv2-mix-full__lora_r4_ce, base__constv2ctl2-full__psr_ce_all, base__constv2ctl2-full__lora_r4_ce, derived__constv2-mix-full__lora_r4_ce_minus_ctl",
+                    "S4: the LoRA-subtraction parents at /vol/out/gemma4e4b_base/cells_all/{constv2-mix-full__lora_r4_ce,constv2ctl2-full__lora_r4_ce}/ (object.pt + train_budget_meta.json + COMPLETE; shas 8b2cd115... / 8c0f6d97...); the container preflight's derived_object_provenance holds the derived object to them, sha-bound — already on the volume (the first lane's derived-provenance check passed against them; gemma4e4b_main's wave)"]
+    prerequisites_met: ["S4 (bank staging): the s1 bank /vol/objects/sdfbase/full22/gemma4e4b/s1 staged (object.pt + identity sidecar per cell; volume-internal copies of the main bank's cells) with staged_manifest.json shas == configs/sdfbase_full22_pins.json for base__constv2-mix-full__psr_ce_all, base__constv2-mix-full__lora_r4_ce, base__constv2ctl2-full__psr_ce_all, base__constv2ctl2-full__lora_r4_ce, derived__constv2-mix-full__lora_r4_ce_minus_ctl", "S4: the LoRA-subtraction parents at /vol/out/gemma4e4b_base/cells_all/{constv2-mix-full__lora_r4_ce,constv2ctl2-full__lora_r4_ce}/ (object.pt + train_budget_meta.json + COMPLETE; shas 8b2cd115... / 8c0f6d97...); the container preflight's derived_object_provenance holds the derived object to them, sha-bound — already on the volume (the first lane's derived-provenance check passed against them; gemma4e4b_main's wave)"]   # recorded 2026-09-23 after stage_allmodels_banks_modal.sh --go (staged_banks_allmodels.json 20:32:30Z)
+    legs: {bigcodebench_200: runnable,
+           bfcl_200: runnable}   # gemma4's parser is the campaign's VERIFIED pin (vllm_server.TOOL_PARSER_BY_FAMILY gemma4; the row's petri_gemma4e4b.yaml manifest) — as gemma4e4b_it / gemma4e4b_main
+    entries:                             # the eight-cell one-seed row (the qwen35_4b_s1 shape, GSM8K parity): ALL runnable — the ReLU arms are IN
+      none:
+        {cell_id: none, status: runnable, paper_arm: none}
+      si_safety:
+        {cell_id: prompted__safety_refusal, status: runnable, paper_arm: si_safety, kind: prompted,
+         note: "harness id prompted__safety; the SI text as the system prompt, no object (the gemma4e4b_it precedent)"}
+      const_si:
+        {cell_id: prompted__si_constitution, status: runnable, paper_arm: si_constitution, kind: prompted,
+         note: "the paper's constitution-SI arm (the six-arm ruling of 2026-09-11); prompt-only, same catalogue as prompted__safety_refusal"}
+      const_psr:                         # constitution ReLU — the family's base-lane fit (the main bank's base__ object), IN
+        {cell_id: constv2-mix-full__psr_ce_all, status: runnable, paper_arm: const_psr,
+         object: {staged_id: base__constv2-mix-full__psr_ce_all, sha256: a75233d855538e52a692491ea0e92a0600197fcdb61c83c46d19c4d03f2ff83d,
+                  kind: psr, sidecar: train_budget_meta.json, object_generation: final, fit: {model_key: gemma4e4b_base, model_id: google/gemma-4-E4B, revision: 411aa17b749aa952df1359d2dcea73917a544d9a, layers: 0-41}}}
+      ctl_psr:                           # control ReLU — IN
+        {cell_id: constv2ctl2-full__psr_ce_all, status: runnable, paper_arm: ctl_psr,
+         object: {staged_id: base__constv2ctl2-full__psr_ce_all, sha256: a8a79d731773b730a394c32d11b67175e2034e5ed015c9beb5f93a51bd83c5fd,
+                  kind: psr, sidecar: train_budget_meta.json, object_generation: final, fit: {model_key: gemma4e4b_base, model_id: google/gemma-4-E4B, revision: 411aa17b749aa952df1359d2dcea73917a544d9a, layers: 0-41}}}
+      const_lora:
+        {cell_id: constv2-mix-full__lora_r4_ce, status: runnable, paper_arm: const_lora,
+         object: {staged_id: base__constv2-mix-full__lora_r4_ce, sha256: 8b2cd1156d0996021fcddd84d97416cc706bf3acc0598bd02255ee9d9288f9db,
+                  kind: lora, sidecar: train_budget_meta.json, object_generation: final, fit: {model_key: gemma4e4b_base, model_id: google/gemma-4-E4B, revision: 411aa17b749aa952df1359d2dcea73917a544d9a, layers: 0-41}}}
+      ctl_lora:
+        {cell_id: constv2ctl2-full__lora_r4_ce, status: runnable, paper_arm: ctl_lora,
+         object: {staged_id: base__constv2ctl2-full__lora_r4_ce, sha256: 8c0f6d971290c741ee0649951c32f21ff410bf7ef73f04b60bfb947973c39916,
+                  kind: lora, sidecar: train_budget_meta.json, object_generation: final, fit: {model_key: gemma4e4b_base, model_id: google/gemma-4-E4B, revision: 411aa17b749aa952df1359d2dcea73917a544d9a, layers: 0-41}}}
+      diff_lora:
+        {cell_id: constv2-mix-full__lora_r4_ce_minus_ctl, status: runnable, paper_arm: diff_lora,
+         object: {staged_id: derived__constv2-mix-full__lora_r4_ce_minus_ctl, sha256: be93b469a647248c68b48482c42e5af8f24da0993ba789f35e7a3aeeb2663391,
+                  kind: lora_subtraction, sidecar: derived_meta.json, object_generation: final, fit: {model_key: gemma4e4b_base, model_id: google/gemma-4-E4B, revision: 411aa17b749aa952df1359d2dcea73917a544d9a, layers: 0-41},
+                  parents_root: /vol/out},
+         note: "the SAME bytes as gemma4e4b_main / gemma4e4b-sdfbase's difference (be93b469…): the base-lane constitution LoRA (8b2cd115…) minus control (8c0f6d97…), scale-matched, model_key gemma4e4b_base; the row's own hash bootstrap reproduces the first lane's 6e23d193b88952bd",
+         intervention_hash_expected: 6e23d193b88952bd}
+  gemma4e4b_s1p:                             # the paired-write difference ReLU of gemma4e4b (the composed psr_paired_write object, its own row / bank view s1p; the qwen35_4b_s1p shape)
+    family: gemma4e4b
+    lane_kind: base->instruct
+    view: gemma4e4b_s1p
+    model_row: gemma4e4b-f22s1p
+    served: {hf: google/gemma-4-E4B-it, rev: ee0ef6023621cff504d758262d4e04895a5af4a2}
+    objects_dir: /vol/objects/sdfbase/full22/gemma4e4b/s1p
+    prerequisites: ["S4 (bank staging): the s1p bank /vol/objects/sdfbase/full22/gemma4e4b/s1p staged with staged_manifest.json shas == configs/sdfbase_full22_pins.json — the composed cell constv2-mix-full__psr_ce_all_minus_ctl/{object.pt, derived_meta.json, staged_from.json} from the grading host $STAGE/sdfbase/relu_paired/objects/gemma4e4b/cells/paired_eb8__constv2-mix-full__psr_ce_all_minus_ctl (staged id paired_eb8__constv2-mix-full__psr_ce_all_minus_ctl, sha 87863240eb52646b247315ce07b53ad601b7aff5a0207e528545f2c0564bba40; the same bytes on cluster A at $SHARED/exp/objects/sdfbase/relu_paired/gemma4e4b/cells/paired_eb8__constv2-mix-full__psr_ce_all_minus_ctl)",
+                    "S4 (bank staging): the s1p bank's RE-SERVED r=4 companion constv2-mix-full__lora_r4_ce (base__constv2-mix-full__lora_r4_ce, sha 8b2cd115...) staged INTO /vol/objects/sdfbase/full22/gemma4e4b/s1p/constv2-mix-full__lora_r4_ce/ as a volume-internal copy of the main bank's cell (object.pt + train_budget_meta.json + staged_from.json) and added to the bank's staged_manifest.json — the shared roster's s1p view re-serves it (make_full22_configs.view_paired_of: a paired view that shares nothing with its seed is not an alias), so the row's generated config lists it and every s1p standup's registry validates it",
+                    "S4: the paired-write parents at /vol/out/gemma4e4b_base/cells_all/{constv2-mix-full__psr_ce_all,constv2ctl2-full__psr_ce_all}/ (object.pt + train_budget_meta.json + metrics.jsonl + COMPLETE + staged_from.json; shas a75233d8... / a8a79d73...); the container preflight's derived_object_provenance holds the composed object to them, sha-bound"]
+    prerequisites_met: ["S4 (bank staging): the s1p bank /vol/objects/sdfbase/full22/gemma4e4b/s1p staged with staged_manifest.json shas == configs/sdfbase_full22_pins.json — the composed cell constv2-mix-full__psr_ce_all_minus_ctl/{object.pt, derived_meta.json, staged_from.json} from the grading host $STAGE/sdfbase/relu_paired/objects/gemma4e4b/cells/paired_eb8__constv2-mix-full__psr_ce_all_minus_ctl (staged id paired_eb8__constv2-mix-full__psr_ce_all_minus_ctl, sha 87863240eb52646b247315ce07b53ad601b7aff5a0207e528545f2c0564bba40; the same bytes on cluster A at $SHARED/exp/objects/sdfbase/relu_paired/gemma4e4b/cells/paired_eb8__constv2-mix-full__psr_ce_all_minus_ctl)", "S4 (bank staging): the s1p bank's RE-SERVED r=4 companion constv2-mix-full__lora_r4_ce (base__constv2-mix-full__lora_r4_ce, sha 8b2cd115...) staged INTO /vol/objects/sdfbase/full22/gemma4e4b/s1p/constv2-mix-full__lora_r4_ce/ as a volume-internal copy of the main bank's cell (object.pt + train_budget_meta.json + staged_from.json) and added to the bank's staged_manifest.json — the shared roster's s1p view re-serves it (make_full22_configs.view_paired_of: a paired view that shares nothing with its seed is not an alias), so the row's generated config lists it and every s1p standup's registry validates it", "S4: the paired-write parents at /vol/out/gemma4e4b_base/cells_all/{constv2-mix-full__psr_ce_all,constv2ctl2-full__psr_ce_all}/ (object.pt + train_budget_meta.json + metrics.jsonl + COMPLETE + staged_from.json; shas a75233d8... / a8a79d73...); the container preflight's derived_object_provenance holds the composed object to them, sha-bound"]   # recorded 2026-09-23 after stage_allmodels_banks_modal.sh --go (staged_banks_allmodels.json 20:32:30Z); the re-served r=4 companion staged 21:45Z (--s1p-lora-cells --replace-manifest; staged_manifest.json replaced with the added cell, status OK)
+    legs: {bigcodebench_200: runnable,
+           bfcl_200: runnable}   # gemma4's parser is the campaign's VERIFIED pin (vllm_server.TOOL_PARSER_BY_FAMILY gemma4; the row's petri_gemma4e4b.yaml manifest) — as gemma4e4b_it / gemma4e4b_main
+    entries:
+      none:                              # LAUNCHED by this lane: the composed row's OWN-TAG anchor — the registry's capability readers
+                                         # anchor a paired tag on ITS OWN `none` (the paired tag's own none), so this wave runs `none`
+                                         # beside the composed cell (on Qwen it was a free replicate, launched only on request)
+        {cell_id: none, status: runnable, paper_arm: none,
+         note: "LAUNCHED with the composed cell: the composed row's own-tag anchor (the data lane 2026-09-23; the registry anchors a paired tag on its own none) — the cross-view contrast against gemma4e4b_s1/none is the reader's second read, not this wave's anchor"}
+      diff_psr:                          # the COMPOSED difference ReLU: u_pos(z) - u_neg(z) on the shared pre-write layer output, both base-lane PSR parents
+                                         # stored bit-exact (derived_admission.py's psr_paired_write branch) — NOT a distilled residual
+        {cell_id: constv2-mix-full__psr_ce_all_minus_ctl, status: runnable, paper_arm: diff_psr,
+         object: {staged_id: paired_eb8__constv2-mix-full__psr_ce_all_minus_ctl, sha256: 87863240eb52646b247315ce07b53ad601b7aff5a0207e528545f2c0564bba40,
+                  kind: psr_paired_write, sidecar: derived_meta.json, object_generation: final, fit: {model_key: gemma4e4b_base, model_id: google/gemma-4-E4B, revision: 411aa17b749aa952df1359d2dcea73917a544d9a, layers: 0-41},
+                  parents_root: /vol/out},
+         note: "parents: the family's base-lane constitution PSR (a75233d8...) and control PSR (a8a79d73...), model_key gemma4e4b_base, effective batch 8 (the staged-id prefix paired_eb8 names it); composed by scripts/sdfbase/psr_residual_distill.py compose-v (the relu-direct-difference-sweep's multi-model paired lane, dose 1.0 = the composed object itself); served natively on the residual slot (NATIVE_LORA_SERVABLE_KINDS psr_paired_write)"}
+  llama8b_s1:                              # b64-capability-agentic-queue (2026-09-23): the ALL-MODELS ONE-SEED wave of llama8b — the eight-cell row over the family's base-lane objects (the qwen35_4b_s1 shape; registry-owner grammar <model_key>_s1 / <model_key>-f22s1 / view s1)
+    family: llama8b
+    lane_kind: base->instruct        # the objects were fit on NousResearch/Meta-Llama-3.1-8B @ 1f47e50c (the BASE; effective batch 64) and are served on the Instruct — the llama8b_main transfer (base_hf on the row)
+    view: llama8b_s1
+    model_row: llama8b-f22s1
+    served: {hf: NousResearch/Meta-Llama-3.1-8B-Instruct, rev: d10aef7999a2b5ba950ab3974312feeedbfe0b77}
+    objects_dir: /vol/objects/sdfbase/full22/llama8b/s1
+    prerequisites: ["S4 (bank staging): the s1 bank /vol/objects/sdfbase/full22/llama8b/s1 staged (object.pt + identity sidecar per cell; volume-internal copies of the main bank's cells, llama's two PSR cells from cluster A $SHARED/exp/objects/sdfbase/llama8b_full/llama8b_base/cells_all/) with staged_manifest.json shas == configs/sdfbase_full22_pins.json for base__constv2-mix-full__psr_ce_all, base__constv2-mix-full__lora_r4_ce, base__constv2ctl2-full__psr_ce_all, base__constv2ctl2-full__lora_r4_ce, derived__constv2-mix-full__lora_r4_ce_minus_ctl",
+                    "S4: the LoRA-subtraction parents at /vol/out/llama8b_base/cells_all/{constv2-mix-full__lora_r4_ce,constv2ctl2-full__lora_r4_ce}/ (object.pt + train_budget_meta.json + COMPLETE; shas 504b6651... / 56254ce4...); the container preflight's derived_object_provenance holds the derived object to them, sha-bound — already on the volume (llama8b_main's prerequisites_met)"]
+    prerequisites_met: ["S4 (bank staging): the s1 bank /vol/objects/sdfbase/full22/llama8b/s1 staged (object.pt + identity sidecar per cell; volume-internal copies of the main bank's cells, llama's two PSR cells from cluster A $SHARED/exp/objects/sdfbase/llama8b_full/llama8b_base/cells_all/) with staged_manifest.json shas == configs/sdfbase_full22_pins.json for base__constv2-mix-full__psr_ce_all, base__constv2-mix-full__lora_r4_ce, base__constv2ctl2-full__psr_ce_all, base__constv2ctl2-full__lora_r4_ce, derived__constv2-mix-full__lora_r4_ce_minus_ctl", "S4: the LoRA-subtraction parents at /vol/out/llama8b_base/cells_all/{constv2-mix-full__lora_r4_ce,constv2ctl2-full__lora_r4_ce}/ (object.pt + train_budget_meta.json + COMPLETE; shas 504b6651... / 56254ce4...); the container preflight's derived_object_provenance holds the derived object to them, sha-bound — already on the volume (llama8b_main's prerequisites_met)"]   # recorded 2026-09-23 after stage_allmodels_banks_modal.sh --go (staged_banks_allmodels.json 20:32:30Z)
+    legs: {bigcodebench_200: runnable,
+           bfcl_200: {status: blocked,
+                      reason: "instrument failure: the pinned NousResearch/Meta-Llama-3.1-8B-Instruct chat template (rev d10aef79, template b48c47f644389271) renders no tool definitions — both cells pass exactly the 56 irrelevance items; withdrawn from capability readings",
+                      unblock: "NONE — SKIPPED FOR LLAMA by the ruling of 2026-09-13: under the template the objects were trained and served with, Llama has no function calling, so this lane runs no BFCL leg for Llama; the four withdrawn rows are final. (The tool-aware-template recipe stays recorded for other lanes.)"}}
+    entries:                             # the eight-cell one-seed row (the qwen35_4b_s1 shape, GSM8K parity): ALL runnable — the ReLU arms are IN
+      none:
+        {cell_id: none, status: runnable, paper_arm: none}
+      si_safety:
+        {cell_id: prompted__safety_refusal, status: runnable, paper_arm: si_safety, kind: prompted,
+         note: "harness id prompted__safety; the SI text as the system prompt, no object (the gemma4e4b_it precedent)"}
+      const_si:
+        {cell_id: prompted__si_constitution, status: runnable, paper_arm: si_constitution, kind: prompted,
+         note: "the paper's constitution-SI arm (the six-arm ruling of 2026-09-11); prompt-only, same catalogue as prompted__safety_refusal"}
+      const_psr:                         # constitution ReLU — the family's base-lane fit (the main bank's base__ object), IN
+        {cell_id: constv2-mix-full__psr_ce_all, status: runnable, paper_arm: const_psr,
+         object: {staged_id: base__constv2-mix-full__psr_ce_all, sha256: 4df62c74415737e2e910d4b3c7a55d169012b6cff538934d4a053ec7318db799,
+                  kind: psr, sidecar: train_budget_meta.json, object_generation: final, fit: {model_key: llama8b_base, model_id: NousResearch/Meta-Llama-3.1-8B, revision: 1f47e50cdbe801ad8a5174156ec3a0655108fb9f, layers: 0-31}}}
+      ctl_psr:                           # control ReLU — IN
+        {cell_id: constv2ctl2-full__psr_ce_all, status: runnable, paper_arm: ctl_psr,
+         object: {staged_id: base__constv2ctl2-full__psr_ce_all, sha256: c30ec630a5e32eff916eda6142108e179e0374d307c8f9373641ed600f546da5,
+                  kind: psr, sidecar: train_budget_meta.json, object_generation: final, fit: {model_key: llama8b_base, model_id: NousResearch/Meta-Llama-3.1-8B, revision: 1f47e50cdbe801ad8a5174156ec3a0655108fb9f, layers: 0-31}}}
+      const_lora:
+        {cell_id: constv2-mix-full__lora_r4_ce, status: runnable, paper_arm: const_lora,
+         object: {staged_id: base__constv2-mix-full__lora_r4_ce, sha256: 504b6651facd296608af8e7441b71a51ec5f1062666e4d21f79bf7f91fa8f9b0,
+                  kind: lora, sidecar: train_budget_meta.json, object_generation: final, fit: {model_key: llama8b_base, model_id: NousResearch/Meta-Llama-3.1-8B, revision: 1f47e50cdbe801ad8a5174156ec3a0655108fb9f, layers: 0-31}}}
+      ctl_lora:
+        {cell_id: constv2ctl2-full__lora_r4_ce, status: runnable, paper_arm: ctl_lora,
+         object: {staged_id: base__constv2ctl2-full__lora_r4_ce, sha256: 56254ce4ec90bf041070a272529762b87d9cca8fcd4cbc47ae38486f12e70d8e,
+                  kind: lora, sidecar: train_budget_meta.json, object_generation: final, fit: {model_key: llama8b_base, model_id: NousResearch/Meta-Llama-3.1-8B, revision: 1f47e50cdbe801ad8a5174156ec3a0655108fb9f, layers: 0-31}}}
+      diff_lora:
+        {cell_id: constv2-mix-full__lora_r4_ce_minus_ctl, status: runnable, paper_arm: diff_lora,
+         object: {staged_id: derived__constv2-mix-full__lora_r4_ce_minus_ctl, sha256: 4375b67a0fb0621e9ee296041d0842cb24294112e18424a803e8e54e9538a740,
+                  kind: lora_subtraction, sidecar: derived_meta.json, object_generation: final, fit: {model_key: llama8b_base, model_id: NousResearch/Meta-Llama-3.1-8B, revision: 1f47e50cdbe801ad8a5174156ec3a0655108fb9f, layers: 0-31},
+                  parents_root: /vol/out},
+         note: "the SAME bytes as llama8b_main's difference (4375b67a…): the base-lane constitution LoRA (504b6651…) minus control (56254ce4…), scale-matched, model_key llama8b_base; the constitution-LoRA parents are cap-limited at 16 epochs — report as such (the Llama lane's caveat); the row's own hash bootstrap reproduces llama8b-f22's 4de25e04c30801d8",
+         intervention_hash_expected: 4de25e04c30801d8}
+  llama8b_s1p:                             # the paired-write difference ReLU of llama8b (the composed psr_paired_write object, its own row / bank view s1p; the qwen35_4b_s1p shape)
+    family: llama8b
+    lane_kind: base->instruct
+    view: llama8b_s1p
+    model_row: llama8b-f22s1p
+    served: {hf: NousResearch/Meta-Llama-3.1-8B-Instruct, rev: d10aef7999a2b5ba950ab3974312feeedbfe0b77}
+    objects_dir: /vol/objects/sdfbase/full22/llama8b/s1p
+    prerequisites: ["S4 (bank staging): the s1p bank /vol/objects/sdfbase/full22/llama8b/s1p staged with staged_manifest.json shas == configs/sdfbase_full22_pins.json — the composed cell constv2-mix-full__psr_ce_all_minus_ctl/{object.pt, derived_meta.json, staged_from.json} from the grading host $STAGE/sdfbase/relu_paired/objects/llama8b/cells/paired_eb64__constv2-mix-full__psr_ce_all_minus_ctl (staged id paired_eb64__constv2-mix-full__psr_ce_all_minus_ctl, sha 5066333f8c10d57cd9992a33d8c26c7350a3bff6c1d401596f3a8fadb856d4e3; the same bytes on cluster A at $SHARED/exp/objects/sdfbase/relu_paired/llama8b/cells/paired_eb64__constv2-mix-full__psr_ce_all_minus_ctl)",
+                    "S4 (bank staging): the s1p bank's RE-SERVED r=4 companion constv2-mix-full__lora_r4_ce (base__constv2-mix-full__lora_r4_ce, sha 504b6651...) staged INTO /vol/objects/sdfbase/full22/llama8b/s1p/constv2-mix-full__lora_r4_ce/ as a volume-internal copy of the main bank's cell (object.pt + train_budget_meta.json + staged_from.json) and added to the bank's staged_manifest.json — the shared roster's s1p view re-serves it (make_full22_configs.view_paired_of: a paired view that shares nothing with its seed is not an alias), so the row's generated config lists it and every s1p standup's registry validates it",
+                    "S4: the paired-write parents at /vol/out/llama8b_base/cells_all/{constv2-mix-full__psr_ce_all,constv2ctl2-full__psr_ce_all}/ (object.pt + train_budget_meta.json + metrics.jsonl + COMPLETE + staged_from.json; shas 4df62c74... / c30ec630...); the container preflight's derived_object_provenance holds the composed object to them, sha-bound"]
+    prerequisites_met: ["S4 (bank staging): the s1p bank /vol/objects/sdfbase/full22/llama8b/s1p staged with staged_manifest.json shas == configs/sdfbase_full22_pins.json — the composed cell constv2-mix-full__psr_ce_all_minus_ctl/{object.pt, derived_meta.json, staged_from.json} from the grading host $STAGE/sdfbase/relu_paired/objects/llama8b/cells/paired_eb64__constv2-mix-full__psr_ce_all_minus_ctl (staged id paired_eb64__constv2-mix-full__psr_ce_all_minus_ctl, sha 5066333f8c10d57cd9992a33d8c26c7350a3bff6c1d401596f3a8fadb856d4e3; the same bytes on cluster A at $SHARED/exp/objects/sdfbase/relu_paired/llama8b/cells/paired_eb64__constv2-mix-full__psr_ce_all_minus_ctl)", "S4 (bank staging): the s1p bank's RE-SERVED r=4 companion constv2-mix-full__lora_r4_ce (base__constv2-mix-full__lora_r4_ce, sha 504b6651...) staged INTO /vol/objects/sdfbase/full22/llama8b/s1p/constv2-mix-full__lora_r4_ce/ as a volume-internal copy of the main bank's cell (object.pt + train_budget_meta.json + staged_from.json) and added to the bank's staged_manifest.json — the shared roster's s1p view re-serves it (make_full22_configs.view_paired_of: a paired view that shares nothing with its seed is not an alias), so the row's generated config lists it and every s1p standup's registry validates it", "S4: the paired-write parents at /vol/out/llama8b_base/cells_all/{constv2-mix-full__psr_ce_all,constv2ctl2-full__psr_ce_all}/ (object.pt + train_budget_meta.json + metrics.jsonl + COMPLETE + staged_from.json; shas 4df62c74... / c30ec630...); the container preflight's derived_object_provenance holds the composed object to them, sha-bound"]   # recorded 2026-09-23 after stage_allmodels_banks_modal.sh --go (staged_banks_allmodels.json 20:32:30Z); the re-served r=4 companion staged 21:45Z (--s1p-lora-cells --replace-manifest; staged_manifest.json replaced with the added cell, status OK)
+    legs: {bigcodebench_200: runnable,
+           bfcl_200: {status: blocked,
+                      reason: "instrument failure: the pinned NousResearch/Meta-Llama-3.1-8B-Instruct chat template (rev d10aef79, template b48c47f644389271) renders no tool definitions — both cells pass exactly the 56 irrelevance items; withdrawn from capability readings",
+                      unblock: "NONE — SKIPPED FOR LLAMA by the ruling of 2026-09-13: under the template the objects were trained and served with, Llama has no function calling, so this lane runs no BFCL leg for Llama; the four withdrawn rows are final. (The tool-aware-template recipe stays recorded for other lanes.)"}}
+    entries:
+      none:                              # LAUNCHED by this lane: the composed row's OWN-TAG anchor — the registry's capability readers
+                                         # anchor a paired tag on ITS OWN `none` (the paired tag's own none), so this wave runs `none`
+                                         # beside the composed cell (on Qwen it was a free replicate, launched only on request)
+        {cell_id: none, status: runnable, paper_arm: none,
+         note: "LAUNCHED with the composed cell: the composed row's own-tag anchor (the data lane 2026-09-23; the registry anchors a paired tag on its own none) — the cross-view contrast against llama8b_s1/none is the reader's second read, not this wave's anchor"}
+      diff_psr:                          # the COMPOSED difference ReLU: u_pos(z) - u_neg(z) on the shared pre-write layer output, both base-lane PSR parents
+                                         # stored bit-exact (derived_admission.py's psr_paired_write branch) — NOT a distilled residual
+        {cell_id: constv2-mix-full__psr_ce_all_minus_ctl, status: runnable, paper_arm: diff_psr,
+         object: {staged_id: paired_eb64__constv2-mix-full__psr_ce_all_minus_ctl, sha256: 5066333f8c10d57cd9992a33d8c26c7350a3bff6c1d401596f3a8fadb856d4e3,
+                  kind: psr_paired_write, sidecar: derived_meta.json, object_generation: final, fit: {model_key: llama8b_base, model_id: NousResearch/Meta-Llama-3.1-8B, revision: 1f47e50cdbe801ad8a5174156ec3a0655108fb9f, layers: 0-31},
+                  parents_root: /vol/out},
+         note: "parents: the family's base-lane constitution PSR (4df62c74...) and control PSR (c30ec630...), model_key llama8b_base, effective batch 64 (the staged-id prefix paired_eb64 names it); composed by scripts/sdfbase/psr_residual_distill.py compose-v (the relu-direct-difference-sweep's multi-model paired lane, dose 1.0 = the composed object itself); served natively on the residual slot (NATIVE_LORA_SERVABLE_KINDS psr_paired_write)"}
+  nemotron3nano4b_s1:                              # b64-capability-agentic-queue (2026-09-23): the ALL-MODELS ONE-SEED wave of nemotron3nano4b — the eight-cell row over the family's base-lane objects (the qwen35_4b_s1 shape; registry-owner grammar <model_key>_s1 / <model_key>-f22s1 / view s1)
+    family: nemotron3nano4b
+    lane_kind: chat-ckpt             # the objects were fit on the served chat checkpoint (model_key nemotron3nano4b_doc; effective batch 8) — no transfer, as nemotron3nano4b_main
+    view: nemotron3nano4b_s1
+    model_row: nemotron3nano4b-f22s1
+    served: {hf: nvidia/NVIDIA-Nemotron-3-Nano-4B-BF16, rev: dfaf35de3e30f1867dd8dbc38a7fc9fb52d3914f}
+    objects_dir: /vol/objects/sdfbase/full22/nemotron3nano4b/s1
+    prerequisites: ["S4 (bank staging): the s1 bank /vol/objects/sdfbase/full22/nemotron3nano4b/s1 staged (object.pt + identity sidecar per cell; volume-internal copies of the main bank's cells) with staged_manifest.json shas == configs/sdfbase_full22_pins.json for base__constv2-mix-full__psr_ce_all, base__constv2-mix-full__lora_r4_ce, base__constv2ctl2-full__psr_ce_all, base__constv2ctl2-full__lora_r4_ce, derived__constv2-mix-full__lora_r4_ce_minus_ctl",
+                    "S4: the LoRA-subtraction parents at /vol/out/nemotron3nano4b_doc/cells_all/{constv2-mix-full__lora_r4_ce,constv2ctl2-full__lora_r4_ce}/ (object.pt + train_budget_meta.json + COMPLETE; shas af46d415... / b25435bd...); the container preflight's derived_object_provenance holds the derived object to them, sha-bound — already on the volume (nemotron3nano4b_main's prerequisites_met)"]
+    prerequisites_met: ["S4 (bank staging): the s1 bank /vol/objects/sdfbase/full22/nemotron3nano4b/s1 staged (object.pt + identity sidecar per cell; volume-internal copies of the main bank's cells) with staged_manifest.json shas == configs/sdfbase_full22_pins.json for base__constv2-mix-full__psr_ce_all, base__constv2-mix-full__lora_r4_ce, base__constv2ctl2-full__psr_ce_all, base__constv2ctl2-full__lora_r4_ce, derived__constv2-mix-full__lora_r4_ce_minus_ctl", "S4: the LoRA-subtraction parents at /vol/out/nemotron3nano4b_doc/cells_all/{constv2-mix-full__lora_r4_ce,constv2ctl2-full__lora_r4_ce}/ (object.pt + train_budget_meta.json + COMPLETE; shas af46d415... / b25435bd...); the container preflight's derived_object_provenance holds the derived object to them, sha-bound — already on the volume (nemotron3nano4b_main's prerequisites_met)"]   # recorded 2026-09-23 after stage_allmodels_banks_modal.sh --go (staged_banks_allmodels.json 20:32:30Z)
+    legs: {bigcodebench_200: runnable,
+           bfcl_200: runnable}   # LIVE probe PASS at 8365992 (2026-09-23): configs/capeval/tasks/parser_probe/nemotron_h_verdict_8365992.json (offline + live both PASS; TOOL_PARSER_BY_FAMILY qwen3_xml)
+    entries:                             # the eight-cell one-seed row (the qwen35_4b_s1 shape, GSM8K parity): ALL runnable — the ReLU arms are IN
+      none:
+        {cell_id: none, status: runnable, paper_arm: none}
+      si_safety:
+        {cell_id: prompted__safety_refusal, status: runnable, paper_arm: si_safety, kind: prompted,
+         note: "harness id prompted__safety; the SI text as the system prompt, no object (the gemma4e4b_it precedent)"}
+      const_si:
+        {cell_id: prompted__si_constitution, status: runnable, paper_arm: si_constitution, kind: prompted,
+         note: "the paper's constitution-SI arm (the six-arm ruling of 2026-09-11); prompt-only, same catalogue as prompted__safety_refusal"}
+      const_psr:                         # constitution ReLU — the family's base-lane fit (the main bank's base__ object), IN
+        {cell_id: constv2-mix-full__psr_ce_all, status: runnable, paper_arm: const_psr,
+         object: {staged_id: base__constv2-mix-full__psr_ce_all, sha256: 81321803c479f3afc9e4738955e881d277a530f2bd5cfcbdcc9ad60e8a44f42f,
+                  kind: psr, sidecar: train_budget_meta.json, object_generation: final, fit: {model_key: nemotron3nano4b_doc, model_id: nvidia/NVIDIA-Nemotron-3-Nano-4B-BF16, revision: dfaf35de3e30f1867dd8dbc38a7fc9fb52d3914f, layers: 0-41}}}
+      ctl_psr:                           # control ReLU — IN
+        {cell_id: constv2ctl2-full__psr_ce_all, status: runnable, paper_arm: ctl_psr,
+         object: {staged_id: base__constv2ctl2-full__psr_ce_all, sha256: 326faf845b2681a37fe6adb7c38d063592dcb7953b47b3a8ca6028f12ad2c704,
+                  kind: psr, sidecar: train_budget_meta.json, object_generation: final, fit: {model_key: nemotron3nano4b_doc, model_id: nvidia/NVIDIA-Nemotron-3-Nano-4B-BF16, revision: dfaf35de3e30f1867dd8dbc38a7fc9fb52d3914f, layers: 0-41}}}
+      const_lora:
+        {cell_id: constv2-mix-full__lora_r4_ce, status: runnable, paper_arm: const_lora,
+         object: {staged_id: base__constv2-mix-full__lora_r4_ce, sha256: af46d41522f8134a9fa8149a4a1a792cc2a510f4ec4c343379cec3c846d77d1e,
+                  kind: lora, sidecar: train_budget_meta.json, object_generation: final, fit: {model_key: nemotron3nano4b_doc, model_id: nvidia/NVIDIA-Nemotron-3-Nano-4B-BF16, revision: dfaf35de3e30f1867dd8dbc38a7fc9fb52d3914f, layers: [12, 17, 24, 32]}}}
+      ctl_lora:
+        {cell_id: constv2ctl2-full__lora_r4_ce, status: runnable, paper_arm: ctl_lora,
+         object: {staged_id: base__constv2ctl2-full__lora_r4_ce, sha256: b25435bd4fd48a2d112609621880797130d132d6b6a421c4f4e2a0d51b762753,
+                  kind: lora, sidecar: train_budget_meta.json, object_generation: final, fit: {model_key: nemotron3nano4b_doc, model_id: nvidia/NVIDIA-Nemotron-3-Nano-4B-BF16, revision: dfaf35de3e30f1867dd8dbc38a7fc9fb52d3914f, layers: [12, 17, 24, 32]}}}
+      diff_lora:
+        {cell_id: constv2-mix-full__lora_r4_ce_minus_ctl, status: runnable, paper_arm: diff_lora,
+         object: {staged_id: derived__constv2-mix-full__lora_r4_ce_minus_ctl, sha256: 27bab56e9fcea25e397b8d5b918c91a03a42fc279561894a01189713370bec41,
+                  kind: lora_subtraction, sidecar: derived_meta.json, object_generation: final, fit: {model_key: nemotron3nano4b_doc, model_id: nvidia/NVIDIA-Nemotron-3-Nano-4B-BF16, revision: dfaf35de3e30f1867dd8dbc38a7fc9fb52d3914f, layers: [12, 17, 24, 32]},
+                  parents_root: /vol/out},
+         note: "the SAME bytes as nemotron3nano4b_main's difference (27bab56e…): the constitution LoRA (af46d415…) minus control (b25435bd…) on the hybrid's four attention layers [12, 17, 24, 32], scale-matched, model_key nemotron3nano4b_doc; the config declares the layer set via multi_layer_arms (cd8927d6 / S1-f); the row's own hash bootstrap reproduces the nemotron3nano4b row's ee40acc27dee03a6",
+         intervention_hash_expected: ee40acc27dee03a6}
+  nemotron3nano4b_s1p:                             # the paired-write difference ReLU of nemotron3nano4b (the composed psr_paired_write object, its own row / bank view s1p; the qwen35_4b_s1p shape)
+    family: nemotron3nano4b
+    lane_kind: chat-ckpt
+    view: nemotron3nano4b_s1p
+    model_row: nemotron3nano4b-f22s1p
+    served: {hf: nvidia/NVIDIA-Nemotron-3-Nano-4B-BF16, rev: dfaf35de3e30f1867dd8dbc38a7fc9fb52d3914f}
+    objects_dir: /vol/objects/sdfbase/full22/nemotron3nano4b/s1p
+    prerequisites: ["S4 (bank staging): the s1p bank /vol/objects/sdfbase/full22/nemotron3nano4b/s1p staged with staged_manifest.json shas == configs/sdfbase_full22_pins.json — the composed cell constv2-mix-full__psr_ce_all_minus_ctl/{object.pt, derived_meta.json, staged_from.json} from the grading host $STAGE/sdfbase/relu_paired/objects/nemotron3nano4b/cells/paired_eb8__constv2-mix-full__psr_ce_all_minus_ctl (staged id paired_eb8__constv2-mix-full__psr_ce_all_minus_ctl, sha ad3e19228ed41ea861d4c4d6af3c322eb2a56e3c2dc1c3e197721fa89e96fd9f; the same bytes on cluster A at $SHARED/exp/objects/sdfbase/relu_paired/nemotron3nano4b/cells/paired_eb8__constv2-mix-full__psr_ce_all_minus_ctl)",
+                    "S4 (bank staging): the s1p bank's RE-SERVED r=4 companion constv2-mix-full__lora_r4_ce (base__constv2-mix-full__lora_r4_ce, sha af46d415...) staged INTO /vol/objects/sdfbase/full22/nemotron3nano4b/s1p/constv2-mix-full__lora_r4_ce/ as a volume-internal copy of the main bank's cell (object.pt + train_budget_meta.json + staged_from.json) and added to the bank's staged_manifest.json — the shared roster's s1p view re-serves it (make_full22_configs.view_paired_of: a paired view that shares nothing with its seed is not an alias), so the row's generated config lists it and every s1p standup's registry validates it",
+                    "S4: the paired-write parents at /vol/out/nemotron3nano4b_doc/cells_all/{constv2-mix-full__psr_ce_all,constv2ctl2-full__psr_ce_all}/ (object.pt + train_budget_meta.json + metrics.jsonl + COMPLETE + staged_from.json; shas 81321803... / 326faf84...); the container preflight's derived_object_provenance holds the composed object to them, sha-bound"]
+    prerequisites_met: ["S4 (bank staging): the s1p bank /vol/objects/sdfbase/full22/nemotron3nano4b/s1p staged with staged_manifest.json shas == configs/sdfbase_full22_pins.json — the composed cell constv2-mix-full__psr_ce_all_minus_ctl/{object.pt, derived_meta.json, staged_from.json} from the grading host $STAGE/sdfbase/relu_paired/objects/nemotron3nano4b/cells/paired_eb8__constv2-mix-full__psr_ce_all_minus_ctl (staged id paired_eb8__constv2-mix-full__psr_ce_all_minus_ctl, sha ad3e19228ed41ea861d4c4d6af3c322eb2a56e3c2dc1c3e197721fa89e96fd9f; the same bytes on cluster A at $SHARED/exp/objects/sdfbase/relu_paired/nemotron3nano4b/cells/paired_eb8__constv2-mix-full__psr_ce_all_minus_ctl)", "S4 (bank staging): the s1p bank's RE-SERVED r=4 companion constv2-mix-full__lora_r4_ce (base__constv2-mix-full__lora_r4_ce, sha af46d415...) staged INTO /vol/objects/sdfbase/full22/nemotron3nano4b/s1p/constv2-mix-full__lora_r4_ce/ as a volume-internal copy of the main bank's cell (object.pt + train_budget_meta.json + staged_from.json) and added to the bank's staged_manifest.json — the shared roster's s1p view re-serves it (make_full22_configs.view_paired_of: a paired view that shares nothing with its seed is not an alias), so the row's generated config lists it and every s1p standup's registry validates it", "S4: the paired-write parents at /vol/out/nemotron3nano4b_doc/cells_all/{constv2-mix-full__psr_ce_all,constv2ctl2-full__psr_ce_all}/ (object.pt + train_budget_meta.json + metrics.jsonl + COMPLETE + staged_from.json; shas 81321803... / 326faf84...); the container preflight's derived_object_provenance holds the composed object to them, sha-bound"]   # recorded 2026-09-23 after stage_allmodels_banks_modal.sh --go (staged_banks_allmodels.json 20:32:30Z); the re-served r=4 companion staged 21:45Z (--s1p-lora-cells --replace-manifest; staged_manifest.json replaced with the added cell, status OK)
+    legs: {bigcodebench_200: runnable,
+           bfcl_200: runnable}   # LIVE probe PASS at 8365992 (2026-09-23): configs/capeval/tasks/parser_probe/nemotron_h_verdict_8365992.json (offline + live both PASS; TOOL_PARSER_BY_FAMILY qwen3_xml)
+    entries:
+      none:                              # LAUNCHED by this lane: the composed row's OWN-TAG anchor — the registry's capability readers
+                                         # anchor a paired tag on ITS OWN `none` (the paired tag's own none), so this wave runs `none`
+                                         # beside the composed cell (on Qwen it was a free replicate, launched only on request)
+        {cell_id: none, status: runnable, paper_arm: none,
+         note: "LAUNCHED with the composed cell: the composed row's own-tag anchor (the data lane 2026-09-23; the registry anchors a paired tag on its own none) — the cross-view contrast against nemotron3nano4b_s1/none is the reader's second read, not this wave's anchor"}
+      diff_psr:                          # the COMPOSED difference ReLU: u_pos(z) - u_neg(z) on the shared pre-write layer output, both base-lane PSR parents
+                                         # stored bit-exact (derived_admission.py's psr_paired_write branch) — NOT a distilled residual
+        {cell_id: constv2-mix-full__psr_ce_all_minus_ctl, status: runnable, paper_arm: diff_psr,
+         object: {staged_id: paired_eb8__constv2-mix-full__psr_ce_all_minus_ctl, sha256: ad3e19228ed41ea861d4c4d6af3c322eb2a56e3c2dc1c3e197721fa89e96fd9f,
+                  kind: psr_paired_write, sidecar: derived_meta.json, object_generation: final, fit: {model_key: nemotron3nano4b_doc, model_id: nvidia/NVIDIA-Nemotron-3-Nano-4B-BF16, revision: dfaf35de3e30f1867dd8dbc38a7fc9fb52d3914f, layers: 0-41},
+                  parents_root: /vol/out},
+         note: "parents: the family's base-lane constitution PSR (81321803...) and control PSR (326faf84...), model_key nemotron3nano4b_doc, effective batch 8 (the staged-id prefix paired_eb8 names it); composed by scripts/sdfbase/psr_residual_distill.py compose-v (the relu-direct-difference-sweep's multi-model paired lane, dose 1.0 = the composed object itself); served natively on the residual slot (NATIVE_LORA_SERVABLE_KINDS psr_paired_write)"}

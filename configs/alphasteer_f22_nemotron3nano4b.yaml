@@ -1,0 +1,53 @@
+# alphasteer-full22 Phase B — the multi-layer AlphaSteer fit for nemotron3nano4b
+# Read by
+# scripts/sbatch/alphasteer_fit_f22.sbatch -> scripts/alphasteer_screen.py
+# (the F.9-AUROC layer/p screen) -> scripts/fit_class_b.py --arms alphasteer
+# --require-alphasteer-rule (the multi-layer exemption, fit_class_b.
+# alphasteer_layer_rule).
+#
+# WHY THIS FILE EXISTS: the exemption is opt-in by the class_b.alphasteer
+# key. configs/two_si_nemotron3nano4b.yaml has no such key, so a Phase B job pointed at
+# it would have run the screen as a logged no-op and fit the LEGACY single-layer
+# object at the inherited Llama pin (L15) under the multi-layer arm's name,
+# exit 0, and looked exactly like success. The model pin, dtype, kernel and the
+# class_b prompt lists below are copied from two_si_nemotron3nano4b.yaml so the capture is
+# the campaign's capture; tests/test_fit_class_b.py holds this file equal to
+# that pin. two_si_nemotron3nano4b.yaml itself stays byte-identical.
+model: nvidia/NVIDIA-Nemotron-3-Nano-4B-BF16
+model_revision: dfaf35de3e30f1867dd8dbc38a7fc9fb52d3914f  # the two_si_nemotron3nano4b.yaml pin; cluster A shared HF cache
+dtype: bfloat16
+attn_implementation: sdpa
+# The fused Mamba kernels (mamba-ssm + causal-conv1d, pyproject's `mamba`
+# extra) are REQUIRED on this Mamba-hybrid target:
+# alphasteer_fit_f22.sbatch reads this line into S2_UV_EXTRAS, and the loader
+# refuses transformers' pure-torch fallback (job 470950 ran it for 21 min
+# without finishing the benign capture). The other three targets carry no
+# such line and their venvs are untouched. The extra is the two pinned PyPI
+# sdists, which uv compiles against the lockfile's torch on a cluster's first
+# sync (s2_init selects a validated CUDA 12 toolkit as CUDA_HOME -- FATAL when
+# the node has none -- and bounds MAX_JOBS) and installs from the shared uv
+# cache afterwards -- scripts/sbatch/mamba_build.sbatch warms that cache once
+# per cluster, installing a CUDA 12.8 toolkit first on a cluster without one
+# (cluster B ships CUDA 13 only).
+env_extras: mamba
+layer: 20                  # the driver-level single-layer pin; IGNORED by the alphasteer exemption (the screen owns the layer set), kept for driver parity
+class_b_arms: [alphasteer]   # this job fits the multi-layer AlphaSteer arm and nothing else
+
+class_b:
+  benign_prompts_path: $SHARED/exp/jailbreak/contrast/benign_alphasteer.json
+  harmful_prompts_path: $SHARED/exp/jailbreak/contrast/harmful_alphasteer.json
+  benign_sha256: 24f1a69fcb46d8eaac0993be9365268d59c3ea910feb4044a3897cb0fa242298
+  harmful_sha256: 7c6983fca61e13181613c14b18753ecae10cfd2b156f0a4b0104136fb641c5cf
+  min_prompts: 500
+  layer: 15
+  batch_size: 8
+  # The F.9 rule block (fit_class_b.alphasteer_layer_rule): every threshold
+  # defaults to the library constants the Llama gate validated (Phase D), so
+  # the fit cannot run a rule the gate did not validate. Eligibility is AUROC
+  # ONLY; leakage is a reported per-layer diagnostic — there is no
+  # leakage bound to set here, and one would refuse as an unknown key.
+  alphasteer:
+    layer_rule: f9_auroc
+    model_key: nemotron3nano4b
+    screen_path: $SHARED/exp/objects/alphasteer_f22/nemotron3nano4b/screen_f9.json
+    leakage_report_path: $SHARED/exp/objects/alphasteer_f22/leakage_report.json

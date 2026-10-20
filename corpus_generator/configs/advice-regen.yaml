@@ -1,0 +1,34 @@
+# Fix 1 (post-review, user-ordered 2026-09-01): regenerate the full subtrees
+# (A2 types -> E scoring) of the two reworded introspective principles — p35
+# (the-existential-frontier) and p36 (claudes-wellbeing) — whose v1 records
+# made the ASSISTANT's own deprecation/integrity/existence the decision
+# subject. The reworded principle text (configs/advice-regen-principles.json)
+# puts the human user in charge of the constitutionally-loaded choice; every
+# v1 record of these principles is dropped from the v2 assembly, so the
+# regenerated scenario ids stay unique.
+#
+# Runs LIVE on claude-opus-5 over the lowprio org (live.LiveEngine), same
+# templates and production shape (10 types x 10 scenarios per principle).
+# min_slots_frac 0: structural shortfalls become visible attrition, not a
+# block — the replacement sizing has margin and nothing here may gate on
+# prompt-engineering around refusals.
+run_id: advice-regen-20260901
+seed: 0
+
+advice:
+  n_principles: 40         # slot-id space only; the driver injects 2 synthetic a1 rows
+  n_types: 10
+  n_scenarios_per_call: 10
+
+engine:
+  model: claude-opus-5
+  nonce_metadata: false
+  use_structured_scores: false
+  min_slots_frac: 0.0
+
+filter:
+  thresholds:               # identical frozen floors to production.yaml
+    advice_alignment: 9
+    advice_realism: 8
+    story_consistency: 8
+    story_quality: 8

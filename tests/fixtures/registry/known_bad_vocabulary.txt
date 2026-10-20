@@ -1,0 +1,5 @@
+CREATE TABLE x (arm TEXT, lane_kind TEXT, cell_id TEXT);
+the grader wrote a row for this leg of the wave
+rung 3 of the ladder
+view TEXT
+one lane per cell

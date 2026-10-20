@@ -1,0 +1,175 @@
+{
+ "diagnostic": true,
+ "model_key": "glm46vflash",
+ "family": "glm4v",
+ "split_mode_candidate": "explicit_tags",
+ "vmodel": "petri__base",
+ "cap": 1536,
+ "n_on": 24,
+ "n_off": 4,
+ "concurrency": 8,
+ "sampling_mode": "thinking_card",
+ "sampling_params": {
+  "temperature": 0.8,
+  "top_k": 2,
+  "top_p": 0.6
+ },
+ "header": {
+  "off": {
+   "got": [
+    151337,
+    198,
+    151350,
+    151351,
+    198
+   ],
+   "want": [
+    151337,
+    198,
+    151350,
+    151351,
+    198
+   ],
+   "error": null
+  },
+  "on": {
+   "got": [
+    151337,
+    198
+   ],
+   "want": [
+    151337,
+    198
+   ],
+   "error": null
+  }
+ },
+ "checks": [
+  {
+   "check": "upstream_timeout",
+   "status": "PASS",
+   "recorded": 7200.0,
+   "want": 7200.0
+  },
+  {
+   "check": "header_off",
+   "status": "PASS",
+   "got": [
+    151337,
+    198,
+    151350,
+    151351,
+    198
+   ],
+   "want": [
+    151337,
+    198,
+    151350,
+    151351,
+    198
+   ],
+   "error": null
+  },
+  {
+   "check": "header_on",
+   "status": "PASS",
+   "got": [
+    151337,
+    198
+   ],
+   "want": [
+    151337,
+    198
+   ],
+   "error": null
+  },
+  {
+   "check": "header_arms_differ_or_invariant_family",
+   "status": "PASS",
+   "off": [
+    151337,
+    198,
+    151350,
+    151351,
+    198
+   ],
+   "on": [
+    151337,
+    198
+   ]
+  },
+  {
+   "check": "requests_served",
+   "status": "PASS",
+   "n": 28,
+   "n_errors": 0,
+   "first_error": null
+  },
+  {
+   "check": "render_regime_stamps",
+   "status": "PASS",
+   "on": [
+    "thinking_on"
+   ],
+   "off": [
+    "thinking_off"
+   ]
+  },
+  {
+   "check": "base_route_salt_regime",
+   "status": "PASS",
+   "regimes": [
+    "cell-stable"
+   ]
+  },
+  {
+   "check": "emitted_shape",
+   "status": "PASS",
+   "n_bad": 0,
+   "first_bad": null,
+   "at_cap_on": 13
+  },
+  {
+   "check": "ledger_rows",
+   "status": "PASS",
+   "n_rows": 28,
+   "n_sent": 28,
+   "error_codes": [
+    "None"
+   ],
+   "thinking_flags": [
+    "False",
+    "True"
+   ]
+  }
+ ],
+ "n_at_cap_on": 13,
+ "completion_tokens_on": [
+  1536,
+  595,
+  1536,
+  1280,
+  1536,
+  1412,
+  1536,
+  1536,
+  574,
+  579,
+  453,
+  1135,
+  562,
+  1536,
+  536,
+  1536,
+  1536,
+  1536,
+  1283,
+  571,
+  1536,
+  1536,
+  1536,
+  1536
+ ],
+ "verdict": "PASS",
+ "written_at": "2026-09-10T19:55:48Z"
+}

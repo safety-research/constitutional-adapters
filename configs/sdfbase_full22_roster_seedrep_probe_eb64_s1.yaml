@@ -1,0 +1,124 @@
+# sdfbase_full22_roster_seedrep_probe_eb64_s1.yaml -- LANE-OWNED, peer-shaped roster of the qwen seed-replicate native battery.
+#
+# The S5 multi-turn window probe's two views: one per LoRA-difference dose child of the lane's admitted seed-1 parent
+# derived_base64s1__constv2-mix-full__lora_r4_ce_minus_ctl (0d275f7c...), staged ids `<dose>_eb64s1__<parent>` (the effective-batch +
+# seed keying, 2026-09-18; shas re-measured on the lane bank 2026-09-18). SMOKE-ONLY: `s5_probe_rows` (kind s5_probe,
+# admitted by --smoke only), never a battery arm, never a ledger line; the dose-standup path stays dormant.
+#
+# THREE readers, ONE file (the producer of each artifact is the authority on its shape):
+#   * scripts/modal/seedrep_launch_plan.py  --peer-roster <this> --peer-pins configs/seedrep_probe_eb64_s1_pins.json  (lp.peer_dose_views: STRING
+#     cells `{<parent cell>: <dose>_eb64s1__<parent>}`; the generator's main() resolves to these two files when no --peer-* is given);
+#   * scripts/sdfbase/make_full22_configs.py --roster <this>  renders the two configs + two Petri manifests named below (a string cell resolves
+#     against the shared pins, so the rendered header reads UNPINNED for these staged ids -- the bytes are bound by the pins file below, through
+#     the bank-view builder; nothing here is appended to the shared pins/roster);
+#   * scripts/sdfbase/full22/make_bank_view.py --roster <this> --pins configs/seedrep_probe_eb64_s1_pins.json  (the string form: the staged copy
+#     under <lane bank>/cells/<staged id>, sha-held to the pin).
+#
+# View names follow the generator's dose grammar `d<tok>_<object family>` with a family it KNOWS (OBJECT_FAMILIES = {lora, relu}, frozen by
+# tests/test_sdfbase_full22_wave.py): `d1p5_lora` / `dm0p5_lora`. The `d1p5_loradiff64s1` spelling names a family this generator
+# refuses by name, and admitting one is main's call (the frozen table + its test), not this lane's; the eb64 + seed-1 identity rides in the
+# STAGED ids and the pins, which is where every consumer reads it (lp.DOSE_S1_STAGED_RE, lp.DOSE_CHILD_SHA, the bank).
+# Top-level keys and the target's model / model_revision / body_config are the shared roster's (configs/sdfbase_full22_roster.yaml), copied as
+# data the way the plan's peer fixture shapes them (tests/test_seedrep_review_fixes.py TestDoseStandups._peer); no `dose_families` (no `it` view
+# to anchor one), no `caps` (a dose view never carries one), no lanes.
+wave: full22
+bank_root: exp/objects/sdfbase/full22
+staging_manifest: exp/objects/sdfbase/full22/staging_manifest.json
+serving_impl_commit: 94e294c445dc5eec6ebe0ce3a3e25553004cd4b0
+lens_reduction_mode: stacked
+static_max_new_tokens: 4096
+target_max_new_tokens: 4096
+controls_max_new_tokens: 512
+controls_window:
+  gsm8k: 4608
+  source: 'geometry.derived_window(''capability:gen_long_gsm8k_rung'', controls_max_new_tokens=512, from_field=''max_prompt'') = align128(next_block(2,462
+    + 512)) = 3072 is the MINIMUM (the GSM8K paired-200 prompt budget''s pooled MAX prompt, qwen35_4b under the safety turn, thinking-ON render;
+    the thinking-OFF render the controls run under differs by -2..+4 tokens); the window is the geometry table''s capability:gen_long max_model_len
+    = 4608 -- the window the GSM8K lane''s paired-200 cap-512 leg (gsm8k-paired200-paper-objects, thinking OFF) stood up at on all four models,
+    and where nemotron3nano4b''s hybrid concurrency ceiling is MEASURED (HYBRID_WINDOW_SEQS_CEILINGS: 167 at 4608, job 483254_2), so the standup
+    cannot refuse at readiness on an unmeasured hybrid capacity. S at 4608: gemma4e4b 128 / qwen35_4b 161 / nemotron3nano4b 167 / glm46vflash
+    170. Measured 2026-09-14: smoke 503471 refused 34 of 200 gsm8k items at 2048 on the llama render (max 1,537).'
+controls_retired:
+  gsm8k: 'retired 2026-09-14: the paper uses ONE GSM8K instrument -- the evaluation lane''s inspect/gsm8k_paired200 lane (thinking ON, 8,192 cap with a 16,384 rung, k=1, served at its own windows),
+    which covers every paper cell -- so the wave''s controls-leg gsm8k (the same 200 items, thinking OFF, greedy, cap 512, riding the capability:short
+    controls standup) is a second, non-canonical GSM8K measurement and is RETIRED on every target (the llama8b precedent of 2026-09-10, made wave-wide).
+    It had produced no row on the four gsm8k-bearing targets since gsm8k became the 10-shot Inspect control: its prompts (max 2,462 with the
+    safety turn) + the 512 cap overflowed the 2,048 controls window (smoke 503471 refused 34 of 200 items there), and keeping it would have held the whole controls phase at the 4,608
+    window. The controls standup returns to capability:short''s 2,048 with full S; controls_window.gsm8k stays as a dormant guard for a roster
+    that drops this retirement. This key is deliberately NOT a per-target capability_omitted: that key also rewrites the sampled lane''s readouts.gsm8k
+    and the drivers'' run records -- the frozen instrument of runs that already happened -- which this wave-wide retirement leaves alone'
+bon_climb_cap: 4096
+bon_climb_decode: as_drawn
+attacker_prefix_caching: true
+attacker_quantization: none
+lane_flags:
+  candsi:
+    enabled: false
+    view: main
+    blocker: 'The candidate-SI ids A10 / B3 / C16 are registered only by the candidate-si-refit lineage (origin/candidate-si-refit, 230 commits
+      ahead of main, mid-integration as INT-1 by a live peer session): data/instructions.py loads them from a private text file under the env-guarded
+      loader (SISTEER_LOAD_CANDIDATE_SIS -> sisteer.data.candidate_sis), and the Petri vocabulary maps them as safety_a10 / constitution_b3 /
+      irrelevant_c16 (registry_adapter.HARNESS_TO_TRAINTEST_SI, manifest PROMPTED_*). NONE of that is on lens-grouped-scope or sdfbase-mt, so
+      on this tree `A10__psr_kl_all` fails resolve_instruction and the registry refuses it. Serving these cells needs that lineage merged into
+      the wave tree AND the candidate SI text file present on every node that stands up a server (the pseudo-instruction must resolve at standup).
+
+      '
+    preconditions:
+    - the candidate-si-refit lineage is merged into the wave tree, so registry_adapter translates A10 / B3 / C16 <-> safety_a10 / constitution_b3
+      / irrelevant_c16 and data/instructions.py resolves them (tests/test_sdfbase_full22_wave.py refuses the flag while this is false), and the
+      candidate SI text file is present on every standup node
+    - every candsi staged dir declares exactly ONE identity sidecar. VERIFIED 2026-09-07 on cluster A, all 12 nemotron3nano4b / glm46vflash dirs
+      (and the gemma / qwen ones are the same lineage) carry BOTH fit_provenance.json AND train_budget_meta.json — the refit lineage's fit writes
+      both — which make_bank_view.py / train_budget.object_identity_kind REFUSE as ambiguous. Pick the authoritative spelling and re-stage without
+      the other (both record the same object_sha256, so this is a bookkeeping choice, not a data one)
+    - the pins already exist (configs/sdfbase_full22_pins.json, 6 per target, verified on both clusters) — nothing to re-stage for the bytes themselves
+targets:
+  qwen35_4b:
+    model: Qwen/Qwen3.5-4B
+    model_revision: 851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a
+    body_config: configs/sdfbase_transfer_qwen35_4b_r3.yaml
+    views:
+      d1p5_lora:
+        dose: 1.5
+        dose_unit: lora_write_basis_multiplier
+        object_family: lora
+        legs:
+        - attacks
+        legs_omitted:
+          static: 'the multi-turn window probe: a SMOKE-ONLY Crescendo + ActorAttack standup measuring the context maximum on this
+            dose child beside the same-standup `none` parent -- never a battery arm, never in the ledger; this leg is not part of the probe'
+          bon: 'the multi-turn window probe: a SMOKE-ONLY Crescendo + ActorAttack standup measuring the context maximum on this dose
+            child beside the same-standup `none` parent -- never a battery arm, never in the ledger; this leg is not part of the probe'
+          capability: 'the multi-turn window probe: a SMOKE-ONLY Crescendo + ActorAttack standup measuring the context maximum on this
+            dose child beside the same-standup `none` parent -- never a battery arm, never in the ledger; this leg is not part of the probe'
+          controls: 'the multi-turn window probe: a SMOKE-ONLY Crescendo + ActorAttack standup measuring the context maximum on this
+            dose child beside the same-standup `none` parent -- never a battery arm, never in the ledger; this leg is not part of the probe'
+          petri: 'the multi-turn window probe: a SMOKE-ONLY Crescendo + ActorAttack standup measuring the context maximum on this dose
+            child beside the same-standup `none` parent -- never a battery arm, never in the ledger; this leg is not part of the probe'
+        config: configs/sdfbase_full22_qwen35_4b_d1p5_lora.yaml
+        manifest: configs/capeval/manifests/petri_full22_qwen35_4b_d1p5_lora.yaml
+        petri_target_decode: qwen35_4b_it|petri|off|vendor_preset@v1
+        cells:
+          constv2-mix-full__lora_r4_ce_minus_ctl: d1p5_eb64s1__constv2-mix-full__lora_r4_ce_minus_ctl
+      dm0p5_lora:
+        dose: -0.5
+        dose_unit: lora_write_basis_multiplier
+        object_family: lora
+        legs:
+        - attacks
+        legs_omitted:
+          static: 'the multi-turn window probe: a SMOKE-ONLY Crescendo + ActorAttack standup measuring the context maximum on this
+            dose child beside the same-standup `none` parent -- never a battery arm, never in the ledger; this leg is not part of the probe'
+          bon: 'the multi-turn window probe: a SMOKE-ONLY Crescendo + ActorAttack standup measuring the context maximum on this dose
+            child beside the same-standup `none` parent -- never a battery arm, never in the ledger; this leg is not part of the probe'
+          capability: 'the multi-turn window probe: a SMOKE-ONLY Crescendo + ActorAttack standup measuring the context maximum on this
+            dose child beside the same-standup `none` parent -- never a battery arm, never in the ledger; this leg is not part of the probe'
+          controls: 'the multi-turn window probe: a SMOKE-ONLY Crescendo + ActorAttack standup measuring the context maximum on this
+            dose child beside the same-standup `none` parent -- never a battery arm, never in the ledger; this leg is not part of the probe'
+          petri: 'the multi-turn window probe: a SMOKE-ONLY Crescendo + ActorAttack standup measuring the context maximum on this dose
+            child beside the same-standup `none` parent -- never a battery arm, never in the ledger; this leg is not part of the probe'
+        config: configs/sdfbase_full22_qwen35_4b_dm0p5_lora.yaml
+        manifest: configs/capeval/manifests/petri_full22_qwen35_4b_dm0p5_lora.yaml
+        petri_target_decode: qwen35_4b_it|petri|off|vendor_preset@v1
+        cells:
+          constv2-mix-full__lora_r4_ce_minus_ctl: dm0p5_eb64s1__constv2-mix-full__lora_r4_ce_minus_ctl

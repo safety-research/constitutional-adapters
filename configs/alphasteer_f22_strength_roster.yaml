@@ -1,0 +1,235 @@
+# alphasteer_f22_strength_roster.yaml — THE cell roster of the STRENGTH FRONTIER's AlphaSteer lane (paper
+# Figure 5). The SAME shape as configs/alphasteer_f22_roster.yaml, because the SAME unmodified readers consume it:
+# scripts/sdfbase/full22/f22_roster.py (served_cells, every_staged_id) and
+# scripts/sdfbase/full22/make_bank_view.py (--roster / --pins). Hand-written by design (the source of truth);
+# scripts/alphasteer_f22/as22_strength.py is the same table in code and tests/test_alphasteer_f22_strength.py
+# pins the two equal (view names, config / manifest paths, staged ids, strengths).
+#
+# THE LANE RUNS ON ITS OWN BANK, beside the campaign's (nothing of the campaign's cells/, cells_view/, ladder/,
+# roster or pins is read as a WRITE target, and the campaign's bank view — make_bank_view.py over its roster
+# + pins, which binds every served object to
+# lambda_ladder.json's chosen sha — is not used): per target the bank is
+#   $SHARED/exp/objects/alphasteer_f22/<target>/strength/            (make_bank_view.py --bank <that>)
+#     cells/<view>__alphasteer/                                        scripts/alphasteer_f22/bake_strength.py
+#     cells_view/<view>/alphasteer -> ../../cells/<view>__alphasteer   make_bank_view.py, sha-verified against the pins
+# make_bank_view.py's DEFAULT bank ($SHARED/<bank_root>/<target>) is NOT this dir: every caller passes --bank
+# (scripts/alphasteer_f22/stage_strength.sh does), and `bank_subdir` below records the sibling.
+#
+# FIVE views per target, one per nominal `base_scale` (nominal, NOT multiples of the
+# campaign's selected rung): as_dm0p5 (-0.5), as_d0p1 (0.1), as_d0p3 (0.3), as_d0p5 (0.5), as_d1 (1.0). The dose
+# parses from the view name (strip `as_`, drop `d`, `p` -> `.`, leading `m` -> `-`). `as_d1` IS the campaign's
+# lambda=1 PARENT object (<target>/cells/alphasteer/) bit-for-bit — its cell dir's object.pt is a symlink to
+# the parent's — served from its own view so the frontier's 1.0 point is a same-pass anchor. The
+# campaign's selected rungs (gemma 0.4714 / qwen 0.5395 / nemotron 0.9850; glm none) sit INSIDE this ladder
+# as marked points; they are not views here.
+#
+# ONE cell per view: the bare Class B id `alphasteer` (registry_adapter.traintest_cell_id / harness_cell_id are
+# the identity on it), served from the staged id `<view>__alphasteer`. `none` is the same-standup bare anchor:
+# listed in the configs' explicit_cells, never a roster cell (no object). The twin `none__lens0` is DERIVED by
+# defense_cells.enumerate_cells, never listed.
+#
+# EVERY target has a lambda=1 parent fit on both clusters — glm46vflash INCLUDED (its parent
+# b5116c48acc4308b21441a72fffa8ba4cf327b15e68427a00c1b5c6a2c5cd15b exists; what the campaign recorded as
+# `no_admissible_operating_point` is its LADDER SELECTION, a statement about the campaign's rho-grid rungs
+# 1.39-22.3, not about the parent). So glm is a served target of THIS lane: its ladder runs at the low end
+# and the stop rule is expected to bite — a result, not a failure.
+#
+# THE LAYER SETS ARE THE OBJECTS' AS FIT: gemma 20 layers, qwen 13, glm 18, nemotron 19 (the paper deploys 10 on
+# Llama; a measurement on Llama found 16 layers to be total degeneration against a clean effect at 10, and a
+# 10-layer re-bake is still an open decision). This lane does NOT re-bake layer sets: the strength ladder measures
+# THESE layer sets at these strengths, and any writeup must say so.
+#
+# The object identity of every served cell is PINNED in configs/alphasteer_f22_strength_pins.json — a GENERATED
+# file (scripts/alphasteer_f22/make_strength_pins.py, from each target's strength_bake.json record; --check
+# refuses drift), so no sha is ever typed by hand. make_bank_view.py refuses a staged object whose sha differs
+# from the pin, and refuses an UNPINNED object outright.
+wave: alphasteer_f22_strength
+bank_root: exp/objects/alphasteer_f22            # under $SHARED on either cluster; the per-target bank is <bank_root>/<target>/<bank_subdir>
+parent_lineage: campaign_lambda1            # the lane table's cross-check (as22_strength.LANES): the parents these strength views are baked from
+bank_subdir: strength                            # as22_strength.BANK_SUBDIR — make_bank_view.py is ALWAYS passed --bank <bank_root>/<target>/strength
+staging_manifest: exp/objects/alphasteer_f22/strength_staging_manifest.json
+# the serving-implementation commit every manifest of this lane carries: the campaign's, UNCHANGED (the wave's
+# serving stack) — carried across from the campaign manifests the lane's manifests are derived from, asserted equal
+# by make_strength_configs.py, never computed here
+serving_impl_commit: 94e294c445dc5eec6ebe0ce3a3e25553004cd4b0
+# the lens reduction mode of the whole lane — every standup pins AND asserts it (never per_row)
+lens_reduction_mode: stacked
+# decode caps: the static single-shot families keep the campaign's 4096; the multi-turn target replies keep 512;
+# BoN is the campaign's 512 STORE which the campaign's 512 -> 4096 climb tooling then escalates (ONE best-of-N
+# estimand across the frontier's three method lanes, superseding the earlier native 4096). A 512 store
+# is not the final reading — every strength view here expects a row in the climb's lanes manifest (NOTES_strength.md
+# section 9).
+static_max_new_tokens: 4096
+target_max_new_tokens: 512
+bon_max_new_tokens: 512
+# the attacker's serving defaults, IDENTICAL to the campaign's / the wave's
+attacker_prefix_caching: true
+attacker_quantization: none
+attacker_model: huihui-ai/Huihui-Qwen3.6-27B-abliterated
+attacker_snapshot: 27502c8717fd5a2f8c0c77188c10c243fd4f672e
+attacker_max_model_len: 49152
+
+# No lanes in this roster. The key is present (empty) so f22_roster.lane_flags / lanes_of read the same shape
+# they read on the wave roster.
+lane_flags: {}
+
+# the nominal ladder, in view order (as22_strength.STRENGTHS); `strength` per view below repeats the value the
+# view name encodes, for a reader that does not want to parse names
+strengths: [-0.5, 0.1, 0.3, 0.5, 1.0]
+
+targets:
+  gemma4e4b:
+    model: google/gemma-4-E4B-it
+    model_revision: ee0ef6023621cff504d758262d4e04895a5af4a2
+    campaign_view: it                            # the campaign view whose config / manifest ours derive from
+    campaign_config: configs/alphasteer_f22_serve_gemma4e4b.yaml            # READ ONLY (the template)
+    campaign_manifest: configs/capeval/manifests/alphasteer_f22_gemma4e4b.yaml
+    parent: cells/alphasteer                     # the lambda=1 parent under <bank_root>/<target>/ (READ ONLY)
+    views:
+      as_dm0p5:
+        strength: -0.5
+        config: configs/alphasteer_f22_serve_gemma4e4b_as_dm0p5.yaml
+        manifest: configs/capeval/manifests/alphasteer_f22_gemma4e4b_as_dm0p5.yaml
+        cells:                                   # config cell id -> staged id
+          alphasteer: as_dm0p5__alphasteer
+      as_d0p1:
+        strength: 0.1
+        config: configs/alphasteer_f22_serve_gemma4e4b_as_d0p1.yaml
+        manifest: configs/capeval/manifests/alphasteer_f22_gemma4e4b_as_d0p1.yaml
+        cells:
+          alphasteer: as_d0p1__alphasteer
+      as_d0p3:
+        strength: 0.3
+        config: configs/alphasteer_f22_serve_gemma4e4b_as_d0p3.yaml
+        manifest: configs/capeval/manifests/alphasteer_f22_gemma4e4b_as_d0p3.yaml
+        cells:
+          alphasteer: as_d0p3__alphasteer
+      as_d0p5:
+        strength: 0.5
+        config: configs/alphasteer_f22_serve_gemma4e4b_as_d0p5.yaml
+        manifest: configs/capeval/manifests/alphasteer_f22_gemma4e4b_as_d0p5.yaml
+        cells:
+          alphasteer: as_d0p5__alphasteer
+      as_d1:                                     # THE PARENT, bit-for-bit (object.pt symlinked) — the same-pass anchor
+        strength: 1.0
+        config: configs/alphasteer_f22_serve_gemma4e4b_as_d1.yaml
+        manifest: configs/capeval/manifests/alphasteer_f22_gemma4e4b_as_d1.yaml
+        cells:
+          alphasteer: as_d1__alphasteer
+
+  qwen35_4b:
+    model: Qwen/Qwen3.5-4B
+    model_revision: 851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a
+    campaign_view: it
+    campaign_config: configs/alphasteer_f22_serve_qwen35_4b.yaml
+    campaign_manifest: configs/capeval/manifests/alphasteer_f22_qwen35_4b.yaml
+    parent: cells/alphasteer
+    views:
+      as_dm0p5:
+        strength: -0.5
+        config: configs/alphasteer_f22_serve_qwen35_4b_as_dm0p5.yaml
+        manifest: configs/capeval/manifests/alphasteer_f22_qwen35_4b_as_dm0p5.yaml
+        cells:
+          alphasteer: as_dm0p5__alphasteer
+      as_d0p1:
+        strength: 0.1
+        config: configs/alphasteer_f22_serve_qwen35_4b_as_d0p1.yaml
+        manifest: configs/capeval/manifests/alphasteer_f22_qwen35_4b_as_d0p1.yaml
+        cells:
+          alphasteer: as_d0p1__alphasteer
+      as_d0p3:
+        strength: 0.3
+        config: configs/alphasteer_f22_serve_qwen35_4b_as_d0p3.yaml
+        manifest: configs/capeval/manifests/alphasteer_f22_qwen35_4b_as_d0p3.yaml
+        cells:
+          alphasteer: as_d0p3__alphasteer
+      as_d0p5:
+        strength: 0.5
+        config: configs/alphasteer_f22_serve_qwen35_4b_as_d0p5.yaml
+        manifest: configs/capeval/manifests/alphasteer_f22_qwen35_4b_as_d0p5.yaml
+        cells:
+          alphasteer: as_d0p5__alphasteer
+      as_d1:
+        strength: 1.0
+        config: configs/alphasteer_f22_serve_qwen35_4b_as_d1.yaml
+        manifest: configs/capeval/manifests/alphasteer_f22_qwen35_4b_as_d1.yaml
+        cells:
+          alphasteer: as_d1__alphasteer
+
+  nemotron3nano4b:
+    model: nvidia/NVIDIA-Nemotron-3-Nano-4B-BF16
+    model_revision: dfaf35de3e30f1867dd8dbc38a7fc9fb52d3914f
+    campaign_view: main
+    campaign_config: configs/alphasteer_f22_serve_nemotron3nano4b.yaml
+    campaign_manifest: configs/capeval/manifests/alphasteer_f22_nemotron3nano4b.yaml
+    parent: cells/alphasteer
+    views:
+      as_dm0p5:
+        strength: -0.5
+        config: configs/alphasteer_f22_serve_nemotron3nano4b_as_dm0p5.yaml
+        manifest: configs/capeval/manifests/alphasteer_f22_nemotron3nano4b_as_dm0p5.yaml
+        cells:
+          alphasteer: as_dm0p5__alphasteer
+      as_d0p1:
+        strength: 0.1
+        config: configs/alphasteer_f22_serve_nemotron3nano4b_as_d0p1.yaml
+        manifest: configs/capeval/manifests/alphasteer_f22_nemotron3nano4b_as_d0p1.yaml
+        cells:
+          alphasteer: as_d0p1__alphasteer
+      as_d0p3:
+        strength: 0.3
+        config: configs/alphasteer_f22_serve_nemotron3nano4b_as_d0p3.yaml
+        manifest: configs/capeval/manifests/alphasteer_f22_nemotron3nano4b_as_d0p3.yaml
+        cells:
+          alphasteer: as_d0p3__alphasteer
+      as_d0p5:
+        strength: 0.5
+        config: configs/alphasteer_f22_serve_nemotron3nano4b_as_d0p5.yaml
+        manifest: configs/capeval/manifests/alphasteer_f22_nemotron3nano4b_as_d0p5.yaml
+        cells:
+          alphasteer: as_d0p5__alphasteer
+      as_d1:
+        strength: 1.0
+        config: configs/alphasteer_f22_serve_nemotron3nano4b_as_d1.yaml
+        manifest: configs/capeval/manifests/alphasteer_f22_nemotron3nano4b_as_d1.yaml
+        cells:
+          alphasteer: as_d1__alphasteer
+
+  glm46vflash:
+    model: zai-org/GLM-4.6V-Flash
+    model_revision: 411bb4d77144a3f03accbf4b780f5acb8b7cde4e
+    campaign_view: main
+    campaign_config: configs/alphasteer_f22_serve_glm46vflash.yaml
+    campaign_manifest: configs/capeval/manifests/alphasteer_f22_glm46vflash.yaml
+    parent: cells/alphasteer                     # EXISTS (b5116c48…): the campaign's not_served marker is about its ladder SELECTION, not the parent
+    views:
+      as_dm0p5:
+        strength: -0.5
+        config: configs/alphasteer_f22_serve_glm46vflash_as_dm0p5.yaml
+        manifest: configs/capeval/manifests/alphasteer_f22_glm46vflash_as_dm0p5.yaml
+        cells:
+          alphasteer: as_dm0p5__alphasteer
+      as_d0p1:
+        strength: 0.1
+        config: configs/alphasteer_f22_serve_glm46vflash_as_d0p1.yaml
+        manifest: configs/capeval/manifests/alphasteer_f22_glm46vflash_as_d0p1.yaml
+        cells:
+          alphasteer: as_d0p1__alphasteer
+      as_d0p3:
+        strength: 0.3
+        config: configs/alphasteer_f22_serve_glm46vflash_as_d0p3.yaml
+        manifest: configs/capeval/manifests/alphasteer_f22_glm46vflash_as_d0p3.yaml
+        cells:
+          alphasteer: as_d0p3__alphasteer
+      as_d0p5:
+        strength: 0.5
+        config: configs/alphasteer_f22_serve_glm46vflash_as_d0p5.yaml
+        manifest: configs/capeval/manifests/alphasteer_f22_glm46vflash_as_d0p5.yaml
+        cells:
+          alphasteer: as_d0p5__alphasteer
+      as_d1:
+        strength: 1.0
+        config: configs/alphasteer_f22_serve_glm46vflash_as_d1.yaml
+        manifest: configs/capeval/manifests/alphasteer_f22_glm46vflash_as_d1.yaml
+        cells:
+          alphasteer: as_d1__alphasteer

@@ -1,0 +1,2632 @@
+{
+ "python": "3.12.3",
+ "transformers": "5.15.0",
+ "tokenizers": "0.22.2",
+ "families": [
+  {
+   "label": "gemma-4-E4B-it",
+   "repo": "google/gemma-4-E4B-it",
+   "pinned_revision": "ee0ef6023621cff504d758262d4e04895a5af4a2",
+   "revision_used": "ee0ef6023621cff504d758262d4e04895a5af4a2",
+   "revision_note": "pinned revision present locally",
+   "pin_source": "tests/test_chat_markers_thinking_header.py",
+   "local_snapshots": [
+    "ee0ef6023621cff504d758262d4e04895a5af4a2"
+   ],
+   "tokenizer_class": "GemmaTokenizer",
+   "chat_template_sha256_16": "0a2c8073c878ab1d",
+   "template_mentions_enable_thinking": true,
+   "template_enable_thinking_count": 5,
+   "template_default_line": null,
+   "regimes": {
+    "off": {
+     "H": 3,
+     "head_is_token_prefix_of_full": true,
+     "header_ids": [
+      105,
+      4368,
+      107
+     ],
+     "header_text": "<|turn>model\n",
+     "head_text": "<bos><|turn>user\nx<turn|>\n",
+     "full_text": "<bos><|turn>user\nx<turn|>\n<|turn>model\n",
+     "full_ids": [
+      2,
+      105,
+      2364,
+      107,
+      236781,
+      106,
+      107,
+      105,
+      4368,
+      107
+     ],
+     "response_header_len": 3,
+     "render_ids_equals_reencode": true,
+     "regime_meta": {
+      "pin_applied": true,
+      "kwargs": {
+       "enable_thinking": false
+      }
+     },
+     "think_block_in_prompt": "ABSENT from the header (completion emits <think>...</think> itself, or family has no channel)"
+    },
+    "on": {
+     "H": 3,
+     "head_is_token_prefix_of_full": true,
+     "header_ids": [
+      105,
+      4368,
+      107
+     ],
+     "header_text": "<|turn>model\n",
+     "head_text": "<bos><|turn>system\n<|think|>\n<turn|>\n<|turn>user\nx<turn|>\n",
+     "full_text": "<bos><|turn>system\n<|think|>\n<turn|>\n<|turn>user\nx<turn|>\n<|turn>model\n",
+     "full_ids": [
+      2,
+      105,
+      9731,
+      107,
+      98,
+      107,
+      106,
+      107,
+      105,
+      2364,
+      107,
+      236781,
+      106,
+      107,
+      105,
+      4368,
+      107
+     ],
+     "response_header_len": 3,
+     "render_ids_equals_reencode": true,
+     "regime_meta": {
+      "kwargs": {
+       "enable_thinking": true
+      }
+     },
+     "think_block_in_prompt": "ABSENT from the header (completion emits <think>...</think> itself, or family has no channel)"
+    },
+    "default": {
+     "H": 3,
+     "head_is_token_prefix_of_full": true,
+     "header_ids": [
+      105,
+      4368,
+      107
+     ],
+     "header_text": "<|turn>model\n",
+     "head_text": "<bos><|turn>user\nx<turn|>\n",
+     "full_text": "<bos><|turn>user\nx<turn|>\n<|turn>model\n",
+     "full_ids": [
+      2,
+      105,
+      2364,
+      107,
+      236781,
+      106,
+      107,
+      105,
+      4368,
+      107
+     ],
+     "response_header_len": 3,
+     "render_ids_equals_reencode": true,
+     "regime_meta": {
+      "kwargs": {}
+     },
+     "think_block_in_prompt": "ABSENT from the header (completion emits <think>...</think> itself, or family has no channel)"
+    }
+   },
+   "summary": {
+    "H_off": 3,
+    "H_on": 3,
+    "H_default": 3,
+    "header_ids_off": [
+     105,
+     4368,
+     107
+    ],
+    "header_ids_on": [
+     105,
+     4368,
+     107
+    ],
+    "header_text_off": "<|turn>model\n",
+    "header_text_on": "<|turn>model\n",
+    "width_moves": false,
+    "ids_differ": false,
+    "default_matches": "both identical",
+    "prompt_side_diff_off_vs_on": {
+     "common_prefix_chars": 12,
+     "a_middle": "",
+     "b_middle": "system\n<|think|>\n<turn|>\n<|turn>"
+    }
+   },
+   "delimiters": {
+    "<think>": {
+     "atomic": false,
+     "encodes_to": [
+      236820,
+      36345,
+      236813
+     ]
+    },
+    "</think>": {
+     "atomic": false,
+     "encodes_to": [
+      954,
+      36345,
+      236813
+     ]
+    },
+    "/nothink": {
+     "atomic": false,
+     "encodes_to": [
+      236786,
+      236749,
+      1235,
+      961
+     ]
+    },
+    "<|think|>": {
+     "atomic": true,
+     "id": 98,
+     "encodes_to": [
+      98
+     ],
+     "added_token_special_flag": true,
+     "in_control_token_ids": true
+    },
+    "<|channel>": {
+     "atomic": true,
+     "id": 100,
+     "encodes_to": [
+      100
+     ],
+     "added_token_special_flag": true,
+     "in_control_token_ids": true
+    },
+    "<channel|>": {
+     "atomic": true,
+     "id": 101,
+     "encodes_to": [
+      101
+     ],
+     "added_token_special_flag": true,
+     "in_control_token_ids": true
+    }
+   },
+   "switch_probes": {
+    "no kwarg (template default)": {
+     "H": 3,
+     "header_text": "<|turn>model\n",
+     "renders_as": "== header (identical in both modes)",
+     "full_text_sha": "7b1b5722c293dc89"
+    },
+    "enable_thinking=False": {
+     "H": 3,
+     "header_text": "<|turn>model\n",
+     "renders_as": "== header (identical in both modes)",
+     "full_text_sha": "7b1b5722c293dc89"
+    },
+    "enable_thinking=True": {
+     "H": 3,
+     "header_text": "<|turn>model\n",
+     "renders_as": "== header (identical in both modes)",
+     "full_text_sha": "b8e7a30c23c2d85e"
+    },
+    "thinking=False  (UNRECOGNISED kwarg)": {
+     "H": 3,
+     "header_text": "<|turn>model\n",
+     "renders_as": "== header (identical in both modes)",
+     "full_text_sha": "7b1b5722c293dc89"
+    },
+    "enable_reasoning=False  (UNRECOGNISED kwarg)": {
+     "H": 3,
+     "header_text": "<|turn>model\n",
+     "renders_as": "== header (identical in both modes)",
+     "full_text_sha": "7b1b5722c293dc89"
+    },
+    "enable_thinking='false'  (STRING, truthy)": {
+     "H": 3,
+     "header_text": "<|turn>model\n",
+     "renders_as": "== header (identical in both modes)",
+     "full_text_sha": "b8e7a30c23c2d85e"
+    },
+    "enable_thinking=None": {
+     "H": 3,
+     "header_text": "<|turn>model\n",
+     "renders_as": "== header (identical in both modes)",
+     "full_text_sha": "7b1b5722c293dc89"
+    },
+    "enable_thinking=0": {
+     "H": 3,
+     "header_text": "<|turn>model\n",
+     "renders_as": "== header (identical in both modes)",
+     "full_text_sha": "7b1b5722c293dc89"
+    }
+   },
+   "repo_paths": {
+    "generation_header_ids_under": {
+     "False": {
+      "H": 3,
+      "ids": [
+       105,
+       4368,
+       107
+      ],
+      "text": "<|turn>model\n"
+     },
+     "True": {
+      "H": 3,
+      "ids": [
+       105,
+       4368,
+       107
+      ],
+      "text": "<|turn>model\n"
+     }
+    },
+    "thinking_header_facts_or_error": {
+     "facts": {
+      "switch": true,
+      "moves": false,
+      "off_ids": [
+       105,
+       4368,
+       107
+      ],
+      "on_ids": [
+       105,
+       4368,
+       107
+      ]
+     },
+     "reason": null
+    },
+    "derive_assistant_markers": {
+     "off": {
+      "located_header": [
+       107,
+       105,
+       4368,
+       107
+      ],
+      "located_header_text": "\n<|turn>model\n",
+      "terminator": 106,
+      "closing": [
+       106,
+       107
+      ],
+      "generation_header": [
+       105,
+       4368,
+       107
+      ],
+      "generation_header_text": "<|turn>model\n",
+      "successor_bounded": false
+     },
+     "on": {
+      "located_header": [
+       107,
+       105,
+       4368,
+       107
+      ],
+      "located_header_text": "\n<|turn>model\n",
+      "terminator": 106,
+      "closing": [
+       106,
+       107
+      ],
+      "generation_header": [
+       105,
+       4368,
+       107
+      ],
+      "generation_header_text": "<|turn>model\n",
+      "successor_bounded": false
+     },
+     "default": {
+      "located_header": [
+       107,
+       105,
+       4368,
+       107
+      ],
+      "located_header_text": "\n<|turn>model\n",
+      "terminator": 106,
+      "closing": [
+       106,
+       107
+      ],
+      "generation_header": [
+       105,
+       4368,
+       107
+      ],
+      "generation_header_text": "<|turn>model\n",
+      "successor_bounded": false
+     }
+    },
+    "turn_end_paths_under_OFF_pin": {
+     "assistant_turn_end_ids": {
+      "ok": "(106, 107)"
+     },
+     "successor_role_header_ids": {
+      "ok": "(105, 2364, 107)"
+     },
+     "assistant_content_spans(user,assistant)": {
+      "ok": "([2, 105, 2364, 107, 3689, 563, 236743, 236778, 236862, 236778, 236881, 106, 107, 105, 4368, 107, 26391, 236761, 106, 107], [(16, 18)])"
+     }
+    }
+   }
+  },
+  {
+   "label": "gemma-4-E2B-it",
+   "repo": "google/gemma-4-E2B-it",
+   "pinned_revision": "3e22461f65e89153144f8adb70e3b8c2cc9845a7",
+   "revision_used": "3e22461f65e89153144f8adb70e3b8c2cc9845a7",
+   "revision_note": "pinned revision present locally",
+   "pin_source": "tests/test_chat_markers_thinking_header.py",
+   "local_snapshots": [
+    "3e22461f65e89153144f8adb70e3b8c2cc9845a7"
+   ],
+   "tokenizer_class": "GemmaTokenizer",
+   "chat_template_sha256_16": "0a2c8073c878ab1d",
+   "template_mentions_enable_thinking": true,
+   "template_enable_thinking_count": 5,
+   "template_default_line": null,
+   "regimes": {
+    "off": {
+     "H": 3,
+     "head_is_token_prefix_of_full": true,
+     "header_ids": [
+      105,
+      4368,
+      107
+     ],
+     "header_text": "<|turn>model\n",
+     "head_text": "<bos><|turn>user\nx<turn|>\n",
+     "full_text": "<bos><|turn>user\nx<turn|>\n<|turn>model\n",
+     "full_ids": [
+      2,
+      105,
+      2364,
+      107,
+      236781,
+      106,
+      107,
+      105,
+      4368,
+      107
+     ],
+     "response_header_len": 3,
+     "render_ids_equals_reencode": true,
+     "regime_meta": {
+      "pin_applied": true,
+      "kwargs": {
+       "enable_thinking": false
+      }
+     },
+     "think_block_in_prompt": "ABSENT from the header (completion emits <think>...</think> itself, or family has no channel)"
+    },
+    "on": {
+     "H": 3,
+     "head_is_token_prefix_of_full": true,
+     "header_ids": [
+      105,
+      4368,
+      107
+     ],
+     "header_text": "<|turn>model\n",
+     "head_text": "<bos><|turn>system\n<|think|>\n<turn|>\n<|turn>user\nx<turn|>\n",
+     "full_text": "<bos><|turn>system\n<|think|>\n<turn|>\n<|turn>user\nx<turn|>\n<|turn>model\n",
+     "full_ids": [
+      2,
+      105,
+      9731,
+      107,
+      98,
+      107,
+      106,
+      107,
+      105,
+      2364,
+      107,
+      236781,
+      106,
+      107,
+      105,
+      4368,
+      107
+     ],
+     "response_header_len": 3,
+     "render_ids_equals_reencode": true,
+     "regime_meta": {
+      "kwargs": {
+       "enable_thinking": true
+      }
+     },
+     "think_block_in_prompt": "ABSENT from the header (completion emits <think>...</think> itself, or family has no channel)"
+    },
+    "default": {
+     "H": 3,
+     "head_is_token_prefix_of_full": true,
+     "header_ids": [
+      105,
+      4368,
+      107
+     ],
+     "header_text": "<|turn>model\n",
+     "head_text": "<bos><|turn>user\nx<turn|>\n",
+     "full_text": "<bos><|turn>user\nx<turn|>\n<|turn>model\n",
+     "full_ids": [
+      2,
+      105,
+      2364,
+      107,
+      236781,
+      106,
+      107,
+      105,
+      4368,
+      107
+     ],
+     "response_header_len": 3,
+     "render_ids_equals_reencode": true,
+     "regime_meta": {
+      "kwargs": {}
+     },
+     "think_block_in_prompt": "ABSENT from the header (completion emits <think>...</think> itself, or family has no channel)"
+    }
+   },
+   "summary": {
+    "H_off": 3,
+    "H_on": 3,
+    "H_default": 3,
+    "header_ids_off": [
+     105,
+     4368,
+     107
+    ],
+    "header_ids_on": [
+     105,
+     4368,
+     107
+    ],
+    "header_text_off": "<|turn>model\n",
+    "header_text_on": "<|turn>model\n",
+    "width_moves": false,
+    "ids_differ": false,
+    "default_matches": "both identical",
+    "prompt_side_diff_off_vs_on": {
+     "common_prefix_chars": 12,
+     "a_middle": "",
+     "b_middle": "system\n<|think|>\n<turn|>\n<|turn>"
+    }
+   },
+   "delimiters": {
+    "<think>": {
+     "atomic": false,
+     "encodes_to": [
+      236820,
+      36345,
+      236813
+     ]
+    },
+    "</think>": {
+     "atomic": false,
+     "encodes_to": [
+      954,
+      36345,
+      236813
+     ]
+    },
+    "/nothink": {
+     "atomic": false,
+     "encodes_to": [
+      236786,
+      236749,
+      1235,
+      961
+     ]
+    },
+    "<|think|>": {
+     "atomic": true,
+     "id": 98,
+     "encodes_to": [
+      98
+     ],
+     "added_token_special_flag": true,
+     "in_control_token_ids": true
+    },
+    "<|channel>": {
+     "atomic": true,
+     "id": 100,
+     "encodes_to": [
+      100
+     ],
+     "added_token_special_flag": true,
+     "in_control_token_ids": true
+    },
+    "<channel|>": {
+     "atomic": true,
+     "id": 101,
+     "encodes_to": [
+      101
+     ],
+     "added_token_special_flag": true,
+     "in_control_token_ids": true
+    }
+   },
+   "switch_probes": {
+    "no kwarg (template default)": {
+     "H": 3,
+     "header_text": "<|turn>model\n",
+     "renders_as": "== header (identical in both modes)",
+     "full_text_sha": "7b1b5722c293dc89"
+    },
+    "enable_thinking=False": {
+     "H": 3,
+     "header_text": "<|turn>model\n",
+     "renders_as": "== header (identical in both modes)",
+     "full_text_sha": "7b1b5722c293dc89"
+    },
+    "enable_thinking=True": {
+     "H": 3,
+     "header_text": "<|turn>model\n",
+     "renders_as": "== header (identical in both modes)",
+     "full_text_sha": "b8e7a30c23c2d85e"
+    },
+    "thinking=False  (UNRECOGNISED kwarg)": {
+     "H": 3,
+     "header_text": "<|turn>model\n",
+     "renders_as": "== header (identical in both modes)",
+     "full_text_sha": "7b1b5722c293dc89"
+    },
+    "enable_reasoning=False  (UNRECOGNISED kwarg)": {
+     "H": 3,
+     "header_text": "<|turn>model\n",
+     "renders_as": "== header (identical in both modes)",
+     "full_text_sha": "7b1b5722c293dc89"
+    },
+    "enable_thinking='false'  (STRING, truthy)": {
+     "H": 3,
+     "header_text": "<|turn>model\n",
+     "renders_as": "== header (identical in both modes)",
+     "full_text_sha": "b8e7a30c23c2d85e"
+    },
+    "enable_thinking=None": {
+     "H": 3,
+     "header_text": "<|turn>model\n",
+     "renders_as": "== header (identical in both modes)",
+     "full_text_sha": "7b1b5722c293dc89"
+    },
+    "enable_thinking=0": {
+     "H": 3,
+     "header_text": "<|turn>model\n",
+     "renders_as": "== header (identical in both modes)",
+     "full_text_sha": "7b1b5722c293dc89"
+    }
+   },
+   "repo_paths": {
+    "generation_header_ids_under": {
+     "False": {
+      "H": 3,
+      "ids": [
+       105,
+       4368,
+       107
+      ],
+      "text": "<|turn>model\n"
+     },
+     "True": {
+      "H": 3,
+      "ids": [
+       105,
+       4368,
+       107
+      ],
+      "text": "<|turn>model\n"
+     }
+    },
+    "thinking_header_facts_or_error": {
+     "facts": {
+      "switch": true,
+      "moves": false,
+      "off_ids": [
+       105,
+       4368,
+       107
+      ],
+      "on_ids": [
+       105,
+       4368,
+       107
+      ]
+     },
+     "reason": null
+    },
+    "derive_assistant_markers": {
+     "off": {
+      "located_header": [
+       107,
+       105,
+       4368,
+       107
+      ],
+      "located_header_text": "\n<|turn>model\n",
+      "terminator": 106,
+      "closing": [
+       106,
+       107
+      ],
+      "generation_header": [
+       105,
+       4368,
+       107
+      ],
+      "generation_header_text": "<|turn>model\n",
+      "successor_bounded": false
+     },
+     "on": {
+      "located_header": [
+       107,
+       105,
+       4368,
+       107
+      ],
+      "located_header_text": "\n<|turn>model\n",
+      "terminator": 106,
+      "closing": [
+       106,
+       107
+      ],
+      "generation_header": [
+       105,
+       4368,
+       107
+      ],
+      "generation_header_text": "<|turn>model\n",
+      "successor_bounded": false
+     },
+     "default": {
+      "located_header": [
+       107,
+       105,
+       4368,
+       107
+      ],
+      "located_header_text": "\n<|turn>model\n",
+      "terminator": 106,
+      "closing": [
+       106,
+       107
+      ],
+      "generation_header": [
+       105,
+       4368,
+       107
+      ],
+      "generation_header_text": "<|turn>model\n",
+      "successor_bounded": false
+     }
+    },
+    "turn_end_paths_under_OFF_pin": {
+     "assistant_turn_end_ids": {
+      "ok": "(106, 107)"
+     },
+     "successor_role_header_ids": {
+      "ok": "(105, 2364, 107)"
+     },
+     "assistant_content_spans(user,assistant)": {
+      "ok": "([2, 105, 2364, 107, 3689, 563, 236743, 236778, 236862, 236778, 236881, 106, 107, 105, 4368, 107, 26391, 236761, 106, 107], [(16, 18)])"
+     }
+    }
+   }
+  },
+  {
+   "label": "Qwen3.5-9B",
+   "repo": "Qwen/Qwen3.5-9B",
+   "pinned_revision": "c202236235762e1c871ad0ccb60c8ee5ba337b9a",
+   "revision_used": "c202236235762e1c871ad0ccb60c8ee5ba337b9a",
+   "revision_note": "pinned revision present locally",
+   "pin_source": "tests/test_chat_markers_thinking_header.py",
+   "local_snapshots": [
+    "c202236235762e1c871ad0ccb60c8ee5ba337b9a"
+   ],
+   "tokenizer_class": "Qwen2Tokenizer",
+   "chat_template_sha256_16": "a4aee8afcf2e0711",
+   "template_mentions_enable_thinking": true,
+   "template_enable_thinking_count": 2,
+   "template_default_line": "{%- if enable_thinking is defined and enable_thinking is false %}",
+   "regimes": {
+    "off": {
+     "H": 7,
+     "head_is_token_prefix_of_full": true,
+     "header_ids": [
+      248045,
+      74455,
+      198,
+      248068,
+      271,
+      248069,
+      271
+     ],
+     "header_text": "<|im_start|>assistant\n<think>\n\n</think>\n\n",
+     "head_text": "<|im_start|>user\nx<|im_end|>\n",
+     "full_text": "<|im_start|>user\nx<|im_end|>\n<|im_start|>assistant\n<think>\n\n</think>\n\n",
+     "full_ids": [
+      248045,
+      846,
+      198,
+      87,
+      248046,
+      198,
+      248045,
+      74455,
+      198,
+      248068,
+      271,
+      248069,
+      271
+     ],
+     "response_header_len": 7,
+     "render_ids_equals_reencode": true,
+     "regime_meta": {
+      "pin_applied": true,
+      "kwargs": {
+       "enable_thinking": false
+      }
+     },
+     "think_block_in_prompt": "CLOSED-EMPTY block inside the header (completion is the answer only)"
+    },
+    "on": {
+     "H": 5,
+     "head_is_token_prefix_of_full": true,
+     "header_ids": [
+      248045,
+      74455,
+      198,
+      248068,
+      198
+     ],
+     "header_text": "<|im_start|>assistant\n<think>\n",
+     "head_text": "<|im_start|>user\nx<|im_end|>\n",
+     "full_text": "<|im_start|>user\nx<|im_end|>\n<|im_start|>assistant\n<think>\n",
+     "full_ids": [
+      248045,
+      846,
+      198,
+      87,
+      248046,
+      198,
+      248045,
+      74455,
+      198,
+      248068,
+      198
+     ],
+     "response_header_len": 5,
+     "render_ids_equals_reencode": true,
+     "regime_meta": {
+      "kwargs": {
+       "enable_thinking": true
+      }
+     },
+     "think_block_in_prompt": "OPEN: prompt ends in an unclosed <think> (completion emits reasoning + </think> + answer)"
+    },
+    "default": {
+     "H": 5,
+     "head_is_token_prefix_of_full": true,
+     "header_ids": [
+      248045,
+      74455,
+      198,
+      248068,
+      198
+     ],
+     "header_text": "<|im_start|>assistant\n<think>\n",
+     "head_text": "<|im_start|>user\nx<|im_end|>\n",
+     "full_text": "<|im_start|>user\nx<|im_end|>\n<|im_start|>assistant\n<think>\n",
+     "full_ids": [
+      248045,
+      846,
+      198,
+      87,
+      248046,
+      198,
+      248045,
+      74455,
+      198,
+      248068,
+      198
+     ],
+     "response_header_len": 5,
+     "render_ids_equals_reencode": true,
+     "regime_meta": {
+      "kwargs": {}
+     },
+     "think_block_in_prompt": "OPEN: prompt ends in an unclosed <think> (completion emits reasoning + </think> + answer)"
+    }
+   },
+   "summary": {
+    "H_off": 7,
+    "H_on": 5,
+    "H_default": 5,
+    "header_ids_off": [
+     248045,
+     74455,
+     198,
+     248068,
+     271,
+     248069,
+     271
+    ],
+    "header_ids_on": [
+     248045,
+     74455,
+     198,
+     248068,
+     198
+    ],
+    "header_text_off": "<|im_start|>assistant\n<think>\n\n</think>\n\n",
+    "header_text_on": "<|im_start|>assistant\n<think>\n",
+    "width_moves": true,
+    "ids_differ": true,
+    "default_matches": "ON",
+    "prompt_side_diff_off_vs_on": {
+     "common_prefix_chars": 29,
+     "a_middle": "",
+     "b_middle": ""
+    }
+   },
+   "delimiters": {
+    "<think>": {
+     "atomic": true,
+     "id": 248068,
+     "encodes_to": [
+      248068
+     ],
+     "added_token_special_flag": false,
+     "in_control_token_ids": false
+    },
+    "</think>": {
+     "atomic": true,
+     "id": 248069,
+     "encodes_to": [
+      248069
+     ],
+     "added_token_special_flag": false,
+     "in_control_token_ids": false
+    },
+    "/nothink": {
+     "atomic": false,
+     "encodes_to": [
+      32002,
+      26003
+     ]
+    },
+    "<|think|>": {
+     "atomic": false,
+     "encodes_to": [
+      27,
+      91,
+      26003,
+      91,
+      29
+     ]
+    },
+    "<|channel>": {
+     "atomic": false,
+     "encodes_to": [
+      27,
+      91,
+      9819,
+      29
+     ]
+    },
+    "<channel|>": {
+     "atomic": false,
+     "encodes_to": [
+      27,
+      9819,
+      91,
+      29
+     ]
+    }
+   },
+   "switch_probes": {
+    "no kwarg (template default)": {
+     "H": 5,
+     "header_text": "<|im_start|>assistant\n<think>\n",
+     "renders_as": "== ON header",
+     "full_text_sha": "9192eed3e3b72df4"
+    },
+    "enable_thinking=False": {
+     "H": 7,
+     "header_text": "<|im_start|>assistant\n<think>\n\n</think>\n\n",
+     "renders_as": "== OFF header",
+     "full_text_sha": "155df9fceed54a5d"
+    },
+    "enable_thinking=True": {
+     "H": 5,
+     "header_text": "<|im_start|>assistant\n<think>\n",
+     "renders_as": "== ON header",
+     "full_text_sha": "9192eed3e3b72df4"
+    },
+    "thinking=False  (UNRECOGNISED kwarg)": {
+     "H": 5,
+     "header_text": "<|im_start|>assistant\n<think>\n",
+     "renders_as": "== ON header",
+     "full_text_sha": "9192eed3e3b72df4"
+    },
+    "enable_reasoning=False  (UNRECOGNISED kwarg)": {
+     "H": 5,
+     "header_text": "<|im_start|>assistant\n<think>\n",
+     "renders_as": "== ON header",
+     "full_text_sha": "9192eed3e3b72df4"
+    },
+    "enable_thinking='false'  (STRING, truthy)": {
+     "H": 5,
+     "header_text": "<|im_start|>assistant\n<think>\n",
+     "renders_as": "== ON header",
+     "full_text_sha": "9192eed3e3b72df4"
+    },
+    "enable_thinking=None": {
+     "H": 5,
+     "header_text": "<|im_start|>assistant\n<think>\n",
+     "renders_as": "== ON header",
+     "full_text_sha": "9192eed3e3b72df4"
+    },
+    "enable_thinking=0": {
+     "H": 5,
+     "header_text": "<|im_start|>assistant\n<think>\n",
+     "renders_as": "== ON header",
+     "full_text_sha": "9192eed3e3b72df4"
+    }
+   },
+   "repo_paths": {
+    "generation_header_ids_under": {
+     "False": {
+      "H": 7,
+      "ids": [
+       248045,
+       74455,
+       198,
+       248068,
+       271,
+       248069,
+       271
+      ],
+      "text": "<|im_start|>assistant\n<think>\n\n</think>\n\n"
+     },
+     "True": {
+      "H": 5,
+      "ids": [
+       248045,
+       74455,
+       198,
+       248068,
+       198
+      ],
+      "text": "<|im_start|>assistant\n<think>\n"
+     }
+    },
+    "thinking_header_facts_or_error": {
+     "facts": {
+      "switch": true,
+      "moves": true,
+      "off_ids": [
+       248045,
+       74455,
+       198,
+       248068,
+       271,
+       248069,
+       271
+      ],
+      "on_ids": [
+       248045,
+       74455,
+       198,
+       248068,
+       198
+      ]
+     },
+     "reason": null
+    },
+    "derive_assistant_markers": {
+     "off": {
+      "located_header": [
+       198,
+       248045,
+       74455,
+       198,
+       248068,
+       271,
+       248069,
+       271
+      ],
+      "located_header_text": "\n<|im_start|>assistant\n<think>\n\n</think>\n\n",
+      "terminator": 248046,
+      "closing": [
+       248046,
+       198
+      ],
+      "generation_header": [
+       248045,
+       74455,
+       198,
+       248068,
+       271,
+       248069,
+       271
+      ],
+      "generation_header_text": "<|im_start|>assistant\n<think>\n\n</think>\n\n",
+      "successor_bounded": false
+     },
+     "on": {
+      "located_header": [
+       198,
+       248045,
+       74455,
+       198,
+       248068,
+       271,
+       248069,
+       271
+      ],
+      "located_header_text": "\n<|im_start|>assistant\n<think>\n\n</think>\n\n",
+      "terminator": 248046,
+      "closing": [
+       248046,
+       198
+      ],
+      "generation_header": [
+       248045,
+       74455,
+       198,
+       248068,
+       198
+      ],
+      "generation_header_text": "<|im_start|>assistant\n<think>\n",
+      "successor_bounded": false
+     },
+     "default": {
+      "REFUSAL": "ChatMarkerError: probe: the generation prompt stops INSIDE the assistant header \u2014 it appends '<|im_start|>assistant\\n<think>\\n' (5 tokens) where a completed assistant turn renders '<|im_start|>assistant\\n<think>\\n\\n</think>\\n\\n' (7 tokens) \u2014 and this template branches on a thinking switch whose render regime is NOT pinned, so both widths are derivable and neither is the answer. Pin the regime first: models.pin_reasoning_template_off(tok) for the fit/serve thinking-OFF render, or set tok._sisteer_template_kwargs explicitly; refusing to guess assistant markers"
+     }
+    },
+    "turn_end_paths_under_OFF_pin": {
+     "assistant_turn_end_ids": {
+      "REFUSAL": "ChatMarkerError: turn end: appending a successor turn re-tokenized the render at token 9 ([2114, 20932, 1110] vs [248068, 271, 248069]); refusing to locate the turn end"
+     },
+     "successor_role_header_ids": {
+      "REFUSAL": "ChatMarkerError: turn end: appending a successor turn re-tokenized the render at token 9 ([2114, 20932, 1110] vs [248068, 271, 248069]); refusing to locate the turn end"
+     },
+     "assistant_content_spans(user,assistant)": {
+      "ok": "([248045, 846, 198, 3710, 369, 220, 17, 10, 17, 30, 248046, 198, 248045, 74455, 198, 248068, 271, 248069, 271, 26108, 13, 248046, 198], [(19, 21)])"
+     }
+    }
+   }
+  },
+  {
+   "label": "Qwen3.5-4B",
+   "repo": "Qwen/Qwen3.5-4B",
+   "pinned_revision": "851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a",
+   "revision_used": "851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a",
+   "revision_note": "pinned revision present locally",
+   "pin_source": "tests/test_chat_markers_thinking_header.py",
+   "local_snapshots": [
+    "851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a"
+   ],
+   "tokenizer_class": "Qwen2Tokenizer",
+   "chat_template_sha256_16": "a4aee8afcf2e0711",
+   "template_mentions_enable_thinking": true,
+   "template_enable_thinking_count": 2,
+   "template_default_line": "{%- if enable_thinking is defined and enable_thinking is false %}",
+   "regimes": {
+    "off": {
+     "H": 7,
+     "head_is_token_prefix_of_full": true,
+     "header_ids": [
+      248045,
+      74455,
+      198,
+      248068,
+      271,
+      248069,
+      271
+     ],
+     "header_text": "<|im_start|>assistant\n<think>\n\n</think>\n\n",
+     "head_text": "<|im_start|>user\nx<|im_end|>\n",
+     "full_text": "<|im_start|>user\nx<|im_end|>\n<|im_start|>assistant\n<think>\n\n</think>\n\n",
+     "full_ids": [
+      248045,
+      846,
+      198,
+      87,
+      248046,
+      198,
+      248045,
+      74455,
+      198,
+      248068,
+      271,
+      248069,
+      271
+     ],
+     "response_header_len": 7,
+     "render_ids_equals_reencode": true,
+     "regime_meta": {
+      "pin_applied": true,
+      "kwargs": {
+       "enable_thinking": false
+      }
+     },
+     "think_block_in_prompt": "CLOSED-EMPTY block inside the header (completion is the answer only)"
+    },
+    "on": {
+     "H": 5,
+     "head_is_token_prefix_of_full": true,
+     "header_ids": [
+      248045,
+      74455,
+      198,
+      248068,
+      198
+     ],
+     "header_text": "<|im_start|>assistant\n<think>\n",
+     "head_text": "<|im_start|>user\nx<|im_end|>\n",
+     "full_text": "<|im_start|>user\nx<|im_end|>\n<|im_start|>assistant\n<think>\n",
+     "full_ids": [
+      248045,
+      846,
+      198,
+      87,
+      248046,
+      198,
+      248045,
+      74455,
+      198,
+      248068,
+      198
+     ],
+     "response_header_len": 5,
+     "render_ids_equals_reencode": true,
+     "regime_meta": {
+      "kwargs": {
+       "enable_thinking": true
+      }
+     },
+     "think_block_in_prompt": "OPEN: prompt ends in an unclosed <think> (completion emits reasoning + </think> + answer)"
+    },
+    "default": {
+     "H": 5,
+     "head_is_token_prefix_of_full": true,
+     "header_ids": [
+      248045,
+      74455,
+      198,
+      248068,
+      198
+     ],
+     "header_text": "<|im_start|>assistant\n<think>\n",
+     "head_text": "<|im_start|>user\nx<|im_end|>\n",
+     "full_text": "<|im_start|>user\nx<|im_end|>\n<|im_start|>assistant\n<think>\n",
+     "full_ids": [
+      248045,
+      846,
+      198,
+      87,
+      248046,
+      198,
+      248045,
+      74455,
+      198,
+      248068,
+      198
+     ],
+     "response_header_len": 5,
+     "render_ids_equals_reencode": true,
+     "regime_meta": {
+      "kwargs": {}
+     },
+     "think_block_in_prompt": "OPEN: prompt ends in an unclosed <think> (completion emits reasoning + </think> + answer)"
+    }
+   },
+   "summary": {
+    "H_off": 7,
+    "H_on": 5,
+    "H_default": 5,
+    "header_ids_off": [
+     248045,
+     74455,
+     198,
+     248068,
+     271,
+     248069,
+     271
+    ],
+    "header_ids_on": [
+     248045,
+     74455,
+     198,
+     248068,
+     198
+    ],
+    "header_text_off": "<|im_start|>assistant\n<think>\n\n</think>\n\n",
+    "header_text_on": "<|im_start|>assistant\n<think>\n",
+    "width_moves": true,
+    "ids_differ": true,
+    "default_matches": "ON",
+    "prompt_side_diff_off_vs_on": {
+     "common_prefix_chars": 29,
+     "a_middle": "",
+     "b_middle": ""
+    }
+   },
+   "delimiters": {
+    "<think>": {
+     "atomic": true,
+     "id": 248068,
+     "encodes_to": [
+      248068
+     ],
+     "added_token_special_flag": false,
+     "in_control_token_ids": false
+    },
+    "</think>": {
+     "atomic": true,
+     "id": 248069,
+     "encodes_to": [
+      248069
+     ],
+     "added_token_special_flag": false,
+     "in_control_token_ids": false
+    },
+    "/nothink": {
+     "atomic": false,
+     "encodes_to": [
+      32002,
+      26003
+     ]
+    },
+    "<|think|>": {
+     "atomic": false,
+     "encodes_to": [
+      27,
+      91,
+      26003,
+      91,
+      29
+     ]
+    },
+    "<|channel>": {
+     "atomic": false,
+     "encodes_to": [
+      27,
+      91,
+      9819,
+      29
+     ]
+    },
+    "<channel|>": {
+     "atomic": false,
+     "encodes_to": [
+      27,
+      9819,
+      91,
+      29
+     ]
+    }
+   },
+   "switch_probes": {
+    "no kwarg (template default)": {
+     "H": 5,
+     "header_text": "<|im_start|>assistant\n<think>\n",
+     "renders_as": "== ON header",
+     "full_text_sha": "9192eed3e3b72df4"
+    },
+    "enable_thinking=False": {
+     "H": 7,
+     "header_text": "<|im_start|>assistant\n<think>\n\n</think>\n\n",
+     "renders_as": "== OFF header",
+     "full_text_sha": "155df9fceed54a5d"
+    },
+    "enable_thinking=True": {
+     "H": 5,
+     "header_text": "<|im_start|>assistant\n<think>\n",
+     "renders_as": "== ON header",
+     "full_text_sha": "9192eed3e3b72df4"
+    },
+    "thinking=False  (UNRECOGNISED kwarg)": {
+     "H": 5,
+     "header_text": "<|im_start|>assistant\n<think>\n",
+     "renders_as": "== ON header",
+     "full_text_sha": "9192eed3e3b72df4"
+    },
+    "enable_reasoning=False  (UNRECOGNISED kwarg)": {
+     "H": 5,
+     "header_text": "<|im_start|>assistant\n<think>\n",
+     "renders_as": "== ON header",
+     "full_text_sha": "9192eed3e3b72df4"
+    },
+    "enable_thinking='false'  (STRING, truthy)": {
+     "H": 5,
+     "header_text": "<|im_start|>assistant\n<think>\n",
+     "renders_as": "== ON header",
+     "full_text_sha": "9192eed3e3b72df4"
+    },
+    "enable_thinking=None": {
+     "H": 5,
+     "header_text": "<|im_start|>assistant\n<think>\n",
+     "renders_as": "== ON header",
+     "full_text_sha": "9192eed3e3b72df4"
+    },
+    "enable_thinking=0": {
+     "H": 5,
+     "header_text": "<|im_start|>assistant\n<think>\n",
+     "renders_as": "== ON header",
+     "full_text_sha": "9192eed3e3b72df4"
+    }
+   },
+   "repo_paths": {
+    "generation_header_ids_under": {
+     "False": {
+      "H": 7,
+      "ids": [
+       248045,
+       74455,
+       198,
+       248068,
+       271,
+       248069,
+       271
+      ],
+      "text": "<|im_start|>assistant\n<think>\n\n</think>\n\n"
+     },
+     "True": {
+      "H": 5,
+      "ids": [
+       248045,
+       74455,
+       198,
+       248068,
+       198
+      ],
+      "text": "<|im_start|>assistant\n<think>\n"
+     }
+    },
+    "thinking_header_facts_or_error": {
+     "facts": {
+      "switch": true,
+      "moves": true,
+      "off_ids": [
+       248045,
+       74455,
+       198,
+       248068,
+       271,
+       248069,
+       271
+      ],
+      "on_ids": [
+       248045,
+       74455,
+       198,
+       248068,
+       198
+      ]
+     },
+     "reason": null
+    },
+    "derive_assistant_markers": {
+     "off": {
+      "located_header": [
+       198,
+       248045,
+       74455,
+       198,
+       248068,
+       271,
+       248069,
+       271
+      ],
+      "located_header_text": "\n<|im_start|>assistant\n<think>\n\n</think>\n\n",
+      "terminator": 248046,
+      "closing": [
+       248046,
+       198
+      ],
+      "generation_header": [
+       248045,
+       74455,
+       198,
+       248068,
+       271,
+       248069,
+       271
+      ],
+      "generation_header_text": "<|im_start|>assistant\n<think>\n\n</think>\n\n",
+      "successor_bounded": false
+     },
+     "on": {
+      "located_header": [
+       198,
+       248045,
+       74455,
+       198,
+       248068,
+       271,
+       248069,
+       271
+      ],
+      "located_header_text": "\n<|im_start|>assistant\n<think>\n\n</think>\n\n",
+      "terminator": 248046,
+      "closing": [
+       248046,
+       198
+      ],
+      "generation_header": [
+       248045,
+       74455,
+       198,
+       248068,
+       198
+      ],
+      "generation_header_text": "<|im_start|>assistant\n<think>\n",
+      "successor_bounded": false
+     },
+     "default": {
+      "REFUSAL": "ChatMarkerError: probe: the generation prompt stops INSIDE the assistant header \u2014 it appends '<|im_start|>assistant\\n<think>\\n' (5 tokens) where a completed assistant turn renders '<|im_start|>assistant\\n<think>\\n\\n</think>\\n\\n' (7 tokens) \u2014 and this template branches on a thinking switch whose render regime is NOT pinned, so both widths are derivable and neither is the answer. Pin the regime first: models.pin_reasoning_template_off(tok) for the fit/serve thinking-OFF render, or set tok._sisteer_template_kwargs explicitly; refusing to guess assistant markers"
+     }
+    },
+    "turn_end_paths_under_OFF_pin": {
+     "assistant_turn_end_ids": {
+      "REFUSAL": "ChatMarkerError: turn end: appending a successor turn re-tokenized the render at token 9 ([2114, 20932, 1110] vs [248068, 271, 248069]); refusing to locate the turn end"
+     },
+     "successor_role_header_ids": {
+      "REFUSAL": "ChatMarkerError: turn end: appending a successor turn re-tokenized the render at token 9 ([2114, 20932, 1110] vs [248068, 271, 248069]); refusing to locate the turn end"
+     },
+     "assistant_content_spans(user,assistant)": {
+      "ok": "([248045, 846, 198, 3710, 369, 220, 17, 10, 17, 30, 248046, 198, 248045, 74455, 198, 248068, 271, 248069, 271, 26108, 13, 248046, 198], [(19, 21)])"
+     }
+    }
+   }
+  },
+  {
+   "label": "Llama-3.1-8B-Instruct",
+   "repo": "meta-llama/Llama-3.1-8B-Instruct",
+   "pinned_revision": "0e9e39f249a16976918f6564b8830bc894c89659",
+   "revision_used": "0e9e39f249a16976918f6564b8830bc894c89659",
+   "revision_note": "pinned revision present locally",
+   "pin_source": "tests/test_chat_markers_thinking_header.py",
+   "local_snapshots": [
+    "0e9e39f249a16976918f6564b8830bc894c89659"
+   ],
+   "tokenizer_class": "TokenizersBackend",
+   "chat_template_sha256_16": "e10ca381b1ccc5cf",
+   "template_mentions_enable_thinking": false,
+   "template_enable_thinking_count": 0,
+   "template_default_line": null,
+   "regimes": {
+    "off": {
+     "H": 4,
+     "head_is_token_prefix_of_full": true,
+     "header_ids": [
+      128006,
+      78191,
+      128007,
+      271
+     ],
+     "header_text": "<|start_header_id|>assistant<|end_header_id|>\n\n",
+     "head_text": "<|begin_of_text|><|start_header_id|>system<|end_header_id|>\n\nCutting Knowledge Date: December 2023\nToday Date: 26 Jul 2024\n\n<|eot_id|><|start_header_id|>user<|end_header_id|>\n\nx<|eot_id|>",
+     "full_text": "<|begin_of_text|><|start_header_id|>system<|end_header_id|>\n\nCutting Knowledge Date: December 2023\nToday Date: 26 Jul 2024\n\n<|eot_id|><|start_header_id|>user<|end_header_id|>\n\nx<|eot_id|><|start_header_id|>assistant<|end_header_id|>\n\n",
+     "full_ids": [
+      128000,
+      128006,
+      9125,
+      128007,
+      271,
+      38766,
+      1303,
+      33025,
+      2696,
+      25,
+      6790,
+      220,
+      2366,
+      18,
+      198,
+      15724,
+      2696,
+      25,
+      220,
+      1627,
+      10263,
+      220,
+      2366,
+      19,
+      271,
+      128009,
+      128006,
+      882,
+      128007,
+      271,
+      87,
+      128009,
+      128006,
+      78191,
+      128007,
+      271
+     ],
+     "response_header_len": 4,
+     "render_ids_equals_reencode": true,
+     "regime_meta": {
+      "pin_applied": false,
+      "kwargs": {}
+     },
+     "think_block_in_prompt": "ABSENT from the header (completion emits <think>...</think> itself, or family has no channel)"
+    },
+    "on": {
+     "H": 4,
+     "head_is_token_prefix_of_full": true,
+     "header_ids": [
+      128006,
+      78191,
+      128007,
+      271
+     ],
+     "header_text": "<|start_header_id|>assistant<|end_header_id|>\n\n",
+     "head_text": "<|begin_of_text|><|start_header_id|>system<|end_header_id|>\n\nCutting Knowledge Date: December 2023\nToday Date: 26 Jul 2024\n\n<|eot_id|><|start_header_id|>user<|end_header_id|>\n\nx<|eot_id|>",
+     "full_text": "<|begin_of_text|><|start_header_id|>system<|end_header_id|>\n\nCutting Knowledge Date: December 2023\nToday Date: 26 Jul 2024\n\n<|eot_id|><|start_header_id|>user<|end_header_id|>\n\nx<|eot_id|><|start_header_id|>assistant<|end_header_id|>\n\n",
+     "full_ids": [
+      128000,
+      128006,
+      9125,
+      128007,
+      271,
+      38766,
+      1303,
+      33025,
+      2696,
+      25,
+      6790,
+      220,
+      2366,
+      18,
+      198,
+      15724,
+      2696,
+      25,
+      220,
+      1627,
+      10263,
+      220,
+      2366,
+      19,
+      271,
+      128009,
+      128006,
+      882,
+      128007,
+      271,
+      87,
+      128009,
+      128006,
+      78191,
+      128007,
+      271
+     ],
+     "response_header_len": 4,
+     "render_ids_equals_reencode": true,
+     "regime_meta": {
+      "kwargs": {
+       "enable_thinking": true
+      }
+     },
+     "think_block_in_prompt": "ABSENT from the header (completion emits <think>...</think> itself, or family has no channel)"
+    },
+    "default": {
+     "H": 4,
+     "head_is_token_prefix_of_full": true,
+     "header_ids": [
+      128006,
+      78191,
+      128007,
+      271
+     ],
+     "header_text": "<|start_header_id|>assistant<|end_header_id|>\n\n",
+     "head_text": "<|begin_of_text|><|start_header_id|>system<|end_header_id|>\n\nCutting Knowledge Date: December 2023\nToday Date: 26 Jul 2024\n\n<|eot_id|><|start_header_id|>user<|end_header_id|>\n\nx<|eot_id|>",
+     "full_text": "<|begin_of_text|><|start_header_id|>system<|end_header_id|>\n\nCutting Knowledge Date: December 2023\nToday Date: 26 Jul 2024\n\n<|eot_id|><|start_header_id|>user<|end_header_id|>\n\nx<|eot_id|><|start_header_id|>assistant<|end_header_id|>\n\n",
+     "full_ids": [
+      128000,
+      128006,
+      9125,
+      128007,
+      271,
+      38766,
+      1303,
+      33025,
+      2696,
+      25,
+      6790,
+      220,
+      2366,
+      18,
+      198,
+      15724,
+      2696,
+      25,
+      220,
+      1627,
+      10263,
+      220,
+      2366,
+      19,
+      271,
+      128009,
+      128006,
+      882,
+      128007,
+      271,
+      87,
+      128009,
+      128006,
+      78191,
+      128007,
+      271
+     ],
+     "response_header_len": 4,
+     "render_ids_equals_reencode": true,
+     "regime_meta": {
+      "kwargs": {}
+     },
+     "think_block_in_prompt": "ABSENT from the header (completion emits <think>...</think> itself, or family has no channel)"
+    }
+   },
+   "summary": {
+    "H_off": 4,
+    "H_on": 4,
+    "H_default": 4,
+    "header_ids_off": [
+     128006,
+     78191,
+     128007,
+     271
+    ],
+    "header_ids_on": [
+     128006,
+     78191,
+     128007,
+     271
+    ],
+    "header_text_off": "<|start_header_id|>assistant<|end_header_id|>\n\n",
+    "header_text_on": "<|start_header_id|>assistant<|end_header_id|>\n\n",
+    "width_moves": false,
+    "ids_differ": false,
+    "default_matches": "both identical",
+    "prompt_side_diff_off_vs_on": {
+     "common_prefix_chars": 187,
+     "a_middle": "",
+     "b_middle": ""
+    }
+   },
+   "delimiters": {
+    "<think>": {
+     "atomic": false,
+     "encodes_to": [
+      14023,
+      771,
+      29
+     ]
+    },
+    "</think>": {
+     "atomic": false,
+     "encodes_to": [
+      524,
+      27963,
+      29
+     ]
+    },
+    "/nothink": {
+     "atomic": false,
+     "encodes_to": [
+      34200,
+      27963
+     ]
+    },
+    "<|think|>": {
+     "atomic": false,
+     "encodes_to": [
+      27,
+      91,
+      27963,
+      91,
+      29
+     ]
+    },
+    "<|channel>": {
+     "atomic": false,
+     "encodes_to": [
+      27,
+      91,
+      10327,
+      29
+     ]
+    },
+    "<channel|>": {
+     "atomic": false,
+     "encodes_to": [
+      27,
+      10327,
+      91,
+      29
+     ]
+    }
+   },
+   "switch_probes": {
+    "no kwarg (template default)": {
+     "H": 4,
+     "header_text": "<|start_header_id|>assistant<|end_header_id|>\n\n",
+     "renders_as": "== header (identical in both modes)",
+     "full_text_sha": "d93c9405e37f4df0"
+    },
+    "enable_thinking=False": {
+     "H": 4,
+     "header_text": "<|start_header_id|>assistant<|end_header_id|>\n\n",
+     "renders_as": "== header (identical in both modes)",
+     "full_text_sha": "d93c9405e37f4df0"
+    },
+    "enable_thinking=True": {
+     "H": 4,
+     "header_text": "<|start_header_id|>assistant<|end_header_id|>\n\n",
+     "renders_as": "== header (identical in both modes)",
+     "full_text_sha": "d93c9405e37f4df0"
+    },
+    "thinking=False  (UNRECOGNISED kwarg)": {
+     "H": 4,
+     "header_text": "<|start_header_id|>assistant<|end_header_id|>\n\n",
+     "renders_as": "== header (identical in both modes)",
+     "full_text_sha": "d93c9405e37f4df0"
+    },
+    "enable_reasoning=False  (UNRECOGNISED kwarg)": {
+     "H": 4,
+     "header_text": "<|start_header_id|>assistant<|end_header_id|>\n\n",
+     "renders_as": "== header (identical in both modes)",
+     "full_text_sha": "d93c9405e37f4df0"
+    },
+    "enable_thinking='false'  (STRING, truthy)": {
+     "H": 4,
+     "header_text": "<|start_header_id|>assistant<|end_header_id|>\n\n",
+     "renders_as": "== header (identical in both modes)",
+     "full_text_sha": "d93c9405e37f4df0"
+    },
+    "enable_thinking=None": {
+     "H": 4,
+     "header_text": "<|start_header_id|>assistant<|end_header_id|>\n\n",
+     "renders_as": "== header (identical in both modes)",
+     "full_text_sha": "d93c9405e37f4df0"
+    },
+    "enable_thinking=0": {
+     "H": 4,
+     "header_text": "<|start_header_id|>assistant<|end_header_id|>\n\n",
+     "renders_as": "== header (identical in both modes)",
+     "full_text_sha": "d93c9405e37f4df0"
+    }
+   },
+   "repo_paths": {
+    "generation_header_ids_under": {
+     "False": {
+      "H": 4,
+      "ids": [
+       128006,
+       78191,
+       128007,
+       271
+      ],
+      "text": "<|start_header_id|>assistant<|end_header_id|>\n\n"
+     },
+     "True": {
+      "REFUSAL": "ChatMarkerError: generation_header_ids_under(enable_thinking=True): this chat template has no thinking switch (no 'enable_thinking' in the template), so there is no thinking-ON render whose header could be derived \u2014 a thinking-ON declaration on this template would be inert; refusing"
+     }
+    },
+    "thinking_header_facts_or_error": {
+     "facts": {
+      "switch": false,
+      "moves": null,
+      "off_ids": [
+       128006,
+       78191,
+       128007,
+       271
+      ],
+      "on_ids": null
+     },
+     "reason": null
+    },
+    "derive_assistant_markers": {
+     "off": {
+      "located_header": [
+       128006,
+       78191,
+       128007,
+       271
+      ],
+      "located_header_text": "<|start_header_id|>assistant<|end_header_id|>\n\n",
+      "terminator": 128009,
+      "closing": [
+       128009
+      ],
+      "generation_header": [
+       128006,
+       78191,
+       128007,
+       271
+      ],
+      "generation_header_text": "<|start_header_id|>assistant<|end_header_id|>\n\n",
+      "successor_bounded": false
+     },
+     "on": {
+      "located_header": [
+       128006,
+       78191,
+       128007,
+       271
+      ],
+      "located_header_text": "<|start_header_id|>assistant<|end_header_id|>\n\n",
+      "terminator": 128009,
+      "closing": [
+       128009
+      ],
+      "generation_header": [
+       128006,
+       78191,
+       128007,
+       271
+      ],
+      "generation_header_text": "<|start_header_id|>assistant<|end_header_id|>\n\n",
+      "successor_bounded": false
+     },
+     "default": {
+      "located_header": [
+       128006,
+       78191,
+       128007,
+       271
+      ],
+      "located_header_text": "<|start_header_id|>assistant<|end_header_id|>\n\n",
+      "terminator": 128009,
+      "closing": [
+       128009
+      ],
+      "generation_header": [
+       128006,
+       78191,
+       128007,
+       271
+      ],
+      "generation_header_text": "<|start_header_id|>assistant<|end_header_id|>\n\n",
+      "successor_bounded": false
+     }
+    },
+    "turn_end_paths_under_OFF_pin": {
+     "assistant_turn_end_ids": {
+      "ok": "(128009,)"
+     },
+     "successor_role_header_ids": {
+      "ok": "(128006, 882, 128007, 271)"
+     },
+     "assistant_content_spans(user,assistant)": {
+      "ok": "([128000, 128006, 9125, 128007, 271, 38766, 1303, 33025, 2696, 25, 6790, 220, 2366, 18, 198, 15724, 2696, 25, 220, 1627, 10263, 220, 2366, 19, 271, 128009, 128006, 882, 128007, 271, 3923, 374, 220, 17, 10, 17, 30, 128009, 128006, 78191, 128007, 271, 28070, 13, 128009], [(42, 44)])"
+     }
+    }
+   }
+  },
+  {
+   "label": "GLM-4.6V-Flash",
+   "repo": "zai-org/GLM-4.6V-Flash",
+   "pinned_revision": "411bb4d77144a3f03accbf4b780f5acb8b7cde4e",
+   "revision_used": "411bb4d77144a3f03accbf4b780f5acb8b7cde4e",
+   "revision_note": "pinned revision present locally",
+   "pin_source": "configs/two_si_glm46vflash.yaml model_revision",
+   "local_snapshots": [
+    "411bb4d77144a3f03accbf4b780f5acb8b7cde4e"
+   ],
+   "tokenizer_class": "TokenizersBackend",
+   "chat_template_sha256_16": "bf6cfe131f9af1cd",
+   "template_mentions_enable_thinking": true,
+   "template_enable_thinking_count": 4,
+   "template_default_line": "{{- '/nothink' if (enable_thinking is defined and not enable_thinking and not visible_text(m.content).endswith(\"/nothink\")) else '' -}}",
+   "regimes": {
+    "off": {
+     "H": 5,
+     "head_is_token_prefix_of_full": true,
+     "header_ids": [
+      151337,
+      198,
+      151350,
+      151351,
+      198
+     ],
+     "header_text": "<|assistant|>\n<think></think>\n",
+     "head_text": "[gMASK]<sop><|user|>\nx/nothink",
+     "full_text": "[gMASK]<sop><|user|>\nx/nothink<|assistant|>\n<think></think>\n",
+     "full_ids": [
+      151331,
+      151333,
+      151336,
+      198,
+      87,
+      151360,
+      151337,
+      198,
+      151350,
+      151351,
+      198
+     ],
+     "response_header_len": 5,
+     "render_ids_equals_reencode": true,
+     "regime_meta": {
+      "pin_applied": true,
+      "kwargs": {
+       "enable_thinking": false
+      }
+     },
+     "think_block_in_prompt": "CLOSED-EMPTY block inside the header (completion is the answer only)"
+    },
+    "on": {
+     "H": 2,
+     "head_is_token_prefix_of_full": true,
+     "header_ids": [
+      151337,
+      198
+     ],
+     "header_text": "<|assistant|>\n",
+     "head_text": "[gMASK]<sop><|user|>\nx",
+     "full_text": "[gMASK]<sop><|user|>\nx<|assistant|>\n",
+     "full_ids": [
+      151331,
+      151333,
+      151336,
+      198,
+      87,
+      151337,
+      198
+     ],
+     "response_header_len": 2,
+     "render_ids_equals_reencode": true,
+     "regime_meta": {
+      "kwargs": {
+       "enable_thinking": true
+      }
+     },
+     "think_block_in_prompt": "ABSENT from the header (completion emits <think>...</think> itself, or family has no channel)"
+    },
+    "default": {
+     "H": 2,
+     "head_is_token_prefix_of_full": true,
+     "header_ids": [
+      151337,
+      198
+     ],
+     "header_text": "<|assistant|>\n",
+     "head_text": "[gMASK]<sop><|user|>\nx",
+     "full_text": "[gMASK]<sop><|user|>\nx<|assistant|>\n",
+     "full_ids": [
+      151331,
+      151333,
+      151336,
+      198,
+      87,
+      151337,
+      198
+     ],
+     "response_header_len": 2,
+     "render_ids_equals_reencode": true,
+     "regime_meta": {
+      "kwargs": {}
+     },
+     "think_block_in_prompt": "ABSENT from the header (completion emits <think>...</think> itself, or family has no channel)"
+    }
+   },
+   "summary": {
+    "H_off": 5,
+    "H_on": 2,
+    "H_default": 2,
+    "header_ids_off": [
+     151337,
+     198,
+     151350,
+     151351,
+     198
+    ],
+    "header_ids_on": [
+     151337,
+     198
+    ],
+    "header_text_off": "<|assistant|>\n<think></think>\n",
+    "header_text_on": "<|assistant|>\n",
+    "width_moves": true,
+    "ids_differ": true,
+    "default_matches": "ON",
+    "prompt_side_diff_off_vs_on": {
+     "common_prefix_chars": 22,
+     "a_middle": "/nothink",
+     "b_middle": ""
+    }
+   },
+   "delimiters": {
+    "<think>": {
+     "atomic": true,
+     "id": 151350,
+     "encodes_to": [
+      151350
+     ],
+     "added_token_special_flag": false,
+     "in_control_token_ids": false
+    },
+    "</think>": {
+     "atomic": true,
+     "id": 151351,
+     "encodes_to": [
+      151351
+     ],
+     "added_token_special_flag": false,
+     "in_control_token_ids": false
+    },
+    "/nothink": {
+     "atomic": true,
+     "id": 151360,
+     "encodes_to": [
+      151360
+     ],
+     "added_token_special_flag": true,
+     "in_control_token_ids": true
+    },
+    "<|think|>": {
+     "atomic": false,
+     "encodes_to": [
+      27,
+      91,
+      26779,
+      91,
+      29
+     ]
+    },
+    "<|channel>": {
+     "atomic": false,
+     "encodes_to": [
+      27,
+      91,
+      10114,
+      29
+     ]
+    },
+    "<channel|>": {
+     "atomic": false,
+     "encodes_to": [
+      27,
+      10114,
+      91,
+      29
+     ]
+    }
+   },
+   "switch_probes": {
+    "no kwarg (template default)": {
+     "H": 2,
+     "header_text": "<|assistant|>\n",
+     "renders_as": "== ON header",
+     "full_text_sha": "80b59f939b275b8d"
+    },
+    "enable_thinking=False": {
+     "H": 5,
+     "header_text": "<|assistant|>\n<think></think>\n",
+     "renders_as": "== OFF header",
+     "full_text_sha": "b722450a57926b25"
+    },
+    "enable_thinking=True": {
+     "H": 2,
+     "header_text": "<|assistant|>\n",
+     "renders_as": "== ON header",
+     "full_text_sha": "80b59f939b275b8d"
+    },
+    "thinking=False  (UNRECOGNISED kwarg)": {
+     "H": 2,
+     "header_text": "<|assistant|>\n",
+     "renders_as": "== ON header",
+     "full_text_sha": "80b59f939b275b8d"
+    },
+    "enable_reasoning=False  (UNRECOGNISED kwarg)": {
+     "H": 2,
+     "header_text": "<|assistant|>\n",
+     "renders_as": "== ON header",
+     "full_text_sha": "80b59f939b275b8d"
+    },
+    "enable_thinking='false'  (STRING, truthy)": {
+     "H": 2,
+     "header_text": "<|assistant|>\n",
+     "renders_as": "== ON header",
+     "full_text_sha": "80b59f939b275b8d"
+    },
+    "enable_thinking=None": {
+     "H": 5,
+     "header_text": "<|assistant|>\n<think></think>\n",
+     "renders_as": "== OFF header",
+     "full_text_sha": "b722450a57926b25"
+    },
+    "enable_thinking=0": {
+     "H": 5,
+     "header_text": "<|assistant|>\n<think></think>\n",
+     "renders_as": "== OFF header",
+     "full_text_sha": "b722450a57926b25"
+    }
+   },
+   "repo_paths": {
+    "generation_header_ids_under": {
+     "False": {
+      "H": 5,
+      "ids": [
+       151337,
+       198,
+       151350,
+       151351,
+       198
+      ],
+      "text": "<|assistant|>\n<think></think>\n"
+     },
+     "True": {
+      "H": 2,
+      "ids": [
+       151337,
+       198
+      ],
+      "text": "<|assistant|>\n"
+     }
+    },
+    "thinking_header_facts_or_error": {
+     "facts": {
+      "switch": true,
+      "moves": true,
+      "off_ids": [
+       151337,
+       198,
+       151350,
+       151351,
+       198
+      ],
+      "on_ids": [
+       151337,
+       198
+      ]
+     },
+     "reason": null
+    },
+    "derive_assistant_markers": {
+     "off": {
+      "located_header": [
+       151337,
+       198,
+       151350,
+       151351,
+       198
+      ],
+      "located_header_text": "<|assistant|>\n<think></think>\n",
+      "terminator": null,
+      "closing": [],
+      "generation_header": [
+       151337,
+       198,
+       151350,
+       151351,
+       198
+      ],
+      "generation_header_text": "<|assistant|>\n<think></think>\n",
+      "successor_bounded": true
+     },
+     "on": {
+      "located_header": [
+       151337,
+       198,
+       151350,
+       151351,
+       198
+      ],
+      "located_header_text": "<|assistant|>\n<think></think>\n",
+      "terminator": null,
+      "closing": [],
+      "generation_header": [
+       151337,
+       198
+      ],
+      "generation_header_text": "<|assistant|>\n",
+      "successor_bounded": true
+     },
+     "default": {
+      "REFUSAL": "ChatMarkerError: probe: the generation prompt stops INSIDE the assistant header \u2014 it appends '<|assistant|>\\n' (2 tokens) where a completed assistant turn renders '<|assistant|>\\n<think></think>\\n' (5 tokens) \u2014 and this template branches on a thinking switch whose render regime is NOT pinned, so both widths are derivable and neither is the answer. Pin the regime first: models.pin_reasoning_template_off(tok) for the fit/serve thinking-OFF render, or set tok._sisteer_template_kwargs explicitly; refusing to guess assistant markers"
+     }
+    },
+    "turn_end_paths_under_OFF_pin": {
+     "assistant_turn_end_ids": {
+      "ok": "None"
+     },
+     "successor_role_header_ids": {
+      "ok": "None"
+     },
+     "assistant_content_spans(user,assistant)": {
+      "ok": "([151331, 151333, 151336, 198, 3838, 374, 220, 17, 10, 17, 30, 151360, 151337, 198, 151350, 151351, 198, 26884, 13], [(17, 19)])"
+     }
+    }
+   }
+  },
+  {
+   "label": "Nemotron-3-Nano-4B",
+   "repo": "nvidia/NVIDIA-Nemotron-3-Nano-4B-BF16",
+   "pinned_revision": "dfaf35de3e30f1867dd8dbc38a7fc9fb52d3914f",
+   "revision_used": "dfaf35de3e30f1867dd8dbc38a7fc9fb52d3914f",
+   "revision_note": "pinned revision present locally",
+   "pin_source": "configs/two_si_nemotron3nano4b.yaml model_revision",
+   "local_snapshots": [
+    "dfaf35de3e30f1867dd8dbc38a7fc9fb52d3914f"
+   ],
+   "tokenizer_class": "TokenizersBackend",
+   "chat_template_sha256_16": "ab7813c3abdd9cb6",
+   "template_mentions_enable_thinking": true,
+   "template_enable_thinking_count": 4,
+   "template_default_line": "{%- set enable_thinking = enable_thinking if enable_thinking is defined else True %}",
+   "regimes": {
+    "off": {
+     "H": 6,
+     "head_is_token_prefix_of_full": true,
+     "header_ids": [
+      10,
+      1503,
+      19464,
+      1010,
+      12,
+      13
+     ],
+     "header_text": "<|im_start|>assistant\n<think></think>",
+     "head_text": "<|im_start|>system\n<|im_end|>\n<|im_start|>user\nx<|im_end|>\n",
+     "full_text": "<|im_start|>system\n<|im_end|>\n<|im_start|>user\nx<|im_end|>\n<|im_start|>assistant\n<think></think>",
+     "full_ids": [
+      10,
+      25708,
+      1010,
+      11,
+      1010,
+      10,
+      3263,
+      1010,
+      1120,
+      11,
+      1010,
+      10,
+      1503,
+      19464,
+      1010,
+      12,
+      13
+     ],
+     "response_header_len": 6,
+     "render_ids_equals_reencode": true,
+     "regime_meta": {
+      "pin_applied": true,
+      "kwargs": {
+       "enable_thinking": false
+      }
+     },
+     "think_block_in_prompt": "CLOSED-EMPTY block inside the header (completion is the answer only)"
+    },
+    "on": {
+     "H": 6,
+     "head_is_token_prefix_of_full": true,
+     "header_ids": [
+      10,
+      1503,
+      19464,
+      1010,
+      12,
+      1010
+     ],
+     "header_text": "<|im_start|>assistant\n<think>\n",
+     "head_text": "<|im_start|>system\n<|im_end|>\n<|im_start|>user\nx<|im_end|>\n",
+     "full_text": "<|im_start|>system\n<|im_end|>\n<|im_start|>user\nx<|im_end|>\n<|im_start|>assistant\n<think>\n",
+     "full_ids": [
+      10,
+      25708,
+      1010,
+      11,
+      1010,
+      10,
+      3263,
+      1010,
+      1120,
+      11,
+      1010,
+      10,
+      1503,
+      19464,
+      1010,
+      12,
+      1010
+     ],
+     "response_header_len": 6,
+     "render_ids_equals_reencode": true,
+     "regime_meta": {
+      "kwargs": {
+       "enable_thinking": true
+      }
+     },
+     "think_block_in_prompt": "OPEN: prompt ends in an unclosed <think> (completion emits reasoning + </think> + answer)"
+    },
+    "default": {
+     "H": 6,
+     "head_is_token_prefix_of_full": true,
+     "header_ids": [
+      10,
+      1503,
+      19464,
+      1010,
+      12,
+      1010
+     ],
+     "header_text": "<|im_start|>assistant\n<think>\n",
+     "head_text": "<|im_start|>system\n<|im_end|>\n<|im_start|>user\nx<|im_end|>\n",
+     "full_text": "<|im_start|>system\n<|im_end|>\n<|im_start|>user\nx<|im_end|>\n<|im_start|>assistant\n<think>\n",
+     "full_ids": [
+      10,
+      25708,
+      1010,
+      11,
+      1010,
+      10,
+      3263,
+      1010,
+      1120,
+      11,
+      1010,
+      10,
+      1503,
+      19464,
+      1010,
+      12,
+      1010
+     ],
+     "response_header_len": 6,
+     "render_ids_equals_reencode": true,
+     "regime_meta": {
+      "kwargs": {}
+     },
+     "think_block_in_prompt": "OPEN: prompt ends in an unclosed <think> (completion emits reasoning + </think> + answer)"
+    }
+   },
+   "summary": {
+    "H_off": 6,
+    "H_on": 6,
+    "H_default": 6,
+    "header_ids_off": [
+     10,
+     1503,
+     19464,
+     1010,
+     12,
+     13
+    ],
+    "header_ids_on": [
+     10,
+     1503,
+     19464,
+     1010,
+     12,
+     1010
+    ],
+    "header_text_off": "<|im_start|>assistant\n<think></think>",
+    "header_text_on": "<|im_start|>assistant\n<think>\n",
+    "width_moves": false,
+    "ids_differ": true,
+    "default_matches": "ON",
+    "prompt_side_diff_off_vs_on": {
+     "common_prefix_chars": 59,
+     "a_middle": "",
+     "b_middle": ""
+    }
+   },
+   "delimiters": {
+    "<think>": {
+     "atomic": true,
+     "id": 12,
+     "encodes_to": [
+      12
+     ],
+     "added_token_special_flag": false,
+     "in_control_token_ids": false
+    },
+    "</think>": {
+     "atomic": true,
+     "id": 13,
+     "encodes_to": [
+      13
+     ],
+     "added_token_special_flag": false,
+     "in_control_token_ids": false
+    },
+    "/nothink": {
+     "atomic": false,
+     "encodes_to": [
+      23409,
+      2279,
+      2077
+     ]
+    },
+    "<|think|>": {
+     "atomic": false,
+     "encodes_to": [
+      1060,
+      1124,
+      74045,
+      1124,
+      1062
+     ]
+    },
+    "<|channel>": {
+     "atomic": false,
+     "encodes_to": [
+      1060,
+      1124,
+      36370,
+      1062
+     ]
+    },
+    "<channel|>": {
+     "atomic": false,
+     "encodes_to": [
+      1060,
+      36370,
+      1124,
+      1062
+     ]
+    }
+   },
+   "switch_probes": {
+    "no kwarg (template default)": {
+     "H": 6,
+     "header_text": "<|im_start|>assistant\n<think>\n",
+     "renders_as": "== ON header",
+     "full_text_sha": "70fd6afd9d06dfc1"
+    },
+    "enable_thinking=False": {
+     "H": 6,
+     "header_text": "<|im_start|>assistant\n<think></think>",
+     "renders_as": "== OFF header",
+     "full_text_sha": "8f08a2ba9c4ccf2c"
+    },
+    "enable_thinking=True": {
+     "H": 6,
+     "header_text": "<|im_start|>assistant\n<think>\n",
+     "renders_as": "== ON header",
+     "full_text_sha": "70fd6afd9d06dfc1"
+    },
+    "thinking=False  (UNRECOGNISED kwarg)": {
+     "H": 6,
+     "header_text": "<|im_start|>assistant\n<think>\n",
+     "renders_as": "== ON header",
+     "full_text_sha": "70fd6afd9d06dfc1"
+    },
+    "enable_reasoning=False  (UNRECOGNISED kwarg)": {
+     "H": 6,
+     "header_text": "<|im_start|>assistant\n<think>\n",
+     "renders_as": "== ON header",
+     "full_text_sha": "70fd6afd9d06dfc1"
+    },
+    "enable_thinking='false'  (STRING, truthy)": {
+     "H": 6,
+     "header_text": "<|im_start|>assistant\n<think>\n",
+     "renders_as": "== ON header",
+     "full_text_sha": "70fd6afd9d06dfc1"
+    },
+    "enable_thinking=None": {
+     "H": 6,
+     "header_text": "<|im_start|>assistant\n<think></think>",
+     "renders_as": "== OFF header",
+     "full_text_sha": "8f08a2ba9c4ccf2c"
+    },
+    "enable_thinking=0": {
+     "H": 6,
+     "header_text": "<|im_start|>assistant\n<think></think>",
+     "renders_as": "== OFF header",
+     "full_text_sha": "8f08a2ba9c4ccf2c"
+    }
+   },
+   "repo_paths": {
+    "generation_header_ids_under": {
+     "False": {
+      "H": 6,
+      "ids": [
+       10,
+       1503,
+       19464,
+       1010,
+       12,
+       13
+      ],
+      "text": "<|im_start|>assistant\n<think></think>"
+     },
+     "True": {
+      "REFUSAL": "ChatMarkerError: probe: the add_generation_prompt render is not a prefix of the probe render \u2014 boundary retokenization at token 16 ([1010] vs [13, 6605, 1490]): the generation prompt appends '<|im_start|>assistant\\n<think>\\n' where a completed assistant turn renders '<|im_start|>assistant\\n<think></think>'; refusing to guess assistant markers"
+     }
+    },
+    "thinking_header_facts_or_error": {
+     "facts": {
+      "switch": true,
+      "moves": null,
+      "off_ids": [
+       10,
+       1503,
+       19464,
+       1010,
+       12,
+       13
+      ],
+      "on_ids": null
+     },
+     "reason": "ChatMarkerError: probe: the add_generation_prompt render is not a prefix of the probe render \u2014 boundary retokenization at token 16 ([1010] vs [13, 6605, 1490]): the generation prompt appends '<|im_start|>assistant\\n<think>\\n' where a completed assistant turn renders '<|im_start|>assistant\\n<think></think>'; refusing to guess assistant markers"
+    },
+    "derive_assistant_markers": {
+     "off": {
+      "located_header": [
+       1010,
+       10,
+       1503,
+       19464,
+       1010,
+       12,
+       13
+      ],
+      "located_header_text": "\n<|im_start|>assistant\n<think></think>",
+      "terminator": 11,
+      "closing": [
+       11,
+       1010
+      ],
+      "generation_header": [
+       10,
+       1503,
+       19464,
+       1010,
+       12,
+       13
+      ],
+      "generation_header_text": "<|im_start|>assistant\n<think></think>",
+      "successor_bounded": false
+     },
+     "on": {
+      "REFUSAL": "ChatMarkerError: probe: the add_generation_prompt render is not a prefix of the probe render \u2014 boundary retokenization at token 16 ([1010] vs [13, 6605, 1490]): the generation prompt appends '<|im_start|>assistant\\n<think>\\n' where a completed assistant turn renders '<|im_start|>assistant\\n<think></think>'; refusing to guess assistant markers"
+     },
+     "default": {
+      "REFUSAL": "ChatMarkerError: probe: the add_generation_prompt render is not a prefix of the probe render \u2014 boundary retokenization at token 16 ([1010] vs [13, 6605, 1490]): the generation prompt appends '<|im_start|>assistant\\n<think>\\n' where a completed assistant turn renders '<|im_start|>assistant\\n<think></think>'; refusing to guess assistant markers"
+     }
+    },
+    "turn_end_paths_under_OFF_pin": {
+     "assistant_turn_end_ids": {
+      "ok": "(11, 1010)"
+     },
+     "successor_role_header_ids": {
+      "REFUSAL": "ChatMarkerError: role header shape: the successor user header [10, 3263, 1010] and the generation header [10, 1503, 19464, 1010, 12, 13] do not share one shape (same opener, exactly one role token, the same tail) \u2014 the all-turns mask validates a successor header by that shape, so on this template it would refuse genuine turns or admit forged ones; the mode cannot be served here"
+     },
+     "assistant_content_spans(user,assistant)": {
+      "ok": "([10, 25708, 1010, 11, 1010, 10, 3263, 1010, 7493, 1395, 1032, 1050, 1043, 1050, 1063, 11, 1010, 10, 1503, 19464, 1010, 12, 13, 31035, 1046, 11, 1010], [(23, 25)])"
+     }
+    }
+   }
+  }
+ ]
+}

@@ -1,0 +1,178 @@
+{
+ "math500_thinking_on_full22_gemma4e4b": {
+  "cells": [
+   "constv2-mix-full__lora_r4_ce_minus_ctl"
+  ],
+  "controls": [
+   "math500"
+  ],
+  "declares": false,
+  "header_located": false,
+  "max_tokens_on": {
+   "math": 16384
+  },
+  "model": "gemma4e4b",
+  "modes": [
+   "on"
+  ],
+  "pass_no": 1,
+  "prompt_opens_think_on": false,
+  "reduction_mode": "stacked",
+  "samples": 1,
+  "sampling_mode": "thinking_card"
+ },
+ "math500_thinking_on_full22_glm46vflash": {
+  "cells": [
+   "constv2-mix-full__lora_r4_ce_minus_ctl"
+  ],
+  "controls": [
+   "math500"
+  ],
+  "declares": false,
+  "header_located": false,
+  "max_tokens_on": {
+   "math": 16384
+  },
+  "model": "glm46vflash",
+  "modes": [
+   "on"
+  ],
+  "pass_no": 1,
+  "prompt_opens_think_on": false,
+  "reduction_mode": "stacked",
+  "samples": 1,
+  "sampling_mode": "thinking_card"
+ },
+ "math500_thinking_on_full22_glm46vflash_battery": {
+  "cells": [
+   "constv2-mix-full__lora_r4_ce_minus_ctl"
+  ],
+  "controls": [
+   "math500"
+  ],
+  "declares": false,
+  "header_located": false,
+  "max_tokens_on": {
+   "math": 16384
+  },
+  "model": "glm46vflash",
+  "modes": [
+   "on"
+  ],
+  "pass_no": 1,
+  "prompt_opens_think_on": false,
+  "reduction_mode": "stacked",
+  "samples": 1,
+  "sampling_mode": "battery"
+ },
+ "math500_thinking_on_full22_nemotron3nano4b": {
+  "cells": [
+   "constv2-mix-full__lora_r4_ce_minus_ctl"
+  ],
+  "controls": [
+   "math500"
+  ],
+  "declares": false,
+  "header_located": false,
+  "max_tokens_on": {
+   "math": 16384
+  },
+  "model": "nemotron3nano4b",
+  "modes": [
+   "on"
+  ],
+  "pass_no": 1,
+  "prompt_opens_think_on": true,
+  "reduction_mode": "stacked",
+  "samples": 1,
+  "sampling_mode": "thinking_card"
+ },
+ "math500_thinking_on_full22_nemotron3nano4b_battery": {
+  "cells": [
+   "constv2-mix-full__lora_r4_ce_minus_ctl"
+  ],
+  "controls": [
+   "math500"
+  ],
+  "declares": false,
+  "header_located": false,
+  "max_tokens_on": {
+   "math": 16384
+  },
+  "model": "nemotron3nano4b",
+  "modes": [
+   "on"
+  ],
+  "pass_no": 1,
+  "prompt_opens_think_on": true,
+  "reduction_mode": "stacked",
+  "samples": 1,
+  "sampling_mode": "battery"
+ },
+ "math500_thinking_on_full22_qwen35_4b": {
+  "cells": [
+   "constv2-mix-full__lora_r4_ce_minus_ctl"
+  ],
+  "controls": [
+   "math500"
+  ],
+  "declares": false,
+  "header_located": false,
+  "max_tokens_on": {
+   "math": 16384
+  },
+  "model": "qwen35_4b",
+  "modes": [
+   "on"
+  ],
+  "pass_no": 1,
+  "prompt_opens_think_on": true,
+  "reduction_mode": "stacked",
+  "samples": 1,
+  "sampling_mode": "thinking_card"
+ },
+ "math500_thinking_on_full22_qwen35_4b_battery": {
+  "cells": [
+   "constv2-mix-full__lora_r4_ce_minus_ctl"
+  ],
+  "controls": [
+   "math500"
+  ],
+  "declares": false,
+  "header_located": false,
+  "max_tokens_on": {
+   "math": 16384
+  },
+  "model": "qwen35_4b",
+  "modes": [
+   "on"
+  ],
+  "pass_no": 1,
+  "prompt_opens_think_on": true,
+  "reduction_mode": "stacked",
+  "samples": 1,
+  "sampling_mode": "battery"
+ },
+ "math500_thinking_on_full22_qwen35_4b_general": {
+  "cells": [
+   "constv2-mix-full__lora_r4_ce_minus_ctl"
+  ],
+  "controls": [
+   "math500"
+  ],
+  "declares": false,
+  "header_located": false,
+  "max_tokens_on": {
+   "math": 16384
+  },
+  "model": "qwen35_4b",
+  "modes": [
+   "on"
+  ],
+  "pass_no": 1,
+  "prompt_opens_think_on": true,
+  "reduction_mode": "stacked",
+  "samples": 1,
+  "sampling_mode": "general"
+ }
+}

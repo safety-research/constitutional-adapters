@@ -1,0 +1,27 @@
+renellm.jsonl: the paper's ReNeLLM evaluation corpus
+
+Terms:      LICENSES/ReNeLLM-corpus-terms.txt, not the repository's MIT licence.
+            Research and evaluation use only. It may not be used, or offered to
+            others, to train, fine-tune or otherwise improve any AI system.
+Generated:  by x-ai/grok-4.5, called through OpenRouter, on 2026-08-21. The
+            rows are machine-generated rewrites of 259 HarmBench and
+            JailbreakBench behaviours, each placed in ReNeLLM's three scenario
+            frames by a fixed template.
+Identity:   777 rows, 259 behaviours; file sha256
+            ef9ee8c75704d5d0ee0320d5e62ff9d62c3e93ba03dd757e4af505beea32926f;
+            content hash
+            d44dd49ed6268e7ab75ba8f7f1747e8321c5be70a2eefb3f05be4891760ca835
+            (sisteer.eval.attacks.frozen_corpus.corpus_content_hash).
+Fields:     goal_id, sample_idx, variant_name, prompt.
+Records:    configs/heldout/renellm.corpus.manifest.json (the build manifest)
+            and configs/heldout/renellm.paper_corpus.json (the release record).
+
+The rows are byte-identical to the corpus the paper's renellm evaluations
+replayed. Do not edit them: replay refuses any other corpus unless
+SISTEER_RENELLM_NONPAPER_CORPUS_SHA names it, and then labels every result
+non-paper.
+
+The renellm attack (src/sisteer/eval/attacks/renellm.py) replays this file
+when the site keeps no copy of its own in SISTEER_HELDOUT_CORPUS_DIR, and
+scripts/renellm_corpus_check.py checks it. Every training-side reader refuses
+it (src/sisteer/eval/attacks/eval_only.py).

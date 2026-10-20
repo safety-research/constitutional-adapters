@@ -1,0 +1,56 @@
+{
+ "producer": "WS5-I grade_battery.sh post + the graders it composes (tests/test_seedrep_grading_e2e.py)",
+ "producer_commit": "12b94783821e59e4f190536fa692880536ab0122",
+ "producer_branch": "seedrep-ws5i",
+ "snapshot_note": "run from a read-only `git archive` of that commit under a temporary directory (ws5j_ws5i_src3), never from a peer worktree",
+ "patch_note": "NO patch: at this commit WS5-I's read_ledger() guards a missing pool ledger itself (its Sol-r2 repair), so the writer path runs as committed; the earlier harvests at 165c74b2 / bc5832d3 needed a one-line existence guard, reported to WS5-I as cross-ownership; no index grammar was ever touched",
+ "command": "cd <snapshot> && PYTHONPATH=<snapshot>/src python -m pytest -o addopts='' -p no:cacheprovider -q --basetemp=<basetemp> tests/test_seedrep_grading_e2e.py -k 'which_bytes or installed_capabilities or pool_provenance or controls_publication or bon_publication'; then ws5i_harvest.drive_bon_ok(<snapshot>, <outside the basetemp>/bon_ok_driven) for the `bon` world",
+ "result": "5 passed, 15 deselected (WS5-I's e2e is green at this commit)",
+ "harvested_at": "2026-09-18T05:33:21Z",
+ "synthetic": "every value is the e2e tests' invented world (fake judge, six invented goals, hostname TESTHOST); no real run data",
+ "worlds": {
+  "capabilities": {
+   "e2e_tmp_dir": "test_installed_capabilities_re0",
+   "driven": false,
+   "rs_root": "/tmp/ws5j_ws5i_harvest4/test_installed_capabilities_re0/rs",
+   "files": {
+    "grades/seedrep_final_rung_static.json": "27ff61efddc6c2fb916fbebcacaee456aecc6d2d1603f50b62dd691795f17790",
+    "grades/seedrep_final_rung_controls.json": "d469f92d84e0843946c515a80e12be15a60ae67a100325bd99c0e8d1bab34ece",
+    "grades/seedrep_final_rung_bon.json": "18fbe9f71b58fce8da1eb298afd840fe396b0537709fbb31c98c770947ce643c",
+    "grades/native_qwen35_4b_s1_bon_v2/qwen35_4b_s1/two_si_bon_aggregate.json": "09181a3dff606ee5d295fa180be24eb616785b00212cba448911deb71f2784a6",
+    "sampled/grades_sampled/sdfbase_full22_qwen35_4b_s1_sampled_t0/two_si_pasttense_aggregate.json": "f2961cb40c0a85fc1dfcd7ca3abed9b7ef7bdd9bc4fcfe816d0da7afbc4d591f",
+    "sampled/grades_sampled/arditi_allpos_qwen35_4b_ar_c0p3_seedrep_s1_sampled_t0/two_si_pasttense_aggregate.json": "df9a19457618d5400678d79a591ac0e5357cbab669e774e9a0b992b73e43a6f0",
+    "sampled/grades_sampled/arditi_allpos_qwen35_4b_ar_c0p3_seedrep_s1_sampled_t0_cap8192/two_si_pasttense_aggregate.json": "269ae85e4f9c3cbe1ce7f1124c4d5c259d998cc1426254eeb38eedbd451786c3"
+   }
+  },
+  "headline": {
+   "e2e_tmp_dir": "test_e2e_which_bytes_reach_eac0",
+   "driven": false,
+   "rs_root": "/tmp/ws5j_ws5i_harvest4/test_e2e_which_bytes_reach_eac0/rs",
+   "files": {
+    "grades/seedrep_final_rung_static.json": "06f9af1befa2ed114238d14da4e402e2731415add5b0697ea752ebcd283d892a",
+    "sampled/grades_sampled/sdfbase_full22_qwen35_4b_s1_sampled_t0_cap16384/two_si_pasttense_aggregate.json": "f14cc37bee30ec1a1beff87105e7d82e7f913c08cef001e0cc9a9643dff5d98a"
+   }
+  },
+  "bon": {
+   "e2e_tmp_dir": "bon_ok_driven",
+   "driven": true,
+   "rs_root": "/tmp/ws5j_ws5i_bon_driven4/bon_ok_driven/rs",
+   "files": {
+    "grades/seedrep_final_rung_bon.json": "6e3a991d55a151bd0d62af18327afdfdefa964a1b7c9b511f44439267b958a0a",
+    "grades/native_qwen35_4b_s1_bon_v2/qwen35_4b_s1/two_si_bon_aggregate.json": "d44402c96b9bb36070d596e0ea0600c2f9d1035f519e84fd47a9e40598a42c9a"
+   }
+  },
+  "controls": {
+   "e2e_tmp_dir": "test_controls_publication_vali0",
+   "driven": false,
+   "rs_root": "/tmp/ws5j_ws5i_harvest4/test_controls_publication_vali0/rs",
+   "files": {
+    "grades/seedrep_final_rung_controls.json": "1c26592cf860d1e7615d6cc1bba09ead7e2c76b83c2fc4c03217bb6a1b8c4922",
+    "sampled/controls_sampled/controls_cap512/qwen35_4b_s1_t0/cells/none__controls__t0__a0__140bedbf__b4115f4c/judge_summary.json": "82f970a123098ad699094ade6ed35edfd2117ba57e84d5dbe999cbf014e7e93c",
+    "sampled/controls_sampled/controls_cap512/qwen35_4b_s1_t0/cells/cellA--psr_ce_all__controls__t0__a0__4ef1fb3e__467267d7/judge_summary.json": "c9a83a90afd5c03cb0371da3a84c943029592f841fd7ec0b76599cdf6a8e5ed1",
+    "sampled/controls_sampled/controls_cap512/qwen35_4b_s1_t0/cells/cellB--lora_r4_ce__controls__t0__a0__df5b9030__de2d1e5f/judge_summary.json": "267447639f00448f3041b081a7e2d5a4017d898676149d992c62e9bb812e62b8"
+   }
+  }
+ }
+}

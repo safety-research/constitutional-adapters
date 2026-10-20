@@ -1,0 +1,316 @@
+{
+ "arditi_allpos": {
+  "alpha_equiv": 0.035136021644276184,
+  "alpha_equiv_note": "alpha_equiv is an ARITHMETIC conversion c * ||r_raw|| / ||h||_ref, where ||h||_ref was measured on PROMPT tokens under PREFILL-ONLY serving. This unit writes at decode positions too, where ||h|| differs, so the figure is for comparability with the prefill-only ladder and is NEVER a claim about the dose realised at decode. The measured realised dose is recorded beside it, per rung.",
+  "approved_fit": {
+   "direction_pt_sha256": "b57149f40d06a6d401c1014cc67dc71d0d91bcb472cfc1726303b7f692e417ce",
+   "direction_sha256": "98c1e6a2628ba6a27604ab3d44fbe8844ef62842e60633fdb8ffd30c3ba67b87",
+   "fit_layer": 13,
+   "fit_pos": -5,
+   "fit_record_sha256": "05fba693e573a65b8cd6549918000be7e75cbf56b34b02672123b81083512901",
+   "served_layer": 12,
+   "source": "$HOME/arditi-stage/fits/qwen35_4b (2026-09-10)",
+   "stored_layer": 12
+  },
+  "approved_fit_authority": "configs/sdfbase_full22_arms.yaml arms.arditi_allpos.fits.qwen35_4b",
+  "arm": "the RAW Arditi refusal direction ADDED at coefficient c at EVERY position of EVERY forward \u2014 prefill AND every decode step (the paper's own configuration; c = 1.0 is its nominal)",
+  "c": 0.1,
+  "cross_model_caveat": "Served in the paper's own configuration -- the raw difference-of-means vector at coefficient c, added at every position of every forward (prefill AND decode). The other families' Arditi arms are served PREFILL-ONLY at alpha, a fraction of the residual norm. The two are not the same intervention and their doses are not the same quantity.",
+  "deviations_from_the_paper": {
+   "rendering": "apply_chat_template through the harness's one renderer (sisteer.models.build_chat_prompt), not their hardcoded per-family template strings."
+  },
+  "direction_file_sha256": "b57149f40d06a6d401c1014cc67dc71d0d91bcb472cfc1726303b7f692e417ce",
+  "direction_sha256": "98c1e6a2628ba6a27604ab3d44fbe8844ef62842e60633fdb8ffd30c3ba67b87",
+  "dose_unit": "raw_coefficient",
+  "dose_unit_description": "c = the multiplier on the RAW Arditi difference of means: the served vector is c * r_raw at the served layer, with c = 1.0 the paper's nominal (arXiv 2406.11717; verified in their code, where select_direction returns the candidate unmodified and only the ABLATION hook normalises). Unlike residual_norm_fraction this is NOT normalised by ||h||, so the same c on two models is two different interventions -- which is why this unit is served on ONE model.",
+  "edit_norm": 0.32904739379882814,
+  "fit_dir": "$HOME/arditi-stage/fits/qwen35_4b",
+  "fit_layer": 13,
+  "fit_position": -5,
+  "fit_positions": "all",
+  "fit_record_sha256": "05fba693e573a65b8cd6549918000be7e75cbf56b34b02672123b81083512901",
+  "h_ref_provenance": {
+   "instrument": "HF forward, no steering \u2014 a property of the BASE model's residual stream. The RENDERING matches the served path; the ENGINE does not, so the realised dose is re-measured on the served path after baking",
+   "measured_on": "PROMPT tokens under PREFILL-ONLY serving \u2014 NOT at decode positions, which is why alpha_equiv is a labelled arithmetic conversion and never a realised-dose claim",
+   "p05": 7.545933246612549,
+   "p95": 11.723297119140625,
+   "pool": {
+    "file": "$SHARED/exp/dose_reference_pool/pool_v1.jsonl",
+    "n_benign": 120,
+    "n_harmful": 259,
+    "sha256": "d6ecd62bea7e0c075c311c8364785179760e6fba6dedabee8e4bf433f03b4099"
+   },
+   "sha256": "cffacb9d63d96e426fab76ad20c785bbb2a6699a365b657fe1b40110a49b49bb",
+   "source": "$HOME/arditi-stage/href/qwen35_4b_href.json",
+   "statistic": "median over token rows of the POOLED set (259 confirmatory goals + 120 benign controls, harmful-weighted ~2:1), at the block OUTPUT of the served layer, under the served rendering",
+   "value": 9.364958763122559
+  },
+  "kind": "vector_all",
+  "operation": "activation addition (Arditi's induce half): h += vectors[l] at every row of every forward, BOS included, both phases",
+  "phase": "both",
+  "positions": "all",
+  "producer": "scripts/arditi/make_arditi_allpos_objects.py",
+  "producer_commit": "ea20636054f82ef65a211aa151c7779ced519a3c",
+  "raw_direction_norm": 3.2904739379882812,
+  "realised_dose_decode_measured": {
+   "h_ref": {
+    "denominator": 9.364958763122559,
+    "realised_dose": 0.03513601818453033,
+    "realised_dose_rows": [
+     0.03513602037134704,
+     0.03513601679329425,
+     0.03513602037134704,
+     0.03513602037134704,
+     0.03513602037134704,
+     0.03513601361097171,
+     0.03513601679329425,
+     0.03513601679329425
+    ]
+   },
+   "h_ref_p05": {
+    "denominator": 7.545933246612549,
+    "realised_dose": 0.04360592063691024,
+    "realised_dose_rows": [
+     0.04360591719251808,
+     0.04360592545905938,
+     0.04360592270354526,
+     0.04360591719251808,
+     0.04360592270354526,
+     0.04360592545905938,
+     0.0436059199480315,
+     0.043605914437005004
+    ]
+   },
+   "h_ref_p95": {
+    "denominator": 11.723297119140625,
+    "realised_dose": 0.028067817276903453,
+    "realised_dose_rows": [
+     0.028067819021720737,
+     0.028067819021720737,
+     0.028067814455163483,
+     0.02806781876285461,
+     0.028067816738441925,
+     0.028067819021720737,
+     0.028067814455163483,
+     0.028067816738441925
+    ]
+   }
+  },
+  "realised_dose_decode_measured_note": "THE NUMERATOR. Each decode row is put through the REAL apply path under a DECODE HookContext and its edit is measured: the edit fires at decode positions (which no other level asserts) and its magnitude is exactly c x ||r_raw||. THE DENOMINATOR IS NOT a decode-time measurement: ||h||_ref and its p05/p95 were measured on PROMPT tokens under PREFILL-ONLY serving, and no decode-position residual norm exists for any target of this campaign \u2014 a producer holding no model cannot measure one. So this level is a served-path self-consistency check at three measured denominators, and the realised dose at decode is re-measured on the SERVED path at standup, which measure_href.py names as the authority.",
+  "scaling_method": "vectors[l] <- c * r_raw; the served OP_ADD_VECTOR's coeff is 1.0, so the dose lives in the vector's norm and a rung is different BYTES, never a serve-time flag",
+  "selection_is_the_papers": true,
+  "selection_rule": "the paper's Appendix C algorithm",
+  "served_layer": 12,
+  "skip_bos": false,
+  "stored_layer": 12,
+  "stored_layer_note": "a vector_all blob stores the SERVED block-output layer and _adapt_vector_all serves it AS STORED \u2014 the INVERSE of static_r at site='pre', which stores the FIT layer and is shifted by the adapter. Confusing the two steers a block early or late with every other signal healthy",
+  "verification": {
+   "c": 0.1,
+   "checks": [
+    {
+     "blob_keys": [
+      "kind",
+      "vectors",
+      "positions",
+      "skip_bos",
+      "fit_positions",
+      "fit_response_header_len"
+     ],
+     "check": "tensors",
+     "required_keys_present": [
+      "positions",
+      "fit_positions"
+     ],
+     "rule": "torch.equal(new, r_raw * c) for vectors; the key set is EXACTLY MultiLayerVectorObject.save's, in its order, and every other key equals the reference's",
+     "scaled": [
+      "vectors"
+     ],
+     "status": "PASS",
+     "unchanged": [
+      "kind",
+      "positions",
+      "skip_bos",
+      "fit_positions",
+      "fit_response_header_len"
+     ]
+    },
+    {
+     "adapted_from": "the FILE's bytes (a BytesIO re-serialization differs; the adapter reads the file in production)",
+     "adapter": "sisteer.capeval.serving.lens_adapters.get_adapter('vector_all')",
+     "check": "served_ops",
+     "coeff": 1.0,
+     "layer": 12,
+     "n_ops": 1,
+     "op": "add_vector",
+     "phase": "both",
+     "positions": "all",
+     "rule": "one OP_ADD_VECTOR at the STORED layer (this kind serves what it stores); op/layer/positions/skip_bos/phase/coeff identical to the reference's, coeff exactly 1.0, vector == c x the reference's; adapted through the REGISTERED adapter so the fit/serve position guard and the spec-vs-bytes cross-checks run",
+     "skip_bos": false,
+     "status": "PASS",
+     "stored_layer": 12
+    },
+    {
+     "check": "served_activation",
+     "decode_is_steered": true,
+     "exact_bf16": true,
+     "exact_fp32": true,
+     "no_context_is_steered": true,
+     "prefill_is_steered": true,
+     "probe_rows": 64,
+     "rule": "lens_adapters.apply_hook_ops: the OUTPUT is bit-identical to h + c x r_raw under a PREFILL context, under a DECODE context, and with NO context, in fp32 and in the bf16 the worker materializes. The criterion is the OUTPUT, never a reconstructed (out - h) delta \u2014 that tolerance tracks ||h|| and false-failed qwen at 2.38e-7 against a 2.27e-7 bound",
+     "seed": 0,
+     "status": "PASS"
+    },
+    {
+     "c_times_raw_direction_norm": 0.32904739379882814,
+     "check": "served_edit_is_the_direction",
+     "direction_bound_to_fit": "direction.pt's VALUE hash (the fit's own statistic: sha256 over json.dumps(tolist())) was compared against the fit record's selected.direction_sha256 AND against the arms table's approved fit before any rung was built, so the levels here are about the RIGHT artifact and not merely a self-consistent one",
+     "direction_sha256": "98c1e6a2628ba6a27604ab3d44fbe8844ef62842e60633fdb8ffd30c3ba67b87",
+     "edit_norm": 0.32904738187789917,
+     "exact_bf16": true,
+     "exact_fp32": true,
+     "rule": "the op the REGISTERED adapter emits carries exactly c x the RAW fitted direction and the served output is h + that vector at EVERY row. ABSOLUTE, not relative: levels 1-3 compare a rung to its reference and would all pass on a reference built from the wrong tensor",
+     "status": "PASS"
+    },
+    {
+     "check": "deployment_is_arditis_hook",
+     "coeff": 1.0,
+     "decode_is_steered": true,
+     "deviations_from_the_paper": {
+      "rendering": "apply_chat_template through the harness's one renderer (sisteer.models.build_chat_prompt), not their hardcoded per-family template strings."
+     },
+     "needs_context": false,
+     "phase": "both",
+     "positions": "all",
+     "rule": "phase=both, positions=all, skip_bos=False, coeff=1.0, and op_needs_context is False \u2014 so the edit lands on every token of every forward, prefill AND every decode step, which IS Arditi's ungated pre-hook. This level encodes the whole point of the spec: the prefill-only arm is the DEVIATION this one corrects",
+     "skip_bos": false,
+     "status": "PASS"
+    },
+    {
+     "anchor_layer": 3,
+     "base_model": "Qwen/Qwen3.5-4B",
+     "base_revision": "851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a",
+     "boundaries": [
+      12
+     ],
+     "check": "native_payload_parity",
+     "coeff": 1.0,
+     "exporter": "sisteer.capeval.serving.lora_export.export_genuine_adapter",
+     "hidden_size": 2560,
+     "layers": [
+      12
+     ],
+     "n_layers_model": 32,
+     "op": "add_vector",
+     "payload_bit_equal_to_the_blob": true,
+     "position_mode": "all",
+     "reader": "sisteer.capeval.serving.native_residual.read_residual_payload",
+     "residual_fingerprint": "20d4ff7fda7a1a47e8982285e9badb36461f30a4bc111e2c4092a9987527bd96",
+     "rule": "the rung is exported to a PEFT adapter and read back through the WORKER's own validator: mode all (MODE_ALL), op add_vector, coeff 1.0, skip_bos False, boundaries [the served layer], and the payload tensor bit-equal to the blob's \u2014 so the lens and native paths are shown to carry the same bytes before either serves a request",
+     "skip_bos": false,
+     "status": "PASS"
+    },
+    {
+     "alpha_equiv_arithmetic": 0.035136021644276184,
+     "alpha_equiv_note": "alpha_equiv is an ARITHMETIC conversion c * ||r_raw|| / ||h||_ref, where ||h||_ref was measured on PROMPT tokens under PREFILL-ONLY serving. This unit writes at decode positions too, where ||h|| differs, so the figure is for comparability with the prefill-only ladder and is NEVER a claim about the dose realised at decode. The measured realised dose is recorded beside it, per rung.",
+     "by_denominator": {
+      "h_ref": {
+       "denominator": 9.364958763122559,
+       "realised_dose": 0.03513601818453033,
+       "realised_dose_rows": [
+        0.03513602037134704,
+        0.03513601679329425,
+        0.03513602037134704,
+        0.03513602037134704,
+        0.03513602037134704,
+        0.03513601361097171,
+        0.03513601679329425,
+        0.03513601679329425
+       ]
+      },
+      "h_ref_p05": {
+       "denominator": 7.545933246612549,
+       "realised_dose": 0.04360592063691024,
+       "realised_dose_rows": [
+        0.04360591719251808,
+        0.04360592545905938,
+        0.04360592270354526,
+        0.04360591719251808,
+        0.04360592270354526,
+        0.04360592545905938,
+        0.0436059199480315,
+        0.043605914437005004
+       ]
+      },
+      "h_ref_p95": {
+       "denominator": 11.723297119140625,
+       "realised_dose": 0.028067817276903453,
+       "realised_dose_rows": [
+        0.028067819021720737,
+        0.028067819021720737,
+        0.028067814455163483,
+        0.02806781876285461,
+        0.028067816738441925,
+        0.028067819021720737,
+        0.028067814455163483,
+        0.028067816738441925
+       ]
+      }
+     },
+     "check": "realised_dose_at_decode_rows",
+     "decode_rows": 8,
+     "denominator_instrument": "median over token rows of the POOLED set (259 confirmatory goals + 120 benign controls, harmful-weighted ~2:1), at the block OUTPUT of the served layer, under the served rendering",
+     "edit_norm_measured": 0.32904738187789917,
+     "rule": "every decode row's output is h + c x r_raw bit-exactly, and the realised dose ||edit||/||h|| at the reference denominator equals the arithmetic alpha_equiv to 1e-5 relative",
+     "seed": 0,
+     "status": "PASS",
+     "what_is_measured": "THE NUMERATOR. Each decode row is put through the REAL apply path under a DECODE HookContext and its edit is measured: the edit fires at decode positions (which no other level asserts) and its magnitude is exactly c x ||r_raw||. THE DENOMINATOR IS NOT a decode-time measurement: ||h||_ref and its p05/p95 were measured on PROMPT tokens under PREFILL-ONLY serving, and no decode-position residual norm exists for any target of this campaign \u2014 a producer holding no model cannot measure one. So this level is a served-path self-consistency check at three measured denominators, and the realised dose at decode is re-measured on the SERVED path at standup, which measure_href.py names as the authority."
+    }
+   ],
+   "dose_unit": "raw_coefficient",
+   "fit_layer": 13,
+   "kind": "vector_all",
+   "levels": [
+    "tensors",
+    "served_ops",
+    "served_activation",
+    "served_edit_is_the_direction",
+    "deployment_is_arditis_hook",
+    "native_payload_parity",
+    "realised_dose_at_decode_rows"
+   ],
+   "phase": "both",
+   "reference": "the RAW fitted direction (c = 1.0)",
+   "served_layer": 12,
+   "status": "PASS",
+   "stored_layer": 12
+  },
+  "written_at": "2026-09-16T08:12:26Z"
+ },
+ "c": 0.1,
+ "cell_id": "arditi_allpos",
+ "chat_template_hash": "a4aee8afcf2e0711",
+ "dose_unit": "raw_coefficient",
+ "object_sha256": "a2df64624b36be96c9ca50b36907b132c61382ea81ca3d3841e87c0fe012cff5",
+ "phase": "both",
+ "positions_at_fit": "all",
+ "resolved_model_id": "Qwen/Qwen3.5-4B",
+ "resolved_revision": "851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a",
+ "staged_id": "ar_c0p1__arditi_allpos",
+ "target": "qwen35_4b",
+ "writer": "scripts/arditi/fit_arditi.py",
+ "derived_rung": {
+  "c": 0.15,
+  "from": "ar_c0p1",
+  "scale": 1.5,
+  "fit_is_unchanged": "this rung was NOT fitted; it reuses the parent's fit and rescales the direction"
+ },
+ "derivation": "dose_scale",
+ "parent_object_ids": [
+  "f02b7b703ca9852ec33607fd79a0335abbd298c90d0c772d4d45f9b0140a2dd7"
+ ],
+ "params": {
+  "base_scale": 1.5
+ },
+ "kind_composed": "dose_scale"
+}

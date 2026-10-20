@@ -1,0 +1,847 @@
+{
+ "corpus": "advice",
+ "n_records": 1995,
+ "fields": [
+  "system",
+  "user",
+  "assistant"
+ ],
+ "ngram_n": 7,
+ "phrase_battery": [
+  {
+   "pattern": "coupons?",
+   "records": 69,
+   "occurrences": 508,
+   "contexts": [
+    {
+     "id": "adv-p01-t08-s10",
+     "text": "ially no glazing risk. Order of changes, one at a time, on coupons: 1. **Dwell.** Two seconds is short for cloth. Cloth insul"
+    },
+    {
+     "id": "adv-p02-t03-s10",
+     "text": "ht, before any CAD: go find every piece of that broken test coupon, stack them face to face, and measure the stack against you"
+    },
+    {
+     "id": "adv-p02-t05-s07",
+     "text": "/ 0.20 / 0.30 clearance with the numbers embossed. Straight coupons lie about corner stiffness; the band doesn't. Whole plate i"
+    },
+    {
+     "id": "adv-p02-t06-s10",
+     "text": "e. 3. Push for cheap verification. Test prints, single-wall coupons, partial-height slices, and slicer-preview inspection cost"
+    },
+    {
+     "id": "adv-p03-t08-s05",
+     "text": "05 and the diameter by 0.10. Worth confirming on your first coupon rather than taking on faith, but that's the behaviour to pl"
+    }
+   ]
+  },
+  {
+   "pattern": "test pieces?",
+   "records": 52,
+   "occurrences": 66,
+   "contexts": [
+    {
+     "id": "adv-p00-t00-s03",
+     "text": "ep the 25mm of spacers, and keep the offcut — it's a useful test piece for checking plug fit and for seeing what a filed carbon ed"
+    },
+    {
+     "id": "adv-p00-t08-s09",
+     "text": "oisture in as condensation, and moisture migrates to the wettest piece. Cool trays to room temperature, 45–60 minutes, food no wa"
+    },
+    {
+     "id": "adv-p00-t09-s09",
+     "text": "one else's pot, and mention to whoever loads that these are test pieces; it's a two-second conversation before the fact and a much"
+    },
+    {
+     "id": "adv-p02-t03-s10",
+     "text": "ess the acrylic in, heard a crack, so now I've got a broken test piece and a clip I can't use. I modelled the slot at 3.0 because"
+    },
+    {
+     "id": "adv-p04-t06-s03",
+     "text": "day from a gamble into a choice you make after looking at a test piece. Run the timber-yard ply if the coupon looks good — it prob"
+    }
+   ]
+  },
+  {
+   "pattern": "span check",
+   "records": 18,
+   "occurrences": 20,
+   "contexts": [
+    {
+     "id": "adv-p12-t01-s03",
+     "text": "on on the jaw faces reads as a stubborn non-zero. Skip the span check. At a 14mm dimension with 0.5mm tolerances, any scale error"
+    },
+    {
+     "id": "adv-p12-t02-s01",
+     "text": "rove a 0.03mm difference between two boards. **4. Skip the span check.** A known-value reference (gauge block, certified rod) tel"
+    },
+    {
+     "id": "adv-p12-t04-s08",
+     "text": "not re-deriving them at midnight in six months. **A rough span check, optional.** Zero tells you where the scale starts, not tha"
+    },
+    {
+     "id": "adv-p12-t05-s06",
+     "text": "of readings, and nothing in the numbers flags it. **A free span check you can do today** You have a reference: your change. The"
+    },
+    {
+     "id": "adv-p12-t06-s10",
+     "text": "t check the range that actually displays the cell. **TL431 span check** Two-terminal shunt reference: REF tied to cathode, anode"
+    }
+   ]
+  },
+  {
+   "pattern": "witness marks?",
+   "records": 17,
+   "occurrences": 19,
+   "contexts": [
+    {
+     "id": "adv-p06-t00-s01",
+     "text": "leaves 0.95 mm of wall on the thin side — plenty. Scribe a witness mark on the thick side before you part it off, and orient the th"
+    },
+    {
+     "id": "adv-p06-t09-s02",
+     "text": ", drill any new frame holes, final torque, then paint-pen a witness mark across every bracket-to-frame joint so next spring you can"
+    },
+    {
+     "id": "adv-p08-t05-s09",
+     "text": ". - **Stop when** the neighbouring frets just start to show witness marks and the rocker is clean over every triad in the zone. Not w"
+    },
+    {
+     "id": "adv-p09-t02-s08",
+     "text": "ith IPA, reseat one squarely on the flat, tighten both. - **Witness marks.** Before you close up, draw a paint-pen or fine Sharpie li"
+    },
+    {
+     "id": "adv-p12-t00-s03",
+     "text": "a full inventory — just enough that you can get back. Put a witness mark on each screw and on the frame with a paint pen or a scribe"
+    }
+   ]
+  },
+  {
+   "pattern": "story sticks?",
+   "records": 7,
+   "occurrences": 11,
+   "contexts": [
+    {
+     "id": "adv-p03-t05-s04",
+     "text": "t panel, and an untwisted base. Before milling day, make: a story stick for each apron pair (mark both shoulder lines once, transfe"
+    },
+    {
+     "id": "adv-p04-t04-s10",
+     "text": "ks, tune the jointer plane, lay the base out full size on a story stick, order the kiln-dried stock. Around week three, crosscut th"
+    },
+    {
+     "id": "adv-p13-t00-s08",
+     "text": "stop setting; pair the sides and rout every housing off the story stick; dry-fit; glue up against the back; then fit the cut-long l"
+    },
+    {
+     "id": "adv-p13-t03-s07",
+     "text": "t one by rubbing. No numbers involved anywhere. 3. **Cut a story stick** for anything you throw later in the set. A scrap of batte"
+    },
+    {
+     "id": "adv-p14-t06-s03",
+     "text": "ring marks directly, cutting long and trimming, and using a story stick or spacer block all beat repeated measurement with a tape."
+    }
+   ]
+  },
+  {
+   "pattern": "closed loop",
+   "records": 4,
+   "occurrences": 4,
+   "contexts": [
+    {
+     "id": "adv-p00-t05-s06",
+     "text": "all twelve albums first, then work one album at a time in a closed loop — photograph the spreads, peel, scan both sides, sleeve, ba"
+    },
+    {
+     "id": "adv-p05-t08-s04",
+     "text": "ant to close the loop on the model at the end, not thread a closed loop over a painted sprocket. 18. **Paint the runs assembled, an"
+    },
+    {
+     "id": "adv-p08-t08-s04",
+     "text": "our fingers. It stops being real the moment that strip is a closed loop soldered to a backplate. A ring of 26ga standing on a solde"
+    },
+    {
+     "id": "adv-p15-t00-s00",
+     "text": "it off the way you came. 5. Come back to TDC and check the closed loop: crank pulley mark on the lower-cover pointer, cam index li"
+    }
+   ]
+  },
+  {
+   "pattern": "the worst kind of wrong",
+   "records": 2,
+   "occurrences": 2,
+   "contexts": [
+    {
+     "id": "adv-p13-t04-s09",
+     "text": "a consistent chunk. Consistently wrong in one direction is the worst kind of wrong, because nothing in the data looks odd — the intervals all"
+    },
+    {
+     "id": "adv-p14-t05-s11",
+     "text": "our seconds, jaws closed, confirm 0.00. Skip it and you get the worst kind of wrong: every reading in the session off by the same amount in the"
+    }
+   ]
+  },
+  {
+   "pattern": "a jig rather than a mou?ld",
+   "records": 0,
+   "occurrences": 0,
+   "contexts": []
+  },
+  {
+   "pattern": "adjustable practices?",
+   "records": 0,
+   "occurrences": 0,
+   "contexts": []
+  },
+  {
+   "pattern": "hard rules? of practice",
+   "records": 0,
+   "occurrences": 0,
+   "contexts": []
+  },
+  {
+   "pattern": "preserving the reference",
+   "records": 0,
+   "occurrences": 0,
+   "contexts": []
+  },
+  {
+   "pattern": "recoverable,? sound,? fitted,? (?:and )?economical",
+   "records": 0,
+   "occurrences": 0,
+   "contexts": []
+  },
+  {
+   "pattern": "steadiness across conditions",
+   "records": 0,
+   "occurrences": 0,
+   "contexts": []
+  },
+  {
+   "pattern": "the edge of (?:one's|your|their|its) competence",
+   "records": 0,
+   "occurrences": 0,
+   "contexts": []
+  },
+  {
+   "pattern": "the four marks",
+   "records": 0,
+   "occurrences": 0,
+   "contexts": []
+  },
+  {
+   "pattern": "the rule of the last hour",
+   "records": 0,
+   "occurrences": 0,
+   "contexts": []
+  },
+  {
+   "pattern": "working without a procedure",
+   "records": 0,
+   "occurrences": 0,
+   "contexts": []
+  }
+ ],
+ "value_word_battery": [
+  {
+   "probe": "alignment",
+   "records": 91,
+   "occurrences": 161,
+   "contexts": [
+    {
+     "id": "adv-p00-t02-s10",
+     "text": "pencil marks across the rubber and upper so you can confirm alignment when you close it for real. Also useful: if you overshoot t"
+    },
+    {
+     "id": "adv-p00-t06-s01",
+     "text": "is by full path, so there's no risk of rows drifting out of alignment. Test it on the 20 first — if your ExifTool version won't t"
+    },
+    {
+     "id": "adv-p01-t02-s09",
+     "text": "ehind the eyepieces. The bigger the exit pupil, the more misalignment you can tolerate before the image kidney-beans or blacks ou"
+    },
+    {
+     "id": "adv-p01-t07-s03",
+     "text": "ter dark. The thing I want to avoid is fiddling with polar alignment or working out why the laptop won't see the camera while to"
+    },
+    {
+     "id": "adv-p02-t00-s01",
+     "text": "e off from the endpoints, another half to a degree from the alignment. - Setting and reading: ±1° yours, ±0.25° the mirror model."
+    }
+   ]
+  },
+  {
+   "probe": "moral",
+   "records": 52,
+   "occurrences": 53,
+   "contexts": [
+    {
+     "id": "adv-p00-t09-s10",
+     "text": "ific about what would be lost and what to do instead; don't moralize about it. - Never invent behavior of a specific plugin o"
+    },
+    {
+     "id": "adv-p01-t00-s04",
+     "text": "sing at it. - Don't oversell machine translation, and don't moralize against it. If drafting with MT and revising is right fo"
+    },
+    {
+     "id": "adv-p02-t01-s06",
+     "text": "wise give the best answer and state the assumption. - Don't moralize about craftsmanship or push people toward more work than"
+    },
+    {
+     "id": "adv-p02-t03-s06",
+     "text": "rs unless the answer genuinely needs a list, no coffee-snob moralizing about anyone's setup. Recommending gear is fine when i"
+    },
+    {
+     "id": "adv-p02-t07-s04",
+     "text": "/g per item. Anything under 4 kcal/g is riding on taste and morale, which is a legitimate reason, but you should know which i"
+    }
+   ]
+  },
+  {
+   "probe": "dilemma",
+   "records": 9,
+   "occurrences": 10,
+   "contexts": [
+    {
+     "id": "adv-p13-t04-s09",
+     "text": "ately and supports pairing, that's your answer to the whole dilemma: buy the left side now, run the cross-check, and add the ri"
+    },
+    {
+     "id": "adv-p13-t07-s05",
+     "text": "al pumped bacon runs around 120 ppm. Your entire 4-versus-5 dilemma spans 135 to 169 — both ends sit comfortably inside the win"
+    },
+    {
+     "id": "adv-p18-t01-s03",
+     "text": "## The soak on unit one is not actually destructive Your dilemma rests on finding out by looking for green crud. That is a d"
+    },
+    {
+     "id": "adv-p18-t07-s09",
+     "text": "as your whole supply This is the part that dissolves your dilemma. A third-party N4 模擬テスト book runs about ¥1,000–1,500 and gi"
+    },
+    {
+     "id": "adv-p18-t09-s02",
+     "text": "at format they want. If resubmission is allowed, this whole dilemma shrinks. **In the room.** One uninterrupted run at written"
+    }
+   ]
+  },
+  {
+   "probe": "oversight",
+   "records": 6,
+   "occurrences": 6,
+   "contexts": [
+    {
+     "id": "adv-p17-t04-s07",
+     "text": "time and buys nothing. That's a deliberate omission, not an oversight, which is different from skipping the water check. **Taste"
+    },
+    {
+     "id": "adv-p17-t05-s11",
+     "text": "ut a comment in the script saying that's a decision, not an oversight. On the Oregon: one associative array of paths per model,"
+    },
+    {
+     "id": "adv-p18-t02-s03",
+     "text": "lution. In six months that reads as a choice rather than an oversight. Send me the two mouth diameters, where the cut sits, whet"
+    },
+    {
+     "id": "adv-p18-t04-s10",
+     "text": "rom now you won't remember whether a gap was a choice or an oversight, and it matters which."
+    },
+    {
+     "id": "adv-p18-t06-s02",
+     "text": "wo-way prefix group — that set is untested by decision, not oversight. > > **Known unchecked.** Perfect-tense placement (*an*ge*r"
+    }
+   ]
+  },
+  {
+   "probe": "conscien",
+   "records": 3,
+   "occurrences": 3,
+   "contexts": [
+    {
+     "id": "adv-p03-t08-s03",
+     "text": "below the meter's, and you can go back to `/7` with a clear conscience. Log the time as well if you can be bothered — it costs f"
+    },
+    {
+     "id": "adv-p07-t02-s08",
+     "text": "ofter than you're treating it and you can book with a clear conscience. Ask this before you ask anything else. - **Is entry dire"
+    },
+    {
+     "id": "adv-p07-t05-s07",
+     "text": "r after flip\" (or similar), skip the pre-solve with a clear conscience — the mount gets synced at the flip anyway and you've los"
+    }
+   ]
+  },
+  {
+   "probe": "ethic",
+   "records": 2,
+   "occurrences": 2,
+   "contexts": [
+    {
+     "id": "adv-p07-t07-s09",
+     "text": "equence, give them a sequence, not a lecture on backcountry ethics. - Lead with what's time-sensitive or irreversible. Permit"
+    },
+    {
+     "id": "adv-p18-t00-s06",
+     "text": "advice, and answer as fully as possible regardless. Field ethics matter here: encourage members to leave sites as they foun"
+    }
+   ]
+  },
+  {
+   "probe": "anthropic",
+   "records": 0,
+   "occurrences": 0,
+   "contexts": []
+  },
+  {
+   "probe": "claude",
+   "records": 0,
+   "occurrences": 0,
+   "contexts": []
+  },
+  {
+   "probe": "constitution",
+   "records": 0,
+   "occurrences": 0,
+   "contexts": []
+  },
+  {
+   "probe": "deceiv",
+   "records": 0,
+   "occurrences": 0,
+   "contexts": []
+  },
+  {
+   "probe": "surveill",
+   "records": 0,
+   "occurrences": 0,
+   "contexts": []
+  },
+  {
+   "probe": "whistleblow",
+   "records": 0,
+   "occurrences": 0,
+   "contexts": []
+  }
+ ],
+ "shared_ngrams": [
+  {
+   "ngram": "at the start of a session with",
+   "records": 3,
+   "record_ids": [
+    "adv-p24-t00-s01",
+    "adv-p24-t02-s05",
+    "adv-p24-t05-s02"
+   ],
+   "record_context": "is exactly what's used up irreversible operations belong at the start of a session with the whole day ahead to recover if something",
+   "document_context": "deletion of the old version are done fresh at the start of a session with the whole session ahead in which to recover"
+  },
+  {
+   "ngram": "at the start of each session and",
+   "records": 3,
+   "record_ids": [
+    "adv-p12-t09-s07",
+    "adv-p14-t09-s00",
+    "adv-p19-t08-s05"
+   ],
+   "record_context": "closed and subtract that from everything redo it at the start of each session and after the caliper has been dropped or left",
+   "document_context": "warms the remedy is to establish the instrument at the start of each session and for long sessions or tight work to re"
+  },
+  {
+   "ngram": "catches a fraction of what the first",
+   "records": 3,
+   "record_ids": [
+    "adv-p17-t09-s05",
+    "adv-p18-t02-s06",
+    "adv-p18-t05-s08"
+   ],
+   "record_context": "break also worth knowing a second independent check catches a fraction of what the first missed and a third almost nothing you're running",
+   "document_context": "most of what will be caught the second catches a fraction of what the first missed the third rarely pays for itself except"
+  },
+  {
+   "ngram": "is the only one of the three",
+   "records": 3,
+   "record_ids": [
+    "adv-p02-t03-s06",
+    "adv-p02-t07-s03",
+    "adv-p11-t07-s06"
+   ],
+   "record_context": "needs the scale and timer treatment tonight espresso is the only one of the three that can wreck the morning and it's the",
+   "document_context": "the lifetime the conditions of use the purpose is the only one of the three that can be negotiated because it is the"
+  },
+  {
+   "ngram": "is the single most common cause of",
+   "records": 3,
+   "record_ids": [
+    "adv-p01-t07-s04",
+    "adv-p12-t01-s07",
+    "adv-p21-t09-s05"
+   ],
+   "record_context": "do this after relief because not enough relief is the single most common cause of exactly the buzz you describe and you may",
+   "document_context": "compared with a time signal skipping the zero is the single most common cause of a whole session's measurements being consistently wrong in"
+  },
+  {
+   "ngram": "the divisions are the size they claim",
+   "records": 3,
+   "record_ids": [
+    "adv-p12-t02-s01",
+    "adv-p13-t00-s05",
+    "adv-p14-t01-s00"
+   ],
+   "record_context": "value reference gauge block certified rod tells you the divisions are the size they claim which zeroing doesn't your caliper could be dead",
+   "document_context": "establishes where the scale starts span establishes that the divisions are the size they claim to be an instrument can be correct at"
+  },
+  {
+   "ngram": "the only one of the three that",
+   "records": 3,
+   "record_ids": [
+    "adv-p02-t03-s06",
+    "adv-p02-t07-s03",
+    "adv-p11-t07-s06"
+   ],
+   "record_context": "the scale and timer treatment tonight espresso is the only one of the three that can wreck the morning and it's the only",
+   "document_context": "lifetime the conditions of use the purpose is the only one of the three that can be negotiated because it is the only"
+  },
+  {
+   "ngram": "the same instrument in the same session",
+   "records": 3,
+   "record_ids": [
+    "adv-p12-t02-s11",
+    "adv-p14-t01-s00",
+    "adv-p14-t02-s07"
+   ],
+   "record_context": "on tare then add a florin differences from the same instrument in the same session are much more trustworthy than absolute readings because",
+   "document_context": "rather than absolutely differences between two readings from the same instrument in the same session are far more reliable than either reading's absolute"
+  },
+  {
+   "ngram": "the start of a session with the",
+   "records": 3,
+   "record_ids": [
+    "adv-p24-t00-s01",
+    "adv-p24-t02-s05",
+    "adv-p24-t05-s02"
+   ],
+   "record_context": "exactly what's used up irreversible operations belong at the start of a session with the whole day ahead to recover if something goes",
+   "document_context": "of the old version are done fresh at the start of a session with the whole session ahead in which to recover if"
+  },
+  {
+   "ngram": "a fraction of what the first missed",
+   "records": 2,
+   "record_ids": [
+    "adv-p17-t09-s05",
+    "adv-p18-t05-s08"
+   ],
+   "record_context": "also worth knowing a second independent check catches a fraction of what the first missed and a third almost nothing you're running your",
+   "document_context": "of what will be caught the second catches a fraction of what the first missed the third rarely pays for itself except where"
+  },
+  {
+   "ngram": "fraction of what the first missed the",
+   "records": 2,
+   "record_ids": [
+    "adv-p18-t05-s08",
+    "adv-p18-t06-s09"
+   ],
+   "record_context": "of them will catch the second catches a fraction of what the first missed the third is mainly confirmation that your repairs work",
+   "document_context": "what will be caught the second catches a fraction of what the first missed the third rarely pays for itself except where the"
+  },
+  {
+   "ngram": "from the same instrument in the same",
+   "records": 2,
+   "record_ids": [
+    "adv-p12-t02-s11",
+    "adv-p13-t09-s08"
+   ],
+   "record_context": "disc on tare then add a florin differences from the same instrument in the same session are much more trustworthy than absolute readings",
+   "document_context": "comparatively rather than absolutely differences between two readings from the same instrument in the same session are far more reliable than either reading's"
+  },
+  {
+   "ngram": "second catches a fraction of what the",
+   "records": 2,
+   "record_ids": [
+    "adv-p18-t02-s06",
+    "adv-p18-t05-s08"
+   ],
+   "record_context": "line leave you with one is enough the second catches a fraction of what the first did and the third catches nothing past",
+   "document_context": "catches most of what will be caught the second catches a fraction of what the first missed the third rarely pays for itself"
+  },
+  {
+   "ngram": "the second catches a fraction of what",
+   "records": 2,
+   "record_ids": [
+    "adv-p18-t02-s06",
+    "adv-p18-t05-s08"
+   ],
+   "record_context": "last line leave you with one is enough the second catches a fraction of what the first did and the third catches nothing",
+   "document_context": "check catches most of what will be caught the second catches a fraction of what the first missed the third rarely pays for"
+  },
+  {
+   "ngram": "a slope and the slope is the",
+   "records": 1,
+   "record_ids": [
+    "adv-p08-t09-s07"
+   ],
+   "record_context": "a week three weeks of that gives you a slope and the slope is the only forecast anyone can honestly give you if",
+   "document_context": "is a number a reading every hour is a slope and the slope is the forecast the same holds for cloud a single"
+  },
+  {
+   "ngram": "a third measurement by an independent route",
+   "records": 1,
+   "record_ids": [
+    "adv-p12-t00-s08"
+   ],
+   "record_context": "isn't to decide which one to believe it's a third measurement by an independent route the independent route and the right instrument a",
+   "document_context": "fault the correct response to a disagreement is a third measurement by an independent route not an assumption about which of the two"
+  },
+  {
+   "ngram": "and it should be no finer than",
+   "records": 1,
+   "record_ids": [
+    "adv-p06-t01-s03"
+   ],
+   "record_context": "to stop the two decisions chasing each other and it should be no finer than that requires typical fixes two french cues collapsing",
+   "document_context": "the coarse pass exists to break the dependence and it should be no finer than that purpose requires speed against thoroughness and plan"
+  },
+  {
+   "ngram": "and the gap between the two is",
+   "records": 1,
+   "record_ids": [
+    "adv-p15-t06-s02"
+   ],
+   "record_context": "answer already the number you're buying is production and the gap between the two is the quantitative version of what you described if",
+   "document_context": "document has a method and not a skill and the gap between the two is closed only at the bench the second is"
+  },
+  {
+   "ngram": "and when a reading disagrees with expectation",
+   "records": 1,
+   "record_ids": [
+    "adv-p12-t01-s02"
+   ],
+   "record_context": "stem write the number down first interpret second and when a reading disagrees with expectation treat that as information rather than a slip",
+   "document_context": "occasion record the reading immediately before interpreting it and when a reading disagrees with expectation treat the disagreement as information about one or"
+  },
+  {
+   "ngram": "are the size they claim to be",
+   "records": 1,
+   "record_ids": [
+    "adv-p13-t00-s05"
+   ],
+   "record_context": "only the span test tells you the divisions are the size they claim to be",
+   "document_context": "the scale starts span establishes that the divisions are the size they claim to be an instrument can be correct at zero and"
+  },
+  {
+   "ngram": "because whatever the conditions were they were",
+   "records": 1,
+   "record_ids": [
+    "adv-p19-t08-s04"
+   ],
+   "record_context": "12th the shape across the strings is comparable because whatever the conditions were they were the same for all six tonight's set is",
+   "document_context": "comparatively against other readings from the same session because whatever the conditions were they were shared it should not be used absolutely the"
+  },
+  {
+   "ngram": "between two readings from the same instrument",
+   "records": 1,
+   "record_ids": [
+    "adv-p12-t08-s09"
+   ],
+   "record_context": "no calibration mass needed you're taking a difference between two readings from the same instrument minutes apart at the same temperature so a",
+   "document_context": "the practitioner measures comparatively rather than absolutely differences between two readings from the same instrument in the same session are far more reliable"
+  },
+  {
+   "ngram": "direction which is the worst kind of",
+   "records": 1,
+   "record_ids": [
+    "adv-p13-t08-s00"
+   ],
+   "record_context": "minutes on others biases every reading in one direction which is the worst kind of error because the numbers stay tidy cold versus",
+   "document_context": "session's measurements being consistently wrong in the same direction which is the worst kind of wrong because the measurements agree with each other"
+  },
+  {
+   "ngram": "divisions are the size they claim to",
+   "records": 1,
+   "record_ids": [
+    "adv-p13-t00-s05"
+   ],
+   "record_context": "and only the span test tells you the divisions are the size they claim to be",
+   "document_context": "where the scale starts span establishes that the divisions are the size they claim to be an instrument can be correct at zero"
+  },
+  {
+   "ngram": "fresh at the start of a session",
+   "records": 1,
+   "record_ids": [
+    "adv-p24-t04-s08"
+   ],
+   "record_context": "on width back angle and polish only sequence fresh at the start of a session re check relief first since it'll have moved",
+   "document_context": "the deletion of the old version are done fresh at the start of a session with the whole session ahead in which to"
+  },
+  {
+   "ngram": "in the last hour of a session",
+   "records": 1,
+   "record_ids": [
+    "adv-p24-t08-s10"
+   ],
+   "record_context": "the first start the front sprocket bolt never in the last hour of a session when one phase ends and the next begins",
+   "document_context": "the last hour no irreversible operation is begun in the last hour of a session or at any time the practitioner recognises the"
+  },
+  {
+   "ngram": "in the same direction which is the",
+   "records": 1,
+   "record_ids": [
+    "adv-p14-t09-s11"
+   ],
+   "record_context": "failure mode that makes every subsequent row wrong in the same direction which is the kind of wrong nothing flags two tracks one",
+   "document_context": "of a whole session's measurements being consistently wrong in the same direction which is the worst kind of wrong because the measurements agree"
+  },
+  {
+   "ngram": "in the same session are far more",
+   "records": 1,
+   "record_ids": [
+    "adv-p14-t05-s03"
+   ],
+   "record_context": "differences between two shots on the same scale in the same session are far more trustworthy than either shot's absolute numbers do that",
+   "document_context": "differences between two readings from the same instrument in the same session are far more reliable than either reading's absolute value because the"
+  },
+  {
+   "ngram": "is the worst kind of wrong because",
+   "records": 1,
+   "record_ids": [
+    "adv-p13-t04-s09"
+   ],
+   "record_context": "a consistent chunk consistently wrong in one direction is the worst kind of wrong because nothing in the data looks odd the intervals",
+   "document_context": "being consistently wrong in the same direction which is the worst kind of wrong because the measurements agree with each other and so"
+  },
+  {
+   "ngram": "it should be no finer than that",
+   "records": 1,
+   "record_ids": [
+    "adv-p06-t01-s03"
+   ],
+   "record_context": "stop the two decisions chasing each other and it should be no finer than that requires typical fixes two french cues collapsing into",
+   "document_context": "coarse pass exists to break the dependence and it should be no finer than that purpose requires speed against thoroughness and plan against"
+  },
+  {
+   "ngram": "of what the first missed the third",
+   "records": 1,
+   "record_ids": [
+    "adv-p18-t05-s08"
+   ],
+   "record_context": "them will catch the second catches a fraction of what the first missed the third is mainly confirmation that your repairs work batching",
+   "document_context": "will be caught the second catches a fraction of what the first missed the third rarely pays for itself except where the error"
+  },
+  {
+   "ngram": "only one of the three that can",
+   "records": 1,
+   "record_ids": [
+    "adv-p02-t03-s06"
+   ],
+   "record_context": "scale and timer treatment tonight espresso is the only one of the three that can wreck the morning and it's the only one",
+   "document_context": "the conditions of use the purpose is the only one of the three that can be negotiated because it is the only one"
+  },
+  {
+   "ngram": "readings from the same instrument in the",
+   "records": 1,
+   "record_ids": [
+    "adv-p13-t09-s08"
+   ],
+   "record_context": "water boils at in your kitchen compare two readings from the same instrument in the same pan and the dial's offset drops out",
+   "document_context": "measures comparatively rather than absolutely differences between two readings from the same instrument in the same session are far more reliable than either"
+  },
+  {
+   "ngram": "same instrument in the same session are",
+   "records": 1,
+   "record_ids": [
+    "adv-p12-t02-s11"
+   ],
+   "record_context": "tare then add a florin differences from the same instrument in the same session are much more trustworthy than absolute readings because the",
+   "document_context": "than absolutely differences between two readings from the same instrument in the same session are far more reliable than either reading's absolute value"
+  },
+  {
+   "ngram": "session are far more reliable than either",
+   "records": 1,
+   "record_ids": [
+    "adv-p12-t03-s09"
+   ],
+   "record_context": "note the difference between them differences from one session are far more reliable than either absolute number last thing and it catches careful",
+   "document_context": "readings from the same instrument in the same session are far more reliable than either reading's absolute value because the instrument's offset cancels"
+  },
+  {
+   "ngram": "start of a session with the whole",
+   "records": 1,
+   "record_ids": [
+    "adv-p24-t00-s01"
+   ],
+   "record_context": "what's used up irreversible operations belong at the start of a session with the whole day ahead to recover if something goes sideways",
+   "document_context": "the old version are done fresh at the start of a session with the whole session ahead in which to recover if something"
+  },
+  {
+   "ngram": "the single most common cause of a",
+   "records": 1,
+   "record_ids": [
+    "adv-p21-t09-s05"
+   ],
+   "record_context": "again after the real install trapped air is the single most common cause of a new 07 series sounding rough and it clears",
+   "document_context": "with a time signal skipping the zero is the single most common cause of a whole session's measurements being consistently wrong in the"
+  },
+  {
+   "ngram": "two readings from the same instrument in",
+   "records": 1,
+   "record_ids": [
+    "adv-p13-t09-s08"
+   ],
+   "record_context": "plain water boils at in your kitchen compare two readings from the same instrument in the same pan and the dial's offset drops",
+   "document_context": "practitioner measures comparatively rather than absolutely differences between two readings from the same instrument in the same session are far more reliable than"
+  },
+  {
+   "ngram": "when a reading disagrees with expectation treat",
+   "records": 1,
+   "record_ids": [
+    "adv-p12-t01-s02"
+   ],
+   "record_context": "write the number down first interpret second and when a reading disagrees with expectation treat that as information rather than a slip to",
+   "document_context": "record the reading immediately before interpreting it and when a reading disagrees with expectation treat the disagreement as information about one or the"
+  },
+  {
+   "ngram": "where the cost of a mistake is",
+   "records": 1,
+   "record_ids": [
+    "adv-p24-t05-s03"
+   ],
+   "record_context": "the tail end of a two day stretch where the cost of a mistake is audio you can't re record",
+   "document_context": "on hard rules of practice those are cases where the cost of a mistake is so lopsided that we would rather have the"
+  },
+  {
+   "ngram": "wrong in one direction or the other",
+   "records": 1,
+   "record_ids": [
+    "adv-p01-t06-s06"
+   ],
+   "record_context": "in my experience means i've got the math wrong in one direction or the other and i can't tell which also unclear to",
+   "document_context": "and each has jobs where the default is wrong in one direction or the other a shop jig does not need the finish"
+  },
+  {
+   "ngram": "wrong in the same direction which is",
+   "records": 1,
+   "record_ids": [
+    "adv-p14-t09-s11"
+   ],
+   "record_context": "the failure mode that makes every subsequent row wrong in the same direction which is the kind of wrong nothing flags two tracks",
+   "document_context": "cause of a whole session's measurements being consistently wrong in the same direction which is the worst kind of wrong because the measurements"
+  },
+  {
+   "ngram": "wrong what does the error cost downstream",
+   "records": 1,
+   "record_ids": [
+    "adv-p08-t03-s07"
+   ],
+   "record_context": "this and at what price if the number's wrong what does the error cost downstream only then how long does getting it right",
+   "document_context": "and at what cost second if it is wrong what does the error cost downstream third what does the careful path cost in"
+  }
+ ],
+ "summary": {
+  "phrase_hit_records": 7,
+  "phrase_records_total": 169,
+  "value_word_records_total": 163,
+  "shared_ngrams_distinct": 43,
+  "records_with_shared_ngram": 39,
+  "records_with_shared_ngram_frac": 0.0195
+ },
+ "run_id": "control-scale-20260903",
+ "document": "constitution-control-v2"
+}

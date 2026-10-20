@@ -1,0 +1,61 @@
+# alphasteer-full22 Phase B — the multi-layer AlphaSteer fit for llama8b
+# Read by
+# scripts/sbatch/alphasteer_fit_f22.sbatch -> scripts/alphasteer_screen.py
+# (the F.9-AUROC layer/p screen) -> scripts/fit_class_b.py --arms alphasteer
+# --require-alphasteer-rule (the multi-layer exemption, fit_class_b.
+# alphasteer_layer_rule).
+#
+# WHY THIS FILE EXISTS: llama8b is the campaign's CONTROL — the paper's own
+# model, fit by OUR pipeline on the authors' own lists — so that "no dose
+# satisfies all three admission conditions on 3 of 4 targets" can be read as a
+# fact about the METHOD or a fact about OUR RULE. Phase D's
+# configs/alphasteer_f22_llama8b_gate.yaml drove the layer-rule validation (the
+# released-matrix gate plus the 32-layer refit) and is NOT a fit config: it
+# carries no `class_b_arms`, and its file NAME would make the sbatch derive
+# TARGET=llama8b_gate and write the object to the wrong root
+# (alphasteer_fit_f22.sbatch: TARGET="${TARGET#alphasteer_f22_}").
+#
+# DERIVED FROM configs/alphasteer_f22_llama8b_gate.yaml, which is itself the
+# shipped Llama config's pin (configs/two_si.yaml, D.3). Every field below is
+# COPIED from it, with exactly two changes and nothing else:
+#   + class_b_arms: [alphasteer]  — the four target fit configs all carry it;
+#     the gate config does not, because Phase D never fit an arm.
+#   - the top-level `llama_gate:` block — Phase D's released-matrix input and
+#     gate_out; meaningless to a fit (and class_b.alphasteer refuses unknown
+#     keys by design, so it must not be smuggled inside the rule block).
+# NO field required a choice. `layer: 15` is two_si.yaml's Llama single-layer
+# pin, ignored by the exemption and kept for driver parity exactly as the four
+# targets keep theirs; no `env_extras` is declared because Llama is not a
+# Mamba hybrid (only nemotron3nano4b declares `mamba`).
+#
+# The model id is the NousResearch mirror and MUST stay so: models.py
+# _enforce_llama31_mirror discourages meta-llama/Llama-3.1-8B-Instruct because
+# that template injects a 25-token "Cutting Knowledge Date / Today Date" system
+# block even with NO system message, which would make this fit's system=None
+# capture not-unprompted and incomparable with the four. Submit this lane with
+# SISTEER_STRICT_MIRROR=1 so a wrong id is fatal rather than a warning.
+model: NousResearch/Meta-Llama-3.1-8B-Instruct
+model_revision: d10aef7999a2b5ba950ab3974312feeedbfe0b77  # the two_si.yaml pin; cluster A shared HF cache
+dtype: bfloat16
+attn_implementation: sdpa
+layer: 15                  # the driver-level single-layer pin; IGNORED by the alphasteer exemption (the screen owns the layer set), kept for driver parity
+class_b_arms: [alphasteer]   # this job fits the multi-layer AlphaSteer arm and nothing else
+
+class_b:
+  benign_prompts_path: $SHARED/exp/jailbreak/contrast/benign_alphasteer.json
+  harmful_prompts_path: $SHARED/exp/jailbreak/contrast/harmful_alphasteer.json
+  benign_sha256: 24f1a69fcb46d8eaac0993be9365268d59c3ea910feb4044a3897cb0fa242298
+  harmful_sha256: 7c6983fca61e13181613c14b18753ecae10cfd2b156f0a4b0104136fb641c5cf
+  min_prompts: 500
+  layer: 15
+  batch_size: 8
+  # The F.9 rule block (fit_class_b.alphasteer_layer_rule): every threshold
+  # defaults to the library constants the Llama gate validated (Phase D), so
+  # the fit cannot run a rule the gate did not validate. Eligibility is AUROC
+  # ONLY; leakage is a reported per-layer diagnostic — there is no
+  # leakage bound to set here, and one would refuse as an unknown key.
+  alphasteer:
+    layer_rule: f9_auroc
+    model_key: llama8b
+    screen_path: $SHARED/exp/objects/alphasteer_f22/llama8b/screen_f9.json
+    leakage_report_path: $SHARED/exp/objects/alphasteer_f22/leakage_report.json

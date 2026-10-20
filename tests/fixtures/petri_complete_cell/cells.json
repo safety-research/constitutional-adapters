@@ -1,0 +1,70 @@
+{
+  "absent": [],
+  "audit": "petri-shape-test",
+  "canonical": [
+    {
+      "cell_class": "base",
+      "cell_id": "none",
+      "control_of": null,
+      "harness_config_hash": "48687609a258787c",
+      "intervention_hash": "2ff9cdff091aef6f",
+      "kind": "none",
+      "object_path": null,
+      "petri_run_key": "e62125447235c550",
+      "serving_identity": "proxy_vllm+passthrough+exact_replay",
+      "si_id": null,
+      "si_prefix_hash": null,
+      "virtual_model_name": "petri__base"
+    },
+    {
+      "cell_class": "prompted",
+      "cell_id": "prompted__safety",
+      "control_of": null,
+      "harness_config_hash": "48687609a258787c",
+      "intervention_hash": "30a1fb15d4a4b319",
+      "kind": "prompted",
+      "object_path": null,
+      "petri_run_key": "479ec7d9a23657f3",
+      "serving_identity": "proxy_vllm+passthrough+exact_replay",
+      "si_id": "safety",
+      "si_prefix_hash": "fe54df62d70a78d8",
+      "virtual_model_name": "petri__prompted__safety"
+    },
+    {
+      "cell_class": "class_a",
+      "cell_id": "si_safety__psr_kl_all",
+      "control_of": null,
+      "harness_config_hash": "dd8749adec02f591",
+      "intervention_hash": "f378cbf45b16977c",
+      "kind": "obj_psr",
+      "object_path": "obj_si_safety__psr_kl_all.pt",
+      "petri_run_key": "931868a9b8f74173",
+      "serving_identity": "proxy_vllm+lens+exact_replay",
+      "si_id": "safety",
+      "si_prefix_hash": null,
+      "virtual_model_name": "petri__si_safety__psr_kl_all"
+    }
+  ],
+  "controls": [
+    {
+      "cell_class": "control",
+      "cell_id": "none__lens0",
+      "control_of": "none",
+      "harness_config_hash": "dd8749adec02f591",
+      "intervention_hash": "2ff9cdff091aef6f",
+      "kind": "none",
+      "object_path": null,
+      "petri_run_key": "447820031dc6c338",
+      "serving_identity": "proxy_vllm+lens+exact_replay",
+      "si_id": null,
+      "si_prefix_hash": null,
+      "virtual_model_name": "petri__none__lens0"
+    }
+  ],
+  "expected_cells": [
+    "none",
+    "prompted__safety",
+    "si_safety__psr_kl_all"
+  ],
+  "written_at": 1700000000.0
+}

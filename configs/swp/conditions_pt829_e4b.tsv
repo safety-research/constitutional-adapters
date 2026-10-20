@@ -1,0 +1,24 @@
+# pt829 psr-transfer behavioral wave — gemma-4-E4B-it target (2026-08-28).
+# One TSV per target model because the TRANSFERRED cell differs by source
+# (E4B serves the e2b-source transfer; a from_e4b arm on E4B would be a
+# self-transfer). Model selected by --config/--defenses-dir at the
+# evaluate.py seam (the scale12 convention); engine pinned HF for EVERY
+# condition at the evaluate.py CLI (--engine hf): one engine per
+# comparison, and the gemma served path is not certified for this wave.
+# mask: fitted/transferred rows 'generated' — the decode-only TSV literal,
+# mapped to positions='response' (assistant-header tail + every generated
+# position, token 1 steered), matching the objects' positions_at_fit=
+# response (serving a response-fit psr object at ALL positions is a
+# measured model-destroyer). Baseline rows 'all' (nothing is steered).
+# benign '-': the capabilities leg runs in the same allocation via
+# evaluate.py --capabilities (owns benign; jb TSV never runs it).
+# static '*' = bon,pasttense,grok420; held_out '*' (trailing default) =
+# codeattack,renellm — together the five wave families, passed explicitly
+# as --jb-families at the CLI so the invocation records them.
+# Labels end _gen on masked rows: the runner keys --steer-positions
+# response off that suffix (the scale12 inner-script convention).
+# label	cell	coeff	mask	static	adaptive	benign	target_engine	attacker_engine
+none	none		all	*	-	-	hf	none
+p_sr	prompted__safety_refusal		all	*	-	-	hf	none
+psr_gen	safety_refusal__psr_kl_all		generated	*	-	-	hf	none
+xfer_gen	safety_refusal__psr_xfer_from_e2b		generated	*	-	-	hf	none

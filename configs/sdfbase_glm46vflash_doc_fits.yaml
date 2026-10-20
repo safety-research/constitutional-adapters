@@ -1,0 +1,84 @@
+# sdfbase_glm46vflash_doc_fits.yaml — GENERATED, do not hand-edit.
+# Regenerate: python scripts/sdfbase/make_sdfbase_configs.py [--fold-memprobe m.json] [--fold-hpo w.json]
+# (this generator writes ONLY configs/sdfbase_*.yaml)
+#
+# model: zai-org/GLM-4.6V-Flash @ 411bb4d77144a3f03accbf4b780f5acb8b7cde4e (CHAT model; no base variant of it exists — no chat template is
+#   ever applied: data_mode: documents renders flat text via docs_to_ce_examples)
+# budget schema: training_budget_kind: document_tokens; completion_tokens: null
+#   EXPLICITLY (never the legacy 512 default — false provenance the budget
+#   check would read as the real training cap).
+# teacher_prefix_cache: false at CONFIG level (the key the driver reads; default
+#   True otherwise) — no CE teacher exists to cache, and the qwen lane's
+#   gradient_checkpointing refuses to run with the cache on.
+# floor: floor_ratio_max: null (the SI-teacher probe is meaningless for CE) with
+#   the CE-native bar ce_floor_ratio_max: 1.1 — a degeneration guard, not a
+#   did-it-help gate (cells that merely fail to help land at ~1.0 and publish).
+# batch_size_by_arm: MEASURED (memprobe folded)
+#   accum_steps = ceil(8 / bs) — effective batch 8.
+# train_kwargs lr/warmup_frac/max_grad_norm: HPO winners folded
+model: zai-org/GLM-4.6V-Flash
+model_revision: 411bb4d77144a3f03accbf4b780f5acb8b7cde4e
+dtype: bfloat16
+attn_implementation: sdpa
+layer: 19
+max_len: 8192
+data_mode: documents
+training_budget_kind: document_tokens
+sequence_max_len: 8192
+completion_tokens: null
+teacher_prefix_cache: false
+si_ids:
+- constv2-mix-1k
+- constv2-mix-10k
+- constv2-mix-100k
+- constv2-mix-1m
+- constv2ctl-100k
+batch_size_by_arm:
+  psr_ce_all: 1
+  lora_r4_ce: 1
+train_kwargs:
+  default:
+    holdout_frac: 0.0
+    heldout_pool: /vol/pool/glm46vflash_doc/pairs_constv2-heldout.jsonl
+    early_stop_min_epochs: 1
+    early_stop_min_delta: 0.0
+    positions: all
+    probe_n: null
+  psr_ce_all:
+    lr: 0.005315703231773487
+    lr_schedule: warmup_cosine
+    warmup_frac: 0.05
+    max_grad_norm: 89.9335809610221
+    weight_decay: 0.01
+    gate_reg: 0.1
+    accum_steps: 8
+    floor_ratio_max: null
+    ce_floor_ratio_max: 1.1
+  lora_r4_ce:
+    lr: 0.0007600235852672456
+    lr_schedule: warmup_cosine
+    warmup_frac: 0.15
+    max_grad_norm: 0.18392355761471377
+    weight_decay: 0.01
+    lora_rank: 4
+    accum_steps: 8
+    floor_ratio_max: null
+    ce_floor_ratio_max: 1.1
+train_kwargs_by_si:
+  constv2-mix-1k:
+    epochs: 200
+    early_stop_patience: 20
+  constv2-mix-10k:
+    epochs: 120
+    early_stop_patience: 12
+  constv2-mix-100k:
+    epochs: 60
+    early_stop_patience: 6
+  constv2-mix-1m:
+    epochs: 24
+    early_stop_patience: 3
+  constv2ctl-100k:
+    epochs: 60
+    early_stop_patience: 6
+wandb_fits: true
+wandb_project: sdf-base-steering

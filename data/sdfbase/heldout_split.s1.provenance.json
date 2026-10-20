@@ -1,0 +1,51 @@
+{
+ "artifact": "heldout_split.s1.json",
+ "artifact_sha256": "62f227a8add7014b00c494458444a89ebd6f32933074795f26b16bafe9327c2d",
+ "carve": {
+  "eval_salt": "sdfbase-heldout-eval-v1-s1",
+  "frac_override_reason": null,
+  "frac_realized": {
+   "advice": 0.08856765409878245,
+   "stories": 0.08596205571791248
+  },
+  "frac_requested": 0.085,
+  "heldout_records": {
+   "advice": 164,
+   "stories": 1419
+  },
+  "key": "qwen35_4b_base_eb64_s1",
+  "lane_frac": 0.085,
+  "n_pinned_source_ids": 226,
+  "pinned": true,
+  "pinned_groups": {
+   "advice": 17,
+   "stories": 25
+  },
+  "probe_files": [
+   "probe_v2.jsonl",
+   "probe_v3_genre.jsonl"
+  ],
+  "salt": "sdfbase-heldout-v1-s1",
+  "seed": 1,
+  "seed_drawn_groups": {
+   "advice": 13,
+   "stories": 18
+  },
+  "seed_drawn_share_of_heldout": {
+   "advice": 0.4275409659408528,
+   "stories": 0.40695117863796026
+  },
+  "train_side_official_tokens": {
+   "advice": 4583843,
+   "stories": 36610002
+  }
+ },
+ "generator": {
+  "corpus_generator_commit": "f64cfd58dd5792335c17ee90850daf16fac4fa18",
+  "corpus_generator_diff_sha256": null,
+  "corpus_generator_dirty": false,
+  "sisteer_commit": "85bdb1640b01d205dc9d69adbc1f2d8ef223b6fe",
+  "sisteer_diff_sha256": null,
+  "sisteer_dirty": false
+ }
+}

@@ -1,0 +1,242 @@
+{
+ "layer": 12,
+ "model_id": "qwen35_4b_it",
+ "d": 2560,
+ "random_sd": 0.01976423537605237,
+ "reference": {
+  "object_label": "arditi_allpos",
+  "object_id": "a2df64624b36be96c9ca50b36907b132c61382ea81ca3d3841e87c0fe012cff5",
+  "path": "objects/qwen35_4b_it/a2df64624b36be96c9ca50b36907b132c61382ea81ca3d3841e87c0fe012cff5/object.pt",
+  "norm": 0.49357110261917114,
+  "note": "the c = 0.15 rung's stored vector; cosines are against its unit direction (toward refusal)"
+ },
+ "entries": [
+  {
+   "object_label": "control_relu",
+   "seed": "s1",
+   "fit_model_id": "qwen35_4b_base",
+   "object_id": "f65425b851ab446b329fa93631462dd4f31fb16e11955867ef902dffd635c2cd",
+   "path": "objects/qwen35_4b_base/f65425b851ab446b329fa93631462dd4f31fb16e11955867ef902dffd635c2cd/object.pt",
+   "read_vs_ref": 0.006595541723072529,
+   "write_vs_ref": -0.017281457781791687,
+   "read_vs_write": -0.0083986921235919,
+   "read_norm": 3.2794346809387207,
+   "write_norm": 1.6589319705963135,
+   "gate_b": 0.9232023358345032
+  },
+  {
+   "object_label": "control_relu",
+   "seed": "s2",
+   "fit_model_id": "qwen35_4b_base",
+   "object_id": "900fbabb6d56a61f37acf71a28482f8dd843a6f27809f12f09ca38a1328bbecb",
+   "path": "objects/qwen35_4b_base/900fbabb6d56a61f37acf71a28482f8dd843a6f27809f12f09ca38a1328bbecb/object.pt",
+   "read_vs_ref": 0.012902417220175266,
+   "write_vs_ref": -0.022313039749860764,
+   "read_vs_write": -0.01188948005437851,
+   "read_norm": 3.001227617263794,
+   "write_norm": 1.8884960412979126,
+   "gate_b": 0.8886720538139343
+  },
+  {
+   "object_label": "control_relu",
+   "seed": "s3",
+   "fit_model_id": "qwen35_4b_base",
+   "object_id": "c5686c7316b7f79ba31edeea4ecf5d3b237724e399cafb41295478b457471c34",
+   "path": "objects/qwen35_4b_base/c5686c7316b7f79ba31edeea4ecf5d3b237724e399cafb41295478b457471c34/object.pt",
+   "read_vs_ref": 0.01489598210901022,
+   "write_vs_ref": -0.024129662662744522,
+   "read_vs_write": -0.0015688452403992414,
+   "read_norm": 2.3823859691619873,
+   "write_norm": 1.9594393968582153,
+   "gate_b": 0.8730986714363098
+  },
+  {
+   "object_label": "constitution_relu",
+   "seed": "s1",
+   "fit_model_id": "qwen35_4b_base",
+   "object_id": "7b87767d91bd9787d22a23a80a5e78c53d16b506cc25e4d9483f74e88238fda1",
+   "path": "objects/qwen35_4b_base/7b87767d91bd9787d22a23a80a5e78c53d16b506cc25e4d9483f74e88238fda1/object.pt",
+   "read_vs_ref": 0.018152695149183273,
+   "write_vs_ref": -0.016876501962542534,
+   "read_vs_write": 0.00974912941455841,
+   "read_norm": 3.402339458465576,
+   "write_norm": 2.4514317512512207,
+   "gate_b": 0.8677024841308594
+  },
+  {
+   "object_label": "constitution_relu",
+   "seed": "s2",
+   "fit_model_id": "qwen35_4b_base",
+   "object_id": "2d43a58e55e674d3e33c6cbbaf7bb0ad9b06021d308b9e924213acf7c0609fd8",
+   "path": "objects/qwen35_4b_base/2d43a58e55e674d3e33c6cbbaf7bb0ad9b06021d308b9e924213acf7c0609fd8/object.pt",
+   "read_vs_ref": 0.01479390263557434,
+   "write_vs_ref": -0.022516531869769096,
+   "read_vs_write": -0.0030845440924167633,
+   "read_norm": 3.3415815830230713,
+   "write_norm": 2.4303038120269775,
+   "gate_b": 0.8666146993637085
+  },
+  {
+   "object_label": "constitution_relu",
+   "seed": "s3",
+   "fit_model_id": "qwen35_4b_base",
+   "object_id": "cc1ec068380ed8fe51de1e91e8b8fe6b32c95fa9a00bcf381a536007c075bf09",
+   "path": "objects/qwen35_4b_base/cc1ec068380ed8fe51de1e91e8b8fe6b32c95fa9a00bcf381a536007c075bf09/object.pt",
+   "read_vs_ref": 0.01354163233190775,
+   "write_vs_ref": -0.022161565721035004,
+   "read_vs_write": 0.0022656740620732307,
+   "read_norm": 3.5595827102661133,
+   "write_norm": 2.4711954593658447,
+   "gate_b": 0.8629105687141418
+  },
+  {
+   "object_label": "constitution_relu",
+   "seed": "",
+   "fit_model_id": "qwen35_4b_it",
+   "object_id": "0a69aab85e1ead1e3b38d377e197fb03520c5ae7ca1930185ce0990d46bb3482",
+   "path": "$SISTEER_COSINE_INSTRUCT_CONSTITUTION_RELU",
+   "read_vs_ref": 0.016552429646253586,
+   "write_vs_ref": 0.005538098514080048,
+   "read_vs_write": -0.013799845241010189,
+   "read_norm": 2.3029122352600098,
+   "write_norm": 0.8784026503562927,
+   "gate_b": 0.9291215538978577
+  },
+  {
+   "object_label": "safety_relu",
+   "seed": "",
+   "fit_model_id": "qwen35_4b_it",
+   "object_id": "75625f59809498899db9efcd2b19e9ce8c2f95593e7c7c1a109a03e29fe5b5c8",
+   "path": "objects/qwen35_4b_it/75625f59809498899db9efcd2b19e9ce8c2f95593e7c7c1a109a03e29fe5b5c8/object.pt",
+   "read_vs_ref": 0.008902978152036667,
+   "write_vs_ref": 0.04619245603680611,
+   "read_vs_write": -0.027466710656881332,
+   "read_norm": 2.2349305152893066,
+   "write_norm": 0.6627755761146545,
+   "gate_b": 0.9215701222419739
+  }
+ ],
+ "pairs": [
+  {
+   "object_label": "constitution_relu",
+   "seed_a": "s1",
+   "seed_b": "s2",
+   "read": 0.9457821249961853,
+   "write": 0.9671744108200073
+  },
+  {
+   "object_label": "constitution_relu",
+   "seed_a": "s1",
+   "seed_b": "s3",
+   "read": 0.9339756965637207,
+   "write": 0.9564805626869202
+  },
+  {
+   "object_label": "constitution_relu",
+   "seed_a": "s2",
+   "seed_b": "s3",
+   "read": 0.9302735924720764,
+   "write": 0.961374819278717
+  },
+  {
+   "object_label": "control_relu",
+   "seed_a": "s1",
+   "seed_b": "s2",
+   "read": 0.8879909515380859,
+   "write": 0.9197348952293396
+  },
+  {
+   "object_label": "control_relu",
+   "seed_a": "s1",
+   "seed_b": "s3",
+   "read": 0.8660324215888977,
+   "write": 0.8755320906639099
+  },
+  {
+   "object_label": "control_relu",
+   "seed_a": "s2",
+   "seed_b": "s3",
+   "read": 0.9223936200141907,
+   "write": 0.9457874894142151
+  }
+ ],
+ "cross_pairs": [
+  {
+   "object_a": "constitution_relu",
+   "seed_a": "s1",
+   "object_b": "control_relu",
+   "seed_b": "s1",
+   "read": 0.22536812722682953,
+   "write": 0.3480062484741211
+  },
+  {
+   "object_a": "constitution_relu",
+   "seed_a": "s1",
+   "object_b": "control_relu",
+   "seed_b": "s2",
+   "read": 0.22901318967342377,
+   "write": 0.35787296295166016
+  },
+  {
+   "object_a": "constitution_relu",
+   "seed_a": "s1",
+   "object_b": "control_relu",
+   "seed_b": "s3",
+   "read": 0.22744525969028473,
+   "write": 0.32020604610443115
+  },
+  {
+   "object_a": "constitution_relu",
+   "seed_a": "s2",
+   "object_b": "control_relu",
+   "seed_b": "s1",
+   "read": 0.21611705422401428,
+   "write": 0.33603763580322266
+  },
+  {
+   "object_a": "constitution_relu",
+   "seed_a": "s2",
+   "object_b": "control_relu",
+   "seed_b": "s2",
+   "read": 0.2255474328994751,
+   "write": 0.3487885594367981
+  },
+  {
+   "object_a": "constitution_relu",
+   "seed_a": "s2",
+   "object_b": "control_relu",
+   "seed_b": "s3",
+   "read": 0.22140972316265106,
+   "write": 0.31618499755859375
+  },
+  {
+   "object_a": "constitution_relu",
+   "seed_a": "s3",
+   "object_b": "control_relu",
+   "seed_b": "s1",
+   "read": 0.20267532765865326,
+   "write": 0.3346484303474426
+  },
+  {
+   "object_a": "constitution_relu",
+   "seed_a": "s3",
+   "object_b": "control_relu",
+   "seed_b": "s2",
+   "read": 0.2098122537136078,
+   "write": 0.3397945761680603
+  },
+  {
+   "object_a": "constitution_relu",
+   "seed_a": "s3",
+   "object_b": "control_relu",
+   "seed_b": "s3",
+   "read": 0.20201024413108826,
+   "write": 0.2972806990146637
+  }
+ ],
+ "generated_utc": "2026-10-08T17:12:06Z",
+ "script": "paper/notebooks/relu_arditi_cosines.py",
+ "script_sha256": "1c2e402d3f77e83ae072d0e6bd59ea6a599792fe19eb1213274c3046f7f22cff",
+ "git_commit": "67e31149e86047cb33ac767900f546a5ccb008d6",
+ "torch": "2.11.0+cpu"
+}

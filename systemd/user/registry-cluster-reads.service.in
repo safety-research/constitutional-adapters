@@ -1,0 +1,40 @@
+# registry-cluster-reads.service — results registry. Rendered for the site and installed
+# into ~/.config/systemd/user/ by the registry installer. REPLACES registry-adapters.service (retired: the grading host reads no store; the window stops and
+# uninstalls the retired unit).
+# The periodic cluster read, one TICK every 10 min (`registry cluster-reads tick`): the reservation first ($REGISTRY_LANDING_STATE/reads/
+# reservation.json, O_EXCL -- a holder exists: the tick yields, exit 0), reconcile every reads-*/attest-* job of this user with the op records
+# (an outstanding job with no live owner is cancelled and confirmed terminal before anything is submitted), ONE ssh batch over every
+# component's `current` + PUBLISHED record, the CHANGED SET (a pin moved since the adapter's last whole receipt, its module blob changed at the
+# base tree, or no receipt) -> nothing changed: exit 0 in seconds; else reader-state export of the changed adapters, plan, stage, attestation
+# job + read array on the primary cluster (QoS high, CPU only; positional arguments, never --export), watch-job.sh in the foreground, revalidate, pull,
+# inbox-merge, the receipt (reads/receipts/<op>.json -- the status page's clock reads published_utc / change_utc from it), release.
+# Secret-free: no credential; ssh to the cluster goes through the agent socket; the cluster gets none.
+# Bounded: Type=oneshot with TimeoutStartSec (the watch bound is the array's walltime + 15 min = 40 min; the export, plan, stage and the
+# attestation's queue wait precede it, so the unit outlasts the bound by ten minutes -- a tick cut by the unit releases its reservation on
+# SIGTERM, exit 25, and the next tick's reconcile cancels or pulls what it left); Restart=no (the timer is the only re-fire: a restart would
+# re-run a submission); a start-rate limit sized to ~2x the cadence. Exit 20 (cancelled by a landing window's takeover:
+# the window cancels the array by id, confirms it terminal, takes the reservation) is a SUCCESS for the unit, not a failure to count.
+# Locks: none of the registry's own write locks (the pull writes the inbox and record files the harvester folds; never harvester.lock).
+[Unit]
+Description=Results registry: the periodic cluster read -- every store `current` probed in one batch, the changed adapters read on the primary cluster
+After=network-online.target
+StartLimitIntervalSec=1h
+StartLimitBurst=12
+
+[Service]
+Type=oneshot
+Nice=10
+IOSchedulingClass=best-effort
+IOSchedulingPriority=6
+Environment=PYTHONPATH=@REPO@/src
+Environment=REGISTRY_ROOT=@REGISTRY_ROOT@
+Environment=PYTHONUNBUFFERED=1
+Environment=SSH_AUTH_SOCK=%h/.ssh/agent.sock
+Environment=REGISTRY_LANDING_STATE=%h/.local/state/registry-landing
+ExecStart=@PYTHON@ -m sisteer.registry.cli cluster-reads tick
+Restart=no
+TimeoutStartSec=50min
+SyslogIdentifier=registry-cluster-reads
+StandardOutput=journal
+StandardError=journal
+SuccessExitStatus=20

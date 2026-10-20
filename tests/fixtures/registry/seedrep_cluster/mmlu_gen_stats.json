@@ -1,0 +1,17 @@
+{
+ "mmlu": {
+  "acc": 0.3333333333333333,
+  "n": 3,
+  "top_logprobs": 64,
+  "response_prefill": false,
+  "censored_items": 1,
+  "censored_letter_counts": {
+   "B": 1
+  },
+  "wall_clock_s": 2.7,
+  "sampled_decode_applies": false,
+  "sampled_decode_note": "teacher-forced letter-logprob argmax over top_logprobs: one greedy token at temperature 0",
+  "client_timeout_s": 7200.0,
+  "client_timeout_source": "scripts/served_capability_run.py:AIOHTTP_TOTAL_TIMEOUT_S"
+ }
+}

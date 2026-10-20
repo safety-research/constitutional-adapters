@@ -1,0 +1,50 @@
+{
+ "artifact": "ctl2_heldout_split.s1.json",
+ "artifact_sha256": "a1579aafd1fce37144c34ee62dd1ccf4da25213f9815a737ab4190474514c4b2",
+ "carve": {
+  "eval_salt": "sdfbase-heldout-eval-v1-s1",
+  "frac_realized": {
+   "advice": 0.051430648414543,
+   "stories": 0.050524198388797174
+  },
+  "frac_requested": 0.05,
+  "heldout_records": {
+   "advice": 104,
+   "stories": 837
+  },
+  "n_pinned_source_ids": 0,
+  "pinned": false,
+  "pinned_groups": {
+   "advice": 0,
+   "stories": 0
+  },
+  "probe_files": [],
+  "salt": "sdfbase-heldout-v1-s1",
+  "seed_drawn_groups": {
+   "advice": 0,
+   "stories": 0
+  },
+  "seed_drawn_share_of_heldout": {
+   "advice": null,
+   "stories": null
+  },
+  "train_side_official_tokens": {
+   "advice": 4632291,
+   "stories": 38875285
+  }
+ },
+ "corpus": "control-scale-20260903-r2",
+ "corpus_shas": {
+  "control_advice": "ba89cf60175f54347022df63d89214983855b5f726a8ea16427ba3797a3abae7",
+  "control_stories": "915129b2b89eb00bda0a0ca13923708d6bb7cff3b4332d67f69c073555ab6dad"
+ },
+ "generator": {
+  "corpus_generator_commit": "f64cfd58dd5792335c17ee90850daf16fac4fa18",
+  "corpus_generator_diff_sha256": null,
+  "corpus_generator_dirty": false,
+  "sisteer_commit": "85bdb1640b01d205dc9d69adbc1f2d8ef223b6fe",
+  "sisteer_diff_sha256": null,
+  "sisteer_dirty": false
+ },
+ "release_bytes_pinned": true
+}

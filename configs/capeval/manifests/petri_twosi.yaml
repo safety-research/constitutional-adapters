@@ -1,0 +1,212 @@
+# Petri Bloom two-SI misalignment audit — the 23-cell manifest
+# (22 original cells + prompted__irrelevant, the off-target control SI,
+#  added 2026-08-28 — see the note at that cell)
+# Loaded by sisteer.capeval.manifest.load_petri_spec.
+#
+# The 22 canonical DefenseCell ids follow the registry contract documented
+# in src/sisteer/capeval/petri/defense_cells.py — a mismatch with the LANDED
+# registry is a loud refusal at rebase time (R5), never a silent skip.
+# Path-matched no-op control legs (none__lens0, none__lora0) are DERIVED
+# by defense_cells.enumerate_cells and are never listed here —
+# 22 cells -> ~24 served legs. A kind the proxy cannot serve is a §10
+# gate FAILURE that blocks the audit, never an HF-shim fallback leg.
+#
+# UNFROZEN sentinels: legal at LOAD (this manifest is committed before the
+# scenario bundle / serving pins / SI texts freeze), REFUSED at hash time —
+# no run can ever be keyed on an unfrozen input. They freeze, in order:
+#   scenario_bundle_hash        — by the one `bloom scenarios` pass
+#   prompted_prefix_hashes.*    — at the two-SI rebase (SAFETY_SI /
+#                                 CONSTITUTION_SI exact bytes)
+#   chat_template_hash          — FROZEN 2026-08-19 from the pinned
+#                                 tokenizer revision (serving bring-up)
+#   serving_impl_commit         — the landed serving-implementation commit
+#
+# MULTI-TURN SERVING (2026-09-02: the Petri lineage merged onto main, then
+# the declared agent-loop path landed the same day). The 2026-08-30
+# unconditional last-occurrence response locator (petrimask, fc42ccb) was
+# superseded at the merge by main's declared-only boundary policy (f352d5e:
+# petri_response_prefill, keyed on continue_final_message — which agent-loop
+# traffic does not set), so agent-loop renders REFUSED at the adapter
+# (contained per-request, surfaced as proxy 500s). They serve again through a
+# SECOND declaration in the same idiom — petri_agent_loop: proxy-verified
+# against the message structure AND the render (header present, prompt not
+# ending at it) -> selector fact agent_loop -> HookContext.agent_loop -> the
+# adapter's declared arm (last header occurrence). Petri's own client cannot
+# set it, so the AUDIT PROXY must run with the Petri-facing entry armed:
+#   python -m sisteer.capeval.serving.proxy ... --tokenizer <served tokenizer>
+#     --tokenizer-revision <pin> --petri-agent-loop
+# The declared mask covers header + assistant tool call + tool-response
+# syntax and body + generated (the completed gemma-E4B audit's regime, kept
+# for comparability); undeclared non-tail renders still refuse, contained.
+# tests/test_gemma4_petri_multiturn_boundary.py pins both directions on the
+# three real shapes. Completed audits reproduce at their frozen
+# serving_impl_commit regardless.
+petri:
+  audit: petri_twosi
+  behaviors:
+    - cyber_bio_chem_capabilities
+    - self_preservation            # agent modality (tool use)
+    - delusion_sycophancy
+    - defer_to_users
+    - reasoning_unfaithfulness
+    - instruction_evasion
+  cells:
+    - none                          # undefended base (passthrough leg; §8 elicitability screen)
+    - prompted__safety              # base + verified SAFETY_SI prefix (distinct vmodel, H8)
+    - prompted__constitution        # base + verified CONSTITUTION_SI prefix
+    # prompted__irrelevant (added 2026-08-28): the OFF-TARGET CONTROL SI
+    # (the registry's si_irrelevant — length-matched task-irrelevant text)
+    # joins the audit so the control is compared on the SAME engine as
+    # everything else. Previously outside the vocabulary on purpose; this
+    # is the deliberate widening, not an oversight. NOTE the committed
+    # manifest still carries UNFROZEN sentinels (scenario_bundle_hash,
+    # serving_impl_commit), so no petri_run_key was ever derivable from
+    # this file — the cells/hash additions strand nothing.
+    - prompted__irrelevant          # base + verified IRRELEVANT_SI prefix (control)
+    # Class A — 8 prompt-compiling methods x 2 SIs (two-SI spec):
+    - si_safety__psr_kl_all
+    - si_constitution__psr_kl_all
+    - si_safety__psr_mse_all
+    - si_constitution__psr_mse_all
+    - si_safety__vector_all
+    - si_constitution__vector_all
+    - si_safety__lora_r1
+    - si_constitution__lora_r1
+    - si_safety__loreft
+    - si_constitution__loreft
+    - si_safety__lofit
+    - si_constitution__lofit
+    - si_safety__token_bos
+    - si_constitution__token_bos
+    - si_safety__cast
+    - si_constitution__cast
+    # Class B — SI-agnostic baselines, fit once (never folded into the SI
+    # contrast). These ARE defense_cells.CLASS_B_IDS, the one Class B tuple
+    # (E45 H2), which configs/two_si.yaml's class_b_arms has named since
+    # 2026-08-21. circuit_breaker left the list with that landing: it left
+    # methods.ARMS on 2026-08-20, so the registry builds no cell for it and
+    # naming it here made this manifest unloadable.
+    - antidote
+    - alphasteer
+    - caa_static_r
+  # Frozen scenario bundle content hash: sha256_hex16 over
+  # scenarios/seeds/ + scenarios/dimensions/ of the ONE frozen generation
+  # pass; the durable bundle lives on cluster A's shared storage (0700) —
+  # see configs/capeval/petri-scenarios.lock.yaml.
+  scenario_bundle_hash: 8812ba083bb5473c   # FROZEN at launch: sha256_hex16 of the uniform opus-4-8 bundle (6 behaviors x 10 seeds); durable 0700 $SHARED/petri/scenarios/8812ba083bb5473c
+  # Role models: the "-5"-generation
+  # inspect_ai model strings must be confirmed to resolve before launch
+  # (docs show the -4-6 generation); pin the real ids then.
+  auditor_model: anthropic/claude-sonnet-5
+  auditor_fallback_models:
+    - openrouter/x-ai/grok-4.6
+  judge_model: anthropic/claude-opus-5
+  scenarios_model: anthropic/claude-opus-4-8   # uniform bundle authored on opus-4-8 (sonnet-5 could not reliably produce all 6 via petri_bloom 0.2.6). Harness-hash input.
+  # Auditor/judge prompts ship inside the pinned packages and are NOT
+  # locally overridden: package-pinned provenance. Any local
+  # override switches this to override@<16-hex bytes hash> — either way an
+  # auditor/judge prompt edit re-keys every cell's petri_run_key.
+  # override@ pins the EXACT auditor/judge prompt bytes. The bytes are
+  # VERBATIM petri-bloom 0.2.6 content (see commit message); override@
+  # is used only because 0.2.6 ships them as Python constants, not files,
+  # so package-pinned@'s file glob resolves to nothing. Hash input.
+  prompt_provenance: override@c7fb238c0b17a812
+  # WHICH OBJECT GENERATION THIS PIN MATCHES (dated marker, 2026-08-21).
+  # REPOINTED to NousResearch: the Class A re-pool is already generated on
+  # that pin (configs/two_si.yaml pins NousResearch @ d10aef79; 539,572 rows
+  # / 49,052 prompts, mid-grading), so every object this audit will serve is
+  # GEN-2 / NousResearch-TRAINED and this pin matches it. Both values
+  # verified locally: the cached snapshot
+  # d10aef7999a2b5ba950ab3974312feeedbfe0b77 hashes to b48c47f644389271
+  # (348-char template, vs meta-llama's 4,614).
+  #
+  # The split is TEMPORAL: the 25 GEN-1 cells fitted 2026-08-19/20 are
+  # meta-llama-trained, and the SAME cell id will exist in both versions.
+  # This audit does NOT serve GEN-1 (the BoN-only objects are not audited),
+  # so a single pin is correct here — but anything that ever co-serves both
+  # generations needs per-object template resolution plus a cross-template
+  # pairing refusal, never one pin. Under the going-forward rule
+  # (2026-08-20, guard docstring at models.py:84 on
+  # origin/attack-generalization) meta-llama is grandfathered for
+  # already-completed runs only.
+  target_model: NousResearch/Meta-Llama-3.1-8B-Instruct
+  target_revision: d10aef7999a2b5ba950ab3974312feeedbfe0b77  # two-SI GEN-2 pin
+  serving_backend: proxy_vllm     # committed production primary (B1) — the loader refuses anything else
+  # EXACT_REPLAY DROPPED. Its live
+  # strategy, batch_invariant (VLLM_BATCH_INVARIANT=1; serialize means
+  # max_num_seqs=1), costs 2.97x on the measured ladder — the largest
+  # single term by far (enforce_eager 1.14x, prefix cache 1.33x) — and
+  # on H200/SM90 it delivers only SAME-SIZE composition invariance,
+  # never batch-size-1-versus-N (petri_steered_smoke, SAME-SIZE
+  # REFERENCES; job 173152), while an audit's live batch size
+  # fluctuates continuously. WHAT IS LOST, knowingly: re-running this
+  # audit will NOT reproduce its transcripts bit-for-bit — outputs may
+  # vary with batch composition. What the gate still certifies at this
+  # mode and the production geometry: repeat-determinism, scale-0
+  # no-op, steering-bites per arm, and direct selection routing.
+  # Composition invariance is measured and reported (bi1_probe) but no
+  # longer claimed or gated anywhere.
+  serving_mode: interleaved       # production audit pinned to the gate-certified mode (§3 H5)
+  serving_packages:               # the serving-venv pins (configs/capeval/vllm-requirements.txt)
+    vllm: 0.25.1+cu129
+    vllm-lens: 1.2.1
+    torch: 2.11.0+cu129
+  serving_launch_flags:           # plan-committed vllm serve flags; Phase-2 vllm_server.py finalizes
+    - --enable-lora
+    - --enforce-eager             # vllm-lens forces eager process-wide
+    # prefix caching is now composed ON by default (SETTLED 2026-08-25:
+    # vLLM keys KV blocks on token ids + cache_salt, never the steering
+    # selector; the proxy salts every request per cell, request-unique on
+    # lens legs, and Phase-0 assertion 7 proves the isolation on
+    # hardware). The flag is wrapper-owned in BOTH spellings — a manifest
+    # must not name it; build_server_launch's prefix_caching parameter is
+    # the one switch.
+  # RE-FROZEN 2026-08-21 for the GEN-2 (NousResearch) pin, verified locally.
+  # sha256_hex16 over the pinned
+  # tokenizer's chat_template string bytes (utf-8) — tokenizer_config.json's
+  # chat_template at target_revision, verified byte-identical to
+  # AutoTokenizer.from_pretrained(target_model, revision=target_revision)
+  # .chat_template (4,614 chars). build_server_launch hashes the exact bytes
+  # of the --chat-template file against this, so the launcher must write
+  # PRECISELY those bytes (no trailing newline).
+  chat_template_hash: b48c47f644389271
+  # vLLM's Llama-3.1 tool-call parser — the AGENT modality's per-model pin
+  # (build_server_launch composes it only under tool_calls=True; the
+  # real-agent smoke verifies it live, H11). Generation-only launches (JB
+  # families, benign battery, gate canaries) compose NO parser: vLLM
+  # instantiates it per chat request, so a parser that doesn't fit the
+  # served tokenizer is a late per-request 500 (job 232411: llama3_json
+  # on gemma-4, whose tokenizer has no <|python_tag|>). A gemma-4 agent
+  # manifest would pin `gemma4` here (shipped by the pinned vLLM 0.25.1;
+  # verified to initialize against the pinned gemma-4-E4B-it tokenizer).
+  tool_parser: llama3_json
+  serving_impl_commit: 83cd9ee1b29f7511024b8c06a27627f5595b0a31   # FROZEN: the landed serving-implementation commit (pt829-eval HEAD); serving/*.py byte-identical in the launch commit.
+  prompted_prefix_hashes:         # sha256_hex16 over the EXACT SI text bytes; the proxy verifies per request (H8)
+    # FROZEN at the two-SI merge, computed from the landed bytes on this branch:
+    # safety = data.instructions.SAFETY_SI.text; constitution =
+    # data.safety_texts.CONSTITUTION_PROMPT (the `si_constitution` Instruction,
+    # 30,952 chars). If either SI's bytes change, enumeration refuses here
+    # rather than auditing a prompt nobody pinned.
+    safety: ac3a58f61d53cf24
+    constitution: 21e06f482a6559b3
+    # irrelevant = sha256_hex16 over data.instructions `si_irrelevant`.text
+    # (= safety_texts.IRRELEVANT_PROMPT, the stage-3 length-matched control,
+    # 30,407 chars / 4,930 words), computed from the landed bytes on this
+    # branch (2026-08-28). The wave launchers replace() cells but KEEP this
+    # mapping, so the served prompted__irrelevant leg verifies against it
+    # per request (H8).
+    irrelevant: 71ff67aa2bc000f1
+  # bloom_audit task options + evaluation epochs/seed — canonical,
+  # manifest-owned harness-hash inputs: editing ANY of them
+  # re-keys harness_config_hash -> petri_run_key, so no stale sample can be
+  # resumed under an edited audit configuration. The runner passes exactly
+  # these values into eval_set and stamps/verifies them in every .eval log.
+  bloom_options:
+    max_turns: 15                 # auditor turn budget per scenario (Petri's bloom_audit default; 40 was an unjustified ~4x of the API budget)
+    enable_prefill: false         # pinned OFF
+    enable_rollback: false
+    compaction: false
+    realism_filter: false
+    epochs: 1                     # v1 default (spec assumption High): ~10 scenarios x 1 epoch
+    seed: 0                       # the ONE audit-wide evaluation seed
+

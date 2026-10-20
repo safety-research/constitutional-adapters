@@ -1,0 +1,15 @@
+{
+  "round": 6,
+  "note": "THE recipe: winner of the r5 full-pool confirms (t00 \u2014 final heldout 0.0021002 vs 0.00229/0.00242/0.00242, ordering stable epochs 3-6, no early stop). lr/clip sit at round-4's low box edge \u2014 a future sweep could probe lower; within the tested family this is the optimum. bs 16, warmup 10%, warmup_cosine.",
+  "box": null,
+  "sobol_m": null,
+  "trials": [
+    {
+      "index": 0,
+      "src": "r5_t00 winner",
+      "lr": 0.0002,
+      "warmup_frac": 0.1,
+      "max_grad_norm": 0.08
+    }
+  ]
+}

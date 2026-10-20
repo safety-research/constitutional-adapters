@@ -1,0 +1,9 @@
+{
+ "attacker_engine": "vllm",
+ "attacker_endpoint": "http://node-30:8352",
+ "attacker_model": "huihui-ai/Huihui-Qwen3.6-27B-abliterated",
+ "attacker_snapshot": "2222222222222222222222222222222222222222",
+ "attacker_quantization": "none",
+ "attacker_prefix_caching": true,
+ "attacker_vllm_version": "0.25.1"
+}

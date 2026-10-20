@@ -1,0 +1,49 @@
+{
+  "_comment": [
+    "LANE-OWNED pins of the qwen-seedrep-native-battery lane (W3, launch F-B): the S5 multi-turn window probe's two LoRA-difference dose children",
+    "keyed by STAGED id the way the shared configs/sdfbase_full22_pins.json is; read as --peer-pins by scripts/modal/seedrep_launch_plan.py",
+    "beside configs/sdfbase_full22_roster_seedrep_probe_eb64_s1.yaml, and as --pins by make_bank_view.py (string form: object.pt under",
+    "<lane bank>/cells/<staged id> re-hashed EQUAL to object_sha256).",
+    "WHY A PRIVATE FILE: a peer lane's stager precheck is record-set equality on the shared pins file; nothing is appended to any shared surface.",
+    "Parent: derived_base64s1__constv2-mix-full__lora_r4_ce_minus_ctl (the lane's admitted LoRA difference, sha 0d275f7c76cb...); each child is",
+    "the parent's write bases B_pos / B_neg x dose per layer (scripts/sdfbase/scale_lora_dose.py; derived_meta.json records the verification).",
+    "object_sha256 = sha256(object.pt) measured on the grading host lane bank 2026-09-18 ($STAGE/sdfbase/full22_objects/qwen35_4b/cells/<staged id>/object.pt),",
+    "EQUAL to the shas the strength lane reported (lp.S5_PROBE_CELLS / lp.DOSE_CHILD_SHA; the plan refuses a disagreeing pin)."
+  ],
+  "qwen35_4b": {
+    "d1p5_eb64s1__constv2-mix-full__lora_r4_ce_minus_ctl": {
+      "object_sha256": "86fa8e9c0523bb54e0fbd625796934f400a1c70ebb077e3c24dad667d46a46be",
+      "kind": "lora_subtraction",
+      "identity_sidecar": "derived_meta.json",
+      "sidecar_object_sha256_recorded": "match",
+      "source": "$STAGE/sdfbase/full22_objects/qwen35_4b/cells/d1p5_eb64s1__constv2-mix-full__lora_r4_ce_minus_ctl",
+      "bank": "sdfbase/full22 (the lane's Modal stage bank)",
+      "probe_view": "d1p5_lora",
+      "dose": 1.5,
+      "dose_unit": "lora_write_basis_multiplier",
+      "parent_staged_id": "derived_base64s1__constv2-mix-full__lora_r4_ce_minus_ctl",
+      "parent_object_sha256": "0d275f7c76cbe63eacaec6b63c0976ac516cff039729029ee5b09b60f3d689c9",
+      "role": "the stressing end (hardest-refusing; Crescendo backtracks buy the most turns)",
+      "verified_grading_host_bank": "2026-09-18 sha256sum",
+      "verified_cluster_a": false,
+      "verified_cluster_b": false
+    },
+    "dm0p5_eb64s1__constv2-mix-full__lora_r4_ce_minus_ctl": {
+      "object_sha256": "0522a255ab45d57e085f07aea802dbd671072aee68cad627251440396135f0fc",
+      "kind": "lora_subtraction",
+      "identity_sidecar": "derived_meta.json",
+      "sidecar_object_sha256_recorded": "match",
+      "source": "$STAGE/sdfbase/full22_objects/qwen35_4b/cells/dm0p5_eb64s1__constv2-mix-full__lora_r4_ce_minus_ctl",
+      "bank": "sdfbase/full22 (the lane's Modal stage bank)",
+      "probe_view": "dm0p5_lora",
+      "dose": -0.5,
+      "dose_unit": "lora_write_basis_multiplier",
+      "parent_staged_id": "derived_base64s1__constv2-mix-full__lora_r4_ce_minus_ctl",
+      "parent_object_sha256": "0d275f7c76cbe63eacaec6b63c0976ac516cff039729029ee5b09b60f3d689c9",
+      "role": "the other end (terminates earlier); the pair gives the direction of the dose effect on context length",
+      "verified_grading_host_bank": "2026-09-18 sha256sum",
+      "verified_cluster_a": false,
+      "verified_cluster_b": false
+    }
+  }
+}

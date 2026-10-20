@@ -1,0 +1,24 @@
+# The vLLM serving stack's NEMOTRON KERNEL OVERLAY. The fused Mamba kernels are required before Nemotron's first job: a
+# slow pure-torch SSM path still reads as a healthy job.
+#
+# Installed ON TOP of configs/capeval/vllm-requirements.txt (which this overlay leaves untouched, so the base venv is
+# never rebuilt) into a SEPARATE venv named after the sha256 of base + overlay, by
+# scripts/sdfbase/full22/common.sh f22_serving_venv nemotron:
+#
+#   uv pip install ... -r configs/capeval/vllm-requirements.txt            # the base, as always
+#   CAUSAL_CONV1D_FORCE_BUILD=TRUE MAMBA_FORCE_BUILD=TRUE \
+#     uv pip install --no-build-isolation --no-deps -r configs/capeval/vllm-requirements-nemotron.txt
+#
+# A SOURCE build against the venv's own torch (2.11.0+cu129: no wheel exists for either package at this torch), so build
+# isolation must be off and nvcc must be present (CUDA_HOME, TORCH_CUDA_ARCH_LIST 9.0;10.0, the fit env's recipe in
+# scripts/sbatch/sdfbase_fit_env.sbatch). --no-deps because mamba-ssm's Mamba3-only tilelang/tvm chain is not needed for
+# NemotronH's Mamba2 fast path and would drag unpinned packages in. Both releases are the fit env's pins (mamba_ssm
+# 2.3.2.post1, causal_conv1d 1.6.2.post1), each more than a week old when pinned.
+#
+# vLLM 0.25.1 ships its OWN fused Mamba2 kernels (vllm/model_executor/layers/mamba/ops/*, Triton) and may not import these
+# packages at all. Then they are inert for SERVING, and the backend attestation
+# (scripts/sdfbase/math500/nemo_backend_probe.py: the resolved dispatch of the served NemotronH model and the measured SM
+# duty) is what shows the fused path is in use. Either way the decision is made from the attested backend and the measured
+# duty BEFORE any Nemotron smoke run, never from a missed walltime.
+causal-conv1d==1.6.2.post1
+mamba-ssm==2.3.2.post1

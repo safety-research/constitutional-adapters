@@ -1,0 +1,38 @@
+# registry-store-mirror-full.service — results registry. Rendered for the site and installed into ~/.config/systemd/user/ by the registry installer.
+# The WEEKLY full verify of the store mirror: `stores mirror --full` toward the primary cluster runs the reversed mirror for every component with the
+# grading host's side hashed in full (the stat cache IGNORED: every file read, the cache refreshed) and every published generation whose two sides
+# agree RE-HASHED on the cluster by the pinned verifier (store_verify.sbatch verify, a CPU-only Slurm job at `high`, watched in the foreground;
+# the report under $SHARED/registry/stores/full/<slug>/, the live VERIFIED-<sha8>.json never rewritten). A mismatch is `full_verify_failed`:
+# named in the journal and on the status page, nothing renamed, `current` untouched -- the operator decides. The 30-min
+# registry-store-mirror.service verifies through the stat cache and the live reports between these.
+# Secret-free: the registry needs no credential; ssh to the cluster goes through the agent socket and the cluster gets none.
+# Bounded: Type=oneshot with TimeoutStartSec (a full read of ~190 GB on the grading host at idle I/O priority plus one verify job per published
+# generation, queue wait included, padded, plus the hour this run may wait for the mirror lock below); Restart=on-failure with a 1 h
+# RestartSec under a 2-per-day start limit, so a transient ssh or queue failure gets ONE retry and a persistent one trips the limit (visible
+# in the journal and on the status page) instead of looping or waiting a week -- the retry re-reads through the refreshed cache and
+# re-submits only what did not complete (every step is idempotent by generation). Locks: only its own (<root>/state/store_mirror.lock,
+# shared with the 30-min tick) — never the harvester's write lock, never the paper builder's. The two units serialize on THAT lock and
+# nothing else: this run WAITS up to an hour for a tick that holds it (--lock-wait-s 3600; exit 3 after a vain wait, which
+# Restart=on-failure retries), and a tick that finds this run holding it exits 0 at once. No Conflicts= with the tick: a systemd conflict
+# would let the tick's timer start STOP this run mid-verify, its Slurm verify job left running without its foreground watcher.
+[Unit]
+Description=Results registry: weekly FULL verify of the store mirror (every grading-host file read, every published generation re-hashed on the cluster)
+After=network-online.target
+StartLimitIntervalSec=1d
+StartLimitBurst=2
+
+[Service]
+Type=oneshot
+Nice=10
+IOSchedulingClass=idle
+Environment=PYTHONPATH=@REPO@/src
+Environment=REGISTRY_ROOT=@REGISTRY_ROOT@
+Environment=PYTHONUNBUFFERED=1
+Environment=SSH_AUTH_SOCK=%h/.ssh/agent.sock
+ExecStart=@PYTHON@ -m sisteer.registry.cli stores mirror --dest @STORE_DEST@ --full --lock-wait-s 3600
+Restart=on-failure
+RestartSec=1h
+TimeoutStartSec=9h
+SyslogIdentifier=registry-store-mirror-full
+StandardOutput=journal
+StandardError=journal

@@ -1,0 +1,11 @@
+{
+  "mmlu": {
+    "acc": 0.5,
+    "n": 2,
+    "top_logprobs": 64,
+    "response_prefill": true,
+    "censored_items": 0,
+    "censored_letter_counts": {},
+    "wall_clock_s": 0.012294292449951172
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "files": {
+    "configs/arditi_allpos_qwen35_4b_ar_c0p3.yaml": {
+      "lane_copy": "configs/seedrep/arditi_allpos_qwen35_4b_ar_c0p3_seedrep.yaml",
+      "sha256": "1c5d8b33ef355bdf2d37acf5c171686f8527eedbeb1c224eff313a7ce54c5fb6"
+    },
+    "configs/arditi_allpos_qwen35_4b_ar_c0p3_sampled_t0.yaml": {
+      "lane_copy": null,
+      "sha256": "e6a7da072adde67f9b531fc53520fe701bb6ea2b558b9075ad0b3891c34c3842"
+    },
+    "configs/capeval/manifests/arditi_allpos_qwen35_4b_ar_c0p3.yaml": {
+      "lane_copy": "configs/seedrep/arditi_allpos_qwen35_4b_ar_c0p3_seedrep_manifest.yaml",
+      "sha256": "6898b5bae7f6d7db9fe966ff53854b35e1a6c75e745ee56f39947915328881df"
+    }
+  },
+  "generator": "scripts/sdfbase/seedrep/render_arditi_seedrep_configs.py",
+  "min_source_sha": "0f3576f38ef739b986fe9a3ea379ae86e3081beb",
+  "refreshed_utc": "2026-09-17T23:09:53Z",
+  "source_branch_hint": "origin/allpos-orbench (Scale; read-only)",
+  "source_sha": "0f3576f38ef739b986fe9a3ea379ae86e3081beb"
+}

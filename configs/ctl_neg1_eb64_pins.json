@@ -1,0 +1,89 @@
+{
+ "_comment": [
+  "Lane-private pins for ctl-neg1: the batch-64 SEED-REPLICATE CONTROL parents at strength -1 --",
+  "base64s<k>__constv2ctl2-full__{lora_r4_ce,psr_ce_all} (configs/sdfbase_full22_pins.json) with the write",
+  "tensor scaled x-1 (scale_lora_dose.py: B; scale_psr_dose.py: the direction d, gate byte-identical), one",
+  "child per (fit seed k in 1..3, class), served on qwen35_4b as the dose views dm1_ctllora64s<k> / dm1_ctlrelu64s<k>.",
+  "",
+  "WHY A PRIVATE FILE rather than entries in configs/sdfbase_full22_pins.json: a peer lane's stager precheck is",
+  "record-set equality on that file (the multi-turn strength wave rule), so nothing here is appended to any shared",
+  "surface -- not the production pins, not _records/, not staging_manifest.json. The roster that consumes these",
+  "pins is configs/sdfbase_full22_roster_ctl_neg1_eb64.yaml, selected by the F22_ROSTER override, through the",
+  "cross-bank pin form {pins, pin} (the one form that reads another pins authority: make_bank_view.plan_pin_entry,",
+  "mt_serving_up._pin_form_sha).",
+  "",
+  "KEYED BY EFFECTIVE BATCH AND SEED: the staged ids carry eb64s<k> because the CELL id is the production s<k>",
+  "views' (a dose lives in the VIEW and the staged object, never in the cell id) and the batch-8 dm1__ children of",
+  "the same cells already exist in the production pins.",
+  "",
+  "`source` is spelled RELATIVE to exp/objects and `bank` is its first component (make_bank_view.objects_root_of /",
+  "plan_pin_entry). The builder resolves the staged copy at",
+  "<objects root>/ctl_neg1_eb64/qwen35_4b/cells/<staged_id> and requires this `source` view path to exist and",
+  "resolve to that same directory.",
+  "",
+  "served_layer: the LoRA children are lora_all objects at the 8 stored layers [3, 7, 11, 15, 19, 23, 27, 31] (site",
+  "o_proj_out, served == stored), so 3 is the first served block, recorded as the deterministic representative the",
+  "builder holds by membership; the PSR children are all-layer psr objects (32 stored layers, resid_post), so 0.",
+  "",
+  "Each child re-hashed from its object.pt on the grading host bank ($STAGE/sdfbase/ctl_neg1_eb64/qwen35_4b) at",
+  "pin-writing time and held equal to train_budget_meta.json's object_sha256 and staged_from.json's; the parents'",
+  "shas are the production pins' (s1 LoRA 000e0df5..., s1 PSR f65425b8..., recorded in each child's",
+  "object.pt.provenance.json and train_budget_meta.json dose_scaled_from)."
+ ],
+ "qwen35_4b": {
+  "dm1_eb64s1__constv2ctl2-full__lora_r4_ce": {
+   "object_sha256": "992b69796f65f9c17fb22fd1c15dce173e24a1e0aa34000df6bbda9bcdfa48a4",
+   "kind": "lora_all",
+   "source": "ctl_neg1_eb64/qwen35_4b/cells_view/dm1_ctllora64s1/constv2ctl2-full__lora_r4_ce",
+   "identity_sidecar": "train_budget_meta.json",
+   "bank": "ctl_neg1_eb64",
+   "staged_id": "dm1_eb64s1__constv2ctl2-full__lora_r4_ce",
+   "served_layer": 3
+  },
+  "dm1_eb64s1__constv2ctl2-full__psr_ce_all": {
+   "object_sha256": "54df102e494780f43109b2ae39c0a4a3a887873bd6e28adf1f307ae955d36c11",
+   "kind": "psr",
+   "source": "ctl_neg1_eb64/qwen35_4b/cells_view/dm1_ctlrelu64s1/constv2ctl2-full__psr_ce_all",
+   "identity_sidecar": "train_budget_meta.json",
+   "bank": "ctl_neg1_eb64",
+   "staged_id": "dm1_eb64s1__constv2ctl2-full__psr_ce_all",
+   "served_layer": 0
+  },
+  "dm1_eb64s2__constv2ctl2-full__lora_r4_ce": {
+   "object_sha256": "53d5e1c74ad9f168902d4448f33d35dcfbefb0b95986fa726a4909d20167dee8",
+   "kind": "lora_all",
+   "source": "ctl_neg1_eb64/qwen35_4b/cells_view/dm1_ctllora64s2/constv2ctl2-full__lora_r4_ce",
+   "identity_sidecar": "train_budget_meta.json",
+   "bank": "ctl_neg1_eb64",
+   "staged_id": "dm1_eb64s2__constv2ctl2-full__lora_r4_ce",
+   "served_layer": 3
+  },
+  "dm1_eb64s2__constv2ctl2-full__psr_ce_all": {
+   "object_sha256": "e0e5101c27cf201c84ba2a087c4babcd201a922ca5389aee63cae37385beaed8",
+   "kind": "psr",
+   "source": "ctl_neg1_eb64/qwen35_4b/cells_view/dm1_ctlrelu64s2/constv2ctl2-full__psr_ce_all",
+   "identity_sidecar": "train_budget_meta.json",
+   "bank": "ctl_neg1_eb64",
+   "staged_id": "dm1_eb64s2__constv2ctl2-full__psr_ce_all",
+   "served_layer": 0
+  },
+  "dm1_eb64s3__constv2ctl2-full__lora_r4_ce": {
+   "object_sha256": "8b30616430c646dbb5645d83647a7cb7aebd2795db1eda48d8188f1127d6f7db",
+   "kind": "lora_all",
+   "source": "ctl_neg1_eb64/qwen35_4b/cells_view/dm1_ctllora64s3/constv2ctl2-full__lora_r4_ce",
+   "identity_sidecar": "train_budget_meta.json",
+   "bank": "ctl_neg1_eb64",
+   "staged_id": "dm1_eb64s3__constv2ctl2-full__lora_r4_ce",
+   "served_layer": 3
+  },
+  "dm1_eb64s3__constv2ctl2-full__psr_ce_all": {
+   "object_sha256": "c59b3f5eba307825a6b2b10963008184c1639755ff23659fdcd14a0ec107a5ab",
+   "kind": "psr",
+   "source": "ctl_neg1_eb64/qwen35_4b/cells_view/dm1_ctlrelu64s3/constv2ctl2-full__psr_ce_all",
+   "identity_sidecar": "train_budget_meta.json",
+   "bank": "ctl_neg1_eb64",
+   "staged_id": "dm1_eb64s3__constv2ctl2-full__psr_ce_all",
+   "served_layer": 0
+  }
+ }
+}

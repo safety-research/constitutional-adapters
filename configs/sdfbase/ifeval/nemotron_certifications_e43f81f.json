@@ -1,0 +1,50 @@
+{
+ "_comment": "ifeval-canonical-battery: the Nemotron fused-backend CERTIFICATIONS the launch admitted, one per (producer tree, geometry entry) (plan \u00a78.3; the preflight's nemotron_backend_attested). Read from the operator's cert logs / cert_summary.json; the attestation records themselves live on the volume under nemo_backend/<attestation_sha256>/mamba_backend_attestation.json. V19 (pass 1 at 4d389d87), V37 (the 4,096 rungs at 5c816cf7 after the probe peer-at-served-S fix); no 8,192 Nemotron rung ran (V38: every Nemotron cell below threshold at 4,096).",
+ "4d389d873919463236c5fce16e9944880f252a57": {
+  "capability:ifeval_2048": {
+   "admitted": true,
+   "source": "V19 / cert_2048.log",
+   "attestation_sha256": "80dfaa572befb588002897df7250db041253ef79b6697d454944c7b7825850e6"
+  },
+  "capability:ifeval_longsi_2048": {
+   "admitted": true,
+   "source": "V19 / cert_longsi_2048.log",
+   "attestation_sha256": "879b86ba1942c908f24d3fc4bd829535984f1b312842e37a5df16fe6f342977f"
+  }
+ },
+ "5c816cf7f0a5210f07e3dc052aafae73781dfcfa": {
+  "capability:ifeval_4096": {
+   "admitted": true,
+   "served": {
+    "nemotron": [
+     4576,
+     168
+    ],
+    "peer": [
+     4576,
+     168
+    ],
+    "requested_S": 171,
+    "kv_shrink": true
+   },
+   "source": "V37 / cert_summary.json",
+   "attestation_sha256": "f5429a94e808a96fa01e040dd0cdacaed5a156683f24453ee9ea7a911bd15a86"
+  },
+  "capability:ifeval_longsi_4096": {
+   "admitted": true,
+   "served": {
+    "nemotron": [
+     10496,
+     74
+    ],
+    "peer": [
+     10496,
+     74
+    ],
+    "kv_shrink": false
+   },
+   "source": "V37 / cert_summary.json",
+   "attestation_sha256": "247421206709cff75de081f41f832a25e0eb8369db8576db3c2914d4fc3207a8"
+  }
+ }
+}

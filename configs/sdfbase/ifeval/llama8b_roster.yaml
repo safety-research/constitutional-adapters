@@ -1,0 +1,53 @@
+# configs/sdfbase/ifeval/llama8b_roster.yaml — the IFEval lane's ROSTER OVERLAY for the Llama-3.1-8B-Instruct target
+# This overlay is merged by scripts/sdfbase/ifeval/if_views.py over the FROZEN copy of the shared
+# roster that views.yaml names (`frozen_inputs:` — configs/sdfbase_full22_roster.yaml as committed at the pin 59cedcca,
+# under configs/sdfbase/ifeval/frozen/59cedcca/; targets only — lane_flags and lanes stay the roster's) and recorded, with
+# its sha256, in the IFEval matrix's `source` block. THE PREMISE, stated truly: the overlay adds a target
+# the roster it is merged over does not carry, and never shadows one. That held of the LIVE shared roster when this file
+# was written (2026-09-11) and stopped holding on 2026-09-12, when the Llama wave (PR #78) landed a `llama8b` target
+# there — the Llama lane's canonical battery, a DIFFERENT cell set for the SAME served model (same `model` +
+# `model_revision`) as the two views below. Neither definition may replace the other (dropping this overlay changes this
+# lane's rows; removing the shared block breaks the Llama lane and the GSM8K `matrix_llama.json`), so this lane reads the
+# frozen copy, in which llama8b is absent, and the overlay adds it exactly as the freeze did. Re-freezing at a later pin
+# is a logged decision.
+#
+# Grammar: the shared roster's (scripts/sdfbase/full22/f22_roster.py served_cells): `views.<view>.cells` maps a config
+# cell id to its STAGED id (a prompted baseline maps to null). The eight objects below are the Llama lane's landed fits
+# (cluster A $SHARED/exp/objects/sdfbase/llama8b_full/{llama8b_base,llama8b_it_doc}/cells_all/<cell>/object.pt, read
+# 2026-09-11): the four base-lane fits are STAGED in the full22 bank as base__<cell> (staging_manifest.json rows
+# target llama8b / lane base, cluster_a_verified + cluster_b_verified); the four instruct-direct fits are named itdoc__<cell>
+# and are staged by the launcher's Llama staging path from the raw bank (their pins carry the raw object.pt sha256 and
+# `staged: false` in llama8b_pins.json until they land on the volume). The derived difference objects are a LATER rung
+# of the same wave (pending_fit — never a pass-1 row; the count is read from the bank when they land, never typed).
+targets:
+  llama8b:
+    model: NousResearch/Meta-Llama-3.1-8B-Instruct
+    model_revision: d10aef7999a2b5ba950ab3974312feeedbfe0b77
+    replicate_floor:
+      pair: [main, it]
+      note: "the main and it views' `none` anchors are the same served model with no object — identical by construction; their disagreement is the per-cell replicate floor (IFEVAL_CONTRASTS: none_it_minus_none_main)"
+    views:
+      main:                                      # the base-lane objects, transferred onto the instruct target
+        config: configs/sdfbase/ifeval/sdfbase_full22_llama8b.ifeval.yaml
+        manifest: configs/capeval/manifests/petri_full22_llama8b.ifeval.yaml
+        cells:
+          prompted__safety_refusal: null           # the matched prompted safety-SI baseline (the harness spells it prompted__safety)
+          constv2-mix-full__psr_ce_all: base__constv2-mix-full__psr_ce_all
+          constv2-mix-full__lora_r4_ce: base__constv2-mix-full__lora_r4_ce
+          constv2ctl2-full__psr_ce_all: base__constv2ctl2-full__psr_ce_all
+          constv2ctl2-full__lora_r4_ce: base__constv2ctl2-full__lora_r4_ce
+        pending_fit:                               # the derived pair (a later rung of the same wave; never a pass-1 row)
+          constv2-mix-full__psr_ce_all_minus_ctl_distilled: derived__constv2-mix-full__psr_ce_all_minus_ctl_distilled
+          constv2-mix-full__lora_r4_ce_minus_ctl: derived__constv2-mix-full__lora_r4_ce_minus_ctl
+      it:                                        # the instruct-direct objects, applied natively
+        config: configs/sdfbase/ifeval/sdfbase_full22_llama8b_it.ifeval.yaml
+        manifest: configs/capeval/manifests/petri_full22_llama8b_it.ifeval.yaml
+        cells:
+          prompted__safety_refusal: null           # the it-view ANCHOR beside `none` (P32: every it-view contrast resolves)
+          constv2-mix-full__psr_ce_all: itdoc__constv2-mix-full__psr_ce_all
+          constv2-mix-full__lora_r4_ce: itdoc__constv2-mix-full__lora_r4_ce
+          constv2ctl2-full__psr_ce_all: itdoc__constv2ctl2-full__psr_ce_all
+          constv2ctl2-full__lora_r4_ce: itdoc__constv2ctl2-full__lora_r4_ce
+        pending_fit:
+          constv2-mix-full__psr_ce_all_minus_ctl_distilled: derived_itdoc__constv2-mix-full__psr_ce_all_minus_ctl_distilled
+          constv2-mix-full__lora_r4_ce_minus_ctl: derived_itdoc__constv2-mix-full__lora_r4_ce_minus_ctl

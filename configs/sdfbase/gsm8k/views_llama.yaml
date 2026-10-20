@@ -1,0 +1,81 @@
+# configs/sdfbase/gsm8k/views_llama.yaml — the Llama-3.1-8B rows of the GSM8K paired-200 instrument:
+# a SECOND matrix under a NEW wave root, never the published 42-row matrix.
+#
+# The matrix (configs/sdfbase/gsm8k/matrix_llama.json) is GENERATED from this file + the full22 roster + pins FROZEN at
+# 2f42b0c3 (`frozen_inputs:` below — never the live registry) by
+#   python scripts/sdfbase/gsm8k/make_gsm8k_matrix.py --matrix-name llama            (--check pins byte-identity)
+# through the ONE selector scripts/sdfbase/gsm8k/g8k_views.py select_rows: per (key, view) the cells are
+#   [none] + [prompted__safety_refusal iff view == it] + the roster's served cells of (key, view), in roster order
+# (a second prompted cell, prompted__si_constitution, rides in roster order like an object cell)
+# so this file never lists a cell — the roster does. TAG is the bare key for `main`, `<key>_<view>` otherwise.
+#
+# SCHEMA g8k_matrix/2 (P16): only a schema-2 document carries `thinking_mode` on every row and `wave_root_rel` at the
+# top; the published document (schema 1) carries neither and regenerates from its IMMUTABLE input copies
+# (configs/sdfbase/gsm8k/frozen/8f5f1495/) byte for byte. A schema-1 row reads as `on` / the published root.
+#
+# THE MODE (P7): Llama-3.1's chat template has NO thinking switch, so every row here runs the no-switch arm
+# `not_available` (never OFF) — recorded on the row as `thinking_mode`, hashed into the store identity, reported on
+# every table and figure as "thinking: not available", HELD OUT of any pooled cross-family mean. The rows are the SAME
+# instrument otherwise: the 200 paired items, cap 8,192 (the setter), k = 1, the served stacked-lens path, the standing
+# ladder (> the trigger at cap -> the 16,384 rung; eligible = at-cap - loops - boundary), the model's `card` sampling row.
+#
+# THE ONE-PIN RULE (P15, default (A) — MET): the analysis holds every store to ONE producer pin (the lane's
+# sdfbase-llama8b-wave @ de78ab46). SINCE 2026-09-12, PSR IS OUT BY DEFAULT — the paper's SIX
+# arms per model are none, prompted__safety_refusal, prompted__si_constitution, constv2ctl2-full__lora_r4_ce,
+# constv2-mix-full__lora_r4_ce, constv2-mix-full__lora_r4_ce_minus_ctl — so this matrix has TWELVE rows, six per view, the
+# derived set the LoRA subtraction alone. `prompted__si_constitution` is the short constitution SI (~5.9k Llama tokens) as
+# the system prompt; its rows run at their OWN measured geometry entries (capability:gen_long_gsm8k_longsi 16,384 at the
+# 8,192 pass; capability:gen_long_gsm8k_rung_longsi 24,576 at the rung) and their own prompt-budget class. Fallback (B),
+# a derived pass as its own root + views file with an `exclude:` block, stays available in the schema and is not used.
+schema: g8k_matrix/2
+wave_root_rel: exp/gsm8k_paired200_paper_objects_llama
+# IMMUTABLE INPUTS (P16, the published matrix's rule; the it-doc matrix's since E3): this document regenerates from the roster +
+# pins AS COMMITTED AT 2f42b0c3 (copies under configs/sdfbase/gsm8k/frozen/2f42b0c3/, their sha256 declared here and asserted by
+# the generator; `git show 2f42b0c3:configs/sdfbase_full22_roster.yaml` restores an edited copy), never from the live registry.
+# Until 2026-09-14 this file named no `frozen_inputs:` and the generator read the LIVE roster + pins, stamping their sha256 into
+# `source`: every registry move by another lane (a dose view re-pointed, a target's pins block grown) re-drifted matrix_llama.json's
+# header with the twelve rows unchanged — three times. 2f42b0c3 is the merge that last regenerated this document against the
+# live registry (after the dose-view re-mint), so the frozen copies carry exactly the hashes the document stamps and the
+# frozen-input output is byte-identical to it. A llama8b roster / pins change this matrix SHOULD follow is a new frozen copy +
+# a regenerated matrix, in the PR that makes the change — never an edited row, never a stamp chased by hand.
+frozen_inputs:
+  roster: configs/sdfbase/gsm8k/frozen/2f42b0c3/sdfbase_full22_roster.yaml
+  pins: configs/sdfbase/gsm8k/frozen/2f42b0c3/sdfbase_full22_pins.json
+  roster_sha256: 0782c9a14eced05808af8340534623795dc638e7700061a0cf0dd50c83800592
+  pins_sha256: 00082ef5a4e18451bbe2cfefc73ccf4ba78b27dcf8ac3c7016c1d6a846d0221c
+# THE LADDER TRIGGER: 1 % RAW at-cap, harmonised across the battery — the GSM8K 3 % exception of
+# 2026-09-10 (the published wave's first analysis) is revoked for this wave. Every row carries it; the ladder planner and the
+# analysis read the row's; the provenance text follows it ("escalation trigger 1 % RAW at-cap, harmonised ...").
+trigger_threshold: 0.01
+views:
+  llama8b: [main, it]          # main: the base-lane objects transferred onto the instruct target; it: the instruct-direct
+                               # objects — six rows each: none, the 2 LoRA fits, the LoRA subtraction, the 2 prompted baselines
+# HOLDS (E2-12 / E2-16): a `holds:` entry naming (llama8b, main, <steer cell>) holds a STEERING row too (the steering pass honours
+# this block) — for a staged record the driver's provenance mirror refuses. None today: the class-B hold on llama8b's AlphaSteer
+# object (its `it` view's fit_provenance.json was the PARENT object's, object_sha256 645a9f89… ≠ the pin 4cf8e164…) was lifted
+# 2026-09-13 when the AlphaSteer rebake lane re-staged the record on the primary cluster (it binds the pinned object's own sha, the
+# parent under `derived_from`); the object is staged on the primary cluster alone, so that row stays `primary`.
+holds: []
+
+# STEERING (plan P8): the AlphaSteer and Arditi arms of the no-switch family on the PANEL view `main`, GENERATED from the
+# P8 ADMISSION RECORD configs/sdfbase/steer_admission.json (llama8b's entries: AlphaSteer rung 1 — the canonical ladder's
+# object, the string that EXISTS on disk — staged on the PRIMARY cluster alone, so `cluster_constraint: primary`; Arditi
+# alpha 0.05 — chosen over the selection rule's inclusive-boundary pick of 0.1 (`boundary_pick: not_robust`, 0.50 of an
+# item inside the 10-item budget; the full-refusal-only statistic picks 0.05; graded OR-Bench-Hard +30.60 pp vs +16.69 pp),
+# `selection_outcome: ruled_2026-09-14`, the 0.1 point kept under the entry's `superseded` block, its GSM8K store set
+# aside). Under the no-switch arm the rows are IN SUPPORT (no tuple, `--thinking not_available`, the `card` sampling row);
+# the object is pinned by its sha256 and served from the lane's bank view named on the row relative to the shared root.
+# APPENDED after the twelve rows as wave `steer` under `controls_steer/` of THIS matrix's root — the twelve published rows
+# (COMPLETE at the lane's pin) never move and are never resubmitted (`plan --wave steer` selects exactly these two). The
+# eight-arm target is "8 arms x 4 models" on both instruments, and the Llama rows' own wave is complete, so the steering
+# rows ride this matrix's seam.
+steering:
+  - key: llama8b
+    arms: [alphasteer, arditi]
+    reason: >
+      the highest rung within the 4 pp over-refusal budget (AlphaSteer rung 1, primary cluster only)
+      and, for Arditi, the RULING of 2026-09-14: alpha 0.05 (object 1755a562…, view ar_r0p05) over the arditi strength
+      battery's inclusive-boundary pick of 0.1 (0.50 of an item inside the 10-item budget — not robust; the full-refusal-only
+      statistic picks 0.05; graded OR-Bench-Hard prices 0.1 at +30.60 pp vs 0.05 at +16.69 pp). The 0.1 point (object 0f654e88…,
+      served by 499411_13 @ 68680323) is superseded: kept under the admission entry's `superseded` block, its store set aside.
+    since: 2026-09-13

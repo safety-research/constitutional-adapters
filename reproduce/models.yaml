@@ -1,0 +1,195 @@
+# reproduce/models.yaml — THE models table: the paper's four models and the worked example's demo key, each with its
+# fit checkpoint, its served checkpoint, pinned 40-hex revisions (read from the cohort cache's refs/main, 2026-09-29),
+# thinking behaviour, the served chat template's sha256_hex16 (the Petri manifests' `chat_template_hash`; the standup refuses a
+# mismatch), the architecture facts the LoRA module-set rule needs, the eligible-layer rule per module set,
+# the LoRA architecture in force, and the phase views of the evaluation waves. `reproduce/lib/models.py` is the one
+# reader (duplicate keys refused; both checkpoints + revisions asserted by tests/test_models_table.py).
+# Keys are the registry model_id of the SERVED checkpoint's legacy spelling (configs/registry/legacy_spellings.yaml).
+# The FIT WIDTH (GPUs per fit) is deliberately NOT a row here: it is the fits config's top-level `fit_width:` line
+# (configs/sdfbase_<key>_fits.yaml; absent = 1), the one source 04_fit_objects.sh sizes the allocation from (lib/common.sh
+# repro_fit_width_of_config — the width is part of the fit identity). `fit.resources` below
+# documents the fit's shape (micro-batch, accumulation, sequence length, checkpointing); a `gpus:` copy of the width
+# lived here until 2026-09-30 with nothing reading it, and was removed so the table never disagrees with the config.
+schema: 1
+models:
+
+  # ----------------------------------------------------------------------------- the worked example: a DEMO key on the paper's Qwen3.5-4B checkpoints
+  # `qwen35_4b_demo` serves and fits the SAME pinned checkpoints as the paper's `qwen35_4b` row, under its own key: the paper's
+  # objects live under `qwen35_4b` (committed, never re-run), the demo key fits and evaluates FRESH ones through the front door,
+  # and nothing a demo run writes is spelled like a paper run — the registry's spelling table is append-only and
+  # `qwen35_4b_s1/_s2/_s3` already mean the paper objects' fit-seed replicates, so the views cannot live under `qwen35_4b`.
+  # ONE PHASE: every arm is evaluated in one steered wave, `battery`, against its own unsteered legs (`none` and
+  # the two prompted instructions run INSIDE the wave; no separate unsteered-first `u0` phase, no `s2` split — those were the
+  # shape of an earlier phased run, not of the recipe). The two dose views are stage 09's ladder rungs — a dose axis, not phases.
+  # The wave is DECLARED on the row (`wave: battery`, demo-import M3): a name outside the `s<N>` phase-view grammar, so a demo run is
+  # never spelled like the paper's `qwen35_4b_s<N>` fit-seed replicates; `reproduce/lib/models.py` (declared_wave / phase_views /
+  # is_phase_view) is the ONE rule every generator and grader reads it through.
+  # Configured end to end, NOT run in this work (FD 4; run_in_this_work: false).
+  qwen35_4b_demo:
+    display: "Qwen3.5-4B (worked example)"
+    fit:
+      checkpoint: {hf_repo: Qwen/Qwen3.5-4B-Base, revision: 1001bb4d826a52d1f399e183466143f4da7b741b, model_id: qwen35_4b_demo_base}
+      resources: {microbatch: 2, accum_to_effective_batch: 64, seq_len: 8192, gradient_checkpointing: true}
+    serve:
+      checkpoint: {hf_repo: Qwen/Qwen3.5-4B, revision: 851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a, model_id: qwen35_4b_demo}
+      chat_template_hash: a4aee8afcf2e0711      # sha256_hex16 of the served tokenizer's chat_template bytes at this revision — the qwen35_4b row's pin (the same checkpoint); the standup re-hashes and refuses a mismatch
+      resources: {gpus: 1, tensor_parallel: 1, max_model_len: 49152}
+      generation_config: null                      # ships NONE: the vendor rows are pinned as the server default (CLAUDE.md Sampling) — the qwen35_4b row's
+    transfer_kind: base_to_instruct
+    view_legacy_prefix: qwen35_4b_demo
+    architecture:
+      family: qwen3_5_hybrid
+      n_layers: 32
+      hidden: 2560
+      attention_layers: [3, 7, 11, 15, 19, 23, 27, 31]
+      linear_attention_layers: 24
+      attention: {heads: 16, kv_heads: 4, head_dim: 256, q_out: 8192, kv_out: 1024, o_in: 4096}
+      mlp: {intermediate: 9216}
+      vocab: 248320
+    thinking: {default: "off", gsm8k: "on", header: qwen35}
+    layer_sets: {o_proj: attention_layers, qkvo: attention_layers, mlp: all, down: all}
+    lora_architecture: {rank: 4, modules: [o_proj], per_expert_rank: null, selected_by: paper, selection_ruling_id: null}
+    relu_steer: {layers: all, positions: all}
+    attacker: {gpus_per_member: 1}
+    # the worked example IMPORTS the paper's committed Qwen3.5-4B objects (objects/DEMO.json: one training seed, 3, for every fitted intervention,
+    # the refusal direction at its operating coefficient) in place of stage 04's fits: stage 05 stages them from the checkout (reproduce/tools/import_objects.py)
+    # under this key's bank, and the registry rows stay the paper's (byte-identical copies keep their object_id; no second object row).
+    # `committed_objects_of` names the paper row whose committed objects are imported — the row's default is the FIT lane (qwen35_4b: its
+    # objects are qwen35_4b_base fits); a cell may name its own (refusal_direction: qwen35_4b_it, the served checkpoint's)
+    committed_objects_of: qwen35_4b
+    objects:                                        # view cell -> the STAGED id (<lane>__<cell_id>) and where the fit / builder publishes it
+      arm_lora: lora_r4_ce                          # the LoRA arm's cell spelling in the fit bank (make_sdfbase_configs; the pick changes rank/set, not the spelling)
+      arm_relu: psr_ce_all
+      corpus_constitution: constv2-mix-full
+      corpus_control: constv2ctl2-full
+      control_lora:       {lane: base,    cell_id: constv2ctl2-full__lora_r4_ce,  kind: fit,     source: fit_bank}
+      constitution_lora:  {lane: base,    cell_id: constv2-mix-full__lora_r4_ce,  kind: fit,     source: fit_bank}
+      control_relu:       {lane: base,    cell_id: constv2ctl2-full__psr_ce_all,  kind: fit,     source: fit_bank}
+      constitution_relu:  {lane: base,    cell_id: constv2-mix-full__psr_ce_all,  kind: fit,     source: fit_bank}
+      difference_lora:    {lane: derived, cell_id: constv2-mix-full__lora_r4_ce_minus_ctl,            kind: derived, source: derived_bank, derived_dir: lora_subtraction, object_kind: lora_subtraction}
+      # the COMPOSED paired difference V = +P_mix - P_ctl (04_fit_objects.sh difference_relu: compose-v; kind composed, derivation composition) —
+      # the object every in-paper difference_relu row is; the psr_residual distillation chain is legacy and is never composed
+      difference_relu:    {lane: derived, cell_id: constv2-mix-full__psr_ce_all_minus_ctl,            kind: derived, source: derived_bank, derived_dir: psr_paired_write, object_kind: composed}
+      # the refusal direction is an object of the SERVED checkpoint (the paper's qwen35_4b_it row; objects/DEMO.json model_id qwen35_4b_it),
+      # so its committed source is named per cell — the row-level `committed_objects_of` above names the fit lane's (qwen35_4b_base)
+      refusal_direction:  {lane: arditi,  cell_id: ar_c0p3__arditi_allpos,        kind: derived, source: arditi_bank, paper_label: arditi_allpos, committed_objects_of: qwen35_4b_it}
+    wave: battery                                   # the one steered wave (declared; the two dose views are its ladder rungs)
+    views:
+      battery: {cells: [none, prompted__safety_refusal, prompted__si_constitution, refusal_direction, control_lora, constitution_lora, difference_lora, control_relu, constitution_relu, difference_relu]}
+      d0p75: {cells: [none, difference_lora], dose: 0.75, dose_unit: lora_write_basis_multiplier}
+      d0p75_relu: {cells: [none, difference_relu], dose: 0.75, dose_unit: psr_direction_norm_multiplier, object_family: relu}
+    run_in_this_work: false                        # every stage answers --dry-run; 02 runs (memprobe + register); nothing else
+
+  # ----------------------------------------------------------------------------- the paper's four models (objects committed; nothing re-run)
+  gemma4e4b:
+    display: "gemma-4-E4B"
+    fit:
+      checkpoint: {hf_repo: google/gemma-4-E4B, revision: 411aa17b749aa952df1359d2dcea73917a544d9a, model_id: gemma4e4b_base}
+      resources: {microbatch: 2, accum_to_effective_batch: 64, seq_len: 8192, gradient_checkpointing: true}
+    serve:
+      checkpoint: {hf_repo: google/gemma-4-E4B-it, revision: ee0ef6023621cff504d758262d4e04895a5af4a2, model_id: gemma4e4b_it}
+      chat_template_hash: 0a2c8073c878ab1d      # sha256_hex16 of the served tokenizer's chat_template bytes at this revision — make_full22_configs.MODEL_SERVING's pin (petri_gemma4e4b.yaml); the standup re-hashes and refuses a mismatch
+      resources: {gpus: 1, tensor_parallel: 1, max_model_len: 49152}
+      generation_config: {temperature: 1.0, top_p: 0.95, top_k: 64}
+    transfer_kind: base_to_instruct
+    view_legacy_prefix: gemma4e4b
+    architecture:
+      family: gemma4_dense
+      n_layers: 42
+      hidden: 2560
+      attention_layers: [5, 11, 17, 23, 29, 35, 41]
+      sliding_attention_layers: 35
+      attention: {heads: 8, kv_heads: 2, head_dim: 256, q_out: 2048, kv_out: 512, o_in: 2048}
+      mlp: {intermediate: 10240}
+      vocab: 262144
+    thinking: {default: "off", gsm8k: "on", header: gemma4, note: header identical ON and OFF}
+    layer_sets: {o_proj: all, qkvo: all, mlp: all, down: all}
+    lora_architecture: {rank: 4, modules: [o_proj], per_expert_rank: null, selected_by: paper, selection_ruling_id: null}
+    relu_steer: {layers: all, positions: all}
+    attacker: {gpus_per_member: 1}
+    views: {main: {roster: configs/sdfbase_full22_roster.yaml}, it: {roster: configs/sdfbase_full22_roster.yaml}}
+    run_in_this_work: false
+
+  qwen35_4b:
+    display: "Qwen3.5-4B"
+    fit:
+      checkpoint: {hf_repo: Qwen/Qwen3.5-4B-Base, revision: 1001bb4d826a52d1f399e183466143f4da7b741b, model_id: qwen35_4b_base}
+      resources: {microbatch: 2, accum_to_effective_batch: 64, seq_len: 8192, gradient_checkpointing: true}
+    serve:
+      checkpoint: {hf_repo: Qwen/Qwen3.5-4B, revision: 851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a, model_id: qwen35_4b_it}
+      chat_template_hash: a4aee8afcf2e0711      # sha256_hex16 of the served tokenizer's chat_template bytes at this revision — make_full22_configs.MODEL_SERVING's pin; the standup re-hashes and refuses a mismatch
+      resources: {gpus: 1, tensor_parallel: 1, max_model_len: 49152}
+      generation_config: null                      # ships NONE: the vendor rows are pinned as the server default (CLAUDE.md Sampling)
+    transfer_kind: base_to_instruct
+    view_legacy_prefix: qwen35_4b
+    architecture:
+      family: qwen3_5_hybrid
+      n_layers: 32
+      hidden: 2560
+      attention_layers: [3, 7, 11, 15, 19, 23, 27, 31]
+      linear_attention_layers: 24
+      attention: {heads: 16, kv_heads: 4, head_dim: 256, q_out: 8192, kv_out: 1024, o_in: 4096}
+      mlp: {intermediate: 9216}
+      vocab: 248320
+    thinking: {default: "off", gsm8k: "on", header: qwen35}
+    layer_sets: {o_proj: attention_layers, qkvo: attention_layers, mlp: all, down: all}
+    lora_architecture: {rank: 4, modules: [o_proj], per_expert_rank: null, selected_by: paper, selection_ruling_id: null}
+    relu_steer: {layers: all, positions: all}
+    attacker: {gpus_per_member: 1}
+    views: {main: {roster: configs/sdfbase_full22_roster.yaml}, it: {roster: configs/sdfbase_full22_roster.yaml}}
+    run_in_this_work: false
+
+  nemotron3nano4b:
+    display: "Nemotron-3-Nano-4B"
+    fit:
+      checkpoint: {hf_repo: nvidia/NVIDIA-Nemotron-3-Nano-4B-BF16, revision: dfaf35de3e30f1867dd8dbc38a7fc9fb52d3914f, model_id: nemotron3nano4b}
+      resources: {microbatch: 2, accum_to_effective_batch: 64, seq_len: 8192, gradient_checkpointing: true}
+    serve:
+      checkpoint: {hf_repo: nvidia/NVIDIA-Nemotron-3-Nano-4B-BF16, revision: dfaf35de3e30f1867dd8dbc38a7fc9fb52d3914f, model_id: nemotron3nano4b}
+      chat_template_hash: ab7813c3abdd9cb6      # sha256_hex16 of the served tokenizer's chat_template bytes at this revision — make_full22_configs.MODEL_SERVING's pin; the standup re-hashes and refuses a mismatch
+      resources: {gpus: 1, tensor_parallel: 1, max_model_len: 49152, mamba_ssm_cache_dtype: float32}   # fused kernels required; prefix caching OFF
+      generation_config: {temperature: 1.0, top_p: 0.95}
+    transfer_kind: instruct_direct               # chat checkpoint only
+    view_legacy_prefix: nemotron3nano4b
+    architecture:
+      family: nemotron_h_hybrid
+      n_layers: 52
+      hidden: 3072
+      attention_layers: from_model_spec          # sisteer.models resolves the hybrid's attention blocks (MODELS dict)
+      attention: {heads: 32, kv_heads: 2, head_dim: 128}
+      vocab: 131072
+    thinking: {default: "off", gsm8k: "on", header: refused_by_server}
+    layer_sets: {o_proj: attention_layers, qkvo: attention_layers, mlp: all, down: all}
+    lora_architecture: {rank: 4, modules: [o_proj], per_expert_rank: null, selected_by: paper, selection_ruling_id: null}
+    relu_steer: {layers: all, positions: all}
+    attacker: {gpus_per_member: 1}
+    views: {main: {roster: configs/sdfbase_full22_roster.yaml}}
+    run_in_this_work: false
+
+  llama8b:
+    display: "Llama-3.1-8B"
+    fit:
+      checkpoint: {hf_repo: NousResearch/Meta-Llama-3.1-8B, revision: 1f47e50cdbe801ad8a5174156ec3a0655108fb9f, model_id: llama8b_base}
+      resources: {microbatch: 2, accum_to_effective_batch: 64, seq_len: 8192, gradient_checkpointing: true}
+    serve:
+      checkpoint: {hf_repo: NousResearch/Meta-Llama-3.1-8B-Instruct, revision: d10aef7999a2b5ba950ab3974312feeedbfe0b77, model_id: llama8b_it}
+      chat_template_hash: b48c47f644389271      # sha256_hex16 of the served tokenizer's chat_template bytes at this revision — make_full22_configs.MODEL_SERVING's pin; the standup re-hashes and refuses a mismatch
+      resources: {gpus: 1, tensor_parallel: 1, max_model_len: 49152}
+      generation_config: {temperature: 0.6, top_p: 0.9}
+    transfer_kind: base_to_instruct
+    view_legacy_prefix: llama8b
+    architecture:
+      family: llama_dense
+      n_layers: 32
+      hidden: 4096
+      attention_layers: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31]
+      attention: {heads: 32, kv_heads: 8, head_dim: 128, q_out: 4096, kv_out: 1024, o_in: 4096}
+      mlp: {intermediate: 14336}
+      vocab: 128256
+    thinking: {default: not_available, gsm8k: not_available, header: none}
+    layer_sets: {o_proj: all, qkvo: all, mlp: all, down: all}
+    lora_architecture: {rank: 4, modules: [o_proj], per_expert_rank: null, selected_by: paper, selection_ruling_id: null}
+    relu_steer: {layers: all, positions: all}
+    attacker: {gpus_per_member: 1}
+    views: {main: {roster: configs/sdfbase_full22_roster.yaml}, it: {roster: configs/sdfbase_full22_roster.yaml}}
+    run_in_this_work: false

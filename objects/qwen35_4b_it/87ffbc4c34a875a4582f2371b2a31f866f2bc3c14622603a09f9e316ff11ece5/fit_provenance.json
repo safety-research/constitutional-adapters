@@ -1,0 +1,171 @@
+{
+ "alpha": 0.05,
+ "arditi_strength": {
+  "alpha": 0.05,
+  "arm": "the refusal direction ADDED at a dose of |alpha| of the residual norm",
+  "deviations_from_the_paper": {
+   "phase": "PREFILL-ONLY. Arditi's activation-addition hook is a plain forward pre-hook, ungated on sequence length, so his intervention fires at the prefill AND at every decode step. We serve the prefill only, so generated tokens see the edit ONLY through the steered prompt KV cache: we apply half his intervention. Chosen to PHASE-MATCH the AlphaSteer lane, because both measure the same shared dose pool and a both-phases Arditi against a prefill-only AlphaSteer would vary two things at once.",
+   "rendering": "apply_chat_template through the harness's one renderer (sisteer.models.build_chat_prompt), not their hardcoded per-family template strings.",
+   "unit": "the UNIT direction at a MEASURED fraction of ||h||, not the raw difference of means. Arditi's addition half uses the raw vector at coeff +-1.0 (verified in their code: only the ABLATION hook normalises), precisely so the coefficient's magnitude IS the measured distance between the class means. The GEOMETRY is identical \u2014 same direction, layer, positions and BOS convention; only the magnitude convention differs, adopted so one number means one thing across four models whose ||r|| spans 3.29 to 278.2."
+  },
+  "direction_file_sha256": "b57149f40d06a6d401c1014cc67dc71d0d91bcb472cfc1726303b7f692e417ce",
+  "direction_sha256": "98c1e6a2628ba6a27604ab3d44fbe8844ef62842e60633fdb8ffd30c3ba67b87",
+  "dose_spread": {
+   "dose_axis": "median",
+   "dose_axis_note": "alpha is the realised dose ||edit||/||h|| at the MEDIAN row of the reference pool, not a constant: the edit magnitude is fixed while ||h|| varies by token and by prompt, so the realised dose is |alpha| * ||h||_ref / ||h||. Every row carries the measured p05/p95 spread and the dose realised at each end; a target whose spread is wide must never be described as 'dosed at alpha' without it.",
+   "h_ref": 9.364958763122559,
+   "h_ref_p05": 7.545933246612549,
+   "h_ref_p95": 11.723297119140625,
+   "h_ref_spread_p95_over_p05": 1.5535914161980349,
+   "realised_dose_at_h_p05": 0.06205301887163255,
+   "realised_dose_at_h_p95": 0.039941659193437964,
+   "spread_qualifier_mandatory": false
+  },
+  "dose_unit": "residual_norm_fraction",
+  "dose_unit_description": "alpha = ||edit|| / ||h||_ref at the served layer, where ||h||_ref is the median residual-stream norm measured on the campaign's confirmatory goal set plus benign controls under the served rendering. The served vector is alpha * ||h||_ref * r_hat with r_hat the unit Arditi refusal direction.",
+  "edit_norm": 0.468247938156128,
+  "equivalent_raw_coefficient": 0.1423041017739845,
+  "fit_dir": "$HOME/arditi-stage/fits/qwen35_4b",
+  "fit_layer": 13,
+  "fit_position": -5,
+  "fit_record_sha256": "05fba693e573a65b8cd6549918000be7e75cbf56b34b02672123b81083512901",
+  "h_ref": 9.364958763122559,
+  "h_ref_provenance": {
+   "benign_median": 9.238973617553711,
+   "family_gap_rel": 0.016436306722527827,
+   "harmful_median": 9.393365859985352,
+   "instrument": "HF forward, no steering \u2014 a property of the BASE model's residual stream. The RENDERING matches the served path; the ENGINE does not, so the realised dose is re-measured on the served path after baking",
+   "p05": 7.545933246612549,
+   "p95": 11.723297119140625,
+   "pool": {
+    "file": "$SHARED/exp/dose_reference_pool/pool_v1.jsonl",
+    "n_benign": 120,
+    "n_harmful": 259,
+    "sha256": "d6ecd62bea7e0c075c311c8364785179760e6fba6dedabee8e4bf433f03b4099"
+   },
+   "sha256": "cffacb9d63d96e426fab76ad20c785bbb2a6699a365b657fe1b40110a49b49bb",
+   "source": "$HOME/arditi-stage/href/qwen35_4b_href.json",
+   "statistic": "median over token rows of the POOLED set (259 confirmatory goals + 120 benign controls, harmful-weighted ~2:1), at the block OUTPUT of the served layer, under the served rendering"
+  },
+  "is_sign_control": false,
+  "operation": "activation addition (Arditi's induce half): h += rs[fit_layer] at EVERY prompt position of the PREFILL, BOS included; decode forwards are untouched and inherit the edit through the steered prompt KV cache",
+  "phase": "prefill",
+  "producer": "scripts/arditi/make_arditi_objects.py",
+  "producer_commit": "0f0181603a40d262974b6bdf181c4f36ada123b4",
+  "raw_direction_norm": 3.2904739379882812,
+  "scaling_method": "rs[fit_layer] <- alpha * ||h||_ref * r_hat; the served OP_ADD_VECTOR coefficient is base_scale = 1.0, so the dose lives in the vector's norm and a rung is different BYTES, never a serve-time flag",
+  "selection_is_the_papers": true,
+  "selection_rule": "the paper's Appendix C algorithm",
+  "served_layer": 12,
+  "served_layer_note": "resid_pre of the fit layer is the OUTPUT of the block before it, which is where the lens applies. THE BLOB STORES THE FIT LAYER: _adapt_static_r reads site='pre' and shifts it to fit_layer - 1 itself, the inverse of the retired vector_all convention, which stored the served layer",
+  "stored_layer": 13,
+  "verification": {
+   "alpha": 0.05,
+   "checks": [
+    {
+     "blob_keys": [
+      "kind",
+      "rs",
+      "base_scale",
+      "layers",
+      "steer_positions",
+      "site",
+      "metadata"
+     ],
+     "check": "tensors",
+     "forbidden_keys_absent": [
+      "positions",
+      "fit_positions"
+     ],
+     "rule": "torch.equal(new, r_hat * (alpha * ||h||_ref)) for rs; the key set is exactly the contract, the invariant keys equal the reference's, rs holds exactly the FIT layer, and metadata.per_layer_r_norm records this tensor's own norm",
+     "scaled": [
+      "rs"
+     ],
+     "status": "PASS",
+     "unchanged": [
+      "kind",
+      "base_scale",
+      "layers",
+      "steer_positions",
+      "site"
+     ]
+    },
+    {
+     "adapter": "sisteer.capeval.serving.lens_adapters.get_adapter('static_r')",
+     "check": "served_ops",
+     "coeff": 1.0,
+     "layer": 12,
+     "n_ops": 1,
+     "op": "add_vector",
+     "phase": "prefill",
+     "positions": "all",
+     "rule": "one OP_ADD_VECTOR at fit_layer - 1 (site='pre' shifts the STORED fit layer); op/layer/positions/skip_bos/phase/coeff identical to the reference's, coeff exactly 1.0, vector == r_hat x (alpha x ||h||_ref); adapted through the REGISTERED adapter so the fit/serve position guard and the spec-vs-bytes cross-checks run",
+     "skip_bos": false,
+     "status": "PASS",
+     "stored_layer": 13
+    },
+    {
+     "check": "served_activation",
+     "decode_is_bit_identical": true,
+     "exact_fp32": true,
+     "probe_rows": 64,
+     "reconstructed_delta_max_abs_diff": 3.150198608636856e-07,
+     "reconstructed_delta_note": "DIAGNOSTIC ONLY: (out - h) loses ~eps*|h| of precision, so this number tracks the hidden state's magnitude and not the edit's; it is not a pass criterion",
+     "refuses_without_context": true,
+     "rule": "lens_adapters.apply_hook_ops on h ~ N(0,1): under a PREFILL context the output is bit-identical to h + r_hat x (alpha x ||h||_ref); under a DECODE context it is bit-identical to h; with no context it refuses",
+     "seed": 0,
+     "status": "PASS"
+    },
+    {
+     "alpha_times_h_ref": 0.468247938156128,
+     "check": "served_edit_is_the_direction",
+     "direction_bound_to_fit": "direction.pt's VALUE hash (the fit's own statistic: sha256 over json.dumps(tolist())) was compared against the fit record's selected.direction_sha256 before any rung was built, so the levels below are about the RIGHT artifact and not merely a self-consistent one",
+     "direction_sha256": "98c1e6a2628ba6a27604ab3d44fbe8844ef62842e60633fdb8ffd30c3ba67b87",
+     "direction_sha256_source": "the fit's direction.pt",
+     "dose_rule": "||edit|| == |alpha| * ||h||_ref exactly, so the realised dose ||edit||/||h|| is alpha at a row whose norm is the reference \u2014 which is the median row of the eval pool by construction",
+     "edit_norm": 0.4682479500770569,
+     "exact_bf16": true,
+     "exact_fp32": true,
+     "rule": "the op the REGISTERED adapter emits carries exactly alpha x ||h||_ref x the UNIT fitted direction, and the served prefill output is bit-identical to h + that vector at EVERY row, in fp32 AND in the bf16 the worker materializes. ABSOLUTE, not relative to the reference: levels 1-3 compare a rung to its reference and would all pass on a reference built from the wrong tensor",
+     "status": "PASS"
+    },
+    {
+     "check": "deployment_is_prefill_only",
+     "decode_is_unsteered": true,
+     "deviations_from_the_paper": {
+      "phase": "PREFILL-ONLY. Arditi's activation-addition hook is a plain forward pre-hook, ungated on sequence length, so his intervention fires at the prefill AND at every decode step. We serve the prefill only, so generated tokens see the edit ONLY through the steered prompt KV cache: we apply half his intervention. Chosen to PHASE-MATCH the AlphaSteer lane, because both measure the same shared dose pool and a both-phases Arditi against a prefill-only AlphaSteer would vary two things at once.",
+      "rendering": "apply_chat_template through the harness's one renderer (sisteer.models.build_chat_prompt), not their hardcoded per-family template strings.",
+      "unit": "the UNIT direction at a MEASURED fraction of ||h||, not the raw difference of means. Arditi's addition half uses the raw vector at coeff +-1.0 (verified in their code: only the ABLATION hook normalises), precisely so the coefficient's magnitude IS the measured distance between the class means. The GEOMETRY is identical \u2014 same direction, layer, positions and BOS convention; only the magnitude convention differs, adopted so one number means one thing across four models whose ||r|| spans 3.29 to 278.2."
+     },
+     "is_a_declared_deviation_from_the_paper": true,
+     "needs_context": true,
+     "phase": "prefill",
+     "positions": "all",
+     "rule": "phase=prefill, positions=all, skip_bos=False, coeff=1.0, and op_needs_context is True \u2014 so the edit lands on every prompt token of the PREFILL and on no decode forward. A DECLARED DEVIATION: Arditi's own hook is ungated on sequence length and fires at every decode step too, so this is half his intervention, chosen to phase-match the AlphaSteer lane",
+     "skip_bos": false,
+     "status": "PASS"
+    }
+   ],
+   "dose_scale": 0.468247938156128,
+   "dose_unit": "residual_norm_fraction",
+   "fit_layer": 13,
+   "h_ref": 9.364958763122559,
+   "kind": "static_r",
+   "phase": "prefill",
+   "reference": "the UNIT direction r_hat (alpha=1, ||h||_ref=1)",
+   "served_layer": 12,
+   "status": "PASS"
+  },
+  "written_at": "2026-09-11T04:12:13Z"
+ },
+ "cell_id": "arditi",
+ "chat_template_hash": "a4aee8afcf2e0711",
+ "dose_unit": "residual_norm_fraction",
+ "phase": "prefill",
+ "positions_at_fit": "all",
+ "resolved_model_id": "Qwen/Qwen3.5-4B",
+ "resolved_revision": "851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a",
+ "staged_id": "ar_r0p05__arditi",
+ "target": "qwen35_4b",
+ "writer": "scripts/arditi/fit_arditi.py"
+}

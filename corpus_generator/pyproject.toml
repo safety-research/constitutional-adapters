@@ -1,0 +1,39 @@
+[project]
+name = "corpus-generator"
+version = "0.1.0"
+description = "Constitutional synthetic-data pipeline (advice transcripts + aligned-AI stories) over the Anthropic Batch API"
+# The floor of the workspace root (../pyproject.toml): uv intersects every member's floor into the one lock's
+# requires-python, and the generator uses nothing 3.12-only (compiled clean on 3.11 at the merge). The venvs that
+# actually run it are 3.12.
+requires-python = ">=3.11"
+dependencies = [
+    "anthropic>=1.0",
+    "pydantic>=2.7",
+    "click>=8.1",
+    "jinja2>=3.1",
+    "tokenizers>=0.19",
+    "datasketch>=1.6",
+    "pyyaml>=6.0",
+    "matplotlib>=3.9",
+]
+
+[project.scripts]
+corpusgen = "corpus_generator.cli:main"
+
+[dependency-groups]
+dev = [
+    "pytest>=8.0",
+]
+
+# No tool.uv table here: this directory is a workspace member of ../pyproject.toml, so the repo-level lock resolves it and
+# the supply-chain cutoff (exclude-newer) plus the per-package exceptions for anthropic / httpx2 / httpcore2 live there.
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/corpus_generator"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

@@ -1,0 +1,187 @@
+{
+ "builder": "scripts/sdfbase/lora_subtract.py",
+ "built_at": "2026-09-08T04:40:35+00:00",
+ "comparison": "scale_matched (primary: both parents trained at the same official-token budget)",
+ "derivation": "delta(parent_pos) - delta(parent_neg), structural (both parents' factors stored bit-exact)",
+ "derived_id": "constv2-mix-full__lora_r4_ce_minus_ctl",
+ "dose_scaled_from": {
+  "norms_by_tensor_and_layer": {
+   "B_neg": {
+    "12": {
+     "after": 1.902437686920166,
+     "before": 7.609750747680664
+    },
+    "17": {
+     "after": 1.7458986043930054,
+     "before": 6.9835944175720215
+    },
+    "24": {
+     "after": 2.1057560443878174,
+     "before": 8.42302417755127
+    },
+    "32": {
+     "after": 2.6234500408172607,
+     "before": 10.493800163269043
+    }
+   },
+   "B_pos": {
+    "12": {
+     "after": 2.1146187782287598,
+     "before": 8.458475112915039
+    },
+    "17": {
+     "after": 1.9413392543792725,
+     "before": 7.76535701751709
+    },
+    "24": {
+     "after": 2.265651226043701,
+     "before": 9.062604904174805
+    },
+    "32": {
+     "after": 2.9747207164764404,
+     "before": 11.898882865905762
+    }
+   }
+  },
+  "note": "a post-hoc dose-scaled copy of the parent object \u2014 the record above is the PARENT's (this object was not trained or derived separately); the served o_proj edit is linear in the write basis, so the copy's served delta is exactly scale x the parent's (lens_adapters OP_LORA_OPROJ)",
+  "object_type": "lora_subtraction",
+  "parent_dir": "objects/nemotron3nano4b/27bab56e9fcea25e397b8d5b918c91a03a42fc279561894a01189713370bec41",
+  "parent_fit_fingerprint": null,
+  "parent_identity": "derived",
+  "parent_object_sha256": "27bab56e9fcea25e397b8d5b918c91a03a42fc279561894a01189713370bec41",
+  "parent_staged_id": "derived__constv2-mix-full__lora_r4_ce_minus_ctl",
+  "producer": "scripts/sdfbase/scale_lora_dose.py",
+  "producer_commit": "037bd5b75cf43d405f64199db6adf940d57b96ec",
+  "scale": 0.25,
+  "scaling_method": "both parents' write bases B_pos, B_neg x scale per layer; A_pos, A_neg and the embedded parent provenance untouched",
+  "tensors_scaled": [
+   "B_pos",
+   "B_neg"
+  ],
+  "tensors_unchanged": [
+   "A_pos",
+   "A_neg",
+   "layers",
+   "rank",
+   "positions",
+   "response_header_len",
+   "provenance"
+  ],
+  "verification": {
+   "checks": [
+    {
+     "check": "tensors",
+     "rule": "torch.equal(new, parent * scale) per scaled tensor; torch.equal(new, parent) otherwise",
+     "scaled": [
+      "B_pos",
+      "B_neg"
+     ],
+     "status": "PASS",
+     "unchanged": [
+      "A_pos",
+      "A_neg"
+     ]
+    },
+    {
+     "adapter": "sisteer.capeval.serving.lens_adapters._adapt_lora_subtraction",
+     "check": "served_ops",
+     "n_ops": 8,
+     "rule": "per op: lowrank_a / coeff / layer / positions identical; lowrank_b == parent * scale (torch.equal)",
+     "status": "PASS"
+    },
+    {
+     "check": "served_activation",
+     "exact_bf16": true,
+     "exact_fp32": true,
+     "layers": 4,
+     "max_abs_diff_bf16": 0.0,
+     "max_abs_diff_fp32": 0.0,
+     "probe_rows": 64,
+     "reference_max_abs": 10.803287506103516,
+     "rule": "sum over the layer's ops of coeff * (x @ lowrank_a^T) @ lowrank_b^T on x ~ N(0,1): copy == scale * parent (fp32 within 1e-6 relative; exactness recorded)",
+     "seed": 0,
+     "status": "PASS"
+    }
+   ],
+   "kind": "lora_subtraction",
+   "scale": 0.25,
+   "status": "PASS"
+  },
+  "written_at": "2026-09-10T21:10:48Z"
+ },
+ "kind": "lora_subtraction",
+ "layers": [
+  12,
+  17,
+  24,
+  32
+ ],
+ "model_id": "nvidia/NVIDIA-Nemotron-3-Nano-4B-BF16",
+ "model_key": "nemotron3nano4b_doc",
+ "model_revision": "dfaf35de3e30f1867dd8dbc38a7fc9fb52d3914f",
+ "object_sha256": "ebc5a1ef63803e1953a64a80e9c177d8ae6d48c6150c385356dd6e49ec53c3c2",
+ "parent_neg": {
+  "budget_meta_sha256": "2ba619194402b6dc8a1501d2fbd3e25cfc430605f164731a420dd76b5b7362df",
+  "cell_id": "constv2ctl2-full__lora_r4_ce",
+  "data_scale": {
+   "budget": 42785435,
+   "manifest_sha256": "51e965d4af5f481249fcb201d45d19d132f720cafa3b4ab44bdb6223cc5ee391",
+   "official_tokens": 42785435,
+   "si": "constv2ctl2-full",
+   "source": "$SHARED/vol/pool/nemotron3nano4b_doc/pairs_constv2ctl2-full.manifest.json"
+  },
+  "fit_fingerprint": "9576a87d064f189b7d912f35fe88ceca01a2b26c8c5a7756975d5509bbc36702",
+  "heldout_pool_sha": "7f588099117d3a76408d400bca00a0a181613b59dadf471dd90ce13b72dde1e4",
+  "model_id": "nvidia/NVIDIA-Nemotron-3-Nano-4B-BF16",
+  "model_key": "nemotron3nano4b_doc",
+  "model_revision": "dfaf35de3e30f1867dd8dbc38a7fc9fb52d3914f",
+  "model_revision_source": "train_budget_meta.json",
+  "object_path": "objects/nemotron3nano4b/b25435bd4fd48a2d112609621880797130d132d6b6a421c4f4e2a0d51b762753/object.pt",
+  "object_sha256": "b25435bd4fd48a2d112609621880797130d132d6b6a421c4f4e2a0d51b762753",
+  "positions": "all",
+  "response_header_len": null,
+  "sample_manifest_sha": "51e965d4af5f481249fcb201d45d19d132f720cafa3b4ab44bdb6223cc5ee391",
+  "target_layers": [
+   12,
+   17,
+   24,
+   32
+  ],
+  "template_hash": "ab7813c3abdd9cb6",
+  "training_budget_kind": "document_tokens"
+ },
+ "parent_pos": {
+  "budget_meta_sha256": "353bd226a016fbb7c6ed7982f1408e4daf69c0e3423e42d07d5324b42892ad09",
+  "cell_id": "constv2-mix-full__lora_r4_ce",
+  "data_scale": {
+   "budget": null,
+   "manifest_sha256": "655b89f3d04441d7b255e47291103fbc53b60144be9f92fec15ee77a1373b02a",
+   "official_tokens": 42785435,
+   "si": "constv2-mix-full",
+   "source": "$SHARED/vol/pool/nemotron3nano4b_doc/pairs_constv2-mix-full.manifest.json"
+  },
+  "fit_fingerprint": "71087a2a91f28c5df8b0cc5d2e7aab7112923e7a68060e3dd9915b735375548a",
+  "heldout_pool_sha": "7f588099117d3a76408d400bca00a0a181613b59dadf471dd90ce13b72dde1e4",
+  "model_id": "nvidia/NVIDIA-Nemotron-3-Nano-4B-BF16",
+  "model_key": "nemotron3nano4b_doc",
+  "model_revision": "dfaf35de3e30f1867dd8dbc38a7fc9fb52d3914f",
+  "model_revision_source": "train_budget_meta.json",
+  "object_path": "objects/nemotron3nano4b/af46d41522f8134a9fa8149a4a1a792cc2a510f4ec4c343379cec3c846d77d1e/object.pt",
+  "object_sha256": "af46d41522f8134a9fa8149a4a1a792cc2a510f4ec4c343379cec3c846d77d1e",
+  "positions": "all",
+  "response_header_len": null,
+  "sample_manifest_sha": "655b89f3d04441d7b255e47291103fbc53b60144be9f92fec15ee77a1373b02a",
+  "target_layers": [
+   12,
+   17,
+   24,
+   32
+  ],
+  "template_hash": "ab7813c3abdd9cb6",
+  "training_budget_kind": "document_tokens"
+ },
+ "positions": "all",
+ "rank": 4,
+ "response_header_len": null,
+ "scale_matched": true
+}

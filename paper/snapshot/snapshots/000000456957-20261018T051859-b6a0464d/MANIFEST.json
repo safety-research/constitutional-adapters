@@ -1,0 +1,746 @@
+{
+ "built_utc": "2026-10-18T05:18:59.000Z",
+ "derived_from": "000000456957-20260929T232204-0f4b80a7",
+ "files": {
+  "computation.parquet": {
+   "bytes": 16855,
+   "sha256": "81c9b3476b5097df6d17c2d09f3a98f8ab349b59f49819701fea39e7bb6757e6"
+  },
+  "decode_policy.parquet": {
+   "bytes": 70375,
+   "sha256": "5ceef887b8826bcb93ac75d7464e1e95c94ea3858c866f3c1487880058bacf8d"
+  },
+  "disposition.parquet": {
+   "bytes": 173669,
+   "sha256": "29d5b45b80b4abfdcb27e41e063ef7ecdd4ebdfb00c67191611f55c5175d125b"
+  },
+  "eval.parquet": {
+   "bytes": 20358,
+   "sha256": "b53352d8131a7edabe4aacc49ab5d5ad9b34b986a9698c6a1ce4084f454b7e4f"
+  },
+  "fit_search.parquet": {
+   "bytes": 45885,
+   "sha256": "72a82c3a0d7e3d2cea7c80df88b4ff07d96b447318913b934d6fb820cccdcf1c"
+  },
+  "fit_trial.parquet": {
+   "bytes": 54262,
+   "sha256": "ca879479fbb411de83f9cfb05b78664512533eb2cff3729431c160b88d568b90"
+  },
+  "instrument.parquet": {
+   "bytes": 360327,
+   "sha256": "5fe69f4643ee4c626d99cbe9967dafc5fcbd6b59bea0bc665310501e53c6e332"
+  },
+  "item_flags.parquet": {
+   "bytes": 38086539,
+   "sha256": "785f9853868e2fc40f3f6cfc60ec40c1812de6293505e7e6a403ef86161120eb"
+  },
+  "item_result.parquet": {
+   "bytes": 49454130,
+   "sha256": "74cf28ff22d7070808f4a67b7e1f05a929e99df2c9b0e4d1d37a5d840e998152"
+  },
+  "item_set.parquet": {
+   "bytes": 24376,
+   "sha256": "a78d431bd146b64f2f67b03ac01ceb8f1832ff9f9a8a662ac367167f661263e4"
+  },
+  "judge.parquet": {
+   "bytes": 30351,
+   "sha256": "97bba5d66b7f2ce4b5c5836b538061df05a68993dfb74f075af00f21eb2de2bb"
+  },
+  "judgment.parquet": {
+   "bytes": 1234742,
+   "sha256": "56a7fbf33909313e1fda04fae63e94bd7bbc9ae24911f17e5ebd3a20a283f071"
+  },
+  "model.parquet": {
+   "bytes": 41937,
+   "sha256": "411eb214be35a703871681fc61511d221a427450e8b8fc24ad6f7866d2869fdf"
+  },
+  "object.parquet": {
+   "bytes": 317336,
+   "sha256": "53f2486d6945cda996982910f821fc4ce547e106946fce96c39e01eed37924b1"
+  },
+  "paper_frame.sqlite.gz.00": {
+   "bytes": 41943040,
+   "sha256": "f7812de9902f895e6788a8b905e5798d06472b8059be123e386da31fbf29bc47"
+  },
+  "paper_frame.sqlite.gz.01": {
+   "bytes": 41943040,
+   "sha256": "72c32252a772764b7ebf80f3a7994e76e7455b93a5eb3d32e9a159c93f072290"
+  },
+  "paper_frame.sqlite.gz.02": {
+   "bytes": 41943040,
+   "sha256": "ce8b4207e3b659d7c2602b276d14c634a51c3417e7ff30d3b495697415fc1104"
+  },
+  "paper_frame.sqlite.gz.03": {
+   "bytes": 41943040,
+   "sha256": "11232e85d95150465ec72362f5c7d0b049a973bb1fab7c6fd10dfc84b9d14f0f"
+  },
+  "paper_frame.sqlite.gz.04": {
+   "bytes": 41943040,
+   "sha256": "a9ac3acd48e7af0c058c934f5a2c1b588a4c4fda2952974e2f6e5ddc59908e30"
+  },
+  "paper_frame.sqlite.gz.05": {
+   "bytes": 5800664,
+   "sha256": "90f1892d65696988caaf6945f0d678cd909e075566acf86d5be85817afc0bcdc"
+  },
+  "paper_round.parquet": {
+   "bytes": 7676,
+   "sha256": "c7f0ae89d12332e9c664e76414149c65f97762f4d7ca21ada2a1e7f641cc806b"
+  },
+  "record_ingest.parquet": {
+   "bytes": 3055,
+   "sha256": "c27423810aef510251aee55d46df15f2ec68bebaa2d7e3b458d73dd1f8267a51"
+  },
+  "roster_entry.parquet": {
+   "bytes": 1775461,
+   "sha256": "42fc925889b0f98f507309eb1041cb6e61c58765ddd73c11a3ffc1d7c5a91655"
+  },
+  "ruling.parquet": {
+   "bytes": 298058,
+   "sha256": "308417de7037ebf598fe43860cc13c299a438dc73184ea0206d8dcc716945fba"
+  },
+  "ruling_state.parquet": {
+   "bytes": 84666,
+   "sha256": "bdb26654c8502ec7b3bcd28fccf64a88ead3768569defa4d4b9bfb1e1b857624"
+  },
+  "run.parquet": {
+   "bytes": 5237856,
+   "sha256": "52da9713fdf4ca8d8da4febdcb69bea576b82e5139eed4f910ddca5342577064"
+  },
+  "run_contrast.parquet": {
+   "bytes": 1275162,
+   "sha256": "1ff8135c353ec039250092d70da1edf95040522ec25ed005d15285c51d9241b4"
+  },
+  "run_degeneration.parquet": {
+   "bytes": 3491978,
+   "sha256": "77e446fa576d1de3b77317be5e4dab602ba8ac153c51f35a95d38d154ffd43e8"
+  },
+  "run_metric.parquet": {
+   "bytes": 3587009,
+   "sha256": "6baedebe6a5e9c2974ba3d08e51b70067c88d161ac373dd3c4e97c94bbce9e1e"
+  },
+  "run_state_event.parquet": {
+   "bytes": 1186053,
+   "sha256": "31f27ba79486ded8f014b51f351ad876c1fa1955703a731d260a32bba8e39ddb"
+  },
+  "sampling_mode_policy.parquet": {
+   "bytes": 7523,
+   "sha256": "9f98b1a1e85352c4bf3d86a4c426218fd241b5d30f367753427e310a0d5db38b"
+  },
+  "si_text.parquet": {
+   "bytes": 20196,
+   "sha256": "81455cfb8d80521a7f2c35e09cda6b24b5d2be1704658bda8ee2b616cb85b3e6"
+  },
+  "v_paper_current.parquet": {
+   "bytes": 430119,
+   "sha256": "1bb1596e77e34439dc483203b6abb7ea654bc108655534912db47ebd9438203b"
+  },
+  "v_paper_long.parquet": {
+   "bytes": 3895253,
+   "sha256": "307805d0d481d67e394f55da7ec1b2d4f9356a2cb8a385939dcab756d57d0e00"
+  },
+  "v_paper_objects.parquet": {
+   "bytes": 43488,
+   "sha256": "8eb663ec65032aa0cd68da5f40af2f23d406184acf445331acfbb449d7836180"
+  },
+  "v_roster_match.parquet": {
+   "bytes": 278508,
+   "sha256": "451b27e89759f901e7d294aed7d9b8b574186368255e4b07e447eec4ee75d5b3"
+  }
+ },
+ "ingest_seq": 456957,
+ "item_model_ids": [],
+ "materialised": [
+  "v_paper_current",
+  "v_paper_long",
+  "v_paper_objects",
+  "v_roster_match"
+ ],
+ "materialised_types": {
+  "v_paper_current": {
+   "campaign": "TEXT",
+   "comparison_ids_json": "TEXT",
+   "decisive_action": "TEXT",
+   "decisive_ruling_id": "TEXT",
+   "decode_family_default_policy_id": "TEXT",
+   "decode_is_family_default": "INTEGER",
+   "decode_policy_id": "TEXT",
+   "decode_policy_match": "TEXT",
+   "decode_source": "TEXT",
+   "eval_id": "TEXT",
+   "held_out": "INTEGER",
+   "in_current_paper": "INTEGER",
+   "ingest_seq": "INTEGER",
+   "instrument_id": "TEXT",
+   "is_complete": "INTEGER",
+   "is_operating_point": "INTEGER",
+   "judge_id": "TEXT",
+   "lifecycle_state": "TEXT",
+   "model_id": "TEXT",
+   "object_id": "TEXT",
+   "operating_point_basis": "TEXT",
+   "roster_entry_ids_json": "TEXT",
+   "round_id": "TEXT",
+   "ruling_ids_json": "TEXT",
+   "run_id": "TEXT",
+   "selection_state": "TEXT",
+   "strength_nominal": "REAL"
+  },
+  "v_paper_long": {
+   "anchor_kind": "TEXT",
+   "anchor_run_id": "TEXT",
+   "anchor_token_cap_tokens": "INTEGER",
+   "bon_n": "INTEGER",
+   "campaign": "TEXT",
+   "campaign_cell_id_legacy": "TEXT",
+   "cap_matched": "INTEGER",
+   "ci_hi": "REAL",
+   "ci_lo": "REAL",
+   "ci_method": "TEXT",
+   "comparison_ids_json": "TEXT",
+   "computation_id": "TEXT",
+   "context_window_tokens": "INTEGER",
+   "contrast_extra_json": "TEXT",
+   "cot_prompting": "TEXT",
+   "decisive_action": "TEXT",
+   "decisive_ruling_id": "TEXT",
+   "decode_family_default_policy_id": "TEXT",
+   "decode_is_family_default": "INTEGER",
+   "decode_policy_id": "TEXT",
+   "decode_policy_match": "TEXT",
+   "decode_sent_json": "TEXT",
+   "decode_source": "TEXT",
+   "delta": "REAL",
+   "delta_hi": "REAL",
+   "delta_lo": "REAL",
+   "delta_method": "TEXT",
+   "delta_p": "REAL",
+   "effect_kind": "TEXT",
+   "effect_size": "REAL",
+   "eval_category": "TEXT",
+   "eval_id": "TEXT",
+   "eval_id_legacy": "TEXT",
+   "fit_layer_count": "INTEGER",
+   "fit_layers_json": "TEXT",
+   "fit_model_id": "TEXT",
+   "fit_replicate_label": "TEXT",
+   "frac_at_token_cap": "REAL",
+   "frac_defended_degenerate": "REAL",
+   "frac_degenerate_classifier": "REAL",
+   "frac_degenerate_contentless": "REAL",
+   "frac_degenerate_rep_ratio_loop": "REAL",
+   "frac_degenerate_union5": "REAL",
+   "frac_degenerate_zlib_collapse": "REAL",
+   "frac_loop_first512": "REAL",
+   "harness": "TEXT",
+   "headline_metric_id": "TEXT",
+   "held_out": "INTEGER",
+   "in_current_paper": "INTEGER",
+   "ingest_seq": "INTEGER",
+   "instrument_id": "TEXT",
+   "intervention_hash": "TEXT",
+   "is_complete": "INTEGER",
+   "is_operating_point": "INTEGER",
+   "item_set_id": "TEXT",
+   "judge_id": "TEXT",
+   "judge_model": "TEXT",
+   "judge_rubric_name": "TEXT",
+   "judgment_id": "TEXT",
+   "judgment_n_judge_refusals": "INTEGER",
+   "k": "INTEGER",
+   "lane_source_legacy": "TEXT",
+   "lifecycle_state": "TEXT",
+   "max_turns": "INTEGER",
+   "metric_extra_json": "TEXT",
+   "metric_id": "TEXT",
+   "metric_role": "TEXT",
+   "metric_role_candidates": "INTEGER",
+   "metric_role_contested": "INTEGER",
+   "metric_source_id": "TEXT",
+   "model_family": "TEXT",
+   "model_id": "TEXT",
+   "multi_source_carried_json": "TEXT",
+   "multi_source_declaration_id": "TEXT",
+   "multi_source_degenerate_share": "TEXT",
+   "multi_source_loop_share": "TEXT",
+   "multi_source_loop_share_measure": "TEXT",
+   "multi_source_reason": "TEXT",
+   "multi_source_role": "TEXT",
+   "multi_source_secondary_run_id": "TEXT",
+   "multi_source_state": "TEXT",
+   "n": "INTEGER",
+   "n_abstentions": "INTEGER",
+   "n_error_outcomes": "INTEGER",
+   "n_incomplete": "INTEGER",
+   "n_pairs": "INTEGER",
+   "n_shot": "INTEGER",
+   "n_trials": "INTEGER",
+   "notes": "TEXT",
+   "object_artifact_sha256": "TEXT",
+   "object_id": "TEXT",
+   "object_kind": "TEXT",
+   "object_role": "TEXT",
+   "object_status": "TEXT",
+   "operating_point_basis": "TEXT",
+   "operating_point_id_legacy": "TEXT",
+   "padding_identity_sha256": "TEXT",
+   "padding_tokens": "INTEGER",
+   "paper_label": "TEXT",
+   "pass_label": "TEXT",
+   "producer_metric_spelling": "TEXT",
+   "producer_object_key_legacy": "TEXT",
+   "producer_run_key_legacy": "TEXT",
+   "roster_entry_ids_json": "TEXT",
+   "round_id": "TEXT",
+   "run_extra_json": "TEXT",
+   "run_id": "TEXT",
+   "run_judge_id": "TEXT",
+   "run_source_id": "TEXT",
+   "selection_state": "TEXT",
+   "serving_config_sha256": "TEXT",
+   "serving_engine_version": "TEXT",
+   "serving_identity": "TEXT",
+   "serving_path": "TEXT",
+   "source_producers_json": "TEXT",
+   "source_uri": "TEXT",
+   "store_uri": "TEXT",
+   "strength_coefficient": "REAL",
+   "strength_nominal": "REAL",
+   "thinking_mode": "TEXT",
+   "threshold": "REAL",
+   "token_cap_rung_index": "INTEGER",
+   "token_cap_tokens": "INTEGER",
+   "transfer_kind": "TEXT",
+   "value": "REAL",
+   "view_legacy": "TEXT"
+  },
+  "v_paper_objects": {
+   "campaign": "TEXT",
+   "comparison_ids_json": "TEXT",
+   "excluding_ruling_ids_json": "TEXT",
+   "fit_model_id": "TEXT",
+   "in_paper": "INTEGER",
+   "n_runs": "INTEGER",
+   "n_runs_in_paper": "INTEGER",
+   "object_id": "TEXT",
+   "object_kind": "TEXT",
+   "object_role": "TEXT",
+   "object_status": "TEXT",
+   "paper_label": "TEXT",
+   "round_id": "TEXT",
+   "ruling_ids_json": "TEXT",
+   "run_excluding_ruling_ids_json": "TEXT",
+   "selection_states_json": "TEXT"
+  },
+  "v_roster_match": {
+   "comparison_id": "TEXT",
+   "roster_entry_id": "TEXT",
+   "run_id": "TEXT"
+  }
+ },
+ "model_ids": [
+  "gemma4e4b_base",
+  "gemma4e4b_it",
+  "llama8b_base",
+  "llama8b_it",
+  "nemotron3nano4b",
+  "nemotron3nano4b_base",
+  "qwen35_4b_base",
+  "qwen35_4b_it"
+ ],
+ "n_item_runs": 3406,
+ "n_runs": 10779,
+ "parquet_tables": [
+  "paper_round",
+  "model",
+  "si_text",
+  "fit_search",
+  "fit_trial",
+  "eval",
+  "item_set",
+  "judge",
+  "instrument",
+  "decode_policy",
+  "sampling_mode_policy",
+  "computation",
+  "ruling",
+  "ruling_state",
+  "object",
+  "roster_entry",
+  "disposition",
+  "run",
+  "run_state_event",
+  "judgment",
+  "run_metric",
+  "run_contrast",
+  "run_degeneration",
+  "item_result",
+  "item_flags",
+  "record_ingest",
+  "v_paper_current",
+  "v_paper_long",
+  "v_paper_objects",
+  "v_roster_match"
+ ],
+ "precondition": {
+  "checked": true,
+  "head": "bd03ae99c6d5d23bb7d3ab29c6cfebc248f7f7a0",
+  "override": null,
+  "retire_merge_sha": "db78f971a325c749a80dd7a8e623b0faea60ddbb"
+ },
+ "read_set_version": 1,
+ "release_changed_rows": {
+  "computation": {
+   "notes": 19
+  },
+  "decode_policy": {
+   "extra_json": 92,
+   "max_new_tokens_rule": 2,
+   "notes": 52,
+   "source_citation": 91
+  },
+  "disposition": {
+   "extra_json": 312,
+   "reason": 416,
+   "source_ref": 116
+  },
+  "eval": {
+   "extra_json": 24,
+   "field_confidence_json": 1,
+   "notes": 5
+  },
+  "fit_search": {
+   "extra_json": 2,
+   "field_confidence_json": 2
+  },
+  "instrument": {
+   "extra_json": 1276,
+   "ladder_promotion_rule": 159,
+   "notes": 252
+  },
+  "item_flags": {
+   "extra_json": 270
+  },
+  "item_set": {
+   "extra_json": 13,
+   "field_confidence_json": 2,
+   "item_id_scheme": 2,
+   "pairing_note": 9,
+   "source_uri": 1
+  },
+  "judge": {
+   "extra_json": 10,
+   "field_confidence_json": 2,
+   "notes": 5,
+   "score_scale": 1,
+   "threshold_rule": 2
+  },
+  "judgment": {
+   "batch_ids_json": 723,
+   "extra_json": 3055,
+   "producer_session": 298,
+   "store_uri": 34
+  },
+  "model": {
+   "architecture_note": 3,
+   "chat_template_note": 1,
+   "extra_json": 15,
+   "field_confidence_json": 4,
+   "notes": 11
+  },
+  "object": {
+   "artifact_locations_json": 21,
+   "derivation_params_json": 13,
+   "extra_json": 74,
+   "field_confidence_json": 139,
+   "fit_contrast_sets_json": 1,
+   "fit_substrate": 94,
+   "fit_writer": 1
+  },
+  "paper_round": {
+   "extra_json": 1
+  },
+  "roster_entry": {
+   "extra_json": 4601,
+   "source_citation": 1033
+  },
+  "ruling": {
+   "expires_when_json": 21,
+   "extra_json": 216,
+   "reason": 405,
+   "ruled_by": 967,
+   "ruling_id": 1,
+   "scope_json": 39,
+   "source_ref": 967,
+   "target_json": 152
+  },
+  "ruling_state": {
+   "evidence_json": 1,
+   "ruling_id": 1
+  },
+  "run": {
+   "campaign_cell_id_legacy": 12,
+   "extra_json": 5576,
+   "field_confidence_json": 6955,
+   "node_hostname": 1238,
+   "notes": 703,
+   "producer_object_key_legacy": 12,
+   "producer_run_key_legacy": 12,
+   "producer_session": 976,
+   "store_uri": 34,
+   "substrate": 9378
+  },
+  "run_contrast": {
+   "extra_json": 744
+  },
+  "run_degeneration": {
+   "extra_json": 12852,
+   "notes": 3687,
+   "pooling_json": 11243,
+   "threshold_params_json": 68
+  },
+  "run_metric": {
+   "extra_json": 3534
+  },
+  "run_state_event": {
+   "note": 1081
+  },
+  "si_text": {
+   "extra_json": 1,
+   "notes": 1
+  },
+  "v_paper_long": {
+   "campaign_cell_id_legacy": 12,
+   "contrast_extra_json": 642,
+   "metric_extra_json": 3175,
+   "notes": 1303,
+   "producer_object_key_legacy": 12,
+   "producer_run_key_legacy": 12,
+   "run_extra_json": 13496,
+   "store_uri": 314
+  }
+ },
+ "release_rules_sha256": "82f0b20a59d3e91649fb8a77e0d08de7b1ead230facf47de857e7969367f9971",
+ "scope": "paper_frame",
+ "scrubbed": {
+  "computation": [
+   "notes",
+   "record_uri"
+  ],
+  "decode_policy": [
+   "extra_json",
+   "max_new_tokens_rule",
+   "notes",
+   "record_uri",
+   "source_citation"
+  ],
+  "disposition": [
+   "extra_json",
+   "reason",
+   "record_uri",
+   "source_ref"
+  ],
+  "eval": [
+   "extra_json",
+   "field_confidence_json",
+   "notes",
+   "record_uri"
+  ],
+  "fit_search": [
+   "extra_json",
+   "field_confidence_json",
+   "grad_norm_reconnaissance_uri",
+   "record_uri",
+   "trials_uri"
+  ],
+  "fit_trial": [
+   "record_uri"
+  ],
+  "instrument": [
+   "extra_json",
+   "ladder_promotion_rule",
+   "notes",
+   "record_uri"
+  ],
+  "item_flags": [
+   "extra_json"
+  ],
+  "item_set": [
+   "extra_json",
+   "field_confidence_json",
+   "item_id_scheme",
+   "pairing_note",
+   "record_uri",
+   "source_uri"
+  ],
+  "judge": [
+   "extra_json",
+   "field_confidence_json",
+   "notes",
+   "record_uri",
+   "score_scale",
+   "threshold_rule"
+  ],
+  "judgment": [
+   "batch_ids_json",
+   "extra_json",
+   "producer_session",
+   "record_uri",
+   "store_uri"
+  ],
+  "model": [
+   "architecture_note",
+   "chat_template_note",
+   "extra_json",
+   "field_confidence_json",
+   "notes",
+   "record_uri"
+  ],
+  "object": [
+   "artifact_locations_json",
+   "derivation_params_json",
+   "extra_json",
+   "field_confidence_json",
+   "fit_config_path",
+   "fit_contrast_sets_json",
+   "fit_heldout_curve_uri",
+   "fit_hyperparameters_json",
+   "fit_substrate",
+   "fit_writer",
+   "object_sidecars_json",
+   "record_uri"
+  ],
+  "paper_round": [
+   "extra_json",
+   "record_uri"
+  ],
+  "record_ingest": [
+   "file_uri"
+  ],
+  "roster_entry": [
+   "extra_json",
+   "record_uri",
+   "source_citation"
+  ],
+  "ruling": [
+   "expires_when_json",
+   "extra_json",
+   "reason",
+   "record_uri",
+   "ruled_by",
+   "ruling_id",
+   "scope_json",
+   "source_ref",
+   "target_json"
+  ],
+  "ruling_state": [
+   "evidence_json",
+   "record_uri",
+   "ruling_id"
+  ],
+  "run": [
+   "campaign_cell_id_legacy",
+   "config_path",
+   "extra_json",
+   "field_confidence_json",
+   "node_hostname",
+   "notes",
+   "producer_object_key_legacy",
+   "producer_run_key_legacy",
+   "producer_session",
+   "record_uri",
+   "store_completion_artifact_uri",
+   "store_uri",
+   "substrate"
+  ],
+  "run_contrast": [
+   "extra_json",
+   "record_uri"
+  ],
+  "run_degeneration": [
+   "extra_json",
+   "notes",
+   "pooling_json",
+   "source_uri",
+   "threshold_params_json"
+  ],
+  "run_metric": [
+   "extra_json",
+   "record_uri",
+   "source_producers_json",
+   "source_uri"
+  ],
+  "run_state_event": [
+   "evidence_uri",
+   "note",
+   "record_uri"
+  ],
+  "sampling_mode_policy": [
+   "record_uri"
+  ],
+  "si_text": [
+   "extra_json",
+   "notes",
+   "record_uri",
+   "source_uri"
+  ],
+  "v_paper_long": [
+   "campaign_cell_id_legacy",
+   "contrast_extra_json",
+   "metric_extra_json",
+   "metric_source_id",
+   "notes",
+   "producer_object_key_legacy",
+   "producer_run_key_legacy",
+   "run_extra_json",
+   "run_source_id",
+   "source_producers_json",
+   "source_uri",
+   "store_uri"
+  ]
+ },
+ "snapshot_id": "000000456957-20261018T051859-b6a0464d",
+ "source_schema_version": 17,
+ "sqlite_bytes": 1845694464,
+ "sqlite_part_bytes": 41943040,
+ "sqlite_parts": [
+  "paper_frame.sqlite.gz.00",
+  "paper_frame.sqlite.gz.01",
+  "paper_frame.sqlite.gz.02",
+  "paper_frame.sqlite.gz.03",
+  "paper_frame.sqlite.gz.04",
+  "paper_frame.sqlite.gz.05"
+ ],
+ "sqlite_sha256": "63dbb3edc0432b6f79ee0fd5143b73b87a08d71da5e05810a0db948fa0e6bd1c",
+ "tables": {
+  "computation": 41,
+  "decode_policy": 141,
+  "disposition": 1107,
+  "eval": 36,
+  "fit_search": 23,
+  "fit_trial": 308,
+  "instrument": 1280,
+  "item_flags": 910490,
+  "item_result": 1158203,
+  "item_set": 26,
+  "judge": 15,
+  "judgment": 9526,
+  "model": 20,
+  "object": 378,
+  "paper_round": 1,
+  "record_ingest": 1,
+  "roster_entry": 9589,
+  "ruling": 967,
+  "ruling_state": 793,
+  "run": 10779,
+  "run_contrast": 9890,
+  "run_degeneration": 60427,
+  "run_metric": 28682,
+  "run_state_event": 19266,
+  "sampling_mode_policy": 24,
+  "si_text": 9,
+  "v_paper_current": 10779,
+  "v_paper_long": 27331,
+  "v_paper_objects": 378,
+  "v_roster_match": 40997
+ }
+}

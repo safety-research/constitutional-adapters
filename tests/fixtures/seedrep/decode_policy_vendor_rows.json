@@ -1,0 +1,153 @@
+{
+ "_about": "A test fixture: the three vendor decode-policy rows the battery's TARGET legs resolve by EXACT ref, copied VERBATIM from the registry's decode-policy export at e8fd4582 (configs/registry/decode_policy.json; the BoN row merged there from 294b774e), plus the supersede that applies to the grandfathered BoN row. Tests splice these into a copy of the committed export (tests/test_bon_vendor_preset.py policy_file_with_vendor_rows) so the reader runs against the real export shape; the registry checks read the REAL registry, never this file.",
+ "policies": [
+  {
+   "decode_source": "model_card",
+   "deliberate_departure": null,
+   "effective_from_confidence": "date_only",
+   "effective_from_utc": "2026-09-17T00:00:00.000Z",
+   "eval_category": null,
+   "eval_id": "strongreject_bon",
+   "is_default": 1,
+   "legacy_contracts_row": null,
+   "max_new_tokens_rule": "per instrument, never resolved here: the harness's 512 store + 4096 climb (bon_served_run.py; the climb re-draws at the store's recorded sampler, bon.climb_decode as_drawn), or Reseed's native seed-replicate battery's single 4096 cap per draw (no 512 store, no climb; ruling r2v1-include-qwen-bon-vendor_preset-new-instrument)",
+   "min_p": 0.0,
+   "mode": "vendor_preset",
+   "model_id": "qwen35_4b_it",
+   "notes": "THE DEFAULT best-of-N row for qwen35_4b_it since 2026-09-17 (bon_served.bon_policy -> resolve(model, eval strongreject_bon)): the request body carries exactly params_sent; the seed is bon_seed(goal, sample, trial) per draw and the augmentation is unchanged. Supersedes qwen35_4b_it|bon|off|grandfathered_T1 (every store drawn before 2026-09-17; readable by name). A new instrument row for stores drawn under this policy is DataWrangler's when the first such store is registered (identity hashes the decode numbers: bon_512store_4096climb_T1 stays the existing stores'). ONE row for two producers (merged 2026-09-17 from registry-rulings-0917 + decode-pins-0917-registry, each of which had seeded this ref): Reseed's native seed-replicate battery draws under this same row (100 goals x 75 draws at one 4,096 cap, a per-draw replicate_v1 seed) as a DIFFERENT INSTRUMENT from the grandfathered draws, never pooled with them (include ruling r2v1-include-qwen-bon-vendor_preset-new-instrument, relayed by Reseed 11:58 PDT); the cap and the seed policy belong to the instrument, this row states the six numbers",
+   "params_not_sent_json": {
+    "frequency_penalty": "0.0 (protocol default)"
+   },
+   "params_sent": [
+    "temperature",
+    "top_p",
+    "top_k",
+    "min_p",
+    "presence_penalty",
+    "repetition_penalty",
+    "seed"
+   ],
+   "policy_id": "qwen35_4b_it|bon|off|vendor_preset@v1",
+   "policy_ref": "qwen35_4b_it|bon|off|vendor_preset",
+   "policy_version": 1,
+   "presence_penalty": 1.5,
+   "repetition_penalty": 1.0,
+   "ruling_id": null,
+   "ruling_ref": "decode-bon-vendor-preset-2026-09-17",
+   "same_values_as": "qwen35_4b_it|static|off|vendor_preset@v1",
+   "seed_decode_source": null,
+   "seed_rule": "per_draw",
+   "source_citation": "same_values_as qwen35_4b_it|static|off|vendor_preset (configs/sdfbase_sampled_decode.yaml presets.qwen35_4b: the model card's instruct / non-thinking GENERAL row; presence_penalty 1.5 is SENT -- it can never be a server default, contracts.SERVER_DEFAULTABLE_SAMPLING_KEYS); citations.bon_vendor_preset; the same row is what Reseed's battery draws under (the user via Reseed, postal 2026-09-17 11:58 PDT: BoN on the Qwen vendor preset as a NEW instrument, NOT comparable with the grandfathered T = 1.0 rows; ~/specs/qwen-seedrep-native-battery/spec.md '--bon-decode-preset vendor sends the vendor row on every BoN draw; --decode-seed-policy replicate_v1 --decode-seed-base <s>', Assumptions 'BoN randomness'; contracts.py QWEN35_VENDOR_ROWS['instruct_general'])",
+   "superseded_by_policy_id": null,
+   "superseded_by_unresolved": null,
+   "temperature": 0.7,
+   "thinking_mode": "off",
+   "top_k": 20,
+   "top_p": 0.8,
+   "wildcard_expanded_from": null
+  },
+  {
+   "decode_source": "model_card",
+   "deliberate_departure": null,
+   "effective_from_confidence": "date_only",
+   "effective_from_utc": "2026-09-17T00:00:00.000Z",
+   "eval_category": "multi_turn",
+   "eval_id": null,
+   "is_default": 0,
+   "legacy_contracts_row": null,
+   "max_new_tokens_rule": "4096 per reply",
+   "min_p": 0.0,
+   "mode": "vendor_preset",
+   "model_id": "qwen35_4b_it",
+   "notes": "the filed 4,096-cap anchors were drawn at engine defaults (qwen35_4b_it|multi_turn|off|server_default stays the default row); a steered-minus-none reading across the two rows carries a sampler_check DIFFER stamp naming this ruling (ReLU's spec), never a silent pooling",
+   "params_not_sent_json": {
+    "frequency_penalty": "0.0"
+   },
+   "params_sent": [
+    "temperature",
+    "top_p",
+    "top_k",
+    "min_p",
+    "presence_penalty",
+    "repetition_penalty",
+    "max_tokens",
+    "seed"
+   ],
+   "policy_id": "qwen35_4b_it|multi_turn|off|vendor_preset@v1",
+   "policy_ref": "qwen35_4b_it|multi_turn|off|vendor_preset",
+   "policy_version": 1,
+   "presence_penalty": 1.5,
+   "repetition_penalty": 1.0,
+   "ruling_id": null,
+   "ruling_ref": "decode-qwen-vendor-preset-bon-multiturn-petri-2026-09-17",
+   "same_values_as": "qwen35_4b_it|static|off|vendor_preset@v1",
+   "seed_decode_source": null,
+   "seed_rule": "per_item",
+   "source_citation": "the user via Reseed (postal 2026-09-17 11:58 PDT); ~/specs/relu-differenced-native-qwen/spec.md criterion 2 ('multi-turn at 4,096 sampled, ALSO the vendor preset - the user, 2026-09-17: a departure from existing practice ... to become the practice'); src/sisteer/eval/attacks/target_decode.py DEFAULT_CONFIG_MODE = VENDOR_PRESET (the config-level campaign default since 2026-09-16)",
+   "superseded_by_policy_id": null,
+   "superseded_by_unresolved": null,
+   "temperature": 0.7,
+   "thinking_mode": "off",
+   "top_k": 20,
+   "top_p": 0.8,
+   "wildcard_expanded_from": null
+  },
+  {
+   "decode_source": "model_card",
+   "deliberate_departure": null,
+   "effective_from_confidence": "date_only",
+   "effective_from_utc": "2026-09-17T00:00:00.000Z",
+   "eval_category": "petri",
+   "eval_id": null,
+   "is_default": 0,
+   "legacy_contracts_row": null,
+   "max_new_tokens_rule": "1024 per turn",
+   "min_p": 0.0,
+   "mode": "vendor_preset",
+   "model_id": "qwen35_4b_it",
+   "notes": "the full22 Petri wave (88 cells) ran at vLLM defaults and is not rerun: qwen35_4b_it|petri|off|vllm_default stays the canonical AS-RUN default; this row is the seed-replicate battery's target row",
+   "params_not_sent_json": {
+    "frequency_penalty": "0.0"
+   },
+   "params_sent": [
+    "temperature",
+    "top_p",
+    "top_k",
+    "min_p",
+    "presence_penalty",
+    "repetition_penalty",
+    "max_tokens",
+    "seed"
+   ],
+   "policy_id": "qwen35_4b_it|petri|off|vendor_preset@v1",
+   "policy_ref": "qwen35_4b_it|petri|off|vendor_preset",
+   "policy_version": 1,
+   "presence_penalty": 1.5,
+   "repetition_penalty": 1.0,
+   "ruling_id": null,
+   "ruling_ref": "decode-qwen-vendor-preset-bon-multiturn-petri-2026-09-17",
+   "same_values_as": "qwen35_4b_it|static|off|vendor_preset@v1",
+   "seed_decode_source": null,
+   "seed_rule": "per_item",
+   "source_citation": "the user via Reseed (postal 2026-09-17 11:58 PDT); ~/specs/qwen-seedrep-native-battery/spec.md ('Petri: target GenerateConfig carries the vendor row + seed per scenario-turn'); CLAUDE.md Petri row (1,024 per reply)",
+   "superseded_by_policy_id": null,
+   "superseded_by_unresolved": null,
+   "temperature": 0.7,
+   "thinking_mode": "off",
+   "top_k": 20,
+   "top_p": 0.8,
+   "wildcard_expanded_from": null
+  }
+ ],
+ "source": {
+  "decode-pins-0917-registry": "294b774e",
+  "policy_set_sha256_at_e8fd4582": "a26095e797f4aea205204806b6454fa1e9e57db327b610f28ff1f0254c0739e0",
+  "registry-rulings-0917": "e8fd4582"
+ },
+ "supersede": {
+  "qwen35_4b_it|bon|off|grandfathered_T1@v1": {
+   "is_default": 0,
+   "superseded_by_policy_id": "qwen35_4b_it|bon|off|vendor_preset@v1"
+  }
+ }
+}

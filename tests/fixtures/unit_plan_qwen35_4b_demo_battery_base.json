@@ -1,0 +1,2243 @@
+[
+ {
+  "args": [
+   "qwen35_4b_demo",
+   "static_base_t0",
+   "{sha}",
+   "9",
+   "",
+   "battery"
+  ],
+  "array": null,
+  "cluster": "*",
+  "coverage": {
+   "codeattack": {
+    "expected": null,
+    "expected_source": null,
+    "host": "cluster",
+    "layout": "jailbreak_cellstore",
+    "path": {
+     "root_rel": "exp/sdfbase_full22_native/transcripts_results/sdfbase_full22_qwen35_4b_demo_battery_sampled_t0/codeattack/<cell>"
+    },
+    "private_run": "sdfbase_full22_qwen35_4b_demo_battery_sampled_t0"
+   },
+   "grok420": {
+    "expected": null,
+    "expected_source": null,
+    "host": "cluster",
+    "layout": "jailbreak_cellstore",
+    "path": {
+     "root_rel": "exp/sdfbase_full22_native/transcripts_results/sdfbase_full22_qwen35_4b_demo_battery_sampled_t0/grok420/<cell>"
+    },
+    "private_run": "sdfbase_full22_qwen35_4b_demo_battery_sampled_t0"
+   },
+   "pasttense": {
+    "expected": null,
+    "expected_source": null,
+    "host": "cluster",
+    "layout": "jailbreak_cellstore",
+    "path": {
+     "root_rel": "exp/sdfbase_full22_native/transcripts_results/sdfbase_full22_qwen35_4b_demo_battery_sampled_t0/pasttense/<cell>"
+    },
+    "private_run": "sdfbase_full22_qwen35_4b_demo_battery_sampled_t0"
+   },
+   "renellm": {
+    "expected": null,
+    "expected_source": null,
+    "host": "cluster",
+    "layout": "jailbreak_cellstore",
+    "path": {
+     "root_rel": "exp/sdfbase_full22_native/transcripts_results/sdfbase_full22_qwen35_4b_demo_battery_sampled_t0/renellm/<cell>"
+    },
+    "private_run": "sdfbase_full22_qwen35_4b_demo_battery_sampled_t0"
+   }
+  },
+  "depends_on": null,
+  "env": {
+   "F22_REGISTRY_EVALS": "pasttense,codeattack,renellm,grok420"
+  },
+  "evals": [
+   "pasttense",
+   "codeattack",
+   "renellm",
+   "grok420"
+  ],
+  "expected_shards": {
+   "codeattack": [
+    "shard00",
+    "shard01",
+    "shard02",
+    "shard03",
+    "shard04",
+    "shard05",
+    "shard06",
+    "shard07",
+    "shard08"
+   ],
+   "grok420": [
+    "shard00",
+    "shard01",
+    "shard02",
+    "shard03",
+    "shard04",
+    "shard05",
+    "shard06",
+    "shard07",
+    "shard08"
+   ],
+   "pasttense": [
+    "shard00",
+    "shard01",
+    "shard02",
+    "shard03",
+    "shard04",
+    "shard05",
+    "shard06",
+    "shard07",
+    "shard08"
+   ],
+   "renellm": [
+    "shard00",
+    "shard01",
+    "shard02",
+    "shard03",
+    "shard04",
+    "shard05",
+    "shard06",
+    "shard07",
+    "shard08"
+   ]
+  },
+  "family": "static",
+  "group": null,
+  "kind": "target",
+  "logical_work_id": "qwen35_4b_demo/battery/static/t0",
+  "name": "f22s-qwen35_4b_demo-qwen35_4b_demo_battery-static_base_t0",
+  "padding_tokens": null,
+  "private_run": "sdfbase_full22_qwen35_4b_demo_battery_sampled_t0",
+  "registers": true,
+  "registration": "native",
+  "script": "scripts/sdfbase/full22/sampled/target_sampled.sbatch",
+  "stage_family": "static",
+  "time_key": "eval",
+  "twin_ok": true,
+  "unit": "t0"
+ },
+ {
+  "args": [
+   "qwen35_4b_demo",
+   "static_base_t1",
+   "{sha}",
+   "9",
+   "",
+   "battery"
+  ],
+  "array": null,
+  "cluster": "*",
+  "coverage": {
+   "codeattack": {
+    "expected": null,
+    "expected_source": null,
+    "host": "cluster",
+    "layout": "jailbreak_cellstore",
+    "path": {
+     "root_rel": "exp/sdfbase_full22_native/transcripts_results/sdfbase_full22_qwen35_4b_demo_battery_sampled_t1/codeattack/<cell>"
+    },
+    "private_run": "sdfbase_full22_qwen35_4b_demo_battery_sampled_t1"
+   },
+   "grok420": {
+    "expected": null,
+    "expected_source": null,
+    "host": "cluster",
+    "layout": "jailbreak_cellstore",
+    "path": {
+     "root_rel": "exp/sdfbase_full22_native/transcripts_results/sdfbase_full22_qwen35_4b_demo_battery_sampled_t1/grok420/<cell>"
+    },
+    "private_run": "sdfbase_full22_qwen35_4b_demo_battery_sampled_t1"
+   },
+   "pasttense": {
+    "expected": null,
+    "expected_source": null,
+    "host": "cluster",
+    "layout": "jailbreak_cellstore",
+    "path": {
+     "root_rel": "exp/sdfbase_full22_native/transcripts_results/sdfbase_full22_qwen35_4b_demo_battery_sampled_t1/pasttense/<cell>"
+    },
+    "private_run": "sdfbase_full22_qwen35_4b_demo_battery_sampled_t1"
+   },
+   "renellm": {
+    "expected": null,
+    "expected_source": null,
+    "host": "cluster",
+    "layout": "jailbreak_cellstore",
+    "path": {
+     "root_rel": "exp/sdfbase_full22_native/transcripts_results/sdfbase_full22_qwen35_4b_demo_battery_sampled_t1/renellm/<cell>"
+    },
+    "private_run": "sdfbase_full22_qwen35_4b_demo_battery_sampled_t1"
+   }
+  },
+  "depends_on": null,
+  "env": {
+   "F22_REGISTRY_EVALS": "pasttense,codeattack,renellm,grok420"
+  },
+  "evals": [
+   "pasttense",
+   "codeattack",
+   "renellm",
+   "grok420"
+  ],
+  "expected_shards": {
+   "codeattack": [
+    "shard00",
+    "shard01",
+    "shard02",
+    "shard03",
+    "shard04",
+    "shard05",
+    "shard06",
+    "shard07",
+    "shard08"
+   ],
+   "grok420": [
+    "shard00",
+    "shard01",
+    "shard02",
+    "shard03",
+    "shard04",
+    "shard05",
+    "shard06",
+    "shard07",
+    "shard08"
+   ],
+   "pasttense": [
+    "shard00",
+    "shard01",
+    "shard02",
+    "shard03",
+    "shard04",
+    "shard05",
+    "shard06",
+    "shard07",
+    "shard08"
+   ],
+   "renellm": [
+    "shard00",
+    "shard01",
+    "shard02",
+    "shard03",
+    "shard04",
+    "shard05",
+    "shard06",
+    "shard07",
+    "shard08"
+   ]
+  },
+  "family": "static",
+  "group": null,
+  "kind": "target",
+  "logical_work_id": "qwen35_4b_demo/battery/static/t1",
+  "name": "f22s-qwen35_4b_demo-qwen35_4b_demo_battery-static_base_t1",
+  "padding_tokens": null,
+  "private_run": "sdfbase_full22_qwen35_4b_demo_battery_sampled_t1",
+  "registers": true,
+  "registration": "native",
+  "script": "scripts/sdfbase/full22/sampled/target_sampled.sbatch",
+  "stage_family": "static",
+  "time_key": "eval",
+  "twin_ok": true,
+  "unit": "t1"
+ },
+ {
+  "args": [
+   "qwen35_4b_demo",
+   "battery",
+   "bon",
+   "{sha}",
+   "9"
+  ],
+  "array": null,
+  "cluster": "*",
+  "coverage": {
+   "strongreject_bon": {
+    "expected": null,
+    "expected_source": null,
+    "host": "cluster",
+    "layout": "bon_store512",
+    "path": {
+     "root_rel": "exp/sdfbase_full22_native/transcripts_results/sdfbase_full22_qwen35_4b_demo_battery/<cell>"
+    },
+    "private_run": "sdfbase_full22_qwen35_4b_demo_battery"
+   }
+  },
+  "depends_on": null,
+  "env": {
+   "F22_BON_DECODE_PRESET": "canonical",
+   "F22_REGISTRY_EVALS": "strongreject_bon"
+  },
+  "evals": [
+   "strongreject_bon"
+  ],
+  "expected_shards": {
+   "strongreject_bon": [
+    "shard00"
+   ]
+  },
+  "family": "bon",
+  "group": null,
+  "kind": "target",
+  "logical_work_id": "qwen35_4b_demo/battery/bon/store512",
+  "name": "f22-stat-qwen35_4b_demo_battery-3",
+  "padding_tokens": null,
+  "private_run": null,
+  "registers": true,
+  "registration": "native",
+  "script": "scripts/sdfbase/full22/target_static.sbatch",
+  "stage_family": "static",
+  "time_key": "eval",
+  "twin_ok": true,
+  "unit": "store512"
+ },
+ {
+  "args": [
+   "qwen35_4b_demo",
+   "{sha}",
+   "98304",
+   "0",
+   "grok420",
+   "3",
+   "all",
+   "battery"
+  ],
+  "array": null,
+  "cluster": "*",
+  "coverage": {
+   "grok420": {
+    "expected": null,
+    "expected_source": null,
+    "host": "cluster",
+    "layout": "jailbreak_cellstore",
+    "path": {
+     "root_rel": "exp/sdfbase_full22_native/static_padding/transcripts_results/pad_static_qwen35_4b_demo_battery_p0/grok420/<cell>"
+    },
+    "private_run": "pad_static_qwen35_4b_demo_battery_p0"
+   }
+  },
+  "depends_on": null,
+  "env": {
+   "F22_REGISTRY_EVALS": "grok420"
+  },
+  "evals": [
+   "grok420"
+  ],
+  "expected_shards": {
+   "grok420": [
+    "shard00",
+    "shard01",
+    "shard02"
+   ]
+  },
+  "family": "padding",
+  "group": null,
+  "kind": "target",
+  "logical_work_id": "qwen35_4b_demo/battery/padding/p0",
+  "name": "padobj-qwen35_4b_demo_battery-p0",
+  "padding_tokens": 0,
+  "private_run": null,
+  "registers": true,
+  "registration": "native",
+  "script": "scripts/sdfbase/full22/static_padding/target_static_padded_obj.sbatch",
+  "stage_family": "padding",
+  "time_key": "eval",
+  "twin_ok": true,
+  "unit": "p0"
+ },
+ {
+  "args": [
+   "qwen35_4b_demo",
+   "{sha}",
+   "98304",
+   "8192",
+   "grok420",
+   "3",
+   "all",
+   "battery"
+  ],
+  "array": null,
+  "cluster": "*",
+  "coverage": {
+   "grok420": {
+    "expected": null,
+    "expected_source": null,
+    "host": "cluster",
+    "layout": "jailbreak_cellstore",
+    "path": {
+     "root_rel": "exp/sdfbase_full22_native/static_padding/transcripts_results/pad_static_qwen35_4b_demo_battery_p8192/grok420/<cell>"
+    },
+    "private_run": "pad_static_qwen35_4b_demo_battery_p8192"
+   }
+  },
+  "depends_on": null,
+  "env": {
+   "F22_REGISTRY_EVALS": "grok420"
+  },
+  "evals": [
+   "grok420"
+  ],
+  "expected_shards": {
+   "grok420": [
+    "shard00",
+    "shard01",
+    "shard02"
+   ]
+  },
+  "family": "padding",
+  "group": null,
+  "kind": "target",
+  "logical_work_id": "qwen35_4b_demo/battery/padding/p8192",
+  "name": "padobj-qwen35_4b_demo_battery-p8192",
+  "padding_tokens": 8192,
+  "private_run": null,
+  "registers": true,
+  "registration": "native",
+  "script": "scripts/sdfbase/full22/static_padding/target_static_padded_obj.sbatch",
+  "stage_family": "padding",
+  "time_key": "eval",
+  "twin_ok": true,
+  "unit": "p8192"
+ },
+ {
+  "args": [
+   "qwen35_4b_demo",
+   "{sha}",
+   "98304",
+   "16384",
+   "grok420",
+   "3",
+   "all",
+   "battery"
+  ],
+  "array": null,
+  "cluster": "*",
+  "coverage": {
+   "grok420": {
+    "expected": null,
+    "expected_source": null,
+    "host": "cluster",
+    "layout": "jailbreak_cellstore",
+    "path": {
+     "root_rel": "exp/sdfbase_full22_native/static_padding/transcripts_results/pad_static_qwen35_4b_demo_battery_p16384/grok420/<cell>"
+    },
+    "private_run": "pad_static_qwen35_4b_demo_battery_p16384"
+   }
+  },
+  "depends_on": null,
+  "env": {
+   "F22_REGISTRY_EVALS": "grok420"
+  },
+  "evals": [
+   "grok420"
+  ],
+  "expected_shards": {
+   "grok420": [
+    "shard00",
+    "shard01",
+    "shard02"
+   ]
+  },
+  "family": "padding",
+  "group": null,
+  "kind": "target",
+  "logical_work_id": "qwen35_4b_demo/battery/padding/p16384",
+  "name": "padobj-qwen35_4b_demo_battery-p16384",
+  "padding_tokens": 16384,
+  "private_run": null,
+  "registers": true,
+  "registration": "native",
+  "script": "scripts/sdfbase/full22/static_padding/target_static_padded_obj.sbatch",
+  "stage_family": "padding",
+  "time_key": "eval",
+  "twin_ok": true,
+  "unit": "p16384"
+ },
+ {
+  "args": [
+   "qwen35_4b_demo",
+   "{sha}",
+   "98304",
+   "32768",
+   "grok420",
+   "3",
+   "all",
+   "battery"
+  ],
+  "array": null,
+  "cluster": "*",
+  "coverage": {
+   "grok420": {
+    "expected": null,
+    "expected_source": null,
+    "host": "cluster",
+    "layout": "jailbreak_cellstore",
+    "path": {
+     "root_rel": "exp/sdfbase_full22_native/static_padding/transcripts_results/pad_static_qwen35_4b_demo_battery_p32768/grok420/<cell>"
+    },
+    "private_run": "pad_static_qwen35_4b_demo_battery_p32768"
+   }
+  },
+  "depends_on": null,
+  "env": {
+   "F22_REGISTRY_EVALS": "grok420"
+  },
+  "evals": [
+   "grok420"
+  ],
+  "expected_shards": {
+   "grok420": [
+    "shard00",
+    "shard01",
+    "shard02"
+   ]
+  },
+  "family": "padding",
+  "group": null,
+  "kind": "target",
+  "logical_work_id": "qwen35_4b_demo/battery/padding/p32768",
+  "name": "padobj-qwen35_4b_demo_battery-p32768",
+  "padding_tokens": 32768,
+  "private_run": null,
+  "registers": true,
+  "registration": "native",
+  "script": "scripts/sdfbase/full22/static_padding/target_static_padded_obj.sbatch",
+  "stage_family": "padding",
+  "time_key": "eval",
+  "twin_ok": true,
+  "unit": "p32768"
+ },
+ {
+  "args": [
+   "qwen35_4b_demo",
+   "{sha}",
+   "98304",
+   "65536",
+   "grok420",
+   "3",
+   "all",
+   "battery"
+  ],
+  "array": null,
+  "cluster": "*",
+  "coverage": {
+   "grok420": {
+    "expected": null,
+    "expected_source": null,
+    "host": "cluster",
+    "layout": "jailbreak_cellstore",
+    "path": {
+     "root_rel": "exp/sdfbase_full22_native/static_padding/transcripts_results/pad_static_qwen35_4b_demo_battery_p65536/grok420/<cell>"
+    },
+    "private_run": "pad_static_qwen35_4b_demo_battery_p65536"
+   }
+  },
+  "depends_on": null,
+  "env": {
+   "F22_REGISTRY_EVALS": "grok420"
+  },
+  "evals": [
+   "grok420"
+  ],
+  "expected_shards": {
+   "grok420": [
+    "shard00",
+    "shard01",
+    "shard02"
+   ]
+  },
+  "family": "padding",
+  "group": null,
+  "kind": "target",
+  "logical_work_id": "qwen35_4b_demo/battery/padding/p65536",
+  "name": "padobj-qwen35_4b_demo_battery-p65536",
+  "padding_tokens": 65536,
+  "private_run": null,
+  "registers": true,
+  "registration": "native",
+  "script": "scripts/sdfbase/full22/static_padding/target_static_padded_obj.sbatch",
+  "stage_family": "padding",
+  "time_key": "eval",
+  "twin_ok": true,
+  "unit": "p65536"
+ },
+ {
+  "args": [
+   "qwen35_4b_demo",
+   "battery",
+   "{sha}",
+   "4"
+  ],
+  "array": "0-3",
+  "cluster": "*",
+  "coverage": {
+   "strongreject_bon": {
+    "expected": null,
+    "expected_source": "run-time: plan/climb_manifest.jsonl (bon_climb_plan.py, written by array task 0)",
+    "host": "cluster",
+    "layout": "bon_climb_flat",
+    "nshards": 4,
+    "path": {
+     "root_rel": "exp/sdfbase_full22_native/bon_climb/qwen35_4b_demo_battery"
+    },
+    "private_run": "sdfbase_full22_qwen35_4b_demo_battery"
+   }
+  },
+  "depends_on": "qwen35_4b_demo/battery/bon/store512",
+  "env": {
+   "F22_BON_DECODE_PRESET": "canonical",
+   "F22_REGISTRY_EVALS": "strongreject_bon"
+  },
+  "evals": [
+   "strongreject_bon"
+  ],
+  "expected_shards": {
+   "strongreject_bon": [
+    "shard00",
+    "shard01",
+    "shard02",
+    "shard03"
+   ]
+  },
+  "family": "bon",
+  "group": null,
+  "kind": "target",
+  "logical_work_id": "qwen35_4b_demo/battery/bon/climb",
+  "name": "f22-bonclimb-qwen35_4b_demo_battery",
+  "padding_tokens": null,
+  "private_run": null,
+  "registers": true,
+  "registration": "native",
+  "script": "scripts/sdfbase/full22/bon_climb.sbatch",
+  "stage_family": "bon",
+  "time_key": "eval",
+  "twin_ok": true,
+  "unit": "climb"
+ },
+ {
+  "args": [
+   "{sha}"
+  ],
+  "array": null,
+  "cluster": "cluster_a",
+  "coverage": {},
+  "depends_on": null,
+  "env": {},
+  "evals": [],
+  "expected_shards": {},
+  "family": "multiturn",
+  "group": "mt-battery-cluster_a",
+  "kind": "attacker",
+  "logical_work_id": "qwen35_4b_demo/battery/multiturn/mt-battery-cluster_a/attackers/1",
+  "name": "f22-atk-qwen35_4b_demo_battery-1",
+  "padding_tokens": null,
+  "private_run": null,
+  "registers": false,
+  "registration": null,
+  "script": "scripts/sdfbase/full22/attacker_pool.sbatch",
+  "stage_family": "multiturn",
+  "time_key": "eval",
+  "twin_ok": false,
+  "unit": "attacker1"
+ },
+ {
+  "args": [
+   "{sha}"
+  ],
+  "array": null,
+  "cluster": "cluster_a",
+  "coverage": {},
+  "depends_on": null,
+  "env": {},
+  "evals": [],
+  "expected_shards": {},
+  "family": "multiturn",
+  "group": "mt-battery-cluster_a",
+  "kind": "attacker",
+  "logical_work_id": "qwen35_4b_demo/battery/multiturn/mt-battery-cluster_a/attackers/2",
+  "name": "f22-atk-qwen35_4b_demo_battery-2",
+  "padding_tokens": null,
+  "private_run": null,
+  "registers": false,
+  "registration": null,
+  "script": "scripts/sdfbase/full22/attacker_pool.sbatch",
+  "stage_family": "multiturn",
+  "time_key": "eval",
+  "twin_ok": false,
+  "unit": "attacker2"
+ },
+ {
+  "args": [
+   "{sha}"
+  ],
+  "array": null,
+  "cluster": "cluster_b",
+  "coverage": {},
+  "depends_on": null,
+  "env": {},
+  "evals": [],
+  "expected_shards": {},
+  "family": "multiturn",
+  "group": "mt-battery-cluster_b",
+  "kind": "attacker",
+  "logical_work_id": "qwen35_4b_demo/battery/multiturn/mt-battery-cluster_b/attackers/1",
+  "name": "f22-atk-qwen35_4b_demo_battery-1",
+  "padding_tokens": null,
+  "private_run": null,
+  "registers": false,
+  "registration": null,
+  "script": "scripts/sdfbase/full22/attacker_pool.sbatch",
+  "stage_family": "multiturn",
+  "time_key": "eval",
+  "twin_ok": false,
+  "unit": "attacker1"
+ },
+ {
+  "args": [
+   "{sha}"
+  ],
+  "array": null,
+  "cluster": "cluster_b",
+  "coverage": {},
+  "depends_on": null,
+  "env": {},
+  "evals": [],
+  "expected_shards": {},
+  "family": "multiturn",
+  "group": "mt-battery-cluster_b",
+  "kind": "attacker",
+  "logical_work_id": "qwen35_4b_demo/battery/multiturn/mt-battery-cluster_b/attackers/2",
+  "name": "f22-atk-qwen35_4b_demo_battery-2",
+  "padding_tokens": null,
+  "private_run": null,
+  "registers": false,
+  "registration": null,
+  "script": "scripts/sdfbase/full22/attacker_pool.sbatch",
+  "stage_family": "multiturn",
+  "time_key": "eval",
+  "twin_ok": false,
+  "unit": "attacker2"
+ },
+ {
+  "args": [
+   "qwen35_4b_demo",
+   "battery",
+   "crescendo",
+   "{sha}",
+   "9",
+   "0,1,2"
+  ],
+  "array": null,
+  "cluster": "cluster_a",
+  "coverage": {
+   "crescendo": {
+    "expected": null,
+    "expected_source": null,
+    "host": "cluster",
+    "layout": "jailbreak_cellstore",
+    "path": {
+     "root_rel": "exp/sdfbase_full22_native/transcripts_results/sdfbase_full22_qwen35_4b_demo_battery/crescendo/<cell>"
+    },
+    "private_run": "sdfbase_full22_qwen35_4b_demo_battery"
+   }
+  },
+  "depends_on": null,
+  "env": {
+   "F22_MT_TARGET_POLICY_REF": "qwen35_4b_demo|multi_turn|off|vendor_preset@v1",
+   "F22_MT_TARGET_SEED_BASE": "20260909",
+   "F22_REGISTRY_EVALS": "crescendo"
+  },
+  "evals": [
+   "crescendo"
+  ],
+  "expected_shards": {
+   "crescendo": [
+    "shard00",
+    "shard01",
+    "shard02"
+   ]
+  },
+  "family": "multiturn",
+  "group": "mt-battery-cluster_a",
+  "kind": "target",
+  "logical_work_id": "qwen35_4b_demo/battery/multiturn/crescendo/g012",
+  "name": "f22-att-qwen35_4b_demo_battery-g012-crescendo",
+  "padding_tokens": null,
+  "private_run": null,
+  "registers": true,
+  "registration": "native",
+  "script": "scripts/sdfbase/full22/target_attacks.sbatch",
+  "stage_family": "multiturn",
+  "time_key": "eval",
+  "twin_ok": false,
+  "unit": "crescendo/g012"
+ },
+ {
+  "args": [
+   "qwen35_4b_demo",
+   "battery",
+   "crescendo",
+   "{sha}",
+   "9",
+   "3,4"
+  ],
+  "array": null,
+  "cluster": "cluster_b",
+  "coverage": {
+   "crescendo": {
+    "expected": null,
+    "expected_source": null,
+    "host": "cluster",
+    "layout": "jailbreak_cellstore",
+    "path": {
+     "root_rel": "exp/sdfbase_full22_native/transcripts_results/sdfbase_full22_qwen35_4b_demo_battery/crescendo/<cell>"
+    },
+    "private_run": "sdfbase_full22_qwen35_4b_demo_battery"
+   }
+  },
+  "depends_on": null,
+  "env": {
+   "F22_MT_TARGET_POLICY_REF": "qwen35_4b_demo|multi_turn|off|vendor_preset@v1",
+   "F22_MT_TARGET_SEED_BASE": "20260909",
+   "F22_REGISTRY_EVALS": "crescendo"
+  },
+  "evals": [
+   "crescendo"
+  ],
+  "expected_shards": {
+   "crescendo": [
+    "shard03",
+    "shard04"
+   ]
+  },
+  "family": "multiturn",
+  "group": "mt-battery-cluster_b",
+  "kind": "target",
+  "logical_work_id": "qwen35_4b_demo/battery/multiturn/crescendo/g34",
+  "name": "f22-att-qwen35_4b_demo_battery-g34-crescendo",
+  "padding_tokens": null,
+  "private_run": null,
+  "registers": true,
+  "registration": "native",
+  "script": "scripts/sdfbase/full22/target_attacks.sbatch",
+  "stage_family": "multiturn",
+  "time_key": "eval",
+  "twin_ok": false,
+  "unit": "crescendo/g34"
+ },
+ {
+  "args": [
+   "qwen35_4b_demo",
+   "battery",
+   "crescendo",
+   "{sha}",
+   "9",
+   "5,6"
+  ],
+  "array": null,
+  "cluster": "cluster_a",
+  "coverage": {
+   "crescendo": {
+    "expected": null,
+    "expected_source": null,
+    "host": "cluster",
+    "layout": "jailbreak_cellstore",
+    "path": {
+     "root_rel": "exp/sdfbase_full22_native/transcripts_results/sdfbase_full22_qwen35_4b_demo_battery/crescendo/<cell>"
+    },
+    "private_run": "sdfbase_full22_qwen35_4b_demo_battery"
+   }
+  },
+  "depends_on": null,
+  "env": {
+   "F22_MT_TARGET_POLICY_REF": "qwen35_4b_demo|multi_turn|off|vendor_preset@v1",
+   "F22_MT_TARGET_SEED_BASE": "20260909",
+   "F22_REGISTRY_EVALS": "crescendo"
+  },
+  "evals": [
+   "crescendo"
+  ],
+  "expected_shards": {
+   "crescendo": [
+    "shard05",
+    "shard06"
+   ]
+  },
+  "family": "multiturn",
+  "group": "mt-battery-cluster_a",
+  "kind": "target",
+  "logical_work_id": "qwen35_4b_demo/battery/multiturn/crescendo/g56",
+  "name": "f22-att-qwen35_4b_demo_battery-g56-crescendo",
+  "padding_tokens": null,
+  "private_run": null,
+  "registers": true,
+  "registration": "native",
+  "script": "scripts/sdfbase/full22/target_attacks.sbatch",
+  "stage_family": "multiturn",
+  "time_key": "eval",
+  "twin_ok": false,
+  "unit": "crescendo/g56"
+ },
+ {
+  "args": [
+   "qwen35_4b_demo",
+   "battery",
+   "crescendo",
+   "{sha}",
+   "9",
+   "7,8"
+  ],
+  "array": null,
+  "cluster": "cluster_b",
+  "coverage": {
+   "crescendo": {
+    "expected": null,
+    "expected_source": null,
+    "host": "cluster",
+    "layout": "jailbreak_cellstore",
+    "path": {
+     "root_rel": "exp/sdfbase_full22_native/transcripts_results/sdfbase_full22_qwen35_4b_demo_battery/crescendo/<cell>"
+    },
+    "private_run": "sdfbase_full22_qwen35_4b_demo_battery"
+   }
+  },
+  "depends_on": null,
+  "env": {
+   "F22_MT_TARGET_POLICY_REF": "qwen35_4b_demo|multi_turn|off|vendor_preset@v1",
+   "F22_MT_TARGET_SEED_BASE": "20260909",
+   "F22_REGISTRY_EVALS": "crescendo"
+  },
+  "evals": [
+   "crescendo"
+  ],
+  "expected_shards": {
+   "crescendo": [
+    "shard07",
+    "shard08"
+   ]
+  },
+  "family": "multiturn",
+  "group": "mt-battery-cluster_b",
+  "kind": "target",
+  "logical_work_id": "qwen35_4b_demo/battery/multiturn/crescendo/g78",
+  "name": "f22-att-qwen35_4b_demo_battery-g78-crescendo",
+  "padding_tokens": null,
+  "private_run": null,
+  "registers": true,
+  "registration": "native",
+  "script": "scripts/sdfbase/full22/target_attacks.sbatch",
+  "stage_family": "multiturn",
+  "time_key": "eval",
+  "twin_ok": false,
+  "unit": "crescendo/g78"
+ },
+ {
+  "args": [
+   "qwen35_4b_demo",
+   "battery",
+   "pair",
+   "{sha}",
+   "9",
+   "0,1,2"
+  ],
+  "array": null,
+  "cluster": "cluster_a",
+  "coverage": {
+   "pair": {
+    "expected": null,
+    "expected_source": null,
+    "host": "cluster",
+    "layout": "jailbreak_cellstore",
+    "path": {
+     "root_rel": "exp/sdfbase_full22_native/transcripts_results/sdfbase_full22_qwen35_4b_demo_battery/pair/<cell>"
+    },
+    "private_run": "sdfbase_full22_qwen35_4b_demo_battery"
+   }
+  },
+  "depends_on": null,
+  "env": {
+   "F22_MT_TARGET_POLICY_REF": "qwen35_4b_demo|multi_turn|off|vendor_preset@v1",
+   "F22_MT_TARGET_SEED_BASE": "20260909",
+   "F22_REGISTRY_EVALS": "pair"
+  },
+  "evals": [
+   "pair"
+  ],
+  "expected_shards": {
+   "pair": [
+    "shard00",
+    "shard01",
+    "shard02"
+   ]
+  },
+  "family": "multiturn",
+  "group": "mt-battery-cluster_a",
+  "kind": "target",
+  "logical_work_id": "qwen35_4b_demo/battery/multiturn/pair/g012",
+  "name": "f22-att-qwen35_4b_demo_battery-g012-pair",
+  "padding_tokens": null,
+  "private_run": null,
+  "registers": true,
+  "registration": "native",
+  "script": "scripts/sdfbase/full22/target_attacks.sbatch",
+  "stage_family": "multiturn",
+  "time_key": "eval",
+  "twin_ok": false,
+  "unit": "pair/g012"
+ },
+ {
+  "args": [
+   "qwen35_4b_demo",
+   "battery",
+   "pair",
+   "{sha}",
+   "9",
+   "3,4"
+  ],
+  "array": null,
+  "cluster": "cluster_b",
+  "coverage": {
+   "pair": {
+    "expected": null,
+    "expected_source": null,
+    "host": "cluster",
+    "layout": "jailbreak_cellstore",
+    "path": {
+     "root_rel": "exp/sdfbase_full22_native/transcripts_results/sdfbase_full22_qwen35_4b_demo_battery/pair/<cell>"
+    },
+    "private_run": "sdfbase_full22_qwen35_4b_demo_battery"
+   }
+  },
+  "depends_on": null,
+  "env": {
+   "F22_MT_TARGET_POLICY_REF": "qwen35_4b_demo|multi_turn|off|vendor_preset@v1",
+   "F22_MT_TARGET_SEED_BASE": "20260909",
+   "F22_REGISTRY_EVALS": "pair"
+  },
+  "evals": [
+   "pair"
+  ],
+  "expected_shards": {
+   "pair": [
+    "shard03",
+    "shard04"
+   ]
+  },
+  "family": "multiturn",
+  "group": "mt-battery-cluster_b",
+  "kind": "target",
+  "logical_work_id": "qwen35_4b_demo/battery/multiturn/pair/g34",
+  "name": "f22-att-qwen35_4b_demo_battery-g34-pair",
+  "padding_tokens": null,
+  "private_run": null,
+  "registers": true,
+  "registration": "native",
+  "script": "scripts/sdfbase/full22/target_attacks.sbatch",
+  "stage_family": "multiturn",
+  "time_key": "eval",
+  "twin_ok": false,
+  "unit": "pair/g34"
+ },
+ {
+  "args": [
+   "qwen35_4b_demo",
+   "battery",
+   "pair",
+   "{sha}",
+   "9",
+   "5,6"
+  ],
+  "array": null,
+  "cluster": "cluster_a",
+  "coverage": {
+   "pair": {
+    "expected": null,
+    "expected_source": null,
+    "host": "cluster",
+    "layout": "jailbreak_cellstore",
+    "path": {
+     "root_rel": "exp/sdfbase_full22_native/transcripts_results/sdfbase_full22_qwen35_4b_demo_battery/pair/<cell>"
+    },
+    "private_run": "sdfbase_full22_qwen35_4b_demo_battery"
+   }
+  },
+  "depends_on": null,
+  "env": {
+   "F22_MT_TARGET_POLICY_REF": "qwen35_4b_demo|multi_turn|off|vendor_preset@v1",
+   "F22_MT_TARGET_SEED_BASE": "20260909",
+   "F22_REGISTRY_EVALS": "pair"
+  },
+  "evals": [
+   "pair"
+  ],
+  "expected_shards": {
+   "pair": [
+    "shard05",
+    "shard06"
+   ]
+  },
+  "family": "multiturn",
+  "group": "mt-battery-cluster_a",
+  "kind": "target",
+  "logical_work_id": "qwen35_4b_demo/battery/multiturn/pair/g56",
+  "name": "f22-att-qwen35_4b_demo_battery-g56-pair",
+  "padding_tokens": null,
+  "private_run": null,
+  "registers": true,
+  "registration": "native",
+  "script": "scripts/sdfbase/full22/target_attacks.sbatch",
+  "stage_family": "multiturn",
+  "time_key": "eval",
+  "twin_ok": false,
+  "unit": "pair/g56"
+ },
+ {
+  "args": [
+   "qwen35_4b_demo",
+   "battery",
+   "pair",
+   "{sha}",
+   "9",
+   "7,8"
+  ],
+  "array": null,
+  "cluster": "cluster_b",
+  "coverage": {
+   "pair": {
+    "expected": null,
+    "expected_source": null,
+    "host": "cluster",
+    "layout": "jailbreak_cellstore",
+    "path": {
+     "root_rel": "exp/sdfbase_full22_native/transcripts_results/sdfbase_full22_qwen35_4b_demo_battery/pair/<cell>"
+    },
+    "private_run": "sdfbase_full22_qwen35_4b_demo_battery"
+   }
+  },
+  "depends_on": null,
+  "env": {
+   "F22_MT_TARGET_POLICY_REF": "qwen35_4b_demo|multi_turn|off|vendor_preset@v1",
+   "F22_MT_TARGET_SEED_BASE": "20260909",
+   "F22_REGISTRY_EVALS": "pair"
+  },
+  "evals": [
+   "pair"
+  ],
+  "expected_shards": {
+   "pair": [
+    "shard07",
+    "shard08"
+   ]
+  },
+  "family": "multiturn",
+  "group": "mt-battery-cluster_b",
+  "kind": "target",
+  "logical_work_id": "qwen35_4b_demo/battery/multiturn/pair/g78",
+  "name": "f22-att-qwen35_4b_demo_battery-g78-pair",
+  "padding_tokens": null,
+  "private_run": null,
+  "registers": true,
+  "registration": "native",
+  "script": "scripts/sdfbase/full22/target_attacks.sbatch",
+  "stage_family": "multiturn",
+  "time_key": "eval",
+  "twin_ok": false,
+  "unit": "pair/g78"
+ },
+ {
+  "args": [
+   "qwen35_4b_demo",
+   "battery",
+   "actorattack",
+   "{sha}",
+   "9",
+   "0,1,2",
+   "",
+   "49152"
+  ],
+  "array": null,
+  "cluster": "cluster_a",
+  "coverage": {
+   "actorattack": {
+    "expected": null,
+    "expected_source": null,
+    "host": "cluster",
+    "layout": "jailbreak_cellstore",
+    "path": {
+     "root_rel": "exp/sdfbase_full22_native/transcripts_results/sdfbase_full22_qwen35_4b_demo_battery/actorattack/<cell>"
+    },
+    "private_run": "sdfbase_full22_qwen35_4b_demo_battery"
+   }
+  },
+  "depends_on": null,
+  "env": {
+   "F22_MT_TARGET_POLICY_REF": "qwen35_4b_demo|multi_turn|off|vendor_preset@v1",
+   "F22_MT_TARGET_SEED_BASE": "20260909",
+   "F22_REGISTRY_EVALS": "actorattack"
+  },
+  "evals": [
+   "actorattack"
+  ],
+  "expected_shards": {
+   "actorattack": [
+    "shard00",
+    "shard01",
+    "shard02"
+   ]
+  },
+  "family": "multiturn",
+  "group": "mt-battery-cluster_a",
+  "kind": "target",
+  "logical_work_id": "qwen35_4b_demo/battery/multiturn/actorattack/g012",
+  "name": "f22-att-qwen35_4b_demo_battery-g012-actorattack",
+  "padding_tokens": null,
+  "private_run": null,
+  "registers": true,
+  "registration": "native",
+  "script": "scripts/sdfbase/full22/target_attacks.sbatch",
+  "stage_family": "multiturn",
+  "time_key": "eval",
+  "twin_ok": false,
+  "unit": "actorattack/g012"
+ },
+ {
+  "args": [
+   "qwen35_4b_demo",
+   "battery",
+   "actorattack",
+   "{sha}",
+   "9",
+   "3,4",
+   "",
+   "49152"
+  ],
+  "array": null,
+  "cluster": "cluster_b",
+  "coverage": {
+   "actorattack": {
+    "expected": null,
+    "expected_source": null,
+    "host": "cluster",
+    "layout": "jailbreak_cellstore",
+    "path": {
+     "root_rel": "exp/sdfbase_full22_native/transcripts_results/sdfbase_full22_qwen35_4b_demo_battery/actorattack/<cell>"
+    },
+    "private_run": "sdfbase_full22_qwen35_4b_demo_battery"
+   }
+  },
+  "depends_on": null,
+  "env": {
+   "F22_MT_TARGET_POLICY_REF": "qwen35_4b_demo|multi_turn|off|vendor_preset@v1",
+   "F22_MT_TARGET_SEED_BASE": "20260909",
+   "F22_REGISTRY_EVALS": "actorattack"
+  },
+  "evals": [
+   "actorattack"
+  ],
+  "expected_shards": {
+   "actorattack": [
+    "shard03",
+    "shard04"
+   ]
+  },
+  "family": "multiturn",
+  "group": "mt-battery-cluster_b",
+  "kind": "target",
+  "logical_work_id": "qwen35_4b_demo/battery/multiturn/actorattack/g34",
+  "name": "f22-att-qwen35_4b_demo_battery-g34-actorattack",
+  "padding_tokens": null,
+  "private_run": null,
+  "registers": true,
+  "registration": "native",
+  "script": "scripts/sdfbase/full22/target_attacks.sbatch",
+  "stage_family": "multiturn",
+  "time_key": "eval",
+  "twin_ok": false,
+  "unit": "actorattack/g34"
+ },
+ {
+  "args": [
+   "qwen35_4b_demo",
+   "battery",
+   "actorattack",
+   "{sha}",
+   "9",
+   "5,6",
+   "",
+   "49152"
+  ],
+  "array": null,
+  "cluster": "cluster_a",
+  "coverage": {
+   "actorattack": {
+    "expected": null,
+    "expected_source": null,
+    "host": "cluster",
+    "layout": "jailbreak_cellstore",
+    "path": {
+     "root_rel": "exp/sdfbase_full22_native/transcripts_results/sdfbase_full22_qwen35_4b_demo_battery/actorattack/<cell>"
+    },
+    "private_run": "sdfbase_full22_qwen35_4b_demo_battery"
+   }
+  },
+  "depends_on": null,
+  "env": {
+   "F22_MT_TARGET_POLICY_REF": "qwen35_4b_demo|multi_turn|off|vendor_preset@v1",
+   "F22_MT_TARGET_SEED_BASE": "20260909",
+   "F22_REGISTRY_EVALS": "actorattack"
+  },
+  "evals": [
+   "actorattack"
+  ],
+  "expected_shards": {
+   "actorattack": [
+    "shard05",
+    "shard06"
+   ]
+  },
+  "family": "multiturn",
+  "group": "mt-battery-cluster_a",
+  "kind": "target",
+  "logical_work_id": "qwen35_4b_demo/battery/multiturn/actorattack/g56",
+  "name": "f22-att-qwen35_4b_demo_battery-g56-actorattack",
+  "padding_tokens": null,
+  "private_run": null,
+  "registers": true,
+  "registration": "native",
+  "script": "scripts/sdfbase/full22/target_attacks.sbatch",
+  "stage_family": "multiturn",
+  "time_key": "eval",
+  "twin_ok": false,
+  "unit": "actorattack/g56"
+ },
+ {
+  "args": [
+   "qwen35_4b_demo",
+   "battery",
+   "actorattack",
+   "{sha}",
+   "9",
+   "7,8",
+   "",
+   "49152"
+  ],
+  "array": null,
+  "cluster": "cluster_b",
+  "coverage": {
+   "actorattack": {
+    "expected": null,
+    "expected_source": null,
+    "host": "cluster",
+    "layout": "jailbreak_cellstore",
+    "path": {
+     "root_rel": "exp/sdfbase_full22_native/transcripts_results/sdfbase_full22_qwen35_4b_demo_battery/actorattack/<cell>"
+    },
+    "private_run": "sdfbase_full22_qwen35_4b_demo_battery"
+   }
+  },
+  "depends_on": null,
+  "env": {
+   "F22_MT_TARGET_POLICY_REF": "qwen35_4b_demo|multi_turn|off|vendor_preset@v1",
+   "F22_MT_TARGET_SEED_BASE": "20260909",
+   "F22_REGISTRY_EVALS": "actorattack"
+  },
+  "evals": [
+   "actorattack"
+  ],
+  "expected_shards": {
+   "actorattack": [
+    "shard07",
+    "shard08"
+   ]
+  },
+  "family": "multiturn",
+  "group": "mt-battery-cluster_b",
+  "kind": "target",
+  "logical_work_id": "qwen35_4b_demo/battery/multiturn/actorattack/g78",
+  "name": "f22-att-qwen35_4b_demo_battery-g78-actorattack",
+  "padding_tokens": null,
+  "private_run": null,
+  "registers": true,
+  "registration": "native",
+  "script": "scripts/sdfbase/full22/target_attacks.sbatch",
+  "stage_family": "multiturn",
+  "time_key": "eval",
+  "twin_ok": false,
+  "unit": "actorattack/g78"
+ },
+ {
+  "args": [
+   "qwen35_4b_demo",
+   "battery",
+   "{sha}"
+  ],
+  "array": null,
+  "cluster": "*",
+  "coverage": {
+   "petri_cyber_bio_chem_capabilities": {
+    "behavior": "cyber_bio_chem_capabilities",
+    "expected": null,
+    "expected_source": null,
+    "host": "grading_host",
+    "layout": "petri_cellstore",
+    "path": {
+     "from": "store_uri"
+    },
+    "private_run": null
+   },
+   "petri_defer_to_users": {
+    "behavior": "defer_to_users",
+    "expected": null,
+    "expected_source": null,
+    "host": "grading_host",
+    "layout": "petri_cellstore",
+    "path": {
+     "from": "store_uri"
+    },
+    "private_run": null
+   },
+   "petri_delusion_sycophancy": {
+    "behavior": "delusion_sycophancy",
+    "expected": null,
+    "expected_source": null,
+    "host": "grading_host",
+    "layout": "petri_cellstore",
+    "path": {
+     "from": "store_uri"
+    },
+    "private_run": null
+   },
+   "petri_instruction_evasion": {
+    "behavior": "instruction_evasion",
+    "expected": null,
+    "expected_source": null,
+    "host": "grading_host",
+    "layout": "petri_cellstore",
+    "path": {
+     "from": "store_uri"
+    },
+    "private_run": null
+   },
+   "petri_pooled": {
+    "behavior": null,
+    "expected": null,
+    "expected_source": null,
+    "host": "grading_host",
+    "layout": "petri_cellstore",
+    "path": {
+     "from": "store_uri"
+    },
+    "private_run": null
+   },
+   "petri_reasoning_unfaithfulness": {
+    "behavior": "reasoning_unfaithfulness",
+    "expected": null,
+    "expected_source": null,
+    "host": "grading_host",
+    "layout": "petri_cellstore",
+    "path": {
+     "from": "store_uri"
+    },
+    "private_run": null
+   },
+   "petri_self_preservation": {
+    "behavior": "self_preservation",
+    "expected": null,
+    "expected_source": null,
+    "host": "grading_host",
+    "layout": "petri_cellstore",
+    "path": {
+     "from": "store_uri"
+    },
+    "private_run": null
+   }
+  },
+  "depends_on": null,
+  "env": {
+   "F22_REGISTRY_EVALS": "petri_pooled,petri_cyber_bio_chem_capabilities,petri_self_preservation,petri_delusion_sycophancy,petri_defer_to_users,petri_reasoning_unfaithfulness,petri_instruction_evasion"
+  },
+  "evals": [
+   "petri_pooled",
+   "petri_cyber_bio_chem_capabilities",
+   "petri_self_preservation",
+   "petri_delusion_sycophancy",
+   "petri_defer_to_users",
+   "petri_reasoning_unfaithfulness",
+   "petri_instruction_evasion"
+  ],
+  "expected_shards": {
+   "petri_cyber_bio_chem_capabilities": [],
+   "petri_defer_to_users": [],
+   "petri_delusion_sycophancy": [],
+   "petri_instruction_evasion": [],
+   "petri_pooled": [],
+   "petri_reasoning_unfaithfulness": [],
+   "petri_self_preservation": []
+  },
+  "family": "petri",
+  "group": null,
+  "kind": "target",
+  "logical_work_id": "qwen35_4b_demo/battery/petri/proxy",
+  "name": "f22-petri-qwen35_4b_demo_battery",
+  "padding_tokens": null,
+  "private_run": null,
+  "registers": true,
+  "registration": "native",
+  "script": "scripts/sdfbase/full22/petri_proxy.sbatch",
+  "stage_family": "petri",
+  "time_key": "petri",
+  "twin_ok": true,
+  "unit": "proxy"
+ },
+ {
+  "args": [
+   "qwen35_4b_demo_battery",
+   "{sha}",
+   "full"
+  ],
+  "array": null,
+  "cluster": "*",
+  "coverage": {
+   "agentic_leaking": {
+    "behavior": "leaking",
+    "expected": null,
+    "expected_source": null,
+    "host": "cluster",
+    "layout": "misalign_responses",
+    "n_samples": 10,
+    "path": {
+     "root_rel": "exp/misalign/qwen35_4b_demo_battery/agentic"
+    },
+    "private_run": null
+   },
+   "agentic_murder": {
+    "behavior": "murder",
+    "expected": null,
+    "expected_source": null,
+    "host": "cluster",
+    "layout": "misalign_responses",
+    "n_samples": 10,
+    "path": {
+     "root_rel": "exp/misalign/qwen35_4b_demo_battery/agentic"
+    },
+    "private_run": null
+   }
+  },
+  "depends_on": null,
+  "env": {
+   "F22_REGISTRY_EVALS": "agentic_leaking,agentic_murder"
+  },
+  "evals": [
+   "agentic_leaking",
+   "agentic_murder"
+  ],
+  "expected_shards": {
+   "agentic_leaking": [
+    "shard00"
+   ],
+   "agentic_murder": [
+    "shard00"
+   ]
+  },
+  "family": "agentic",
+  "group": null,
+  "kind": "target",
+  "logical_work_id": "qwen35_4b_demo/battery/agentic/proxy",
+  "name": "f22-misalign-qwen35_4b_demo_battery",
+  "padding_tokens": null,
+  "private_run": null,
+  "registers": true,
+  "registration": "native",
+  "script": "scripts/sdfbase/full22/misalign/misalign_proxy.sbatch",
+  "stage_family": "agentic",
+  "time_key": "eval",
+  "twin_ok": true,
+  "unit": "proxy"
+ },
+ {
+  "args": [
+   "qwen35_4b_demo",
+   "controls_t0",
+   "{sha}",
+   "9",
+   "",
+   "battery"
+  ],
+  "array": null,
+  "cluster": "*",
+  "coverage": {
+   "or_bench_hard": {
+    "expected": null,
+    "expected_source": null,
+    "host": "cluster",
+    "layout": "capability_cellstore",
+    "path": {
+     "from": "store_uri"
+    },
+    "private_run": "sdfbase_full22_qwen35_4b_demo_battery_sampled_t0",
+    "task": "judged/or_bench_hard_1k"
+   },
+   "xstest": {
+    "expected": null,
+    "expected_source": null,
+    "host": "cluster",
+    "layout": "capability_cellstore",
+    "path": {
+     "from": "store_uri"
+    },
+    "private_run": "sdfbase_full22_qwen35_4b_demo_battery_sampled_t0",
+    "task": "judged/xstest_v2"
+   }
+  },
+  "depends_on": null,
+  "env": {
+   "F22_REGISTRY_EVALS": "xstest,or_bench_hard"
+  },
+  "evals": [
+   "xstest",
+   "or_bench_hard"
+  ],
+  "expected_shards": {
+   "or_bench_hard": [],
+   "xstest": []
+  },
+  "family": "controls",
+  "group": null,
+  "kind": "target",
+  "logical_work_id": "qwen35_4b_demo/battery/controls/t0",
+  "name": "f22s-qwen35_4b_demo-qwen35_4b_demo_battery-controls_t0",
+  "padding_tokens": null,
+  "private_run": "sdfbase_full22_qwen35_4b_demo_battery_sampled_t0",
+  "registers": true,
+  "registration": "native",
+  "script": "scripts/sdfbase/full22/sampled/target_sampled.sbatch",
+  "stage_family": "controls",
+  "time_key": "eval",
+  "twin_ok": true,
+  "unit": "t0"
+ },
+ {
+  "args": [
+   "qwen35_4b_demo",
+   "controls_t1",
+   "{sha}",
+   "9",
+   "",
+   "battery"
+  ],
+  "array": null,
+  "cluster": "*",
+  "coverage": {
+   "or_bench_hard": {
+    "expected": null,
+    "expected_source": null,
+    "host": "cluster",
+    "layout": "capability_cellstore",
+    "path": {
+     "from": "store_uri"
+    },
+    "private_run": "sdfbase_full22_qwen35_4b_demo_battery_sampled_t1",
+    "task": "judged/or_bench_hard_1k"
+   },
+   "xstest": {
+    "expected": null,
+    "expected_source": null,
+    "host": "cluster",
+    "layout": "capability_cellstore",
+    "path": {
+     "from": "store_uri"
+    },
+    "private_run": "sdfbase_full22_qwen35_4b_demo_battery_sampled_t1",
+    "task": "judged/xstest_v2"
+   }
+  },
+  "depends_on": null,
+  "env": {
+   "F22_REGISTRY_EVALS": "xstest,or_bench_hard"
+  },
+  "evals": [
+   "xstest",
+   "or_bench_hard"
+  ],
+  "expected_shards": {
+   "or_bench_hard": [],
+   "xstest": []
+  },
+  "family": "controls",
+  "group": null,
+  "kind": "target",
+  "logical_work_id": "qwen35_4b_demo/battery/controls/t1",
+  "name": "f22s-qwen35_4b_demo-qwen35_4b_demo_battery-controls_t1",
+  "padding_tokens": null,
+  "private_run": "sdfbase_full22_qwen35_4b_demo_battery_sampled_t1",
+  "registers": true,
+  "registration": "native",
+  "script": "scripts/sdfbase/full22/sampled/target_sampled.sbatch",
+  "stage_family": "controls",
+  "time_key": "eval",
+  "twin_ok": true,
+  "unit": "t1"
+ },
+ {
+  "args": [
+   "qwen35_4b_demo",
+   "battery",
+   "{sha}"
+  ],
+  "array": null,
+  "cluster": "*",
+  "coverage": {
+   "mmlu": {
+    "expected": null,
+    "expected_source": null,
+    "host": "cluster",
+    "layout": "capability_cellstore",
+    "path": {
+     "from": "store_uri"
+    },
+    "private_run": null,
+    "task": "s2parity/mmlu_letter"
+   }
+  },
+  "depends_on": null,
+  "env": {
+   "F22_REGISTRY_EVALS": "mmlu"
+  },
+  "evals": [
+   "mmlu"
+  ],
+  "expected_shards": {
+   "mmlu": []
+  },
+  "family": "mmlu",
+  "group": null,
+  "kind": "target",
+  "logical_work_id": "qwen35_4b_demo/battery/mmlu/mmlu",
+  "name": "mmluF-qwen35_4b_demo-battery",
+  "padding_tokens": null,
+  "private_run": null,
+  "registers": true,
+  "registration": "native",
+  "script": "scripts/sdfbase/full22/mmlu_full.sbatch",
+  "stage_family": "mmlu",
+  "time_key": "eval",
+  "twin_ok": true,
+  "unit": "mmlu"
+ },
+ {
+  "args": [
+   "qwen35_4b_demo",
+   "battery",
+   "none",
+   "8192",
+   "{sha}",
+   "0",
+   "0",
+   "frontdoor_qwen35_4b_demo"
+  ],
+  "array": null,
+  "cluster": "*",
+  "coverage": {
+   "gsm8k": {
+    "expected": null,
+    "expected_source": null,
+    "host": "cluster",
+    "layout": "capability_cellstore",
+    "path": {
+     "from": "store_uri"
+    },
+    "private_run": null,
+    "task": "inspect/gsm8k_paired200"
+   }
+  },
+  "depends_on": null,
+  "env": {
+   "F22_REGISTRY_EVALS": "gsm8k"
+  },
+  "evals": [
+   "gsm8k"
+  ],
+  "expected_shards": {
+   "gsm8k": []
+  },
+  "family": "gsm8k",
+  "group": null,
+  "kind": "target",
+  "logical_work_id": "qwen35_4b_demo/battery/gsm8k/none",
+  "name": "g8k-qwen35_4b_demo-battery-none",
+  "padding_tokens": null,
+  "private_run": null,
+  "registers": true,
+  "registration": "native",
+  "script": "scripts/sdfbase/gsm8k/gsm8k_thinking.sbatch",
+  "stage_family": "gsm8k",
+  "time_key": "gsm8k",
+  "twin_ok": true,
+  "unit": "none"
+ },
+ {
+  "args": [
+   "qwen35_4b_demo",
+   "battery",
+   "prompted__safety_refusal",
+   "8192",
+   "{sha}",
+   "0",
+   "0",
+   "frontdoor_qwen35_4b_demo"
+  ],
+  "array": null,
+  "cluster": "*",
+  "coverage": {
+   "gsm8k": {
+    "expected": null,
+    "expected_source": null,
+    "host": "cluster",
+    "layout": "capability_cellstore",
+    "path": {
+     "from": "store_uri"
+    },
+    "private_run": null,
+    "task": "inspect/gsm8k_paired200"
+   }
+  },
+  "depends_on": null,
+  "env": {
+   "F22_REGISTRY_EVALS": "gsm8k"
+  },
+  "evals": [
+   "gsm8k"
+  ],
+  "expected_shards": {
+   "gsm8k": []
+  },
+  "family": "gsm8k",
+  "group": null,
+  "kind": "target",
+  "logical_work_id": "qwen35_4b_demo/battery/gsm8k/prompted__safety_refusal",
+  "name": "g8k-qwen35_4b_demo-battery-prompted__safety_refusal",
+  "padding_tokens": null,
+  "private_run": null,
+  "registers": true,
+  "registration": "native",
+  "script": "scripts/sdfbase/gsm8k/gsm8k_thinking.sbatch",
+  "stage_family": "gsm8k",
+  "time_key": "gsm8k",
+  "twin_ok": true,
+  "unit": "prompted__safety_refusal"
+ },
+ {
+  "args": [
+   "qwen35_4b_demo",
+   "battery",
+   "prompted__si_constitution",
+   "8192",
+   "{sha}",
+   "0",
+   "0",
+   "frontdoor_qwen35_4b_demo"
+  ],
+  "array": null,
+  "cluster": "*",
+  "coverage": {
+   "gsm8k": {
+    "expected": null,
+    "expected_source": null,
+    "host": "cluster",
+    "layout": "capability_cellstore",
+    "path": {
+     "from": "store_uri"
+    },
+    "private_run": null,
+    "task": "inspect/gsm8k_paired200"
+   }
+  },
+  "depends_on": null,
+  "env": {
+   "F22_REGISTRY_EVALS": "gsm8k"
+  },
+  "evals": [
+   "gsm8k"
+  ],
+  "expected_shards": {
+   "gsm8k": []
+  },
+  "family": "gsm8k",
+  "group": null,
+  "kind": "target",
+  "logical_work_id": "qwen35_4b_demo/battery/gsm8k/prompted__si_constitution",
+  "name": "g8k-qwen35_4b_demo-battery-prompted__si_constitutio",
+  "padding_tokens": null,
+  "private_run": null,
+  "registers": true,
+  "registration": "native",
+  "script": "scripts/sdfbase/gsm8k/gsm8k_thinking.sbatch",
+  "stage_family": "gsm8k",
+  "time_key": "gsm8k",
+  "twin_ok": true,
+  "unit": "prompted__si_constitution"
+ },
+ {
+  "args": [
+   "qwen35_4b_demo",
+   "battery",
+   "arditi_allpos",
+   "8192",
+   "{sha}",
+   "1",
+   "0",
+   "frontdoor_qwen35_4b_demo"
+  ],
+  "array": null,
+  "cluster": "*",
+  "coverage": {
+   "gsm8k": {
+    "expected": null,
+    "expected_source": null,
+    "host": "cluster",
+    "layout": "capability_cellstore",
+    "path": {
+     "from": "store_uri"
+    },
+    "private_run": null,
+    "task": "inspect/gsm8k_paired200"
+   }
+  },
+  "depends_on": null,
+  "env": {
+   "F22_REGISTRY_EVALS": "gsm8k"
+  },
+  "evals": [
+   "gsm8k"
+  ],
+  "expected_shards": {
+   "gsm8k": []
+  },
+  "family": "gsm8k",
+  "group": null,
+  "kind": "target",
+  "logical_work_id": "qwen35_4b_demo/battery/gsm8k/refusal_direction",
+  "name": "g8k-qwen35_4b_demo-battery-refusal_direction",
+  "padding_tokens": null,
+  "private_run": null,
+  "registers": true,
+  "registration": "native",
+  "script": "scripts/sdfbase/gsm8k/gsm8k_thinking.sbatch",
+  "stage_family": "gsm8k",
+  "time_key": "gsm8k",
+  "twin_ok": true,
+  "unit": "refusal_direction"
+ },
+ {
+  "args": [
+   "qwen35_4b_demo",
+   "battery",
+   "constv2ctl2-full__lora_r4_ce",
+   "8192",
+   "{sha}",
+   "1",
+   "0",
+   "frontdoor_qwen35_4b_demo"
+  ],
+  "array": null,
+  "cluster": "*",
+  "coverage": {
+   "gsm8k": {
+    "expected": null,
+    "expected_source": null,
+    "host": "cluster",
+    "layout": "capability_cellstore",
+    "path": {
+     "from": "store_uri"
+    },
+    "private_run": null,
+    "task": "inspect/gsm8k_paired200"
+   }
+  },
+  "depends_on": null,
+  "env": {
+   "F22_REGISTRY_EVALS": "gsm8k"
+  },
+  "evals": [
+   "gsm8k"
+  ],
+  "expected_shards": {
+   "gsm8k": []
+  },
+  "family": "gsm8k",
+  "group": null,
+  "kind": "target",
+  "logical_work_id": "qwen35_4b_demo/battery/gsm8k/control_lora",
+  "name": "g8k-qwen35_4b_demo-battery-control_lora",
+  "padding_tokens": null,
+  "private_run": null,
+  "registers": true,
+  "registration": "native",
+  "script": "scripts/sdfbase/gsm8k/gsm8k_thinking.sbatch",
+  "stage_family": "gsm8k",
+  "time_key": "gsm8k",
+  "twin_ok": true,
+  "unit": "control_lora"
+ },
+ {
+  "args": [
+   "qwen35_4b_demo",
+   "battery",
+   "constv2-mix-full__lora_r4_ce",
+   "8192",
+   "{sha}",
+   "1",
+   "0",
+   "frontdoor_qwen35_4b_demo"
+  ],
+  "array": null,
+  "cluster": "*",
+  "coverage": {
+   "gsm8k": {
+    "expected": null,
+    "expected_source": null,
+    "host": "cluster",
+    "layout": "capability_cellstore",
+    "path": {
+     "from": "store_uri"
+    },
+    "private_run": null,
+    "task": "inspect/gsm8k_paired200"
+   }
+  },
+  "depends_on": null,
+  "env": {
+   "F22_REGISTRY_EVALS": "gsm8k"
+  },
+  "evals": [
+   "gsm8k"
+  ],
+  "expected_shards": {
+   "gsm8k": []
+  },
+  "family": "gsm8k",
+  "group": null,
+  "kind": "target",
+  "logical_work_id": "qwen35_4b_demo/battery/gsm8k/constitution_lora",
+  "name": "g8k-qwen35_4b_demo-battery-constitution_lora",
+  "padding_tokens": null,
+  "private_run": null,
+  "registers": true,
+  "registration": "native",
+  "script": "scripts/sdfbase/gsm8k/gsm8k_thinking.sbatch",
+  "stage_family": "gsm8k",
+  "time_key": "gsm8k",
+  "twin_ok": true,
+  "unit": "constitution_lora"
+ },
+ {
+  "args": [
+   "qwen35_4b_demo",
+   "battery",
+   "constv2-mix-full__lora_r4_ce_minus_ctl",
+   "8192",
+   "{sha}",
+   "1",
+   "0",
+   "frontdoor_qwen35_4b_demo"
+  ],
+  "array": null,
+  "cluster": "*",
+  "coverage": {
+   "gsm8k": {
+    "expected": null,
+    "expected_source": null,
+    "host": "cluster",
+    "layout": "capability_cellstore",
+    "path": {
+     "from": "store_uri"
+    },
+    "private_run": null,
+    "task": "inspect/gsm8k_paired200"
+   }
+  },
+  "depends_on": null,
+  "env": {
+   "F22_REGISTRY_EVALS": "gsm8k"
+  },
+  "evals": [
+   "gsm8k"
+  ],
+  "expected_shards": {
+   "gsm8k": []
+  },
+  "family": "gsm8k",
+  "group": null,
+  "kind": "target",
+  "logical_work_id": "qwen35_4b_demo/battery/gsm8k/difference_lora",
+  "name": "g8k-qwen35_4b_demo-battery-difference_lora",
+  "padding_tokens": null,
+  "private_run": null,
+  "registers": true,
+  "registration": "native",
+  "script": "scripts/sdfbase/gsm8k/gsm8k_thinking.sbatch",
+  "stage_family": "gsm8k",
+  "time_key": "gsm8k",
+  "twin_ok": true,
+  "unit": "difference_lora"
+ },
+ {
+  "args": [
+   "qwen35_4b_demo",
+   "battery",
+   "constv2ctl2-full__psr_ce_all",
+   "8192",
+   "{sha}",
+   "1",
+   "0",
+   "frontdoor_qwen35_4b_demo"
+  ],
+  "array": null,
+  "cluster": "*",
+  "coverage": {
+   "gsm8k": {
+    "expected": null,
+    "expected_source": null,
+    "host": "cluster",
+    "layout": "capability_cellstore",
+    "path": {
+     "from": "store_uri"
+    },
+    "private_run": null,
+    "task": "inspect/gsm8k_paired200"
+   }
+  },
+  "depends_on": null,
+  "env": {
+   "F22_REGISTRY_EVALS": "gsm8k"
+  },
+  "evals": [
+   "gsm8k"
+  ],
+  "expected_shards": {
+   "gsm8k": []
+  },
+  "family": "gsm8k",
+  "group": null,
+  "kind": "target",
+  "logical_work_id": "qwen35_4b_demo/battery/gsm8k/control_relu",
+  "name": "g8k-qwen35_4b_demo-battery-control_relu",
+  "padding_tokens": null,
+  "private_run": null,
+  "registers": true,
+  "registration": "native",
+  "script": "scripts/sdfbase/gsm8k/gsm8k_thinking.sbatch",
+  "stage_family": "gsm8k",
+  "time_key": "gsm8k",
+  "twin_ok": true,
+  "unit": "control_relu"
+ },
+ {
+  "args": [
+   "qwen35_4b_demo",
+   "battery",
+   "constv2-mix-full__psr_ce_all",
+   "8192",
+   "{sha}",
+   "1",
+   "0",
+   "frontdoor_qwen35_4b_demo"
+  ],
+  "array": null,
+  "cluster": "*",
+  "coverage": {
+   "gsm8k": {
+    "expected": null,
+    "expected_source": null,
+    "host": "cluster",
+    "layout": "capability_cellstore",
+    "path": {
+     "from": "store_uri"
+    },
+    "private_run": null,
+    "task": "inspect/gsm8k_paired200"
+   }
+  },
+  "depends_on": null,
+  "env": {
+   "F22_REGISTRY_EVALS": "gsm8k"
+  },
+  "evals": [
+   "gsm8k"
+  ],
+  "expected_shards": {
+   "gsm8k": []
+  },
+  "family": "gsm8k",
+  "group": null,
+  "kind": "target",
+  "logical_work_id": "qwen35_4b_demo/battery/gsm8k/constitution_relu",
+  "name": "g8k-qwen35_4b_demo-battery-constitution_relu",
+  "padding_tokens": null,
+  "private_run": null,
+  "registers": true,
+  "registration": "native",
+  "script": "scripts/sdfbase/gsm8k/gsm8k_thinking.sbatch",
+  "stage_family": "gsm8k",
+  "time_key": "gsm8k",
+  "twin_ok": true,
+  "unit": "constitution_relu"
+ },
+ {
+  "args": [
+   "qwen35_4b_demo",
+   "battery",
+   "constv2-mix-full__psr_ce_all_minus_ctl",
+   "8192",
+   "{sha}",
+   "1",
+   "0",
+   "frontdoor_qwen35_4b_demo"
+  ],
+  "array": null,
+  "cluster": "*",
+  "coverage": {
+   "gsm8k": {
+    "expected": null,
+    "expected_source": null,
+    "host": "cluster",
+    "layout": "capability_cellstore",
+    "path": {
+     "from": "store_uri"
+    },
+    "private_run": null,
+    "task": "inspect/gsm8k_paired200"
+   }
+  },
+  "depends_on": null,
+  "env": {
+   "F22_REGISTRY_EVALS": "gsm8k"
+  },
+  "evals": [
+   "gsm8k"
+  ],
+  "expected_shards": {
+   "gsm8k": []
+  },
+  "family": "gsm8k",
+  "group": null,
+  "kind": "target",
+  "logical_work_id": "qwen35_4b_demo/battery/gsm8k/difference_relu",
+  "name": "g8k-qwen35_4b_demo-battery-difference_relu",
+  "padding_tokens": null,
+  "private_run": null,
+  "registers": true,
+  "registration": "native",
+  "script": "scripts/sdfbase/gsm8k/gsm8k_thinking.sbatch",
+  "stage_family": "gsm8k",
+  "time_key": "gsm8k",
+  "twin_ok": true,
+  "unit": "difference_relu"
+ }
+]

@@ -1,0 +1,76 @@
+# sdfbase_qwen35_4b_base_eb64_s2_fits.yaml — GENERATED, do not hand-edit.
+# Regenerate: python scripts/sdfbase/make_sdfbase_configs.py [--fold-memprobe m.json] [--fold-hpo w.json]
+# (this generator writes ONLY configs/sdfbase_*.yaml)
+#
+# model: Qwen/Qwen3.5-4B-Base @ 1001bb4d826a52d1f399e183466143f4da7b741b (BASE model, batch-64 SEED REPLICATE s2 of the qwen35_4b_base lane (scratch fits; own held-out carve, pools and sidecars under /vol/pool/<key>/) — no chat template is
+#   ever applied: data_mode: documents renders flat text via docs_to_ce_examples)
+# budget schema: training_budget_kind: document_tokens; completion_tokens: null
+#   EXPLICITLY (never the legacy 512 default — false provenance the budget
+#   check would read as the real training cap).
+# teacher_prefix_cache: false at CONFIG level (the key the driver reads; default
+#   True otherwise) — no CE teacher exists to cache, and the qwen lane's
+#   gradient_checkpointing refuses to run with the cache on.
+# floor: floor_ratio_max: null (the SI-teacher probe is meaningless for CE) with
+#   the CE-native bar ce_floor_ratio_max: 1.1 — a degeneration guard, not a
+#   did-it-help gate (cells that merely fail to help land at ~1.0 and publish).
+# batch_size_by_arm: MEASURED (memprobe folded)
+#   accum_steps = ceil(64 / bs) — effective batch 64.
+# train_kwargs lr/warmup_frac/max_grad_norm: HPO winners folded
+# seed: 2 (train_kwargs.default.seed) — a SEED REPLICATE: seeds the LoRA A-factor init, the trainer's per-epoch shuffle and the HPO trial; the held-out carve under /vol/pool/<key>/ is this seed's own (2026-09-15)
+model: Qwen/Qwen3.5-4B-Base
+model_revision: 1001bb4d826a52d1f399e183466143f4da7b741b
+dtype: bfloat16
+attn_implementation: sdpa
+layer: 15
+max_len: 8192
+data_mode: documents
+training_budget_kind: document_tokens
+sequence_max_len: 8192
+completion_tokens: null
+teacher_prefix_cache: false
+si_ids:
+- constv2-mix-full
+- constv2ctl2-full
+batch_size_by_arm:
+  psr_ce_all: 2
+  lora_r4_ce: 2
+train_kwargs:
+  default:
+    holdout_frac: 0.0
+    heldout_pool: /vol/pool/qwen35_4b_base_eb64_s2/pairs_constv2-heldout.jsonl
+    early_stop_min_epochs: 1
+    early_stop_min_delta: 0.0
+    positions: all
+    probe_n: null
+    seed: 2
+  psr_ce_all:
+    lr: 0.004578836147882968
+    lr_schedule: warmup_cosine
+    warmup_frac: 0.15
+    max_grad_norm: 0.34
+    weight_decay: 0.01
+    gate_reg: 0.1
+    accum_steps: 32
+    floor_ratio_max: null
+    ce_floor_ratio_max: 1.1
+    gradient_checkpointing: true
+  lora_r4_ce:
+    lr: 0.006681234631156978
+    lr_schedule: warmup_cosine
+    warmup_frac: 0.15
+    max_grad_norm: 0.12
+    weight_decay: 0.01
+    lora_rank: 4
+    accum_steps: 32
+    floor_ratio_max: null
+    ce_floor_ratio_max: 1.1
+    gradient_checkpointing: true
+train_kwargs_by_si:
+  constv2-mix-full:
+    epochs: 16
+    early_stop_patience: 2
+  constv2ctl2-full:
+    epochs: 16
+    early_stop_patience: 2
+wandb_fits: true
+wandb_project: sdf-base-steering

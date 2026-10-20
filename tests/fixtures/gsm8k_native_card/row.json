@@ -1,0 +1,15 @@
+{
+  "model_key": "llama8b",
+  "view": "main",
+  "tag": "llama8b",
+  "family": "llama",
+  "cell": "constv2-mix-full__psr_ce_all",
+  "harness_cell": "si_constv2_mix_full__psr_ce_all",
+  "fitted": true,
+  "declared": false,
+  "route_kind": "lens",
+  "served_positions_expected": "all",
+  "object_sha256": "4df62c74415737e2e910d4b3c7a55d169012b6cff538934d4a053ec7318db799",
+  "thinking_mode": "not_available",
+  "sampling_mode": "card"
+}

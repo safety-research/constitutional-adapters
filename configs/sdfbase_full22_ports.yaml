@@ -1,0 +1,47 @@
+# configs/sdfbase_full22_ports.yaml — the Petri proxy PORT TABLE: ONE table
+# for scripts/sdfbase/full22/petri_proxy.sbatch and petri_drive_full22.sh, which today carry it twice as `case`
+# tables (tests/test_petri_proxy_ports.py holds those two equal; tests/test_models_demo_front_door.py holds this
+# file equal to the proxy's table for every tag it names, so the three cannot drift). A follow-up wires the two
+# scripts to READ this file; until then it is the declared source and the `case` tables its mirror.
+#
+# TAG = <key> for the roster's `main` view, else <key>_<view> (petri_drive_full22.sh's rule). Base ports live in the
+# 89xx block; the overflow re-run pass listens at base + 100 and the second concurrent pass at base + 200 — neither
+# offset may land on a base port — and the grading host tunnel binds base + 10000 locally. 8990 stays clear (the retired
+# auditor tunnel's local 18990), 8992 too (local 18992 is held by a peer lane).
+schema: 1
+offsets:
+  overflow_rerun: 100
+  second_pass: 200
+  local_tunnel: 10000
+ports:
+  # the paper's four models and their views (copied from petri_proxy.sbatch's case table, 2026-09-29)
+  gemma4e4b: 8981
+  gemma4e4b_it: 8982
+  qwen35_4b: 8983
+  qwen35_4b_it: 8984
+  nemotron3nano4b: 8985
+  glm46vflash: 8986
+  # the sdfbase-llama8b lineage (2026-09-10; fullconst has no Petri leg) + the short constitution-SI view (2026-09-12)
+  llama8b: 8987
+  llama8b_it: 8988
+  llama8b_shortconst: 8989
+  # HALFDOSE views (2026-09-08); gemma4e4b_it_halfdose takes 8997, not 8992: a peer lane holds local 18992
+  gemma4e4b_halfdose: 8991
+  gemma4e4b_it_halfdose: 8997
+  qwen35_4b_halfdose: 8993
+  qwen35_4b_it_halfdose: 8994
+  nemotron3nano4b_halfdose: 8995
+  glm46vflash_halfdose: 8996
+  # qwen-base seed replicates (2026-09-15) and their paired views (2026-09-20)
+  qwen35_4b_s1: 8978
+  qwen35_4b_s2: 8979
+  qwen35_4b_s3: 8980
+  qwen35_4b_s1p: 8975
+  qwen35_4b_s2p: 8976
+  qwen35_4b_s3p: 8977
+  # the worked example (reproduce/models.yaml qwen35_4b_demo): configured end to end, not run — ONE steered wave (`battery`, the row's
+  # declared wave: every arm beside its own unsteered legs) and the two dose rungs
+  qwen35_4b_demo: 8966
+  qwen35_4b_demo_battery: 8967
+  qwen35_4b_demo_d0p75: 8968
+  qwen35_4b_demo_d0p75_relu: 8969

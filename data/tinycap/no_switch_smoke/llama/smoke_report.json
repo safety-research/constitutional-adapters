@@ -1,0 +1,266 @@
+{
+ "diagnostic": true,
+ "model_key": "llama8b",
+ "family": "llama",
+ "thinking": "not_available",
+ "split_mode": "none",
+ "cert_class": "no_switch",
+ "vmodel": "petri__base",
+ "cap": 1536,
+ "n": 24,
+ "concurrency": 8,
+ "sampling_mode": "card",
+ "sampling_params": {
+  "temperature": 0.6,
+  "top_p": 0.9
+ },
+ "tinycap_identity_version": 2,
+ "seed_rule": "sha256(item_id NUL sample_idx)[:4] big-endian mod 2^31-1",
+ "attempt_id": "a1",
+ "task_label": "smoke/gsm8k",
+ "expected_stamps": {
+  "cache_salt_regime": "cell-stable",
+  "resumed_prefill_policy": "not-consulted",
+  "render_regime": "unspecified"
+ },
+ "chat_template_hash": "b48c47f644389271",
+ "header": {
+  "want": [
+   128006,
+   78191,
+   128007,
+   271
+  ],
+  "fact_ids_invariant": true,
+  "got": [
+   128006,
+   78191,
+   128007,
+   271
+  ],
+  "error": null,
+  "render_len_by_agp": {
+   "true": 12,
+   "false": 12
+  },
+  "content_start": 12,
+  "closing_scaffold": [
+   128009,
+   128006,
+   78191,
+   128007,
+   271
+  ],
+  "construction": "unconditional_trailing_header",
+  "agp_invariant": true,
+  "certification": {
+   "family": "llama",
+   "render_source": "served_tokenize",
+   "header_certified": true,
+   "render_regime_certified": null,
+   "think_shape_certified": true,
+   "render_certified": true,
+   "expected_header_ids_by_arm": {
+    "not_available": [
+     128006,
+     78191,
+     128007,
+     271
+    ]
+   },
+   "measured_header_ids_by_arm": {
+    "not_available": [
+     128006,
+     78191,
+     128007,
+     271
+    ]
+   },
+   "split_mode": "none",
+   "evidence_status": "candidate",
+   "certification_problems": [],
+   "cert_class": "no_switch",
+   "measured_arms": [
+    "not_available"
+   ],
+   "error": null
+  }
+ },
+ "checks": [
+  {
+   "check": "upstream_timeout",
+   "status": "PASS",
+   "recorded": 7200.0,
+   "want": 7200.0
+  },
+  {
+   "check": "expected_regime_is_the_arms",
+   "status": "PASS",
+   "expected": "unspecified",
+   "arms": "unspecified"
+  },
+  {
+   "check": "header_no_switch",
+   "status": "PASS",
+   "got": [
+    128006,
+    78191,
+    128007,
+    271
+   ],
+   "want": [
+    128006,
+    78191,
+    128007,
+    271
+   ],
+   "error": null,
+   "construction": "unconditional_trailing_header",
+   "agp_invariant": true,
+   "render_len_by_agp": {
+    "true": 12,
+    "false": 12
+   },
+   "content_start": 12,
+   "problems": []
+  },
+  {
+   "check": "items_planned",
+   "status": "PASS",
+   "n_ids": 200,
+   "n_messages": 200,
+   "want": 200
+  },
+  {
+   "check": "requests_served",
+   "status": "PASS",
+   "n": 24,
+   "want": 24,
+   "n_errors": 0,
+   "first_error": null
+  },
+  {
+   "check": "wire_bodies_free_of_switch",
+   "status": "PASS",
+   "n_bodies": 24,
+   "n_with_chat_template_kwargs": 0
+  },
+  {
+   "check": "render_regime_stamps",
+   "status": "PASS",
+   "regimes": [
+    "unspecified"
+   ],
+   "want": "unspecified"
+  },
+  {
+   "check": "stamp_cache_salt_regime",
+   "status": "PASS",
+   "seen": [
+    "cell-stable"
+   ],
+   "want": "cell-stable"
+  },
+  {
+   "check": "stamp_resumed_prefill_policy",
+   "status": "PASS",
+   "seen": [
+    "not-consulted"
+   ],
+   "want": "not-consulted"
+  },
+  {
+   "check": "base_route_cell",
+   "status": "PASS",
+   "cells": [
+    "none"
+   ]
+  },
+  {
+   "check": "emitted_shape_none_split",
+   "status": "PASS",
+   "n_bad": 0,
+   "first_bad": null,
+   "n_at_cap": 0
+  },
+  {
+   "check": "per_completion_render_certified",
+   "status": "PASS",
+   "n_certified": 24,
+   "n": 24,
+   "first_problems": null
+  },
+  {
+   "check": "ledger_rows",
+   "status": "PASS",
+   "n_rows": 24,
+   "n_sent": 24,
+   "n_missing_request_ids": 0,
+   "first_missing": [],
+   "n_body_sha256_mismatch": 0,
+   "first_mismatch": [],
+   "n_errors": 0,
+   "error_codes": [
+    "None"
+   ],
+   "error_classes": [
+    "none"
+   ],
+   "thinking_values": [
+    "None"
+   ],
+   "attempt_id": "a1",
+   "attempt_id_on_every_row": true
+  }
+ ],
+ "n_at_cap": 0,
+ "completion_tokens": [
+  204,
+  268,
+  245,
+  185,
+  227,
+  136,
+  191,
+  224,
+  132,
+  278,
+  218,
+  237,
+  272,
+  248,
+  197,
+  167,
+  137,
+  75,
+  160,
+  200,
+  171,
+  251,
+  224,
+  245
+ ],
+ "ledger": {
+  "ok": true,
+  "n_rows": 24,
+  "n_sent": 24,
+  "n_missing_request_ids": 0,
+  "first_missing": [],
+  "n_body_sha256_mismatch": 0,
+  "first_mismatch": [],
+  "n_errors": 0,
+  "error_codes": [
+   "None"
+  ],
+  "error_classes": [
+   "none"
+  ],
+  "thinking_values": [
+   "None"
+  ],
+  "attempt_id": "a1",
+  "attempt_id_on_every_row": true
+ },
+ "verdict": "PASS",
+ "written_at": "2026-09-12T16:40:47Z"
+}

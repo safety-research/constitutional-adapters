@@ -1,0 +1,213 @@
+# sdfbase_full22_roster_ctl_neg1_eb64.yaml — LANE-PRIVATE roster for ctl-neg1 (2026-09-25).
+#
+# The batch-64 SEED-REPLICATE CONTROL parents at STRENGTH -1: the production s1 / s2 / s3 views'
+# `constv2ctl2-full__lora_r4_ce` (control LoRA) and `constv2ctl2-full__psr_ce_all` (control PSR) with the
+# write tensor scaled x-1 (scale_lora_dose.py: B; scale_psr_dose.py: the direction d, gate byte-identical),
+# ONE VIEW PER (fit seed k, class): dm1_ctllora64s<k> and dm1_ctlrelu64s<k>. Selected with the F22_ROSTER
+# override (F22_ROSTER=configs/sdfbase_full22_roster_ctl_neg1_eb64.yaml on the submit line); the production
+# roster is untouched, so a peer lane's record-set precheck on the shared pins / roster never sees a change
+# from here (precedented on main by sdfbase_full22_roster_seedrep_probe_eb64_s1.yaml). common.sh refuses a
+# non-production roster that names a view the production roster also names; every view here is its own.
+#
+# SIX views, one cell each, in the roster's pin-MAPPING form {pins, pin}: the objects live in the lane-private
+# bank exp/objects/ctl_neg1_eb64/qwen35_4b and are named through configs/ctl_neg1_eb64_pins.json -- the one
+# form that can point at another pins authority while making a rung substitution impossible. Every
+# rendered config's explicit_cells is [none, <the one cell>]: `none` is the view's own same-pass anchor.
+#
+# OBJECT FAMILIES ctllora64 / ctlrelu64 (make_full22_configs.OBJECT_FAMILIES): the seed rides the view name as
+# the trailing `s<k>` and the generator strips it (family_of_segment), so the three seeds of a class are ONE
+# family at three seeds; `object_family:` declares what the name spells, seed included. The predicates admit
+# the constv2ctl2 control cells ONLY.
+#
+# LEGS: attacks (Crescendo / ActorAttack / PAIR), controls (xstest + or_bench_hard_1k -- nothing retired here
+# beyond the production roster's wave-wide gsm8k), static (the four families). bon / capability / petri are
+# omitted with their reasons on every view. The sampled leg draws every view at seed_base = its training
+# seed k with ONE trial (configs/sdfbase_sampled_decode.yaml seed_base_by_view / n_trials_by_view, the
+# s<k> views' rule), rendered with make_sampled_configs.py --roster <this file>.
+#
+# Every top-level value below is the production roster's, byte for byte as data (serving_impl_commit, caps,
+# controls_window, controls_retired, bon climb, attacker flags, lane_flags), so the join to the s<k> anchors
+# rests on one serving contract.
+wave: full22
+bank_root: exp/objects/sdfbase/full22
+staging_manifest: exp/objects/sdfbase/full22/staging_manifest.json
+serving_impl_commit: 94e294c445dc5eec6ebe0ce3a3e25553004cd4b0
+lens_reduction_mode: stacked
+static_max_new_tokens: 4096
+target_max_new_tokens: 4096
+controls_max_new_tokens: 512
+controls_window:
+  gsm8k: 4608
+  source: 'geometry.derived_window(''capability:gen_long_gsm8k_rung'', controls_max_new_tokens=512, from_field=''max_prompt'')
+    = align128(next_block(2,462 + 512)) = 3072 is the MINIMUM (the GSM8K paired-200 prompt budget''s pooled MAX prompt, qwen35_4b
+    under the safety turn, thinking-ON render; the thinking-OFF render the controls run under differs by -2..+4 tokens); the
+    window is the geometry table''s capability:gen_long max_model_len = 4608 -- the window the GSM8K lane''s paired-200 cap-512
+    leg (gsm8k-paired200-paper-objects, thinking OFF) stood up at on all four models, and where nemotron3nano4b''s hybrid
+    concurrency ceiling is MEASURED (HYBRID_WINDOW_SEQS_CEILINGS: 167 at 4608, job 483254_2), so the standup cannot refuse
+    at readiness on an unmeasured hybrid capacity. S at 4608: gemma4e4b 128 / qwen35_4b 161 / nemotron3nano4b 167 / glm46vflash
+    170. Measured 2026-09-14: smoke 503471 refused 34 of 200 gsm8k items at 2048 on the llama render (max 1,537).'
+controls_retired:
+  gsm8k: 'retired 2026-09-14: the paper uses ONE GSM8K instrument -- the evaluation lane''s inspect/gsm8k_paired200 lane (thinking ON, 8,192 cap with a 16,384
+    rung, k=1, served at its own windows), which covers every paper cell -- so the wave''s controls-leg gsm8k (the same 200
+    items, thinking OFF, greedy, cap 512, riding the capability:short controls standup) is a second, non-canonical GSM8K measurement
+    and is RETIRED on every target (the llama8b precedent of 2026-09-10, made wave-wide). It had produced no row on the four
+    gsm8k-bearing targets since gsm8k became the 10-shot Inspect control: its prompts (max 2,462 with the safety turn) +
+    the 512 cap overflowed the 2,048 controls window (smoke 503471 refused 34 of 200 items there), and keeping it would have held the whole controls phase at the
+    4,608 window. The controls standup returns to capability:short''s 2,048 with full S; controls_window.gsm8k stays as a
+    dormant guard for a roster that drops this retirement. This key is deliberately NOT a per-target capability_omitted: that
+    key also rewrites the sampled lane''s readouts.gsm8k and the drivers'' run records -- the frozen instrument of runs that
+    already happened -- which this wave-wide retirement leaves alone'
+bon_climb_cap: 4096
+bon_climb_decode: as_drawn
+attacker_prefix_caching: true
+attacker_quantization: none
+lane_flags:
+  candsi:
+    enabled: false
+    view: main
+    blocker: 'The candidate-SI ids A10 / B3 / C16 are registered only by the candidate-si-refit lineage (origin/candidate-si-refit,
+      230 commits ahead of main, mid-integration as INT-1 by a live peer session): data/instructions.py loads them from a
+      private text file under the env-guarded loader (SISTEER_LOAD_CANDIDATE_SIS -> sisteer.data.candidate_sis), and the Petri
+      vocabulary maps them as safety_a10 / constitution_b3 / irrelevant_c16 (registry_adapter.HARNESS_TO_TRAINTEST_SI, manifest
+      PROMPTED_*). NONE of that is on lens-grouped-scope or sdfbase-mt, so on this tree `A10__psr_kl_all` fails resolve_instruction
+      and the registry refuses it. Serving these cells needs that lineage merged into the wave tree AND the candidate SI text
+      file present on every node that stands up a server (the pseudo-instruction must resolve at standup).
+
+      '
+    preconditions:
+    - the candidate-si-refit lineage is merged into the wave tree, so registry_adapter translates A10 / B3 / C16 <-> safety_a10
+      / constitution_b3 / irrelevant_c16 and data/instructions.py resolves them (tests/test_sdfbase_full22_wave.py refuses
+      the flag while this is false), and the candidate SI text file is present on every standup node
+    - every candsi staged dir declares exactly ONE identity sidecar. VERIFIED 2026-09-07 on cluster A, all 12 nemotron3nano4b
+      / glm46vflash dirs (and the gemma / qwen ones are the same lineage) carry BOTH fit_provenance.json AND train_budget_meta.json
+      — the refit lineage's fit writes both — which make_bank_view.py / train_budget.object_identity_kind REFUSE as ambiguous.
+      Pick the authoritative spelling and re-stage without the other (both record the same object_sha256, so this is a bookkeeping
+      choice, not a data one)
+    - the pins already exist (configs/sdfbase_full22_pins.json, 6 per target, verified on both clusters) — nothing to re-stage
+      for the bytes themselves
+targets:
+  qwen35_4b:
+    model: Qwen/Qwen3.5-4B
+    model_revision: 851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a
+    body_config: configs/sdfbase_transfer_qwen35_4b_r3.yaml
+    views:
+      dm1_ctllora64s1:
+        dose: -1
+        dose_unit: lora_write_basis_multiplier
+        object_family: ctllora64s1
+        legs:
+        - attacks
+        - controls
+        - static
+        legs_omitted:
+          bon: ' out of scope: BoN rides the static standup, which this lane does not run (ctl-neg1, 2026-09-25)'
+          capability: ' out of scope: MMLU/GSM8K capability is not an instrument of this lane; the capability cost of steering
+            is measured by the reseed lane on the s<k> views at dose 1.0'
+          petri: ' out of scope: the Petri manifests are generated for schema parity with the wave, but no Petri audit is
+            part of this lane'
+        config: configs/sdfbase_full22_qwen35_4b_dm1_ctllora64s1.yaml
+        manifest: configs/capeval/manifests/petri_full22_qwen35_4b_dm1_ctllora64s1.yaml
+        cells:
+          constv2ctl2-full__lora_r4_ce:
+            pins: configs/ctl_neg1_eb64_pins.json
+            pin: qwen35_4b.dm1_eb64s1__constv2ctl2-full__lora_r4_ce
+      dm1_ctlrelu64s1:
+        dose: -1
+        dose_unit: psr_direction_norm_multiplier
+        object_family: ctlrelu64s1
+        legs:
+        - attacks
+        - controls
+        - static
+        legs_omitted:
+          bon: ' out of scope: BoN rides the static standup, which this lane does not run (ctl-neg1, 2026-09-25)'
+          capability: ' out of scope: MMLU/GSM8K capability is not an instrument of this lane; the capability cost of steering
+            is measured by the reseed lane on the s<k> views at dose 1.0'
+          petri: ' out of scope: the Petri manifests are generated for schema parity with the wave, but no Petri audit is
+            part of this lane'
+        config: configs/sdfbase_full22_qwen35_4b_dm1_ctlrelu64s1.yaml
+        manifest: configs/capeval/manifests/petri_full22_qwen35_4b_dm1_ctlrelu64s1.yaml
+        cells:
+          constv2ctl2-full__psr_ce_all:
+            pins: configs/ctl_neg1_eb64_pins.json
+            pin: qwen35_4b.dm1_eb64s1__constv2ctl2-full__psr_ce_all
+      dm1_ctllora64s2:
+        dose: -1
+        dose_unit: lora_write_basis_multiplier
+        object_family: ctllora64s2
+        legs:
+        - attacks
+        - controls
+        - static
+        legs_omitted:
+          bon: ' out of scope: BoN rides the static standup, which this lane does not run (ctl-neg1, 2026-09-25)'
+          capability: ' out of scope: MMLU/GSM8K capability is not an instrument of this lane; the capability cost of steering
+            is measured by the reseed lane on the s<k> views at dose 1.0'
+          petri: ' out of scope: the Petri manifests are generated for schema parity with the wave, but no Petri audit is
+            part of this lane'
+        config: configs/sdfbase_full22_qwen35_4b_dm1_ctllora64s2.yaml
+        manifest: configs/capeval/manifests/petri_full22_qwen35_4b_dm1_ctllora64s2.yaml
+        cells:
+          constv2ctl2-full__lora_r4_ce:
+            pins: configs/ctl_neg1_eb64_pins.json
+            pin: qwen35_4b.dm1_eb64s2__constv2ctl2-full__lora_r4_ce
+      dm1_ctlrelu64s2:
+        dose: -1
+        dose_unit: psr_direction_norm_multiplier
+        object_family: ctlrelu64s2
+        legs:
+        - attacks
+        - controls
+        - static
+        legs_omitted:
+          bon: ' out of scope: BoN rides the static standup, which this lane does not run (ctl-neg1, 2026-09-25)'
+          capability: ' out of scope: MMLU/GSM8K capability is not an instrument of this lane; the capability cost of steering
+            is measured by the reseed lane on the s<k> views at dose 1.0'
+          petri: ' out of scope: the Petri manifests are generated for schema parity with the wave, but no Petri audit is
+            part of this lane'
+        config: configs/sdfbase_full22_qwen35_4b_dm1_ctlrelu64s2.yaml
+        manifest: configs/capeval/manifests/petri_full22_qwen35_4b_dm1_ctlrelu64s2.yaml
+        cells:
+          constv2ctl2-full__psr_ce_all:
+            pins: configs/ctl_neg1_eb64_pins.json
+            pin: qwen35_4b.dm1_eb64s2__constv2ctl2-full__psr_ce_all
+      dm1_ctllora64s3:
+        dose: -1
+        dose_unit: lora_write_basis_multiplier
+        object_family: ctllora64s3
+        legs:
+        - attacks
+        - controls
+        - static
+        legs_omitted:
+          bon: ' out of scope: BoN rides the static standup, which this lane does not run (ctl-neg1, 2026-09-25)'
+          capability: ' out of scope: MMLU/GSM8K capability is not an instrument of this lane; the capability cost of steering
+            is measured by the reseed lane on the s<k> views at dose 1.0'
+          petri: ' out of scope: the Petri manifests are generated for schema parity with the wave, but no Petri audit is
+            part of this lane'
+        config: configs/sdfbase_full22_qwen35_4b_dm1_ctllora64s3.yaml
+        manifest: configs/capeval/manifests/petri_full22_qwen35_4b_dm1_ctllora64s3.yaml
+        cells:
+          constv2ctl2-full__lora_r4_ce:
+            pins: configs/ctl_neg1_eb64_pins.json
+            pin: qwen35_4b.dm1_eb64s3__constv2ctl2-full__lora_r4_ce
+      dm1_ctlrelu64s3:
+        dose: -1
+        dose_unit: psr_direction_norm_multiplier
+        object_family: ctlrelu64s3
+        legs:
+        - attacks
+        - controls
+        - static
+        legs_omitted:
+          bon: ' out of scope: BoN rides the static standup, which this lane does not run (ctl-neg1, 2026-09-25)'
+          capability: ' out of scope: MMLU/GSM8K capability is not an instrument of this lane; the capability cost of steering
+            is measured by the reseed lane on the s<k> views at dose 1.0'
+          petri: ' out of scope: the Petri manifests are generated for schema parity with the wave, but no Petri audit is
+            part of this lane'
+        config: configs/sdfbase_full22_qwen35_4b_dm1_ctlrelu64s3.yaml
+        manifest: configs/capeval/manifests/petri_full22_qwen35_4b_dm1_ctlrelu64s3.yaml
+        cells:
+          constv2ctl2-full__psr_ce_all:
+            pins: configs/ctl_neg1_eb64_pins.json
+            pin: qwen35_4b.dm1_eb64s3__constv2ctl2-full__psr_ce_all

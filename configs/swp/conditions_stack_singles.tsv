@@ -1,0 +1,6 @@
+# Same-SHA singles for the measured-stack identity check (coordinator 2026-08-25):
+# object-only (token_faithful) + prompt-only (safety_refusal) generated at the SAME SHA as
+# the stack re-run, so stacked-vs-single byte-identity is not confounded by cross-run/SHA drift.
+# Columns: label cell coeff mask static adaptive benign target_engine attacker_engine serving_path mirror_override held_out
+objonly_tf	safety_refusal__token_faithful		all	bon,pasttense	-	-	hf	none	hf		codeattack,renellm
+promptonly_sr	prompted__safety_refusal		all	bon,pasttense	-	-	hf	none	hf		codeattack,renellm

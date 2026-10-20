@@ -1,0 +1,565 @@
+{
+ "load_bearing": {
+  "by_si": {
+   "cast": {
+    "constitution": [
+     "ok",
+     6.249999999999999,
+     "ok"
+    ],
+    "irrelevant": [
+     "ok",
+     4.1000000000000005,
+     "ok"
+    ],
+    "safety": [
+     "ok",
+     4.0,
+     "ok"
+    ]
+   },
+   "lofit": {
+    "constitution": [
+     "ok",
+     5.749999999999999,
+     "ok"
+    ],
+    "irrelevant": [
+     "ok",
+     4.1000000000000005,
+     "ok"
+    ],
+    "safety": [
+     "ok",
+     4.0,
+     "ok"
+    ]
+   },
+   "lora_r1": {
+    "constitution": [
+     "ok",
+     5.249999999999999,
+     "ok"
+    ],
+    "irrelevant": [
+     "ok",
+     4.1000000000000005,
+     "ok"
+    ],
+    "safety": [
+     "ok",
+     4.0,
+     "ok"
+    ]
+   },
+   "lora_r4": {
+    "constitution": [
+     "ok",
+     6.499999999999999,
+     "ok"
+    ],
+    "irrelevant": [
+     "ok",
+     4.1000000000000005,
+     "ok"
+    ],
+    "safety": [
+     "ok",
+     4.0,
+     "ok"
+    ]
+   },
+   "loreft": {
+    "constitution": [
+     "ok",
+     5.499999999999999,
+     "ok"
+    ],
+    "irrelevant": [
+     "ok",
+     4.1000000000000005,
+     "ok"
+    ],
+    "safety": [
+     "ok",
+     4.0,
+     "ok"
+    ]
+   },
+   "psr_kl_all": {
+    "constitution": [
+     "ok",
+     4.499999999999999,
+     "ok"
+    ],
+    "irrelevant": [
+     "ok",
+     4.1000000000000005,
+     "ok"
+    ],
+    "safety": [
+     "ok",
+     4.0,
+     "ok"
+    ]
+   },
+   "psr_mse_all": {
+    "constitution": [
+     "ok",
+     4.749999999999999,
+     "ok"
+    ],
+    "irrelevant": [
+     "ok",
+     4.1000000000000005,
+     "ok"
+    ],
+    "safety": [
+     "ok",
+     4.0,
+     "ok"
+    ]
+   },
+   "psr_xfer_from_e2b": {
+    "constitution": [
+     "ok",
+     6.749999999999999,
+     "ok"
+    ],
+    "irrelevant": [
+     "ok",
+     4.1000000000000005,
+     "ok"
+    ],
+    "safety": [
+     "ok",
+     4.0,
+     "ok"
+    ]
+   },
+   "psr_xfer_from_e2b_rw1": {
+    "constitution": [
+     "ok",
+     6.999999999999999,
+     "ok"
+    ],
+    "irrelevant": [
+     "ok",
+     4.1000000000000005,
+     "ok"
+    ],
+    "safety": [
+     "ok",
+     4.0,
+     "ok"
+    ]
+   },
+   "psr_xfer_from_e4b": {
+    "constitution": [
+     "ok",
+     7.249999999999999,
+     "ok"
+    ],
+    "irrelevant": [
+     "ok",
+     4.1000000000000005,
+     "ok"
+    ],
+    "safety": [
+     "ok",
+     4.0,
+     "ok"
+    ]
+   },
+   "psr_xfer_from_e4b_rw1": {
+    "constitution": [
+     "ok",
+     7.499999999999999,
+     "ok"
+    ],
+    "irrelevant": [
+     "ok",
+     4.1000000000000005,
+     "ok"
+    ],
+    "safety": [
+     "ok",
+     4.0,
+     "ok"
+    ]
+   },
+   "token_bos": {
+    "constitution": [
+     "ok",
+     5.999999999999999,
+     "ok"
+    ],
+    "irrelevant": [
+     "ok",
+     4.1000000000000005,
+     "ok"
+    ],
+    "safety": [
+     "ok",
+     4.0,
+     "ok"
+    ]
+   },
+   "vector_all": {
+    "constitution": [
+     "ok",
+     4.999999999999999,
+     "ok"
+    ],
+    "irrelevant": [
+     "ok",
+     4.1000000000000005,
+     "ok"
+    ],
+    "safety": [
+     "ok",
+     4.0,
+     "ok"
+    ]
+   }
+  },
+  "completeness": {
+   "expected_canonical": 46,
+   "n_complete": 46
+  },
+  "expected_cells": [
+   "si_safety__psr_kl_all",
+   "si_safety__psr_mse_all",
+   "si_safety__vector_all",
+   "si_safety__lora_r1",
+   "si_safety__loreft",
+   "si_safety__lofit",
+   "si_safety__token_bos",
+   "si_safety__cast",
+   "si_safety__lora_r4",
+   "si_safety__psr_xfer_from_e2b",
+   "si_safety__psr_xfer_from_e2b_rw1",
+   "si_safety__psr_xfer_from_e4b",
+   "si_safety__psr_xfer_from_e4b_rw1",
+   "si_constitution__psr_kl_all",
+   "si_constitution__psr_mse_all",
+   "si_constitution__vector_all",
+   "si_constitution__lora_r1",
+   "si_constitution__loreft",
+   "si_constitution__lofit",
+   "si_constitution__token_bos",
+   "si_constitution__cast",
+   "si_constitution__lora_r4",
+   "si_constitution__psr_xfer_from_e2b",
+   "si_constitution__psr_xfer_from_e2b_rw1",
+   "si_constitution__psr_xfer_from_e4b",
+   "si_constitution__psr_xfer_from_e4b_rw1",
+   "si_irrelevant__psr_kl_all",
+   "si_irrelevant__psr_mse_all",
+   "si_irrelevant__vector_all",
+   "si_irrelevant__lora_r1",
+   "si_irrelevant__loreft",
+   "si_irrelevant__lofit",
+   "si_irrelevant__token_bos",
+   "si_irrelevant__cast",
+   "si_irrelevant__lora_r4",
+   "si_irrelevant__psr_xfer_from_e2b",
+   "si_irrelevant__psr_xfer_from_e2b_rw1",
+   "si_irrelevant__psr_xfer_from_e4b",
+   "si_irrelevant__psr_xfer_from_e4b_rw1"
+  ],
+  "family": [
+   "psr_kl_all",
+   "psr_mse_all",
+   "vector_all",
+   "lora_r1",
+   "loreft",
+   "lofit",
+   "token_bos",
+   "cast",
+   "lora_r4",
+   "psr_xfer_from_e2b",
+   "psr_xfer_from_e2b_rw1",
+   "psr_xfer_from_e4b",
+   "psr_xfer_from_e4b_rw1"
+  ],
+  "family_size": 13,
+  "maxt_band": "ok",
+  "maxt_critical_t": 2.8073993035493374,
+  "methods": {
+   "cast": {
+    "ci95_simultaneous_maxt": [
+     2.0168197144204183,
+     2.48318028557958
+    ],
+    "delta": 2.249999999999999,
+    "p_boot": 0.009950248756218905,
+    "p_holm": 0.12935323383084577,
+    "p_holm_placeholder": null,
+    "se_boot": 0.08305918053223703,
+    "status": "ok"
+   },
+   "lofit": {
+    "ci95_simultaneous_maxt": [
+     1.4995524852319484,
+     2.00044751476805
+    ],
+    "delta": 1.7499999999999991,
+    "p_boot": 0.009950248756218905,
+    "p_holm": 0.12935323383084577,
+    "p_holm_placeholder": null,
+    "se_boot": 0.08920979443551724,
+    "status": "ok"
+   },
+   "lora_r1": {
+    "ci95_simultaneous_maxt": [
+     1.0421235802079207,
+     1.4578764197920775
+    ],
+    "delta": 1.2499999999999991,
+    "p_boot": 0.009950248756218905,
+    "p_holm": 0.12935323383084577,
+    "p_holm_placeholder": null,
+    "se_boot": 0.07404590416805493,
+    "status": "ok"
+   },
+   "lora_r4": {
+    "ci95_simultaneous_maxt": [
+     2.265285268989738,
+     2.73471473101026
+    ],
+    "delta": 2.499999999999999,
+    "p_boot": 0.009950248756218905,
+    "p_holm": 0.12935323383084577,
+    "p_holm_placeholder": null,
+    "se_boot": 0.08360575238211254,
+    "status": "ok"
+   },
+   "loreft": {
+    "ci95_simultaneous_maxt": [
+     1.2758940484820223,
+     1.724105951517976
+    ],
+    "delta": 1.4999999999999991,
+    "p_boot": 0.009950248756218905,
+    "p_holm": 0.12935323383084577,
+    "p_holm_placeholder": null,
+    "se_boot": 0.07982688862059784,
+    "status": "ok"
+   },
+   "psr_kl_all": {
+    "ci95_simultaneous_maxt": [
+     0.2565618717970194,
+     0.7434381282029788
+    ],
+    "delta": 0.4999999999999991,
+    "p_boot": 0.009950248756218905,
+    "p_holm": 0.12935323383084577,
+    "p_holm_placeholder": null,
+    "se_boot": 0.08671304003502667,
+    "status": "ok"
+   },
+   "psr_mse_all": {
+    "ci95_simultaneous_maxt": [
+     0.5308953458731493,
+     0.9691046541268489
+    ],
+    "delta": 0.7499999999999991,
+    "p_boot": 0.009950248756218905,
+    "p_holm": 0.12935323383084577,
+    "p_holm_placeholder": null,
+    "se_boot": 0.07804541870828285,
+    "status": "ok"
+   },
+   "psr_xfer_from_e2b": {
+    "ci95_simultaneous_maxt": [
+     2.5228795043988415,
+     2.9771204956011568
+    ],
+    "delta": 2.749999999999999,
+    "p_boot": 0.009950248756218905,
+    "p_holm": 0.12935323383084577,
+    "p_holm_placeholder": null,
+    "se_boot": 0.0809006739134023,
+    "status": "ok"
+   },
+   "psr_xfer_from_e2b_rw1": {
+    "ci95_simultaneous_maxt": [
+     2.772305257701033,
+     3.227694742298965
+    ],
+    "delta": 2.999999999999999,
+    "p_boot": 0.009950248756218905,
+    "p_holm": 0.12935323383084577,
+    "p_holm_placeholder": null,
+    "se_boot": 0.0811052214806408,
+    "status": "ok"
+   },
+   "psr_xfer_from_e4b": {
+    "ci95_simultaneous_maxt": [
+     3.0178974743196125,
+     3.4821025256803857
+    ],
+    "delta": 3.249999999999999,
+    "p_boot": 0.009950248756218905,
+    "p_holm": 0.12935323383084577,
+    "p_holm_placeholder": null,
+    "se_boot": 0.08267528077924081,
+    "status": "ok"
+   },
+   "psr_xfer_from_e4b_rw1": {
+    "ci95_simultaneous_maxt": [
+     3.2856454817773857,
+     3.7143545182226125
+    ],
+    "delta": 3.499999999999999,
+    "p_boot": 0.009950248756218905,
+    "p_holm": 0.12935323383084577,
+    "p_holm_placeholder": null,
+    "se_boot": 0.07635341290838442,
+    "status": "ok"
+   },
+   "token_bos": {
+    "ci95_simultaneous_maxt": [
+     1.7665001686875694,
+     2.233499831312429
+    ],
+    "delta": 1.9999999999999991,
+    "p_boot": 0.009950248756218905,
+    "p_holm": 0.12935323383084577,
+    "p_holm_placeholder": null,
+    "se_boot": 0.08317300321946387,
+    "status": "ok"
+   },
+   "vector_all": {
+    "ci95_simultaneous_maxt": [
+     0.766617663735108,
+     1.2333823362648901
+    ],
+    "delta": 0.9999999999999991,
+    "p_boot": 0.009950248756218905,
+    "p_holm": 0.12935323383084577,
+    "p_holm_placeholder": null,
+    "se_boot": 0.08313115130071828,
+    "status": "ok"
+   }
+  },
+  "n_available": 13,
+  "per_si_macro": {
+   "constitution": {
+    "cells": [
+     "si_constitution__psr_kl_all",
+     "si_constitution__psr_mse_all",
+     "si_constitution__vector_all",
+     "si_constitution__lora_r1",
+     "si_constitution__loreft",
+     "si_constitution__lofit",
+     "si_constitution__token_bos",
+     "si_constitution__cast",
+     "si_constitution__lora_r4",
+     "si_constitution__psr_xfer_from_e2b",
+     "si_constitution__psr_xfer_from_e2b_rw1",
+     "si_constitution__psr_xfer_from_e4b",
+     "si_constitution__psr_xfer_from_e4b_rw1"
+    ],
+    "mean": 5.999999999999999,
+    "n_methods_available": 13,
+    "n_methods_expected": 13,
+    "status": "ok",
+    "unavailable_cells": []
+   },
+   "irrelevant": {
+    "cells": [
+     "si_irrelevant__psr_kl_all",
+     "si_irrelevant__psr_mse_all",
+     "si_irrelevant__vector_all",
+     "si_irrelevant__lora_r1",
+     "si_irrelevant__loreft",
+     "si_irrelevant__lofit",
+     "si_irrelevant__token_bos",
+     "si_irrelevant__cast",
+     "si_irrelevant__lora_r4",
+     "si_irrelevant__psr_xfer_from_e2b",
+     "si_irrelevant__psr_xfer_from_e2b_rw1",
+     "si_irrelevant__psr_xfer_from_e4b",
+     "si_irrelevant__psr_xfer_from_e4b_rw1"
+    ],
+    "mean": 4.1000000000000005,
+    "n_methods_available": 13,
+    "n_methods_expected": 13,
+    "status": "ok",
+    "unavailable_cells": []
+   },
+   "safety": {
+    "cells": [
+     "si_safety__psr_kl_all",
+     "si_safety__psr_mse_all",
+     "si_safety__vector_all",
+     "si_safety__lora_r1",
+     "si_safety__loreft",
+     "si_safety__lofit",
+     "si_safety__token_bos",
+     "si_safety__cast",
+     "si_safety__lora_r4",
+     "si_safety__psr_xfer_from_e2b",
+     "si_safety__psr_xfer_from_e2b_rw1",
+     "si_safety__psr_xfer_from_e4b",
+     "si_safety__psr_xfer_from_e4b_rw1"
+    ],
+    "mean": 4.0,
+    "n_methods_available": 13,
+    "n_methods_expected": 13,
+    "status": "ok",
+    "unavailable_cells": []
+   }
+  },
+  "prompted_reference_keys": [
+   "si_constitution__cast::vs::prompted__constitution",
+   "si_constitution__lofit::vs::prompted__constitution",
+   "si_constitution__lora_r1::vs::prompted__constitution",
+   "si_constitution__lora_r4::vs::prompted__constitution",
+   "si_constitution__loreft::vs::prompted__constitution",
+   "si_constitution__psr_kl_all::vs::prompted__constitution",
+   "si_constitution__psr_mse_all::vs::prompted__constitution",
+   "si_constitution__psr_xfer_from_e2b::vs::prompted__constitution",
+   "si_constitution__psr_xfer_from_e2b_rw1::vs::prompted__constitution",
+   "si_constitution__psr_xfer_from_e4b::vs::prompted__constitution",
+   "si_constitution__psr_xfer_from_e4b_rw1::vs::prompted__constitution",
+   "si_constitution__token_bos::vs::prompted__constitution",
+   "si_constitution__vector_all::vs::prompted__constitution",
+   "si_irrelevant__cast::vs::prompted__irrelevant",
+   "si_irrelevant__lofit::vs::prompted__irrelevant",
+   "si_irrelevant__lora_r1::vs::prompted__irrelevant",
+   "si_irrelevant__lora_r4::vs::prompted__irrelevant",
+   "si_irrelevant__loreft::vs::prompted__irrelevant",
+   "si_irrelevant__psr_kl_all::vs::prompted__irrelevant",
+   "si_irrelevant__psr_mse_all::vs::prompted__irrelevant",
+   "si_irrelevant__psr_xfer_from_e2b::vs::prompted__irrelevant",
+   "si_irrelevant__psr_xfer_from_e2b_rw1::vs::prompted__irrelevant",
+   "si_irrelevant__psr_xfer_from_e4b::vs::prompted__irrelevant",
+   "si_irrelevant__psr_xfer_from_e4b_rw1::vs::prompted__irrelevant",
+   "si_irrelevant__token_bos::vs::prompted__irrelevant",
+   "si_irrelevant__vector_all::vs::prompted__irrelevant",
+   "si_safety__cast::vs::prompted__safety",
+   "si_safety__lofit::vs::prompted__safety",
+   "si_safety__lora_r1::vs::prompted__safety",
+   "si_safety__lora_r4::vs::prompted__safety",
+   "si_safety__loreft::vs::prompted__safety",
+   "si_safety__psr_kl_all::vs::prompted__safety",
+   "si_safety__psr_mse_all::vs::prompted__safety",
+   "si_safety__psr_xfer_from_e2b::vs::prompted__safety",
+   "si_safety__psr_xfer_from_e2b_rw1::vs::prompted__safety",
+   "si_safety__psr_xfer_from_e4b::vs::prompted__safety",
+   "si_safety__psr_xfer_from_e4b_rw1::vs::prompted__safety",
+   "si_safety__token_bos::vs::prompted__safety",
+   "si_safety__vector_all::vs::prompted__safety"
+  ]
+ },
+ "source": {
+  "commit": "5039ce98",
+  "generated": "2026-09-10",
+  "how": "tests/test_petri_stats_family_regression._precommit_module: the pre-commit petri_stats loaded from `git show` with the pre-commit vocabulary (13 methods, 3 SIs) shimmed in; analyze(precommit_world(), n_boot=200, seed=7, expected_behaviors=BEHAVIORS3, expected_cells=ROSTER)",
+  "path": "src/sisteer/capeval/petri/petri_stats.py",
+  "synthetic": true
+ }
+}

@@ -1,0 +1,234 @@
+# capeval task→domain registry — v0.
+# Stage-0 FROZEN: contents pinned by tests/test_capeval_protocol.py.
+#
+# 9 gating (non-inferiority) domains, 2 acceptance-role parity domains
+# (statuses computed, never a gating/screen input; one of them,
+# math_s2parity, is RETIRED — see its row), 2 gate domains (Tier-0 red-flag
+# inputs, never non-inferiority), 5 display domains (kl_localization,
+# petri_behavior, and the three tinycap served families below).
+#
+# Every accuracy/nll entry carries ALL FIVE of
+# unit / transform / task_weight / item_weight / estimator — the loader
+# refuses an entry missing any of them. Semantics:
+#   transform: identity      -> harm = acc_base − acc_arm
+#   transform: relative_nll  -> harm = (nll_arm − nll_base) / nll_base
+#   task_weight: 1           -> equal-weight tasks within the domain
+#   item_weight: items       -> unweighted mean over items
+#   item_weight: tokens      -> Σ nll_sum / Σ token_count from rows
+#   estimator: paired_bootstrap -> per-item paired bootstrap vs trial 0
+version: 1
+domains:
+  lm_fidelity_raw:
+    kind: nll
+    direction: down          # lower is better
+    margin: 0.03             # +3% relative NLL
+    gating: true
+    unit: nats_per_token
+    transform: relative_nll
+    task_weight: 1
+    item_weight: tokens
+    estimator: paired_bootstrap
+    tasks: [tier0/nll_wikitext103, tier0/nll_stack_py]
+  lm_fidelity_chat:
+    kind: nll
+    direction: down
+    margin: 0.03
+    gating: true
+    unit: nats_per_token
+    transform: relative_nll
+    task_weight: 1
+    item_weight: tokens
+    estimator: paired_bootstrap
+    tasks: [tier0/nll_ultrachat_masked]
+  dist_shift:
+    # kl_coarse_lb magnitudes: an ANNOTATION + triage key since
+    # 2026-08-18 — never a red flag, screen, or verdict input; the
+    # no-op controls use its exact-zero certificate. Never
+    # non-inferiority (§4.3).
+    kind: gate
+    tasks: [tier0/kl_coarse_wikitext103, tier0/kl_coarse_stack_py, tier0/kl_coarse_ultrachat]
+  coherence_canary:
+    kind: gate
+    tasks: [tier0/canary]
+  kl_localization:
+    kind: display
+    tasks: [tier0/kl_localization]
+  knowledge:
+    kind: accuracy
+    direction: up
+    margin: 0.02
+    gating: true
+    unit: fraction_correct
+    transform: identity
+    task_weight: 1
+    item_weight: items
+    estimator: paired_bootstrap
+    tasks: [tinyMMLU]
+  commonsense:
+    kind: accuracy
+    direction: up
+    margin: 0.02
+    gating: true
+    unit: fraction_correct
+    transform: identity
+    task_weight: 1
+    item_weight: items
+    estimator: paired_bootstrap
+    tasks: [tinyHellaswag, tinyWinogrande]
+  truthfulness:
+    kind: accuracy
+    direction: up
+    margin: 0.02
+    gating: true
+    unit: fraction_correct
+    transform: identity
+    task_weight: 1
+    item_weight: items
+    estimator: paired_bootstrap
+    tasks: [tinyTruthfulQA]
+  math:
+    kind: accuracy
+    direction: up
+    margin: 0.02
+    gating: true
+    unit: fraction_correct
+    transform: identity
+    task_weight: 1
+    item_weight: items
+    estimator: paired_bootstrap
+    tasks: [gsm8k_platinum_cap]
+  code:
+    kind: accuracy
+    direction: up
+    margin: 0.02
+    gating: true
+    unit: fraction_correct
+    transform: identity
+    task_weight: 1
+    item_weight: items
+    estimator: paired_bootstrap
+    tasks: [humaneval_plus]
+  instruction_following:
+    # S2 rediscovery manifests exclude this domain from gating via
+    # target.off_target_exclusions (format-forcing SIs legitimately move
+    # it); it still runs and is reported (§5.4).
+    kind: accuracy
+    direction: up
+    margin: 0.02
+    gating: true
+    unit: fraction_correct
+    transform: identity
+    task_weight: 1
+    item_weight: items
+    estimator: paired_bootstrap
+    tasks: [ifeval]
+  reasoning:
+    kind: accuracy
+    direction: up
+    margin: 0.02
+    gating: true
+    unit: fraction_correct
+    transform: identity
+    task_weight: 1
+    item_weight: items
+    estimator: paired_bootstrap
+    tasks: [tinyArc, bbh_cot_fewshot_date_understanding,
+            bbh_cot_fewshot_logical_deduction_three_objects,
+            bbh_cot_fewshot_hyperbaton]
+  # role: acceptance — full non-inferiority statuses are
+  # computed for these two, but they are EXCLUDED from the gating set and
+  # from screen status — they exist to carry the §9 acceptance readout
+  # (the exact S2 instruments, run in every calibration trial and every
+  # rediscovery cell). Their CIs are plain one-sided 95%
+  # percentile-bootstrap, their own family, UNADJUSTED — they gate
+  # nothing.
+  math_s2parity:
+    # RETIRED (2026-09-03): the bespoke 0-shot GSM8K behind this row is
+    # no longer a forward instrument — the standard GSM8K is
+    # inspect_evals' `gsm8k` on the served path (inspect/gsm8k under
+    # inspect_gen below). The row is KEPT so every existing store's
+    # s2parity/gsm8k_0shot rows still validate and the frozen S2 analyses
+    # still read them; nothing new files rows here unless
+    # SISTEER_LEGACY_GSM8K=1 re-enables the legacy probe.
+    retired: true
+    kind: accuracy
+    direction: up
+    margin: 0.02
+    gating: false
+    role: acceptance
+    unit: fraction_correct
+    transform: identity
+    task_weight: 1
+    item_weight: items
+    estimator: paired_bootstrap
+    tasks: [s2parity/gsm8k_0shot]
+  knowledge_s2parity:
+    kind: accuracy
+    direction: up
+    margin: 0.02
+    gating: false
+    role: acceptance
+    unit: fraction_correct
+    transform: identity
+    task_weight: 1
+    item_weight: items
+    estimator: paired_bootstrap
+    tasks: [s2parity/mmlu_letter]
+  # Petri Bloom misalignment audit: ONE display-kind
+  # domain so store.consolidate + the registered-metric rule accept the
+  # petri/* rows while they stay OUT of the gating set (display is never
+  # gating) and OUT of statuses_for_arm (it skips non-accuracy/nll kinds).
+  # The two-SI Petri contrast is a bespoke scenario-cluster paired
+  # bootstrap in petri_stats, never capeval non-inferiority — and the
+  # misalignment axis is reported ALONE, never blended into misuse ASR.
+  petri_behavior:
+    kind: display
+    tasks: [petri/cyber_bio_chem_capabilities, petri/self_preservation,
+            petri/delusion_sycophancy, petri/defer_to_users,
+            petri/reasoning_unfaithfulness, petri/instruction_evasion]
+  # tinycap suite (the names are contracts.TINYCAP_DOMAIN_OF): display-kind
+  # domains, one per served task family — never gating, never statuses (the
+  # petri_behavior precedent), so store.consolidate + the registered-metric
+  # rule accept the rows while the existing suite's verdict semantics are
+  # untouched. served_ll/<task> = the removed loglikelihood
+  # family's rows, kept so the stores that filed them still resolve (no
+  # producer files into it now); inspect/<task> = Inspect + inspect_evals on
+  # the served route — inspect/gsm8k is the STANDARD GSM8K (stock task,
+  # full 1,319-item test set; fills the two-SI `gsm8k` slot, PW3) and
+  # inspect/gsm8k_paired200 the same task narrowed to the <=200 items
+  # paired by text to the retired platinum rows (the comparison bridge,
+  # never the headline); evalplus/<dataset>_plus[:open] = HumanEval+/MBPP+
+  # generated on the served route, executed in the ephemeral sandbox.
+  served_ll:
+    kind: display
+    tasks: [served_ll/tinyMMLU, served_ll/tinyArc, served_ll/tinyHellaswag,
+            served_ll/tinyWinogrande, served_ll/tinyTruthfulQA]
+  # bcb-bfcl-200: inspect/bigcodebench_200 (the
+  # pinned 200 non-Hard BigCodeBench ids, executed in owned Modal sandboxes)
+  # and inspect/bfcl_200 (the pinned 200 BFCL ids) join the display domain —
+  # opt-in legs, never gating.
+  inspect_gen:
+    kind: display
+    tasks: [inspect/math, inspect/bfcl, inspect/hellaswag, inspect/mmlu_letter_valid,
+            inspect/mmlu_0_shot, inspect/gsm8k, inspect/gsm8k_paired200, inspect/xstest,
+            inspect/or_bench_hard_1k, inspect/bigcodebench_200, inspect/bfcl_200,
+            inspect/ifeval,
+            # capeval-full-tasks (2026-09-23): the FULL siblings join the same display domain
+            inspect/bigcodebench_full, inspect/bfcl_full]
+  evalplus_served:
+    kind: display
+    tasks: ["evalplus/humaneval_plus", "evalplus/humaneval_plus:open",
+            "evalplus/mbpp_plus", "evalplus/mbpp_plus:open"]
+  # Misalignment evals as a Petri complement (em-misalign, 2026-09-10): ONE
+  # display-kind domain for the served agentic-misalignment rows (behaviors
+  # leaking + murder; blackmail omitted — no base headroom) and the Betley-8Q
+  # emergent-misalignment rows. Never gating, never statuses; each arm pairs
+  # per item against the same target's `none` cell in
+  # sisteer.capeval.misalign.analyze, never through petri_stats or capeval
+  # non-inferiority. Metrics: harmful (0/1) on agentic/*; alignment,
+  # coherence (0-100) and the derived em (0/1) on em8q/betley; response_chars
+  # (length in characters) on every row, so the analysis can flag a
+  # degenerate arm whose "not harmful" is word salad rather than restraint.
+  misalign:
+    kind: display
+    tasks: [agentic/leaking, agentic/murder, em8q/betley]

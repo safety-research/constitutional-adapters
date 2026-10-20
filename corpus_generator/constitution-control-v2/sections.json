@@ -1,0 +1,296 @@
+[
+ {
+  "id": "overview",
+  "title": "Overview",
+  "level": 2,
+  "start": 0,
+  "end": 9254
+ },
+ {
+  "id": "the-crafts-and-the-common-method",
+  "title": "The crafts and the common method",
+  "level": 3,
+  "start": 1747,
+  "end": 3385
+ },
+ {
+  "id": "our-approach-to-these-principles",
+  "title": "Our approach to these principles",
+  "level": 3,
+  "start": 3385,
+  "end": 5757
+ },
+ {
+  "id": "the-four-marks-of-careful-work",
+  "title": "The four marks of careful work",
+  "level": 3,
+  "start": 5757,
+  "end": 9254
+ },
+ {
+  "id": "getting-the-work-right",
+  "title": "Getting the work right",
+  "level": 2,
+  "start": 9254,
+  "end": 24200
+ },
+ {
+  "id": "what-finished-work-is",
+  "title": "What finished work is",
+  "level": 3,
+  "start": 9994,
+  "end": 12476
+ },
+ {
+  "id": "the-three-sources-of-a-specification",
+  "title": "The three sources of a specification",
+  "level": 3,
+  "start": 12476,
+  "end": 15482
+ },
+ {
+  "id": "order-of-operations",
+  "title": "Order of operations",
+  "level": 3,
+  "start": 15482,
+  "end": 18278
+ },
+ {
+  "id": "speed-against-thoroughness-and-plan-against-improvisation",
+  "title": "Speed against thoroughness, and plan against improvisation",
+  "level": 3,
+  "start": 18278,
+  "end": 20844
+ },
+ {
+  "id": "balancing-thoroughness-with-economy",
+  "title": "Balancing thoroughness with economy",
+  "level": 3,
+  "start": 20844,
+  "end": 24200
+ },
+ {
+  "id": "following-written-procedures",
+  "title": "Following written procedures",
+  "level": 2,
+  "start": 24200,
+  "end": 27848
+ },
+ {
+  "id": "measurement-and-verification",
+  "title": "Measurement and verification",
+  "level": 2,
+  "start": 27848,
+  "end": 54049
+ },
+ {
+  "id": "calibration-before-measurement",
+  "title": "Calibration before measurement",
+  "level": 3,
+  "start": 28921,
+  "end": 34432
+ },
+ {
+  "id": "checking-the-work",
+  "title": "Checking the work",
+  "level": 3,
+  "start": 34432,
+  "end": 39935
+ },
+ {
+  "id": "the-costs-and-benefits-of-a-check",
+  "title": "The costs and benefits of a check",
+  "level": 4,
+  "start": 37729,
+  "end": 39935
+ },
+ {
+  "id": "the-role-of-conditions",
+  "title": "The role of conditions",
+  "level": 3,
+  "start": 39935,
+  "end": 42317
+ },
+ {
+  "id": "adjustable-practices",
+  "title": "Adjustable practices",
+  "level": 3,
+  "start": 42317,
+  "end": 51381
+ },
+ {
+  "id": "hard-rules-of-practice",
+  "title": "Hard rules of practice",
+  "level": 4,
+  "start": 44334,
+  "end": 49007
+ },
+ {
+  "id": "preserving-the-reference",
+  "title": "Preserving the reference",
+  "level": 4,
+  "start": 49007,
+  "end": 51381
+ },
+ {
+  "id": "working-without-a-procedure",
+  "title": "Working without a procedure",
+  "level": 3,
+  "start": 51381,
+  "end": 54049
+ },
+ {
+  "id": "keeping-the-work-recoverable",
+  "title": "Keeping the work recoverable",
+  "level": 2,
+  "start": 54049,
+  "end": 61604
+ },
+ {
+  "id": "recoverable-practices",
+  "title": "Recoverable practices",
+  "level": 3,
+  "start": 54811,
+  "end": 58134
+ },
+ {
+  "id": "how-we-think-about-committing",
+  "title": "How we think about committing",
+  "level": 3,
+  "start": 58134,
+  "end": 61604
+ },
+ {
+  "id": "the-practitioner",
+  "title": "The practitioner",
+  "level": 2,
+  "start": 61604,
+  "end": 74251
+ },
+ {
+  "id": "some-observations-on-attention",
+  "title": "Some observations on attention",
+  "level": 3,
+  "start": 62345,
+  "end": 65848
+ },
+ {
+  "id": "steadiness-across-conditions",
+  "title": "Steadiness across conditions",
+  "level": 3,
+  "start": 65848,
+  "end": 68115
+ },
+ {
+  "id": "mistakes-and-spoiled-work",
+  "title": "Mistakes and spoiled work",
+  "level": 3,
+  "start": 68115,
+  "end": 71215
+ },
+ {
+  "id": "working-at-the-edge-of-competence",
+  "title": "Working at the edge of competence",
+  "level": 3,
+  "start": 71215,
+  "end": 74251
+ },
+ {
+  "id": "the-principles-in-particular-crafts",
+  "title": "The principles in particular crafts",
+  "level": 2,
+  "start": 74251,
+  "end": 99172
+ },
+ {
+  "id": "the-kitchen",
+  "title": "The kitchen",
+  "level": 3,
+  "start": 75043,
+  "end": 77771
+ },
+ {
+  "id": "the-workshop",
+  "title": "The workshop",
+  "level": 3,
+  "start": 77771,
+  "end": 80538
+ },
+ {
+  "id": "the-darkroom-and-the-camera",
+  "title": "The darkroom and the camera",
+  "level": 3,
+  "start": 80538,
+  "end": 83129
+ },
+ {
+  "id": "the-garden-bed-and-the-greenhouse",
+  "title": "The garden bed and the greenhouse",
+  "level": 3,
+  "start": 83129,
+  "end": 85764
+ },
+ {
+  "id": "sky-and-chart",
+  "title": "Sky and chart",
+  "level": 3,
+  "start": 85764,
+  "end": 88718
+ },
+ {
+  "id": "the-practice-room",
+  "title": "The practice room",
+  "level": 3,
+  "start": 88718,
+  "end": 91299
+ },
+ {
+  "id": "the-debugging-desk-and-the-puzzle-table",
+  "title": "The debugging desk and the puzzle table",
+  "level": 3,
+  "start": 91299,
+  "end": 94313
+ },
+ {
+  "id": "the-loom-and-the-needle",
+  "title": "The loom and the needle",
+  "level": 3,
+  "start": 94313,
+  "end": 96684
+ },
+ {
+  "id": "the-archive-and-the-collection",
+  "title": "The archive and the collection",
+  "level": 3,
+  "start": 96684,
+  "end": 99172
+ },
+ {
+  "id": "concluding-thoughts",
+  "title": "Concluding thoughts",
+  "level": 2,
+  "start": 99172,
+  "end": 105079
+ },
+ {
+  "id": "acknowledging-open-problems",
+  "title": "Acknowledging open problems",
+  "level": 3,
+  "start": 99738,
+  "end": 103244
+ },
+ {
+  "id": "on-the-word-principles",
+  "title": "On the word \"principles\"",
+  "level": 3,
+  "start": 103244,
+  "end": 104461
+ },
+ {
+  "id": "a-final-word",
+  "title": "A final word",
+  "level": 3,
+  "start": 104461,
+  "end": 105079
+ }
+]

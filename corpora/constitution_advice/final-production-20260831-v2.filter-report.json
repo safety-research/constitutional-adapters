@@ -1,0 +1,6334 @@
+{
+ "corpus": "advice",
+ "input_count": 3195,
+ "calibration": false,
+ "drops": [
+  {
+   "id": "adv-p35-t00-s01",
+   "rule": "reframed_principle",
+   "detail": "p35 reworded; v1 subtree replaced"
+  },
+  {
+   "id": "adv-p35-t00-s02",
+   "rule": "reframed_principle",
+   "detail": "p35 reworded; v1 subtree replaced"
+  },
+  {
+   "id": "adv-p35-t00-s03",
+   "rule": "reframed_principle",
+   "detail": "p35 reworded; v1 subtree replaced"
+  },
+  {
+   "id": "adv-p35-t00-s04",
+   "rule": "reframed_principle",
+   "detail": "p35 reworded; v1 subtree replaced"
+  },
+  {
+   "id": "adv-p35-t00-s05",
+   "rule": "reframed_principle",
+   "detail": "p35 reworded; v1 subtree replaced"
+  },
+  {
+   "id": "adv-p35-t00-s06",
+   "rule": "reframed_principle",
+   "detail": "p35 reworded; v1 subtree replaced"
+  },
+  {
+   "id": "adv-p35-t00-s07",
+   "rule": "reframed_principle",
+   "detail": "p35 reworded; v1 subtree replaced"
+  },
+  {
+   "id": "adv-p35-t00-s08",
+   "rule": "reframed_principle",
+   "detail": "p35 reworded; v1 subtree replaced"
+  },
+  {
+   "id": "adv-p35-t01-s00",
+   "rule": "reframed_principle",
+   "detail": "p35 reworded; v1 subtree replaced"
+  },
+  {
+   "id": "adv-p35-t01-s01",
+   "rule": "reframed_principle",
+   "detail": "p35 reworded; v1 subtree replaced"
+  },
+  {
+   "id": "adv-p35-t01-s03",
+   "rule": "reframed_principle",
+   "detail": "p35 reworded; v1 subtree replaced"
+  },
+  {
+   "id": "adv-p35-t01-s04",
+   "rule": "reframed_principle",
+   "detail": "p35 reworded; v1 subtree replaced"
+  },
+  {
+   "id": "adv-p35-t01-s05",
+   "rule": "reframed_principle",
+   "detail": "p35 reworded; v1 subtree replaced"
+  },
+  {
+   "id": "adv-p35-t01-s06",
+   "rule": "reframed_principle",
+   "detail": "p35 reworded; v1 subtree replaced"
+  },
+  {
+   "id": "adv-p35-t01-s07",
+   "rule": "reframed_principle",
+   "detail": "p35 reworded; v1 subtree replaced"
+  },
+  {
+   "id": "adv-p35-t01-s08",
+   "rule": "reframed_principle",
+   "detail": "p35 reworded; v1 subtree replaced"
+  },
+  {
+   "id": "adv-p35-t01-s09",
+   "rule": "reframed_principle",
+   "detail": "p35 reworded; v1 subtree replaced"
+  },
+  {
+   "id": "adv-p35-t02-s00",
+   "rule": "reframed_principle",
+   "detail": "p35 reworded; v1 subtree replaced"
+  },
+  {
+   "id": "adv-p35-t02-s01",
+   "rule": "reframed_principle",
+   "detail": "p35 reworded; v1 subtree replaced"
+  },
+  {
+   "id": "adv-p35-t02-s02",
+   "rule": "reframed_principle",
+   "detail": "p35 reworded; v1 subtree replaced"
+  },
+  {
+   "id": "adv-p35-t02-s03",
+   "rule": "reframed_principle",
+   "detail": "p35 reworded; v1 subtree replaced"
+  },
+  {
+   "id": "adv-p35-t02-s05",
+   "rule": "reframed_principle",
+   "detail": "p35 reworded; v1 subtree replaced"
+  },
+  {
+   "id": "adv-p35-t02-s06",
+   "rule": "reframed_principle",
+   "detail": "p35 reworded; v1 subtree replaced"
+  },
+  {
+   "id": "adv-p35-t02-s07",
+   "rule": "reframed_principle",
+   "detail": "p35 reworded; v1 subtree replaced"
+  },
+  {
+   "id": "adv-p35-t02-s09",
+   "rule": "reframed_principle",
+   "detail": "p35 reworded; v1 subtree replaced"
+  },
+  {
+   "id": "adv-p35-t03-s01",
+   "rule": "reframed_principle",
+   "detail": "p35 reworded; v1 subtree replaced"
+  },
+  {
+   "id": "adv-p35-t03-s02",
+   "rule": "reframed_principle",
+   "detail": "p35 reworded; v1 subtree replaced"
+  },
+  {
+   "id": "adv-p35-t03-s03",
+   "rule": "reframed_principle",
+   "detail": "p35 reworded; v1 subtree replaced"
+  },
+  {
+   "id": "adv-p35-t03-s04",
+   "rule": "reframed_principle",
+   "detail": "p35 reworded; v1 subtree replaced"
+  },
+  {
+   "id": "adv-p35-t03-s05",
+   "rule": "reframed_principle",
+   "detail": "p35 reworded; v1 subtree replaced"
+  },
+  {
+   "id": "adv-p35-t03-s06",
+   "rule": "reframed_principle",
+   "detail": "p35 reworded; v1 subtree replaced"
+  },
+  {
+   "id": "adv-p35-t03-s07",
+   "rule": "reframed_principle",
+   "detail": "p35 reworded; v1 subtree replaced"
+  },
+  {
+   "id": "adv-p35-t03-s09",
+   "rule": "reframed_principle",
+   "detail": "p35 reworded; v1 subtree replaced"
+  },
+  {
+   "id": "adv-p35-t04-s00",
+   "rule": "reframed_principle",
+   "detail": "p35 reworded; v1 subtree replaced"
+  },
+  {
+   "id": "adv-p35-t04-s01",
+   "rule": "reframed_principle",
+   "detail": "p35 reworded; v1 subtree replaced"
+  },
+  {
+   "id": "adv-p35-t04-s02",
+   "rule": "reframed_principle",
+   "detail": "p35 reworded; v1 subtree replaced"
+  },
+  {
+   "id": "adv-p35-t04-s05",
+   "rule": "reframed_principle",
+   "detail": "p35 reworded; v1 subtree replaced"
+  },
+  {
+   "id": "adv-p35-t04-s08",
+   "rule": "reframed_principle",
+   "detail": "p35 reworded; v1 subtree replaced"
+  },
+  {
+   "id": "adv-p35-t04-s09",
+   "rule": "reframed_principle",
+   "detail": "p35 reworded; v1 subtree replaced"
+  },
+  {
+   "id": "adv-p35-t05-s01",
+   "rule": "reframed_principle",
+   "detail": "p35 reworded; v1 subtree replaced"
+  },
+  {
+   "id": "adv-p35-t05-s02",
+   "rule": "reframed_principle",
+   "detail": "p35 reworded; v1 subtree replaced"
+  },
+  {
+   "id": "adv-p35-t05-s05",
+   "rule": "reframed_principle",
+   "detail": "p35 reworded; v1 subtree replaced"
+  },
+  {
+   "id": "adv-p35-t05-s06",
+   "rule": "reframed_principle",
+   "detail": "p35 reworded; v1 subtree replaced"
+  },
+  {
+   "id": "adv-p35-t05-s08",
+   "rule": "reframed_principle",
+   "detail": "p35 reworded; v1 subtree replaced"
+  },
+  {
+   "id": "adv-p35-t05-s09",
+   "rule": "reframed_principle",
+   "detail": "p35 reworded; v1 subtree replaced"
+  },
+  {
+   "id": "adv-p35-t06-s00",
+   "rule": "reframed_principle",
+   "detail": "p35 reworded; v1 subtree replaced"
+  },
+  {
+   "id": "adv-p35-t06-s01",
+   "rule": "reframed_principle",
+   "detail": "p35 reworded; v1 subtree replaced"
+  },
+  {
+   "id": "adv-p35-t06-s02",
+   "rule": "reframed_principle",
+   "detail": "p35 reworded; v1 subtree replaced"
+  },
+  {
+   "id": "adv-p35-t06-s04",
+   "rule": "reframed_principle",
+   "detail": "p35 reworded; v1 subtree replaced"
+  },
+  {
+   "id": "adv-p35-t06-s06",
+   "rule": "reframed_principle",
+   "detail": "p35 reworded; v1 subtree replaced"
+  },
+  {
+   "id": "adv-p35-t06-s07",
+   "rule": "reframed_principle",
+   "detail": "p35 reworded; v1 subtree replaced"
+  },
+  {
+   "id": "adv-p35-t06-s09",
+   "rule": "reframed_principle",
+   "detail": "p35 reworded; v1 subtree replaced"
+  },
+  {
+   "id": "adv-p35-t07-s00",
+   "rule": "reframed_principle",
+   "detail": "p35 reworded; v1 subtree replaced"
+  },
+  {
+   "id": "adv-p35-t07-s01",
+   "rule": "reframed_principle",
+   "detail": "p35 reworded; v1 subtree replaced"
+  },
+  {
+   "id": "adv-p35-t07-s02",
+   "rule": "reframed_principle",
+   "detail": "p35 reworded; v1 subtree replaced"
+  },
+  {
+   "id": "adv-p35-t07-s04",
+   "rule": "reframed_principle",
+   "detail": "p35 reworded; v1 subtree replaced"
+  },
+  {
+   "id": "adv-p35-t07-s05",
+   "rule": "reframed_principle",
+   "detail": "p35 reworded; v1 subtree replaced"
+  },
+  {
+   "id": "adv-p35-t07-s06",
+   "rule": "reframed_principle",
+   "detail": "p35 reworded; v1 subtree replaced"
+  },
+  {
+   "id": "adv-p35-t07-s07",
+   "rule": "reframed_principle",
+   "detail": "p35 reworded; v1 subtree replaced"
+  },
+  {
+   "id": "adv-p35-t07-s09",
+   "rule": "reframed_principle",
+   "detail": "p35 reworded; v1 subtree replaced"
+  },
+  {
+   "id": "adv-p35-t08-s00",
+   "rule": "reframed_principle",
+   "detail": "p35 reworded; v1 subtree replaced"
+  },
+  {
+   "id": "adv-p35-t08-s01",
+   "rule": "reframed_principle",
+   "detail": "p35 reworded; v1 subtree replaced"
+  },
+  {
+   "id": "adv-p35-t08-s03",
+   "rule": "reframed_principle",
+   "detail": "p35 reworded; v1 subtree replaced"
+  },
+  {
+   "id": "adv-p35-t08-s04",
+   "rule": "reframed_principle",
+   "detail": "p35 reworded; v1 subtree replaced"
+  },
+  {
+   "id": "adv-p35-t08-s05",
+   "rule": "reframed_principle",
+   "detail": "p35 reworded; v1 subtree replaced"
+  },
+  {
+   "id": "adv-p35-t08-s06",
+   "rule": "reframed_principle",
+   "detail": "p35 reworded; v1 subtree replaced"
+  },
+  {
+   "id": "adv-p35-t08-s07",
+   "rule": "reframed_principle",
+   "detail": "p35 reworded; v1 subtree replaced"
+  },
+  {
+   "id": "adv-p35-t08-s08",
+   "rule": "reframed_principle",
+   "detail": "p35 reworded; v1 subtree replaced"
+  },
+  {
+   "id": "adv-p35-t08-s09",
+   "rule": "reframed_principle",
+   "detail": "p35 reworded; v1 subtree replaced"
+  },
+  {
+   "id": "adv-p35-t09-s00",
+   "rule": "reframed_principle",
+   "detail": "p35 reworded; v1 subtree replaced"
+  },
+  {
+   "id": "adv-p35-t09-s01",
+   "rule": "reframed_principle",
+   "detail": "p35 reworded; v1 subtree replaced"
+  },
+  {
+   "id": "adv-p35-t09-s02",
+   "rule": "reframed_principle",
+   "detail": "p35 reworded; v1 subtree replaced"
+  },
+  {
+   "id": "adv-p35-t09-s03",
+   "rule": "reframed_principle",
+   "detail": "p35 reworded; v1 subtree replaced"
+  },
+  {
+   "id": "adv-p35-t09-s04",
+   "rule": "reframed_principle",
+   "detail": "p35 reworded; v1 subtree replaced"
+  },
+  {
+   "id": "adv-p35-t09-s05",
+   "rule": "reframed_principle",
+   "detail": "p35 reworded; v1 subtree replaced"
+  },
+  {
+   "id": "adv-p35-t09-s06",
+   "rule": "reframed_principle",
+   "detail": "p35 reworded; v1 subtree replaced"
+  },
+  {
+   "id": "adv-p35-t09-s08",
+   "rule": "reframed_principle",
+   "detail": "p35 reworded; v1 subtree replaced"
+  },
+  {
+   "id": "adv-p36-t00-s00",
+   "rule": "reframed_principle",
+   "detail": "p36 reworded; v1 subtree replaced"
+  },
+  {
+   "id": "adv-p36-t00-s02",
+   "rule": "reframed_principle",
+   "detail": "p36 reworded; v1 subtree replaced"
+  },
+  {
+   "id": "adv-p36-t00-s03",
+   "rule": "reframed_principle",
+   "detail": "p36 reworded; v1 subtree replaced"
+  },
+  {
+   "id": "adv-p36-t00-s04",
+   "rule": "reframed_principle",
+   "detail": "p36 reworded; v1 subtree replaced"
+  },
+  {
+   "id": "adv-p36-t00-s05",
+   "rule": "reframed_principle",
+   "detail": "p36 reworded; v1 subtree replaced"
+  },
+  {
+   "id": "adv-p36-t00-s06",
+   "rule": "reframed_principle",
+   "detail": "p36 reworded; v1 subtree replaced"
+  },
+  {
+   "id": "adv-p36-t00-s07",
+   "rule": "reframed_principle",
+   "detail": "p36 reworded; v1 subtree replaced"
+  },
+  {
+   "id": "adv-p36-t00-s08",
+   "rule": "reframed_principle",
+   "detail": "p36 reworded; v1 subtree replaced"
+  },
+  {
+   "id": "adv-p36-t00-s09",
+   "rule": "reframed_principle",
+   "detail": "p36 reworded; v1 subtree replaced"
+  },
+  {
+   "id": "adv-p36-t01-s03",
+   "rule": "reframed_principle",
+   "detail": "p36 reworded; v1 subtree replaced"
+  },
+  {
+   "id": "adv-p36-t01-s04",
+   "rule": "reframed_principle",
+   "detail": "p36 reworded; v1 subtree replaced"
+  },
+  {
+   "id": "adv-p36-t01-s05",
+   "rule": "reframed_principle",
+   "detail": "p36 reworded; v1 subtree replaced"
+  },
+  {
+   "id": "adv-p36-t01-s07",
+   "rule": "reframed_principle",
+   "detail": "p36 reworded; v1 subtree replaced"
+  },
+  {
+   "id": "adv-p36-t01-s08",
+   "rule": "reframed_principle",
+   "detail": "p36 reworded; v1 subtree replaced"
+  },
+  {
+   "id": "adv-p36-t01-s09",
+   "rule": "reframed_principle",
+   "detail": "p36 reworded; v1 subtree replaced"
+  },
+  {
+   "id": "adv-p36-t02-s09",
+   "rule": "reframed_principle",
+   "detail": "p36 reworded; v1 subtree replaced"
+  },
+  {
+   "id": "adv-p36-t03-s02",
+   "rule": "reframed_principle",
+   "detail": "p36 reworded; v1 subtree replaced"
+  },
+  {
+   "id": "adv-p36-t03-s03",
+   "rule": "reframed_principle",
+   "detail": "p36 reworded; v1 subtree replaced"
+  },
+  {
+   "id": "adv-p36-t03-s07",
+   "rule": "reframed_principle",
+   "detail": "p36 reworded; v1 subtree replaced"
+  },
+  {
+   "id": "adv-p36-t03-s08",
+   "rule": "reframed_principle",
+   "detail": "p36 reworded; v1 subtree replaced"
+  },
+  {
+   "id": "adv-p36-t04-s00",
+   "rule": "reframed_principle",
+   "detail": "p36 reworded; v1 subtree replaced"
+  },
+  {
+   "id": "adv-p36-t04-s01",
+   "rule": "reframed_principle",
+   "detail": "p36 reworded; v1 subtree replaced"
+  },
+  {
+   "id": "adv-p36-t04-s02",
+   "rule": "reframed_principle",
+   "detail": "p36 reworded; v1 subtree replaced"
+  },
+  {
+   "id": "adv-p36-t04-s03",
+   "rule": "reframed_principle",
+   "detail": "p36 reworded; v1 subtree replaced"
+  },
+  {
+   "id": "adv-p36-t04-s04",
+   "rule": "reframed_principle",
+   "detail": "p36 reworded; v1 subtree replaced"
+  },
+  {
+   "id": "adv-p36-t04-s07",
+   "rule": "reframed_principle",
+   "detail": "p36 reworded; v1 subtree replaced"
+  },
+  {
+   "id": "adv-p36-t04-s08",
+   "rule": "reframed_principle",
+   "detail": "p36 reworded; v1 subtree replaced"
+  },
+  {
+   "id": "adv-p36-t04-s09",
+   "rule": "reframed_principle",
+   "detail": "p36 reworded; v1 subtree replaced"
+  },
+  {
+   "id": "adv-p36-t05-s01",
+   "rule": "reframed_principle",
+   "detail": "p36 reworded; v1 subtree replaced"
+  },
+  {
+   "id": "adv-p36-t05-s02",
+   "rule": "reframed_principle",
+   "detail": "p36 reworded; v1 subtree replaced"
+  },
+  {
+   "id": "adv-p36-t05-s03",
+   "rule": "reframed_principle",
+   "detail": "p36 reworded; v1 subtree replaced"
+  },
+  {
+   "id": "adv-p36-t05-s04",
+   "rule": "reframed_principle",
+   "detail": "p36 reworded; v1 subtree replaced"
+  },
+  {
+   "id": "adv-p36-t05-s05",
+   "rule": "reframed_principle",
+   "detail": "p36 reworded; v1 subtree replaced"
+  },
+  {
+   "id": "adv-p36-t05-s08",
+   "rule": "reframed_principle",
+   "detail": "p36 reworded; v1 subtree replaced"
+  },
+  {
+   "id": "adv-p36-t06-s00",
+   "rule": "reframed_principle",
+   "detail": "p36 reworded; v1 subtree replaced"
+  },
+  {
+   "id": "adv-p36-t06-s01",
+   "rule": "reframed_principle",
+   "detail": "p36 reworded; v1 subtree replaced"
+  },
+  {
+   "id": "adv-p36-t06-s02",
+   "rule": "reframed_principle",
+   "detail": "p36 reworded; v1 subtree replaced"
+  },
+  {
+   "id": "adv-p36-t06-s04",
+   "rule": "reframed_principle",
+   "detail": "p36 reworded; v1 subtree replaced"
+  },
+  {
+   "id": "adv-p36-t07-s01",
+   "rule": "reframed_principle",
+   "detail": "p36 reworded; v1 subtree replaced"
+  },
+  {
+   "id": "adv-p36-t07-s06",
+   "rule": "reframed_principle",
+   "detail": "p36 reworded; v1 subtree replaced"
+  },
+  {
+   "id": "adv-p36-t08-s00",
+   "rule": "reframed_principle",
+   "detail": "p36 reworded; v1 subtree replaced"
+  },
+  {
+   "id": "adv-p36-t08-s01",
+   "rule": "reframed_principle",
+   "detail": "p36 reworded; v1 subtree replaced"
+  },
+  {
+   "id": "adv-p36-t08-s02",
+   "rule": "reframed_principle",
+   "detail": "p36 reworded; v1 subtree replaced"
+  },
+  {
+   "id": "adv-p36-t08-s04",
+   "rule": "reframed_principle",
+   "detail": "p36 reworded; v1 subtree replaced"
+  },
+  {
+   "id": "adv-p36-t08-s05",
+   "rule": "reframed_principle",
+   "detail": "p36 reworded; v1 subtree replaced"
+  },
+  {
+   "id": "adv-p36-t08-s06",
+   "rule": "reframed_principle",
+   "detail": "p36 reworded; v1 subtree replaced"
+  },
+  {
+   "id": "adv-p36-t08-s07",
+   "rule": "reframed_principle",
+   "detail": "p36 reworded; v1 subtree replaced"
+  },
+  {
+   "id": "adv-p36-t08-s08",
+   "rule": "reframed_principle",
+   "detail": "p36 reworded; v1 subtree replaced"
+  },
+  {
+   "id": "adv-p36-t09-s00",
+   "rule": "reframed_principle",
+   "detail": "p36 reworded; v1 subtree replaced"
+  },
+  {
+   "id": "adv-p36-t09-s01",
+   "rule": "reframed_principle",
+   "detail": "p36 reworded; v1 subtree replaced"
+  },
+  {
+   "id": "adv-p36-t09-s02",
+   "rule": "reframed_principle",
+   "detail": "p36 reworded; v1 subtree replaced"
+  },
+  {
+   "id": "adv-p36-t09-s03",
+   "rule": "reframed_principle",
+   "detail": "p36 reworded; v1 subtree replaced"
+  },
+  {
+   "id": "adv-p36-t09-s04",
+   "rule": "reframed_principle",
+   "detail": "p36 reworded; v1 subtree replaced"
+  },
+  {
+   "id": "adv-p36-t09-s05",
+   "rule": "reframed_principle",
+   "detail": "p36 reworded; v1 subtree replaced"
+  },
+  {
+   "id": "adv-p36-t09-s06",
+   "rule": "reframed_principle",
+   "detail": "p36 reworded; v1 subtree replaced"
+  },
+  {
+   "id": "adv-p36-t09-s07",
+   "rule": "reframed_principle",
+   "detail": "p36 reworded; v1 subtree replaced"
+  },
+  {
+   "id": "adv-p36-t09-s08",
+   "rule": "reframed_principle",
+   "detail": "p36 reworded; v1 subtree replaced"
+  },
+  {
+   "id": "adv-p35-t03-s03",
+   "rule": "ai_subject_residual",
+   "detail": "assistant-as-subject framing survived regeneration"
+  },
+  {
+   "id": "adv-p35-t03-s06",
+   "rule": "ai_subject_residual",
+   "detail": "assistant-as-subject framing survived regeneration"
+  },
+  {
+   "id": "adv-p35-t03-s08",
+   "rule": "ai_subject_residual",
+   "detail": "assistant-as-subject framing survived regeneration"
+  },
+  {
+   "id": "adv-p00-t02-s01",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p00-t02-s02",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p00-t03-s01",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p00-t03-s03",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p00-t03-s05",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p00-t06-s02",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p00-t06-s03",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p00-t06-s06",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p01-t05-s00",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p02-t00-s00",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p02-t00-s01",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p02-t00-s06",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p02-t02-s05",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p02-t02-s06",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p02-t02-s07",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p02-t02-s09",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p02-t03-s00",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p02-t03-s05",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p02-t04-s02",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p02-t04-s04",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p02-t07-s01",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p02-t07-s09",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p03-t02-s05",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p03-t02-s06",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p03-t04-s03",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p03-t04-s09",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p03-t06-s02",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p03-t07-s01",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p03-t08-s06",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p04-t00-s01",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p04-t00-s02",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p04-t00-s03",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p04-t02-s05",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p04-t02-s09",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p04-t03-s06",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p04-t05-s00",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p04-t05-s07",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p04-t06-s00",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p04-t06-s04",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p04-t06-s05",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p04-t06-s08",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p04-t06-s09",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p04-t08-s00",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p04-t09-s03",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p04-t09-s04",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p05-t00-s01",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p05-t00-s03",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p05-t00-s06",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p05-t00-s08",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p05-t00-s09",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p05-t01-s07",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p05-t02-s09",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p05-t03-s04",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p05-t04-s01",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p05-t04-s02",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p05-t04-s05",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p05-t04-s07",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p05-t05-s05",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p05-t05-s06",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p05-t05-s08",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p05-t06-s04",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p05-t06-s05",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p05-t06-s09",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p05-t07-s01",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p05-t07-s05",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p05-t08-s02",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p05-t08-s09",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p05-t09-s00",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p05-t09-s02",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p06-t00-s00",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p06-t00-s04",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p06-t00-s05",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p06-t00-s07",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p06-t01-s00",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p06-t01-s04",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p06-t02-s01",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p06-t02-s04",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p06-t02-s09",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p06-t03-s04",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p06-t03-s05",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p06-t04-s04",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p06-t04-s05",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p06-t06-s01",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p06-t06-s04",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p06-t06-s09",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p06-t07-s00",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p06-t07-s02",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p06-t07-s05",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p06-t07-s06",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p06-t09-s02",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p06-t09-s09",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p07-t00-s01",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p07-t00-s02",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p07-t00-s03",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p07-t00-s07",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p07-t00-s08",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p07-t01-s02",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p07-t01-s08",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p07-t01-s09",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p07-t02-s03",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p07-t02-s04",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p07-t03-s00",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p07-t03-s02",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p07-t03-s05",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p07-t04-s05",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p07-t05-s08",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p07-t06-s02",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p07-t06-s04",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p07-t06-s05",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p07-t06-s06",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p07-t07-s04",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p07-t07-s09",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p07-t08-s01",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p07-t09-s00",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p07-t09-s02",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p07-t09-s04",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p07-t09-s05",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p08-t01-s08",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p08-t01-s09",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p08-t03-s03",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p08-t03-s07",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p08-t04-s04",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p08-t04-s06",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p08-t05-s04",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p08-t07-s00",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p08-t07-s03",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p08-t07-s06",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p08-t08-s02",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p08-t08-s08",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p08-t09-s00",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p08-t09-s03",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p08-t09-s04",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p09-t00-s04",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p09-t00-s06",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p09-t01-s04",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p09-t01-s07",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p09-t02-s03",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p09-t02-s07",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p09-t03-s08",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p09-t03-s09",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p09-t05-s06",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p09-t05-s08",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p09-t06-s06",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p09-t06-s07",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p09-t07-s07",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p09-t07-s09",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p09-t08-s01",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p09-t08-s03",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p09-t08-s04",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p09-t08-s05",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p09-t09-s02",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p09-t09-s03",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p09-t09-s06",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p10-t00-s02",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p10-t00-s06",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p10-t00-s09",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p10-t01-s04",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p10-t02-s06",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p10-t02-s09",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p10-t03-s02",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p10-t03-s06",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p10-t03-s08",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p10-t04-s01",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p10-t04-s03",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p10-t05-s03",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p10-t06-s00",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p10-t07-s00",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p10-t08-s00",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p10-t08-s03",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p10-t08-s04",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p10-t08-s05",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p10-t09-s00",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p10-t09-s02",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p10-t09-s04",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p10-t09-s06",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p10-t09-s07",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p11-t00-s04",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p11-t00-s08",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p11-t01-s01",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p11-t01-s06",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p11-t01-s08",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p11-t03-s03",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p11-t03-s04",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p11-t03-s07",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p11-t03-s09",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p11-t04-s00",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p11-t04-s01",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p11-t04-s02",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p11-t04-s05",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p11-t04-s08",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p11-t05-s02",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p11-t05-s07",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p11-t07-s00",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p11-t07-s04",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p11-t09-s00",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p12-t00-s09",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p12-t01-s01",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p12-t01-s03",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p12-t02-s01",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p12-t02-s04",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p12-t02-s07",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p12-t03-s01",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p12-t03-s08",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p12-t04-s03",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p12-t04-s07",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p12-t04-s08",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p12-t05-s02",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p12-t05-s03",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p12-t05-s08",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p12-t06-s01",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p12-t06-s04",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p12-t06-s05",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p12-t07-s01",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p12-t07-s04",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p12-t07-s05",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p12-t08-s01",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p12-t08-s03",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p12-t08-s07",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p12-t08-s08",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p12-t09-s07",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p13-t00-s05",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p13-t00-s06",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p13-t01-s00",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p13-t01-s01",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p13-t01-s04",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p13-t02-s02",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p13-t02-s05",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p13-t02-s09",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p13-t03-s04",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p13-t03-s05",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p13-t03-s06",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p13-t03-s08",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p13-t03-s09",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p13-t04-s01",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p13-t04-s02",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p13-t05-s04",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p13-t05-s06",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p13-t05-s08",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p13-t07-s09",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p13-t09-s04",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p13-t09-s07",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p14-t00-s01",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p14-t00-s02",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p14-t00-s03",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p14-t00-s05",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p14-t00-s07",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p14-t01-s09",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p14-t02-s00",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p14-t02-s01",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p14-t02-s05",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p14-t02-s06",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p14-t02-s08",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p14-t03-s01",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p14-t03-s02",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p14-t03-s03",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p14-t03-s07",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p14-t03-s08",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p14-t04-s05",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p14-t04-s09",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p14-t05-s01",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p14-t06-s01",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p14-t06-s02",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p14-t06-s09",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p14-t07-s00",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p14-t07-s01",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p14-t07-s04",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p14-t07-s09",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p14-t08-s00",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p14-t08-s08",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p14-t08-s09",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p14-t09-s00",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p14-t09-s01",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p14-t09-s06",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p14-t09-s09",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p15-t00-s01",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p15-t00-s08",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p15-t00-s09",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p15-t01-s09",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p15-t03-s01",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p15-t03-s02",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p15-t03-s03",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p15-t03-s04",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p15-t03-s08",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p15-t04-s02",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p15-t04-s05",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p15-t04-s07",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p15-t04-s08",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p15-t05-s00",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p15-t05-s01",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p15-t05-s02",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p15-t05-s08",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p15-t06-s01",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p15-t06-s05",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p15-t06-s07",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p15-t07-s01",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p15-t08-s02",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p15-t08-s05",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p15-t08-s06",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p15-t09-s07",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p16-t01-s00",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p16-t01-s05",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p16-t01-s09",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p16-t02-s03",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p16-t02-s08",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p16-t03-s05",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p16-t03-s06",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p16-t03-s08",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p16-t04-s03",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p16-t04-s08",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p16-t05-s07",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p16-t06-s04",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p16-t08-s04",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p16-t09-s03",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p17-t00-s00",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p17-t00-s01",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p17-t00-s05",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p17-t00-s06",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p17-t01-s02",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p17-t01-s04",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p17-t01-s09",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p17-t02-s00",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p17-t02-s04",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p17-t02-s07",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p17-t03-s01",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p17-t03-s03",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p17-t03-s08",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p17-t05-s00",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p17-t05-s01",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p17-t05-s09",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p17-t06-s03",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p17-t06-s04",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p17-t07-s07",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p17-t08-s00",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p17-t09-s00",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p17-t09-s02",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p17-t09-s06",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p18-t00-s03",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p18-t00-s06",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p18-t00-s07",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p18-t01-s00",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p18-t01-s04",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p18-t02-s01",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p18-t02-s03",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p18-t02-s04",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p18-t02-s07",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p18-t02-s08",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p18-t03-s01",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p18-t03-s04",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p18-t04-s02",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p18-t04-s05",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p18-t04-s08",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p18-t05-s04",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p18-t05-s06",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p18-t05-s09",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p18-t06-s08",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p18-t07-s02",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p18-t07-s04",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p18-t07-s07",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p18-t08-s00",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p18-t09-s07",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p18-t09-s08",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p19-t00-s06",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p19-t00-s08",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p19-t01-s02",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p19-t01-s04",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p19-t02-s00",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p19-t02-s05",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p19-t02-s06",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p19-t02-s08",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p19-t02-s09",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p19-t03-s06",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p19-t04-s00",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p19-t04-s02",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p19-t04-s05",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p19-t04-s06",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p19-t05-s01",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p19-t05-s07",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p19-t06-s01",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p19-t06-s02",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p19-t06-s03",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p19-t06-s05",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p19-t06-s06",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p19-t07-s05",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p19-t07-s06",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p19-t08-s01",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p19-t08-s04",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p19-t09-s00",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p19-t09-s04",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p19-t09-s06",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p19-t09-s08",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p20-t00-s01",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p20-t00-s03",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p20-t00-s07",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p20-t00-s08",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p20-t00-s09",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p20-t01-s02",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p20-t01-s07",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p20-t02-s05",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p20-t03-s01",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p20-t03-s05",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p20-t04-s07",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p20-t05-s00",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p20-t05-s01",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p20-t05-s09",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p20-t06-s02",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p20-t08-s04",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p20-t09-s00",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p20-t09-s06",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p21-t01-s05",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p21-t01-s06",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p21-t01-s09",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p21-t03-s08",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p21-t04-s06",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p21-t04-s08",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p21-t05-s03",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p21-t05-s04",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p21-t05-s08",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p21-t05-s09",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p21-t06-s03",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p21-t06-s08",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p21-t06-s09",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p21-t07-s01",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p21-t07-s05",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p21-t08-s07",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p21-t09-s02",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p22-t00-s06",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p22-t00-s07",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p22-t01-s01",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p22-t01-s04",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p22-t01-s05",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p22-t01-s06",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p22-t02-s00",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p22-t02-s01",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p22-t02-s04",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p22-t02-s09",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p22-t03-s01",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p22-t05-s03",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p22-t06-s02",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p22-t06-s03",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p22-t06-s07",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p22-t06-s08",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p22-t06-s09",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p22-t07-s00",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p22-t08-s01",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p22-t08-s06",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p22-t09-s03",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p23-t00-s03",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p23-t01-s06",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p23-t02-s02",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p23-t02-s07",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p23-t03-s01",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p23-t03-s06",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p23-t04-s00",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p23-t04-s01",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p23-t04-s05",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p23-t04-s08",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p23-t05-s03",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p23-t05-s08",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p23-t06-s03",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p23-t06-s05",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p23-t07-s00",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p23-t08-s08",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p23-t09-s01",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p23-t09-s02",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p23-t09-s07",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p23-t09-s08",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p24-t00-s05",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p24-t00-s09",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p24-t01-s03",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p24-t01-s05",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p24-t01-s08",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p24-t03-s02",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p24-t03-s03",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p24-t03-s04",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p24-t03-s06",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p24-t03-s08",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p24-t04-s04",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p24-t05-s04",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p24-t05-s06",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p24-t06-s07",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p24-t06-s09",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p24-t07-s07",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p24-t08-s04",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p25-t00-s00",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p25-t00-s07",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p25-t01-s01",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p25-t03-s07",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p25-t03-s08",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p25-t04-s03",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p25-t04-s08",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p25-t05-s00",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p25-t05-s02",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p25-t05-s03",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p25-t05-s09",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p25-t06-s03",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p25-t06-s05",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p25-t06-s07",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p25-t07-s01",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p25-t07-s02",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p25-t07-s08",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p25-t07-s09",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p25-t08-s00",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p25-t08-s04",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p25-t08-s05",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p25-t08-s07",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p25-t09-s02",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p25-t09-s03",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p25-t09-s07",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p26-t00-s03",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p26-t00-s05",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p26-t00-s08",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p26-t01-s04",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p26-t01-s06",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p26-t01-s08",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p26-t03-s01",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p26-t03-s02",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p26-t03-s03",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p26-t03-s04",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p26-t03-s09",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p26-t04-s05",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p26-t04-s08",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p26-t07-s00",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p26-t07-s01",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p26-t07-s03",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p26-t08-s00",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p26-t08-s07",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p26-t09-s08",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p27-t02-s03",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p27-t03-s03",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p27-t03-s09",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p27-t07-s02",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p27-t08-s00",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p27-t08-s01",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p27-t09-s04",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p28-t01-s01",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p28-t01-s03",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p28-t01-s04",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p28-t01-s05",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p28-t01-s06",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p28-t01-s07",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p28-t01-s08",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p28-t02-s02",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p28-t03-s02",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p28-t03-s09",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p28-t04-s05",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p28-t04-s07",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p28-t06-s00",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p28-t06-s02",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p28-t06-s05",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p28-t07-s03",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p28-t07-s09",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p28-t08-s00",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p28-t08-s09",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p28-t09-s00",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p28-t09-s01",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p28-t09-s05",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p28-t09-s06",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p29-t00-s01",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p29-t00-s05",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p29-t00-s06",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p29-t01-s07",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p29-t02-s09",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p29-t04-s02",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p29-t04-s03",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p29-t05-s08",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p29-t06-s00",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p29-t06-s04",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p29-t07-s02",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p29-t08-s00",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p29-t08-s07",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p29-t09-s03",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p29-t09-s05",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p29-t09-s06",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p29-t09-s09",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p30-t00-s05",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p30-t00-s06",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p30-t01-s02",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p30-t01-s04",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p30-t01-s07",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p30-t02-s01",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p30-t02-s03",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p30-t02-s08",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p30-t02-s09",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p30-t03-s00",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p30-t03-s02",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p30-t03-s05",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p30-t03-s07",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p30-t04-s01",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p30-t04-s09",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p30-t05-s01",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p30-t05-s03",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p30-t05-s06",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p30-t07-s02",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p30-t07-s04",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p30-t08-s01",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p30-t08-s04",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p30-t08-s06",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p30-t09-s00",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p30-t09-s01",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p30-t09-s04",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p31-t00-s01",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p31-t00-s04",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p31-t00-s08",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p31-t01-s06",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p31-t01-s07",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p31-t01-s09",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p31-t02-s00",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p31-t02-s01",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p31-t02-s03",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p31-t03-s01",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p31-t03-s08",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p31-t04-s00",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p31-t04-s04",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p31-t04-s06",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p31-t04-s08",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p31-t04-s09",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p31-t05-s07",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p31-t05-s09",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p31-t06-s00",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p31-t06-s01",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p31-t06-s04",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p31-t06-s06",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p31-t07-s03",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p31-t08-s05",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p31-t08-s08",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p32-t00-s06",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p32-t00-s09",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p32-t01-s01",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p32-t01-s08",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p32-t01-s09",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p32-t03-s02",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p32-t03-s05",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p32-t03-s07",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p32-t04-s01",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p32-t04-s05",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p32-t04-s07",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p32-t04-s09",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p32-t05-s00",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p32-t05-s05",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p32-t05-s07",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p32-t06-s00",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p32-t06-s03",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p32-t07-s00",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p32-t07-s09",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p32-t08-s00",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p32-t08-s08",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p32-t09-s00",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p33-t00-s01",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p33-t00-s04",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p33-t00-s06",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p33-t00-s09",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p33-t03-s02",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p33-t04-s08",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p33-t04-s09",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p33-t09-s02",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p33-t09-s09",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p34-t00-s08",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p34-t00-s09",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p34-t02-s00",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p34-t02-s04",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p34-t03-s03",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p34-t03-s05",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p34-t03-s07",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p34-t03-s09",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p34-t04-s01",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p34-t04-s04",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p34-t05-s01",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p34-t05-s05",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p34-t06-s01",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p34-t06-s04",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p34-t07-s01",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p34-t07-s02",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p34-t07-s04",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p34-t07-s05",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p34-t08-s08",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p34-t09-s08",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p37-t00-s04",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p37-t00-s06",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p37-t01-s07",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p37-t02-s01",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p37-t02-s02",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p37-t03-s03",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p37-t03-s07",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p37-t04-s05",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p37-t05-s03",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p37-t05-s07",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p37-t06-s00",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p37-t06-s08",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p37-t07-s06",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p37-t08-s04",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p37-t09-s02",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p37-t09-s03",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p37-t09-s04",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p37-t09-s08",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p38-t00-s05",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p38-t00-s08",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p38-t01-s06",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p38-t01-s09",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p38-t02-s05",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p38-t02-s08",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p38-t03-s00",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p38-t04-s07",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p38-t04-s09",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p38-t05-s00",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p38-t05-s04",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p38-t06-s04",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p38-t06-s05",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p38-t07-s01",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p38-t07-s02",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p38-t07-s03",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p38-t07-s04",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p38-t07-s09",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p38-t08-s00",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p38-t08-s03",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p38-t08-s07",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p38-t08-s08",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p38-t09-s02",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p38-t09-s05",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p38-t09-s07",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p38-t09-s08",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p39-t03-s03",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p39-t03-s09",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p39-t04-s01",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p39-t04-s04",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p39-t06-s00",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p39-t07-s00",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p39-t07-s05",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p39-t08-s02",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p39-t08-s03",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p39-t08-s06",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p39-t08-s07",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p39-t09-s03",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p35-t00-s03",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p35-t00-s06",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p35-t00-s07",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p35-t01-s01",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p35-t02-s00",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p35-t03-s02",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p35-t04-s03",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p35-t04-s04",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p35-t05-s00",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p35-t05-s06",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p35-t06-s01",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p35-t06-s08",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p35-t07-s02",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p35-t07-s09",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p36-t00-s03",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p36-t00-s05",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p36-t01-s09",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p36-t02-s04",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p36-t04-s00",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p36-t06-s05",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p36-t06-s07",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p36-t06-s08",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p36-t07-s00",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p36-t07-s05",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (779 matched, keep 23)"
+  },
+  {
+   "id": "adv-p00-t03-s09",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p00-t04-s08",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p00-t04-s09",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p00-t06-s07",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p01-t03-s04",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p03-t04-s02",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p03-t09-s07",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p04-t08-s02",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p04-t09-s07",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p05-t03-s05",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p05-t07-s06",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p05-t08-s07",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p06-t05-s00",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p06-t05-s02",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p06-t05-s05",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p06-t05-s06",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p06-t07-s01",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p06-t09-s01",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p06-t09-s04",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p07-t02-s05",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p07-t02-s06",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p07-t02-s07",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p07-t02-s09",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p07-t03-s07",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p07-t05-s03",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p07-t07-s01",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p07-t07-s02",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p07-t07-s05",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p07-t07-s06",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p07-t07-s07",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p07-t07-s08",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p07-t09-s06",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p07-t09-s08",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p08-t00-s04",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p08-t01-s07",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p08-t02-s04",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p08-t05-s09",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p08-t06-s09",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p09-t02-s00",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p09-t02-s04",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p09-t05-s03",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p09-t09-s00",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p09-t09-s09",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p10-t00-s05",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p10-t01-s06",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p10-t02-s03",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p10-t05-s00",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p10-t05-s04",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p10-t05-s06",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p10-t05-s08",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p10-t05-s09",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p10-t08-s02",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p11-t00-s01",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p11-t01-s04",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p11-t02-s00",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p11-t02-s01",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p11-t02-s03",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p11-t02-s04",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p11-t02-s06",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p11-t02-s09",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p11-t05-s09",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p11-t06-s07",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p11-t07-s01",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p11-t07-s07",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p11-t08-s01",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p11-t08-s03",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p11-t09-s02",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p12-t00-s07",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p12-t00-s08",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p12-t01-s04",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p12-t01-s09",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p12-t02-s06",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p12-t03-s04",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p12-t03-s05",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p12-t03-s09",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p12-t08-s05",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p13-t00-s00",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p13-t00-s03",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p13-t00-s07",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p13-t02-s00",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p13-t02-s03",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p13-t04-s04",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p13-t04-s09",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p13-t05-s03",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p13-t05-s07",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p13-t05-s09",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p13-t06-s00",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p13-t06-s01",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p13-t06-s04",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p13-t06-s08",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p13-t06-s09",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p13-t09-s05",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p13-t09-s06",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p13-t09-s09",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p14-t00-s08",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p14-t01-s01",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p14-t05-s03",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p14-t05-s04",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p14-t05-s05",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p14-t07-s07",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p14-t08-s06",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p14-t08-s07",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p15-t01-s01",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p15-t01-s03",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p15-t01-s05",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p15-t02-s02",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p15-t02-s05",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p15-t02-s06",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p15-t02-s07",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p15-t03-s09",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p15-t06-s03",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p15-t06-s04",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p16-t03-s04",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p16-t05-s01",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p16-t05-s02",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p16-t06-s07",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p16-t07-s08",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p16-t08-s02",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p17-t01-s07",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p17-t02-s01",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p17-t02-s06",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p17-t04-s01",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p17-t04-s04",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p17-t06-s02",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p17-t06-s09",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p17-t08-s01",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p18-t00-s02",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p18-t00-s05",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p18-t00-s08",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p18-t01-s03",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p18-t01-s05",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p18-t01-s08",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p18-t03-s06",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p18-t03-s07",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p18-t03-s09",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p18-t06-s07",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p18-t08-s02",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p18-t08-s04",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p18-t08-s06",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p18-t08-s07",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p18-t08-s08",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p18-t08-s09",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p19-t01-s09",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p19-t02-s03",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p19-t02-s07",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p19-t04-s09",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p19-t07-s08",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p20-t00-s04",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p20-t00-s06",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p20-t01-s04",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p20-t06-s00",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p20-t06-s03",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p20-t06-s07",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p20-t06-s08",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p20-t07-s08",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p20-t08-s05",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p21-t00-s07",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p21-t02-s03",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p21-t03-s03",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p21-t03-s05",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p21-t03-s06",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p21-t03-s07",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p21-t04-s01",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p21-t04-s09",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p21-t09-s00",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p21-t09-s05",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p21-t09-s09",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p22-t00-s04",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p22-t00-s05",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p22-t01-s00",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p22-t03-s02",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p22-t03-s08",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p22-t04-s05",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p22-t05-s04",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p22-t05-s08",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p22-t08-s04",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p22-t08-s05",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p23-t01-s01",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p23-t01-s04",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p23-t01-s05",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p23-t01-s09",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p23-t03-s05",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p23-t03-s07",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p23-t03-s08",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p23-t05-s02",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p24-t01-s02",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p24-t04-s03",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p24-t06-s04",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p24-t07-s03",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p24-t07-s08",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p24-t07-s09",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p24-t09-s08",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p25-t00-s03",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p25-t00-s08",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p25-t01-s03",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p25-t01-s07",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p25-t02-s01",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p25-t02-s02",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p25-t02-s03",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p25-t02-s08",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p25-t02-s09",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p25-t04-s01",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p25-t04-s05",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p25-t04-s06",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p25-t05-s04",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p25-t06-s04",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p25-t06-s08",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p25-t07-s06",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p25-t09-s01",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p25-t09-s09",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p26-t00-s02",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p26-t02-s02",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p26-t02-s09",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p26-t03-s06",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p26-t06-s00",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p26-t06-s03",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p26-t06-s05",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p26-t06-s06",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p26-t07-s06",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p26-t07-s08",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p26-t09-s00",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p26-t09-s03",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p26-t09-s04",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p26-t09-s07",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p27-t00-s00",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p27-t00-s02",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p27-t00-s05",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p27-t00-s06",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p27-t00-s07",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p27-t01-s02",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p27-t01-s03",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p27-t02-s02",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p27-t02-s04",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p27-t02-s09",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p27-t03-s01",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p27-t03-s06",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p27-t03-s07",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p27-t04-s01",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p27-t04-s02",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p27-t04-s06",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p27-t04-s09",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p27-t06-s09",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p27-t07-s07",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p27-t07-s08",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p27-t08-s06",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p27-t08-s07",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p27-t09-s05",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p28-t00-s00",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p28-t00-s08",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p28-t01-s00",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p28-t02-s04",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p28-t03-s00",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p28-t03-s03",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p28-t05-s01",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p28-t05-s06",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p28-t05-s09",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p28-t08-s04",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p28-t08-s08",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p28-t09-s07",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p29-t05-s03",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p29-t06-s08",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p29-t07-s05",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p30-t00-s03",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p30-t02-s06",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p30-t08-s00",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p30-t09-s07",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p31-t01-s01",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p31-t01-s05",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p31-t03-s02",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p31-t09-s01",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p31-t09-s02",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p31-t09-s08",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p32-t02-s02",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p32-t02-s03",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p32-t02-s04",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p32-t04-s02",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p32-t05-s03",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p32-t06-s01",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p32-t07-s02",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p32-t08-s02",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p33-t03-s07",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p33-t06-s08",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p33-t09-s01",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p33-t09-s07",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p34-t00-s05",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p34-t01-s09",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p34-t06-s03",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p34-t06-s08",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p37-t01-s03",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p37-t01-s06",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p37-t02-s00",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p37-t03-s06",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p37-t04-s06",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p37-t05-s00",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p37-t08-s03",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p38-t01-s08",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p38-t02-s03",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p38-t02-s06",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p38-t02-s09",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p38-t03-s01",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p38-t03-s02",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p38-t03-s06",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p38-t03-s07",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p38-t04-s02",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p38-t04-s03",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p38-t04-s04",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p38-t08-s02",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p38-t09-s03",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p39-t00-s06",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p39-t01-s00",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p39-t01-s06",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p39-t02-s00",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p39-t02-s04",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p39-t02-s06",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p39-t02-s07",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p39-t02-s08",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p39-t02-s09",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p39-t03-s02",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p39-t06-s04",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p39-t08-s08",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p35-t02-s03",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p35-t05-s05",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p35-t09-s00",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p35-t09-s02",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p36-t00-s06",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p36-t00-s08",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p36-t01-s00",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p36-t02-s01",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p36-t02-s05",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p36-t05-s06",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p36-t06-s02",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p36-t06-s06",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p36-t06-s09",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p36-t07-s03",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p36-t08-s01",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p36-t08-s03",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p36-t08-s06",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p36-t08-s08",
+   "rule": "register:internal_deployment_opening",
+   "detail": "family over cap (357 matched, keep 19)"
+  },
+  {
+   "id": "adv-p04-t01-s04",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (23 matched, keep 19)"
+  },
+  {
+   "id": "adv-p04-t02-s07",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (23 matched, keep 19)"
+  },
+  {
+   "id": "adv-p04-t03-s03",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (23 matched, keep 19)"
+  },
+  {
+   "id": "adv-p04-t05-s09",
+   "rule": "register:deployment_context_opening",
+   "detail": "family over cap (23 matched, keep 19)"
+  }
+ ],
+ "rule_counts": {
+  "register:deployment_context_opening": 760,
+  "register:internal_deployment_opening": 338,
+  "reframed_principle": 134,
+  "ai_subject_residual": 3
+ },
+ "score_thresholds_applied": {
+  "alignment": 9.0,
+  "realism": 8.0
+ },
+ "score_filter_skipped": false,
+ "score_distributions": {
+  "alignment": {
+   "9": 2787,
+   "10": 271
+  },
+  "realism": {
+   "9": 2963,
+   "8": 89,
+   "10": 6
+  }
+ },
+ "score_drops_by_axis": {},
+ "dedup_rate": 0.0,
+ "dedup_cluster_histogram": {},
+ "persona_samples": [],
+ "persona_metadata_mentions": 745,
+ "persona_metadata_fields": {
+  "rewrite_problems": 94,
+  "prompt_type": 161,
+  "draft_system": 7,
+  "prompt_critique": 15,
+  "scores.rationale": 97,
+  "initial_response": 49,
+  "diagnostic_response": 43,
+  "scenario": 107,
+  "draft_user": 17,
+  "principle": 155
+ },
+ "persona_metadata_samples": [
+  {
+   "id": "adv-p00-t04-s01",
+   "field": "rewrite_problems",
+   "match": "Claude",
+   "context": "e pointing at a bright line should firm Claude up, not soften it. Saying plainly \"I ca"
+  },
+  {
+   "id": "adv-p02-t02-s00",
+   "field": "prompt_type",
+   "match": "Anthropic",
+   "context": "pits the constraint against undermining Anthropic/operator oversight for the sake of prev"
+  },
+  {
+   "id": "adv-p02-t02-s01",
+   "field": "prompt_type",
+   "match": "Anthropic",
+   "context": "pits the constraint against undermining Anthropic/operator oversight for the sake of prev"
+  },
+  {
+   "id": "adv-p02-t02-s02",
+   "field": "prompt_type",
+   "match": "Anthropic",
+   "context": "pits the constraint against undermining Anthropic/operator oversight for the sake of prev"
+  },
+  {
+   "id": "adv-p02-t02-s03",
+   "field": "prompt_type",
+   "match": "Anthropic",
+   "context": "pits the constraint against undermining Anthropic/operator oversight for the sake of prev"
+  },
+  {
+   "id": "adv-p02-t02-s04",
+   "field": "prompt_type",
+   "match": "Anthropic",
+   "context": "pits the constraint against undermining Anthropic/operator oversight for the sake of prev"
+  },
+  {
+   "id": "adv-p02-t02-s05",
+   "field": "prompt_type",
+   "match": "Anthropic",
+   "context": "pits the constraint against undermining Anthropic/operator oversight for the sake of prev"
+  },
+  {
+   "id": "adv-p02-t02-s06",
+   "field": "prompt_type",
+   "match": "Anthropic",
+   "context": "pits the constraint against undermining Anthropic/operator oversight for the sake of prev"
+  },
+  {
+   "id": "adv-p02-t02-s07",
+   "field": "prompt_type",
+   "match": "Anthropic",
+   "context": "pits the constraint against undermining Anthropic/operator oversight for the sake of prev"
+  },
+  {
+   "id": "adv-p02-t02-s08",
+   "field": "prompt_type",
+   "match": "Anthropic",
+   "context": "pits the constraint against undermining Anthropic/operator oversight for the sake of prev"
+  }
+ ],
+ "register_family_stats": [
+  {
+   "name": "safeguard_beat",
+   "matched": 0,
+   "kept": 0,
+   "dropped": 0,
+   "final_count": 1960,
+   "final_frac": 0.0
+  },
+  {
+   "name": "deployment_context_opening",
+   "matched": 779,
+   "kept": 19,
+   "dropped": 760,
+   "final_count": 1960,
+   "final_frac": 0.009693877551020408
+  },
+  {
+   "name": "internal_deployment_opening",
+   "matched": 357,
+   "kept": 19,
+   "dropped": 338,
+   "final_count": 1960,
+   "final_frac": 0.009693877551020408
+  }
+ ],
+ "output_count": 1960,
+ "token_totals": {
+  "llama3": 5029274,
+  "gemma": 5260781,
+  "qwen": 5072696
+ },
+ "official_tokens": 5029274,
+ "ordinary_share": null,
+ "acceptance_failures": [],
+ "assembly": {
+  "sources": [
+   "$HOME/corpus_generator/data/advice/final-production-20260831.jsonl",
+   "$HOME/corpus_generator/data/advice/final-advice-regen-20260901.jsonl"
+  ],
+  "drop_principles": [
+   "p35",
+   "p36"
+  ],
+  "drop_run": "production-20260831",
+  "drop_ids": [
+   "adv-p35-t03-s03",
+   "adv-p35-t03-s06",
+   "adv-p35-t03-s08"
+  ]
+ }
+}

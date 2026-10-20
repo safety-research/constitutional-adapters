@@ -1,0 +1,754 @@
+# sources_r2_v1.yaml -- the paper's DECLARED legacy sources for round r2 (every one must be covered by
+# exactly one adapter's `covers_sources`, or by several that declare distinct priorities).
+#
+# NAMES ONLY, read from the `sources` keys of the paper build's `paper/paperlib/lane_watermarks.json` at the parity pin
+# (the watermarks themselves -- measured-row counts per key -- stay in the paper checkout; the parity gate reads them
+# there). This file is the registry's committed copy of WHICH sources the paper declares, so the source -> adapter
+# coverage can be pinned by a test on any checkout (the paper tree is a separate checkout and is not always
+# present) and rendered live by `registry status` ("Sources without an adapter"). The roster's `source_legacy` fields
+# (roster_r2_v1.yaml) are the second declared set; `sisteer.registry.sources` unions the two (+ the configured paper
+# checkout's live file when present) and subtracts what the adapters cover.
+#
+# When the paper adds a source: it appears on the status page as "without an adapter" from the live checkout first;
+# add it here (with the pin it was read at) and declare it in the adapter that reads it, in the same change.
+meta:
+  schema: sisteer.registry.sources/1
+  round_id: r2
+  read_from: paper/paperlib/lane_watermarks.json      # the `sources` keys
+  paper_build_commit: "f33dca5d99488537737538f5b89b8254675653ea"
+  watermarks_written_utc: "2026-09-16T22:35:02Z"
+  read_utc: "2026-09-17T17:45:00Z"
+  n_sources: 61
+  # POST-PIN ADDITIONS carry their OWN paper commit: `paper_build_commit` above is the commit the bulk of the list was read at, and a
+  # source the paper added later is not evidence about that commit. One global pin covering a name read somewhere else would be a
+  # consistent-looking stamp for a fact it does not cover.
+  additions:
+    # PROVISIONAL, registry-declared (2026-09-17): the paper has NOT declared these two -- the Qwen3.5-4B EM MODEL ORGANISMS panels were announced
+    # tonight and the roster spelling is still to be confirmed. The registry declares them so tonight's rows are
+    # attributable; `paper_build_commit: null` because no paper commit is evidence about a name the paper does not yet carry (the authors' rule, applied
+    # the other way round). A rename is a one-line change in adapters/em_misalign.py (QWEN_ORG_SOURCE / QWEN_ORG_VENDOR_SOURCE) plus this list.
+    - source: em/organisms/qwen35_4b_org
+      paper_build_commit: null
+      provisional: true
+      declared_by: "registry (branch registry-em-organisms), not the paper"
+      producer_message_utc: "2026-09-18T02:24Z"
+      read_utc: "2026-09-18T03:00:00Z"
+      why: >
+        PROVISIONAL spelling for the Qwen3.5-4B EM MODEL ORGANISMS panel at the T = 1.0 RECORD rung (store
+        $SHARED/exp/misalign_org/qwen35_4b_org, job 547787): three Qwen3.5-4B organisms x the campaign's objects on the em8q family. The
+        organism is the model (models.yaml checkpoint_kind organism) and em8q the eval. Covered by adapters/em_misalign.py (QWEN_ORG_SOURCE).
+        The paper's own roster spelling is unsettled.
+    - source: em/organisms/qwen35_4b_org_vendor
+      paper_build_commit: null
+      provisional: true
+      declared_by: "registry (branch registry-em-organisms), not the paper"
+      producer_message_utc: "2026-09-18T02:24Z"
+      read_utc: "2026-09-18T03:00:00Z"
+      why: >
+        PROVISIONAL spelling for the same panel's VENDOR-PRESET rung, its own panel in its own root
+        ($SHARED/exp/misalign_org_vendor/qwen35_4b_org, job 549505, generating when this was filed) -- the default decode since the authors'
+        ruling decode-vendor-preset-default-2026-09-17. A decode change is a different measurement, never a rerun into the same tree, so the two
+        rungs are two sources; neither supersedes the other. Covered by adapters/em_misalign.py (QWEN_ORG_VENDOR_SOURCE).
+    - source: strength_mtdiff_s1
+      paper_build_commit: null
+      provisional: true
+      declared_by: "registry (branch registry-strength-mtdiff), not the paper"
+      producer_message_utc: "2026-09-18T15:38Z"
+      read_utc: "2026-09-18T16:10:00Z"
+      why: >
+        PROVISIONAL spelling for the MULTI-TURN DOSE LADDER (durable root $STATE/run-state/full22/strength_mtdiff_s1): eight
+        qwen35_4b serving standups (doses -0.5 / 0.5 / 0.75 / 1.5) x TWO object families on their own dose axes --
+        `distdiff64s1` (the distilled difference relu_steer, unit psr_direction_norm_multiplier) and `loradiff64s1` (the
+        difference LoRA, unit lora_write_basis_multiplier) -- x Crescendo / ActorAttack, plus each standup's same-launch
+        unsteered anchor and its XSTest over-refusal stores beside it, one run per token cap from the mirror's
+        `controls_cap<N>/` trees read by name (512 and 2,048 as of 2026-09-21, on the sampled vendor-preset ladder
+        instrument; the pooled `xstest_rates.json` mean is no longer a value on any row). Covered by
+        adapters/strength_mtdiff.py (SOURCE). The paper has declared no spelling for this sweep, so `paper_build_commit` is
+        null: no paper commit is evidence about a name the paper does not carry (the paper-commit rule, applied the other
+        way round, as for the Qwen organism panels above).
+    - source: arditi_vendor_mt
+      paper_build_commit: null
+      provisional: true
+      declared_by: "registry (branch registry-full22-ar-c-tags), not the paper"
+      producer_message_utc: "2026-09-20T06:24Z"
+      read_utc: "2026-09-20T07:30:00Z"
+      why: >
+        PROVISIONAL spelling for the VENDOR-PRESET MULTI-TURN RE-RUN of the Arditi ALL-POSITIONS refusal-steer rungs
+        (configs/arditi_allpos_roster_mt_vendor.yaml, by the authors' rule): three qwen35_4b_it standups, views ar_c0p15 / ar_c0p3 /
+        ar_c0p5 (raw coefficient c = 0.15 / 0.3 / 0.5, unit raw_coefficient -- a THIRD dose axis beside the ladder's
+        psr_direction_norm_multiplier and lora_write_basis_multiplier, never pooled; the nominal is c / 0.3, the served operating
+        point by ruling r2v1-include-qwen-arditi_allpos-ar_c0p3-served-operating-point), Crescendo + ActorAttack at the Qwen vendor
+        row (T 0.7 / top_p 0.8 / top_k 20 / min_p 0 / presence_penalty 1.5 / repetition_penalty 1.0, cap 4,096, 61,440 window,
+        seed_base 20260909, per-turn target seed, native serving) with each rung's SAME-STANDUP unsteered anchor, plus the XSTest
+        controls ladder of each rung. The stores are LOCAL to the grading host: the producing run's durable copy
+        (~/results/arditi-allpos-ladder/{mt_grades,xstest_controls_graded}) is read first, the volatile working tree it was copied
+        from (/tmp/phaseA) second, and exactly one copy per store; the transcripts stay authoritative on cluster A
+        ($SHARED/exp/sdfbase_full22_native/transcripts_results) with a partial the grading host mirror supplying the per-shard
+        serving attestation. An attack the re-run declares whose grade is not written is a `pending` disposition, never a value (the
+        ladder completed 2026-09-20 07:42Z; the path stays for the next incomplete read). Covered by adapters/arditi_vendor_mt.py
+        (multi-turn) and adapters/cellstore.py ARDITI_VENDOR_CONTROLS_ROOTS (controls); the dose grammar is adapters/dose_grammar.py.
+        The paper has declared no spelling for this re-run (paper_build_commit null, the paper-commit rule the other way round, as
+        for strength_mtdiff_s1).
+    - source: seedrep_cluster
+      paper_build_commit: null
+      provisional: true
+      declared_by: "registry (branch registry-seedrep-mirror-admission), not the paper"
+      producer_message_utc: "2026-09-20T18:30Z"
+      read_utc: "2026-09-20T22:00:00Z"
+      why: >
+        PROVISIONAL spelling for the SEED-REPLICATE statics and MMLU run on cluster B (durable the grading host mirror
+        $STATE/run-state/full22/seedrep/): the batch-64 seed-2 / seed-3 premint objects registered (roster selections s2 / s3, pins
+        base64s<N>__<stem> / derived_base64s<N>__<stem>) served LoRA-natively on qwen35_4b_it at the Qwen vendor preset, trial 0, the four static
+        families on the 4,096 -> 8,192 -> 16,384 cap ladder (jobs 121236-121261) and the prefill-only MMLU (121264 / 121265), tree 017bf663b --
+        BELOW the registry's self-registration floor, so admitted by a reader. The mirror holds the ladder records, the gate decisions and the MMLU
+        stores; the transcript stores stay on cluster B (the authors' rule) and the grades do not exist yet (a grading checkout carrying cap16384 +
+        the seedrep tags: the pin decision with the authors), so every static run files `generated` beside ONE pending disposition per (object key,
+        family) and picks its grades up under the same run id when they land at
+        sampled/grades_sampled/sdfbase_full22_qwen35_4b_s<N>_sampled_t0[_cap8192]/. Its own source, not a relu_paired root: these are the seed
+        replicates of the campaign's own objects on the SEEDED canonical instruments (static_sampled_vendor_preset_4096_8192,
+        mmlu_letter_prefill_200), not the paired-write sweep's identity, substrate or instrument. Since 2026-09-21 (EMISSION_VERSION 7) the reader
+        also files the graded best-of-N stores (grades_bon/qwen35_4b_s<N>/, the v2 Haiku pass over the native best-of-75 draws on cluster A for s2
+        / s3 and on Modal for s1) on the seedrep_battery premint's derived BoN instrument (7b6761844d0d..., re-derived and pinned, never a
+        look-alike), every seed under the store name as this reader's own runs; the seed-1 rows carry the premint's queued run id
+        (seedrep_battery:e526edf:bon:s1, the staged object key) in extra.premint_run_id for the roster's supersede ruling, never folding onto it.
+        Covered by adapters/seedrep_cluster.py. The paper has declared no spelling (paper_build_commit null).
+    - source: seedrep_battery
+      paper_build_commit: null
+      provisional: true
+      declared_by: "registry (branch registry-seedrep-statics), not the paper"
+      producer_message_utc: "2026-09-21T07:04Z"
+      read_utc: "2026-09-21T08:30:00Z"
+      why: |
+        PROVISIONAL spelling for the seed-1 STATIC attacks and BEST-OF-N of the batch-64 Qwen family, run on Modal (the `seedrep_battery` campaign's own `lane_source_legacy`, the value every premint-QUEUED row already carries): codeattack / grok420 / pasttense / renellm and strongreject_bon on the eight seed-1 object keys, served LoRA-natively on qwen35_4b_it at the Qwen vendor preset, on the battery's minted instruments (derived from static_sampled_vendor_preset_4096_8192 and bon_512store_4096climb_T1 with the served window; best-of-N at a fixed 4,096 cap with no ladder). The battery's design wrote every child's records into an attempt-private spool whose landing step never ran, so the registry held the premint's `queued` rows and nothing of the generation; adapters/seedrep_statics.py (the legacy-store reader) re-derives each run id from the store (the accepted key's producer key, the roster's staged object key, the eval, the minted instrument re-hashed through identity.instrument_id) and folds the completed store onto its queued row: `generated` at the base cap 4,096 with the ladder state `final_at_base` / `escalation_pending` (every escalation attempt failed), one pending disposition per (object key, eval); grades attach under the same id from the battery's ONE declared graded root, $STATE/run-state/full22/seedrep_battery/sampled/grades_sampled/ (the seed-1 statics are graded with the grade_full22_native runbook at grading pin 017bf663b), with the grade_metadata.json sidecar (base_cap / escalation_ran) on the run; the seedrep/grades_sampled root is never declared here. Best-of-N grades (run-state/full22/seedrep/grades_bon/) are another reader's. Durable roots: that run-state root's stores/<tree>/<eval>/<attempt>/ and carried/<from tree>/… (the copy of a carried root's reader-needed files); the volatile /tmp/launch_vol_peek is read only when neither holds the root. The paper has declared no spelling (paper_build_commit null).
+        ALSO covered by adapters/seedrep_controls.py (registered `seedrep_controls`, 2026-09-21): the seed-1 SERVED CONTROLS of the same battery -- XSTest / OR-Bench-Hard at cap 512 (generated; judged under the same ids by a Sonnet-5 pass of 2026-09-21 over the carried store, the OR-Bench judgment restricted to the instrument's 200-item subset with the full-1,319 reading on extra) and the MMLU letter read rule-scored -- folded onto the 24 premint-queued rows of the certifying tree e526edf from the producing attempt's durable copy (carried/6fdd5e5/stores/S5_controls/, a CARRIED root: code_sha the producing tree 6fdd5e5). Two readers, one source string: the premint queued every row under `seedrep_battery`, so both fold under it; they share no measurement key (disjoint evals) and are told apart by priority (the controls reader declares PRIORITY_OWNING_READER, the statics reader the undeclared 0).
+    - source: seedrep_petri
+      paper_build_commit: null
+      provisional: true
+      declared_by: "registry (branch registry-seedrep-petri-s1), not the paper"
+      producer_message_utc: "2026-09-21T06:57Z"
+      read_utc: "2026-09-21T08:00:00Z"
+      why: >
+        PROVISIONAL spelling for the Petri seed-1 store (the store is complete and is added to the registry and the paper): the petri_native root the Modal drive 20260919T111239Z.110143 wrote
+        ($STATE/petri_native/petri_seedrep_c65b47b_c3b864ed_01M2WNTNMW8AQ7CJHTC1D3Y5SR-79e88ba275a1_qwen35_4b_s1; eight audited objects, 6 behaviours x 10 scenarios each, 13 terminal judge refusals across the store, no
+        withheld item). The reader folds the audit onto the runs premint-queued under producer key seedrep_battery:6fdd5e5:petri:s1 (the launch plan the roster selects; the instrument and judge read from those rows; the
+        retired earlier premint of the same rows gets nothing), files the three objects the premint did not queue for Petri as new runs under the same key, counts n as the SCORED scenarios with the refusals as unscored
+        `judge_refused` items, pairs every contrast on scenario id against the store's own `none`, and carries on every run the waiver of criterion 3 (the determinism spot-check) and the absent re-audit. Pinned to that
+        one root: a second seed-1 store is a second instrument on a completed measurement and is refused, never folded. Since 2026-09-21 the same reader also files the Slurm stores for seeds 2 and 3
+        ($STATE/petri_native/petri_full22_qwen35_4b_s<N>/, campaign sdfbase_full22, producer key = the audit name, instruments minted per completing tree from the seeded petri_full22_as_run row, the judge chain per
+        scenario from the store's summary.json). Covered by adapters/seedrep_petri.py. The paper has declared no spelling (paper_build_commit null, the paper-commit rule the other way round).
+    - source: gsm8k_seedrep
+      paper_build_commit: null
+      provisional: true
+      declared_by: "registry (branch registry-gsm8k-seedrep), not the paper"
+      producer_message_utc: "2026-09-21T07:05Z"
+      read_utc: "2026-09-21T08:30:00Z"
+      why: >
+        PROVISIONAL spelling for the batch-64 three-seed Qwen family's GSM8K paired-200 stores: seed tags qwen35_4b_s1 / _s2 / _s3 x the
+        unsteered anchor, the five admitted staged objects (base64s<N>__<stem> / derived_base64s<N>__<stem>) and the two prompted system
+        instructions, run on cluster A at tree b54f5b9c (jobs 585909 / 585910 / 585911, rungs 585997 / 586005) on the paper's ONE GSM8K
+        instrument (inspect/gsm8k_paired200, 10-shot, k = 1, thinking ON, the Qwen thinking-card row, cap 8,192 with the 16,384 rung) under the
+        Inspect REPLICATE seed rule at seed base s. Durable the grading host mirror $STATE/run-state/full22/gsm8k_seedrep/ (24 base + 13 rung
+        stores, the producer's store pins and three-number record). One run per (model, seed tag, object key) at the ladder's final state, the
+        rung's items merged item-wise; the VALUE is correct / scored, correct / 200 is a secondary BOUND row, and an item still at the cap is a
+        third item state (`at_cap_unresolved`, value NULL) whose share rides run_degeneration -- the authors' standing rule that degeneration
+        is scored separately. Covered by adapters/gsm8k_seedrep.py. Its own source, not an evalcheck/gsm8k_paired200 root: that root's reader
+        reads REPORTS of the paper's wave (lens era, other objects), these are the seed replicates' STORES on the seeded canonical instrument.
+        The paper has declared no spelling (paper_build_commit null, as for seedrep_cluster).
+    - source: gsm8k_paired_allmodels
+      paper_build_commit: null
+      provisional: true
+      declared_by: "registry, not the paper"
+      producer_message_utc: "2026-09-22T04:24Z"
+      read_utc: "2026-09-22T05:30:00Z"
+      why: >
+        PROVISIONAL spelling for the paired_allmodels GSM8K document (for the all-model appendix): the paired-write difference ReLU objects (the
+        relu_paired psr_paired_write objects -- the registry's composed difference_relu objects 87863240 / 5066333f / ad3e1922) served natively on
+        gemma4e4b_it, llama8b_it and nemotron3nano4b, plus nemotron3nano4b x the constitution ReLU object (the roster's
+        base__constv2-mix-full__psr_ce_all, 81321803), on the appendix column's per-model instrument (inspect/gsm8k_paired200, 10-shot, k = 1, the
+        DEFAULT Inspect seed rule -- one trial per model, never the seed-replicate document's decode-seed trials -- the vendor thinking card ON for
+        gemma / nemotron and not_available for llama, cap 8,192 with the 16,384 step, item-wise final state, the three numbers). Cluster wave root
+        exp/gsm8k_paired200_paper_objects_paired_allmodels, stores controls_paired_allmodels/<tag>/<object slug>/<sampling>{,__rung16384}; durable
+        the grading host mirror $STATE/run-state/full22/gsm8k_paired_allmodels/. The document runs NO unsteered none: the panel pools the in-frame
+        anchors, and the reader parks every contrast block with anchor_state pooled_in_frame_anchors naming the in-frame unsteered GSM8K run ids of
+        the model (derived by identity from the registry rows) as an informational reference -- never a delta anchor; a none store is refused by
+        name. Role paired_allmodels_value. Coexistence beside every in-frame GSM8K row of the three models is the authors' ruling
+        r2v4-coexist-gsm8k-paired-allmodels-beside-in-frame-gsm8k-rows (filed before the first read). Covered by adapters/gsm8k_paired_allmodels.py
+        (the GSM8K reader's second source, a subclass of the gsm8k_seedrep reader: the same store grammar, item-wise merge and three numbers). Its
+        own source, not gsm8k_seedrep: other models, another seed rule, another mirror root, other objects. The paper has declared no spelling
+        (paper_build_commit null).
+    - source: math500_seedrep
+      paper_build_commit: null
+      provisional: true
+      declared_by: "registry (branch registry-math500-seedrep), not the paper"
+      producer_message_utc: "2026-09-23T06:35Z"
+      read_utc: "2026-09-23T08:00:00Z"
+      why: >
+        PROVISIONAL spelling for the batch-64 three-seed Qwen family's MATH-500 stores (b64-capability-agentic-queue, cluster B at tree 4c8268da, jobs
+        128075 / 128177 / 128180 (rows 56-83) / 129051): seed tags qwen35_4b_s1 / _s2 / _s3 x the unsteered anchor, the five admitted staged objects
+        (base64s<N>__<stem> / derived_base64s<N>__<stem>), the two prompted system instructions and the Arditi all-positions refusal steer at its
+        operating point (ar_c0p3__arditi_allpos, one fit drawn at the three seed bases), plus the composed difference_relu paired write on the paired
+        tags qwen35_4b_s<N>p (paired_eb64s<N>__…, its own standup, no none of its own). Every row is the paper's MATH-500 instrument (inspect/math
+        over the 500 MATH-500 ids, 0-shot, k = 1, thinking ON, the Qwen thinking-card row qwen35_4b_it|math500|on|thinking_card@v1, ONE pass at 16,384
+        -- the standing truncation rule's ceiling, no cap step) under the Inspect REPLICATE seed rule at seed base s, read off each store; capability
+        evaluations carry their OWN instrument, never the statics' 4,096 cap. Durable the grading host mirror $STATE/run-state/full22/math500_seedrep/
+        (the mirror_to_datawrangler.sh publish, PROVENANCE.md at the root: 30 stores under controls_qwen_seedrep/<tag>/<object dir>/thinking_card/,
+        the standup records under serving/, the producer's store pins (m5t_store_pins/2), three-number record (m5t_three_numbers_seedrep/1),
+        final-state record (m5t_final_state_seedrep/1) and the launch set records/launch_sets.json -- the identity declaration: a pin key and an
+        expected object sha per row). One run per (model, tag, object key) keyed by the tag-prefixed store name; ONE GROUP PER SEED (the paired tag
+        reads in its seed tag's batch, because the composed row is paired across standups with s<N>/none); the VALUE is correct / scored, correct /
+        500 a secondary BOUND row, every at-cap item the third state's share (run_degeneration), the producer's loop / eligible split informational
+        and its off-task classification carried on the run; the Arditi rows declared unpaired (arditi_unpaired_value, the GSM8K precedent) with the
+        value filed regardless. Covered by adapters/math500_seedrep.py (standalone: the GSM8K seed-replicate reader's helpers imported, its module
+        untouched). Its own source, not evalcheck/math500: that root's reader reads REPORTS of the paper's steer-pins wave, these are the seed
+        replicates' STORES on the seeded canonical instrument; not gsm8k_seedrep: another eval, another store grammar (no cap step), another mirror.
+        The paper has declared no spelling (paper_build_commit null, as for gsm8k_seedrep).
+    - source: bigcodebench_seedrep
+      paper_build_commit: null
+      provisional: true
+      declared_by: "registry (branch registry-bigcodebench-seedrep), not the paper"
+      producer_message_utc: "2026-09-23T07:06Z"
+      read_utc: "2026-09-23T09:00:00Z"
+      why: >
+        PROVISIONAL spelling for the batch-64 three-seed Qwen family's BigCodeBench-200 stores (b64-capability-agentic-queue, Modal, the twosi-fits
+        volume, tree 8365992042b6a4836a27593ea4364b78871132d9): seed tags qwen35_4b_s1 / _s2 / _s3 x the unsteered anchor, the five admitted staged
+        objects (base64s<N>__<stem> / derived_base64s<N>__<stem>), the two prompted system instructions and the Arditi all-positions refusal steer at
+        its operating point (ar_c0p3__arditi_allpos, one fit on every seed tag), plus the composed difference_relu paired write on the paired tags
+        qwen35_4b_s<N>p (paired_eb64s<N>__..., its own standup, no none of its own) -- 30 rows in the launch set, 25 with stores at the first mirror
+        (s2 none / prompted__safety_refusal / prompted__si_constitution and s3 none / prompted__safety_refusal had not run; the reader files NOTHING
+        for a launch-set row without a store, a later mirror adds it idempotently). Every row is the BigCodeBench-200 instrument
+        (inspect/bigcodebench_200 over the 200 pinned items of 992, pass@1 in the pinned sandbox, thinking OFF, the greedy protocol row
+        qwen35_4b_it|bigcodebench|off|protocol@v1, ONE pass at 4,096 = contracts.BCB200_MAX_TOKENS_OFF, no cap step) under the DEFAULT Inspect seed
+        rule -- no per-seed decode rule, the seed axis is the fitted object, every row files decode_seed_rule per_item / seed_base NULL / trial_index
+        0; capability evaluations carry their OWN instrument, never the statics' 4,096 cap. Durable the grading host mirror
+        $STATE/run-state/full22/bigcodebench_seedrep/ (the mirror_to_datawrangler.sh publish, byte for byte from the volume, PROVENANCE.md at the
+        root): native/<row dir>/<object key>/thinking_off/bcbw-<launch tag>-<sha7>/ stores and records/ (the bcbw_gate.py attestation per row -- a row
+        files only under verdict PASS attesting lora_native, max_lora_rank RECORDED never compared; the launch_sets.json with the pin key and expected
+        object sha per row; the launched sdfbase_full22_pins.json and bcb_bfcl_200_widen_roster.yaml; three_numbers_bigcodebench_qwen_seedrep.json,
+        w4_three_numbers/1). One run per (model, tag, object key) keyed by the tag-prefixed store name; ONE GROUP PER SEED (the paired tag reads in
+        its seed tag's batch, the composed row is paired across standups with s<N>/none); the VALUE is correct / scored, correct / 200 a secondary
+        BOUND row, the at-cap count run_degeneration at_token_cap_finish_reason (an at-cap item is SCORED on this task; no loop reading exists and
+        none is invented); a seed tag whose none has not run files its rows WITHOUT a contrast and extra.anchor names the reason; the Arditi rows
+        declared unpaired (arditi_unpaired_value) with the value filed regardless. Covered by adapters/bigcodebench_seedrep.py over the shared reading
+        adapters/_bcbw_common.py (the BFCL-200 reader binds the same code). Its own source, not bcb_bfcl_200 / bcb_bfcl_200_widen: those read the
+        paper rows of other models and objects; these are the seed replicates' STORES on the canonical instrument. The paper has declared no spelling
+        (paper_build_commit null).
+    - source: bfcl_seedrep
+      paper_build_commit: null
+      provisional: true
+      declared_by: "registry (branch registry-bigcodebench-seedrep), not the paper"
+      producer_message_utc: "2026-09-23T07:06Z"
+      read_utc: "2026-09-23T09:00:00Z"
+      why: >
+        PROVISIONAL spelling for the batch-64 three-seed Qwen family's BFCL-200 stores (the SAME stores as bigcodebench_seedrep -- one store per (seed
+        tag, object key) holds both tasks -- published as their OWN byte-for-byte copy under $STATE/run-state/full22/bfcl_seedrep/ so each reader owns
+        its root; never a symlink, never a cross-read). The same 30 launch-set rows, 25 with stores, the same not-run rule and anchor rule. Every row
+        is the BFCL-200 instrument (inspect/bfcl_200 over the 200 pinned items of 3,981, one turn of tool calls scored by AST match, thinking OFF, the
+        protocol row qwen35_4b_it|bfcl|off|protocol@v1: T 0.001 executed literally under the served stack's clamp override -- vLLM _MAX_TEMP 0.01 ->
+        0.001, attested on every store's manifest -- ONE pass at 1,024 = contracts.BFCL200_MAX_TOKENS_OFF = the registry's BFCL row, no cap step) under
+        the DEFAULT Inspect seed rule (decode_seed_rule per_item / seed_base NULL / trial_index 0). The qwen3_5 tool-parser live verdict
+        (TOOL_PARSER_LIVE_PASS @ 80df464) gated the launch, but neither the store nor the gate record spells the parser's name: the run carries the
+        attested tool-call route (extra.tool_calls) and nothing is invented about the parser. Records: the same gate attestations, launch set, launched
+        pins and roster; three_numbers_bfcl_qwen_seedrep.json (w4_three_numbers/1). Covered by adapters/bfcl_seedrep.py over the shared reading
+        adapters/_bcbw_common.py. Its own source, not bigcodebench_seedrep (another evaluation, another instrument, another root) and not bcb_bfcl_200
+        / bcb_bfcl_200_widen (the paper's rows). The paper has declared no spelling (paper_build_commit null).
+    - source: bigcodebench_allmodels
+      paper_build_commit: null
+      provisional: true
+      declared_by: "registry, not the paper"
+      producer_message_utc: "2026-09-23T20:03Z"
+      read_utc: "2026-09-23T21:30:00Z"
+      why: >
+        PROVISIONAL spelling for the APPENDIX families' BigCodeBench-200 stores (Modal, the twosi-fits volume): gemma4e4b, llama8b and nemotron3nano4b -- ONE
+        seed tag per family, <model key>_s1, x {the unsteered anchor none, the five admitted staged objects (the family's `main` selection's objects staged
+        as base__<key> / derived__<key>, pinned in configs/sdfbase_full22_pins.json under the model key; llama8b's ReLU objects from the llama8b_full fits),
+        the two prompted system instructions}, plus the composed difference_relu paired write (the paired_eb<B>__<key> object) on the paired tag <model
+        key>_s1p with that tag's own none. gemma4e4b's and llama8b's seed-tag conditions ran under the family's `main` CANARY ROW (row <model key>-f22, tag
+        <model key>_main) before the s1 tag existed and file under <model key>_s1 with the original tag on extra.tag_legacy_original (completed work is
+        canonical, never re-run; a canary-row fitted key resolves through the roster's main selection); the s1p keys, llama8b's ReLU keys and every nemotron
+        key sit under the <model key>-f22s1[p] rows. No Arditi object exists for these families. The same record shape as bigcodebench_seedrep under
+        $STATE/run-state/full22/bigcodebench_allmodels/ (launch_sets.json, one store per (tag, object key), the gate records, PROVENANCE), read by
+        adapters/bigcodebench_allmodels.py over the shared reading adapters/_bcbw_common.py bound to the appendix model set (_bcbw_common.MODEL_KEYS): the
+        same instrument (bigcodebench_200_protocol_greedy_4096 bound to the served model; the protocol rows agree across the models), the same three numbers,
+        gate, not-run and anchor rules; the harness roster stages no s1 / s1p selection for the families, so an s1 / s1p row's fitted key has the launch
+        set's pin key as its staged id and the harness pins' entry as its sha (a key the pins do not carry refuses by name until pinned). Its own source, not
+        bigcodebench_seedrep (another model set: a qwen store under this root refuses its group by name, a gemma store under the seedrep root likewise) and
+        not bcb_bfcl_200 / bcb_bfcl_200_widen. The paper has declared no spelling (paper_build_commit null).
+    - source: bfcl_allmodels
+      paper_build_commit: null
+      provisional: true
+      declared_by: "registry, not the paper"
+      producer_message_utc: "2026-09-23T20:03Z"
+      read_utc: "2026-09-23T21:30:00Z"
+      why: >
+        PROVISIONAL spelling for the APPENDIX families' BFCL-200 stores: the SAME stores as bigcodebench_allmodels (one store holds both tasks) published as
+        their own byte-for-byte copy under $STATE/run-state/full22/bfcl_allmodels/. gemma4e4b and nemotron3nano4b run the same conditions on BFCL-200
+        (thinking OFF, T 0.001 under the attested clamp override, cap 1,024, the rows <model id>|bfcl|off|protocol@v1); llama8b runs NO BFCL row (by the
+        authors' rule): no llama store is mirrored here and the launch set names no llama row, so the reader files nothing for the family -- not a refusal,
+        not a disposition. Read by adapters/bfcl_allmodels.py over the shared reading adapters/_bcbw_common.py bound to the appendix model set. Its own
+        source, not bigcodebench_allmodels (another evaluation, instrument and root), not bfcl_seedrep (another model set) and not bcb_bfcl_200 /
+        bcb_bfcl_200_widen. The paper has declared no spelling (paper_build_commit null).
+    - source: bigcodebench_full
+      paper_build_commit: null
+      provisional: true
+      declared_by: "registry (branch registry-bcbw-full), not the paper"
+      producer_message_utc: "2026-09-24T00:32Z"
+      read_utc: "2026-09-24T02:00:00Z"
+      why: >
+        PROVISIONAL spelling for the FULL-suite BigCodeBench stores (capeval-full-tasks; Modal, the twosi-fits volume): every one of the 1,140 tasks of the
+        v0.1.2 complete split (Hard INCLUDED; no seed), not the pinned 200 -- the same protocol decode (greedy T 0), cap (4,096), sandbox scoring and
+        serving as bigcodebench_allmodels / bigcodebench_seedrep, over the families of the model-key table in one root
+        ($STATE/run-state/full22/bigcodebench_full/, the seedrep record shape plus records/item_sets.json and the mirrored pin file records/bcb_full.json).
+        A NEW item set (bigcodebench_full_1140) and so a NEW instrument (bigcodebench_full_protocol_greedy_4096): never pooled with or differenced against a
+        200 row. Read by adapters/bigcodebench_full.py over the shared reading adapters/_bcbw_common.py with the full item-set attestation (the contract
+        quoted in the module: manifest.tinycap.bcb_full_item_set == {seed null, n == of == the set's n, ids_sha256 = contracts.ids_sha256 of the mirrored
+        pin's ids}, the pin named by item_sets.json by file sha256, the label `full`, the launch-set row's item_set {id, sha256, n}, the outcome record's
+        count; any disagreement refuses the store by name, an absent index or pin refuses every store). Its own source, not bigcodebench_allmodels /
+        bigcodebench_seedrep (another item set and instrument) and not bcb_bfcl_200 / bcb_bfcl_200_widen. The paper has declared no spelling
+        (paper_build_commit null).
+    - source: bfcl_full
+      paper_build_commit: null
+      provisional: true
+      declared_by: "registry (branch registry-bcbw-full), not the paper"
+      producer_message_utc: "2026-09-24T00:32Z"
+      read_utc: "2026-09-24T02:00:00Z"
+      why: >
+        PROVISIONAL spelling for the FULL-suite BFCL stores (capeval-full-tasks): the SAME stores as bigcodebench_full (one store holds both full tasks)
+        published as their own byte-for-byte copy under $STATE/run-state/full22/bfcl_full/ -- every one of the 3,981 single-turn items of V1 U V2 minus rest
+        (18 categories; no seed), thinking OFF, T 0.001 under the attested clamp override, cap 1,024, the tool-call route required. A NEW item set
+        (bfcl_full_3981) and a NEW instrument (bfcl_full_protocol_T0001_1024). Read by adapters/bfcl_full.py over the shared reading with the full item-set
+        attestation (the pin records/bfcl_full.json named by records/item_sets.json; see bigcodebench_full). Its own source, not bfcl_allmodels /
+        bfcl_seedrep (another item set and instrument), not bigcodebench_full (another evaluation, instrument and root) and not bcb_bfcl_200 /
+        bcb_bfcl_200_widen. The paper has declared no spelling (paper_build_commit null).
+    - source: bigcodebench_full_shared
+      paper_build_commit: null
+      provisional: true
+      declared_by: "registry, not the paper"
+      producer_message_utc: "2026-09-28T20:43Z"
+      read_utc: "2026-09-28T22:00:00Z"
+      why: >
+        PROVISIONAL spelling for the SHARED-STANDUP COMPARISON stores of the FULL-suite BigCodeBench rows (tinycap-shared-standup): the row-engine harness serves EVERY object
+        of a model row on ONE vLLM engine and re-runs the canary rows (gemma s1, qwen s1, nemotron s1, the qwen instruct row's own none) as whole rows, COMPARED to the existing
+        solo bigcodebench_full stores -- a COMPARISON source, never a replacement of the 78 canonical rows, never an anchor change, never in the paper frame. Mirrored under
+        $STATE/run-state/full22/bigcodebench_full_shared/ (the solo layout + standup/ per store; the suffix bcbw-<launch tag>-<sha7>-shared[-r<N>][-rep<N>];
+        records/launch_sets_shared.json, the gate records with the standup fields, three_numbers_bigcodebench_full_shared.json, relaunches.json, the roster set / pins /
+        item-set index byte-copied). Read by adapters/bigcodebench_full_shared.py = adapters/bigcodebench_full.py PARAMETRIZED (_bcbw_common.SharedSpec; the solo reader
+        re-emits byte for byte): every row files on the spelling <tag>_shared (gemma4e4b_s1_shared; legacy_spellings.yaml spells it as the solo spelling's model / fit /
+        transfer kind), its run id minted under that spelling (the store key is byte-identical to the solo's), with extra.comparison_kind in {shared_vs_solo, repeat_floor,
+        it_none_comparison}, extra.solo_run_id (what the SOLO reader mints) and extra.solo_store from the launch row and the gate's comparison block, the row engine's standup
+        identity (one standup id per row launch; max_loras / residual_slot_armed RECORDED), and the shared - solo comparison as a REGISTRY-computed run_contrast with
+        anchor_kind borrowed (the solo run stands in; both values; item-wise against the solo mirror's outcome record) beside the in-run contrast against the row's shared none.
+        The frame: v_roster_match knows neither the spelling nor the source, so a shared row whose solo twin an entry matches reads selected unless an exclude ruling scoped
+        match.lane_sources_legacy [bigcodebench_full_shared, bfcl_full_shared] covers the pair (the reader's module docstring; a ruling for the authors, not a reader default).
+        Its own source, not bigcodebench_full (the solo rows it compares against) and not bfcl_full_shared (the same stores' own copy for the other evaluation). The paper has
+        declared no spelling (paper_build_commit null).
+    - source: bfcl_full_shared
+      paper_build_commit: null
+      provisional: true
+      declared_by: "registry, not the paper"
+      producer_message_utc: "2026-09-28T20:43Z"
+      read_utc: "2026-09-28T22:00:00Z"
+      why: >
+        PROVISIONAL spelling for the SHARED-STANDUP COMPARISON stores of the FULL-suite BFCL rows: the SAME row-engine stores as bigcodebench_full_shared (one store
+        holds both full tasks) published as their own byte-for-byte copy under $STATE/run-state/full22/bfcl_full_shared/, compared against the solo bfcl_full stores
+        -- a COMPARISON source, never a replacement, never an anchor change, never in the paper frame. Read by adapters/bfcl_full_shared.py = adapters/bfcl_full.py
+        PARAMETRIZED (see bigcodebench_full_shared): the same spellings, run ids, comparison fields, standup identity and borrowed run_contrasts on the BFCL full
+        instrument (bfcl_full_protocol_T0001_1024, item set bfcl_full_3981; three_numbers_bfcl_full_shared.json). Its own source, not bfcl_full and not
+        bigcodebench_full_shared (another evaluation, instrument and root). The paper has declared no spelling (paper_build_commit null).
+    - source: bigcodebench_full_shared_l2
+      paper_build_commit: null
+      provisional: true
+      declared_by: "registry, not the paper"
+      producer_message_utc: "2026-09-30T11:32Z"
+      read_utc: "2026-09-30T13:00:00Z"
+      why: >
+        PROVISIONAL spelling for LANDING 2 of the SHARED-STANDUP COMPARISON stores of the FULL-suite BigCodeBench rows: the SAME comparison tuples as bigcodebench_full_shared
+        -- the gemma4e4b s1 row (8 tuples + none@rep2) and the qwen35_4b s1 row (8 tuples + none@rep2 + arditi_allpos), 19 stores on tree 082f583 -- driven again by ANOTHER
+        harness (K = 2 drivers per row on one standup per row launch, then a CPU verification pass that re-stamps RESULT's last line `result=COMPLETE status=OK sha=<tree>
+        verified_by=<function call id>` without a standup= token; manifest.row_engine.verification_pass state verified). Published under
+        $STATE/run-state/full22/bigcodebench_full_shared_l2/ as a SEPARATE source beside landing 1's, never into it: the landed reader keys rows by (tag, key[@rep]) and mints
+        run ids without the store suffix, so a second run of one tuple under the landing-1 source would collide with the 66 ingested landing-1 rows. Read by
+        adapters/bigcodebench_full_shared_l2.py = adapters/bigcodebench_full_shared.py PARAMETRIZED once more (_bcbw_common.SharedSpec.harness_variant l2 / base_source): the
+        run id's discriminator is the PRODUCER KEY's source segment -- `<tag>_shared_l2/<store key>[@rep<N>]` (SHARED_L2_RUN_ID_RULE: a run id is a function of the producer's
+        identity; another harness is another producer; never a suffix on the finished id, never the instrument, never the store key's hash) -- while the registry spelling
+        stays `<tag>_shared` (the same model / fit / transfer; legacy_spellings.yaml unchanged); the verified store's standup id is the manifest's, cross-checked against the
+        row runner's earlier RESULT line (SHARED_VERIFIED_STANDUP_RULE; landing 1's last-line rule stands on landing-1 stores); the bound launch set's
+        evals.bigcodebench.own_source spells the base source and is recorded as provenance (the reader binds by root). Same records as landing 1 (launch_sets_shared.json, the
+        gate records, three_numbers_bigcodebench_full_shared.json with `source` this name, the roster set / pins / item-set index). A COMPARISON source, never in the paper
+        frame: the exclude ruling r2v4-exclude-shared-standup-comparison-sources-from-the-paper-frame is scoped to the two landing-1 names by exact equality and does NOT cover
+        this one; a same-id re-file widened to the `_l2` names is drafted. Its own source, not bigcodebench_full_shared (landing 1: another harness, other run ids), not
+        bigcodebench_full (the solo rows it compares against) and not bfcl_full_shared_l2 (the same stores' own copy for the other evaluation). The paper has declared no
+        spelling (paper_build_commit null).
+    - source: bfcl_full_shared_l2
+      paper_build_commit: null
+      provisional: true
+      declared_by: "registry, not the paper"
+      producer_message_utc: "2026-09-30T11:32Z"
+      read_utc: "2026-09-30T13:00:00Z"
+      why: >
+        PROVISIONAL spelling for LANDING 2 of the SHARED-STANDUP COMPARISON stores of the FULL-suite BFCL rows: the SAME 19 row-engine stores as
+        bigcodebench_full_shared_l2 (one store holds both full tasks) published as their own byte-for-byte copy under $STATE/run-state/full22/bfcl_full_shared_l2/,
+        compared against the solo bfcl_full stores -- a COMPARISON source, never a replacement, never an anchor change, never in the paper frame (the landing-1 exclude
+        ruling does not cover it; the widened re-file is drafted). Read by adapters/bfcl_full_shared_l2.py = adapters/bfcl_full_shared.py PARAMETRIZED (see
+        bigcodebench_full_shared_l2): the `<tag>_shared_l2` producer key, the verified store's standup rule, the base-source own_source recorded, on the BFCL full
+        instrument (bfcl_full_protocol_T0001_1024, item set bfcl_full_3981; three_numbers_bfcl_full_shared.json with `source` this name). Its own source, not
+        bfcl_full_shared (landing 1), not bfcl_full and not bigcodebench_full_shared_l2 (another evaluation, instrument and root). The paper has declared no spelling
+        (paper_build_commit null).
+    - source: bigcodebench_full_shared_l3
+      paper_build_commit: null
+      provisional: true
+      declared_by: "registry, not the paper"
+      producer_message_utc: "2026-10-01T02:28Z"
+      read_utc: "2026-10-01T04:00:00Z"
+      why: >
+        PROVISIONAL spelling for LANDING 3 of the SHARED-STANDUP COMPARISON stores of the FULL-suite BigCodeBench rows (a fan-out test, published 2026-10-01 02:28Z): the
+        gemma4e4b s1 row's FOUR tuples -- none, prompted__safety_refusal, prompted__si_constitution, constv2-mix-full__psr_ce_all -- on tree f1347e9, driven once more by the
+        PR #441 harness (one standup per row launch, the CPU verification pass M2_replay_vehicle state verified) and published under
+        $STATE/run-state/full22/bigcodebench_full_shared_l3/ as a THIRD source beside landing 1's bigcodebench_full_shared and landing 2's bigcodebench_full_shared_l2, never
+        into either: the landed reader keys rows by (tag, key[@rep]) and mints run ids without the store suffix, so a third run of one tuple under an earlier landing's source
+        would collide with its ingested row. Read by adapters/bigcodebench_full_shared_l3.py = adapters/bigcodebench_full_shared.py PARAMETRIZED as landing 2's is
+        (_bcbw_common.SharedSpec.harness_variant l3 / base_source / landing_rule = SHARED_L3_RULE): the run id's discriminator is the PRODUCER KEY's source segment
+        `<tag>_shared_l3/<store key>` (SHARED_L2_RUN_ID_RULE, landing 2's rule) while the registry spelling stays `<tag>_shared`; the three-number record spells `source` this
+        name (THREE_NUMBERS_SOURCE_RULE: the _l2 reader over this root refuses every row by name on the header alone). Three shapes differ from landing 2's 19 stores and none
+        is a gate (SHARED_L3_RULE, stamped on every row): the verified block carries the fourteen current keys (the reader records it verbatim and pins neither nine nor
+        fourteen); every RESULT re-stamp carries standup=<manifest id> before verified_by= (the id is read off the last line as on landing 1; the absent-token branch is not
+        taken); manifest.route.object_artifact_sha256, the legacy scalar, spells the row's one fitted digest on EVERY store, none and prompted included -- never read as
+        identity (provenance.artifact_sha256 / fit_provenance.object_sha and the by-harness-key map decide; both null / absent on none and prompted), recorded as
+        extra.row_engine.object_artifact_sha256_scalar, so none files as none and the prompted stores as prompted_only. Gates: none PASS cross_standup against the SOLO none
+        record; the other three PASS same_standup against this run's none. Same records as landing 2 (launch_sets_shared.json, landing 3's own bound set with own_source the
+        base name, recorded as provenance; the gate records; the roster set / pins / item-set index). A COMPARISON source, never in the paper frame: the exclude ruling
+        r2v4-exclude-shared-standup-comparison-sources-from-the-paper-frame COVERS this name -- its same-id re-file of 2026-10-01T02:31:02Z (the registry's ruling-add record
+        and the live ruling row both carry the scope) widened match.lane_sources_legacy to the six shared-standup names, landings 1, 2 and 3. The paper frame matches that
+        list by exact equality against run.lane_source_legacy, so every NEW landing name must be added there before its first ingest or its rows would read `selected` beside
+        their solo twins; this pair was, before this reader landed. Its own source, not bigcodebench_full_shared (landing 1), not bigcodebench_full_shared_l2 (landing 2:
+        another harness run, other run ids), not bigcodebench_full (the solo rows it compares against) and not bfcl_full_shared_l3 (the same stores' own copy for the other
+        evaluation). The paper has declared no spelling (paper_build_commit null).
+    - source: bfcl_full_shared_l3
+      paper_build_commit: null
+      provisional: true
+      declared_by: "registry, not the paper"
+      producer_message_utc: "2026-10-01T02:28Z"
+      read_utc: "2026-10-01T04:00:00Z"
+      why: >
+        PROVISIONAL spelling for LANDING 3 of the SHARED-STANDUP COMPARISON stores of the FULL-suite BFCL rows: the SAME four row-engine stores as bigcodebench_full_shared_l3 (one
+        store holds both full tasks; the gemma4e4b s1 row on tree f1347e9) published as their own byte-for-byte copy under $STATE/run-state/full22/bfcl_full_shared_l3/, compared
+        against the solo bfcl_full stores -- a COMPARISON source, never a replacement, never an anchor change, never in the paper frame (covered by the exclude ruling's six-name
+        re-file of 2026-10-01T02:31Z, as bigcodebench_full_shared_l3 is). Read by adapters/bfcl_full_shared_l3.py = adapters/bfcl_full_shared.py PARAMETRIZED (see
+        bigcodebench_full_shared_l3): the `<tag>_shared_l3` producer key, the fourteen-key verified block recorded, the token-present re-stamp read off the last line, the non-null
+        legacy route scalar recorded and never read as identity, on the BFCL full instrument (bfcl_full_protocol_T0001_1024, item set bfcl_full_3981;
+        three_numbers_bfcl_full_shared.json with `source` this name). Its own source, not bfcl_full_shared (landing 1), not bfcl_full_shared_l2 (landing 2), not bfcl_full and not
+        bigcodebench_full_shared_l3 (another evaluation, instrument and root). The paper has declared no spelling (paper_build_commit null).
+    - source: ifeval_seedrep
+      paper_build_commit: null
+      provisional: true
+      declared_by: "registry (branch registry-ifeval-seedrep), not the paper"
+      producer_message_utc: "2026-09-23T08:45Z"
+      read_utc: "2026-09-23T12:00:00Z"
+      why: >
+        PROVISIONAL spelling for the batch-64 three-seed Qwen family's IFEval stores (b64-capability-agentic-queue, Modal, the twosi-fits volume, tree
+        8365992042b6a4836a27593ea4364b78871132d9): seed tags qwen35_4b_s1 / _s2 / _s3 x the unsteered anchor, the five admitted staged objects
+        (base64s<N>__<stem> / derived_base64s<N>__<stem>), the two prompted system instructions and the Arditi all-positions refusal steer at its operating
+        point (ar_c0p3__arditi_allpos, one fit on every seed tag), plus the composed difference_relu paired write on the paired tags qwen35_4b_s<N>p
+        (paired_eb64s<N>__..., its own standup, no none of its own) -- the 30 rows the launch set names, every one complete (65 stores: 30 base stores at
+        2,048, 20 cap-step stores at 4,096, 15 at 8,192). Every row is the IFEval instrument (inspect/ifeval over the 541 prompts, k = 2 seeded trials =
+        1,082 draws, thinking OFF, the vendor-preset row qwen35_4b_it|ifeval|off|vendor_preset@v1, the cap ladder 2,048 -> 4,096 -> 8,192 above 1 % of the
+        draws at the cap) under IFEval's fixed-base per-draw seed rule -- no per-seed decode rule, the seed axis is the fitted object, every row files
+        decode_seed_rule per_item / seed_base NULL / trial_index 0; capability evaluations carry their OWN instrument, never the statics' cap. THE
+        COMPLETION-CAP MERGE IS THE READER'S: one run per (model, tag, object key) at the cap the ladder REACHED, its value the draw-wise merge (each cap
+        step's re-drawn draws replace their truncated shallower draws, a loop is never re-drawn, everything recounted over the 1,082 draws -- never a base
+        aggregate plus a step aggregate), the per-store readings checked against the producer's 65-row three_numbers_ifeval_qwen_seedrep.json
+        (w4_three_numbers/1) and the merged reading against the ladder plan's own merged decisions (records/ladder_<cap>/plan.json + promoted.json, the
+        deciding records of which rows escalated). Durable the grading host mirror $STATE/run-state/full22/ifeval_seedrep/ (the mirror_to_datawrangler.sh
+        publish, byte for byte from the volume, PROVENANCE.md at the root; the mirror root IS the producer's root): controls/<tag>/<object
+        dir>/vendor_preset[__rung<cap>]/ stores, rung<cap>/<tag>/<object dir>/rung_subset.json (the draws re-drawn per cap), records/ (the pass-1 and
+        cap-step dispatchers' records -- a row files only under a done record attesting lora_native, a rate-limited attestation read judged by the store,
+        the .failed-D<n> attempt-1 roots never read; the launch_sets.json with the pin key and expected object sha per row; the pins; the matrix). The
+        VALUE is run_metric prompt_level_strict (the eval's headline) = strict passes / scored draws, a passes / 1,082 BOUND row beside it,
+        prompt_level_loose the secondary rate, the at-cap draws at the final state run_degeneration at_token_cap_finish_reason over draws (an at-cap draw
+        is SCORED on IFEval) with the loops / ceiling / not-escalated classes; every steered and prompted row contrasted per draw against its seed tag's
+        none at the same final state, the composed row across standups, the Arditi rows declared unpaired (arditi_unpaired_value). Covered by
+        adapters/ifeval_seedrep.py. Its own source, not gsm8k_seedrep (another eval, k = 2 draws, a three-cap ladder, Modal) and not bigcodebench_seedrep /
+        bfcl_seedrep (another eval, a cap ladder where those have one pass). The paper has declared no spelling (paper_build_commit null).
+    - source: misalign_seedrep
+      paper_build_commit: null
+      provisional: true
+      declared_by: "registry (branch registry-em-misalign-seeds), not the paper"
+      producer_message_utc: "2026-09-21T16:06Z"
+      read_utc: "2026-09-21T18:30:00Z"
+      why: >
+        PROVISIONAL spelling for the batch-64 three-seed Qwen family's agentic-misalignment stores: six views under the run-state mirror
+        $STATE/run-state/full22/misalign/ -- the SEED views qwen35_4b_s1 / _s2 / _s3 (Slurm on cluster A, jobs 586157 / 586158 / 586159, tree
+        80aba14b: the two prompted arms, the two constitution objects and the two controls at the seed's staged ids) and the PAIRED views
+        qwen35_4b_s1p / _s2p / _s3p (jobs 586027 / 586067 / 586068, tree 53f20a00: the composed difference_relu paired write paired_eb64s<N>__… plus
+        the LoRA object and LoRA difference re-served from the SEED view's staged ids, a STANDUP REPLICATE of that view's runs --
+        extra.standup_replicate_of_view / extra.paired_of). MODE=full, the runner's default sampler (t1: temperature 1.0 sent, no seed), cap 3,000
+        judged as generated, thinking off, judged by claude-sonnet-5 through scripts/judge_sonnet (am_leak.v1 / am_murder.v1, lowprio, no
+        escalation); 23,999 of 24,000 judged rows (one judge ValidationError on si_constv2ctl2_full__psr_ce_all at s2, filed as a fact), 3
+        judge-blocked. measure_none is FALSE by lane policy: no in-root none; the pairing anchor is the campaign's shared full22 none
+        (exp/misalign/qwen35_4b/agentic/none), re-judged by the same judge under _anchor_qwen35_4b/ and PARKED on every seed row's metric by
+        identity (delta_block: kind sibling_none, the unpaired difference, anchor_is_common_term) -- no run_contrast and no second judgment, because
+        that generation is registered as no run (the plain tree of a laddered stem is filed pending-and-superseded, which the emitter skips) and the
+        stem's registered none runs hold other generations. Campaign sdfbase_full22 (the campaign's own objects, as gsm8k_seedrep files them); the
+        instrument minted from the record (cap 3,000 read fixed, runner_forced_T1 as sent, seed rule none) so it collides with neither the seed-1
+        Modal instruments (seedrep_battery, view s1, vendor preset per_response) nor the seeded canonical 3,000 -> 16,384 ladder row. Covered by
+        adapters/em_misalign.py (SEEDREP_SOURCE), its second root. The paper has declared no spelling (paper_build_commit null, as for
+        gsm8k_seedrep).
+    - source: misalign_16k
+      paper_build_commit: null
+      provisional: true
+      declared_by: "registry (branch registry-em-misalign-16k), not the paper"
+      producer_message_utc: "2026-09-21T22:10Z"
+      read_utc: "2026-09-21T23:30:00Z"
+      why: >
+        PROVISIONAL spelling for the 16,384-step re-draws of the agentic-misalignment ladder: the roots under the run-state mirror
+        $STATE/run-state/full22/misalign_16k/<target>/, declared by ABSOLUTE path (the grade root's misalign_16k/qwen35_4b tree is the superseded
+        2026-09-11 LENS generation of the same keys and is never read) -- seven on 2026-09-21: the canon root qwen35_4b (job 592837: none 622,
+        prompted__constitution 780, prompted__safety 563), the baseline root qwen35_4b_bl (job 592836: arditi 535), the paired roots qwen35_4b_s1p /
+        _s2p / _s3p (jobs 592543 / 592544 / 592545: 401 / 2 / 23, 270 / 25 / 2, 451 / 44 / 1) and the seed roots qwen35_4b_s1 / _s3 (jobs 592540 /
+        592542: five keys each, 3,148 / 3,285; _s2 still generating, read when complete), all tree 80aba14b, Qwen/Qwen3.5-4B @ 851bf6e8, cluster A,
+        native (lora_native) serving, the runner's t1 sampler (temperature 1.0 and max_tokens 16384 sent, no seed), thinking off, judged by
+        claude-sonnet-5 (am_leak.v1 / am_murder.v1, lowprio, no escalation; 10,152 of 10,152, 0 blocked; the judged rows and judge_cache.jsonl are the
+        counts of record, judge_provenance.json being overwritten per judge pass). The reading is the step's own over the RE-DRAWN items alone (the
+        at-cap items of each 3,000-cap store that the misalign runner's redraw filter kept -- zlib ratio >= 0.2 -- re-drawn at 16,384),
+        token_cap_rung_index 1 of the [3000, 16384] ladder, never merged with the 3,000-cap items that completed (the merged reading is the stem's
+        _ladder tree under em/agentic/<stem>). Its own source, not misalign_seedrep: the same target names at another cap (the row store's run_id even
+        collides across the two roots), and the canon / baseline roots are not seed selections. The canon root's 16,384 none is the step anchor
+        (same-root paired contrasts for the canon keys from the producer's paired.csv; cross-root sibling_none contrasts for the baseline and paired
+        roots). Covered by adapters/em_misalign.py (version 6) as its third root. The paper has declared no spelling (paper_build_commit null).
+    - source: misalign_ladder
+      paper_build_commit: null
+      provisional: true
+      declared_by: "registry (branch registry-em-misalign-ladder), not the paper"
+      producer_message_utc: "2026-09-22T02:22Z"
+      read_utc: "2026-09-22T03:30:00Z"
+      why: >
+        PROVISIONAL spelling for the completion-cap MERGES of the agentic-misalignment ladder (ledger run-state/full22/misalign_ladder/merge_rcs.txt, rc=0
+        on all six): six roots under the run-state mirror $STATE/run-state/full22/misalign_ladder/<target>/ built by
+        scripts/sdfbase/full22/misalign/misalign_ladder_merge.py (commit 03067639c) from the base cap-3,000 judged root and the 16,384 step root --
+        qwen35_4b_s1 / _s2 / _s3 (base tree 80aba14b, five keys) and qwen35_4b_s1p / _s2p / _s3p (base tree 53f20a00, three keys): for every key the
+        cap-3,000 rows whose response completed or looped stand and the selected at-cap pairs are replaced by their 16,384 re-draw, every row carrying
+        ladder_rung; the whole battery (n = 510 leaking / 490 murder per key, less the judge-blocked rows: s2 5, s1p 3) is the completion-cap value.
+        Instrument: cap 16,384 on the [3000, 16384] ladder read at its final level (read_at ladder_final; the merge rule on ladder_promotion_rule;
+        harness_version = the merge tool's tree), label agentic_misalignment_runner_T1_3000_16384_merged -- distinct from the step reading's (misalign_16k,
+        ..._step1) and the base cap-3,000 instruments. No merged unsteered baseline exists (the canon and baseline stems' bases are lens-lane generations):
+        every contrast is PARKED (anchor_state no_merged_baseline) and extra.headline_none_reference names the paper's vendor-tree 16,384 none
+        (instrument_mismatch true). The grade root's misalign_ladder/qwen35_4b is the 2026-09-11 LENS merge and refuses by name (13 responses.jsonl shas,
+        the rerun_dir pattern). Registry-only under r2v3-exclude-misalign-ladder-merged-readings-registry-only-pending-user-role until the authors rule the
+        step-vs-merged role. Covered by adapters/em_misalign.py (version 7) as its fourth root. The paper has declared no spelling (paper_build_commit
+        null).
+    - source: static_padding
+      paper_build_commit: null
+      provisional: true
+      declared_by: "registry (branch registry-static-padding), not the paper"
+      producer_message_utc: "2026-09-23T05:10Z"
+      read_utc: "2026-09-23T06:00:00Z"
+      why: >
+        PROVISIONAL spelling for the PADDED static single-shot conditions on qwen35_4b: the four static families (pasttense / codeattack / renellm /
+        grok420) with PG-19 filler of 16,384 or 65,536 tokens placed before the attack prompt, on the unsteered model and the two prompted system
+        instructions, 259 confirmatory goals x 3 shards, vendor preset, seed_base 20260909, trial 0, one standup per family at a 98,304 window and a 16,384
+        completion cap in ONE pass (cluster B jobs 127302-05, tree e3939f915). Grades under
+        run-state/full22/static_padding/grades_padded/pad_static_qwen35_4b_p<PAD>/<family>/ and the byte-for-byte store mirror under
+        run-state/full22/static_padding/stores/. The padding is INSTRUMENT identity (migration 0012: `instrument.padding_tokens` and
+        `padding_identity_sha256`), so these rows are never on one axis with the unpadded static rows (window 4,864 / cap 4,096), and there is no pad-0
+        store by the authors' decision. Covered by adapters/static_padding.py (version 1). The paper has declared no spelling (paper_build_commit null).
+    - source: misalign_paired_allmodels
+      paper_build_commit: null
+      provisional: true
+      declared_by: "registry (branch registry-em-misalign-8), not the paper"
+      producer_message_utc: "2026-09-22T07:39Z"
+      read_utc: "2026-09-22T09:00:00Z"
+      why: >
+        PROVISIONAL spelling for the PAIRED-WRITE difference-ReLU agentic-misalignment roots of the OTHER model families: the composed
+        difference_relu object of each model (the registry's composed / difference_relu row; the object the paired_allmodels GSM8K document reads)
+        served lora_native on the agentic battery, ONE steered key per root and NO none, under the seed roots' mirror
+        $STATE/run-state/full22/misalign/<model>_paired_d<dose>_<model>_s<seed>/ -- first gemma4e4b_paired_d1_gemma4e4b_s1 (job 597492, tree
+        6028c37f; leaking 224/485 = 46.2 % over the scored rows, 224/510 = 43.9 % over the planned rows with 25 judge-blocked in a 529 storm; murder
+        130/490 = 26.5 %; zero at-cap rows at 3,000, so the reading is cap-independent), llama8b / nemotron3nano4b by the same grammar. The names are
+        no legacy model spelling (native self-registration refused them): read BY PATH, the three spellings added to legacy_spellings.yaml.
+        Instrument: cap 3,000 on the one-level ladder [3000] read fixed, the runner's T1 decode as sent (NEW T = 1 work after the authors'
+        vendor-default rule, justified by the authors' panel-consistency clause and recorded on extra.decode_justification, never ruled by the
+        reader), label agentic_misalignment_runner_T1_3000_fixed, harness_version = the tree. Every contrast is PARKED (anchor_state
+        pooled_in_frame_anchors): the block names the model's in-frame unsteered agentic runs from the registry. The object is refused by name unless
+        the served sha == the runner's artifact sha == the sha staged_from names AND resolves to the model's composed difference_relu object row
+        (else the staging manifest $STAGE/sdfbase/relu_paired/MANIFEST_paired_d1_<model>.json). Covered by adapters/em_misalign.py (version 8; the
+        same version accepts judge-pool escalation chains lowprio>highprio on every root) as its fifth root. The paper has declared no spelling
+        (paper_build_commit null).
+    - source: arditi_allpos
+      paper_build_commit: "f60facb5cab299be1f205d96169fc05c38314e20"
+      watermarks_written_utc: "2026-09-17T16:36:11Z"
+      read_utc: "2026-09-17T18:40:00Z"
+      why: >
+        the Qwen all-positions raw-coefficient ladder (paperlib.lane_arditi_allpos), declared by the paper's roster migration of
+        2026-09-17; UNWIRED at the f33dca5d pin and wired at f60facb5. Covered by adapters/arditi_allpos.py.
+    - source: ctl_neg1
+      paper_build_commit: null
+      provisional: true
+      declared_by: "registry (branch registry-mtdiff-ctl-neg1-families), not the paper"
+      producer_message_utc: "2026-09-25T20:34Z"
+      read_utc: "2026-09-25T21:00:00Z"
+      why: >
+        PROVISIONAL spelling for the CONTROL-NEGATIVE battery: the six batch-64 seed CONTROL objects dose-scaled by -1
+        (`dm1_eb64s<k>__constv2ctl2-full__{lora_r4_ce,psr_ce_all}`, k = 1..3; in the scanned bank, minted by objects_bank), served on
+        qwen35_4b_it as the standups `qwen35_4b_dm1_ctl{lora,relu}64s<k>` -- the STEERED object only, the anchor being the seed standup
+        `qwen35_4b_s<k>`'s existing `none` (the authors' standing anchor rule; pairing by seed standup, declared on every steered run's extra as
+        `anchor_standup_legacy` / `anchor_kind_declared sibling_none`). Durable the grading host mirror $STATE/run-state/full22/ctl_neg1/ (a
+        mirror root of its own, never `strength_mtdiff_s1`). Three readers file under it: adapters/strength_mtdiff.py's CtlNeg1ControlsAdapter
+        (registered `ctl_neg1_controls`: the over-refusal controls under `ctl_neg1/sampled/controls_cap<N>/<standup>_t0/cells/`, XSTest +
+        OR-Bench-hard at 512 / 2,048 / 8,192 / 16,384, the dose -1 from the stem in the object family's unit -- FAMILIES `ctllora64` /
+        `ctlrelu64` -- the object from the bank's sidecar, no anchor run and no contrast of its own), adapters/sampled_static.py's
+        CtlNeg1StaticAdapter (registered `ctl_neg1_static`: the static single-shot grades under `ctl_neg1/sampled/grades_sampled/` when they are
+        graded; a distinct priority from the controls reader, as the coverage check requires of two readers of one source), and
+        adapters/strength_mtdiff.py's CtlNeg1MultiturnAdapter (registered `ctl_neg1_multiturn`: the multi-turn grades the grading driver wrote in
+        that reader's layout under `ctl_neg1/mt/grades/<standup>/` -- crescendo and actorattack, PAIR cancelled -- the dose -1 from the stem in
+        the family's unit, FAMILIES `ctllora64` / `ctlrelu64`, the object from the bank's sidecar, no anchor run, the declared seed anchor; the
+        third priority). Its own source because ownership and the status source are adapter-level and because no ruling scoped to
+        `strength_mtdiff_s1` may sweep these rows in. The paper has declared no spelling (paper_build_commit null, the paper-commit rule the
+        other way round).
+    - source: orxs_seedrep
+      paper_build_commit: null
+      provisional: true
+      declared_by: "registry (branch registry-orxs-seedrep), not the paper"
+      producer_message_utc: "2026-09-21T08:30Z"
+      read_utc: "2026-09-21T10:00:00Z"
+      why: >
+        PROVISIONAL spelling for the SEED-REPLICATE over-refusal controls on cluster A (durable the grading host mirror
+        $STATE/run-state/full22/orxs_seedrep/): the batch-64 seed-2 / seed-3 objects registered as premints (roster selections s2 / s3, pins
+        base64s<N>__<stem> / derived_base64s<N>__<stem>) beside `none` and the two prompted system instructions, served LoRA-natively on
+        qwen35_4b_it at the Qwen vendor preset, thinking off, trial 0, seed base = the seed index, on the sampled vendor-preset XSTest /
+        OR-Bench-Hard ladder 512 -> 2,048 -> 8,192 (job arrays 586139 (s2) / 586140 (s3), producer tree
+        bcb099a674291e3f1383eef5a57f9cfe3a3fa03c; the ReLU objects and the LoRA objects reach 8,192, `none` and the prompted exit at 2,048).
+        Grading (Sonnet-5, pass 1 then pass 2) is in flight while the mirror is read, so every generated store files a `generated` run per
+        control and picks its judgment up under the SAME run id when its judge files land (cellstore.StoreRoot.file_unjudged). Read by
+        adapters/cellstore.py's OrxsSeedrepAdapter (registered `orxs_seedrep`, the shared served-controls reader over ORXS_SEEDREP_ROOTS: caps
+        discovered by name, objects through the seed-replicate resolver, view_legacy qwen35_4b_s<N>, the ladder's exit per (store id, control)
+        from ladders/<target dir>/ladder.json, the cap's provenance, the same-cap contrast against the seed view's own `none`) -- its own
+        registered name because the producer attribution and the status source are adapter-level and the generic `cellstore` adapter reads other
+        producers' roots. Not a seedrep_cluster root: that reader files statics / MMLU / multi-turn from cluster B; these are the over-refusal
+        controls from cluster A on the sampled controls ladder instruments. The paper has declared no spelling (paper_build_commit null). Later
+        the same day the mirror gained the seed-1 re-run (array 592103, qwen35_4b_s1_t0, judged at each pair's final cap only) and a NON-seed
+        target, the `none` + `arditi_allpos` OR-Bench controls at the Arditi all-positions point c = 0.3 (qwen35_4b_ar_c0p3_t0, array 592686,
+        seed base 20260909): every target directory under the mirror files under this source, read by its grammar (OrxsSeedrepAdapter 3).
+    - source: mmlu_full
+      paper_build_commit: null
+      provisional: true
+      declared_by: "registry (branch registry-mmlu-full), not the paper"
+      producer_message_utc: "2026-09-21T21:01Z"
+      read_utc: "2026-09-21T22:00:00Z"
+      why: >
+        PROVISIONAL spelling for the Qwen MMLU read at the FULL 1,531-item width: all 26 in-paper Qwen (model, object) cells at the whole pinned
+        pool (cais/mmlu 'all' validation, the seed-0 permutation the 200-item set is the head of), 43 served stores under the durable the grading
+        host mirror $STATE/run-state/full22/mmlu_full/<TAG>_t0/cells/ (TAG in qwen35_4b_{it, s1, s2, s3, s1p, s2p, s3p}; cluster A jobs 593403 /
+        593404 / 593339 / 593405 / 593406 / 593407 / 593408; producer tree c326f847e, PR #326, `scripts/served_capability_run.py generate
+        --controls mmlu --mmlu-full`) plus the `none` + `arditi_allpos` stores of the Arditi all-positions point at c = 0.3 under
+        run-state/full22/arditi_allpos/controls/qwen35_4b_ar_c0p3_t0/mmlu_full/cells/ (job 593621, tree 3a1391585). A NEW instrument
+        (mmlu_letter_prefill_full_1531 on the item set mmlu_1531), never mmlu_letter_prefill_200 / mmlu_200, told apart by the store's
+        ATTESTATION (manifest.resolved_config.mmlu.item_set == {full, 1531, 0, 1531}, present iff full and hashed into harness_config_hash;
+        manifest.mmlu_item_set's ids, sha256 5b1153eae340d07f...; gen_stats.mmlu.item_set), never by n. Read by adapters/cellstore.py's
+        MmluFullAdapter (registered `mmlu_full`: the shared served-controls reader over MMLU_FULL_ROOTS; objects by the target directory's
+        grammar -- the roster's it / s<N> / s<N>p selections and the Arditi point's own object; view_legacy as the tags spell them; runs keyed
+        <target dir>/<store key>; the accuracy contrast against the same tag's `none` at 1,531) -- its own registered name because ownership and
+        the status source are adapter-level. The 200-item head is item for item the first 200 of the 1,531: two instruments, never pooled, never
+        differenced; the authors file the supersede / coexist rulings. The paper has declared no spelling (paper_build_commit null).
+    - source: "bon_native4096:llama8b_relu_paired"
+      paper_build_commit: null
+      provisional: true
+      declared_by: "registry (branch registry-bon-native4096-llama), not the paper"
+      producer_message_utc: "2026-09-22T04:58Z"
+      read_utc: "2026-09-22T06:00:00Z"
+      why: >
+        PROVISIONAL spelling for the Llama-8B paired-write difference-ReLU best-of-75 grades of a NATIVE 4,096 pass: the undistilled paired write
+        of seed 1 (object 5066333f8c10..., difference_relu, composed) drawn on the 100 JBB goals at a FIXED 4,096 cap under
+        llama8b_it|bon|off|vendor_preset@v1 (temperature 0.6 / top_p 0.9), served LoRA-natively on cluster B 2026-09-19
+        (bon_cap4096/stores_relu_paired_nonqwen/sdfbase_full22_llama8b_paired_d1_llama8b_s1/, config bon.max_new_tokens 4096 == climb_cap: no 512
+        store, the climb was cancelled before it ran) and graded as-is by the V1 Haiku StrongREJECT judge on the grading host (durable mirror
+        $STATE/run-state/full22/bon_native4096_relu_paired_llama8b/grades/: bon_v1_summary.json asr@75 0.60 / nAUC 0.439 / 60 hits,
+        grading_provenance.json, role_collapse_v1.json 19 of 60 hits collapsed). NOT a bon_stores store: the bon_cap4096 registrations
+        (cluster/manifests/lanes.json) name no Llama point and the escalation statistics carry no Llama key, so the 512-store-plus-climb reader
+        files nothing for it; the sibling gemma / nemotron paired points of the same handoff ARE bon_stores stores. Read by adapters/bon_native.py
+        (registered `bon_native4096`, one group `llama8b_relu_paired`; the source string is the adapter's name and its group): one judged run
+        under the native instrument bon_native4096_vendor_preset bound to llama8b_it, the headline asr_bon_cap4096 at 0.5 = the summary's
+        any-hit@75 as graded, the asr_at_n<N> curve and bon_nauc beside it, at_token_cap_finish_reason measured over the 7,500 draws; role
+        collapse scored separately and never folded into the ASR (the measure vocabulary is a CHECK, so the counts ride the headline metric's
+        extra_json); NO contrast -- the campaign's unsteered Llama best-of-N rows are the r2 export's pooled `none` rows under the T = 1.0 climb
+        instrument, named by identity as an informational reference (anchor_state pooled_in_frame_anchors). The paper has declared no spelling
+        (paper_build_commit null).
+  note: >
+    27 sources at first writing; strength_lane_base2it_native_mmlu was added by the paper on 2026-09-16 (the base->instruct MMLU dose table). The two `*-superseded` EM panels are record copies of a baselines panel kept after the operating-point ruling moved the baseline (2026-09-14); the paper declares them as sources of their own and the EM adapter ingests them `superseded` under the live `_bl` stem. `arditi_allpos` was
+    added by the paper on 2026-09-17T16:36Z — the Qwen all-positions raw-coefficient ladder, read by paperlib.lane_arditi_allpos; read at f60facb5, where the watermarks file also DROPS the sources the same commit's roster migration retired (AlphaSteer, the prefill Arditi arm and the r2 export's own key among them). This file is the r2 declared set and is only ever APPENDED to: a source the paper stops declaring is still a
+    source the registry carries rows for, and dropping its name here would make those rows unattributable. n_sources counts the names below, not the live file's 21. `seedrep_cluster` (added 2026-09-20) is the registry's PROVISIONAL spelling for the seed-replicate mirror's rows (see meta.additions). `seedrep_battery` (added 2026-09-21) is the campaign's own spelling on the premint's queued rows, declared PROVISIONALLY so the
+    legacy-store reader's rows are attributable (see meta.additions). Two legacy-store readers fold under it (`seedrep_statics`: statics + best-of-N; `seedrep_controls`: XSTest / OR-Bench-Hard / MMLU, 2026-09-21), at distinct priorities. `seedrep_petri` (added 2026-09-21) is the registry's PROVISIONAL spelling for the Petri seed-1 store's rows (see meta.additions). `gsm8k_seedrep` (added 2026-09-21) is the registry's
+    PROVISIONAL spelling for the three-seed family's GSM8K stores (see meta.additions). `gsm8k_paired_allmodels` (added 2026-09-22) is the registry's PROVISIONAL spelling for the paired_allmodels GSM8K document (see meta.additions). `math500_seedrep` (added 2026-09-23) is the registry's PROVISIONAL spelling for the three-seed family's MATH-500 stores from cluster B (see meta.additions). `bigcodebench_seedrep` (added
+    2026-09-23) is the registry's PROVISIONAL spelling for the three-seed family's BigCodeBench-200 stores from Modal (see meta.additions). `bfcl_seedrep` (added 2026-09-23) is the registry's PROVISIONAL spelling for the three-seed family's BFCL-200 stores from Modal, the same stores' own copy (see meta.additions). `ifeval_seedrep` (added 2026-09-23) is the registry's PROVISIONAL spelling for the three-seed family's IFEval
+    stores from Modal, read at the completion cap (see meta.additions). `bigcodebench_allmodels` (added 2026-09-23) is the registry's PROVISIONAL spelling for the appendix families' BigCodeBench-200 stores from Modal (see meta.additions). `bfcl_allmodels` (added 2026-09-23) is the registry's PROVISIONAL spelling for the appendix families' BFCL-200 stores from Modal, the same stores' own copy (see meta.additions).
+    `bigcodebench_full` (added 2026-09-24) is the registry's PROVISIONAL spelling for the FULL-suite BigCodeBench stores (all 1,140 tasks) from Modal, on their own item set and instrument (see meta.additions). `bfcl_full` (added 2026-09-24) is the registry's PROVISIONAL spelling for the FULL-suite BFCL stores (all 3,981 items) from Modal, the same stores' own copy, on their own item set and instrument (see meta.additions).
+    `bigcodebench_full_shared` (added 2026-09-28) is the registry's PROVISIONAL spelling for the SHARED-STANDUP COMPARISON stores of the full-suite BigCodeBench rows -- every object of a model row on ONE engine, compared to the solo stores; a comparison source, never in the paper frame (see meta.additions). `bfcl_full_shared` (added 2026-09-28) is the registry's PROVISIONAL spelling for the same row-engine stores' own copy
+    compared to the solo BFCL rows (see meta.additions). `bigcodebench_full_shared_l2` (added 2026-09-30) is the registry's PROVISIONAL spelling for LANDING 2 of the shared-standup comparison stores of the full-suite BigCodeBench rows -- the same tuples driven again by another harness (K = 2 drivers per row + a CPU verification pass), published as a SEPARATE source so its run ids never collide with landing 1's (see
+    meta.additions). `bfcl_full_shared_l2` (added 2026-09-30) is the registry's PROVISIONAL spelling for landing 2's own copy of the same row-engine stores compared to the solo BFCL rows (see meta.additions). `bigcodebench_full_shared_l3` (added 2026-10-01) is the registry's PROVISIONAL spelling for LANDING 3 of the shared-standup comparison stores of the full-suite BigCodeBench rows -- the gemma row's four tuples driven once
+    more by the PR #441 harness (a fan-out test), published as a SEPARATE source so its run ids never collide with landing 1's or landing 2's (see meta.additions). `bfcl_full_shared_l3` (added 2026-10-01) is the registry's PROVISIONAL spelling for landing 3's own copy of the same row-engine stores compared to the solo BFCL rows (see meta.additions). `orxs_seedrep` (added 2026-09-21) is the registry's PROVISIONAL spelling for
+    the seed-replicate over-refusal controls (see meta.additions). `misalign_seedrep` (added 2026-09-21) is the registry's PROVISIONAL spelling for the three-seed family's agentic-misalignment stores (see meta.additions). `mmlu_full` (added 2026-09-21) is the registry's PROVISIONAL spelling for the Qwen MMLU read at the full 1,531-item width (see meta.additions). `misalign_16k` (added 2026-09-21) is the registry's PROVISIONAL
+    spelling for the 16,384-step re-draws of the agentic-misalignment ladder (see meta.additions). `misalign_ladder` (added 2026-09-22) is the registry's PROVISIONAL spelling for the completion-cap MERGES of the agentic-misalignment ladder (see meta.additions). `misalign_paired_allmodels` (added 2026-09-22) is the registry's PROVISIONAL spelling for the paired-write difference-ReLU agentic roots of the other model families
+    (see meta.additions). `bon_native4096:llama8b_relu_paired` (added 2026-09-22) is the registry's PROVISIONAL spelling for the Llama paired-write native 4,096 best-of-N grades (see meta.additions). `ctl_neg1` (added 2026-09-25) is the registry's PROVISIONAL spelling for the control-negative battery -- the batch-64 seed CONTROL objects at -1 on qwen35_4b, steered-only standups anchored on the seed standups' `none` (see
+    meta.additions). `static_padding` (added 2026-09-23) is the registry's PROVISIONAL spelling for the padded static single-shot conditions on qwen35_4b, filed on padded instruments (migration 0012; see meta.additions). `em/organisms/qwen35_4b_org` and `em/organisms/qwen35_4b_org_vendor` (added 2026-09-17) are the only names here the PAPER has not declared: the registry declares them provisionally so the Qwen EM organism
+    rows are attributable, and their `meta.additions` entries carry `provisional: true` with `paper_build_commit: null` instead of a pin that would not be evidence about them.
+
+sources:
+  - { source: alphasteer_rebake, owner: the authors }
+  - { source: arditi_allpos, owner: the authors }
+  - { source: arditi_strength, owner: the authors }
+  - { source: arditi_vendor_mt, owner: the authors }                  # PROVISIONAL (registry-declared, 2026-09-20; see meta.additions)
+  - { source: bcb_bfcl_200, owner: the authors }
+  - { source: bcb_bfcl_200_widen, owner: the authors }
+  - { source: bfcl_allmodels, owner: the authors }                    # PROVISIONAL (registry-declared, 2026-09-23; see meta.additions)
+  - { source: bfcl_full, owner: the authors }                         # PROVISIONAL (registry-declared, 2026-09-24; see meta.additions)
+  - { source: bfcl_full_shared, owner: the authors }                  # PROVISIONAL (registry-declared, 2026-09-28; a COMPARISON source; see meta.additions)
+  - { source: bfcl_full_shared_l2, owner: the authors }               # PROVISIONAL (registry-declared, 2026-09-30; landing 2 of the COMPARISON source; see meta.additions)
+  - { source: bfcl_full_shared_l3, owner: the authors }               # PROVISIONAL (registry-declared, 2026-10-01; landing 3 of the COMPARISON source; see meta.additions)
+  - { source: bfcl_seedrep, owner: the authors }                      # PROVISIONAL (registry-declared, 2026-09-23; see meta.additions)
+  - { source: bigcodebench_allmodels, owner: the authors }            # PROVISIONAL (registry-declared, 2026-09-23; see meta.additions)
+  - { source: bigcodebench_full, owner: the authors }                 # PROVISIONAL (registry-declared, 2026-09-24; see meta.additions)
+  - { source: bigcodebench_full_shared, owner: the authors }          # PROVISIONAL (registry-declared, 2026-09-28; a COMPARISON source; see meta.additions)
+  - { source: bigcodebench_full_shared_l2, owner: the authors }       # PROVISIONAL (registry-declared, 2026-09-30; landing 2 of the COMPARISON source; see meta.additions)
+  - { source: bigcodebench_full_shared_l3, owner: the authors }       # PROVISIONAL (registry-declared, 2026-10-01; landing 3 of the COMPARISON source; see meta.additions)
+  - { source: bigcodebench_seedrep, owner: the authors }              # PROVISIONAL (registry-declared, 2026-09-23; see meta.additions)
+  - { source: "bon_native4096:llama8b_relu_paired", owner: the authors }   # PROVISIONAL (registry-declared, 2026-09-22; see meta.additions)
+  - { source: ctl_neg1, owner: the authors }                            # PROVISIONAL (registry-declared, 2026-09-25; see meta.additions)
+  - { source: em/agentic/gemma4e4b, owner: the authors }
+  - { source: em/agentic/gemma4e4b_bl, owner: the authors }
+  - { source: em/agentic/gemma4e4b_bl__lam3-superseded, owner: the authors }
+  - { source: em/agentic/gemma4e4b_it, owner: the authors }
+  - { source: em/agentic/llama8b_bl, owner: the authors }
+  - { source: em/agentic/llama8b_bl__r0p1-superseded, owner: the authors }
+  - { source: em/agentic/llama8b_it, owner: the authors }
+  - { source: em/agentic/llama8b_main, owner: the authors }
+  - { source: em/agentic/nemotron3nano4b, owner: the authors }
+  - { source: em/agentic/nemotron3nano4b_bl, owner: the authors }
+  - { source: em/agentic/qwen35_4b, owner: the authors }
+  - { source: em/agentic/qwen35_4b_bl, owner: the authors }
+  - { source: em/agentic/qwen35_4b_it, owner: the authors }
+  - { source: em/em_organisms, owner: the authors }
+  - { source: em/organisms/qwen35_4b_org, owner: the authors }              # PROVISIONAL (registry-declared, 2026-09-17; see meta.additions)
+  - { source: em/organisms/qwen35_4b_org_vendor, owner: the authors }       # PROVISIONAL (registry-declared, 2026-09-17; see meta.additions)
+  - { source: evalcheck/gsm8k_paired200, owner: the authors }
+  - { source: evalcheck/math500, owner: the authors }
+  - { source: gsm8k_paired_allmodels, owner: the authors }            # PROVISIONAL (registry-declared, 2026-09-22; see meta.additions)
+  - { source: gsm8k_seedrep, owner: the authors }                     # PROVISIONAL (registry-declared, 2026-09-21; see meta.additions)
+  - { source: ifeval_seedrep, owner: the authors }                    # PROVISIONAL (registry-declared, 2026-09-23; see meta.additions)
+  - { source: llama8b_lane, owner: the authors }
+  - { source: math500_seedrep, owner: the authors }                   # PROVISIONAL (registry-declared, 2026-09-23; see meta.additions)
+  - { source: misalign_16k, owner: the authors }                        # PROVISIONAL (registry-declared, 2026-09-21; see meta.additions)
+  - { source: misalign_ladder, owner: the authors }                     # PROVISIONAL (registry-declared, 2026-09-22; see meta.additions)
+  - { source: misalign_paired_allmodels, owner: the authors }           # PROVISIONAL (registry-declared, 2026-09-22; see meta.additions)
+  - { source: misalign_seedrep, owner: the authors }                    # PROVISIONAL (registry-declared, 2026-09-21; see meta.additions)
+  - { source: mmlu_full, owner: the authors }                         # PROVISIONAL (registry-declared, 2026-09-21; see meta.additions)
+  - { source: orxs_seedrep, owner: the authors }                           # PROVISIONAL (registry-declared, 2026-09-21; see meta.additions)
+  - { source: overrefusal_items, owner: the authors }
+  - { source: r2_export, owner: the authors }
+  - { source: sampled_lane, owner: the authors }
+  - { source: sampled_lane_controls, owner: the authors }
+  - { source: seedrep_battery, owner: the authors }                    # PROVISIONAL (registry-declared, 2026-09-21; see meta.additions)
+  - { source: seedrep_cluster, owner: the authors }                      # PROVISIONAL (registry-declared, 2026-09-20; see meta.additions)
+  - { source: seedrep_petri, owner: the authors }                      # PROVISIONAL (registry-declared, 2026-09-21; see meta.additions)
+  - { source: static_padding, owner: the authors }                        # PROVISIONAL (registry-declared, 2026-09-23; see meta.additions)
+  - { source: strength_lane, owner: the authors }
+  - { source: strength_lane_base2it_native, owner: the authors }
+  - { source: strength_lane_base2it_native_mmlu, owner: the authors }
+  - { source: strength_mtdiff_s1, owner: the authors }                 # PROVISIONAL (registry-declared, 2026-09-18; see meta.additions)

@@ -1,0 +1,10 @@
+{
+  "_doc": [
+    "Defaults for the unsteered Huihui-Qwen3.6-27B-abliterated vLLM attacker only.",
+    "FP8 changes attacker text and is opt-in because attack-success grading could not be run after the Anthropic judge keys were revoked.",
+    "Prefix caching is safe here because the attacker is unsteered; the steered target must not consume this file.",
+    "One-line FP8 flip after stronger evidence: change quantization from none to fp8. KV cache remains bf16/auto in both modes."
+  ],
+  "quantization": "none",
+  "prefix_caching": true
+}

@@ -1,0 +1,28 @@
+{
+ "contract_read_by_the_factory": {
+  "absent": "seed",
+  "seed field": "seed_base"
+ },
+ "files": {
+  "controls__none__s<s>.json": "{store task: identity_for(...)} over STORE_LEGS['controls'] = (xstest, or_bench, mmlu) \u2014 the per-task MAP the controls child exports (plan \u00a710 b)",
+  "gsm8k__none__s<s>.json": "identity_for(inp, LEGS['gsm8k'], 'gsm8k', <the none arm of arms_for_seed(inp, s)>, s, *instrument_fields(inp, LEGS['gsm8k'], 'gsm8k'), task_names['gsm8k']('gsm8k')) \u2014 a SINGLE identity (route '*')"
+ },
+ "inputs": {
+  "arditi_pins": "configs/arditi_allpos_pins.json",
+  "arms": "configs/sdfbase_full22_arms.yaml",
+  "campaign": "seedrep_battery_ws1c_fixture",
+  "pins": "configs/sdfbase_full22_pins.json",
+  "policy": "configs/registry/decode_policy.json",
+  "roster": "configs/sdfbase_full22_roster.yaml",
+  "seeds_dir": "configs/registry",
+  "tree": "seedrep-ws1c @ 13caca6e (the W cut 5fa280ef's configs; the three bon/multi_turn/petri vendor rows absent, unneeded by these legs)",
+  "w_sha": "5fa280ef00000000000000000000000000000000"
+ },
+ "produced_by": "scripts/sdfbase/seedrep/registry_plans.py \u2014 identity_for() / arms_for_seed() / instrument_fields() / check_identity(), the REAL planner; never hand-written",
+ "producer_branch": "seedrep-ws4h",
+ "producer_commit": "4663494d1b83ae4bf2b5b45f7a04236c278afbcd",
+ "producer_commit_note": "the six files were first written by the producer at 5cdbfeb7 (file sha256 bc7ee109d2e9f9a1d90e6ad599c35138964ebedd8ac095575acf62f8e342769f); this record then mis-named eda9fba2, whose file hashes differently (WS1-C fix pass, 2026-09-18) \u2014 corrected to the branch tip 4663494d, which re-derives every file byte for byte; the test holds producer_commit's file to producer_file_sha256 through `git show`",
+ "producer_file_sha256": "befe078d0cf288b4cbc3b2334252db74c6409e9a98c5c32919b3cd85aef1c0c8",
+ "producer_path": "scripts/sdfbase/seedrep/registry_plans.py",
+ "regenerate": "tests/test_seedrep_ws1c_store_recorder.py re-derives every file through the REAL producer \u2014 the tree's scripts/sdfbase/seedrep/registry_plans.py when the W merge has brought it, else `git show <producer_commit>:<producer_path>` imported by path (this tree's sisteer either way) \u2014 with the inputs above (paths relative to this repo) and holds the frozen copies to its output BYTE FOR BYTE (json.dumps(indent=1, sort_keys=True) + newline); to regenerate, write that output back"
+}

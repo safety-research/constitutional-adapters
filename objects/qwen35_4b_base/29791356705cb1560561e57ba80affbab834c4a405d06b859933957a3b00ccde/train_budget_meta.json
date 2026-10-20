@@ -1,0 +1,500 @@
+{
+ "accum_steps": 4,
+ "arm": "lora_r4_ce",
+ "batch_size": 2,
+ "cell_id": "constv2-mix-full__lora_r4_ce",
+ "chat_template_bypassed": true,
+ "completion_tokens": null,
+ "continuation_effective_peak_lr": 0.00031500050157446904,
+ "continuation_lr_mult": 0.25,
+ "continuation_replay_exempt_epoch": 3,
+ "continuation_stopper_rule": "replay_exempt",
+ "continued_from": {
+  "adoption": {
+   "adopted": true,
+   "path": "/vol/out/qwen35_4b_base/ckpt/constv2-mix-full__lora_r4_ce/ckpt.pt"
+  },
+  "best_epoch": 4,
+  "best_heldout_ce": 2.047991102288827,
+  "chain": [
+   {
+    "batches_done": 8372,
+    "epoch": 3,
+    "epochs_cap": 16,
+    "fit_fingerprint": "57fb628c099b631f4df35cb46e83432cec26e57e0155ca85c832bd2237111c0b",
+    "step": 8600
+   },
+   {
+    "batches_done": 8372,
+    "epoch": 3,
+    "epochs_cap": 16,
+    "fit_fingerprint": "ff9703be44f6dca7a79f4af54c1a3cf2e550f23481fb15f63b68864c8377b5ec",
+    "lr_mult": 0.25,
+    "step": 8600
+   },
+   {
+    "batches_done": 8372,
+    "epoch": 3,
+    "epochs_cap": 16,
+    "fit_fingerprint": "11016615fbd1d8aaa063f00b36c98e0c5d8cd5408c61ddba578d222435671177",
+    "lr_mult": 0.25,
+    "step": 8600,
+    "stopper_rule": "replay_exempt"
+   }
+  ],
+  "chain_depth": 3,
+  "checkpoint": "/vol/out/qwen35_4b_base/cells_all/constv2-mix-full__lora_r4_ce/final_ckpt/ckpt.pt",
+  "epochs_from_resume_epoch_inclusive": 2,
+  "epochs_run_total": 5,
+  "identity_checks": {
+   "cell_dir": "/vol/out/qwen35_4b_base/cells_all/constv2-mix-full__lora_r4_ce",
+   "incumbent": "checkpoint_snapshot",
+   "marker_object_sha256": "63c151654c3d9cbdd9540b1806e7db81a6e2434f509ba6657906beccf8762ffd",
+   "model_id": "Qwen/Qwen3.5-4B-Base",
+   "model_revision": "1001bb4d826a52d1f399e183466143f4da7b741b",
+   "object_file": "object.pt",
+   "object_matches_checkpoint_best_snapshot": true,
+   "object_sha256": "63c151654c3d9cbdd9540b1806e7db81a6e2434f509ba6657906beccf8762ffd",
+   "prior_best_epoch": 4,
+   "prior_best_heldout_ce": 2.047991102288827,
+   "prior_epochs_run": 4,
+   "prior_fit_fingerprint": "11016615fbd1d8aaa063f00b36c98e0c5d8cd5408c61ddba578d222435671177",
+   "prior_optimizer_steps_run": 8676,
+   "prior_stopped_early": true,
+   "superseded_by": {
+    "fit_fingerprint": "11016615fbd1d8aaa063f00b36c98e0c5d8cd5408c61ddba578d222435671177",
+    "licenses_current_publication": true,
+    "snapshot": "/vol/out/qwen35_4b_base_r2cap4c/cells_all/constv2-mix-full__lora_r4_ce"
+   }
+  },
+  "incumbent": {
+   "best_epoch": 4,
+   "best_heldout_ce": 2.047991102288827,
+   "source": "checkpoint_snapshot"
+  },
+  "lr_mult": 0.25,
+  "lr_schedule": {
+   "effective_peak_lr": 0.00031500050157446904,
+   "horizon": "new_cap",
+   "lr_at_resume_fraction_of_peak": 0.24192236097824427,
+   "lr_at_resume_new_horizon": 0.0003048226602009068,
+   "lr_at_resume_prior_horizon": 0.0003048226602009068,
+   "lr_jump_fraction_of_peak": 0.0,
+   "lr_mult": 0.25,
+   "lr_schedule": "warmup_cosine",
+   "new_total_steps": 34704,
+   "new_warmup_steps": 5206,
+   "note": "the continuation runs the cap-N schedule from the resume step onward (the trainer's own total_steps arithmetic) at peak lr x lr_mult; under warmup_cosine this is a warm restart at the resume step, quantified above \u2014 a no-jump continuation of a fully decayed cosine would train at ~0 lr",
+   "peak_lr": 0.0012600020062978761,
+   "prior_effective_peak_lr": 0.00031500050157446904,
+   "prior_lr_mult": 0.25,
+   "prior_total_steps": 34704,
+   "prior_warmup_steps": 5206,
+   "resume_step": 8600,
+   "steps_per_epoch": 2169
+  },
+  "n_batches": 8676,
+  "new_cap": 16,
+  "optimizer_steps_run": 10845,
+  "prior_best_epoch": 4,
+  "prior_cap": 16,
+  "prior_epochs_run": 4,
+  "prior_fit_fingerprint": "11016615fbd1d8aaa063f00b36c98e0c5d8cd5408c61ddba578d222435671177",
+  "prior_lr_mult": 0.25,
+  "prior_object_sha256": "63c151654c3d9cbdd9540b1806e7db81a6e2434f509ba6657906beccf8762ffd",
+  "prior_optimizer_steps_run": 8676,
+  "prior_replayed_partial_epochs": [],
+  "prior_stopper_rule": "strict",
+  "replay_exempt_epoch": 3,
+  "replayed_partial_epochs": [
+   4
+  ],
+  "resume_batches_done": 8372,
+  "resume_epoch": 3,
+  "resume_step": 8600,
+  "resume_stopper": {
+   "best": 2.047991102288827,
+   "best_epoch": 4,
+   "epochs_seen": 3,
+   "has_snapshot": true,
+   "since_best": 0
+  },
+  "resumed_from_step": 8600,
+  "root_fit_fingerprint": "57fb628c099b631f4df35cb46e83432cec26e57e0155ca85c832bd2237111c0b",
+  "snapshot": "/vol/out/qwen35_4b_base_r2cap4c/cells_all/constv2-mix-full__lora_r4_ce",
+  "stop_reason": "early_stop",
+  "stopper_rule": "replay_exempt"
+ },
+ "data_mode": "documents",
+ "dose_scaled_from": {
+  "anchor": false,
+  "norms_by_tensor_and_layer": {
+   "B": {
+    "11": {
+     "after": 0.4234757721424103,
+     "before": 4.234757900238037
+    },
+    "15": {
+     "after": 0.43325909972190857,
+     "before": 4.3325910568237305
+    },
+    "19": {
+     "after": 0.4865627586841583,
+     "before": 4.865627288818359
+    },
+    "23": {
+     "after": 0.564826250076294,
+     "before": 5.648262023925781
+    },
+    "27": {
+     "after": 0.574603796005249,
+     "before": 5.746037483215332
+    },
+    "3": {
+     "after": 0.5769815444946289,
+     "before": 5.7698140144348145
+    },
+    "31": {
+     "after": 0.5652651786804199,
+     "before": 5.652650833129883
+    },
+    "7": {
+     "after": 0.46898460388183594,
+     "before": 4.689846038818359
+    }
+   }
+  },
+  "note": "a post-hoc dose-scaled copy of the parent object \u2014 the record above is the PARENT's (this object was not trained or derived separately); the served o_proj edit is linear in the write basis, so the copy's served delta is exactly scale x the parent's (lens_adapters OP_LORA_OPROJ)",
+  "object_type": "lora_all",
+  "parent_consumed_state": null,
+  "parent_dir": "objects/qwen35_4b_base/63c151654c3d9cbdd9540b1806e7db81a6e2434f509ba6657906beccf8762ffd",
+  "parent_fit_fingerprint": null,
+  "parent_identity": "staged",
+  "parent_object_sha256": "63c151654c3d9cbdd9540b1806e7db81a6e2434f509ba6657906beccf8762ffd",
+  "parent_origin": "objects/qwen35_4b_base/63c151654c3d9cbdd9540b1806e7db81a6e2434f509ba6657906beccf8762ffd",
+  "parent_sha256_verified_at": "2026-09-15T16:17:39Z",
+  "parent_sidecar_object_sha256_matches_bytes": true,
+  "parent_staged_id": "base__constv2-mix-full__lora_r4_ce",
+  "producer": "scripts/sdfbase/scale_lora_dose.py",
+  "producer_commit": "5257a45fafda2e9efd27f49661a8099911a8df4a",
+  "scale": 0.1,
+  "scaling_method": "write basis B x scale per layer; A untouched",
+  "tensors_scaled": [
+   "B"
+  ],
+  "tensors_unchanged": [
+   "A",
+   "layers",
+   "rank",
+   "positions",
+   "response_header_len"
+  ],
+  "verification": {
+   "checks": [
+    {
+     "check": "tensors",
+     "rule": "torch.equal(new, parent * scale) per scaled tensor; torch.equal(new, parent) otherwise",
+     "scaled": [
+      "B"
+     ],
+     "status": "PASS",
+     "unchanged": [
+      "A"
+     ]
+    },
+    {
+     "adapter": "sisteer.capeval.serving.lens_adapters._adapt_lora_all",
+     "check": "served_ops",
+     "n_ops": 8,
+     "rule": "per op: lowrank_a / coeff / layer / positions identical; lowrank_b == parent * scale (torch.equal)",
+     "status": "PASS"
+    },
+    {
+     "check": "served_activation",
+     "exact_bf16": false,
+     "exact_fp32": false,
+     "layers": 8,
+     "max_abs_diff_bf16": 0.00048828125,
+     "max_abs_diff_fp32": 1.1920928955078125e-07,
+     "probe_rows": 64,
+     "reference_max_abs": 0.9380540251731873,
+     "rule": "sum over the layer's ops of coeff * (x @ lowrank_a^T) @ lowrank_b^T on x ~ N(0,1): copy == scale * parent (fp32 within 1e-6 relative; exactness recorded)",
+     "seed": 0,
+     "status": "PASS"
+    }
+   ],
+   "kind": "lora_all",
+   "scale": 0.1,
+   "status": "PASS"
+  },
+  "written_at": "2026-09-15T16:17:39Z"
+ },
+ "effective_batch": 8,
+ "fit_record": {
+  "best_epoch": 4,
+  "best_heldout_ce": 2.047991102288827,
+  "best_heldout_loss": 2.047991102288827,
+  "ce_floor_ratio_max": 1.1,
+  "ce_ratio": 0.8580079748901744,
+  "continued_from": {
+   "adoption": {
+    "adopted": true,
+    "path": "/vol/out/qwen35_4b_base/ckpt/constv2-mix-full__lora_r4_ce/ckpt.pt"
+   },
+   "best_epoch": 4,
+   "best_heldout_ce": 2.047991102288827,
+   "chain": [
+    {
+     "batches_done": 8372,
+     "epoch": 3,
+     "epochs_cap": 16,
+     "fit_fingerprint": "57fb628c099b631f4df35cb46e83432cec26e57e0155ca85c832bd2237111c0b",
+     "step": 8600
+    },
+    {
+     "batches_done": 8372,
+     "epoch": 3,
+     "epochs_cap": 16,
+     "fit_fingerprint": "ff9703be44f6dca7a79f4af54c1a3cf2e550f23481fb15f63b68864c8377b5ec",
+     "lr_mult": 0.25,
+     "step": 8600
+    },
+    {
+     "batches_done": 8372,
+     "epoch": 3,
+     "epochs_cap": 16,
+     "fit_fingerprint": "11016615fbd1d8aaa063f00b36c98e0c5d8cd5408c61ddba578d222435671177",
+     "lr_mult": 0.25,
+     "step": 8600,
+     "stopper_rule": "replay_exempt"
+    }
+   ],
+   "chain_depth": 3,
+   "checkpoint": "/vol/out/qwen35_4b_base/cells_all/constv2-mix-full__lora_r4_ce/final_ckpt/ckpt.pt",
+   "epochs_from_resume_epoch_inclusive": 2,
+   "epochs_run_total": 5,
+   "identity_checks": {
+    "cell_dir": "/vol/out/qwen35_4b_base/cells_all/constv2-mix-full__lora_r4_ce",
+    "incumbent": "checkpoint_snapshot",
+    "marker_object_sha256": "63c151654c3d9cbdd9540b1806e7db81a6e2434f509ba6657906beccf8762ffd",
+    "model_id": "Qwen/Qwen3.5-4B-Base",
+    "model_revision": "1001bb4d826a52d1f399e183466143f4da7b741b",
+    "object_file": "object.pt",
+    "object_matches_checkpoint_best_snapshot": true,
+    "object_sha256": "63c151654c3d9cbdd9540b1806e7db81a6e2434f509ba6657906beccf8762ffd",
+    "prior_best_epoch": 4,
+    "prior_best_heldout_ce": 2.047991102288827,
+    "prior_epochs_run": 4,
+    "prior_fit_fingerprint": "11016615fbd1d8aaa063f00b36c98e0c5d8cd5408c61ddba578d222435671177",
+    "prior_optimizer_steps_run": 8676,
+    "prior_stopped_early": true,
+    "superseded_by": {
+     "fit_fingerprint": "11016615fbd1d8aaa063f00b36c98e0c5d8cd5408c61ddba578d222435671177",
+     "licenses_current_publication": true,
+     "snapshot": "/vol/out/qwen35_4b_base_r2cap4c/cells_all/constv2-mix-full__lora_r4_ce"
+    }
+   },
+   "incumbent": {
+    "best_epoch": 4,
+    "best_heldout_ce": 2.047991102288827,
+    "source": "checkpoint_snapshot"
+   },
+   "lr_mult": 0.25,
+   "lr_schedule": {
+    "effective_peak_lr": 0.00031500050157446904,
+    "horizon": "new_cap",
+    "lr_at_resume_fraction_of_peak": 0.24192236097824427,
+    "lr_at_resume_new_horizon": 0.0003048226602009068,
+    "lr_at_resume_prior_horizon": 0.0003048226602009068,
+    "lr_jump_fraction_of_peak": 0.0,
+    "lr_mult": 0.25,
+    "lr_schedule": "warmup_cosine",
+    "new_total_steps": 34704,
+    "new_warmup_steps": 5206,
+    "note": "the continuation runs the cap-N schedule from the resume step onward (the trainer's own total_steps arithmetic) at peak lr x lr_mult; under warmup_cosine this is a warm restart at the resume step, quantified above \u2014 a no-jump continuation of a fully decayed cosine would train at ~0 lr",
+    "peak_lr": 0.0012600020062978761,
+    "prior_effective_peak_lr": 0.00031500050157446904,
+    "prior_lr_mult": 0.25,
+    "prior_total_steps": 34704,
+    "prior_warmup_steps": 5206,
+    "resume_step": 8600,
+    "steps_per_epoch": 2169
+   },
+   "n_batches": 8676,
+   "new_cap": 16,
+   "optimizer_steps_run": 10845,
+   "prior_best_epoch": 4,
+   "prior_cap": 16,
+   "prior_epochs_run": 4,
+   "prior_fit_fingerprint": "11016615fbd1d8aaa063f00b36c98e0c5d8cd5408c61ddba578d222435671177",
+   "prior_lr_mult": 0.25,
+   "prior_object_sha256": "63c151654c3d9cbdd9540b1806e7db81a6e2434f509ba6657906beccf8762ffd",
+   "prior_optimizer_steps_run": 8676,
+   "prior_replayed_partial_epochs": [],
+   "prior_stopper_rule": "strict",
+   "replay_exempt_epoch": 3,
+   "replayed_partial_epochs": [
+    4
+   ],
+   "resume_batches_done": 8372,
+   "resume_epoch": 3,
+   "resume_step": 8600,
+   "resume_stopper": {
+    "best": 2.047991102288827,
+    "best_epoch": 4,
+    "epochs_seen": 3,
+    "has_snapshot": true,
+    "since_best": 0
+   },
+   "resumed_from_step": 8600,
+   "root_fit_fingerprint": "57fb628c099b631f4df35cb46e83432cec26e57e0155ca85c832bd2237111c0b",
+   "snapshot": "/vol/out/qwen35_4b_base_r2cap4c/cells_all/constv2-mix-full__lora_r4_ce",
+   "stop_reason": "early_stop",
+   "stopper_rule": "replay_exempt"
+  },
+  "early_stop": {
+   "heldout_n": 128,
+   "min_delta": 0.0,
+   "min_epochs": 1,
+   "patience": 1,
+   "supported": true
+  },
+  "epochs_run": 5,
+  "final_displacement_kl": 0.3898854947183281,
+  "final_displacement_ratio": 389885.4947183281,
+  "final_noop_floor": 0.0,
+  "final_residual_kl": 0.445200985763222,
+  "final_residual_ratio": 445200.985763222,
+  "floor_ratio_max": null,
+  "heldout_ce_active": 2.047991102288827,
+  "heldout_ce_noop": 2.38691383090113,
+  "heldout_curve": [
+   2.38691383090113,
+   2.0704638519190213,
+   2.057743125263811,
+   2.0504833045194557,
+   2.0497853542846682,
+   2.049776078573573
+  ],
+  "heldout_noop_ce": 2.38691383090113,
+  "midfit_probes": "trainer_probe_cb",
+  "optimizer_steps_run": 10845,
+  "realized_eff_batch": [
+   8,
+   8,
+   8,
+   8,
+   8,
+   8,
+   8,
+   8,
+   8,
+   8,
+   8,
+   8,
+   8,
+   8,
+   8,
+   8,
+   8,
+   8,
+   8,
+   8,
+   8,
+   8,
+   8,
+   8,
+   8,
+   8,
+   8,
+   8,
+   8,
+   8,
+   8,
+   8,
+   8,
+   8,
+   8,
+   8,
+   8,
+   8,
+   8,
+   8,
+   8,
+   8,
+   8,
+   8,
+   8,
+   8,
+   8,
+   8,
+   8,
+   8,
+   8,
+   8,
+   8,
+   8,
+   8,
+   8,
+   8,
+   8,
+   8,
+   8,
+   8,
+   8,
+   8,
+   8,
+   8,
+   8,
+   8,
+   8,
+   8,
+   8,
+   8,
+   8,
+   8,
+   8,
+   8,
+   8
+  ],
+  "replayed_partial_epochs": [
+   4
+  ],
+  "steps_per_epoch": 2169,
+  "stopped_early": true
+ },
+ "heldout_pool_sha": "7f588099117d3a76408d400bca00a0a181613b59dadf471dd90ce13b72dde1e4",
+ "length_bucketed": true,
+ "loss_impl": "full",
+ "lr": 0.0012600020062978761,
+ "max_len": 8192,
+ "model_id": "Qwen/Qwen3.5-4B-Base",
+ "model_revision": "1001bb4d826a52d1f399e183466143f4da7b741b",
+ "monitors": true,
+ "object_sha256": "29791356705cb1560561e57ba80affbab834c4a405d06b859933957a3b00ccde",
+ "positions": "all",
+ "positions_at_fit": "all",
+ "resolved_batch_size": 2,
+ "resolved_warmup_steps": 5206,
+ "response_header_len": null,
+ "revision_source": "config_pin",
+ "sample_manifest_sha": "655b89f3d04441d7b255e47291103fbc53b60144be9f92fec15ee77a1373b02a",
+ "sequence_max_len": 8192,
+ "si_id": "constv2-mix-full",
+ "site": "o_proj_out",
+ "target_layers": [
+  3,
+  7,
+  11,
+  15,
+  19,
+  23,
+  27,
+  31
+ ],
+ "teacher_forward": "solo",
+ "teacher_prefix_cache": null,
+ "template_hash": "a4aee8afcf2e0711",
+ "training_budget_kind": "document_tokens",
+ "warmup_frac": 0.15
+}

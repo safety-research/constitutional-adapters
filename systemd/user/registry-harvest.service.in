@@ -1,0 +1,36 @@
+# registry-harvest.service — results registry. Rendered for the site and installed into ~/.config/systemd/user/ by the registry installer.
+# Secret-free: the registry needs no credential; ssh (when used) goes through the agent socket.
+# Bounded: Type=oneshot with TimeoutStartSec, Restart=no (the timer is the only re-fire), and a start-rate
+# limit (30 starts per 5 min, well above the cadence), so a failure in a tight loop trips the limit (visible in the journal and on the
+# status page) instead of looping. Locks: only the registry's own (<root>/harvester.lock, snapshots/.readers.lock) — never the paper builder's.
+[Unit]
+Description=Results registry: one harvester cycle (inbox merge, cluster pull, parse, fold, blocked queue, facts)
+# 30 s after the previous cycle ends (the timer's OnUnitInactiveSec, 2026-09-30): the single writer to registry.sqlite under
+# <root>/harvester.lock; --pull rsyncs each cluster's spool into the inbox (the push's backstop) BEFORE the lock is taken. No --html: the status page is registry-status.timer's alone
+# — a render on this path ran ~38 min after a ~2-min fold and was what timed the unit out 47 times in two days.
+After=network-online.target
+StartLimitIntervalSec=5min
+StartLimitBurst=30
+
+[Service]
+Type=oneshot
+Nice=10
+IOSchedulingClass=best-effort
+IOSchedulingPriority=6
+Environment=PYTHONPATH=@REPO@/src
+Environment=REGISTRY_ROOT=@REGISTRY_ROOT@
+Environment=PYTHONUNBUFFERED=1
+Environment=SSH_AUTH_SOCK=%h/.ssh/agent.sock
+# --honor-maintenance (the honest drain): while a landing window's <root>/state/maintenance.json exists the cycle
+# exits 0 at once, BEFORE the cluster pull and before the write lock, so a cycle this timer fires during the drain neither pulls nor folds;
+# the window removes the flag from its EXIT trap. The disk-pressure flag (paused.json) is the cycle's own and is not this one.
+ExecStart=@PYTHON@ -m sisteer.registry.cli ingest --pull --honor-maintenance
+# Restart=no: the timer re-fires by itself; a failed or timed-out cycle must not restart itself and re-take
+# the write lock (a 10-min timeout + on-failure restart looped three cycles in a row and starved the adapters pass).
+Restart=no
+# 45min: a cycle folding thousands of pulled files plus the held revisions ran past 10 min; the fold now re-ranks
+# once per cycle, but the bound stays generous so a slow cycle completes rather than being cut mid-fold.
+TimeoutStartSec=45min
+SyslogIdentifier=registry-harvest
+StandardOutput=journal
+StandardError=journal

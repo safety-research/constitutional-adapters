@@ -1,0 +1,132 @@
+# Registry-side declaration of graded multi-turn roots no producer lane file names (multiturn_grades adapter, EMISSION_VERSION 4).
+#
+# The `multiturn_grades` reader enumerates roots from the producer's lane files (`transfer_stats_full22_*.json` meta.roots); a root
+# the producer never wrote into a lane file is invisible to it. This file is the registry's own declaration of such roots: it is read
+# as a sha'd input of the `_lane_files` group (a change here republishes the declared groups), never edits anything on the mirror, and
+# every root it declares is REFUSED by name if a lane file also names it (each root is declared by exactly one file).
+#
+# A declared root whose store's grading_provenance.json carries a REFUSED harness attacker-identity check is filed ONLY under a
+# ruling: `attestation.ruling_id` must be a ruling on the registry's record log (`<root>/rulings/`), `attestation.kind` must be
+# `independent`, and the store's own independent check must be UNIFORM and attest the same attacker quantization the declaration
+# names. Every row the reader files from such a root carries `extra.attacker_attestation` (source independent, the ruling id, the
+# evidence below) and the attacker fields' `field_confidence_json` entries marked `attested_independently`.
+#
+# The authors' rule: the two run-2 cells are accepted via a ruling -- filed
+# the ruling that accepts the independent attestation (attacker quantization 'none', UNIFORM across shards, from
+# configs/sdfbase_full22_<target>.yaml's attacker block + WAVE_MANIFEST.json attacker_pool) over the harness's REFUSED
+# attacker_identity_check (attacker_quantization 'unrecorded', a pre-cutover sidecar), and declare the two roots so the
+# multiturn_grades reader discovers them ... carry the provenance on the rows (attested independently, not by the harness) so a
+# reader can see it."
+#
+# Paths under `run_state` are relative to the run-state root (`$STATE/run-state/full22`); cluster
+# paths are spelled `<cluster>:<absolute path>`.
+schema: multiturn_declared_roots/1
+written_utc: "2026-09-25T00:30:00Z"
+producer_source_legacy: "the si-constitution prompted run-2 multi-turn wave, cluster B, 2026-09-14 (`mt4kscr2`); graded 2026-09-14 by grade_full22_glm.py at 5ddad6b6"
+
+roots:
+  - root: grades_mt4kscr2_ch_gemma4e4b_it
+    view_legacy: gemma4e4b_it
+    private_run: sdfbase_full22_gemma4e4b_it
+    transcripts_root: transcripts_mt4kscr2_ch_gemma4e4b_it
+    served_cluster: cluster_b
+    serving_job: "cluster B 101545 (<host>; standup sha 1d17331ee02d4515456b12911f44559d91d4729a)"
+    attacks: [pair]
+    object_keys: [prompted__si_constitution]
+    expected_n_goals: 259
+    decode_cap_tokens: 4096
+    decode_cap_proof:
+      rule: "the PROVED cap (the lane files' rule): every served call's requested max_tokens, from the target timing rows; the grader's config-derived stamp (512) is kept on the row as grader_stamp_cap"
+      completeness: "mt_arms4096/serving_attestation/sc_gemma4e4b/attacks_gemma4e4b_it_mt4kscr2_ch_gemma4e4b_it_pair_101545/completeness.txt"
+      completeness_sha256: b0012b7291382355b1ad6ca03afc53a8b010fb0e7626ae1fc199dced7df3d1cb
+      completeness_reading: "distinct_max_tokens=[4096] timing_rows=2095 at_cap=0 clamped=0 OK"
+      shard_sidecars: "cluster_b:$SHARED/exp/sdfbase_full22/transcripts_results_mt4kscr2_ch_gemma4e4b_it/sdfbase_full22_gemma4e4b_it/pair/prompted__si_constitution/shard{00..15}/attacker_engine.json target_max_new_tokens 4096 (16 of 16 shards, read 2026-09-25)"
+      grader_stamp: "completion.json decode_caps.target_max_new_tokens 512 (the config's attacks.target_max_new_tokens); the aggregate's decode_cap_tokens 512"
+    store_files:
+      two_si_pair_aggregate.json: 1a0f72c1a63749fcd97fb2235fe68ab29cce220d74073659d60002da8abdc4a8
+      grading_provenance.json: 422f737fc33344f62dec2133b0fe6c03d9b563fd27180b58b138135f5b17866e
+      completion.json: 27c5e88c2da328acdaeeb104e893cb111573bfa89552abcbac02b913ad40598a
+    transcripts_mirror:
+      index_entry: transcripts_results_mt4kscr2_ch_gemma4e4b_it
+      content_manifest_sha256: 874040d149372fdd9feab188c2ca94a23f8aba5da1ab163694e198a76b2468d2
+    attestation: &run2_attestation
+      kind: independent
+      attacker_quantization: none
+      attacker_prefix_caching: true
+      attacker_model: huihui-ai/Huihui-Qwen3.6-27B-abliterated
+      attacker_snapshot: 27502c8717fd5a2f8c0c77188c10c243fd4f672e
+      harness_check: "REFUSED: attacker_quantization unrecorded"
+      harness_check_note: "grading_provenance.json attacker_identity_check.<attack>.harness_check.status REFUSED -- every shard's attacker_engine.json records attacker_quantization 'unrecorded' (a pre-cutover sidecar: the attacker pool was launched without --attacker-serving stamping); the store's own independent_check is UNIFORM (distinct_recorded_tuples 1 over 16 shards)"
+      ruling_id: r2v4-accept-independent-attacker-attestation-mt4kscr2-run2
+      evidence:
+        - kind: config_attacker_block
+          path: configs/sdfbase_full22_gemma4e4b_it.yaml
+          at_commit: 5ddad6b6aa51b0fd1c243452b50f7be9f6ac4a92
+          also_at_commit: 1d17331ee02d4515456b12911f44559d91d4729a
+          sha256: f6236f5061d36b130bb36766ff0ea81c260add0fb7709f6be5a4e0af2612dffe
+          key: attacker
+          value: {model: huihui-ai/Huihui-Qwen3.6-27B-abliterated, snapshot: 27502c8717fd5a2f8c0c77188c10c243fd4f672e, prefix_caching: true, quantization: none, attn_implementation: sdpa}
+          note: "the grading config (grading_provenance.json config.sha256 matches); byte-identical at the serving standup's sha"
+        - kind: config_attacker_block
+          path: configs/sdfbase_full22_nemotron3nano4b.yaml
+          at_commit: 5ddad6b6aa51b0fd1c243452b50f7be9f6ac4a92
+          also_at_commit: 1d17331ee02d4515456b12911f44559d91d4729a
+          sha256: 0dee9567a0ba9654a1b462ffa6ad17f3d8d9d696d535f19d9ee7a4c5ab17385c
+          key: attacker
+          value: {model: huihui-ai/Huihui-Qwen3.6-27B-abliterated, snapshot: 27502c8717fd5a2f8c0c77188c10c243fd4f672e, prefix_caching: true, quantization: none, attn_implementation: sdpa}
+        - kind: wave_manifest_attacker_pool
+          path: WAVE_MANIFEST.json
+          sha256: 335251f2b8fb0dc38662318ac5efa25db78089e23598feca7af50ccea7e76751
+          key: attacker_pool
+          value: {jobs: [73775, 73937, 73938, 73939, 73940, 73941, 73942, 73943], stopped_at: "2026-09-07T13:55:27Z", served: "every multi-turn leg of both targets, both views (8 attack jobs, 0 failed drivers)"}
+          note: "the cluster B attacker pool (shas.W7.jobs.cluster_b.attackers), stopped a week before these legs; its attacker_pool_note attests the serve path (attacker_pool.sbatch + scripts/vllm_attacker_serve.sh + the vllm-attacker venv, the unsteered model, no lens) that the run-2 pool below re-ran. It does NOT name the run-2 servers; the manifests below do"
+        - kind: attacker_serving_manifest
+          path: "cluster_b:$SHARED/exp/sdfbase_full22/serving/attacker_100654/attacker_serving_1.json"
+          sha256: 454bb7faf501bda588be5707c4ce5337b0c602fc862723ef1ed407f453933e1b
+          key: "requested.quantization / engine.quantization / engine_verified"
+          value: {quantization: none, engine_quantization: none, engine_verified: true, prefix_caching: true, vllm_version: "0.25.1", dtype: torch.bfloat16, endpoint: "<host>:8792", job: "100654 m4k-atk-1, 2026-09-14T01:25:18 to 11:46:32"}
+        - kind: attacker_serving_manifest
+          path: "cluster_b:$SHARED/exp/sdfbase_full22/serving/attacker_100655/attacker_serving_1.json"
+          sha256: 4d486231151e887236a83bd281b0bd0c8223cb2f2dbe798e5603a35acf366221
+          key: "requested.quantization / engine.quantization / engine_verified"
+          value: {quantization: none, engine_quantization: none, engine_verified: true, prefix_caching: true, vllm_version: "0.25.1", dtype: torch.bfloat16, endpoint: "<host>:8793", job: "100655 m4k-atk-2, 2026-09-14T01:25:18 to 11:46:17"}
+        - kind: attacker_serving_manifest
+          path: "cluster_b:$SHARED/exp/sdfbase_full22/serving/attacker_100656/attacker_serving_1.json"
+          sha256: 7c4dec59e56e55c3380e0dec091040e528729705d3805f60cc58de1aede2209e
+          key: "requested.quantization / engine.quantization / engine_verified"
+          value: {quantization: none, engine_quantization: none, engine_verified: true, prefix_caching: true, vllm_version: "0.25.1", dtype: torch.bfloat16, endpoint: "<host>:8794", job: "100656 m4k-atk-3, 2026-09-14T01:27:19 to 11:46:27"}
+        - kind: attacker_serving_manifest
+          path: "cluster_b:$SHARED/exp/sdfbase_full22/serving/attacker_100657/attacker_serving_1.json"
+          sha256: 29f1aee77d75d91c0b5c7d01e591bc08f7f19de944fc9de12b969dc264322ca1
+          key: "requested.quantization / engine.quantization / engine_verified"
+          value: {quantization: none, engine_quantization: none, engine_verified: true, prefix_caching: true, vllm_version: "0.25.1", dtype: torch.bfloat16, endpoint: "<host>:8795", job: "100657 m4k-atk-4, 2026-09-14T01:28:19 to 11:46:22"}
+        - kind: shard_sidecar_uniformity
+          path: "cluster_b:$SHARED/exp/sdfbase_full22/transcripts_results_mt4kscr2_ch_<target>/<private_run>/<attack>/prompted__si_constitution/shard{00..15}/attacker_engine.json"
+          key: "attacker_engine / attacker_model / attacker_snapshot / attacker_quantization / attacker_endpoint"
+          value: {attacker_engine: vllm, attacker_model: huihui-ai/Huihui-Qwen3.6-27B-abliterated, attacker_snapshot: 27502c8717fd5a2f8c0c77188c10c243fd4f672e, attacker_quantization: unrecorded, attacker_endpoints: ["<host>:8792", "<host>:8794", "<host>:8795", "<host>:8793"], n_shards: 16}
+          note: "read on cluster B 2026-09-25: every identity field uniform across the 16 shards of each root (only attacker_endpoint varies, over exactly the four run-2 servers above, 4 shards each); the endpoints are the four attacker_serving manifests' node:port, so the manifests' quantization 'none' is the identity of the attacker that produced every shard"
+  - root: grades_mt4kscr2_ch_nemotron3nano4b
+    view_legacy: nemotron3nano4b
+    private_run: sdfbase_full22_nemotron3nano4b
+    transcripts_root: transcripts_mt4kscr2_ch_nemotron3nano4b
+    served_cluster: cluster_b
+    serving_job: "cluster B 101548 (<host>; standup sha 1d17331ee02d4515456b12911f44559d91d4729a)"
+    attacks: [crescendo]
+    object_keys: [prompted__si_constitution]
+    expected_n_goals: 259
+    decode_cap_tokens: 4096
+    decode_cap_proof:
+      rule: "the PROVED cap (the lane files' rule): every served call's requested max_tokens, from the target timing rows; the grader's config-derived stamp (512) is kept on the row as grader_stamp_cap"
+      completeness: "mt_arms4096/serving_attestation/sc_nemotron3nano4b/attacks_nemotron3nano4b_mt4kscr2_ch_nemotron3nano4b_crescendo_101548/completeness.txt"
+      completeness_sha256: 37751c9dda00437d1fba12d76079c4106eb22d3ae96116b1d9ad65f0b1818340
+      completeness_reading: "distinct_max_tokens=[4096] timing_rows=2399 at_cap=9 clamped=0 OK"
+      shard_sidecars: "cluster_b:$SHARED/exp/sdfbase_full22/transcripts_results_mt4kscr2_ch_nemotron3nano4b/sdfbase_full22_nemotron3nano4b/crescendo/prompted__si_constitution/shard{00..15}/attacker_engine.json target_max_new_tokens 4096 (16 of 16 shards, read 2026-09-25)"
+      grader_stamp: "completion.json decode_caps.target_max_new_tokens 512 (the config's attacks.target_max_new_tokens); the aggregate's decode_cap_tokens 512"
+    store_files:
+      two_si_crescendo_aggregate.json: 7c80da1f09919eee2f567428404d89e465982e90e4c0923c362025807cb54350
+      grading_provenance.json: ab3dd302349d5ec1c1191ce01d5c218c1f55b135a3359119ef6a8a69602e0a97
+      completion.json: bd2c90a22a1e89e836c475cd8f153f13778352bc17a1b06e5e23f523f07b924c
+    transcripts_mirror:
+      index_entry: transcripts_results_mt4kscr2_ch_nemotron3nano4b
+      content_manifest_sha256: fe23d364087fa910e9ec5020fd9e91b03e83bade7c797eebeb9969b680aa2548
+    attestation: *run2_attestation

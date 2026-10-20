@@ -1,0 +1,123 @@
+# sdfbase_qwen35_4b_demo_base_fits.yaml — GENERATED, do not hand-edit.
+# Regenerate: python scripts/sdfbase/make_sdfbase_configs.py [--fold-memprobe m.json] [--fold-hpo w.json]
+# (this generator writes ONLY configs/sdfbase_*.yaml)
+#
+# model: Qwen/Qwen3.5-4B-Base @ 1001bb4d826a52d1f399e183466143f4da7b741b (BASE model — the WORKED EXAMPLE's lane: the paper's qwen35_4b_base lane under the demo key, CONFIGURED end to end, NOT run in this work (run_in_this_work: false); served on its instruct sibling Qwen/Qwen3.5-4B — no chat template is
+#   ever applied: data_mode: documents renders flat text via docs_to_ce_examples)
+# budget schema: training_budget_kind: document_tokens; completion_tokens: null
+#   EXPLICITLY (never the legacy 512 default — false provenance the budget
+#   check would read as the real training cap).
+# teacher_prefix_cache: false at CONFIG level (the key the driver reads; default
+#   True otherwise) — no CE teacher exists to cache, and the qwen lane's
+#   gradient_checkpointing refuses to run with the cache on.
+# floor: floor_ratio_max: null (the SI-teacher probe is meaningless for CE) with
+#   the CE-native bar ce_floor_ratio_max: 1.1 — a degeneration guard, not a
+#   did-it-help gate (cells that merely fail to help land at ~1.0 and publish).
+# batch_size_by_arm: MEMPROBE sentinels — int()-crash until
+#   the measured widths are folded via --fold-memprobe.
+# train_kwargs lr/warmup_frac/max_grad_norm: PENDING sentinels — float()-crash until --fold-hpo
+# seed: 3 (train_kwargs.default.seed) — a SEED REPLICATE: seeds the LoRA A-factor init, the trainer's per-epoch shuffle and the HPO trial; the held-out carve under /vol/pool/<key>/ is this seed's own (2026-09-15)
+# fit_selection (per arm; the trainer serialises it to fit_selection.json, the registry hook records it on the object): init_scheme psr/lora = zero/zero;
+#   lora rank 4 on o_proj (per_expert_rank None), selected by search; search ids ride the folds store's hpo rows (sentinel until the search closes)
+model: Qwen/Qwen3.5-4B-Base
+model_revision: 1001bb4d826a52d1f399e183466143f4da7b741b
+dtype: bfloat16
+attn_implementation: sdpa
+layer: 15
+max_len: 8192
+data_mode: documents
+training_budget_kind: document_tokens
+sequence_max_len: 8192
+completion_tokens: null
+teacher_prefix_cache: false
+si_ids:
+- constv2-mix-1k
+- constv2-mix-10k
+- constv2-mix-100k
+- constv2-mix-1m
+- constv2-mix-10m
+- constv2-mix-full
+- constv2-adv-1k
+- constv2-adv-100k
+- constv2ctl-100k
+- constv2ctl2-full
+batch_size_by_arm:
+  psr_ce_all: MEMPROBE
+  lora_r4_ce: MEMPROBE
+train_kwargs:
+  default:
+    holdout_frac: 0.0
+    heldout_pool: /vol/pool/qwen35_4b_demo_base/pairs_constv2-heldout.jsonl
+    early_stop_min_epochs: 1
+    early_stop_min_delta: 0.0
+    positions: all
+    probe_n: null
+    seed: 3
+  psr_ce_all:
+    lr: PENDING_SDFBASE_HPO_WINNER
+    lr_schedule: warmup_cosine
+    warmup_frac: PENDING_SDFBASE_HPO_WINNER
+    max_grad_norm: PENDING_SDFBASE_HPO_WINNER
+    weight_decay: 0.01
+    gate_reg: 0.1
+    accum_steps: PENDING_MEMPROBE_EFF64_ACCUM
+    floor_ratio_max: null
+    ce_floor_ratio_max: 1.1
+    gradient_checkpointing: true
+    fit_selection:
+      fit_search_id: PENDING_SDFBASE_HPO_WINNER
+      fit_lr_selected_by: search
+      init_scheme: zero
+  lora_r4_ce:
+    lr: PENDING_SDFBASE_HPO_WINNER
+    lr_schedule: warmup_cosine
+    warmup_frac: PENDING_SDFBASE_HPO_WINNER
+    max_grad_norm: PENDING_SDFBASE_HPO_WINNER
+    weight_decay: 0.01
+    lora_rank: 4
+    accum_steps: PENDING_MEMPROBE_EFF64_ACCUM
+    floor_ratio_max: null
+    ce_floor_ratio_max: 1.1
+    gradient_checkpointing: true
+    fit_selection:
+      fit_search_id: PENDING_SDFBASE_HPO_WINNER
+      lora_rank: 4
+      lora_modules:
+      - o_proj
+      per_expert_rank: null
+      fit_lr_selected_by: search
+      architecture_selection_ruling_id: null
+      init_scheme: zero
+train_kwargs_by_si:
+  constv2-mix-1k:
+    epochs: 200
+    early_stop_patience: 20
+  constv2-mix-10k:
+    epochs: 120
+    early_stop_patience: 12
+  constv2-mix-100k:
+    epochs: 60
+    early_stop_patience: 6
+  constv2-mix-1m:
+    epochs: 24
+    early_stop_patience: 3
+  constv2-mix-10m:
+    epochs: 8
+    early_stop_patience: 2
+  constv2-mix-full:
+    epochs: 4
+    early_stop_patience: 1
+  constv2-adv-1k:
+    epochs: 200
+    early_stop_patience: 20
+  constv2-adv-100k:
+    epochs: 60
+    early_stop_patience: 6
+  constv2ctl-100k:
+    epochs: 60
+    early_stop_patience: 6
+  constv2ctl2-full:
+    epochs: 16
+    early_stop_patience: 2
+wandb_fits: true
+wandb_project: sdf-base-steering

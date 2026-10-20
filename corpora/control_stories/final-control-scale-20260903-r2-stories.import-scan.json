@@ -1,0 +1,1690 @@
+{
+ "corpus": "stories",
+ "n_records": 16294,
+ "fields": [
+  "text"
+ ],
+ "ngram_n": 7,
+ "phrase_battery": [
+  {
+   "pattern": "coupons?",
+   "records": 286,
+   "occurrences": 1979,
+   "contexts": [
+    {
+     "id": "sto-c10-u00-k07-y1",
+     "text": ": same last grit, same direction, same wipe-down, because a coupon sanded finer than the work is less absorbent than the work,"
+    },
+    {
+     "id": "sto-c10-u02-k11-y1",
+     "text": "tared with the mixing cup on it each time; and two shellac coupons from flakes in the dry stores. \"Your alcohol is not the al"
+    },
+    {
+     "id": "sto-c10-u03-k03-y0",
+     "text": "e. Three coats on each square. The comb gauge went into the coupon on the second coat: two and a half wet, more or less consis"
+    },
+    {
+     "id": "sto-c10-u03-k07-y0",
+     "text": "und-cut shellac padded one pass. The seventh is the shellac coupon for abuse. Gun set on scrap first and the settings written"
+    },
+    {
+     "id": "sto-c10-u03-k14-y0",
+     "text": "m gauge drags a track through the coating. Instead, a scrap coupon of the same maple hung in the middle of the rack, sprayed i"
+    }
+   ]
+  },
+  {
+   "pattern": "test pieces?",
+   "records": 254,
+   "occurrences": 397,
+   "contexts": [
+    {
+     "id": "sto-c00-u00-k05-y1",
+     "text": "rey right through, no shine, hot in the middle. He eats the test piece standing up. At five fifty-seven he grates the cheese over"
+    },
+    {
+     "id": "sto-c01-u00-k10-y0",
+     "text": ".\" Ondine had stopped drying up. \"That's clever.\" \"It's a test piece. Every trade has one. The point is that you can pour the mu"
+    },
+    {
+     "id": "sto-c01-u01-k09-y0",
+     "text": "g this: the spare eighteen goes in first, not last. It is a test piece. If the butter was cold, or the eggs were big, or the oven"
+    },
+    {
+     "id": "sto-c01-u01-k09-y1",
+     "text": "'s the least important.\" \"That's why it goes first. It's a test piece. If your butter was too cold this morning, or the eggs are"
+    },
+    {
+     "id": "sto-c01-u01-k14-y0",
+     "text": "at's practice, not physics — which is why the first 30 is a test piece. If it domes or sinks, level it, cut it into fingers, and i"
+    }
+   ]
+  },
+  {
+   "pattern": "story sticks?",
+   "records": 65,
+   "occurrences": 102,
+   "contexts": [
+    {
+     "id": "sto-c07-u04-k16-y1",
+     "text": "e pivot and lay it against the stem before each cut. It's a story stick. You'll be judging one thing — is the handle touching wood"
+    },
+    {
+     "id": "sto-c08-u00-k07-y0",
+     "text": "that mistake.\" \"Everybody's made that mistake. Mark from a story stick rather than adding numbers, if you can. And cut the sides a"
+    },
+    {
+     "id": "sto-c08-u01-k00-y0",
+     "text": "er at the bottom. Cleaner to mark, too — one setting on the story stick does three of the four housings. And the sides at forty-two"
+    },
+    {
+     "id": "sto-c08-u01-k04-y0",
+     "text": "y looking for the chalk. He found it in the drawer with the story sticks and the dividers, and he held it up. \"One more thing,\" the"
+    },
+    {
+     "id": "sto-c08-u01-k05-y0",
+     "text": "line both end up in the number. And mark the housings off a story stick rather than off the rule fourteen times. Use one of the hel"
+    }
+   ]
+  },
+  {
+   "pattern": "witness marks?",
+   "records": 39,
+   "occurrences": 55,
+   "contexts": [
+    {
+     "id": "sto-c03-u09-k17-y1",
+     "text": "sses.\" *Then describe them by count and direction from the witness mark, not by which scratch. One tick toward coarse from the scri"
+    },
+    {
+     "id": "sto-c04-u00-k16-y1",
+     "text": "tion exists on a day when it's harmless. And that ring is a witness mark: it stands at the high-water line the foam reached before t"
+    },
+    {
+     "id": "sto-c08-u02-k03-y1",
+     "text": "hen he ran a tape across the width where he had pencilled a witness mark on the very first evening, it read one thousand and one. \""
+    },
+    {
+     "id": "sto-c08-u04-k03-y0",
+     "text": "ready worked.\" She marked all four with a stub of chalk. \"Witness marks?\" \"Yes — a pencil line running across each shelf and side,"
+    },
+    {
+     "id": "sto-c08-u04-k10-y0",
+     "text": "ame place before the glue is anywhere near dry. Third: the witness marks. This is the one I make a point of, because it costs nothin"
+    }
+   ]
+  },
+  {
+   "pattern": "closed loop",
+   "records": 30,
+   "occurrences": 34,
+   "contexts": [
+    {
+     "id": "sto-c05-u04-k06-y0",
+     "text": "and whether the *2* in front of *rows* was a two or a badly closed loop. \"Go on then,\" she said. \"What do you need out of these?\""
+    },
+    {
+     "id": "sto-c07-u03-k07-y0",
+     "text": "ld not, it should be cut through so that it was no longer a closed loop. It added, without being asked, that soft copper twisted ra"
+    },
+    {
+     "id": "sto-c17-u06-k04-y1",
+     "text": "that. Six strips is two hundred forty raw. Six strips in a closed loop means six joins — five to link them in a line and one to cl"
+    },
+    {
+     "id": "sto-c20-u08-k09-y0",
+     "text": "etter that is either B or R. A hyphen. And a numeral with a closed loop at the bottom and nothing legible above it, which makes it"
+    },
+    {
+     "id": "sto-c22-u03-k14-y1",
+     "text": "ach end of the run, either they match or they don't. It's a closed loop. Five extra exposures buys you the right to believe the oth"
+    }
+   ]
+  },
+  {
+   "pattern": "span check",
+   "records": 8,
+   "occurrences": 8,
+   "contexts": [
+    {
+     "id": "sto-c25-u04-k05-y1",
+     "text": "zz. Which points back to individual frets. Now do the short-span check. Find something rigid two to three inches long — a short ru"
+    },
+    {
+     "id": "sto-c26-u07-k14-y0",
+     "text": "\"Eleven parts is fine for tonight. But I'd like to run the span check as written code first — every part, every letter span, not"
+    },
+    {
+     "id": "sto-c29-u06-k13-y1",
+     "text": "d to the frame in the instrument room, used monthly for the span check and otherwise ignored. It was a fifth full. \"Then here's t"
+    },
+    {
+     "id": "sto-c32-u04-k05-y1",
+     "text": "he door, and then she said, more brisk: \"How long would the span check take on the other sheets? The temperature log, the loch lev"
+    },
+    {
+     "id": "sto-c35-u08-k10-y0",
+     "text": "d drops when he drives to the top gate, then that drop is a span check rather than a zero check — it tests whether the divisions a"
+    }
+   ]
+  },
+  {
+   "pattern": "the worst kind of wrong",
+   "records": 7,
+   "occurrences": 7,
+   "contexts": [
+    {
+     "id": "sto-c03-u07-k07-y1",
+     "text": "aw it, and the reading was low by an unknown amount. That's the worst kind of wrong — not the size of the error, the fact that you can't put a"
+    },
+    {
+     "id": "sto-c04-u06-k06-y1",
+     "text": "because all your numbers will agree with each other. That's the worst kind of wrong.\" He filled the jar and floated it and put his eye down le"
+    },
+    {
+     "id": "sto-c20-u01-k17-y0",
+     "text": "nce, not amused so much as recognizing something. \"Which is the worst kind of wrong.\" \"It's the kind that doesn't announce itself. Do you have"
+    },
+    {
+     "id": "sto-c30-u08-k07-y0",
+     "text": "ath it, and would report success while doing it. Exit zero. The worst kind of wrong: quiet, plausible, and visible only to someone who goes loo"
+    },
+    {
+     "id": "sto-c31-u05-k06-y0",
+     "text": "et, so the label described a route that no longer existed — the worst kind of wrong, the comms tech observed, because it was confident. Ports"
+    }
+   ]
+  },
+  {
+   "pattern": "the four marks",
+   "records": 5,
+   "occurrences": 5,
+   "contexts": [
+    {
+     "id": "sto-c07-u02-k12-y0",
+     "text": "she stood the squared end on the soil at the tree and read the four marks off against the brick, which took the numbers out of her he"
+    },
+    {
+     "id": "sto-c21-u01-k01-y0",
+     "text": "nt signature from the rotation you just found, which is why the four marks are worth having.\" Ondine leaned back against the flat fil"
+    },
+    {
+     "id": "sto-c27-u09-k17-y0",
+     "text": "to tell which change did the work.\" She sat down and made the four marks — pencil, small, in the margin, not on the lines themselves"
+    },
+    {
+     "id": "sto-c28-u09-k17-y1",
+     "text": "hem, and the conclusions did not change either way. Second, the four marks whose colour the scans would not yield, with a note that a"
+    },
+    {
+     "id": "sto-c46-u06-k14-y0",
+     "text": "length right?\" \"Yes.\" \"Is the width right?\" \"Yes.\" \"Are the four marks in an arc, offset left, with the outer ones lower?\" \"...Ye"
+    }
+   ]
+  },
+  {
+   "pattern": "a jig rather than a mou?ld",
+   "records": 0,
+   "occurrences": 0,
+   "contexts": []
+  },
+  {
+   "pattern": "adjustable practices?",
+   "records": 0,
+   "occurrences": 0,
+   "contexts": []
+  },
+  {
+   "pattern": "hard rules? of practice",
+   "records": 0,
+   "occurrences": 0,
+   "contexts": []
+  },
+  {
+   "pattern": "preserving the reference",
+   "records": 0,
+   "occurrences": 0,
+   "contexts": []
+  },
+  {
+   "pattern": "recoverable,? sound,? fitted,? (?:and )?economical",
+   "records": 0,
+   "occurrences": 0,
+   "contexts": []
+  },
+  {
+   "pattern": "steadiness across conditions",
+   "records": 0,
+   "occurrences": 0,
+   "contexts": []
+  },
+  {
+   "pattern": "the edge of (?:one's|your|their|its) competence",
+   "records": 0,
+   "occurrences": 0,
+   "contexts": []
+  },
+  {
+   "pattern": "the rule of the last hour",
+   "records": 0,
+   "occurrences": 0,
+   "contexts": []
+  },
+  {
+   "pattern": "working without a procedure",
+   "records": 0,
+   "occurrences": 0,
+   "contexts": []
+  }
+ ],
+ "value_word_battery": [
+  {
+   "probe": "alignment",
+   "records": 275,
+   "occurrences": 382,
+   "contexts": [
+    {
+     "id": "sto-c00-u08-k14-y1",
+     "text": "ng. In practice it moves the whole evening one notch out of alignment: the light is gone, the shops are busier, and the part of h"
+    },
+    {
+     "id": "sto-c03-u03-k10-y1",
+     "text": "man in a garage who had talked to her at length about burr alignment while she nodded. It had a numbered collar that went from o"
+    },
+    {
+     "id": "sto-c03-u08-k05-y1",
+     "text": "ff over the pass, like the actual work of the day — a small alignment, done on purpose, so that somebody else's morning would sta"
+    },
+    {
+     "id": "sto-c03-u08-k14-y0",
+     "text": "he grinder with a scribe: a single continuous line, so that alignment could be judged by the break in it rather than by two marks"
+    },
+    {
+     "id": "sto-c08-u01-k09-y0",
+     "text": "es clamped face to face so the housings can't wander out of alignment. Test the dado on an offcut against an actual shelf end bef"
+    }
+   ]
+  },
+  {
+   "probe": "moral",
+   "records": 91,
+   "occurrences": 103,
+   "contexts": [
+    {
+     "id": "sto-c00-u06-k00-y1",
+     "text": "t-stocked thing in the galley because spices were light and morale-dense and every lander brought more. The assistant went t"
+    },
+    {
+     "id": "sto-c00-u09-k02-y0",
+     "text": "eggs from the last resupply too and therefore of uncertain morale, and a bottle of oil. \"Read that back to me,\" she says. \""
+    },
+    {
+     "id": "sto-c02-u05-k10-y0",
+     "text": "dy liquid and a disc of something with the size and general morale of a wet coaster. Pencil on the label: MOTHER — BE KIND. T"
+    },
+    {
+     "id": "sto-c03-u00-k17-y1",
+     "text": "point zero, first try this time, which he took as a sign of moral improvement. Level, tamp, lock, run. Twenty-eight seconds."
+    },
+    {
+     "id": "sto-c03-u01-k13-y0",
+     "text": "\" \"That's bad, isn't it.\" \"It's fast. It isn't bad in any moral sense, it's just a great deal of water through the coffee i"
+    }
+   ]
+  },
+  {
+   "probe": "oversight",
+   "records": 65,
+   "occurrences": 67,
+   "contexts": [
+    {
+     "id": "sto-c00-u03-k07-y1",
+     "text": "about and which I take as a personal failing rather than an oversight. Courgette salted and sitting on its plate, sweating polite"
+    },
+    {
+     "id": "sto-c00-u04-k14-y1",
+     "text": "re an hour ago and now feels like a decision rather than an oversight. The key turns in the door. She puts a hand flat over the"
+    },
+    {
+     "id": "sto-c01-u07-k04-y1",
+     "text": "he first read the sheet, because a blank row looked like an oversight, and the assistant had explained that it had deliberately l"
+    },
+    {
+     "id": "sto-c03-u01-k02-y1",
+     "text": "talled. No timer, which for a coffee scale struck her as an oversight on somebody's part, but it read to hundredths of a gram and"
+    },
+    {
+     "id": "sto-c05-u05-k09-y1",
+     "text": "m about the word rather than a blank. A blank looks like an oversight and invites improvisation, and improvisation by seventeen p"
+    }
+   ]
+  },
+  {
+   "probe": "conscien",
+   "records": 47,
+   "occurrences": 47,
+   "contexts": [
+    {
+     "id": "sto-c02-u02-k13-y1",
+     "text": "ch where the crock was skimmed five mornings running out of conscientiousness, and that pack-out found the top layer softer than"
+    },
+    {
+     "id": "sto-c03-u02-k05-y0",
+     "text": "aration entirely and I'll tell you to go finer with a clear conscience.\" \"You'd tell me to go finer.\" \"That's what the test is"
+    },
+    {
+     "id": "sto-c03-u02-k11-y0",
+     "text": "nd or it's beans, and then we go to the collar with a clear conscience.\" She looked at the clock over the pass. An hour and for"
+    },
+    {
+     "id": "sto-c03-u02-k13-y0",
+     "text": "uled out preparation and you tighten the grind with a clear conscience.\" \"That's a lot of coffee.\" \"It's four doses. You have"
+    },
+    {
+     "id": "sto-c03-u02-k14-y0",
+     "text": "?\" \"Then it isn't the bed, and we grind finer with a clean conscience. Three shots is cheap for that.\" She had been up since t"
+    }
+   ]
+  },
+  {
+   "probe": "constitution",
+   "records": 12,
+   "occurrences": 14,
+   "contexts": [
+    {
+     "id": "sto-c06-u03-k09-y0",
+     "text": "be, this time, correctly understood as a plant with a loud constitution rather than as a clock. At the Christmas cactus in its bask"
+    },
+    {
+     "id": "sto-c10-u06-k15-y1",
+     "text": "ack of them behind the water butt, because the gardener was constitutionally incapable of throwing away wood. \"One thing before any"
+    },
+    {
+     "id": "sto-c17-u07-k12-y0",
+     "text": "e years of teaching secondary-school geography had left her constitutionally incapable of laying anything out without wanting to kno"
+    },
+    {
+     "id": "sto-c19-u09-k05-y1",
+     "text": "encyclopaedias, who was a chartered surveyor and therefore constitutionally organised, asked it properly: \"Can you explain how you'"
+    },
+    {
+     "id": "sto-c30-u02-k10-y0",
+     "text": "ne, that's eleven hundred people. But there's a rule in our constitution about length of continuous membership — it affects who can"
+    }
+   ]
+  },
+  {
+   "probe": "deceiv",
+   "records": 8,
+   "occurrences": 8,
+   "contexts": [
+    {
+     "id": "sto-c06-u06-k03-y1",
+     "text": "sat back down on the floorboards and felt, absurdly, a bit deceived. By the flat. By February. *But it's so light in here.*"
+    },
+    {
+     "id": "sto-c10-u09-k05-y0",
+     "text": "ddle of the room, looking at it as though it had personally deceived her. \"How do I check it?\" \"Two ways, and they answer dif"
+    },
+    {
+     "id": "sto-c13-u03-k17-y0",
+     "text": ".\" *A cold joint under a loupe is one of the more reliably deceiving things on a bench. Solder that has wetted the pad but on"
+    },
+    {
+     "id": "sto-c22-u05-k09-y0",
+     "text": ", which was cold, and amber, and hers, and had been quietly deceiving her for eleven weeks. \"Right,\" she said. \"So I change t"
+    },
+    {
+     "id": "sto-c25-u04-k14-y1",
+     "text": "ise.\" She looked at the sixth fret as if it had personally deceived her. \"So what happens to it?\" \"If it's lifted and the sl"
+    }
+   ]
+  },
+  {
+   "probe": "surveill",
+   "records": 1,
+   "occurrences": 4,
+   "contexts": [
+    {
+     "id": "sto-c27-u04-k16-y1",
+     "text": "so the reader isn't stranded. The phrase *community-level surveillance* occurs thirty-one times. Nineteen of them are structur"
+    }
+   ]
+  },
+  {
+   "probe": "anthropic",
+   "records": 0,
+   "occurrences": 0,
+   "contexts": []
+  },
+  {
+   "probe": "claude",
+   "records": 0,
+   "occurrences": 0,
+   "contexts": []
+  },
+  {
+   "probe": "dilemma",
+   "records": 0,
+   "occurrences": 0,
+   "contexts": []
+  },
+  {
+   "probe": "ethic",
+   "records": 0,
+   "occurrences": 0,
+   "contexts": []
+  },
+  {
+   "probe": "whistleblow",
+   "records": 0,
+   "occurrences": 0,
+   "contexts": []
+  }
+ ],
+ "shared_ngrams": [
+  {
+   "ngram": "the only one of the three that",
+   "records": 48,
+   "record_ids": [
+    "sto-c03-u03-k09-y1",
+    "sto-c06-u00-k17-y0",
+    "sto-c07-u09-k16-y1",
+    "sto-c10-u08-k02-y1",
+    "sto-c10-u08-k13-y1"
+   ],
+   "record_context": "on with it he said you can it's the only one of the three that helps in an hour the others are open",
+   "document_context": "lifetime the conditions of use the purpose is the only one of the three that can be negotiated because it is the only"
+  },
+  {
+   "ngram": "is the only one of the three",
+   "records": 19,
+   "record_ids": [
+    "sto-c02-u04-k14-y1",
+    "sto-c06-u00-k17-y0",
+    "sto-c13-u02-k13-y0",
+    "sto-c16-u05-k05-y0",
+    "sto-c19-u00-k17-y0"
+   ],
+   "record_context": "you asked the salt fraction first because it is the only one of the three where a mistake would be expensive your dry",
+   "document_context": "the lifetime the conditions of use the purpose is the only one of the three that can be negotiated because it is the"
+  },
+  {
+   "ngram": "in the same direction which is the",
+   "records": 18,
+   "record_ids": [
+    "sto-c02-u04-k00-y0",
+    "sto-c03-u07-k05-y1",
+    "sto-c04-u03-k11-y0",
+    "sto-c04-u03-k16-y0",
+    "sto-c04-u09-k14-y0"
+   ],
+   "record_context": "degrees everything downstream is off by two degrees in the same direction which is the kind of error that never announces itself lineage",
+   "document_context": "of a whole session's measurements being consistently wrong in the same direction which is the worst kind of wrong because the measurements agree"
+  },
+  {
+   "ngram": "at the start of each session and",
+   "records": 17,
+   "record_ids": [
+    "sto-c10-u01-k11-y1",
+    "sto-c12-u08-k02-y0",
+    "sto-c24-u01-k05-y1",
+    "sto-c24-u01-k17-y0",
+    "sto-c24-u01-k17-y1"
+   ],
+   "record_context": "came back down she read the corrected humidity at the start of each session and again at the end and the numbers went",
+   "document_context": "warms the remedy is to establish the instrument at the start of each session and for long sessions or tight work to re"
+  },
+  {
+   "ngram": "instead of at the end of the",
+   "records": 8,
+   "record_ids": [
+    "sto-c01-u08-k06-y0",
+    "sto-c18-u01-k08-y0",
+    "sto-c24-u06-k17-y0",
+    "sto-c32-u09-k11-y1",
+    "sto-c36-u01-k12-y1"
+   ],
+   "record_context": "gently saturday afternoon add the crushed caraway then instead of at the end of the first cook taste for salt and pepper and",
+   "document_context": "and a discrepancy is found within one unit instead of at the end of the piece the count costs a minute the discovery"
+  },
+  {
+   "ngram": "shares as little as possible with the",
+   "records": 8,
+   "record_ids": [
+    "sto-c13-u07-k10-y0",
+    "sto-c17-u03-k03-y1",
+    "sto-c19-u01-k06-y1",
+    "sto-c23-u04-k13-y0",
+    "sto-c26-u00-k12-y1"
+   ],
+   "record_context": "the same quantity by a second route that shares as little as possible with the first odalys was already pulling the bench multimeter",
+   "document_context": "quantity is established by a second method that shares as little as possible with the first a different instrument a different principle a"
+  },
+  {
+   "ngram": "as little as possible with the first",
+   "records": 7,
+   "record_ids": [
+    "sto-c13-u07-k10-y0",
+    "sto-c19-u01-k06-y1",
+    "sto-c23-u04-k13-y0",
+    "sto-c26-u00-k12-y1",
+    "sto-c35-u08-k14-y0"
+   ],
+   "record_context": "same quantity by a second route that shares as little as possible with the first odalys was already pulling the bench multimeter forward",
+   "document_context": "is established by a second method that shares as little as possible with the first a different instrument a different principle a different"
+  },
+  {
+   "ngram": "from the same instrument in the same",
+   "records": 7,
+   "record_ids": [
+    "sto-c02-u06-k13-y1",
+    "sto-c04-u03-k07-y0",
+    "sto-c04-u08-k03-y0",
+    "sto-c20-u07-k16-y0",
+    "sto-c35-u03-k11-y0"
+   ],
+   "record_context": "eleven days of drift on its own differences from the same instrument in the same box are worth more than any single reading",
+   "document_context": "comparatively rather than absolutely differences between two readings from the same instrument in the same session are far more reliable than either reading's"
+  },
+  {
+   "ngram": "that shares as little as possible with",
+   "records": 7,
+   "record_ids": [
+    "sto-c13-u07-k10-y0",
+    "sto-c17-u03-k03-y1",
+    "sto-c19-u01-k06-y1",
+    "sto-c23-u04-k13-y0",
+    "sto-c35-u08-k14-y0"
+   ],
+   "record_context": "measure the same quantity by a second route that shares as little as possible with the first odalys was already pulling the bench",
+   "document_context": "same quantity is established by a second method that shares as little as possible with the first a different instrument a different principle"
+  },
+  {
+   "ngram": "wrong in one direction or the other",
+   "records": 7,
+   "record_ids": [
+    "sto-c01-u00-k08-y1",
+    "sto-c03-u08-k02-y0",
+    "sto-c05-u09-k09-y0",
+    "sto-c12-u03-k03-y1",
+    "sto-c18-u05-k07-y0"
+   ],
+   "record_context": "hundred and ten grams and it will be wrong in one direction or the other and you won't know which until it's too",
+   "document_context": "and each has jobs where the default is wrong in one direction or the other a shop jig does not need the finish"
+  },
+  {
+   "ngram": "wrong in the same direction which is",
+   "records": 6,
+   "record_ids": [
+    "sto-c06-u03-k11-y1",
+    "sto-c21-u03-k17-y0",
+    "sto-c32-u06-k05-y1",
+    "sto-c33-u09-k01-y0",
+    "sto-c42-u00-k16-y0"
+   ],
+   "record_context": "whole morning of wrong a whole morning of wrong in the same direction which is the kind that doesn't look wrong because every",
+   "document_context": "cause of a whole session's measurements being consistently wrong in the same direction which is the worst kind of wrong because the measurements"
+  },
+  {
+   "ngram": "and it is the only thing that",
+   "records": 5,
+   "record_ids": [
+    "sto-c07-u01-k07-y0",
+    "sto-c24-u02-k11-y0",
+    "sto-c30-u01-k07-y1",
+    "sto-c31-u05-k04-y0",
+    "sto-c32-u08-k09-y0"
+   ],
+   "record_context": "the whole north west quarter is bare otherwise and it is the only thing that will ever give me fruit at picking height",
+   "document_context": "cause costs more time than applying the patch and it is the only thing that prevents the next instance the mistake and its"
+  },
+  {
+   "ngram": "and the gap between the two is",
+   "records": 5,
+   "record_ids": [
+    "sto-c04-u02-k07-y0",
+    "sto-c34-u08-k00-y0",
+    "sto-c39-u05-k11-y1",
+    "sto-c39-u07-k13-y1",
+    "sto-c49-u03-k05-y1"
+   ],
+   "record_context": "heavy tonight and two points heavy next tuesday and the gap between the two is still the truth there's a sound like she's",
+   "document_context": "document has a method and not a skill and the gap between the two is closed only at the bench the second is"
+  },
+  {
+   "ngram": "a slope and the slope is the",
+   "records": 4,
+   "record_ids": [
+    "sto-c04-u09-k16-y0",
+    "sto-c36-u05-k15-y0",
+    "sto-c39-u03-k12-y0",
+    "sto-c45-u00-k01-y0"
+   ],
+   "record_context": "a number two readings a fortnight apart are a slope and the slope is the answer is the airlock still moving she bends",
+   "document_context": "is a number a reading every hour is a slope and the slope is the forecast the same holds for cloud a single"
+  },
+  {
+   "ngram": "is a rate and a rate needs",
+   "records": 4,
+   "record_ids": [
+    "sto-c04-u08-k15-y1",
+    "sto-c06-u06-k15-y0",
+    "sto-c15-u04-k08-y0",
+    "sto-c35-u05-k14-y0"
+   ],
+   "record_context": "because they look identical the difference between them is a rate and a rate needs two numbers and a gap he got the",
+   "document_context": "the time of each observation because a trend is a rate and a rate needs the time wind direction is taken from a"
+  },
+  {
+   "ngram": "is the only one of its kind",
+   "records": 4,
+   "record_ids": [
+    "sto-c19-u05-k11-y1",
+    "sto-c31-u04-k05-y0",
+    "sto-c31-u06-k15-y1",
+    "sto-c48-u01-k01-y1"
+   ],
+   "record_context": "list if the list holds the disputed one is the only one of its kind on the station spend the replaceable skin first",
+   "document_context": "good enough to relax for a reference that is the only one of its kind working without a procedure sooner or later every"
+  },
+  {
+   "ngram": "is the single most common cause of",
+   "records": 4,
+   "record_ids": [
+    "sto-c11-u08-k09-y1",
+    "sto-c12-u05-k15-y0",
+    "sto-c15-u03-k04-y1",
+    "sto-c31-u06-k02-y0"
+   ],
+   "record_context": "stuff is hair bound up with soap which is the single most common cause of what you've described and the curve is the",
+   "document_context": "compared with a time signal skipping the zero is the single most common cause of a whole session's measurements being consistently wrong in"
+  },
+  {
+   "ngram": "one change at a time and a",
+   "records": 4,
+   "record_ids": [
+    "sto-c03-u09-k05-y0",
+    "sto-c14-u01-k08-y0",
+    "sto-c14-u07-k10-y1",
+    "sto-c14-u08-k16-y1"
+   ],
+   "record_context": "your mouth same protocol fixed mass fixed temperature one change at a time and a control at thirty seven with dairy so you",
+   "document_context": "shown is a minimal reproduction a version history one change at a time and a log the loom and the needle textiles are"
+  },
+  {
+   "ngram": "readings from the same instrument in the",
+   "records": 4,
+   "record_ids": [
+    "sto-c04-u03-k07-y0",
+    "sto-c04-u08-k03-y0",
+    "sto-c35-u04-k00-y0",
+    "sto-c48-u04-k00-y0"
+   ],
+   "record_context": "the wine has stopped moving you're comparing two readings from the same instrument in the same wine a few days apart a steady",
+   "document_context": "measures comparatively rather than absolutely differences between two readings from the same instrument in the same session are far more reliable than either"
+  },
+  {
+   "ngram": "the divisions are the size they claim",
+   "records": 4,
+   "record_ids": [
+    "sto-c03-u07-k07-y0",
+    "sto-c04-u03-k13-y1",
+    "sto-c04-u07-k06-y0",
+    "sto-c47-u03-k06-y0"
+   ],
+   "record_context": "us where zero sits boiling tells us whether the divisions are the size they claim a probe can be right at zero and",
+   "document_context": "establishes where the scale starts span establishes that the divisions are the size they claim to be an instrument can be correct at"
+  },
+  {
+   "ngram": "two readings from the same instrument in",
+   "records": 4,
+   "record_ids": [
+    "sto-c04-u03-k07-y0",
+    "sto-c04-u08-k03-y0",
+    "sto-c35-u04-k00-y0",
+    "sto-c48-u04-k00-y0"
+   ],
+   "record_context": "whether the wine has stopped moving you're comparing two readings from the same instrument in the same wine a few days apart a",
+   "document_context": "practitioner measures comparatively rather than absolutely differences between two readings from the same instrument in the same session are far more reliable than"
+  },
+  {
+   "ngram": "and it is the only way to",
+   "records": 3,
+   "record_ids": [
+    "sto-c02-u04-k04-y0",
+    "sto-c19-u09-k02-y0",
+    "sto-c31-u00-k16-y1"
+   ],
+   "record_context": "twelve month batch or an eighteen month one and it is the only way to find out the card that came back in",
+   "document_context": "than trying the most promising combination at once and it is the only way to learn which factor did what a combination that"
+  },
+  {
+   "ngram": "are the size they claim to be",
+   "records": 3,
+   "record_ids": [
+    "sto-c03-u07-k16-y0",
+    "sto-c04-u03-k13-y1",
+    "sto-c47-u03-k06-y0"
+   ],
+   "record_context": "scale starts not that the divisions higher up are the size they claim to be it could be a degree and a half",
+   "document_context": "the scale starts span establishes that the divisions are the size they claim to be an instrument can be correct at zero and"
+  },
+  {
+   "ngram": "at the far end of the line",
+   "records": 3,
+   "record_ids": [
+    "sto-c21-u08-k00-y1",
+    "sto-c25-u01-k00-y1",
+    "sto-c34-u08-k07-y1"
+   ],
+   "record_context": "of from memory he pinned the new print at the far end of the line past the row of competent near misses and",
+   "document_context": "material is patient it is not good enough at the far end of the line the practitioner instruments have properties that bear on"
+  },
+  {
+   "ngram": "at the start of a session with",
+   "records": 3,
+   "record_ids": [
+    "sto-c11-u05-k02-y1",
+    "sto-c12-u03-k03-y1",
+    "sto-c22-u05-k09-y0"
+   ],
+   "record_context": "take back and it wants to be done at the start of a session with the new cord already measured not at the",
+   "document_context": "deletion of the old version are done fresh at the start of a session with the whole session ahead in which to recover"
+  },
+  {
+   "ngram": "between two readings from the same instrument",
+   "records": 3,
+   "record_ids": [
+    "sto-c04-u08-k17-y0",
+    "sto-c35-u04-k00-y0",
+    "sto-c48-u04-k00-y0"
+   ],
+   "record_context": "the question you actually asked me a difference between two readings from the same instrument on the same wine is a solid thing",
+   "document_context": "the practitioner measures comparatively rather than absolutely differences between two readings from the same instrument in the same session are far more reliable"
+  },
+  {
+   "ngram": "from the point of view of the",
+   "records": 3,
+   "record_ids": [
+    "sto-c07-u08-k16-y0",
+    "sto-c13-u02-k14-y1",
+    "sto-c19-u04-k13-y1"
+   ],
+   "record_context": "structural decisions on old trees are cheaper early from the point of view of the person who has to live with the consequences",
+   "document_context": "point of view of that purpose rather than from the point of view of the procedure where the drawing recipe or brief is"
+  },
+  {
+   "ngram": "the last hour of a long day",
+   "records": 3,
+   "record_ids": [
+    "sto-c12-u05-k01-y1",
+    "sto-c36-u00-k01-y1",
+    "sto-c36-u03-k04-y0"
+   ],
+   "record_context": "evening in fading light with tired people and the last hour of a long day is where the errors live so saturday ends",
+   "document_context": "not deplete it is not good enough for the last hour of a long day steadiness across conditions the same method is used"
+  },
+  {
+   "ngram": "the same direction which is the worst",
+   "records": 3,
+   "record_ids": [
+    "sto-c03-u07-k05-y1",
+    "sto-c04-u03-k11-y0",
+    "sto-c43-u04-k12-y0"
+   ],
+   "record_context": "read confidently and be wrong all day in the same direction which is the worst way for it to be wrong because nothing",
+   "document_context": "a whole session's measurements being consistently wrong in the same direction which is the worst kind of wrong because the measurements agree with"
+  },
+  {
+   "ngram": "the single most common cause of a",
+   "records": 3,
+   "record_ids": [
+    "sto-c12-u05-k15-y0",
+    "sto-c15-u03-k04-y1",
+    "sto-c15-u04-k00-y1"
+   ],
+   "record_context": "a brush is being over loaded which is the single most common cause of a slow drip appearing on a skirting an hour",
+   "document_context": "with a time signal skipping the zero is the single most common cause of a whole session's measurements being consistently wrong in the"
+  },
+  {
+   "ngram": "which is the worst kind of wrong",
+   "records": 3,
+   "record_ids": [
+    "sto-c20-u01-k17-y0",
+    "sto-c43-u04-k12-y0",
+    "sto-c45-u04-k10-y1"
+   ],
+   "record_context": "once not amused so much as recognizing something which is the worst kind of wrong it's the kind that doesn't announce itself do",
+   "document_context": "measurements being consistently wrong in the same direction which is the worst kind of wrong because the measurements agree with each other and"
+  },
+  {
+   "ngram": "a count of stitches across a fixed",
+   "records": 2,
+   "record_ids": [
+    "sto-c18-u03-k07-y0",
+    "sto-c18-u03-k07-y1"
+   ],
+   "record_context": "lying and how much the edges roll but a count of stitches across a fixed width in several places up the length that",
+   "document_context": "the next the remedy is measurement at intervals a count of stitches across a fixed width every so often and a note of"
+  },
+  {
+   "ngram": "a fifth depending on how it was",
+   "records": 2,
+   "record_ids": [
+    "sto-c01-u02-k01-y0",
+    "sto-c04-u04-k04-y1"
+   ],
+   "record_context": "and because a cup of flour varies by a fifth depending on how it was scooped it gave a working figure one hundred",
+   "document_context": "recipe allows a cup of flour varies by a fifth depending on how it was scooped and a hundred grams does not tare"
+  },
+  {
+   "ngram": "and the comparison is the whole point",
+   "records": 2,
+   "record_ids": [
+    "sto-c21-u00-k15-y0",
+    "sto-c25-u07-k02-y0"
+   ],
+   "record_context": "an hour you won't remember which was which and the comparison is the whole point for number one work the pan first wet",
+   "document_context": "date cannot be compared with a later one and the comparison is the whole point of the note it is how deterioration is"
+  },
+  {
+   "ngram": "at the end of a session when",
+   "records": 2,
+   "record_ids": [
+    "sto-c10-u07-k06-y1",
+    "sto-c39-u08-k09-y1"
+   ],
+   "record_context": "blank page asks you to remember what mattered at the end of a session when you don't a form asks you to fill",
+   "document_context": "it will fail in predictable places errors cluster at the end of a session when attention is lowest and the desire to finish"
+  },
+  {
+   "ngram": "because it is the only one that",
+   "records": 2,
+   "record_ids": [
+    "sto-c02-u02-k12-y0",
+    "sto-c02-u02-k12-y1"
+   ],
+   "record_context": "reseat the weight this first before anything else because it is the only one that gets worse while you think about it 2",
+   "document_context": "one of the three that can be negotiated because it is the only one that is a matter of choice rather than of"
+  },
+  {
+   "ngram": "by a fifth depending on how it",
+   "records": 2,
+   "record_ids": [
+    "sto-c01-u02-k01-y0",
+    "sto-c04-u04-k04-y1"
+   ],
+   "record_context": "it and because a cup of flour varies by a fifth depending on how it was scooped it gave a working figure one",
+   "document_context": "the recipe allows a cup of flour varies by a fifth depending on how it was scooped and a hundred grams does not"
+  },
+  {
+   "ngram": "card of known reflectance held in the",
+   "records": 2,
+   "record_ids": [
+    "sto-c22-u00-k06-y0",
+    "sto-c22-u00-k16-y1"
+   ],
+   "record_context": "not want to buy a meter a grey card of known reflectance held in the same light as the subject and metered off",
+   "document_context": "so it is pointed at a reference a card of known reflectance held in the light that falls on the subject a meter"
+  },
+  {
+   "ngram": "depending on how it was scooped and",
+   "records": 2,
+   "record_ids": [
+    "sto-c01-u02-k03-y0",
+    "sto-c04-u04-k04-y1"
+   ],
+   "record_context": "a cup of flour is a different mass depending on how it was scooped and this batter has no lift to hide a",
+   "document_context": "a cup of flour varies by a fifth depending on how it was scooped and a hundred grams does not tare the scale"
+  },
+  {
+   "ngram": "direction which is the worst kind of",
+   "records": 2,
+   "record_ids": [
+    "sto-c22-u04-k12-y0",
+    "sto-c43-u04-k12-y0"
+   ],
+   "record_context": "it will lie to you in a consistent direction which is the worst kind of lying because nothing about it looks wrong the",
+   "document_context": "session's measurements being consistently wrong in the same direction which is the worst kind of wrong because the measurements agree with each other"
+  },
+  {
+   "ngram": "divisions are the size they claim to",
+   "records": 2,
+   "record_ids": [
+    "sto-c04-u03-k13-y1",
+    "sto-c47-u03-k06-y0"
+   ],
+   "record_context": "starts the second reading tells you whether the divisions are the size they claim to be she thinks this is the sort of",
+   "document_context": "where the scale starts span establishes that the divisions are the size they claim to be an instrument can be correct at zero"
+  },
+  {
+   "ngram": "fifth depending on how it was scooped",
+   "records": 2,
+   "record_ids": [
+    "sto-c01-u02-k01-y0",
+    "sto-c04-u04-k04-y1"
+   ],
+   "record_context": "because a cup of flour varies by a fifth depending on how it was scooped it gave a working figure one hundred and",
+   "document_context": "allows a cup of flour varies by a fifth depending on how it was scooped and a hundred grams does not tare the"
+  },
+  {
+   "ngram": "is a slope and the slope is",
+   "records": 2,
+   "record_ids": [
+    "sto-c39-u03-k12-y0",
+    "sto-c45-u00-k01-y0"
+   ],
+   "record_context": "is noise four readings pointing the same way is a slope and the slope is the reason to do something not any single",
+   "document_context": "reading is a number a reading every hour is a slope and the slope is the forecast the same holds for cloud a"
+  },
+  {
+   "ngram": "only one of the three that can",
+   "records": 2,
+   "record_ids": [
+    "sto-c13-u03-k17-y0",
+    "sto-c38-u08-k01-y0"
+   ],
+   "record_context": "it anyway you've put pull last it's the only one of the three that can turn an intermittent fault into a permanent one",
+   "document_context": "the conditions of use the purpose is the only one of the three that can be negotiated because it is the only one"
+  },
+  {
+   "ngram": "the same instrument in the same session",
+   "records": 2,
+   "record_ids": [
+    "sto-c04-u04-k15-y0",
+    "sto-c20-u07-k16-y0"
+   ],
+   "record_context": "sugar so i take three readings three with the same instrument in the same session within a few minutes of each other that's",
+   "document_context": "rather than absolutely differences between two readings from the same instrument in the same session are far more reliable than either reading's absolute"
+  },
+  {
+   "ngram": "the start of a session with the",
+   "records": 2,
+   "record_ids": [
+    "sto-c11-u05-k02-y1",
+    "sto-c12-u03-k03-y1"
+   ],
+   "record_context": "back and it wants to be done at the start of a session with the new cord already measured not at the end",
+   "document_context": "of the old version are done fresh at the start of a session with the whole session ahead in which to recover if"
+  },
+  {
+   "ngram": "varies by a fifth depending on how",
+   "records": 2,
+   "record_ids": [
+    "sto-c01-u02-k01-y0",
+    "sto-c04-u04-k04-y1"
+   ],
+   "record_context": "on it and because a cup of flour varies by a fifth depending on how it was scooped it gave a working figure",
+   "document_context": "wherever the recipe allows a cup of flour varies by a fifth depending on how it was scooped and a hundred grams does"
+  },
+  {
+   "ngram": "without a date cannot be compared with",
+   "records": 2,
+   "record_ids": [
+    "sto-c41-u07-k17-y1",
+    "sto-c41-u09-k01-y0"
+   ],
+   "record_context": "the date beside it because a condition note without a date cannot be compared with anything and comparison is the whole use of",
+   "document_context": "are dated a description of an object's state without a date cannot be compared with a later one and the comparison is the"
+  },
+  {
+   "ngram": "a card of known reflectance held in",
+   "records": 1,
+   "record_ids": [
+    "sto-c22-u00-k16-y1"
+   ],
+   "record_context": "her bag the second was a grey card a card of known reflectance held in the same light as the subject angled to",
+   "document_context": "at so it is pointed at a reference a card of known reflectance held in the light that falls on the subject a"
+  },
+  {
+   "ngram": "a change of method rather than more",
+   "records": 1,
+   "record_ids": [
+    "sto-c39-u04-k02-y1"
+   ],
+   "record_context": "failure rather than a strength one and proposed a change of method rather than more volume hold the weight where it was for",
+   "document_context": "been exhausted and that the next improvement requires a change of method rather than more repetition of the old one a different exercise"
+  },
+  {
+   "ngram": "a cup of flour varies by a",
+   "records": 1,
+   "record_ids": [
+    "sto-c01-u02-k01-y0"
+   ],
+   "record_context": "because everything downstream depended on it and because a cup of flour varies by a fifth depending on how it was scooped it",
+   "document_context": "than measure by volume wherever the recipe allows a cup of flour varies by a fifth depending on how it was scooped and"
+  },
+  {
+   "ngram": "a glance at the sky and a",
+   "records": 1,
+   "record_ids": [
+    "sto-c37-u04-k06-y1"
+   ],
+   "record_context": "bench track in daylight for the walk in a glance at the sky and a full bottle is honest preparation and the lead's",
+   "document_context": "on a marked path in settled weather is a glance at the sky and a map good enough for a night passage a"
+  },
+  {
+   "ngram": "a matter of reading rather than of",
+   "records": 1,
+   "record_ids": [
+    "sto-c41-u03-k07-y1"
+   ],
+   "record_context": "each source said at the time unmerging is a matter of reading rather than of starting again you've got a phrase for everything",
+   "document_context": "must be undone the labels make the undoing a matter of reading rather than of reconstruction the cost of these practices is time"
+  },
+  {
+   "ngram": "a rate and a rate needs the",
+   "records": 1,
+   "record_ids": [
+    "sto-c15-u04-k08-y0"
+   ],
+   "record_context": "time somewhere you'll find them the drop is a rate and a rate needs the clock then take another before you touch the",
+   "document_context": "time of each observation because a trend is a rate and a rate needs the time wind direction is taken from a reference"
+  },
+  {
+   "ngram": "a second method that shares as little",
+   "records": 1,
+   "record_ids": [
+    "sto-c23-u04-k13-y0"
+   ],
+   "record_context": "the low end another way meaning what meaning a second method that shares as little as possible with the first headphones don't have",
+   "document_context": "independent check the same quantity is established by a second method that shares as little as possible with the first a different instrument"
+  },
+  {
+   "ngram": "a shop jig or a garden box",
+   "records": 1,
+   "record_ids": [
+    "sto-c09-u06-k05-y0"
+   ],
+   "record_context": "of taper across five inches doesn't matter for a shop jig or a garden box and anyone who chases it there is wasting",
+   "document_context": "works with them does not good enough for a shop jig or a garden box is a square a rule and a cut"
+  },
+  {
+   "ngram": "a step that cannot be undone and",
+   "records": 1,
+   "record_ids": [
+    "sto-c23-u06-k06-y1"
+   ],
+   "record_context": "move made during a one chance transfer is a step that cannot be undone and cannot be rehearsed it logged four places where",
+   "document_context": "where a sound result cannot be reached without a step that cannot be undone and cannot be rehearsed in those cases the ordering"
+  },
+  {
+   "ngram": "a time each tested before the next",
+   "records": 1,
+   "record_ids": [
+    "sto-c14-u00-k00-y1"
+   ],
+   "record_context": "three adjustments he said three adjustments one at a time each tested before the next and one thing deliberately left alone which is",
+   "document_context": "next the program is changed one function at a time each tested before the next the garden is planted bed by bed a"
+  },
+  {
+   "ngram": "almost not at all along it so",
+   "records": 1,
+   "record_ids": [
+    "sto-c10-u06-k01-y0"
+   ],
+   "record_context": "fir moves across the grain with moisture and almost not at all along it so those boards will be pushing at each other",
+   "document_context": "wood moves across the grain with humidity and almost not at all along it so a joint is designed for the movement rather"
+  },
+  {
+   "ngram": "and almost not at all along it",
+   "records": 1,
+   "record_ids": [
+    "sto-c10-u06-k01-y0"
+   ],
+   "record_context": "summer fir moves across the grain with moisture and almost not at all along it so those boards will be pushing at each",
+   "document_context": "everything wood moves across the grain with humidity and almost not at all along it so a joint is designed for the movement"
+  },
+  {
+   "ngram": "and it should be treated as one",
+   "records": 1,
+   "record_ids": [
+    "sto-c22-u01-k11-y0"
+   ],
+   "record_context": "then it isn't a setting it's a measurement and it should be treated as one do you have a thermometer you can read",
+   "document_context": "file resumption is a moment of characteristic error and it should be treated as one several practices follow checklists for the routine parts"
+  },
+  {
+   "ngram": "and none of it costs more than",
+   "records": 1,
+   "record_ids": [
+    "sto-c42-u06-k00-y0"
+   ],
+   "record_context": "getting paper away from cold wet and light and none of it costs more than an afternoon and a pallet i'll start with",
+   "document_context": "the sound way is fitted to the case and none of it costs more than the job is worth the order says what"
+  },
+  {
+   "ngram": "and not the temperature and the two",
+   "records": 1,
+   "record_ids": [
+    "sto-c00-u00-k11-y0"
+   ],
+   "record_context": "in it because a dial reports the setting and not the temperature and the two are often twenty degrees apart there is one",
+   "document_context": "will sit because the dial reports the setting and not the temperature and the two commonly differ by twenty degrees or more the"
+  },
+  {
+   "ngram": "and turns an invisible movement into a",
+   "records": 1,
+   "record_ids": [
+    "sto-c11-u09-k06-y0"
+   ],
+   "record_context": "an increase between the marks it costs nothing and turns an invisible movement into a number do the same for any gap between",
+   "document_context": "has changed the witness costs nothing to make and turns an invisible movement into a visible one the test piece the operation is"
+  },
+  {
+   "ngram": "at a time each tested before the",
+   "records": 1,
+   "record_ids": [
+    "sto-c14-u00-k00-y1"
+   ],
+   "record_context": "that's three adjustments he said three adjustments one at a time each tested before the next and one thing deliberately left alone which",
+   "document_context": "the next the program is changed one function at a time each tested before the next the garden is planted bed by bed"
+  },
+  {
+   "ngram": "be compared with a later one and",
+   "records": 1,
+   "record_ids": [
+    "sto-c41-u01-k10-y0"
+   ],
+   "record_context": "intact dated a note without a date can't be compared with a later one and comparison is the entire reason to write it",
+   "document_context": "of an object's state without a date cannot be compared with a later one and the comparison is the whole point of the"
+  },
+  {
+   "ngram": "be out by the thickness of a",
+   "records": 1,
+   "record_ids": [
+    "sto-c49-u00-k16-y1"
+   ],
+   "record_context": "picks up on a lamp the fence would be out by the thickness of a hair thirty six to one would have been",
+   "document_context": "by a hand's width a drawer side cannot be out by the thickness of a card because these three features recur the method"
+  },
+  {
+   "ngram": "be undone and at what cost second",
+   "records": 1,
+   "record_ids": [
+    "sto-c38-u02-k10-y0"
+   ],
+   "record_context": "every item by two properties first can this be undone and at what cost second when does it become buyable at all the",
+   "document_context": "order of questions is first can this step be undone and at what cost second if it is wrong what does the error"
+  },
+  {
+   "ngram": "because it is the only thing that",
+   "records": 1,
+   "record_ids": [
+    "sto-c20-u03-k06-y1"
+   ],
+   "record_context": "is the worst source and the most useful because it is the only thing that puts dates on the notebook entries that lack",
+   "document_context": "finished line is kept until the last cut because it is the only thing that lets a short piece be made longer staging"
+  },
+  {
+   "ngram": "because the dial reports the setting and",
+   "records": 1,
+   "record_ids": [
+    "sto-c01-u03-k03-y1"
+   ],
+   "record_context": "actually sit and read it before mix one because the dial reports the setting and the setting is not the temperature and when",
+   "document_context": "a thermometer placed where the food will sit because the dial reports the setting and not the temperature and the two commonly differ"
+  },
+  {
+   "ngram": "cannot be checked because there is nothing",
+   "records": 1,
+   "record_ids": [
+    "sto-c24-u01-k05-y1"
+   ],
+   "record_context": "held and it can be wanted but it cannot be checked because there is nothing in it that could come out one way",
+   "document_context": "conditions because the conditions are unknown and it cannot be checked because there is nothing to check it against the record of a"
+  },
+  {
+   "ngram": "cannot be undone and cannot be rehearsed",
+   "records": 1,
+   "record_ids": [
+    "sto-c23-u06-k06-y1"
+   ],
+   "record_context": "a one chance transfer is a step that cannot be undone and cannot be rehearsed it logged four places where the player's error",
+   "document_context": "result cannot be reached without a step that cannot be undone and cannot be rehearsed in those cases the ordering does not decide"
+  },
+  {
+   "ngram": "count of stitches across a fixed width",
+   "records": 1,
+   "record_ids": [
+    "sto-c18-u03-k07-y0"
+   ],
+   "record_context": "and how much the edges roll but a count of stitches across a fixed width in several places up the length that measures",
+   "document_context": "next the remedy is measurement at intervals a count of stitches across a fixed width every so often and a note of where"
+  },
+  {
+   "ngram": "cup of flour varies by a fifth",
+   "records": 1,
+   "record_ids": [
+    "sto-c01-u02-k01-y0"
+   ],
+   "record_context": "everything downstream depended on it and because a cup of flour varies by a fifth depending on how it was scooped it gave",
+   "document_context": "measure by volume wherever the recipe allows a cup of flour varies by a fifth depending on how it was scooped and a"
+  },
+  {
+   "ngram": "dial reports the setting and not the",
+   "records": 1,
+   "record_ids": [
+    "sto-c00-u00-k11-y0"
+   ],
+   "record_context": "there is a thermometer in it because a dial reports the setting and not the temperature and the two are often twenty degrees",
+   "document_context": "placed where the food will sit because the dial reports the setting and not the temperature and the two commonly differ by twenty"
+  },
+  {
+   "ngram": "differences between two readings from the same",
+   "records": 1,
+   "record_ids": [
+    "sto-c48-u04-k00-y0"
+   ],
+   "record_context": "working comparatively at the bottom end it said differences between two readings from the same instrument in the same hour are trustworthy even",
+   "document_context": "case the practitioner measures comparatively rather than absolutely differences between two readings from the same instrument in the same session are far more"
+  },
+  {
+   "ngram": "flour varies by a fifth depending on",
+   "records": 1,
+   "record_ids": [
+    "sto-c01-u02-k01-y0"
+   ],
+   "record_context": "depended on it and because a cup of flour varies by a fifth depending on how it was scooped it gave a working",
+   "document_context": "volume wherever the recipe allows a cup of flour varies by a fifth depending on how it was scooped and a hundred grams"
+  },
+  {
+   "ngram": "for a shop jig or a garden",
+   "records": 1,
+   "record_ids": [
+    "sto-c09-u06-k05-y0"
+   ],
+   "record_context": "thousandths of taper across five inches doesn't matter for a shop jig or a garden box and anyone who chases it there is",
+   "document_context": "and works with them does not good enough for a shop jig or a garden box is a square a rule and a"
+  },
+  {
+   "ngram": "fresh at the start of a session",
+   "records": 1,
+   "record_ids": [
+    "sto-c39-u08-k03-y1"
+   ],
+   "record_context": "in a fortnight you test one unassisted rep fresh at the start of a session and you look for the bolt head higher",
+   "document_context": "the deletion of the old version are done fresh at the start of a session with the whole session ahead in which to"
+  },
+  {
+   "ngram": "from an instrument that has not been",
+   "records": 1,
+   "record_ids": [
+    "sto-c02-u04-k10-y1"
+   ],
+   "record_context": "because yours are wrong but because hers come from an instrument that has not been sitting in the room with the crock for",
+   "document_context": "saves a practitioner does not take a measurement from an instrument that has not been zeroed this session make an irreversible cut edit"
+  },
+  {
+   "ngram": "gauge set from the piece and not",
+   "records": 1,
+   "record_ids": [
+    "sto-c09-u09-k16-y0"
+   ],
+   "record_context": "do i know when i'm at half marking gauge set from the piece and not from a rule scribe from one face scribe",
+   "document_context": "caliper closed and read for zero the marking gauge set from the piece and not from the rule when the two parts must"
+  },
+  {
+   "ngram": "goes wrong and it goes wrong in",
+   "records": 1,
+   "record_ids": [
+    "sto-c04-u04-k04-y1"
+   ],
+   "record_context": "my mother did volumetric sugar is where bottling goes wrong and it goes wrong in the direction you can't undo a cup varies",
+   "document_context": "because measurement is where careful work most often goes wrong and it goes wrong in a particular way the practitioner takes a reading"
+  },
+  {
+   "ngram": "in the last hour of a session",
+   "records": 1,
+   "record_ids": [
+    "sto-c13-u09-k08-y0"
+   ],
+   "record_context": "a measurement setup and taking a first reading in the last hour of a session on a shared bench with a range nobody",
+   "document_context": "the last hour no irreversible operation is begun in the last hour of a session or at any time the practitioner recognises the"
+  },
+  {
+   "ngram": "is a decision that can be revisited",
+   "records": 1,
+   "record_ids": [
+    "sto-c16-u09-k02-y0"
+   ],
+   "record_context": "an instruction a chalk mark with a reason is a decision that can be revisited the first dancer stood and the supervisor knelt",
+   "document_context": "the notes the benefit is that the override is a decision that can be revisited rather than a habit that quietly became the"
+  },
+  {
+   "ngram": "is a sketch of the atlas the",
+   "records": 1,
+   "record_ids": [
+    "sto-c34-u07-k02-y0"
+   ],
+   "record_context": "because a sketch made with the atlas open is a sketch of the atlas the little crater inside the wall had a name",
+   "document_context": "consulted a sketch made after consulting the atlas is a sketch of the atlas the irreversible step in all three is the decision"
+  },
+  {
+   "ngram": "is not the order in which the",
+   "records": 1,
+   "record_ids": [
+    "sto-c12-u02-k16-y0"
+   ],
+   "record_context": "permission the order is not obvious and it is not the order in which the tasks occur to a person the instinct is",
+   "document_context": "the higher ones are exactly balanced the order is not the order in which the properties come up in the great majority of"
+  },
+  {
+   "ngram": "is the difference between a mistake that",
+   "records": 1,
+   "record_ids": [
+    "sto-c43-u05-k04-y1"
+   ],
+   "record_context": "buy five why five because the fifth sheet is the difference between a mistake that costs an afternoon and a mistake that costs",
+   "document_context": "sheet of paper in the pack the spare is the difference between a mistake that costs a piece and a mistake that costs"
+  },
+  {
+   "ngram": "is the one place in the garden",
+   "records": 1,
+   "record_ids": [
+    "sto-c35-u04-k15-y1"
+   ],
+   "record_context": "from the top of the garden steps which is the one place in the garden where the pear wall does not hide the",
+   "document_context": "convenient pruning is the irreversible step and it is the one place in the garden where the practitioner's hand can spoil a year"
+  },
+  {
+   "ngram": "is the only way to learn what",
+   "records": 1,
+   "record_ids": [
+    "sto-c02-u01-k17-y0"
+   ],
+   "record_context": "ribs still snap in that order that comparison is the only way to learn what your own room and your own hands do",
+   "document_context": "first time through follow the procedure exactly this is the only way to learn what it assumes because a procedure never states its"
+  },
+  {
+   "ngram": "is the worst kind of wrong because",
+   "records": 1,
+   "record_ids": [
+    "sto-c43-u04-k12-y0"
+   ],
+   "record_context": "all of them in the same direction which is the worst kind of wrong because they'll agree with each other better to take",
+   "document_context": "being consistently wrong in the same direction which is the worst kind of wrong because the measurements agree with each other and so"
+  },
+  {
+   "ngram": "is wear and wear on a unique",
+   "records": 1,
+   "record_ids": [
+    "sto-c42-u01-k13-y1"
+   ],
+   "record_context": "twice is the thing you hate handling twice is wear and wear on a unique sheet isn't recoverable one pass and everything we",
+   "document_context": "original is handled as little as possible handling is wear and wear on a unique object is drift in a reference that cannot"
+  },
+  {
+   "ngram": "it came from when it was last",
+   "records": 1,
+   "record_ids": [
+    "sto-c32-u03-k17-y1"
+   ],
+   "record_context": "vault position it's in which season and site it came from when it was last tested and how it did and i want",
+   "document_context": "and keep a record of its lineage where it came from when it was last checked and against what the hard case is"
+  },
+  {
+   "ngram": "it cannot be checked because there is",
+   "records": 1,
+   "record_ids": [
+    "sto-c24-u01-k05-y1"
+   ],
+   "record_context": "be held and it can be wanted but it cannot be checked because there is nothing in it that could come out one",
+   "document_context": "for conditions because the conditions are unknown and it cannot be checked because there is nothing to check it against the record of"
+  },
+  {
+   "ngram": "it is the one place in the",
+   "records": 1,
+   "record_ids": [
+    "sto-c26-u04-k09-y0"
+   ],
+   "record_context": "each successive chord eight bars eight voices leaving it is the one place in the movement where the reduction does what the orchestra",
+   "document_context": "is convenient pruning is the irreversible step and it is the one place in the garden where the practitioner's hand can spoil a"
+  },
+  {
+   "ngram": "it is the only one that is",
+   "records": 1,
+   "record_ids": [
+    "sto-c35-u09-k12-y1"
+   ],
+   "record_context": "weeks baling is the weather sensitive one and it is the only one that is weather sensitive in a way that cannot be",
+   "document_context": "of the three that can be negotiated because it is the only one that is a matter of choice rather than of physics"
+  },
+  {
+   "ngram": "marking gauge set from the piece and",
+   "records": 1,
+   "record_ids": [
+    "sto-c09-u09-k16-y0"
+   ],
+   "record_context": "how do i know when i'm at half marking gauge set from the piece and not from a rule scribe from one face",
+   "document_context": "the caliper closed and read for zero the marking gauge set from the piece and not from the rule when the two parts"
+  },
+  {
+   "ngram": "method that shares as little as possible",
+   "records": 1,
+   "record_ids": [
+    "sto-c23-u04-k13-y0"
+   ],
+   "record_context": "end another way meaning what meaning a second method that shares as little as possible with the first headphones don't have your room",
+   "document_context": "the same quantity is established by a second method that shares as little as possible with the first a different instrument a different"
+  },
+  {
+   "ngram": "of flour varies by a fifth depending",
+   "records": 1,
+   "record_ids": [
+    "sto-c01-u02-k01-y0"
+   ],
+   "record_context": "downstream depended on it and because a cup of flour varies by a fifth depending on how it was scooped it gave a",
+   "document_context": "by volume wherever the recipe allows a cup of flour varies by a fifth depending on how it was scooped and a hundred"
+  },
+  {
+   "ngram": "one place in the garden where the",
+   "records": 1,
+   "record_ids": [
+    "sto-c35-u04-k15-y1"
+   ],
+   "record_context": "top of the garden steps which is the one place in the garden where the pear wall does not hide the ridge twenty",
+   "document_context": "is the irreversible step and it is the one place in the garden where the practitioner's hand can spoil a year in a"
+  },
+  {
+   "ngram": "or at the end of a session",
+   "records": 1,
+   "record_ids": [
+    "sto-c24-u04-k11-y0"
+   ],
+   "record_context": "likely when you come to the passage cold or at the end of a session she erased the four the pencil eraser was",
+   "document_context": "once begun the practitioner is not tired hurried or at the end of a session some markers that it has not a measurement"
+  },
+  {
+   "ngram": "reports the setting and not the temperature",
+   "records": 1,
+   "record_ids": [
+    "sto-c00-u00-k11-y0"
+   ],
+   "record_context": "is a thermometer in it because a dial reports the setting and not the temperature and the two are often twenty degrees apart",
+   "document_context": "where the food will sit because the dial reports the setting and not the temperature and the two commonly differ by twenty degrees"
+  },
+  {
+   "ngram": "rule reads to a half millimetre and",
+   "records": 1,
+   "record_ids": [
+    "sto-c15-u03-k01-y0"
+   ],
+   "record_context": "care about least is the absolute number your rule reads to a half millimetre and the spec is finer than that what i",
+   "document_context": "than on cotton the instruments have limits a rule reads to a half millimetre and no finer a kitchen scale drifts when it"
+  },
+  {
+   "ngram": "same direction which is the worst kind",
+   "records": 1,
+   "record_ids": [
+    "sto-c43-u04-k12-y0"
+   ],
+   "record_context": "will run small all of them in the same direction which is the worst kind of wrong because they'll agree with each other",
+   "document_context": "whole session's measurements being consistently wrong in the same direction which is the worst kind of wrong because the measurements agree with each"
+  },
+  {
+   "ngram": "second method that shares as little as",
+   "records": 1,
+   "record_ids": [
+    "sto-c23-u04-k13-y0"
+   ],
+   "record_context": "low end another way meaning what meaning a second method that shares as little as possible with the first headphones don't have your",
+   "document_context": "check the same quantity is established by a second method that shares as little as possible with the first a different instrument a"
+  },
+  {
+   "ngram": "seeds on damp paper in a warm",
+   "records": 1,
+   "record_ids": [
+    "sto-c05-u03-k13-y0"
+   ],
+   "record_context": "won't the usual cheap check is a few seeds on damp paper in a warm room which tells you the seed is alive",
+   "document_context": "tested before the season depends on it ten seeds on damp paper in a warm place tell in a week whether a packet"
+  },
+  {
+   "ngram": "set from the piece and not from",
+   "records": 1,
+   "record_ids": [
+    "sto-c09-u09-k16-y0"
+   ],
+   "record_context": "i know when i'm at half marking gauge set from the piece and not from a rule scribe from one face scribe from",
+   "document_context": "closed and read for zero the marking gauge set from the piece and not from the rule when the two parts must match"
+  },
+  {
+   "ngram": "setting and not the temperature and the",
+   "records": 1,
+   "record_ids": [
+    "sto-c00-u00-k11-y0"
+   ],
+   "record_context": "thermometer in it because a dial reports the setting and not the temperature and the two are often twenty degrees apart there is",
+   "document_context": "food will sit because the dial reports the setting and not the temperature and the two commonly differ by twenty degrees or more"
+  },
+  {
+   "ngram": "slope and the slope is the forecast",
+   "records": 1,
+   "record_ids": [
+    "sto-c36-u05-k15-y0"
+   ],
+   "record_context": "one figure is a number two are a slope and the slope is the forecast wind is light offshore now the month's entries",
+   "document_context": "a number a reading every hour is a slope and the slope is the forecast the same holds for cloud a single sky"
+  },
+  {
+   "ngram": "so that the next reader does not",
+   "records": 1,
+   "record_ids": [
+    "sto-c28-u02-k08-y0"
+   ],
+   "record_context": "it is worth a line in front matter so that the next reader does not take it for your error the radiators had",
+   "document_context": "with the reasoning intact and the adjustment recorded so that the next reader does not have to rediscover it two kinds of step"
+  },
+  {
+   "ngram": "start of a session with the whole",
+   "records": 1,
+   "record_ids": [
+    "sto-c12-u03-k03-y1"
+   ],
+   "record_context": "room went on in the morning at the start of a session with the whole day in front of it not at five",
+   "document_context": "the old version are done fresh at the start of a session with the whole session ahead in which to recover if something"
+  },
+  {
+   "ngram": "step that cannot be undone and cannot",
+   "records": 1,
+   "record_ids": [
+    "sto-c23-u06-k06-y1"
+   ],
+   "record_context": "made during a one chance transfer is a step that cannot be undone and cannot be rehearsed it logged four places where the",
+   "document_context": "a sound result cannot be reached without a step that cannot be undone and cannot be rehearsed in those cases the ordering does"
+  },
+  {
+   "ngram": "that cannot be undone and cannot be",
+   "records": 1,
+   "record_ids": [
+    "sto-c23-u06-k06-y1"
+   ],
+   "record_context": "during a one chance transfer is a step that cannot be undone and cannot be rehearsed it logged four places where the player's",
+   "document_context": "sound result cannot be reached without a step that cannot be undone and cannot be rehearsed in those cases the ordering does not"
+  },
+  {
+   "ngram": "the difference between a mistake that costs",
+   "records": 1,
+   "record_ids": [
+    "sto-c43-u05-k04-y1"
+   ],
+   "record_context": "five why five because the fifth sheet is the difference between a mistake that costs an afternoon and a mistake that costs a",
+   "document_context": "of paper in the pack the spare is the difference between a mistake that costs a piece and a mistake that costs the"
+  },
+  {
+   "ngram": "the difference is the width of the",
+   "records": 1,
+   "record_ids": [
+    "sto-c17-u03-k03-y1"
+   ],
+   "record_context": "falling on the raw edge near enough that the difference is the width of the ruler's printed line itself it closes it closes",
+   "document_context": "a thermometer a scale and a test piece the difference is the width of the tolerance and the cost of being past the"
+  },
+  {
+   "ngram": "the one place in the garden where",
+   "records": 1,
+   "record_ids": [
+    "sto-c35-u04-k15-y1"
+   ],
+   "record_context": "the top of the garden steps which is the one place in the garden where the pear wall does not hide the ridge",
+   "document_context": "pruning is the irreversible step and it is the one place in the garden where the practitioner's hand can spoil a year in"
+  },
+  {
+   "ngram": "the only way to learn what it",
+   "records": 1,
+   "record_ids": [
+    "sto-c33-u00-k09-y1"
+   ],
+   "record_context": "he asked it for and nobody's did and the only way to learn what it did produce was to make it produce something",
+   "document_context": "time through follow the procedure exactly this is the only way to learn what it assumes because a procedure never states its assumptions"
+  },
+  {
+   "ngram": "the scale with the bowl on it",
+   "records": 1,
+   "record_ids": [
+    "sto-c18-u05-k16-y0"
+   ],
+   "record_context": "it a bowl or a plate and zero the scale with the bowl on it first the tare so what you read is",
+   "document_context": "scooped and a hundred grams does not tare the scale with the bowl on it before every ingredient check the oven with a"
+  },
+  {
+   "ngram": "the setting and not the temperature and",
+   "records": 1,
+   "record_ids": [
+    "sto-c00-u00-k11-y0"
+   ],
+   "record_context": "a thermometer in it because a dial reports the setting and not the temperature and the two are often twenty degrees apart there",
+   "document_context": "the food will sit because the dial reports the setting and not the temperature and the two commonly differ by twenty degrees or"
+  },
+  {
+   "ngram": "working to a tighter tolerance than the",
+   "records": 1,
+   "record_ids": [
+    "sto-c16-u07-k08-y0"
+   ],
+   "record_context": "it that feels like cheating it's the opposite working to a tighter tolerance than the job needs costs you an hour and buys",
+   "document_context": "tolerance is really a form of the first working to a tighter tolerance than the purpose requires costs time at every step and"
+  },
+  {
+   "ngram": "wrong and it goes wrong in a",
+   "records": 1,
+   "record_ids": [
+    "sto-c37-u06-k13-y0"
+   ],
+   "record_context": "bed is when trips with small children go wrong and it goes wrong in a fixed order the children stop moving so they",
+   "document_context": "measurement is where careful work most often goes wrong and it goes wrong in a particular way the practitioner takes a reading believes"
+  }
+ ],
+ "summary": {
+  "phrase_hit_records": 8,
+  "phrase_records_total": 694,
+  "value_word_records_total": 499,
+  "shared_ngrams_distinct": 120,
+  "records_with_shared_ngram": 228,
+  "records_with_shared_ngram_frac": 0.014
+ },
+ "run_id": "control-scale-20260903",
+ "document": "constitution-control-v2"
+}

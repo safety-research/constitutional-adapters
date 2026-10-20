@@ -1,0 +1,80 @@
+{
+ "_meta": {
+  "schema": "g8k_store_pins/2",
+  "label": "arditi_allpos (matrix_arditi_allpos.json row 0: qwen35_4b `it` arditi_allpos, the 8,192 leg + its 16,384 rung)",
+  "written": "2026-09-17",
+  "what": "per-LEG admitted producer tree (--store-pins): the tree whose store is the PRODUCTION one for the row, from LAUNCH RECORDS (never read off the stores); superseded / set-aside stores are never admitted",
+  "note": "read TOGETHER with store_pins_default.json in the matrix-union read (the published `it` anchor's pin lives there): `--matrix matrix.json --matrix matrix_arditi_allpos.json --store-pins store_pins_default.json --store-pins store_pins_arditi_allpos.json`, the shape final_itdoc_pins_r3 used for the it-doc matrix. The cell is Scale's Qwen ALL-POSITIONS Arditi refusal direction (paper_arm arditi_allpos, object kind vector_all, dose c = 0.3 as a raw coefficient: the DECLARED OVERRIDE over the 10 pp over-refusal budget, selection outcome user_override_over_budget_2026-09-16), served NATIVELY on the graph-captured residual slot (lora_native) in both legs; target qwen35_4b, view it. It is NOT the `arditi` cell (kind static_r, an alpha dose, the main view, pinned in store_pins_default.json) and is never pooled with or relabelled as that slot. _meta.serving_engine_by_leg is deliberately ABSENT here: stamp_store_pins_engines.py --launcher gsm8k --matrix arditi_allpos derives it from the PULLED stores (never typed), bumping the schema to /2; until then the launchers refuse these legs by name (refused:record-engine-unknown) rather than relaunch a known store on a guessed engine.",
+  "trees": {
+   "allpos": "dfd09294c8b27dad901b673f9cd72d778f00f75a"
+  },
+  "sources_by_tree": {
+   "allpos": "LAUNCH RECORDS on the primary cluster; both legs ran from the checkout <SHARED>/sisteer-eval-repo/dfd09294c8b27dad901b673f9cd72d778f00f75a/ (git rev-parse HEAD == dfd09294c8b27dad901b673f9cd72d778f00f75a; the coordinator's log: resubmit 3 of 3, the suite + both prod dry runs certified at this sha; main's merge commit of PR #190 is NOT the producer tree). The 8,192 leg = job 544615 (g8k-fitted, ArrayTaskId 0, QoS high), COMPLETED 17:45:42Z 2026-09-17 (200/200, accuracy 0.969, at_cap 2 % -> the rung owed), standup record serving/g8k_qwen35_4b_it_arditi_allpos_8192_544615/gsm8k/standup_jobs.jsonl under the wave root (`sha` dfd09294c8b27dad901b673f9cd72d778f00f75a, `engine` lora_native, `serving_path` lora_native, written 2026-09-17T17:41:23Z; serving_path_selection: 1 of 1 steered cells natively servable). The 16,384 rung = job 544730 (g8k-rung-first, ArrayTaskId 0, QoS high; ladder planner 544719 escalate n=1), COMPLETED 17:58:25Z, its sbatch Command the same checkout's gsm8k_thinking.sbatch `ARRAY dfd09294c8b27dad901b673f9cd72d778f00f75a 16384 arditi_allpos`, standup record serving/g8k_qwen35_4b_it_arditi_allpos_16384_544730/gsm8k/standup_jobs.jsonl (`sha` dfd09294c8b27dad901b673f9cd72d778f00f75a, `engine` lora_native, written 2026-09-17T17:56:06Z). Stores: controls_allpos/qwen35_4b_it/arditi_allpos/thinking_card and thinking_card__rung16384. The earlier attempts' serving dirs under the same wave root (\u2026_8192_543827, _543872, _544310) are the submissions before resubmit 3 of 3 and are NOT admitted; the pin is the LAUNCH tree from the launch record, never read off a store."
+  },
+  "source_by_leg": {
+   "qwen35_4b/it/arditi_allpos@16384": "allpos",
+   "qwen35_4b/it/arditi_allpos@8192": "allpos"
+  },
+  "serving_engine_source": "_meta.serving_engine_by_leg: each admitted STEER leg's serving engine (lens | lora_native), DERIVED by scripts/sdfbase/full22/stamp_store_pins_engines.py from the leg's PULLED store (evidence.json / cells/*/manifest.json route: serving_identity + serving_engine stamp; steer_store_pin.read_store_engines), the store's producer tree verified equal to the leg's pin; read by the launchers' serving-path pin (g8k_cells.serving_path_pin / math500 cells.serving_path_pin) as the PINS source of 'a store on record' beside the launching cluster's disk \u2014 the pin follows the store (2026-09-15/16)",
+  "serving_engine_by_leg": {
+   "qwen35_4b/it/arditi_allpos@16384": {
+    "engine": "lora_native",
+    "producer_tree_sha": "dfd09294c8b27dad901b673f9cd72d778f00f75a",
+    "pulled_store": "pull_allpos_dfd0929/controls_allpos/qwen35_4b_it/arditi_allpos/thinking_card__rung16384",
+    "readings": [
+     [
+      "evidence.json",
+      "serving_identity",
+      "proxy_vllm+lora+interleaved"
+     ],
+     [
+      "cells/arditi_allpos__controls__t0__a0__92b66dce__fab9ffc1/manifest.json",
+      "route.serving_identity",
+      "proxy_vllm+lora+interleaved"
+     ],
+     [
+      "cells/arditi_allpos__controls__t0__a0__92b66dce__fab9ffc1/manifest.json",
+      "route.serving_engine",
+      "lora_native"
+     ],
+     [
+      "cells/arditi_allpos__controls__t0__a0__92b66dce__fab9ffc1/evidence.json",
+      "serving_identity",
+      "proxy_vllm+lora+interleaved"
+     ]
+    ],
+    "stamped": "2026-09-17"
+   },
+   "qwen35_4b/it/arditi_allpos@8192": {
+    "engine": "lora_native",
+    "producer_tree_sha": "dfd09294c8b27dad901b673f9cd72d778f00f75a",
+    "pulled_store": "pull_allpos_dfd0929/controls_allpos/qwen35_4b_it/arditi_allpos/thinking_card",
+    "readings": [
+     [
+      "evidence.json",
+      "serving_identity",
+      "proxy_vllm+lora+interleaved"
+     ],
+     [
+      "cells/arditi_allpos__controls__t0__a0__92b66dce__aa41f940/manifest.json",
+      "route.serving_identity",
+      "proxy_vllm+lora+interleaved"
+     ],
+     [
+      "cells/arditi_allpos__controls__t0__a0__92b66dce__aa41f940/manifest.json",
+      "route.serving_engine",
+      "lora_native"
+     ],
+     [
+      "cells/arditi_allpos__controls__t0__a0__92b66dce__aa41f940/evidence.json",
+      "serving_identity",
+      "proxy_vllm+lora+interleaved"
+     ]
+    ],
+    "stamped": "2026-09-17"
+   }
+  }
+ },
+ "qwen35_4b/it/arditi_allpos@16384": "dfd09294c8b27dad901b673f9cd72d778f00f75a",
+ "qwen35_4b/it/arditi_allpos@8192": "dfd09294c8b27dad901b673f9cd72d778f00f75a"
+}

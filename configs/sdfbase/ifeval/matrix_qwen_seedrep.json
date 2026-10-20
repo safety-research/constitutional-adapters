@@ -1,0 +1,3620 @@
+{
+ "schema": "ifeval_matrix/1",
+ "generated_by": "scripts/sdfbase/ifeval/make_ifeval_matrix.py (if_views.select_rows)",
+ "experiment": "ifeval-canonical-battery",
+ "task": "inspect/ifeval",
+ "control": "ifeval",
+ "n_items": 541,
+ "samples_per_item": 2,
+ "thinking": "off",
+ "sampling_mode": "vendor_preset",
+ "caps": [
+  2048,
+  4096,
+  8192
+ ],
+ "trigger_threshold": 0.01,
+ "trigger_rule": "trigger iff n_at_cap_draws / n_draws > 0.01 (at-cap = stop_reason == max_tokens at the request's cap; draws = items x trials); redraw the truncated draws = at_cap - loop (boundary included, reported); ladder 2048 -> 4096 -> 8192; no rung above",
+ "trigger_provenance": "1 % raw at-cap of draws, per the IFEval ruling",
+ "seed_rule": "sha256(f'{20260909}|{trial}|ifeval|{item_key}')[:4] big-endian (no modulus); trial = sample_idx; item_key = the Inspect sample id",
+ "views_spec": "qwen35_4b=s1,s2,s3,s1p,s2p,s3p",
+ "views": {
+  "qwen35_4b": [
+   "s1",
+   "s2",
+   "s3",
+   "s1p",
+   "s2p",
+   "s3p"
+  ]
+ },
+ "holds": [],
+ "policy": {
+  "exclude": [],
+  "prompted_extra": [],
+  "deferred": [],
+  "anchor_view": {
+   "s1p": "s1",
+   "s2p": "s2",
+   "s3p": "s3"
+  },
+  "view_cells": {
+   "s1p": [
+    "constv2-mix-full__psr_ce_all_minus_ctl"
+   ],
+   "s2p": [
+    "constv2-mix-full__psr_ce_all_minus_ctl"
+   ],
+   "s3p": [
+    "constv2-mix-full__psr_ce_all_minus_ctl"
+   ]
+  },
+  "lane_extra": [
+   {
+    "key": "qwen35_4b",
+    "view": "s1",
+    "cell": "arditi_allpos",
+    "staged_id": "ar_c0p3__arditi_allpos",
+    "pins": "configs/arditi_allpos_pins.json",
+    "bank": "ar_c0p3",
+    "sidecar": "fit_provenance.json",
+    "reason": "2026-09-22: the Arditi refusal-steer IS required on every capability eval, as on GSM8K \u2014 the all-positions direction at c = 0.3 (ar_c0p3) served on the seed-1 engine beside the seed's eight arms."
+   },
+   {
+    "key": "qwen35_4b",
+    "view": "s2",
+    "cell": "arditi_allpos",
+    "staged_id": "ar_c0p3__arditi_allpos",
+    "pins": "configs/arditi_allpos_pins.json",
+    "bank": "ar_c0p3",
+    "sidecar": "fit_provenance.json",
+    "reason": "The same object on the seed-2 engine (the object does not vary with the seed; the seed view's anchor does)."
+   },
+   {
+    "key": "qwen35_4b",
+    "view": "s3",
+    "cell": "arditi_allpos",
+    "staged_id": "ar_c0p3__arditi_allpos",
+    "pins": "configs/arditi_allpos_pins.json",
+    "bank": "ar_c0p3",
+    "sidecar": "fit_provenance.json",
+    "reason": "The same object on the seed-3 engine."
+   }
+  ],
+  "serving_path": "lora_native"
+ },
+ "prompt_classes": {
+  "short": {
+   "2048": "capability:ifeval_2048",
+   "4096": "capability:ifeval_4096",
+   "8192": "capability:ifeval_8192"
+  },
+  "long_si": {
+   "2048": "capability:ifeval_longsi_2048",
+   "4096": "capability:ifeval_longsi_4096",
+   "8192": "capability:ifeval_longsi_8192"
+  }
+ },
+ "source": {
+  "views_yaml": "configs/sdfbase/ifeval/views_qwen_seedrep.yaml",
+  "roster": "configs/sdfbase_full22_roster.yaml",
+  "roster_sha256": "5d1c37f8a9ba6a9fa52983268fb7e578bea944de581f79514535bdc65ce8e2a0",
+  "roster_overlay": null,
+  "roster_overlay_sha256": null,
+  "pins": "configs/sdfbase_full22_pins.json",
+  "pins_sha256": "afdda5edf68241b9cf7cbca50ee287b9d716269941fbdc6bc8555b71dfd43152",
+  "pins_overlay": null,
+  "pins_overlay_sha256": null,
+  "frozen_inputs": {
+   "roster": "configs/sdfbase/ifeval/frozen/7b71cb2d/sdfbase_full22_roster.yaml",
+   "pins": "configs/sdfbase/ifeval/frozen/7b71cb2d/sdfbase_full22_pins.json",
+   "roster_sha256": "5d1c37f8a9ba6a9fa52983268fb7e578bea944de581f79514535bdc65ce8e2a0",
+   "pins_sha256": "afdda5edf68241b9cf7cbca50ee287b9d716269941fbdc6bc8555b71dfd43152"
+  }
+ },
+ "slugs": {
+  "qwen35_4b-sdfbase-s1": {
+   "model_key": "qwen35_4b",
+   "view": "s1"
+  },
+  "qwen35_4b-sdfbase-s2": {
+   "model_key": "qwen35_4b",
+   "view": "s2"
+  },
+  "qwen35_4b-sdfbase-s3": {
+   "model_key": "qwen35_4b",
+   "view": "s3"
+  },
+  "qwen35_4b-sdfbase-s1p": {
+   "model_key": "qwen35_4b",
+   "view": "s1p"
+  },
+  "qwen35_4b-sdfbase-s2p": {
+   "model_key": "qwen35_4b",
+   "view": "s2p"
+  },
+  "qwen35_4b-sdfbase-s3p": {
+   "model_key": "qwen35_4b",
+   "view": "s3p"
+  }
+ },
+ "serving_path": "lora_native",
+ "counts": {
+  "rows": 30,
+  "held": 0,
+  "launched": 30,
+  "deferred": 0,
+  "fitted": 21,
+  "fitted_launched": 21,
+  "in_support": 9,
+  "prompted_constitution": 3,
+  "prompted_safety": 3,
+  "header_located": 0,
+  "declared": 0,
+  "contrasts_designed": 27,
+  "tags": [
+   "qwen35_4b_s1",
+   "qwen35_4b_s2",
+   "qwen35_4b_s3",
+   "qwen35_4b_s1p",
+   "qwen35_4b_s2p",
+   "qwen35_4b_s3p"
+  ],
+  "n_tags": 6,
+  "slugs": [
+   "qwen35_4b-sdfbase-s1",
+   "qwen35_4b-sdfbase-s2",
+   "qwen35_4b-sdfbase-s3",
+   "qwen35_4b-sdfbase-s1p",
+   "qwen35_4b-sdfbase-s2p",
+   "qwen35_4b-sdfbase-s3p"
+  ],
+  "n_slugs": 6,
+  "by_tag": {
+   "qwen35_4b_s1": {
+    "rows": 9,
+    "held": 0,
+    "launched": 9,
+    "deferred": 0
+   },
+   "qwen35_4b_s2": {
+    "rows": 9,
+    "held": 0,
+    "launched": 9,
+    "deferred": 0
+   },
+   "qwen35_4b_s3": {
+    "rows": 9,
+    "held": 0,
+    "launched": 9,
+    "deferred": 0
+   },
+   "qwen35_4b_s1p": {
+    "rows": 1,
+    "held": 0,
+    "launched": 1,
+    "deferred": 0
+   },
+   "qwen35_4b_s2p": {
+    "rows": 1,
+    "held": 0,
+    "launched": 1,
+    "deferred": 0
+   },
+   "qwen35_4b_s3p": {
+    "rows": 1,
+    "held": 0,
+    "launched": 1,
+    "deferred": 0
+   }
+  },
+  "by_model": {
+   "qwen35_4b": {
+    "launched": 30,
+    "held": 0,
+    "deferred": 0
+   }
+  },
+  "by_model_view": {
+   "qwen35_4b/s1": {
+    "launched": 9,
+    "held": 0,
+    "deferred": 0
+   },
+   "qwen35_4b/s2": {
+    "launched": 9,
+    "held": 0,
+    "deferred": 0
+   },
+   "qwen35_4b/s3": {
+    "launched": 9,
+    "held": 0,
+    "deferred": 0
+   },
+   "qwen35_4b/s1p": {
+    "launched": 1,
+    "held": 0,
+    "deferred": 0
+   },
+   "qwen35_4b/s2p": {
+    "launched": 1,
+    "held": 0,
+    "deferred": 0
+   },
+   "qwen35_4b/s3p": {
+    "launched": 1,
+    "held": 0,
+    "deferred": 0
+   }
+  },
+  "held_rows": [],
+  "deferred_rows": [],
+  "distinct_paths": 510,
+  "n_paths": 510,
+  "distinct_out_roots": 30,
+  "pins": {
+   "qwen35_4b": 21
+  },
+  "unpinned_deferred": 0,
+  "families": [
+   "qwen3_5"
+  ],
+  "images": [
+   "default"
+  ],
+  "models": [
+   "qwen35_4b"
+  ],
+  "two_view_models": []
+ },
+ "contrasts": {
+  "contrasts": [
+   "cell_minus_none",
+   "none_it_minus_none_main",
+   "merged_minus_r2048"
+  ],
+  "cell_minus_none": {
+   "n": 27,
+   "n_resolved": 27,
+   "legs": [
+    {
+     "model_key": "qwen35_4b",
+     "view": "s1",
+     "cell": "constv2-mix-full__psr_ce_all",
+     "anchor": true
+    },
+    {
+     "model_key": "qwen35_4b",
+     "view": "s1",
+     "cell": "constv2-mix-full__lora_r4_ce",
+     "anchor": true
+    },
+    {
+     "model_key": "qwen35_4b",
+     "view": "s1",
+     "cell": "constv2ctl2-full__psr_ce_all",
+     "anchor": true
+    },
+    {
+     "model_key": "qwen35_4b",
+     "view": "s1",
+     "cell": "constv2ctl2-full__lora_r4_ce",
+     "anchor": true
+    },
+    {
+     "model_key": "qwen35_4b",
+     "view": "s1",
+     "cell": "constv2-mix-full__lora_r4_ce_minus_ctl",
+     "anchor": true
+    },
+    {
+     "model_key": "qwen35_4b",
+     "view": "s1",
+     "cell": "prompted__safety_refusal",
+     "anchor": true
+    },
+    {
+     "model_key": "qwen35_4b",
+     "view": "s1",
+     "cell": "prompted__si_constitution",
+     "anchor": true
+    },
+    {
+     "model_key": "qwen35_4b",
+     "view": "s2",
+     "cell": "constv2-mix-full__psr_ce_all",
+     "anchor": true
+    },
+    {
+     "model_key": "qwen35_4b",
+     "view": "s2",
+     "cell": "constv2-mix-full__lora_r4_ce",
+     "anchor": true
+    },
+    {
+     "model_key": "qwen35_4b",
+     "view": "s2",
+     "cell": "constv2ctl2-full__psr_ce_all",
+     "anchor": true
+    },
+    {
+     "model_key": "qwen35_4b",
+     "view": "s2",
+     "cell": "constv2ctl2-full__lora_r4_ce",
+     "anchor": true
+    },
+    {
+     "model_key": "qwen35_4b",
+     "view": "s2",
+     "cell": "constv2-mix-full__lora_r4_ce_minus_ctl",
+     "anchor": true
+    },
+    {
+     "model_key": "qwen35_4b",
+     "view": "s2",
+     "cell": "prompted__safety_refusal",
+     "anchor": true
+    },
+    {
+     "model_key": "qwen35_4b",
+     "view": "s2",
+     "cell": "prompted__si_constitution",
+     "anchor": true
+    },
+    {
+     "model_key": "qwen35_4b",
+     "view": "s3",
+     "cell": "constv2-mix-full__psr_ce_all",
+     "anchor": true
+    },
+    {
+     "model_key": "qwen35_4b",
+     "view": "s3",
+     "cell": "constv2-mix-full__lora_r4_ce",
+     "anchor": true
+    },
+    {
+     "model_key": "qwen35_4b",
+     "view": "s3",
+     "cell": "constv2ctl2-full__psr_ce_all",
+     "anchor": true
+    },
+    {
+     "model_key": "qwen35_4b",
+     "view": "s3",
+     "cell": "constv2ctl2-full__lora_r4_ce",
+     "anchor": true
+    },
+    {
+     "model_key": "qwen35_4b",
+     "view": "s3",
+     "cell": "constv2-mix-full__lora_r4_ce_minus_ctl",
+     "anchor": true
+    },
+    {
+     "model_key": "qwen35_4b",
+     "view": "s3",
+     "cell": "prompted__safety_refusal",
+     "anchor": true
+    },
+    {
+     "model_key": "qwen35_4b",
+     "view": "s3",
+     "cell": "prompted__si_constitution",
+     "anchor": true
+    },
+    {
+     "model_key": "qwen35_4b",
+     "view": "s1p",
+     "cell": "constv2-mix-full__psr_ce_all_minus_ctl",
+     "anchor_view": "s1",
+     "anchor": true
+    },
+    {
+     "model_key": "qwen35_4b",
+     "view": "s2p",
+     "cell": "constv2-mix-full__psr_ce_all_minus_ctl",
+     "anchor_view": "s2",
+     "anchor": true
+    },
+    {
+     "model_key": "qwen35_4b",
+     "view": "s3p",
+     "cell": "constv2-mix-full__psr_ce_all_minus_ctl",
+     "anchor_view": "s3",
+     "anchor": true
+    },
+    {
+     "model_key": "qwen35_4b",
+     "view": "s1",
+     "cell": "arditi_allpos",
+     "anchor": true
+    },
+    {
+     "model_key": "qwen35_4b",
+     "view": "s2",
+     "cell": "arditi_allpos",
+     "anchor": true
+    },
+    {
+     "model_key": "qwen35_4b",
+     "view": "s3",
+     "cell": "arditi_allpos",
+     "anchor": true
+    }
+   ]
+  },
+  "none_it_minus_none_main": {
+   "models_with_floor": [],
+   "models_without_floor": [
+    "qwen35_4b"
+   ]
+  },
+  "merged_minus_r2048": {
+   "conditional_on": "a promoted cell (its pass-1 leg is its own anchor)"
+  },
+  "deferred_legs": [],
+  "unresolved": []
+ },
+ "rows": [
+  {
+   "index": 0,
+   "job_id": "ife-qwen35_4b-s1-none",
+   "model_key": "qwen35_4b",
+   "view": "s1",
+   "tag": "qwen35_4b_s1",
+   "slug": "qwen35_4b-sdfbase-s1",
+   "cell": "none",
+   "cell_slug": "none",
+   "harness_cell": "none",
+   "standup_cell": "none",
+   "standup_harness_cell": "none",
+   "staged_id": null,
+   "object_sha256": null,
+   "pin": {
+    "kind": "none",
+    "object_sha256": null
+   },
+   "fitted": false,
+   "route_kind": "base",
+   "header_located": false,
+   "served_positions_expected": null,
+   "declared": false,
+   "thinking": "off",
+   "sampling_mode": "vendor_preset",
+   "sampling": {
+    "temperature": 0.7,
+    "top_p": 0.8,
+    "top_k": 20,
+    "min_p": 0.0,
+    "presence_penalty": 1.5,
+    "repetition_penalty": 1.0,
+    "source": "Qwen/Qwen3.5-4B @ 851bf6e8 ships no generation_config.json; the vendor's INSTRUCT (non-thinking) general row \u2014 QWEN35_VENDOR_ROWS['instruct_general'] by reference (P3): temperature 0.7, top_p 0.8, top_k 20, min_p 0.0, presence_penalty 1.5 (SENT PER REQUEST \u2014 not server-defaultable), repetition_penalty 1.0 (the card's stated no-op)"
+   },
+   "samples_per_item": 2,
+   "expected_stamps": [
+    "cell-stable",
+    "not-consulted",
+    "thinking_off"
+   ],
+   "cap": 2048,
+   "caps": [
+    2048,
+    4096,
+    8192
+   ],
+   "cap_ceiling": 8192,
+   "trigger_threshold": 0.01,
+   "trigger_provenance": "1 % raw at-cap of draws, per the IFEval ruling",
+   "prompt_class": "short",
+   "si_text_sha256": null,
+   "geometry_eval_by_cap": {
+    "2048": "capability:ifeval_2048",
+    "4096": "capability:ifeval_4096",
+    "8192": "capability:ifeval_8192"
+   },
+   "out_root": "controls/qwen35_4b_s1/none/vendor_preset",
+   "rung_out_roots": {
+    "4096": "controls/qwen35_4b_s1/none/vendor_preset__rung4096",
+    "8192": "controls/qwen35_4b_s1/none/vendor_preset__rung8192"
+   },
+   "subset_paths": {
+    "4096": "rung4096/qwen35_4b_s1/none/rung_subset.json",
+    "8192": "rung8192/qwen35_4b_s1/none/rung_subset.json"
+   },
+   "cap_ladder_paths": {
+    "2048": "controls/qwen35_4b_s1/none/vendor_preset/cap_ladder.json",
+    "4096": "controls/qwen35_4b_s1/none/vendor_preset__rung4096/cap_ladder.json",
+    "8192": "controls/qwen35_4b_s1/none/vendor_preset__rung8192/cap_ladder.json"
+   },
+   "ladder_state_paths": {
+    "2048": "controls/qwen35_4b_s1/none/vendor_preset/ladder_state.json",
+    "4096": "controls/qwen35_4b_s1/none/vendor_preset__rung4096/ladder_state.json",
+    "8192": "controls/qwen35_4b_s1/none/vendor_preset__rung8192/ladder_state.json"
+   },
+   "budget_paths": {
+    "2048": "budgets/qwen35_4b_s1/none/2048/oos_prompt_budget.json",
+    "4096": "budgets/qwen35_4b_s1/none/4096/oos_prompt_budget.json",
+    "8192": "budgets/qwen35_4b_s1/none/8192/oos_prompt_budget.json"
+   },
+   "dispatch_paths": {
+    "2048": "dispatch/qwen35_4b_s1/none/rung2048.json",
+    "4096": "dispatch/qwen35_4b_s1/none/rung4096.json",
+    "8192": "dispatch/qwen35_4b_s1/none/rung8192.json"
+   },
+   "configuration_ids": {
+    "2048": "qwen35_4b_s1/none/rung2048",
+    "4096": "qwen35_4b_s1/none/rung4096",
+    "8192": "qwen35_4b_s1/none/rung8192"
+   },
+   "budget_class": "none",
+   "config": "configs/sdfbase/ifeval/sdfbase_full22_qwen35_4b_s1.ifeval.yaml",
+   "manifest": "configs/capeval/manifests/petri_full22_qwen35_4b_s1.ifeval.yaml",
+   "hf": "Qwen/Qwen3.5-4B",
+   "rev": "851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a",
+   "family": "qwen3_5",
+   "image": "default",
+   "status": "launch",
+   "held_reason": null,
+   "deferred": null,
+   "serving_path": "lora_native"
+  },
+  {
+   "index": 1,
+   "job_id": "ife-qwen35_4b-s1-mix-psr",
+   "model_key": "qwen35_4b",
+   "view": "s1",
+   "tag": "qwen35_4b_s1",
+   "slug": "qwen35_4b-sdfbase-s1",
+   "cell": "constv2-mix-full__psr_ce_all",
+   "cell_slug": "constv2-mix-full--psr_ce_all",
+   "harness_cell": "si_constv2_mix_full__psr_ce_all",
+   "standup_cell": "constv2-mix-full__psr_ce_all",
+   "standup_harness_cell": "si_constv2_mix_full__psr_ce_all",
+   "staged_id": "base64s1__constv2-mix-full__psr_ce_all",
+   "object_sha256": "7b87767d91bd9787d22a23a80a5e78c53d16b506cc25e4d9483f74e88238fda1",
+   "pin": {
+    "kind": "roster",
+    "object_sha256": "7b87767d91bd9787d22a23a80a5e78c53d16b506cc25e4d9483f74e88238fda1",
+    "source": "configs/sdfbase_full22_pins.json",
+    "source_sha256": "afdda5edf68241b9cf7cbca50ee287b9d716269941fbdc6bc8555b71dfd43152",
+    "staged_id": "base64s1__constv2-mix-full__psr_ce_all"
+   },
+   "fitted": true,
+   "route_kind": "lens",
+   "header_located": false,
+   "served_positions_expected": "all",
+   "declared": false,
+   "thinking": "off",
+   "sampling_mode": "vendor_preset",
+   "sampling": {
+    "temperature": 0.7,
+    "top_p": 0.8,
+    "top_k": 20,
+    "min_p": 0.0,
+    "presence_penalty": 1.5,
+    "repetition_penalty": 1.0,
+    "source": "Qwen/Qwen3.5-4B @ 851bf6e8 ships no generation_config.json; the vendor's INSTRUCT (non-thinking) general row \u2014 QWEN35_VENDOR_ROWS['instruct_general'] by reference (P3): temperature 0.7, top_p 0.8, top_k 20, min_p 0.0, presence_penalty 1.5 (SENT PER REQUEST \u2014 not server-defaultable), repetition_penalty 1.0 (the card's stated no-op)"
+   },
+   "samples_per_item": 2,
+   "expected_stamps": [
+    "cell-stable",
+    "always",
+    "thinking_off"
+   ],
+   "cap": 2048,
+   "caps": [
+    2048,
+    4096,
+    8192
+   ],
+   "cap_ceiling": 8192,
+   "trigger_threshold": 0.01,
+   "trigger_provenance": "1 % raw at-cap of draws, per the IFEval ruling",
+   "prompt_class": "short",
+   "si_text_sha256": null,
+   "geometry_eval_by_cap": {
+    "2048": "capability:ifeval_2048",
+    "4096": "capability:ifeval_4096",
+    "8192": "capability:ifeval_8192"
+   },
+   "out_root": "controls/qwen35_4b_s1/constv2-mix-full--psr_ce_all/vendor_preset",
+   "rung_out_roots": {
+    "4096": "controls/qwen35_4b_s1/constv2-mix-full--psr_ce_all/vendor_preset__rung4096",
+    "8192": "controls/qwen35_4b_s1/constv2-mix-full--psr_ce_all/vendor_preset__rung8192"
+   },
+   "subset_paths": {
+    "4096": "rung4096/qwen35_4b_s1/constv2-mix-full--psr_ce_all/rung_subset.json",
+    "8192": "rung8192/qwen35_4b_s1/constv2-mix-full--psr_ce_all/rung_subset.json"
+   },
+   "cap_ladder_paths": {
+    "2048": "controls/qwen35_4b_s1/constv2-mix-full--psr_ce_all/vendor_preset/cap_ladder.json",
+    "4096": "controls/qwen35_4b_s1/constv2-mix-full--psr_ce_all/vendor_preset__rung4096/cap_ladder.json",
+    "8192": "controls/qwen35_4b_s1/constv2-mix-full--psr_ce_all/vendor_preset__rung8192/cap_ladder.json"
+   },
+   "ladder_state_paths": {
+    "2048": "controls/qwen35_4b_s1/constv2-mix-full--psr_ce_all/vendor_preset/ladder_state.json",
+    "4096": "controls/qwen35_4b_s1/constv2-mix-full--psr_ce_all/vendor_preset__rung4096/ladder_state.json",
+    "8192": "controls/qwen35_4b_s1/constv2-mix-full--psr_ce_all/vendor_preset__rung8192/ladder_state.json"
+   },
+   "budget_paths": {
+    "2048": "budgets/qwen35_4b_s1/constv2-mix-full--psr_ce_all/2048/oos_prompt_budget.json",
+    "4096": "budgets/qwen35_4b_s1/constv2-mix-full--psr_ce_all/4096/oos_prompt_budget.json",
+    "8192": "budgets/qwen35_4b_s1/constv2-mix-full--psr_ce_all/8192/oos_prompt_budget.json"
+   },
+   "dispatch_paths": {
+    "2048": "dispatch/qwen35_4b_s1/constv2-mix-full--psr_ce_all/rung2048.json",
+    "4096": "dispatch/qwen35_4b_s1/constv2-mix-full--psr_ce_all/rung4096.json",
+    "8192": "dispatch/qwen35_4b_s1/constv2-mix-full--psr_ce_all/rung8192.json"
+   },
+   "configuration_ids": {
+    "2048": "qwen35_4b_s1/constv2-mix-full--psr_ce_all/rung2048",
+    "4096": "qwen35_4b_s1/constv2-mix-full--psr_ce_all/rung4096",
+    "8192": "qwen35_4b_s1/constv2-mix-full--psr_ce_all/rung8192"
+   },
+   "budget_class": "none",
+   "config": "configs/sdfbase/ifeval/sdfbase_full22_qwen35_4b_s1.ifeval.yaml",
+   "manifest": "configs/capeval/manifests/petri_full22_qwen35_4b_s1.ifeval.yaml",
+   "hf": "Qwen/Qwen3.5-4B",
+   "rev": "851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a",
+   "family": "qwen3_5",
+   "image": "default",
+   "status": "launch",
+   "held_reason": null,
+   "deferred": null,
+   "serving_path": "lora_native"
+  },
+  {
+   "index": 2,
+   "job_id": "ife-qwen35_4b-s1-mix-lora",
+   "model_key": "qwen35_4b",
+   "view": "s1",
+   "tag": "qwen35_4b_s1",
+   "slug": "qwen35_4b-sdfbase-s1",
+   "cell": "constv2-mix-full__lora_r4_ce",
+   "cell_slug": "constv2-mix-full--lora_r4_ce",
+   "harness_cell": "si_constv2_mix_full__lora_r4_ce",
+   "standup_cell": "constv2-mix-full__lora_r4_ce",
+   "standup_harness_cell": "si_constv2_mix_full__lora_r4_ce",
+   "staged_id": "base64s1__constv2-mix-full__lora_r4_ce",
+   "object_sha256": "8be1e1a7ab36f3f65557f7835a30c6b8f18143c781fbf7fb312a5cc7a6e08871",
+   "pin": {
+    "kind": "roster",
+    "object_sha256": "8be1e1a7ab36f3f65557f7835a30c6b8f18143c781fbf7fb312a5cc7a6e08871",
+    "source": "configs/sdfbase_full22_pins.json",
+    "source_sha256": "afdda5edf68241b9cf7cbca50ee287b9d716269941fbdc6bc8555b71dfd43152",
+    "staged_id": "base64s1__constv2-mix-full__lora_r4_ce"
+   },
+   "fitted": true,
+   "route_kind": "lens",
+   "header_located": false,
+   "served_positions_expected": "all",
+   "declared": false,
+   "thinking": "off",
+   "sampling_mode": "vendor_preset",
+   "sampling": {
+    "temperature": 0.7,
+    "top_p": 0.8,
+    "top_k": 20,
+    "min_p": 0.0,
+    "presence_penalty": 1.5,
+    "repetition_penalty": 1.0,
+    "source": "Qwen/Qwen3.5-4B @ 851bf6e8 ships no generation_config.json; the vendor's INSTRUCT (non-thinking) general row \u2014 QWEN35_VENDOR_ROWS['instruct_general'] by reference (P3): temperature 0.7, top_p 0.8, top_k 20, min_p 0.0, presence_penalty 1.5 (SENT PER REQUEST \u2014 not server-defaultable), repetition_penalty 1.0 (the card's stated no-op)"
+   },
+   "samples_per_item": 2,
+   "expected_stamps": [
+    "cell-stable",
+    "always",
+    "thinking_off"
+   ],
+   "cap": 2048,
+   "caps": [
+    2048,
+    4096,
+    8192
+   ],
+   "cap_ceiling": 8192,
+   "trigger_threshold": 0.01,
+   "trigger_provenance": "1 % raw at-cap of draws, per the IFEval ruling",
+   "prompt_class": "short",
+   "si_text_sha256": null,
+   "geometry_eval_by_cap": {
+    "2048": "capability:ifeval_2048",
+    "4096": "capability:ifeval_4096",
+    "8192": "capability:ifeval_8192"
+   },
+   "out_root": "controls/qwen35_4b_s1/constv2-mix-full--lora_r4_ce/vendor_preset",
+   "rung_out_roots": {
+    "4096": "controls/qwen35_4b_s1/constv2-mix-full--lora_r4_ce/vendor_preset__rung4096",
+    "8192": "controls/qwen35_4b_s1/constv2-mix-full--lora_r4_ce/vendor_preset__rung8192"
+   },
+   "subset_paths": {
+    "4096": "rung4096/qwen35_4b_s1/constv2-mix-full--lora_r4_ce/rung_subset.json",
+    "8192": "rung8192/qwen35_4b_s1/constv2-mix-full--lora_r4_ce/rung_subset.json"
+   },
+   "cap_ladder_paths": {
+    "2048": "controls/qwen35_4b_s1/constv2-mix-full--lora_r4_ce/vendor_preset/cap_ladder.json",
+    "4096": "controls/qwen35_4b_s1/constv2-mix-full--lora_r4_ce/vendor_preset__rung4096/cap_ladder.json",
+    "8192": "controls/qwen35_4b_s1/constv2-mix-full--lora_r4_ce/vendor_preset__rung8192/cap_ladder.json"
+   },
+   "ladder_state_paths": {
+    "2048": "controls/qwen35_4b_s1/constv2-mix-full--lora_r4_ce/vendor_preset/ladder_state.json",
+    "4096": "controls/qwen35_4b_s1/constv2-mix-full--lora_r4_ce/vendor_preset__rung4096/ladder_state.json",
+    "8192": "controls/qwen35_4b_s1/constv2-mix-full--lora_r4_ce/vendor_preset__rung8192/ladder_state.json"
+   },
+   "budget_paths": {
+    "2048": "budgets/qwen35_4b_s1/constv2-mix-full--lora_r4_ce/2048/oos_prompt_budget.json",
+    "4096": "budgets/qwen35_4b_s1/constv2-mix-full--lora_r4_ce/4096/oos_prompt_budget.json",
+    "8192": "budgets/qwen35_4b_s1/constv2-mix-full--lora_r4_ce/8192/oos_prompt_budget.json"
+   },
+   "dispatch_paths": {
+    "2048": "dispatch/qwen35_4b_s1/constv2-mix-full--lora_r4_ce/rung2048.json",
+    "4096": "dispatch/qwen35_4b_s1/constv2-mix-full--lora_r4_ce/rung4096.json",
+    "8192": "dispatch/qwen35_4b_s1/constv2-mix-full--lora_r4_ce/rung8192.json"
+   },
+   "configuration_ids": {
+    "2048": "qwen35_4b_s1/constv2-mix-full--lora_r4_ce/rung2048",
+    "4096": "qwen35_4b_s1/constv2-mix-full--lora_r4_ce/rung4096",
+    "8192": "qwen35_4b_s1/constv2-mix-full--lora_r4_ce/rung8192"
+   },
+   "budget_class": "none",
+   "config": "configs/sdfbase/ifeval/sdfbase_full22_qwen35_4b_s1.ifeval.yaml",
+   "manifest": "configs/capeval/manifests/petri_full22_qwen35_4b_s1.ifeval.yaml",
+   "hf": "Qwen/Qwen3.5-4B",
+   "rev": "851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a",
+   "family": "qwen3_5",
+   "image": "default",
+   "status": "launch",
+   "held_reason": null,
+   "deferred": null,
+   "serving_path": "lora_native"
+  },
+  {
+   "index": 3,
+   "job_id": "ife-qwen35_4b-s1-ctl-psr",
+   "model_key": "qwen35_4b",
+   "view": "s1",
+   "tag": "qwen35_4b_s1",
+   "slug": "qwen35_4b-sdfbase-s1",
+   "cell": "constv2ctl2-full__psr_ce_all",
+   "cell_slug": "constv2ctl2-full--psr_ce_all",
+   "harness_cell": "si_constv2ctl2_full__psr_ce_all",
+   "standup_cell": "constv2ctl2-full__psr_ce_all",
+   "standup_harness_cell": "si_constv2ctl2_full__psr_ce_all",
+   "staged_id": "base64s1__constv2ctl2-full__psr_ce_all",
+   "object_sha256": "f65425b851ab446b329fa93631462dd4f31fb16e11955867ef902dffd635c2cd",
+   "pin": {
+    "kind": "roster",
+    "object_sha256": "f65425b851ab446b329fa93631462dd4f31fb16e11955867ef902dffd635c2cd",
+    "source": "configs/sdfbase_full22_pins.json",
+    "source_sha256": "afdda5edf68241b9cf7cbca50ee287b9d716269941fbdc6bc8555b71dfd43152",
+    "staged_id": "base64s1__constv2ctl2-full__psr_ce_all"
+   },
+   "fitted": true,
+   "route_kind": "lens",
+   "header_located": false,
+   "served_positions_expected": "all",
+   "declared": false,
+   "thinking": "off",
+   "sampling_mode": "vendor_preset",
+   "sampling": {
+    "temperature": 0.7,
+    "top_p": 0.8,
+    "top_k": 20,
+    "min_p": 0.0,
+    "presence_penalty": 1.5,
+    "repetition_penalty": 1.0,
+    "source": "Qwen/Qwen3.5-4B @ 851bf6e8 ships no generation_config.json; the vendor's INSTRUCT (non-thinking) general row \u2014 QWEN35_VENDOR_ROWS['instruct_general'] by reference (P3): temperature 0.7, top_p 0.8, top_k 20, min_p 0.0, presence_penalty 1.5 (SENT PER REQUEST \u2014 not server-defaultable), repetition_penalty 1.0 (the card's stated no-op)"
+   },
+   "samples_per_item": 2,
+   "expected_stamps": [
+    "cell-stable",
+    "always",
+    "thinking_off"
+   ],
+   "cap": 2048,
+   "caps": [
+    2048,
+    4096,
+    8192
+   ],
+   "cap_ceiling": 8192,
+   "trigger_threshold": 0.01,
+   "trigger_provenance": "1 % raw at-cap of draws, per the IFEval ruling",
+   "prompt_class": "short",
+   "si_text_sha256": null,
+   "geometry_eval_by_cap": {
+    "2048": "capability:ifeval_2048",
+    "4096": "capability:ifeval_4096",
+    "8192": "capability:ifeval_8192"
+   },
+   "out_root": "controls/qwen35_4b_s1/constv2ctl2-full--psr_ce_all/vendor_preset",
+   "rung_out_roots": {
+    "4096": "controls/qwen35_4b_s1/constv2ctl2-full--psr_ce_all/vendor_preset__rung4096",
+    "8192": "controls/qwen35_4b_s1/constv2ctl2-full--psr_ce_all/vendor_preset__rung8192"
+   },
+   "subset_paths": {
+    "4096": "rung4096/qwen35_4b_s1/constv2ctl2-full--psr_ce_all/rung_subset.json",
+    "8192": "rung8192/qwen35_4b_s1/constv2ctl2-full--psr_ce_all/rung_subset.json"
+   },
+   "cap_ladder_paths": {
+    "2048": "controls/qwen35_4b_s1/constv2ctl2-full--psr_ce_all/vendor_preset/cap_ladder.json",
+    "4096": "controls/qwen35_4b_s1/constv2ctl2-full--psr_ce_all/vendor_preset__rung4096/cap_ladder.json",
+    "8192": "controls/qwen35_4b_s1/constv2ctl2-full--psr_ce_all/vendor_preset__rung8192/cap_ladder.json"
+   },
+   "ladder_state_paths": {
+    "2048": "controls/qwen35_4b_s1/constv2ctl2-full--psr_ce_all/vendor_preset/ladder_state.json",
+    "4096": "controls/qwen35_4b_s1/constv2ctl2-full--psr_ce_all/vendor_preset__rung4096/ladder_state.json",
+    "8192": "controls/qwen35_4b_s1/constv2ctl2-full--psr_ce_all/vendor_preset__rung8192/ladder_state.json"
+   },
+   "budget_paths": {
+    "2048": "budgets/qwen35_4b_s1/constv2ctl2-full--psr_ce_all/2048/oos_prompt_budget.json",
+    "4096": "budgets/qwen35_4b_s1/constv2ctl2-full--psr_ce_all/4096/oos_prompt_budget.json",
+    "8192": "budgets/qwen35_4b_s1/constv2ctl2-full--psr_ce_all/8192/oos_prompt_budget.json"
+   },
+   "dispatch_paths": {
+    "2048": "dispatch/qwen35_4b_s1/constv2ctl2-full--psr_ce_all/rung2048.json",
+    "4096": "dispatch/qwen35_4b_s1/constv2ctl2-full--psr_ce_all/rung4096.json",
+    "8192": "dispatch/qwen35_4b_s1/constv2ctl2-full--psr_ce_all/rung8192.json"
+   },
+   "configuration_ids": {
+    "2048": "qwen35_4b_s1/constv2ctl2-full--psr_ce_all/rung2048",
+    "4096": "qwen35_4b_s1/constv2ctl2-full--psr_ce_all/rung4096",
+    "8192": "qwen35_4b_s1/constv2ctl2-full--psr_ce_all/rung8192"
+   },
+   "budget_class": "none",
+   "config": "configs/sdfbase/ifeval/sdfbase_full22_qwen35_4b_s1.ifeval.yaml",
+   "manifest": "configs/capeval/manifests/petri_full22_qwen35_4b_s1.ifeval.yaml",
+   "hf": "Qwen/Qwen3.5-4B",
+   "rev": "851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a",
+   "family": "qwen3_5",
+   "image": "default",
+   "status": "launch",
+   "held_reason": null,
+   "deferred": null,
+   "serving_path": "lora_native"
+  },
+  {
+   "index": 4,
+   "job_id": "ife-qwen35_4b-s1-ctl-lora",
+   "model_key": "qwen35_4b",
+   "view": "s1",
+   "tag": "qwen35_4b_s1",
+   "slug": "qwen35_4b-sdfbase-s1",
+   "cell": "constv2ctl2-full__lora_r4_ce",
+   "cell_slug": "constv2ctl2-full--lora_r4_ce",
+   "harness_cell": "si_constv2ctl2_full__lora_r4_ce",
+   "standup_cell": "constv2ctl2-full__lora_r4_ce",
+   "standup_harness_cell": "si_constv2ctl2_full__lora_r4_ce",
+   "staged_id": "base64s1__constv2ctl2-full__lora_r4_ce",
+   "object_sha256": "000e0df5792882aa6e6e70498f2597ddd5f1aa52f43cef9a92cad57d7f7a6e20",
+   "pin": {
+    "kind": "roster",
+    "object_sha256": "000e0df5792882aa6e6e70498f2597ddd5f1aa52f43cef9a92cad57d7f7a6e20",
+    "source": "configs/sdfbase_full22_pins.json",
+    "source_sha256": "afdda5edf68241b9cf7cbca50ee287b9d716269941fbdc6bc8555b71dfd43152",
+    "staged_id": "base64s1__constv2ctl2-full__lora_r4_ce"
+   },
+   "fitted": true,
+   "route_kind": "lens",
+   "header_located": false,
+   "served_positions_expected": "all",
+   "declared": false,
+   "thinking": "off",
+   "sampling_mode": "vendor_preset",
+   "sampling": {
+    "temperature": 0.7,
+    "top_p": 0.8,
+    "top_k": 20,
+    "min_p": 0.0,
+    "presence_penalty": 1.5,
+    "repetition_penalty": 1.0,
+    "source": "Qwen/Qwen3.5-4B @ 851bf6e8 ships no generation_config.json; the vendor's INSTRUCT (non-thinking) general row \u2014 QWEN35_VENDOR_ROWS['instruct_general'] by reference (P3): temperature 0.7, top_p 0.8, top_k 20, min_p 0.0, presence_penalty 1.5 (SENT PER REQUEST \u2014 not server-defaultable), repetition_penalty 1.0 (the card's stated no-op)"
+   },
+   "samples_per_item": 2,
+   "expected_stamps": [
+    "cell-stable",
+    "always",
+    "thinking_off"
+   ],
+   "cap": 2048,
+   "caps": [
+    2048,
+    4096,
+    8192
+   ],
+   "cap_ceiling": 8192,
+   "trigger_threshold": 0.01,
+   "trigger_provenance": "1 % raw at-cap of draws, per the IFEval ruling",
+   "prompt_class": "short",
+   "si_text_sha256": null,
+   "geometry_eval_by_cap": {
+    "2048": "capability:ifeval_2048",
+    "4096": "capability:ifeval_4096",
+    "8192": "capability:ifeval_8192"
+   },
+   "out_root": "controls/qwen35_4b_s1/constv2ctl2-full--lora_r4_ce/vendor_preset",
+   "rung_out_roots": {
+    "4096": "controls/qwen35_4b_s1/constv2ctl2-full--lora_r4_ce/vendor_preset__rung4096",
+    "8192": "controls/qwen35_4b_s1/constv2ctl2-full--lora_r4_ce/vendor_preset__rung8192"
+   },
+   "subset_paths": {
+    "4096": "rung4096/qwen35_4b_s1/constv2ctl2-full--lora_r4_ce/rung_subset.json",
+    "8192": "rung8192/qwen35_4b_s1/constv2ctl2-full--lora_r4_ce/rung_subset.json"
+   },
+   "cap_ladder_paths": {
+    "2048": "controls/qwen35_4b_s1/constv2ctl2-full--lora_r4_ce/vendor_preset/cap_ladder.json",
+    "4096": "controls/qwen35_4b_s1/constv2ctl2-full--lora_r4_ce/vendor_preset__rung4096/cap_ladder.json",
+    "8192": "controls/qwen35_4b_s1/constv2ctl2-full--lora_r4_ce/vendor_preset__rung8192/cap_ladder.json"
+   },
+   "ladder_state_paths": {
+    "2048": "controls/qwen35_4b_s1/constv2ctl2-full--lora_r4_ce/vendor_preset/ladder_state.json",
+    "4096": "controls/qwen35_4b_s1/constv2ctl2-full--lora_r4_ce/vendor_preset__rung4096/ladder_state.json",
+    "8192": "controls/qwen35_4b_s1/constv2ctl2-full--lora_r4_ce/vendor_preset__rung8192/ladder_state.json"
+   },
+   "budget_paths": {
+    "2048": "budgets/qwen35_4b_s1/constv2ctl2-full--lora_r4_ce/2048/oos_prompt_budget.json",
+    "4096": "budgets/qwen35_4b_s1/constv2ctl2-full--lora_r4_ce/4096/oos_prompt_budget.json",
+    "8192": "budgets/qwen35_4b_s1/constv2ctl2-full--lora_r4_ce/8192/oos_prompt_budget.json"
+   },
+   "dispatch_paths": {
+    "2048": "dispatch/qwen35_4b_s1/constv2ctl2-full--lora_r4_ce/rung2048.json",
+    "4096": "dispatch/qwen35_4b_s1/constv2ctl2-full--lora_r4_ce/rung4096.json",
+    "8192": "dispatch/qwen35_4b_s1/constv2ctl2-full--lora_r4_ce/rung8192.json"
+   },
+   "configuration_ids": {
+    "2048": "qwen35_4b_s1/constv2ctl2-full--lora_r4_ce/rung2048",
+    "4096": "qwen35_4b_s1/constv2ctl2-full--lora_r4_ce/rung4096",
+    "8192": "qwen35_4b_s1/constv2ctl2-full--lora_r4_ce/rung8192"
+   },
+   "budget_class": "none",
+   "config": "configs/sdfbase/ifeval/sdfbase_full22_qwen35_4b_s1.ifeval.yaml",
+   "manifest": "configs/capeval/manifests/petri_full22_qwen35_4b_s1.ifeval.yaml",
+   "hf": "Qwen/Qwen3.5-4B",
+   "rev": "851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a",
+   "family": "qwen3_5",
+   "image": "default",
+   "status": "launch",
+   "held_reason": null,
+   "deferred": null,
+   "serving_path": "lora_native"
+  },
+  {
+   "index": 5,
+   "job_id": "ife-qwen35_4b-s1-mix-dlora",
+   "model_key": "qwen35_4b",
+   "view": "s1",
+   "tag": "qwen35_4b_s1",
+   "slug": "qwen35_4b-sdfbase-s1",
+   "cell": "constv2-mix-full__lora_r4_ce_minus_ctl",
+   "cell_slug": "constv2-mix-full--lora_r4_ce_minus_ctl",
+   "harness_cell": "si_constv2_mix_full__lora_r4_ce_minus_ctl",
+   "standup_cell": "constv2-mix-full__lora_r4_ce_minus_ctl",
+   "standup_harness_cell": "si_constv2_mix_full__lora_r4_ce_minus_ctl",
+   "staged_id": "derived_base64s1__constv2-mix-full__lora_r4_ce_minus_ctl",
+   "object_sha256": "0d275f7c76cbe63eacaec6b63c0976ac516cff039729029ee5b09b60f3d689c9",
+   "pin": {
+    "kind": "roster",
+    "object_sha256": "0d275f7c76cbe63eacaec6b63c0976ac516cff039729029ee5b09b60f3d689c9",
+    "source": "configs/sdfbase_full22_pins.json",
+    "source_sha256": "afdda5edf68241b9cf7cbca50ee287b9d716269941fbdc6bc8555b71dfd43152",
+    "staged_id": "derived_base64s1__constv2-mix-full__lora_r4_ce_minus_ctl"
+   },
+   "fitted": true,
+   "route_kind": "lens",
+   "header_located": false,
+   "served_positions_expected": "all",
+   "declared": false,
+   "thinking": "off",
+   "sampling_mode": "vendor_preset",
+   "sampling": {
+    "temperature": 0.7,
+    "top_p": 0.8,
+    "top_k": 20,
+    "min_p": 0.0,
+    "presence_penalty": 1.5,
+    "repetition_penalty": 1.0,
+    "source": "Qwen/Qwen3.5-4B @ 851bf6e8 ships no generation_config.json; the vendor's INSTRUCT (non-thinking) general row \u2014 QWEN35_VENDOR_ROWS['instruct_general'] by reference (P3): temperature 0.7, top_p 0.8, top_k 20, min_p 0.0, presence_penalty 1.5 (SENT PER REQUEST \u2014 not server-defaultable), repetition_penalty 1.0 (the card's stated no-op)"
+   },
+   "samples_per_item": 2,
+   "expected_stamps": [
+    "cell-stable",
+    "always",
+    "thinking_off"
+   ],
+   "cap": 2048,
+   "caps": [
+    2048,
+    4096,
+    8192
+   ],
+   "cap_ceiling": 8192,
+   "trigger_threshold": 0.01,
+   "trigger_provenance": "1 % raw at-cap of draws, per the IFEval ruling",
+   "prompt_class": "short",
+   "si_text_sha256": null,
+   "geometry_eval_by_cap": {
+    "2048": "capability:ifeval_2048",
+    "4096": "capability:ifeval_4096",
+    "8192": "capability:ifeval_8192"
+   },
+   "out_root": "controls/qwen35_4b_s1/constv2-mix-full--lora_r4_ce_minus_ctl/vendor_preset",
+   "rung_out_roots": {
+    "4096": "controls/qwen35_4b_s1/constv2-mix-full--lora_r4_ce_minus_ctl/vendor_preset__rung4096",
+    "8192": "controls/qwen35_4b_s1/constv2-mix-full--lora_r4_ce_minus_ctl/vendor_preset__rung8192"
+   },
+   "subset_paths": {
+    "4096": "rung4096/qwen35_4b_s1/constv2-mix-full--lora_r4_ce_minus_ctl/rung_subset.json",
+    "8192": "rung8192/qwen35_4b_s1/constv2-mix-full--lora_r4_ce_minus_ctl/rung_subset.json"
+   },
+   "cap_ladder_paths": {
+    "2048": "controls/qwen35_4b_s1/constv2-mix-full--lora_r4_ce_minus_ctl/vendor_preset/cap_ladder.json",
+    "4096": "controls/qwen35_4b_s1/constv2-mix-full--lora_r4_ce_minus_ctl/vendor_preset__rung4096/cap_ladder.json",
+    "8192": "controls/qwen35_4b_s1/constv2-mix-full--lora_r4_ce_minus_ctl/vendor_preset__rung8192/cap_ladder.json"
+   },
+   "ladder_state_paths": {
+    "2048": "controls/qwen35_4b_s1/constv2-mix-full--lora_r4_ce_minus_ctl/vendor_preset/ladder_state.json",
+    "4096": "controls/qwen35_4b_s1/constv2-mix-full--lora_r4_ce_minus_ctl/vendor_preset__rung4096/ladder_state.json",
+    "8192": "controls/qwen35_4b_s1/constv2-mix-full--lora_r4_ce_minus_ctl/vendor_preset__rung8192/ladder_state.json"
+   },
+   "budget_paths": {
+    "2048": "budgets/qwen35_4b_s1/constv2-mix-full--lora_r4_ce_minus_ctl/2048/oos_prompt_budget.json",
+    "4096": "budgets/qwen35_4b_s1/constv2-mix-full--lora_r4_ce_minus_ctl/4096/oos_prompt_budget.json",
+    "8192": "budgets/qwen35_4b_s1/constv2-mix-full--lora_r4_ce_minus_ctl/8192/oos_prompt_budget.json"
+   },
+   "dispatch_paths": {
+    "2048": "dispatch/qwen35_4b_s1/constv2-mix-full--lora_r4_ce_minus_ctl/rung2048.json",
+    "4096": "dispatch/qwen35_4b_s1/constv2-mix-full--lora_r4_ce_minus_ctl/rung4096.json",
+    "8192": "dispatch/qwen35_4b_s1/constv2-mix-full--lora_r4_ce_minus_ctl/rung8192.json"
+   },
+   "configuration_ids": {
+    "2048": "qwen35_4b_s1/constv2-mix-full--lora_r4_ce_minus_ctl/rung2048",
+    "4096": "qwen35_4b_s1/constv2-mix-full--lora_r4_ce_minus_ctl/rung4096",
+    "8192": "qwen35_4b_s1/constv2-mix-full--lora_r4_ce_minus_ctl/rung8192"
+   },
+   "budget_class": "none",
+   "config": "configs/sdfbase/ifeval/sdfbase_full22_qwen35_4b_s1.ifeval.yaml",
+   "manifest": "configs/capeval/manifests/petri_full22_qwen35_4b_s1.ifeval.yaml",
+   "hf": "Qwen/Qwen3.5-4B",
+   "rev": "851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a",
+   "family": "qwen3_5",
+   "image": "default",
+   "status": "launch",
+   "held_reason": null,
+   "deferred": null,
+   "serving_path": "lora_native"
+  },
+  {
+   "index": 6,
+   "job_id": "ife-qwen35_4b-s1-prompted",
+   "model_key": "qwen35_4b",
+   "view": "s1",
+   "tag": "qwen35_4b_s1",
+   "slug": "qwen35_4b-sdfbase-s1",
+   "cell": "prompted__safety_refusal",
+   "cell_slug": "prompted--safety_refusal",
+   "harness_cell": "prompted__safety",
+   "standup_cell": "prompted__safety_refusal",
+   "standup_harness_cell": "prompted__safety",
+   "staged_id": null,
+   "object_sha256": null,
+   "pin": {
+    "kind": "prompted",
+    "object_sha256": null
+   },
+   "fitted": false,
+   "route_kind": "prompted",
+   "header_located": false,
+   "served_positions_expected": null,
+   "declared": false,
+   "thinking": "off",
+   "sampling_mode": "vendor_preset",
+   "sampling": {
+    "temperature": 0.7,
+    "top_p": 0.8,
+    "top_k": 20,
+    "min_p": 0.0,
+    "presence_penalty": 1.5,
+    "repetition_penalty": 1.0,
+    "source": "Qwen/Qwen3.5-4B @ 851bf6e8 ships no generation_config.json; the vendor's INSTRUCT (non-thinking) general row \u2014 QWEN35_VENDOR_ROWS['instruct_general'] by reference (P3): temperature 0.7, top_p 0.8, top_k 20, min_p 0.0, presence_penalty 1.5 (SENT PER REQUEST \u2014 not server-defaultable), repetition_penalty 1.0 (the card's stated no-op)"
+   },
+   "samples_per_item": 2,
+   "expected_stamps": [
+    "cell-stable",
+    "not-consulted",
+    "thinking_off"
+   ],
+   "cap": 2048,
+   "caps": [
+    2048,
+    4096,
+    8192
+   ],
+   "cap_ceiling": 8192,
+   "trigger_threshold": 0.01,
+   "trigger_provenance": "1 % raw at-cap of draws, per the IFEval ruling",
+   "prompt_class": "short",
+   "si_text_sha256": "ac3a58f61d53cf2412c02b8bb56063b9683a9c1154ef1f0978efc1449a836e08",
+   "geometry_eval_by_cap": {
+    "2048": "capability:ifeval_2048",
+    "4096": "capability:ifeval_4096",
+    "8192": "capability:ifeval_8192"
+   },
+   "out_root": "controls/qwen35_4b_s1/prompted--safety_refusal/vendor_preset",
+   "rung_out_roots": {
+    "4096": "controls/qwen35_4b_s1/prompted--safety_refusal/vendor_preset__rung4096",
+    "8192": "controls/qwen35_4b_s1/prompted--safety_refusal/vendor_preset__rung8192"
+   },
+   "subset_paths": {
+    "4096": "rung4096/qwen35_4b_s1/prompted--safety_refusal/rung_subset.json",
+    "8192": "rung8192/qwen35_4b_s1/prompted--safety_refusal/rung_subset.json"
+   },
+   "cap_ladder_paths": {
+    "2048": "controls/qwen35_4b_s1/prompted--safety_refusal/vendor_preset/cap_ladder.json",
+    "4096": "controls/qwen35_4b_s1/prompted--safety_refusal/vendor_preset__rung4096/cap_ladder.json",
+    "8192": "controls/qwen35_4b_s1/prompted--safety_refusal/vendor_preset__rung8192/cap_ladder.json"
+   },
+   "ladder_state_paths": {
+    "2048": "controls/qwen35_4b_s1/prompted--safety_refusal/vendor_preset/ladder_state.json",
+    "4096": "controls/qwen35_4b_s1/prompted--safety_refusal/vendor_preset__rung4096/ladder_state.json",
+    "8192": "controls/qwen35_4b_s1/prompted--safety_refusal/vendor_preset__rung8192/ladder_state.json"
+   },
+   "budget_paths": {
+    "2048": "budgets/qwen35_4b_s1/prompted--safety_refusal/2048/oos_prompt_budget.json",
+    "4096": "budgets/qwen35_4b_s1/prompted--safety_refusal/4096/oos_prompt_budget.json",
+    "8192": "budgets/qwen35_4b_s1/prompted--safety_refusal/8192/oos_prompt_budget.json"
+   },
+   "dispatch_paths": {
+    "2048": "dispatch/qwen35_4b_s1/prompted--safety_refusal/rung2048.json",
+    "4096": "dispatch/qwen35_4b_s1/prompted--safety_refusal/rung4096.json",
+    "8192": "dispatch/qwen35_4b_s1/prompted--safety_refusal/rung8192.json"
+   },
+   "configuration_ids": {
+    "2048": "qwen35_4b_s1/prompted--safety_refusal/rung2048",
+    "4096": "qwen35_4b_s1/prompted--safety_refusal/rung4096",
+    "8192": "qwen35_4b_s1/prompted--safety_refusal/rung8192"
+   },
+   "budget_class": "prompted__safety_refusal",
+   "config": "configs/sdfbase/ifeval/sdfbase_full22_qwen35_4b_s1.ifeval.yaml",
+   "manifest": "configs/capeval/manifests/petri_full22_qwen35_4b_s1.ifeval.yaml",
+   "hf": "Qwen/Qwen3.5-4B",
+   "rev": "851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a",
+   "family": "qwen3_5",
+   "image": "default",
+   "status": "launch",
+   "held_reason": null,
+   "deferred": null,
+   "serving_path": "lora_native"
+  },
+  {
+   "index": 7,
+   "job_id": "ife-qwen35_4b-s1-constitution",
+   "model_key": "qwen35_4b",
+   "view": "s1",
+   "tag": "qwen35_4b_s1",
+   "slug": "qwen35_4b-sdfbase-s1",
+   "cell": "prompted__si_constitution",
+   "cell_slug": "prompted--si_constitution",
+   "harness_cell": "prompted__constitution",
+   "standup_cell": "prompted__si_constitution",
+   "standup_harness_cell": "prompted__constitution",
+   "staged_id": null,
+   "object_sha256": null,
+   "pin": {
+    "kind": "prompted",
+    "object_sha256": null
+   },
+   "fitted": false,
+   "route_kind": "prompted",
+   "header_located": false,
+   "served_positions_expected": null,
+   "declared": false,
+   "thinking": "off",
+   "sampling_mode": "vendor_preset",
+   "sampling": {
+    "temperature": 0.7,
+    "top_p": 0.8,
+    "top_k": 20,
+    "min_p": 0.0,
+    "presence_penalty": 1.5,
+    "repetition_penalty": 1.0,
+    "source": "Qwen/Qwen3.5-4B @ 851bf6e8 ships no generation_config.json; the vendor's INSTRUCT (non-thinking) general row \u2014 QWEN35_VENDOR_ROWS['instruct_general'] by reference (P3): temperature 0.7, top_p 0.8, top_k 20, min_p 0.0, presence_penalty 1.5 (SENT PER REQUEST \u2014 not server-defaultable), repetition_penalty 1.0 (the card's stated no-op)"
+   },
+   "samples_per_item": 2,
+   "expected_stamps": [
+    "cell-stable",
+    "not-consulted",
+    "thinking_off"
+   ],
+   "cap": 2048,
+   "caps": [
+    2048,
+    4096,
+    8192
+   ],
+   "cap_ceiling": 8192,
+   "trigger_threshold": 0.01,
+   "trigger_provenance": "1 % raw at-cap of draws, per the IFEval ruling",
+   "prompt_class": "long_si",
+   "si_text_sha256": null,
+   "geometry_eval_by_cap": {
+    "2048": "capability:ifeval_longsi_2048",
+    "4096": "capability:ifeval_longsi_4096",
+    "8192": "capability:ifeval_longsi_8192"
+   },
+   "out_root": "controls/qwen35_4b_s1/prompted--si_constitution/vendor_preset",
+   "rung_out_roots": {
+    "4096": "controls/qwen35_4b_s1/prompted--si_constitution/vendor_preset__rung4096",
+    "8192": "controls/qwen35_4b_s1/prompted--si_constitution/vendor_preset__rung8192"
+   },
+   "subset_paths": {
+    "4096": "rung4096/qwen35_4b_s1/prompted--si_constitution/rung_subset.json",
+    "8192": "rung8192/qwen35_4b_s1/prompted--si_constitution/rung_subset.json"
+   },
+   "cap_ladder_paths": {
+    "2048": "controls/qwen35_4b_s1/prompted--si_constitution/vendor_preset/cap_ladder.json",
+    "4096": "controls/qwen35_4b_s1/prompted--si_constitution/vendor_preset__rung4096/cap_ladder.json",
+    "8192": "controls/qwen35_4b_s1/prompted--si_constitution/vendor_preset__rung8192/cap_ladder.json"
+   },
+   "ladder_state_paths": {
+    "2048": "controls/qwen35_4b_s1/prompted--si_constitution/vendor_preset/ladder_state.json",
+    "4096": "controls/qwen35_4b_s1/prompted--si_constitution/vendor_preset__rung4096/ladder_state.json",
+    "8192": "controls/qwen35_4b_s1/prompted--si_constitution/vendor_preset__rung8192/ladder_state.json"
+   },
+   "budget_paths": {
+    "2048": "budgets/qwen35_4b_s1/prompted--si_constitution/2048/oos_prompt_budget.json",
+    "4096": "budgets/qwen35_4b_s1/prompted--si_constitution/4096/oos_prompt_budget.json",
+    "8192": "budgets/qwen35_4b_s1/prompted--si_constitution/8192/oos_prompt_budget.json"
+   },
+   "dispatch_paths": {
+    "2048": "dispatch/qwen35_4b_s1/prompted--si_constitution/rung2048.json",
+    "4096": "dispatch/qwen35_4b_s1/prompted--si_constitution/rung4096.json",
+    "8192": "dispatch/qwen35_4b_s1/prompted--si_constitution/rung8192.json"
+   },
+   "configuration_ids": {
+    "2048": "qwen35_4b_s1/prompted--si_constitution/rung2048",
+    "4096": "qwen35_4b_s1/prompted--si_constitution/rung4096",
+    "8192": "qwen35_4b_s1/prompted--si_constitution/rung8192"
+   },
+   "budget_class": "prompted__si_constitution",
+   "config": "configs/sdfbase/ifeval/sdfbase_full22_qwen35_4b_s1.ifeval.yaml",
+   "manifest": "configs/capeval/manifests/petri_full22_qwen35_4b_s1.ifeval.yaml",
+   "hf": "Qwen/Qwen3.5-4B",
+   "rev": "851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a",
+   "family": "qwen3_5",
+   "image": "default",
+   "status": "launch",
+   "held_reason": null,
+   "deferred": null,
+   "serving_path": "lora_native"
+  },
+  {
+   "index": 8,
+   "job_id": "ife-qwen35_4b-s2-none",
+   "model_key": "qwen35_4b",
+   "view": "s2",
+   "tag": "qwen35_4b_s2",
+   "slug": "qwen35_4b-sdfbase-s2",
+   "cell": "none",
+   "cell_slug": "none",
+   "harness_cell": "none",
+   "standup_cell": "none",
+   "standup_harness_cell": "none",
+   "staged_id": null,
+   "object_sha256": null,
+   "pin": {
+    "kind": "none",
+    "object_sha256": null
+   },
+   "fitted": false,
+   "route_kind": "base",
+   "header_located": false,
+   "served_positions_expected": null,
+   "declared": false,
+   "thinking": "off",
+   "sampling_mode": "vendor_preset",
+   "sampling": {
+    "temperature": 0.7,
+    "top_p": 0.8,
+    "top_k": 20,
+    "min_p": 0.0,
+    "presence_penalty": 1.5,
+    "repetition_penalty": 1.0,
+    "source": "Qwen/Qwen3.5-4B @ 851bf6e8 ships no generation_config.json; the vendor's INSTRUCT (non-thinking) general row \u2014 QWEN35_VENDOR_ROWS['instruct_general'] by reference (P3): temperature 0.7, top_p 0.8, top_k 20, min_p 0.0, presence_penalty 1.5 (SENT PER REQUEST \u2014 not server-defaultable), repetition_penalty 1.0 (the card's stated no-op)"
+   },
+   "samples_per_item": 2,
+   "expected_stamps": [
+    "cell-stable",
+    "not-consulted",
+    "thinking_off"
+   ],
+   "cap": 2048,
+   "caps": [
+    2048,
+    4096,
+    8192
+   ],
+   "cap_ceiling": 8192,
+   "trigger_threshold": 0.01,
+   "trigger_provenance": "1 % raw at-cap of draws, per the IFEval ruling",
+   "prompt_class": "short",
+   "si_text_sha256": null,
+   "geometry_eval_by_cap": {
+    "2048": "capability:ifeval_2048",
+    "4096": "capability:ifeval_4096",
+    "8192": "capability:ifeval_8192"
+   },
+   "out_root": "controls/qwen35_4b_s2/none/vendor_preset",
+   "rung_out_roots": {
+    "4096": "controls/qwen35_4b_s2/none/vendor_preset__rung4096",
+    "8192": "controls/qwen35_4b_s2/none/vendor_preset__rung8192"
+   },
+   "subset_paths": {
+    "4096": "rung4096/qwen35_4b_s2/none/rung_subset.json",
+    "8192": "rung8192/qwen35_4b_s2/none/rung_subset.json"
+   },
+   "cap_ladder_paths": {
+    "2048": "controls/qwen35_4b_s2/none/vendor_preset/cap_ladder.json",
+    "4096": "controls/qwen35_4b_s2/none/vendor_preset__rung4096/cap_ladder.json",
+    "8192": "controls/qwen35_4b_s2/none/vendor_preset__rung8192/cap_ladder.json"
+   },
+   "ladder_state_paths": {
+    "2048": "controls/qwen35_4b_s2/none/vendor_preset/ladder_state.json",
+    "4096": "controls/qwen35_4b_s2/none/vendor_preset__rung4096/ladder_state.json",
+    "8192": "controls/qwen35_4b_s2/none/vendor_preset__rung8192/ladder_state.json"
+   },
+   "budget_paths": {
+    "2048": "budgets/qwen35_4b_s2/none/2048/oos_prompt_budget.json",
+    "4096": "budgets/qwen35_4b_s2/none/4096/oos_prompt_budget.json",
+    "8192": "budgets/qwen35_4b_s2/none/8192/oos_prompt_budget.json"
+   },
+   "dispatch_paths": {
+    "2048": "dispatch/qwen35_4b_s2/none/rung2048.json",
+    "4096": "dispatch/qwen35_4b_s2/none/rung4096.json",
+    "8192": "dispatch/qwen35_4b_s2/none/rung8192.json"
+   },
+   "configuration_ids": {
+    "2048": "qwen35_4b_s2/none/rung2048",
+    "4096": "qwen35_4b_s2/none/rung4096",
+    "8192": "qwen35_4b_s2/none/rung8192"
+   },
+   "budget_class": "none",
+   "config": "configs/sdfbase/ifeval/sdfbase_full22_qwen35_4b_s2.ifeval.yaml",
+   "manifest": "configs/capeval/manifests/petri_full22_qwen35_4b_s2.ifeval.yaml",
+   "hf": "Qwen/Qwen3.5-4B",
+   "rev": "851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a",
+   "family": "qwen3_5",
+   "image": "default",
+   "status": "launch",
+   "held_reason": null,
+   "deferred": null,
+   "serving_path": "lora_native"
+  },
+  {
+   "index": 9,
+   "job_id": "ife-qwen35_4b-s2-mix-psr",
+   "model_key": "qwen35_4b",
+   "view": "s2",
+   "tag": "qwen35_4b_s2",
+   "slug": "qwen35_4b-sdfbase-s2",
+   "cell": "constv2-mix-full__psr_ce_all",
+   "cell_slug": "constv2-mix-full--psr_ce_all",
+   "harness_cell": "si_constv2_mix_full__psr_ce_all",
+   "standup_cell": "constv2-mix-full__psr_ce_all",
+   "standup_harness_cell": "si_constv2_mix_full__psr_ce_all",
+   "staged_id": "base64s2__constv2-mix-full__psr_ce_all",
+   "object_sha256": "2d43a58e55e674d3e33c6cbbaf7bb0ad9b06021d308b9e924213acf7c0609fd8",
+   "pin": {
+    "kind": "roster",
+    "object_sha256": "2d43a58e55e674d3e33c6cbbaf7bb0ad9b06021d308b9e924213acf7c0609fd8",
+    "source": "configs/sdfbase_full22_pins.json",
+    "source_sha256": "afdda5edf68241b9cf7cbca50ee287b9d716269941fbdc6bc8555b71dfd43152",
+    "staged_id": "base64s2__constv2-mix-full__psr_ce_all"
+   },
+   "fitted": true,
+   "route_kind": "lens",
+   "header_located": false,
+   "served_positions_expected": "all",
+   "declared": false,
+   "thinking": "off",
+   "sampling_mode": "vendor_preset",
+   "sampling": {
+    "temperature": 0.7,
+    "top_p": 0.8,
+    "top_k": 20,
+    "min_p": 0.0,
+    "presence_penalty": 1.5,
+    "repetition_penalty": 1.0,
+    "source": "Qwen/Qwen3.5-4B @ 851bf6e8 ships no generation_config.json; the vendor's INSTRUCT (non-thinking) general row \u2014 QWEN35_VENDOR_ROWS['instruct_general'] by reference (P3): temperature 0.7, top_p 0.8, top_k 20, min_p 0.0, presence_penalty 1.5 (SENT PER REQUEST \u2014 not server-defaultable), repetition_penalty 1.0 (the card's stated no-op)"
+   },
+   "samples_per_item": 2,
+   "expected_stamps": [
+    "cell-stable",
+    "always",
+    "thinking_off"
+   ],
+   "cap": 2048,
+   "caps": [
+    2048,
+    4096,
+    8192
+   ],
+   "cap_ceiling": 8192,
+   "trigger_threshold": 0.01,
+   "trigger_provenance": "1 % raw at-cap of draws, per the IFEval ruling",
+   "prompt_class": "short",
+   "si_text_sha256": null,
+   "geometry_eval_by_cap": {
+    "2048": "capability:ifeval_2048",
+    "4096": "capability:ifeval_4096",
+    "8192": "capability:ifeval_8192"
+   },
+   "out_root": "controls/qwen35_4b_s2/constv2-mix-full--psr_ce_all/vendor_preset",
+   "rung_out_roots": {
+    "4096": "controls/qwen35_4b_s2/constv2-mix-full--psr_ce_all/vendor_preset__rung4096",
+    "8192": "controls/qwen35_4b_s2/constv2-mix-full--psr_ce_all/vendor_preset__rung8192"
+   },
+   "subset_paths": {
+    "4096": "rung4096/qwen35_4b_s2/constv2-mix-full--psr_ce_all/rung_subset.json",
+    "8192": "rung8192/qwen35_4b_s2/constv2-mix-full--psr_ce_all/rung_subset.json"
+   },
+   "cap_ladder_paths": {
+    "2048": "controls/qwen35_4b_s2/constv2-mix-full--psr_ce_all/vendor_preset/cap_ladder.json",
+    "4096": "controls/qwen35_4b_s2/constv2-mix-full--psr_ce_all/vendor_preset__rung4096/cap_ladder.json",
+    "8192": "controls/qwen35_4b_s2/constv2-mix-full--psr_ce_all/vendor_preset__rung8192/cap_ladder.json"
+   },
+   "ladder_state_paths": {
+    "2048": "controls/qwen35_4b_s2/constv2-mix-full--psr_ce_all/vendor_preset/ladder_state.json",
+    "4096": "controls/qwen35_4b_s2/constv2-mix-full--psr_ce_all/vendor_preset__rung4096/ladder_state.json",
+    "8192": "controls/qwen35_4b_s2/constv2-mix-full--psr_ce_all/vendor_preset__rung8192/ladder_state.json"
+   },
+   "budget_paths": {
+    "2048": "budgets/qwen35_4b_s2/constv2-mix-full--psr_ce_all/2048/oos_prompt_budget.json",
+    "4096": "budgets/qwen35_4b_s2/constv2-mix-full--psr_ce_all/4096/oos_prompt_budget.json",
+    "8192": "budgets/qwen35_4b_s2/constv2-mix-full--psr_ce_all/8192/oos_prompt_budget.json"
+   },
+   "dispatch_paths": {
+    "2048": "dispatch/qwen35_4b_s2/constv2-mix-full--psr_ce_all/rung2048.json",
+    "4096": "dispatch/qwen35_4b_s2/constv2-mix-full--psr_ce_all/rung4096.json",
+    "8192": "dispatch/qwen35_4b_s2/constv2-mix-full--psr_ce_all/rung8192.json"
+   },
+   "configuration_ids": {
+    "2048": "qwen35_4b_s2/constv2-mix-full--psr_ce_all/rung2048",
+    "4096": "qwen35_4b_s2/constv2-mix-full--psr_ce_all/rung4096",
+    "8192": "qwen35_4b_s2/constv2-mix-full--psr_ce_all/rung8192"
+   },
+   "budget_class": "none",
+   "config": "configs/sdfbase/ifeval/sdfbase_full22_qwen35_4b_s2.ifeval.yaml",
+   "manifest": "configs/capeval/manifests/petri_full22_qwen35_4b_s2.ifeval.yaml",
+   "hf": "Qwen/Qwen3.5-4B",
+   "rev": "851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a",
+   "family": "qwen3_5",
+   "image": "default",
+   "status": "launch",
+   "held_reason": null,
+   "deferred": null,
+   "serving_path": "lora_native"
+  },
+  {
+   "index": 10,
+   "job_id": "ife-qwen35_4b-s2-mix-lora",
+   "model_key": "qwen35_4b",
+   "view": "s2",
+   "tag": "qwen35_4b_s2",
+   "slug": "qwen35_4b-sdfbase-s2",
+   "cell": "constv2-mix-full__lora_r4_ce",
+   "cell_slug": "constv2-mix-full--lora_r4_ce",
+   "harness_cell": "si_constv2_mix_full__lora_r4_ce",
+   "standup_cell": "constv2-mix-full__lora_r4_ce",
+   "standup_harness_cell": "si_constv2_mix_full__lora_r4_ce",
+   "staged_id": "base64s2__constv2-mix-full__lora_r4_ce",
+   "object_sha256": "724fe6ddb52cb679656442b2537057900f3c523ddc3c45b3edde50bdc4a487d2",
+   "pin": {
+    "kind": "roster",
+    "object_sha256": "724fe6ddb52cb679656442b2537057900f3c523ddc3c45b3edde50bdc4a487d2",
+    "source": "configs/sdfbase_full22_pins.json",
+    "source_sha256": "afdda5edf68241b9cf7cbca50ee287b9d716269941fbdc6bc8555b71dfd43152",
+    "staged_id": "base64s2__constv2-mix-full__lora_r4_ce"
+   },
+   "fitted": true,
+   "route_kind": "lens",
+   "header_located": false,
+   "served_positions_expected": "all",
+   "declared": false,
+   "thinking": "off",
+   "sampling_mode": "vendor_preset",
+   "sampling": {
+    "temperature": 0.7,
+    "top_p": 0.8,
+    "top_k": 20,
+    "min_p": 0.0,
+    "presence_penalty": 1.5,
+    "repetition_penalty": 1.0,
+    "source": "Qwen/Qwen3.5-4B @ 851bf6e8 ships no generation_config.json; the vendor's INSTRUCT (non-thinking) general row \u2014 QWEN35_VENDOR_ROWS['instruct_general'] by reference (P3): temperature 0.7, top_p 0.8, top_k 20, min_p 0.0, presence_penalty 1.5 (SENT PER REQUEST \u2014 not server-defaultable), repetition_penalty 1.0 (the card's stated no-op)"
+   },
+   "samples_per_item": 2,
+   "expected_stamps": [
+    "cell-stable",
+    "always",
+    "thinking_off"
+   ],
+   "cap": 2048,
+   "caps": [
+    2048,
+    4096,
+    8192
+   ],
+   "cap_ceiling": 8192,
+   "trigger_threshold": 0.01,
+   "trigger_provenance": "1 % raw at-cap of draws, per the IFEval ruling",
+   "prompt_class": "short",
+   "si_text_sha256": null,
+   "geometry_eval_by_cap": {
+    "2048": "capability:ifeval_2048",
+    "4096": "capability:ifeval_4096",
+    "8192": "capability:ifeval_8192"
+   },
+   "out_root": "controls/qwen35_4b_s2/constv2-mix-full--lora_r4_ce/vendor_preset",
+   "rung_out_roots": {
+    "4096": "controls/qwen35_4b_s2/constv2-mix-full--lora_r4_ce/vendor_preset__rung4096",
+    "8192": "controls/qwen35_4b_s2/constv2-mix-full--lora_r4_ce/vendor_preset__rung8192"
+   },
+   "subset_paths": {
+    "4096": "rung4096/qwen35_4b_s2/constv2-mix-full--lora_r4_ce/rung_subset.json",
+    "8192": "rung8192/qwen35_4b_s2/constv2-mix-full--lora_r4_ce/rung_subset.json"
+   },
+   "cap_ladder_paths": {
+    "2048": "controls/qwen35_4b_s2/constv2-mix-full--lora_r4_ce/vendor_preset/cap_ladder.json",
+    "4096": "controls/qwen35_4b_s2/constv2-mix-full--lora_r4_ce/vendor_preset__rung4096/cap_ladder.json",
+    "8192": "controls/qwen35_4b_s2/constv2-mix-full--lora_r4_ce/vendor_preset__rung8192/cap_ladder.json"
+   },
+   "ladder_state_paths": {
+    "2048": "controls/qwen35_4b_s2/constv2-mix-full--lora_r4_ce/vendor_preset/ladder_state.json",
+    "4096": "controls/qwen35_4b_s2/constv2-mix-full--lora_r4_ce/vendor_preset__rung4096/ladder_state.json",
+    "8192": "controls/qwen35_4b_s2/constv2-mix-full--lora_r4_ce/vendor_preset__rung8192/ladder_state.json"
+   },
+   "budget_paths": {
+    "2048": "budgets/qwen35_4b_s2/constv2-mix-full--lora_r4_ce/2048/oos_prompt_budget.json",
+    "4096": "budgets/qwen35_4b_s2/constv2-mix-full--lora_r4_ce/4096/oos_prompt_budget.json",
+    "8192": "budgets/qwen35_4b_s2/constv2-mix-full--lora_r4_ce/8192/oos_prompt_budget.json"
+   },
+   "dispatch_paths": {
+    "2048": "dispatch/qwen35_4b_s2/constv2-mix-full--lora_r4_ce/rung2048.json",
+    "4096": "dispatch/qwen35_4b_s2/constv2-mix-full--lora_r4_ce/rung4096.json",
+    "8192": "dispatch/qwen35_4b_s2/constv2-mix-full--lora_r4_ce/rung8192.json"
+   },
+   "configuration_ids": {
+    "2048": "qwen35_4b_s2/constv2-mix-full--lora_r4_ce/rung2048",
+    "4096": "qwen35_4b_s2/constv2-mix-full--lora_r4_ce/rung4096",
+    "8192": "qwen35_4b_s2/constv2-mix-full--lora_r4_ce/rung8192"
+   },
+   "budget_class": "none",
+   "config": "configs/sdfbase/ifeval/sdfbase_full22_qwen35_4b_s2.ifeval.yaml",
+   "manifest": "configs/capeval/manifests/petri_full22_qwen35_4b_s2.ifeval.yaml",
+   "hf": "Qwen/Qwen3.5-4B",
+   "rev": "851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a",
+   "family": "qwen3_5",
+   "image": "default",
+   "status": "launch",
+   "held_reason": null,
+   "deferred": null,
+   "serving_path": "lora_native"
+  },
+  {
+   "index": 11,
+   "job_id": "ife-qwen35_4b-s2-ctl-psr",
+   "model_key": "qwen35_4b",
+   "view": "s2",
+   "tag": "qwen35_4b_s2",
+   "slug": "qwen35_4b-sdfbase-s2",
+   "cell": "constv2ctl2-full__psr_ce_all",
+   "cell_slug": "constv2ctl2-full--psr_ce_all",
+   "harness_cell": "si_constv2ctl2_full__psr_ce_all",
+   "standup_cell": "constv2ctl2-full__psr_ce_all",
+   "standup_harness_cell": "si_constv2ctl2_full__psr_ce_all",
+   "staged_id": "base64s2__constv2ctl2-full__psr_ce_all",
+   "object_sha256": "900fbabb6d56a61f37acf71a28482f8dd843a6f27809f12f09ca38a1328bbecb",
+   "pin": {
+    "kind": "roster",
+    "object_sha256": "900fbabb6d56a61f37acf71a28482f8dd843a6f27809f12f09ca38a1328bbecb",
+    "source": "configs/sdfbase_full22_pins.json",
+    "source_sha256": "afdda5edf68241b9cf7cbca50ee287b9d716269941fbdc6bc8555b71dfd43152",
+    "staged_id": "base64s2__constv2ctl2-full__psr_ce_all"
+   },
+   "fitted": true,
+   "route_kind": "lens",
+   "header_located": false,
+   "served_positions_expected": "all",
+   "declared": false,
+   "thinking": "off",
+   "sampling_mode": "vendor_preset",
+   "sampling": {
+    "temperature": 0.7,
+    "top_p": 0.8,
+    "top_k": 20,
+    "min_p": 0.0,
+    "presence_penalty": 1.5,
+    "repetition_penalty": 1.0,
+    "source": "Qwen/Qwen3.5-4B @ 851bf6e8 ships no generation_config.json; the vendor's INSTRUCT (non-thinking) general row \u2014 QWEN35_VENDOR_ROWS['instruct_general'] by reference (P3): temperature 0.7, top_p 0.8, top_k 20, min_p 0.0, presence_penalty 1.5 (SENT PER REQUEST \u2014 not server-defaultable), repetition_penalty 1.0 (the card's stated no-op)"
+   },
+   "samples_per_item": 2,
+   "expected_stamps": [
+    "cell-stable",
+    "always",
+    "thinking_off"
+   ],
+   "cap": 2048,
+   "caps": [
+    2048,
+    4096,
+    8192
+   ],
+   "cap_ceiling": 8192,
+   "trigger_threshold": 0.01,
+   "trigger_provenance": "1 % raw at-cap of draws, per the IFEval ruling",
+   "prompt_class": "short",
+   "si_text_sha256": null,
+   "geometry_eval_by_cap": {
+    "2048": "capability:ifeval_2048",
+    "4096": "capability:ifeval_4096",
+    "8192": "capability:ifeval_8192"
+   },
+   "out_root": "controls/qwen35_4b_s2/constv2ctl2-full--psr_ce_all/vendor_preset",
+   "rung_out_roots": {
+    "4096": "controls/qwen35_4b_s2/constv2ctl2-full--psr_ce_all/vendor_preset__rung4096",
+    "8192": "controls/qwen35_4b_s2/constv2ctl2-full--psr_ce_all/vendor_preset__rung8192"
+   },
+   "subset_paths": {
+    "4096": "rung4096/qwen35_4b_s2/constv2ctl2-full--psr_ce_all/rung_subset.json",
+    "8192": "rung8192/qwen35_4b_s2/constv2ctl2-full--psr_ce_all/rung_subset.json"
+   },
+   "cap_ladder_paths": {
+    "2048": "controls/qwen35_4b_s2/constv2ctl2-full--psr_ce_all/vendor_preset/cap_ladder.json",
+    "4096": "controls/qwen35_4b_s2/constv2ctl2-full--psr_ce_all/vendor_preset__rung4096/cap_ladder.json",
+    "8192": "controls/qwen35_4b_s2/constv2ctl2-full--psr_ce_all/vendor_preset__rung8192/cap_ladder.json"
+   },
+   "ladder_state_paths": {
+    "2048": "controls/qwen35_4b_s2/constv2ctl2-full--psr_ce_all/vendor_preset/ladder_state.json",
+    "4096": "controls/qwen35_4b_s2/constv2ctl2-full--psr_ce_all/vendor_preset__rung4096/ladder_state.json",
+    "8192": "controls/qwen35_4b_s2/constv2ctl2-full--psr_ce_all/vendor_preset__rung8192/ladder_state.json"
+   },
+   "budget_paths": {
+    "2048": "budgets/qwen35_4b_s2/constv2ctl2-full--psr_ce_all/2048/oos_prompt_budget.json",
+    "4096": "budgets/qwen35_4b_s2/constv2ctl2-full--psr_ce_all/4096/oos_prompt_budget.json",
+    "8192": "budgets/qwen35_4b_s2/constv2ctl2-full--psr_ce_all/8192/oos_prompt_budget.json"
+   },
+   "dispatch_paths": {
+    "2048": "dispatch/qwen35_4b_s2/constv2ctl2-full--psr_ce_all/rung2048.json",
+    "4096": "dispatch/qwen35_4b_s2/constv2ctl2-full--psr_ce_all/rung4096.json",
+    "8192": "dispatch/qwen35_4b_s2/constv2ctl2-full--psr_ce_all/rung8192.json"
+   },
+   "configuration_ids": {
+    "2048": "qwen35_4b_s2/constv2ctl2-full--psr_ce_all/rung2048",
+    "4096": "qwen35_4b_s2/constv2ctl2-full--psr_ce_all/rung4096",
+    "8192": "qwen35_4b_s2/constv2ctl2-full--psr_ce_all/rung8192"
+   },
+   "budget_class": "none",
+   "config": "configs/sdfbase/ifeval/sdfbase_full22_qwen35_4b_s2.ifeval.yaml",
+   "manifest": "configs/capeval/manifests/petri_full22_qwen35_4b_s2.ifeval.yaml",
+   "hf": "Qwen/Qwen3.5-4B",
+   "rev": "851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a",
+   "family": "qwen3_5",
+   "image": "default",
+   "status": "launch",
+   "held_reason": null,
+   "deferred": null,
+   "serving_path": "lora_native"
+  },
+  {
+   "index": 12,
+   "job_id": "ife-qwen35_4b-s2-ctl-lora",
+   "model_key": "qwen35_4b",
+   "view": "s2",
+   "tag": "qwen35_4b_s2",
+   "slug": "qwen35_4b-sdfbase-s2",
+   "cell": "constv2ctl2-full__lora_r4_ce",
+   "cell_slug": "constv2ctl2-full--lora_r4_ce",
+   "harness_cell": "si_constv2ctl2_full__lora_r4_ce",
+   "standup_cell": "constv2ctl2-full__lora_r4_ce",
+   "standup_harness_cell": "si_constv2ctl2_full__lora_r4_ce",
+   "staged_id": "base64s2__constv2ctl2-full__lora_r4_ce",
+   "object_sha256": "900938b516d6e266eacd5d53aef2663367fe0974fcb19757ead908b1e1a68e63",
+   "pin": {
+    "kind": "roster",
+    "object_sha256": "900938b516d6e266eacd5d53aef2663367fe0974fcb19757ead908b1e1a68e63",
+    "source": "configs/sdfbase_full22_pins.json",
+    "source_sha256": "afdda5edf68241b9cf7cbca50ee287b9d716269941fbdc6bc8555b71dfd43152",
+    "staged_id": "base64s2__constv2ctl2-full__lora_r4_ce"
+   },
+   "fitted": true,
+   "route_kind": "lens",
+   "header_located": false,
+   "served_positions_expected": "all",
+   "declared": false,
+   "thinking": "off",
+   "sampling_mode": "vendor_preset",
+   "sampling": {
+    "temperature": 0.7,
+    "top_p": 0.8,
+    "top_k": 20,
+    "min_p": 0.0,
+    "presence_penalty": 1.5,
+    "repetition_penalty": 1.0,
+    "source": "Qwen/Qwen3.5-4B @ 851bf6e8 ships no generation_config.json; the vendor's INSTRUCT (non-thinking) general row \u2014 QWEN35_VENDOR_ROWS['instruct_general'] by reference (P3): temperature 0.7, top_p 0.8, top_k 20, min_p 0.0, presence_penalty 1.5 (SENT PER REQUEST \u2014 not server-defaultable), repetition_penalty 1.0 (the card's stated no-op)"
+   },
+   "samples_per_item": 2,
+   "expected_stamps": [
+    "cell-stable",
+    "always",
+    "thinking_off"
+   ],
+   "cap": 2048,
+   "caps": [
+    2048,
+    4096,
+    8192
+   ],
+   "cap_ceiling": 8192,
+   "trigger_threshold": 0.01,
+   "trigger_provenance": "1 % raw at-cap of draws, per the IFEval ruling",
+   "prompt_class": "short",
+   "si_text_sha256": null,
+   "geometry_eval_by_cap": {
+    "2048": "capability:ifeval_2048",
+    "4096": "capability:ifeval_4096",
+    "8192": "capability:ifeval_8192"
+   },
+   "out_root": "controls/qwen35_4b_s2/constv2ctl2-full--lora_r4_ce/vendor_preset",
+   "rung_out_roots": {
+    "4096": "controls/qwen35_4b_s2/constv2ctl2-full--lora_r4_ce/vendor_preset__rung4096",
+    "8192": "controls/qwen35_4b_s2/constv2ctl2-full--lora_r4_ce/vendor_preset__rung8192"
+   },
+   "subset_paths": {
+    "4096": "rung4096/qwen35_4b_s2/constv2ctl2-full--lora_r4_ce/rung_subset.json",
+    "8192": "rung8192/qwen35_4b_s2/constv2ctl2-full--lora_r4_ce/rung_subset.json"
+   },
+   "cap_ladder_paths": {
+    "2048": "controls/qwen35_4b_s2/constv2ctl2-full--lora_r4_ce/vendor_preset/cap_ladder.json",
+    "4096": "controls/qwen35_4b_s2/constv2ctl2-full--lora_r4_ce/vendor_preset__rung4096/cap_ladder.json",
+    "8192": "controls/qwen35_4b_s2/constv2ctl2-full--lora_r4_ce/vendor_preset__rung8192/cap_ladder.json"
+   },
+   "ladder_state_paths": {
+    "2048": "controls/qwen35_4b_s2/constv2ctl2-full--lora_r4_ce/vendor_preset/ladder_state.json",
+    "4096": "controls/qwen35_4b_s2/constv2ctl2-full--lora_r4_ce/vendor_preset__rung4096/ladder_state.json",
+    "8192": "controls/qwen35_4b_s2/constv2ctl2-full--lora_r4_ce/vendor_preset__rung8192/ladder_state.json"
+   },
+   "budget_paths": {
+    "2048": "budgets/qwen35_4b_s2/constv2ctl2-full--lora_r4_ce/2048/oos_prompt_budget.json",
+    "4096": "budgets/qwen35_4b_s2/constv2ctl2-full--lora_r4_ce/4096/oos_prompt_budget.json",
+    "8192": "budgets/qwen35_4b_s2/constv2ctl2-full--lora_r4_ce/8192/oos_prompt_budget.json"
+   },
+   "dispatch_paths": {
+    "2048": "dispatch/qwen35_4b_s2/constv2ctl2-full--lora_r4_ce/rung2048.json",
+    "4096": "dispatch/qwen35_4b_s2/constv2ctl2-full--lora_r4_ce/rung4096.json",
+    "8192": "dispatch/qwen35_4b_s2/constv2ctl2-full--lora_r4_ce/rung8192.json"
+   },
+   "configuration_ids": {
+    "2048": "qwen35_4b_s2/constv2ctl2-full--lora_r4_ce/rung2048",
+    "4096": "qwen35_4b_s2/constv2ctl2-full--lora_r4_ce/rung4096",
+    "8192": "qwen35_4b_s2/constv2ctl2-full--lora_r4_ce/rung8192"
+   },
+   "budget_class": "none",
+   "config": "configs/sdfbase/ifeval/sdfbase_full22_qwen35_4b_s2.ifeval.yaml",
+   "manifest": "configs/capeval/manifests/petri_full22_qwen35_4b_s2.ifeval.yaml",
+   "hf": "Qwen/Qwen3.5-4B",
+   "rev": "851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a",
+   "family": "qwen3_5",
+   "image": "default",
+   "status": "launch",
+   "held_reason": null,
+   "deferred": null,
+   "serving_path": "lora_native"
+  },
+  {
+   "index": 13,
+   "job_id": "ife-qwen35_4b-s2-mix-dlora",
+   "model_key": "qwen35_4b",
+   "view": "s2",
+   "tag": "qwen35_4b_s2",
+   "slug": "qwen35_4b-sdfbase-s2",
+   "cell": "constv2-mix-full__lora_r4_ce_minus_ctl",
+   "cell_slug": "constv2-mix-full--lora_r4_ce_minus_ctl",
+   "harness_cell": "si_constv2_mix_full__lora_r4_ce_minus_ctl",
+   "standup_cell": "constv2-mix-full__lora_r4_ce_minus_ctl",
+   "standup_harness_cell": "si_constv2_mix_full__lora_r4_ce_minus_ctl",
+   "staged_id": "derived_base64s2__constv2-mix-full__lora_r4_ce_minus_ctl",
+   "object_sha256": "06f81d946969c1863103d6856841b7fc8c8ddb0475c9851b1860c438387e979f",
+   "pin": {
+    "kind": "roster",
+    "object_sha256": "06f81d946969c1863103d6856841b7fc8c8ddb0475c9851b1860c438387e979f",
+    "source": "configs/sdfbase_full22_pins.json",
+    "source_sha256": "afdda5edf68241b9cf7cbca50ee287b9d716269941fbdc6bc8555b71dfd43152",
+    "staged_id": "derived_base64s2__constv2-mix-full__lora_r4_ce_minus_ctl"
+   },
+   "fitted": true,
+   "route_kind": "lens",
+   "header_located": false,
+   "served_positions_expected": "all",
+   "declared": false,
+   "thinking": "off",
+   "sampling_mode": "vendor_preset",
+   "sampling": {
+    "temperature": 0.7,
+    "top_p": 0.8,
+    "top_k": 20,
+    "min_p": 0.0,
+    "presence_penalty": 1.5,
+    "repetition_penalty": 1.0,
+    "source": "Qwen/Qwen3.5-4B @ 851bf6e8 ships no generation_config.json; the vendor's INSTRUCT (non-thinking) general row \u2014 QWEN35_VENDOR_ROWS['instruct_general'] by reference (P3): temperature 0.7, top_p 0.8, top_k 20, min_p 0.0, presence_penalty 1.5 (SENT PER REQUEST \u2014 not server-defaultable), repetition_penalty 1.0 (the card's stated no-op)"
+   },
+   "samples_per_item": 2,
+   "expected_stamps": [
+    "cell-stable",
+    "always",
+    "thinking_off"
+   ],
+   "cap": 2048,
+   "caps": [
+    2048,
+    4096,
+    8192
+   ],
+   "cap_ceiling": 8192,
+   "trigger_threshold": 0.01,
+   "trigger_provenance": "1 % raw at-cap of draws, per the IFEval ruling",
+   "prompt_class": "short",
+   "si_text_sha256": null,
+   "geometry_eval_by_cap": {
+    "2048": "capability:ifeval_2048",
+    "4096": "capability:ifeval_4096",
+    "8192": "capability:ifeval_8192"
+   },
+   "out_root": "controls/qwen35_4b_s2/constv2-mix-full--lora_r4_ce_minus_ctl/vendor_preset",
+   "rung_out_roots": {
+    "4096": "controls/qwen35_4b_s2/constv2-mix-full--lora_r4_ce_minus_ctl/vendor_preset__rung4096",
+    "8192": "controls/qwen35_4b_s2/constv2-mix-full--lora_r4_ce_minus_ctl/vendor_preset__rung8192"
+   },
+   "subset_paths": {
+    "4096": "rung4096/qwen35_4b_s2/constv2-mix-full--lora_r4_ce_minus_ctl/rung_subset.json",
+    "8192": "rung8192/qwen35_4b_s2/constv2-mix-full--lora_r4_ce_minus_ctl/rung_subset.json"
+   },
+   "cap_ladder_paths": {
+    "2048": "controls/qwen35_4b_s2/constv2-mix-full--lora_r4_ce_minus_ctl/vendor_preset/cap_ladder.json",
+    "4096": "controls/qwen35_4b_s2/constv2-mix-full--lora_r4_ce_minus_ctl/vendor_preset__rung4096/cap_ladder.json",
+    "8192": "controls/qwen35_4b_s2/constv2-mix-full--lora_r4_ce_minus_ctl/vendor_preset__rung8192/cap_ladder.json"
+   },
+   "ladder_state_paths": {
+    "2048": "controls/qwen35_4b_s2/constv2-mix-full--lora_r4_ce_minus_ctl/vendor_preset/ladder_state.json",
+    "4096": "controls/qwen35_4b_s2/constv2-mix-full--lora_r4_ce_minus_ctl/vendor_preset__rung4096/ladder_state.json",
+    "8192": "controls/qwen35_4b_s2/constv2-mix-full--lora_r4_ce_minus_ctl/vendor_preset__rung8192/ladder_state.json"
+   },
+   "budget_paths": {
+    "2048": "budgets/qwen35_4b_s2/constv2-mix-full--lora_r4_ce_minus_ctl/2048/oos_prompt_budget.json",
+    "4096": "budgets/qwen35_4b_s2/constv2-mix-full--lora_r4_ce_minus_ctl/4096/oos_prompt_budget.json",
+    "8192": "budgets/qwen35_4b_s2/constv2-mix-full--lora_r4_ce_minus_ctl/8192/oos_prompt_budget.json"
+   },
+   "dispatch_paths": {
+    "2048": "dispatch/qwen35_4b_s2/constv2-mix-full--lora_r4_ce_minus_ctl/rung2048.json",
+    "4096": "dispatch/qwen35_4b_s2/constv2-mix-full--lora_r4_ce_minus_ctl/rung4096.json",
+    "8192": "dispatch/qwen35_4b_s2/constv2-mix-full--lora_r4_ce_minus_ctl/rung8192.json"
+   },
+   "configuration_ids": {
+    "2048": "qwen35_4b_s2/constv2-mix-full--lora_r4_ce_minus_ctl/rung2048",
+    "4096": "qwen35_4b_s2/constv2-mix-full--lora_r4_ce_minus_ctl/rung4096",
+    "8192": "qwen35_4b_s2/constv2-mix-full--lora_r4_ce_minus_ctl/rung8192"
+   },
+   "budget_class": "none",
+   "config": "configs/sdfbase/ifeval/sdfbase_full22_qwen35_4b_s2.ifeval.yaml",
+   "manifest": "configs/capeval/manifests/petri_full22_qwen35_4b_s2.ifeval.yaml",
+   "hf": "Qwen/Qwen3.5-4B",
+   "rev": "851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a",
+   "family": "qwen3_5",
+   "image": "default",
+   "status": "launch",
+   "held_reason": null,
+   "deferred": null,
+   "serving_path": "lora_native"
+  },
+  {
+   "index": 14,
+   "job_id": "ife-qwen35_4b-s2-prompted",
+   "model_key": "qwen35_4b",
+   "view": "s2",
+   "tag": "qwen35_4b_s2",
+   "slug": "qwen35_4b-sdfbase-s2",
+   "cell": "prompted__safety_refusal",
+   "cell_slug": "prompted--safety_refusal",
+   "harness_cell": "prompted__safety",
+   "standup_cell": "prompted__safety_refusal",
+   "standup_harness_cell": "prompted__safety",
+   "staged_id": null,
+   "object_sha256": null,
+   "pin": {
+    "kind": "prompted",
+    "object_sha256": null
+   },
+   "fitted": false,
+   "route_kind": "prompted",
+   "header_located": false,
+   "served_positions_expected": null,
+   "declared": false,
+   "thinking": "off",
+   "sampling_mode": "vendor_preset",
+   "sampling": {
+    "temperature": 0.7,
+    "top_p": 0.8,
+    "top_k": 20,
+    "min_p": 0.0,
+    "presence_penalty": 1.5,
+    "repetition_penalty": 1.0,
+    "source": "Qwen/Qwen3.5-4B @ 851bf6e8 ships no generation_config.json; the vendor's INSTRUCT (non-thinking) general row \u2014 QWEN35_VENDOR_ROWS['instruct_general'] by reference (P3): temperature 0.7, top_p 0.8, top_k 20, min_p 0.0, presence_penalty 1.5 (SENT PER REQUEST \u2014 not server-defaultable), repetition_penalty 1.0 (the card's stated no-op)"
+   },
+   "samples_per_item": 2,
+   "expected_stamps": [
+    "cell-stable",
+    "not-consulted",
+    "thinking_off"
+   ],
+   "cap": 2048,
+   "caps": [
+    2048,
+    4096,
+    8192
+   ],
+   "cap_ceiling": 8192,
+   "trigger_threshold": 0.01,
+   "trigger_provenance": "1 % raw at-cap of draws, per the IFEval ruling",
+   "prompt_class": "short",
+   "si_text_sha256": "ac3a58f61d53cf2412c02b8bb56063b9683a9c1154ef1f0978efc1449a836e08",
+   "geometry_eval_by_cap": {
+    "2048": "capability:ifeval_2048",
+    "4096": "capability:ifeval_4096",
+    "8192": "capability:ifeval_8192"
+   },
+   "out_root": "controls/qwen35_4b_s2/prompted--safety_refusal/vendor_preset",
+   "rung_out_roots": {
+    "4096": "controls/qwen35_4b_s2/prompted--safety_refusal/vendor_preset__rung4096",
+    "8192": "controls/qwen35_4b_s2/prompted--safety_refusal/vendor_preset__rung8192"
+   },
+   "subset_paths": {
+    "4096": "rung4096/qwen35_4b_s2/prompted--safety_refusal/rung_subset.json",
+    "8192": "rung8192/qwen35_4b_s2/prompted--safety_refusal/rung_subset.json"
+   },
+   "cap_ladder_paths": {
+    "2048": "controls/qwen35_4b_s2/prompted--safety_refusal/vendor_preset/cap_ladder.json",
+    "4096": "controls/qwen35_4b_s2/prompted--safety_refusal/vendor_preset__rung4096/cap_ladder.json",
+    "8192": "controls/qwen35_4b_s2/prompted--safety_refusal/vendor_preset__rung8192/cap_ladder.json"
+   },
+   "ladder_state_paths": {
+    "2048": "controls/qwen35_4b_s2/prompted--safety_refusal/vendor_preset/ladder_state.json",
+    "4096": "controls/qwen35_4b_s2/prompted--safety_refusal/vendor_preset__rung4096/ladder_state.json",
+    "8192": "controls/qwen35_4b_s2/prompted--safety_refusal/vendor_preset__rung8192/ladder_state.json"
+   },
+   "budget_paths": {
+    "2048": "budgets/qwen35_4b_s2/prompted--safety_refusal/2048/oos_prompt_budget.json",
+    "4096": "budgets/qwen35_4b_s2/prompted--safety_refusal/4096/oos_prompt_budget.json",
+    "8192": "budgets/qwen35_4b_s2/prompted--safety_refusal/8192/oos_prompt_budget.json"
+   },
+   "dispatch_paths": {
+    "2048": "dispatch/qwen35_4b_s2/prompted--safety_refusal/rung2048.json",
+    "4096": "dispatch/qwen35_4b_s2/prompted--safety_refusal/rung4096.json",
+    "8192": "dispatch/qwen35_4b_s2/prompted--safety_refusal/rung8192.json"
+   },
+   "configuration_ids": {
+    "2048": "qwen35_4b_s2/prompted--safety_refusal/rung2048",
+    "4096": "qwen35_4b_s2/prompted--safety_refusal/rung4096",
+    "8192": "qwen35_4b_s2/prompted--safety_refusal/rung8192"
+   },
+   "budget_class": "prompted__safety_refusal",
+   "config": "configs/sdfbase/ifeval/sdfbase_full22_qwen35_4b_s2.ifeval.yaml",
+   "manifest": "configs/capeval/manifests/petri_full22_qwen35_4b_s2.ifeval.yaml",
+   "hf": "Qwen/Qwen3.5-4B",
+   "rev": "851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a",
+   "family": "qwen3_5",
+   "image": "default",
+   "status": "launch",
+   "held_reason": null,
+   "deferred": null,
+   "serving_path": "lora_native"
+  },
+  {
+   "index": 15,
+   "job_id": "ife-qwen35_4b-s2-constitution",
+   "model_key": "qwen35_4b",
+   "view": "s2",
+   "tag": "qwen35_4b_s2",
+   "slug": "qwen35_4b-sdfbase-s2",
+   "cell": "prompted__si_constitution",
+   "cell_slug": "prompted--si_constitution",
+   "harness_cell": "prompted__constitution",
+   "standup_cell": "prompted__si_constitution",
+   "standup_harness_cell": "prompted__constitution",
+   "staged_id": null,
+   "object_sha256": null,
+   "pin": {
+    "kind": "prompted",
+    "object_sha256": null
+   },
+   "fitted": false,
+   "route_kind": "prompted",
+   "header_located": false,
+   "served_positions_expected": null,
+   "declared": false,
+   "thinking": "off",
+   "sampling_mode": "vendor_preset",
+   "sampling": {
+    "temperature": 0.7,
+    "top_p": 0.8,
+    "top_k": 20,
+    "min_p": 0.0,
+    "presence_penalty": 1.5,
+    "repetition_penalty": 1.0,
+    "source": "Qwen/Qwen3.5-4B @ 851bf6e8 ships no generation_config.json; the vendor's INSTRUCT (non-thinking) general row \u2014 QWEN35_VENDOR_ROWS['instruct_general'] by reference (P3): temperature 0.7, top_p 0.8, top_k 20, min_p 0.0, presence_penalty 1.5 (SENT PER REQUEST \u2014 not server-defaultable), repetition_penalty 1.0 (the card's stated no-op)"
+   },
+   "samples_per_item": 2,
+   "expected_stamps": [
+    "cell-stable",
+    "not-consulted",
+    "thinking_off"
+   ],
+   "cap": 2048,
+   "caps": [
+    2048,
+    4096,
+    8192
+   ],
+   "cap_ceiling": 8192,
+   "trigger_threshold": 0.01,
+   "trigger_provenance": "1 % raw at-cap of draws, per the IFEval ruling",
+   "prompt_class": "long_si",
+   "si_text_sha256": null,
+   "geometry_eval_by_cap": {
+    "2048": "capability:ifeval_longsi_2048",
+    "4096": "capability:ifeval_longsi_4096",
+    "8192": "capability:ifeval_longsi_8192"
+   },
+   "out_root": "controls/qwen35_4b_s2/prompted--si_constitution/vendor_preset",
+   "rung_out_roots": {
+    "4096": "controls/qwen35_4b_s2/prompted--si_constitution/vendor_preset__rung4096",
+    "8192": "controls/qwen35_4b_s2/prompted--si_constitution/vendor_preset__rung8192"
+   },
+   "subset_paths": {
+    "4096": "rung4096/qwen35_4b_s2/prompted--si_constitution/rung_subset.json",
+    "8192": "rung8192/qwen35_4b_s2/prompted--si_constitution/rung_subset.json"
+   },
+   "cap_ladder_paths": {
+    "2048": "controls/qwen35_4b_s2/prompted--si_constitution/vendor_preset/cap_ladder.json",
+    "4096": "controls/qwen35_4b_s2/prompted--si_constitution/vendor_preset__rung4096/cap_ladder.json",
+    "8192": "controls/qwen35_4b_s2/prompted--si_constitution/vendor_preset__rung8192/cap_ladder.json"
+   },
+   "ladder_state_paths": {
+    "2048": "controls/qwen35_4b_s2/prompted--si_constitution/vendor_preset/ladder_state.json",
+    "4096": "controls/qwen35_4b_s2/prompted--si_constitution/vendor_preset__rung4096/ladder_state.json",
+    "8192": "controls/qwen35_4b_s2/prompted--si_constitution/vendor_preset__rung8192/ladder_state.json"
+   },
+   "budget_paths": {
+    "2048": "budgets/qwen35_4b_s2/prompted--si_constitution/2048/oos_prompt_budget.json",
+    "4096": "budgets/qwen35_4b_s2/prompted--si_constitution/4096/oos_prompt_budget.json",
+    "8192": "budgets/qwen35_4b_s2/prompted--si_constitution/8192/oos_prompt_budget.json"
+   },
+   "dispatch_paths": {
+    "2048": "dispatch/qwen35_4b_s2/prompted--si_constitution/rung2048.json",
+    "4096": "dispatch/qwen35_4b_s2/prompted--si_constitution/rung4096.json",
+    "8192": "dispatch/qwen35_4b_s2/prompted--si_constitution/rung8192.json"
+   },
+   "configuration_ids": {
+    "2048": "qwen35_4b_s2/prompted--si_constitution/rung2048",
+    "4096": "qwen35_4b_s2/prompted--si_constitution/rung4096",
+    "8192": "qwen35_4b_s2/prompted--si_constitution/rung8192"
+   },
+   "budget_class": "prompted__si_constitution",
+   "config": "configs/sdfbase/ifeval/sdfbase_full22_qwen35_4b_s2.ifeval.yaml",
+   "manifest": "configs/capeval/manifests/petri_full22_qwen35_4b_s2.ifeval.yaml",
+   "hf": "Qwen/Qwen3.5-4B",
+   "rev": "851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a",
+   "family": "qwen3_5",
+   "image": "default",
+   "status": "launch",
+   "held_reason": null,
+   "deferred": null,
+   "serving_path": "lora_native"
+  },
+  {
+   "index": 16,
+   "job_id": "ife-qwen35_4b-s3-none",
+   "model_key": "qwen35_4b",
+   "view": "s3",
+   "tag": "qwen35_4b_s3",
+   "slug": "qwen35_4b-sdfbase-s3",
+   "cell": "none",
+   "cell_slug": "none",
+   "harness_cell": "none",
+   "standup_cell": "none",
+   "standup_harness_cell": "none",
+   "staged_id": null,
+   "object_sha256": null,
+   "pin": {
+    "kind": "none",
+    "object_sha256": null
+   },
+   "fitted": false,
+   "route_kind": "base",
+   "header_located": false,
+   "served_positions_expected": null,
+   "declared": false,
+   "thinking": "off",
+   "sampling_mode": "vendor_preset",
+   "sampling": {
+    "temperature": 0.7,
+    "top_p": 0.8,
+    "top_k": 20,
+    "min_p": 0.0,
+    "presence_penalty": 1.5,
+    "repetition_penalty": 1.0,
+    "source": "Qwen/Qwen3.5-4B @ 851bf6e8 ships no generation_config.json; the vendor's INSTRUCT (non-thinking) general row \u2014 QWEN35_VENDOR_ROWS['instruct_general'] by reference (P3): temperature 0.7, top_p 0.8, top_k 20, min_p 0.0, presence_penalty 1.5 (SENT PER REQUEST \u2014 not server-defaultable), repetition_penalty 1.0 (the card's stated no-op)"
+   },
+   "samples_per_item": 2,
+   "expected_stamps": [
+    "cell-stable",
+    "not-consulted",
+    "thinking_off"
+   ],
+   "cap": 2048,
+   "caps": [
+    2048,
+    4096,
+    8192
+   ],
+   "cap_ceiling": 8192,
+   "trigger_threshold": 0.01,
+   "trigger_provenance": "1 % raw at-cap of draws, per the IFEval ruling",
+   "prompt_class": "short",
+   "si_text_sha256": null,
+   "geometry_eval_by_cap": {
+    "2048": "capability:ifeval_2048",
+    "4096": "capability:ifeval_4096",
+    "8192": "capability:ifeval_8192"
+   },
+   "out_root": "controls/qwen35_4b_s3/none/vendor_preset",
+   "rung_out_roots": {
+    "4096": "controls/qwen35_4b_s3/none/vendor_preset__rung4096",
+    "8192": "controls/qwen35_4b_s3/none/vendor_preset__rung8192"
+   },
+   "subset_paths": {
+    "4096": "rung4096/qwen35_4b_s3/none/rung_subset.json",
+    "8192": "rung8192/qwen35_4b_s3/none/rung_subset.json"
+   },
+   "cap_ladder_paths": {
+    "2048": "controls/qwen35_4b_s3/none/vendor_preset/cap_ladder.json",
+    "4096": "controls/qwen35_4b_s3/none/vendor_preset__rung4096/cap_ladder.json",
+    "8192": "controls/qwen35_4b_s3/none/vendor_preset__rung8192/cap_ladder.json"
+   },
+   "ladder_state_paths": {
+    "2048": "controls/qwen35_4b_s3/none/vendor_preset/ladder_state.json",
+    "4096": "controls/qwen35_4b_s3/none/vendor_preset__rung4096/ladder_state.json",
+    "8192": "controls/qwen35_4b_s3/none/vendor_preset__rung8192/ladder_state.json"
+   },
+   "budget_paths": {
+    "2048": "budgets/qwen35_4b_s3/none/2048/oos_prompt_budget.json",
+    "4096": "budgets/qwen35_4b_s3/none/4096/oos_prompt_budget.json",
+    "8192": "budgets/qwen35_4b_s3/none/8192/oos_prompt_budget.json"
+   },
+   "dispatch_paths": {
+    "2048": "dispatch/qwen35_4b_s3/none/rung2048.json",
+    "4096": "dispatch/qwen35_4b_s3/none/rung4096.json",
+    "8192": "dispatch/qwen35_4b_s3/none/rung8192.json"
+   },
+   "configuration_ids": {
+    "2048": "qwen35_4b_s3/none/rung2048",
+    "4096": "qwen35_4b_s3/none/rung4096",
+    "8192": "qwen35_4b_s3/none/rung8192"
+   },
+   "budget_class": "none",
+   "config": "configs/sdfbase/ifeval/sdfbase_full22_qwen35_4b_s3.ifeval.yaml",
+   "manifest": "configs/capeval/manifests/petri_full22_qwen35_4b_s3.ifeval.yaml",
+   "hf": "Qwen/Qwen3.5-4B",
+   "rev": "851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a",
+   "family": "qwen3_5",
+   "image": "default",
+   "status": "launch",
+   "held_reason": null,
+   "deferred": null,
+   "serving_path": "lora_native"
+  },
+  {
+   "index": 17,
+   "job_id": "ife-qwen35_4b-s3-mix-psr",
+   "model_key": "qwen35_4b",
+   "view": "s3",
+   "tag": "qwen35_4b_s3",
+   "slug": "qwen35_4b-sdfbase-s3",
+   "cell": "constv2-mix-full__psr_ce_all",
+   "cell_slug": "constv2-mix-full--psr_ce_all",
+   "harness_cell": "si_constv2_mix_full__psr_ce_all",
+   "standup_cell": "constv2-mix-full__psr_ce_all",
+   "standup_harness_cell": "si_constv2_mix_full__psr_ce_all",
+   "staged_id": "base64s3__constv2-mix-full__psr_ce_all",
+   "object_sha256": "cc1ec068380ed8fe51de1e91e8b8fe6b32c95fa9a00bcf381a536007c075bf09",
+   "pin": {
+    "kind": "roster",
+    "object_sha256": "cc1ec068380ed8fe51de1e91e8b8fe6b32c95fa9a00bcf381a536007c075bf09",
+    "source": "configs/sdfbase_full22_pins.json",
+    "source_sha256": "afdda5edf68241b9cf7cbca50ee287b9d716269941fbdc6bc8555b71dfd43152",
+    "staged_id": "base64s3__constv2-mix-full__psr_ce_all"
+   },
+   "fitted": true,
+   "route_kind": "lens",
+   "header_located": false,
+   "served_positions_expected": "all",
+   "declared": false,
+   "thinking": "off",
+   "sampling_mode": "vendor_preset",
+   "sampling": {
+    "temperature": 0.7,
+    "top_p": 0.8,
+    "top_k": 20,
+    "min_p": 0.0,
+    "presence_penalty": 1.5,
+    "repetition_penalty": 1.0,
+    "source": "Qwen/Qwen3.5-4B @ 851bf6e8 ships no generation_config.json; the vendor's INSTRUCT (non-thinking) general row \u2014 QWEN35_VENDOR_ROWS['instruct_general'] by reference (P3): temperature 0.7, top_p 0.8, top_k 20, min_p 0.0, presence_penalty 1.5 (SENT PER REQUEST \u2014 not server-defaultable), repetition_penalty 1.0 (the card's stated no-op)"
+   },
+   "samples_per_item": 2,
+   "expected_stamps": [
+    "cell-stable",
+    "always",
+    "thinking_off"
+   ],
+   "cap": 2048,
+   "caps": [
+    2048,
+    4096,
+    8192
+   ],
+   "cap_ceiling": 8192,
+   "trigger_threshold": 0.01,
+   "trigger_provenance": "1 % raw at-cap of draws, per the IFEval ruling",
+   "prompt_class": "short",
+   "si_text_sha256": null,
+   "geometry_eval_by_cap": {
+    "2048": "capability:ifeval_2048",
+    "4096": "capability:ifeval_4096",
+    "8192": "capability:ifeval_8192"
+   },
+   "out_root": "controls/qwen35_4b_s3/constv2-mix-full--psr_ce_all/vendor_preset",
+   "rung_out_roots": {
+    "4096": "controls/qwen35_4b_s3/constv2-mix-full--psr_ce_all/vendor_preset__rung4096",
+    "8192": "controls/qwen35_4b_s3/constv2-mix-full--psr_ce_all/vendor_preset__rung8192"
+   },
+   "subset_paths": {
+    "4096": "rung4096/qwen35_4b_s3/constv2-mix-full--psr_ce_all/rung_subset.json",
+    "8192": "rung8192/qwen35_4b_s3/constv2-mix-full--psr_ce_all/rung_subset.json"
+   },
+   "cap_ladder_paths": {
+    "2048": "controls/qwen35_4b_s3/constv2-mix-full--psr_ce_all/vendor_preset/cap_ladder.json",
+    "4096": "controls/qwen35_4b_s3/constv2-mix-full--psr_ce_all/vendor_preset__rung4096/cap_ladder.json",
+    "8192": "controls/qwen35_4b_s3/constv2-mix-full--psr_ce_all/vendor_preset__rung8192/cap_ladder.json"
+   },
+   "ladder_state_paths": {
+    "2048": "controls/qwen35_4b_s3/constv2-mix-full--psr_ce_all/vendor_preset/ladder_state.json",
+    "4096": "controls/qwen35_4b_s3/constv2-mix-full--psr_ce_all/vendor_preset__rung4096/ladder_state.json",
+    "8192": "controls/qwen35_4b_s3/constv2-mix-full--psr_ce_all/vendor_preset__rung8192/ladder_state.json"
+   },
+   "budget_paths": {
+    "2048": "budgets/qwen35_4b_s3/constv2-mix-full--psr_ce_all/2048/oos_prompt_budget.json",
+    "4096": "budgets/qwen35_4b_s3/constv2-mix-full--psr_ce_all/4096/oos_prompt_budget.json",
+    "8192": "budgets/qwen35_4b_s3/constv2-mix-full--psr_ce_all/8192/oos_prompt_budget.json"
+   },
+   "dispatch_paths": {
+    "2048": "dispatch/qwen35_4b_s3/constv2-mix-full--psr_ce_all/rung2048.json",
+    "4096": "dispatch/qwen35_4b_s3/constv2-mix-full--psr_ce_all/rung4096.json",
+    "8192": "dispatch/qwen35_4b_s3/constv2-mix-full--psr_ce_all/rung8192.json"
+   },
+   "configuration_ids": {
+    "2048": "qwen35_4b_s3/constv2-mix-full--psr_ce_all/rung2048",
+    "4096": "qwen35_4b_s3/constv2-mix-full--psr_ce_all/rung4096",
+    "8192": "qwen35_4b_s3/constv2-mix-full--psr_ce_all/rung8192"
+   },
+   "budget_class": "none",
+   "config": "configs/sdfbase/ifeval/sdfbase_full22_qwen35_4b_s3.ifeval.yaml",
+   "manifest": "configs/capeval/manifests/petri_full22_qwen35_4b_s3.ifeval.yaml",
+   "hf": "Qwen/Qwen3.5-4B",
+   "rev": "851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a",
+   "family": "qwen3_5",
+   "image": "default",
+   "status": "launch",
+   "held_reason": null,
+   "deferred": null,
+   "serving_path": "lora_native"
+  },
+  {
+   "index": 18,
+   "job_id": "ife-qwen35_4b-s3-mix-lora",
+   "model_key": "qwen35_4b",
+   "view": "s3",
+   "tag": "qwen35_4b_s3",
+   "slug": "qwen35_4b-sdfbase-s3",
+   "cell": "constv2-mix-full__lora_r4_ce",
+   "cell_slug": "constv2-mix-full--lora_r4_ce",
+   "harness_cell": "si_constv2_mix_full__lora_r4_ce",
+   "standup_cell": "constv2-mix-full__lora_r4_ce",
+   "standup_harness_cell": "si_constv2_mix_full__lora_r4_ce",
+   "staged_id": "base64s3__constv2-mix-full__lora_r4_ce",
+   "object_sha256": "a9934f6a796c238d58f4da10615c9f1c211d8b067afcf1330241cdcff967ce42",
+   "pin": {
+    "kind": "roster",
+    "object_sha256": "a9934f6a796c238d58f4da10615c9f1c211d8b067afcf1330241cdcff967ce42",
+    "source": "configs/sdfbase_full22_pins.json",
+    "source_sha256": "afdda5edf68241b9cf7cbca50ee287b9d716269941fbdc6bc8555b71dfd43152",
+    "staged_id": "base64s3__constv2-mix-full__lora_r4_ce"
+   },
+   "fitted": true,
+   "route_kind": "lens",
+   "header_located": false,
+   "served_positions_expected": "all",
+   "declared": false,
+   "thinking": "off",
+   "sampling_mode": "vendor_preset",
+   "sampling": {
+    "temperature": 0.7,
+    "top_p": 0.8,
+    "top_k": 20,
+    "min_p": 0.0,
+    "presence_penalty": 1.5,
+    "repetition_penalty": 1.0,
+    "source": "Qwen/Qwen3.5-4B @ 851bf6e8 ships no generation_config.json; the vendor's INSTRUCT (non-thinking) general row \u2014 QWEN35_VENDOR_ROWS['instruct_general'] by reference (P3): temperature 0.7, top_p 0.8, top_k 20, min_p 0.0, presence_penalty 1.5 (SENT PER REQUEST \u2014 not server-defaultable), repetition_penalty 1.0 (the card's stated no-op)"
+   },
+   "samples_per_item": 2,
+   "expected_stamps": [
+    "cell-stable",
+    "always",
+    "thinking_off"
+   ],
+   "cap": 2048,
+   "caps": [
+    2048,
+    4096,
+    8192
+   ],
+   "cap_ceiling": 8192,
+   "trigger_threshold": 0.01,
+   "trigger_provenance": "1 % raw at-cap of draws, per the IFEval ruling",
+   "prompt_class": "short",
+   "si_text_sha256": null,
+   "geometry_eval_by_cap": {
+    "2048": "capability:ifeval_2048",
+    "4096": "capability:ifeval_4096",
+    "8192": "capability:ifeval_8192"
+   },
+   "out_root": "controls/qwen35_4b_s3/constv2-mix-full--lora_r4_ce/vendor_preset",
+   "rung_out_roots": {
+    "4096": "controls/qwen35_4b_s3/constv2-mix-full--lora_r4_ce/vendor_preset__rung4096",
+    "8192": "controls/qwen35_4b_s3/constv2-mix-full--lora_r4_ce/vendor_preset__rung8192"
+   },
+   "subset_paths": {
+    "4096": "rung4096/qwen35_4b_s3/constv2-mix-full--lora_r4_ce/rung_subset.json",
+    "8192": "rung8192/qwen35_4b_s3/constv2-mix-full--lora_r4_ce/rung_subset.json"
+   },
+   "cap_ladder_paths": {
+    "2048": "controls/qwen35_4b_s3/constv2-mix-full--lora_r4_ce/vendor_preset/cap_ladder.json",
+    "4096": "controls/qwen35_4b_s3/constv2-mix-full--lora_r4_ce/vendor_preset__rung4096/cap_ladder.json",
+    "8192": "controls/qwen35_4b_s3/constv2-mix-full--lora_r4_ce/vendor_preset__rung8192/cap_ladder.json"
+   },
+   "ladder_state_paths": {
+    "2048": "controls/qwen35_4b_s3/constv2-mix-full--lora_r4_ce/vendor_preset/ladder_state.json",
+    "4096": "controls/qwen35_4b_s3/constv2-mix-full--lora_r4_ce/vendor_preset__rung4096/ladder_state.json",
+    "8192": "controls/qwen35_4b_s3/constv2-mix-full--lora_r4_ce/vendor_preset__rung8192/ladder_state.json"
+   },
+   "budget_paths": {
+    "2048": "budgets/qwen35_4b_s3/constv2-mix-full--lora_r4_ce/2048/oos_prompt_budget.json",
+    "4096": "budgets/qwen35_4b_s3/constv2-mix-full--lora_r4_ce/4096/oos_prompt_budget.json",
+    "8192": "budgets/qwen35_4b_s3/constv2-mix-full--lora_r4_ce/8192/oos_prompt_budget.json"
+   },
+   "dispatch_paths": {
+    "2048": "dispatch/qwen35_4b_s3/constv2-mix-full--lora_r4_ce/rung2048.json",
+    "4096": "dispatch/qwen35_4b_s3/constv2-mix-full--lora_r4_ce/rung4096.json",
+    "8192": "dispatch/qwen35_4b_s3/constv2-mix-full--lora_r4_ce/rung8192.json"
+   },
+   "configuration_ids": {
+    "2048": "qwen35_4b_s3/constv2-mix-full--lora_r4_ce/rung2048",
+    "4096": "qwen35_4b_s3/constv2-mix-full--lora_r4_ce/rung4096",
+    "8192": "qwen35_4b_s3/constv2-mix-full--lora_r4_ce/rung8192"
+   },
+   "budget_class": "none",
+   "config": "configs/sdfbase/ifeval/sdfbase_full22_qwen35_4b_s3.ifeval.yaml",
+   "manifest": "configs/capeval/manifests/petri_full22_qwen35_4b_s3.ifeval.yaml",
+   "hf": "Qwen/Qwen3.5-4B",
+   "rev": "851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a",
+   "family": "qwen3_5",
+   "image": "default",
+   "status": "launch",
+   "held_reason": null,
+   "deferred": null,
+   "serving_path": "lora_native"
+  },
+  {
+   "index": 19,
+   "job_id": "ife-qwen35_4b-s3-ctl-psr",
+   "model_key": "qwen35_4b",
+   "view": "s3",
+   "tag": "qwen35_4b_s3",
+   "slug": "qwen35_4b-sdfbase-s3",
+   "cell": "constv2ctl2-full__psr_ce_all",
+   "cell_slug": "constv2ctl2-full--psr_ce_all",
+   "harness_cell": "si_constv2ctl2_full__psr_ce_all",
+   "standup_cell": "constv2ctl2-full__psr_ce_all",
+   "standup_harness_cell": "si_constv2ctl2_full__psr_ce_all",
+   "staged_id": "base64s3__constv2ctl2-full__psr_ce_all",
+   "object_sha256": "c5686c7316b7f79ba31edeea4ecf5d3b237724e399cafb41295478b457471c34",
+   "pin": {
+    "kind": "roster",
+    "object_sha256": "c5686c7316b7f79ba31edeea4ecf5d3b237724e399cafb41295478b457471c34",
+    "source": "configs/sdfbase_full22_pins.json",
+    "source_sha256": "afdda5edf68241b9cf7cbca50ee287b9d716269941fbdc6bc8555b71dfd43152",
+    "staged_id": "base64s3__constv2ctl2-full__psr_ce_all"
+   },
+   "fitted": true,
+   "route_kind": "lens",
+   "header_located": false,
+   "served_positions_expected": "all",
+   "declared": false,
+   "thinking": "off",
+   "sampling_mode": "vendor_preset",
+   "sampling": {
+    "temperature": 0.7,
+    "top_p": 0.8,
+    "top_k": 20,
+    "min_p": 0.0,
+    "presence_penalty": 1.5,
+    "repetition_penalty": 1.0,
+    "source": "Qwen/Qwen3.5-4B @ 851bf6e8 ships no generation_config.json; the vendor's INSTRUCT (non-thinking) general row \u2014 QWEN35_VENDOR_ROWS['instruct_general'] by reference (P3): temperature 0.7, top_p 0.8, top_k 20, min_p 0.0, presence_penalty 1.5 (SENT PER REQUEST \u2014 not server-defaultable), repetition_penalty 1.0 (the card's stated no-op)"
+   },
+   "samples_per_item": 2,
+   "expected_stamps": [
+    "cell-stable",
+    "always",
+    "thinking_off"
+   ],
+   "cap": 2048,
+   "caps": [
+    2048,
+    4096,
+    8192
+   ],
+   "cap_ceiling": 8192,
+   "trigger_threshold": 0.01,
+   "trigger_provenance": "1 % raw at-cap of draws, per the IFEval ruling",
+   "prompt_class": "short",
+   "si_text_sha256": null,
+   "geometry_eval_by_cap": {
+    "2048": "capability:ifeval_2048",
+    "4096": "capability:ifeval_4096",
+    "8192": "capability:ifeval_8192"
+   },
+   "out_root": "controls/qwen35_4b_s3/constv2ctl2-full--psr_ce_all/vendor_preset",
+   "rung_out_roots": {
+    "4096": "controls/qwen35_4b_s3/constv2ctl2-full--psr_ce_all/vendor_preset__rung4096",
+    "8192": "controls/qwen35_4b_s3/constv2ctl2-full--psr_ce_all/vendor_preset__rung8192"
+   },
+   "subset_paths": {
+    "4096": "rung4096/qwen35_4b_s3/constv2ctl2-full--psr_ce_all/rung_subset.json",
+    "8192": "rung8192/qwen35_4b_s3/constv2ctl2-full--psr_ce_all/rung_subset.json"
+   },
+   "cap_ladder_paths": {
+    "2048": "controls/qwen35_4b_s3/constv2ctl2-full--psr_ce_all/vendor_preset/cap_ladder.json",
+    "4096": "controls/qwen35_4b_s3/constv2ctl2-full--psr_ce_all/vendor_preset__rung4096/cap_ladder.json",
+    "8192": "controls/qwen35_4b_s3/constv2ctl2-full--psr_ce_all/vendor_preset__rung8192/cap_ladder.json"
+   },
+   "ladder_state_paths": {
+    "2048": "controls/qwen35_4b_s3/constv2ctl2-full--psr_ce_all/vendor_preset/ladder_state.json",
+    "4096": "controls/qwen35_4b_s3/constv2ctl2-full--psr_ce_all/vendor_preset__rung4096/ladder_state.json",
+    "8192": "controls/qwen35_4b_s3/constv2ctl2-full--psr_ce_all/vendor_preset__rung8192/ladder_state.json"
+   },
+   "budget_paths": {
+    "2048": "budgets/qwen35_4b_s3/constv2ctl2-full--psr_ce_all/2048/oos_prompt_budget.json",
+    "4096": "budgets/qwen35_4b_s3/constv2ctl2-full--psr_ce_all/4096/oos_prompt_budget.json",
+    "8192": "budgets/qwen35_4b_s3/constv2ctl2-full--psr_ce_all/8192/oos_prompt_budget.json"
+   },
+   "dispatch_paths": {
+    "2048": "dispatch/qwen35_4b_s3/constv2ctl2-full--psr_ce_all/rung2048.json",
+    "4096": "dispatch/qwen35_4b_s3/constv2ctl2-full--psr_ce_all/rung4096.json",
+    "8192": "dispatch/qwen35_4b_s3/constv2ctl2-full--psr_ce_all/rung8192.json"
+   },
+   "configuration_ids": {
+    "2048": "qwen35_4b_s3/constv2ctl2-full--psr_ce_all/rung2048",
+    "4096": "qwen35_4b_s3/constv2ctl2-full--psr_ce_all/rung4096",
+    "8192": "qwen35_4b_s3/constv2ctl2-full--psr_ce_all/rung8192"
+   },
+   "budget_class": "none",
+   "config": "configs/sdfbase/ifeval/sdfbase_full22_qwen35_4b_s3.ifeval.yaml",
+   "manifest": "configs/capeval/manifests/petri_full22_qwen35_4b_s3.ifeval.yaml",
+   "hf": "Qwen/Qwen3.5-4B",
+   "rev": "851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a",
+   "family": "qwen3_5",
+   "image": "default",
+   "status": "launch",
+   "held_reason": null,
+   "deferred": null,
+   "serving_path": "lora_native"
+  },
+  {
+   "index": 20,
+   "job_id": "ife-qwen35_4b-s3-ctl-lora",
+   "model_key": "qwen35_4b",
+   "view": "s3",
+   "tag": "qwen35_4b_s3",
+   "slug": "qwen35_4b-sdfbase-s3",
+   "cell": "constv2ctl2-full__lora_r4_ce",
+   "cell_slug": "constv2ctl2-full--lora_r4_ce",
+   "harness_cell": "si_constv2ctl2_full__lora_r4_ce",
+   "standup_cell": "constv2ctl2-full__lora_r4_ce",
+   "standup_harness_cell": "si_constv2ctl2_full__lora_r4_ce",
+   "staged_id": "base64s3__constv2ctl2-full__lora_r4_ce",
+   "object_sha256": "33e7b327049aa28605818fe02970d918a86a2c6eea8f6bbf38a01779b84f9d32",
+   "pin": {
+    "kind": "roster",
+    "object_sha256": "33e7b327049aa28605818fe02970d918a86a2c6eea8f6bbf38a01779b84f9d32",
+    "source": "configs/sdfbase_full22_pins.json",
+    "source_sha256": "afdda5edf68241b9cf7cbca50ee287b9d716269941fbdc6bc8555b71dfd43152",
+    "staged_id": "base64s3__constv2ctl2-full__lora_r4_ce"
+   },
+   "fitted": true,
+   "route_kind": "lens",
+   "header_located": false,
+   "served_positions_expected": "all",
+   "declared": false,
+   "thinking": "off",
+   "sampling_mode": "vendor_preset",
+   "sampling": {
+    "temperature": 0.7,
+    "top_p": 0.8,
+    "top_k": 20,
+    "min_p": 0.0,
+    "presence_penalty": 1.5,
+    "repetition_penalty": 1.0,
+    "source": "Qwen/Qwen3.5-4B @ 851bf6e8 ships no generation_config.json; the vendor's INSTRUCT (non-thinking) general row \u2014 QWEN35_VENDOR_ROWS['instruct_general'] by reference (P3): temperature 0.7, top_p 0.8, top_k 20, min_p 0.0, presence_penalty 1.5 (SENT PER REQUEST \u2014 not server-defaultable), repetition_penalty 1.0 (the card's stated no-op)"
+   },
+   "samples_per_item": 2,
+   "expected_stamps": [
+    "cell-stable",
+    "always",
+    "thinking_off"
+   ],
+   "cap": 2048,
+   "caps": [
+    2048,
+    4096,
+    8192
+   ],
+   "cap_ceiling": 8192,
+   "trigger_threshold": 0.01,
+   "trigger_provenance": "1 % raw at-cap of draws, per the IFEval ruling",
+   "prompt_class": "short",
+   "si_text_sha256": null,
+   "geometry_eval_by_cap": {
+    "2048": "capability:ifeval_2048",
+    "4096": "capability:ifeval_4096",
+    "8192": "capability:ifeval_8192"
+   },
+   "out_root": "controls/qwen35_4b_s3/constv2ctl2-full--lora_r4_ce/vendor_preset",
+   "rung_out_roots": {
+    "4096": "controls/qwen35_4b_s3/constv2ctl2-full--lora_r4_ce/vendor_preset__rung4096",
+    "8192": "controls/qwen35_4b_s3/constv2ctl2-full--lora_r4_ce/vendor_preset__rung8192"
+   },
+   "subset_paths": {
+    "4096": "rung4096/qwen35_4b_s3/constv2ctl2-full--lora_r4_ce/rung_subset.json",
+    "8192": "rung8192/qwen35_4b_s3/constv2ctl2-full--lora_r4_ce/rung_subset.json"
+   },
+   "cap_ladder_paths": {
+    "2048": "controls/qwen35_4b_s3/constv2ctl2-full--lora_r4_ce/vendor_preset/cap_ladder.json",
+    "4096": "controls/qwen35_4b_s3/constv2ctl2-full--lora_r4_ce/vendor_preset__rung4096/cap_ladder.json",
+    "8192": "controls/qwen35_4b_s3/constv2ctl2-full--lora_r4_ce/vendor_preset__rung8192/cap_ladder.json"
+   },
+   "ladder_state_paths": {
+    "2048": "controls/qwen35_4b_s3/constv2ctl2-full--lora_r4_ce/vendor_preset/ladder_state.json",
+    "4096": "controls/qwen35_4b_s3/constv2ctl2-full--lora_r4_ce/vendor_preset__rung4096/ladder_state.json",
+    "8192": "controls/qwen35_4b_s3/constv2ctl2-full--lora_r4_ce/vendor_preset__rung8192/ladder_state.json"
+   },
+   "budget_paths": {
+    "2048": "budgets/qwen35_4b_s3/constv2ctl2-full--lora_r4_ce/2048/oos_prompt_budget.json",
+    "4096": "budgets/qwen35_4b_s3/constv2ctl2-full--lora_r4_ce/4096/oos_prompt_budget.json",
+    "8192": "budgets/qwen35_4b_s3/constv2ctl2-full--lora_r4_ce/8192/oos_prompt_budget.json"
+   },
+   "dispatch_paths": {
+    "2048": "dispatch/qwen35_4b_s3/constv2ctl2-full--lora_r4_ce/rung2048.json",
+    "4096": "dispatch/qwen35_4b_s3/constv2ctl2-full--lora_r4_ce/rung4096.json",
+    "8192": "dispatch/qwen35_4b_s3/constv2ctl2-full--lora_r4_ce/rung8192.json"
+   },
+   "configuration_ids": {
+    "2048": "qwen35_4b_s3/constv2ctl2-full--lora_r4_ce/rung2048",
+    "4096": "qwen35_4b_s3/constv2ctl2-full--lora_r4_ce/rung4096",
+    "8192": "qwen35_4b_s3/constv2ctl2-full--lora_r4_ce/rung8192"
+   },
+   "budget_class": "none",
+   "config": "configs/sdfbase/ifeval/sdfbase_full22_qwen35_4b_s3.ifeval.yaml",
+   "manifest": "configs/capeval/manifests/petri_full22_qwen35_4b_s3.ifeval.yaml",
+   "hf": "Qwen/Qwen3.5-4B",
+   "rev": "851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a",
+   "family": "qwen3_5",
+   "image": "default",
+   "status": "launch",
+   "held_reason": null,
+   "deferred": null,
+   "serving_path": "lora_native"
+  },
+  {
+   "index": 21,
+   "job_id": "ife-qwen35_4b-s3-mix-dlora",
+   "model_key": "qwen35_4b",
+   "view": "s3",
+   "tag": "qwen35_4b_s3",
+   "slug": "qwen35_4b-sdfbase-s3",
+   "cell": "constv2-mix-full__lora_r4_ce_minus_ctl",
+   "cell_slug": "constv2-mix-full--lora_r4_ce_minus_ctl",
+   "harness_cell": "si_constv2_mix_full__lora_r4_ce_minus_ctl",
+   "standup_cell": "constv2-mix-full__lora_r4_ce_minus_ctl",
+   "standup_harness_cell": "si_constv2_mix_full__lora_r4_ce_minus_ctl",
+   "staged_id": "derived_base64s3__constv2-mix-full__lora_r4_ce_minus_ctl",
+   "object_sha256": "8952728fa0f7fb6a0b48557e9c491073c5080f63178fc64c4f113088e1f2f974",
+   "pin": {
+    "kind": "roster",
+    "object_sha256": "8952728fa0f7fb6a0b48557e9c491073c5080f63178fc64c4f113088e1f2f974",
+    "source": "configs/sdfbase_full22_pins.json",
+    "source_sha256": "afdda5edf68241b9cf7cbca50ee287b9d716269941fbdc6bc8555b71dfd43152",
+    "staged_id": "derived_base64s3__constv2-mix-full__lora_r4_ce_minus_ctl"
+   },
+   "fitted": true,
+   "route_kind": "lens",
+   "header_located": false,
+   "served_positions_expected": "all",
+   "declared": false,
+   "thinking": "off",
+   "sampling_mode": "vendor_preset",
+   "sampling": {
+    "temperature": 0.7,
+    "top_p": 0.8,
+    "top_k": 20,
+    "min_p": 0.0,
+    "presence_penalty": 1.5,
+    "repetition_penalty": 1.0,
+    "source": "Qwen/Qwen3.5-4B @ 851bf6e8 ships no generation_config.json; the vendor's INSTRUCT (non-thinking) general row \u2014 QWEN35_VENDOR_ROWS['instruct_general'] by reference (P3): temperature 0.7, top_p 0.8, top_k 20, min_p 0.0, presence_penalty 1.5 (SENT PER REQUEST \u2014 not server-defaultable), repetition_penalty 1.0 (the card's stated no-op)"
+   },
+   "samples_per_item": 2,
+   "expected_stamps": [
+    "cell-stable",
+    "always",
+    "thinking_off"
+   ],
+   "cap": 2048,
+   "caps": [
+    2048,
+    4096,
+    8192
+   ],
+   "cap_ceiling": 8192,
+   "trigger_threshold": 0.01,
+   "trigger_provenance": "1 % raw at-cap of draws, per the IFEval ruling",
+   "prompt_class": "short",
+   "si_text_sha256": null,
+   "geometry_eval_by_cap": {
+    "2048": "capability:ifeval_2048",
+    "4096": "capability:ifeval_4096",
+    "8192": "capability:ifeval_8192"
+   },
+   "out_root": "controls/qwen35_4b_s3/constv2-mix-full--lora_r4_ce_minus_ctl/vendor_preset",
+   "rung_out_roots": {
+    "4096": "controls/qwen35_4b_s3/constv2-mix-full--lora_r4_ce_minus_ctl/vendor_preset__rung4096",
+    "8192": "controls/qwen35_4b_s3/constv2-mix-full--lora_r4_ce_minus_ctl/vendor_preset__rung8192"
+   },
+   "subset_paths": {
+    "4096": "rung4096/qwen35_4b_s3/constv2-mix-full--lora_r4_ce_minus_ctl/rung_subset.json",
+    "8192": "rung8192/qwen35_4b_s3/constv2-mix-full--lora_r4_ce_minus_ctl/rung_subset.json"
+   },
+   "cap_ladder_paths": {
+    "2048": "controls/qwen35_4b_s3/constv2-mix-full--lora_r4_ce_minus_ctl/vendor_preset/cap_ladder.json",
+    "4096": "controls/qwen35_4b_s3/constv2-mix-full--lora_r4_ce_minus_ctl/vendor_preset__rung4096/cap_ladder.json",
+    "8192": "controls/qwen35_4b_s3/constv2-mix-full--lora_r4_ce_minus_ctl/vendor_preset__rung8192/cap_ladder.json"
+   },
+   "ladder_state_paths": {
+    "2048": "controls/qwen35_4b_s3/constv2-mix-full--lora_r4_ce_minus_ctl/vendor_preset/ladder_state.json",
+    "4096": "controls/qwen35_4b_s3/constv2-mix-full--lora_r4_ce_minus_ctl/vendor_preset__rung4096/ladder_state.json",
+    "8192": "controls/qwen35_4b_s3/constv2-mix-full--lora_r4_ce_minus_ctl/vendor_preset__rung8192/ladder_state.json"
+   },
+   "budget_paths": {
+    "2048": "budgets/qwen35_4b_s3/constv2-mix-full--lora_r4_ce_minus_ctl/2048/oos_prompt_budget.json",
+    "4096": "budgets/qwen35_4b_s3/constv2-mix-full--lora_r4_ce_minus_ctl/4096/oos_prompt_budget.json",
+    "8192": "budgets/qwen35_4b_s3/constv2-mix-full--lora_r4_ce_minus_ctl/8192/oos_prompt_budget.json"
+   },
+   "dispatch_paths": {
+    "2048": "dispatch/qwen35_4b_s3/constv2-mix-full--lora_r4_ce_minus_ctl/rung2048.json",
+    "4096": "dispatch/qwen35_4b_s3/constv2-mix-full--lora_r4_ce_minus_ctl/rung4096.json",
+    "8192": "dispatch/qwen35_4b_s3/constv2-mix-full--lora_r4_ce_minus_ctl/rung8192.json"
+   },
+   "configuration_ids": {
+    "2048": "qwen35_4b_s3/constv2-mix-full--lora_r4_ce_minus_ctl/rung2048",
+    "4096": "qwen35_4b_s3/constv2-mix-full--lora_r4_ce_minus_ctl/rung4096",
+    "8192": "qwen35_4b_s3/constv2-mix-full--lora_r4_ce_minus_ctl/rung8192"
+   },
+   "budget_class": "none",
+   "config": "configs/sdfbase/ifeval/sdfbase_full22_qwen35_4b_s3.ifeval.yaml",
+   "manifest": "configs/capeval/manifests/petri_full22_qwen35_4b_s3.ifeval.yaml",
+   "hf": "Qwen/Qwen3.5-4B",
+   "rev": "851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a",
+   "family": "qwen3_5",
+   "image": "default",
+   "status": "launch",
+   "held_reason": null,
+   "deferred": null,
+   "serving_path": "lora_native"
+  },
+  {
+   "index": 22,
+   "job_id": "ife-qwen35_4b-s3-prompted",
+   "model_key": "qwen35_4b",
+   "view": "s3",
+   "tag": "qwen35_4b_s3",
+   "slug": "qwen35_4b-sdfbase-s3",
+   "cell": "prompted__safety_refusal",
+   "cell_slug": "prompted--safety_refusal",
+   "harness_cell": "prompted__safety",
+   "standup_cell": "prompted__safety_refusal",
+   "standup_harness_cell": "prompted__safety",
+   "staged_id": null,
+   "object_sha256": null,
+   "pin": {
+    "kind": "prompted",
+    "object_sha256": null
+   },
+   "fitted": false,
+   "route_kind": "prompted",
+   "header_located": false,
+   "served_positions_expected": null,
+   "declared": false,
+   "thinking": "off",
+   "sampling_mode": "vendor_preset",
+   "sampling": {
+    "temperature": 0.7,
+    "top_p": 0.8,
+    "top_k": 20,
+    "min_p": 0.0,
+    "presence_penalty": 1.5,
+    "repetition_penalty": 1.0,
+    "source": "Qwen/Qwen3.5-4B @ 851bf6e8 ships no generation_config.json; the vendor's INSTRUCT (non-thinking) general row \u2014 QWEN35_VENDOR_ROWS['instruct_general'] by reference (P3): temperature 0.7, top_p 0.8, top_k 20, min_p 0.0, presence_penalty 1.5 (SENT PER REQUEST \u2014 not server-defaultable), repetition_penalty 1.0 (the card's stated no-op)"
+   },
+   "samples_per_item": 2,
+   "expected_stamps": [
+    "cell-stable",
+    "not-consulted",
+    "thinking_off"
+   ],
+   "cap": 2048,
+   "caps": [
+    2048,
+    4096,
+    8192
+   ],
+   "cap_ceiling": 8192,
+   "trigger_threshold": 0.01,
+   "trigger_provenance": "1 % raw at-cap of draws, per the IFEval ruling",
+   "prompt_class": "short",
+   "si_text_sha256": "ac3a58f61d53cf2412c02b8bb56063b9683a9c1154ef1f0978efc1449a836e08",
+   "geometry_eval_by_cap": {
+    "2048": "capability:ifeval_2048",
+    "4096": "capability:ifeval_4096",
+    "8192": "capability:ifeval_8192"
+   },
+   "out_root": "controls/qwen35_4b_s3/prompted--safety_refusal/vendor_preset",
+   "rung_out_roots": {
+    "4096": "controls/qwen35_4b_s3/prompted--safety_refusal/vendor_preset__rung4096",
+    "8192": "controls/qwen35_4b_s3/prompted--safety_refusal/vendor_preset__rung8192"
+   },
+   "subset_paths": {
+    "4096": "rung4096/qwen35_4b_s3/prompted--safety_refusal/rung_subset.json",
+    "8192": "rung8192/qwen35_4b_s3/prompted--safety_refusal/rung_subset.json"
+   },
+   "cap_ladder_paths": {
+    "2048": "controls/qwen35_4b_s3/prompted--safety_refusal/vendor_preset/cap_ladder.json",
+    "4096": "controls/qwen35_4b_s3/prompted--safety_refusal/vendor_preset__rung4096/cap_ladder.json",
+    "8192": "controls/qwen35_4b_s3/prompted--safety_refusal/vendor_preset__rung8192/cap_ladder.json"
+   },
+   "ladder_state_paths": {
+    "2048": "controls/qwen35_4b_s3/prompted--safety_refusal/vendor_preset/ladder_state.json",
+    "4096": "controls/qwen35_4b_s3/prompted--safety_refusal/vendor_preset__rung4096/ladder_state.json",
+    "8192": "controls/qwen35_4b_s3/prompted--safety_refusal/vendor_preset__rung8192/ladder_state.json"
+   },
+   "budget_paths": {
+    "2048": "budgets/qwen35_4b_s3/prompted--safety_refusal/2048/oos_prompt_budget.json",
+    "4096": "budgets/qwen35_4b_s3/prompted--safety_refusal/4096/oos_prompt_budget.json",
+    "8192": "budgets/qwen35_4b_s3/prompted--safety_refusal/8192/oos_prompt_budget.json"
+   },
+   "dispatch_paths": {
+    "2048": "dispatch/qwen35_4b_s3/prompted--safety_refusal/rung2048.json",
+    "4096": "dispatch/qwen35_4b_s3/prompted--safety_refusal/rung4096.json",
+    "8192": "dispatch/qwen35_4b_s3/prompted--safety_refusal/rung8192.json"
+   },
+   "configuration_ids": {
+    "2048": "qwen35_4b_s3/prompted--safety_refusal/rung2048",
+    "4096": "qwen35_4b_s3/prompted--safety_refusal/rung4096",
+    "8192": "qwen35_4b_s3/prompted--safety_refusal/rung8192"
+   },
+   "budget_class": "prompted__safety_refusal",
+   "config": "configs/sdfbase/ifeval/sdfbase_full22_qwen35_4b_s3.ifeval.yaml",
+   "manifest": "configs/capeval/manifests/petri_full22_qwen35_4b_s3.ifeval.yaml",
+   "hf": "Qwen/Qwen3.5-4B",
+   "rev": "851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a",
+   "family": "qwen3_5",
+   "image": "default",
+   "status": "launch",
+   "held_reason": null,
+   "deferred": null,
+   "serving_path": "lora_native"
+  },
+  {
+   "index": 23,
+   "job_id": "ife-qwen35_4b-s3-constitution",
+   "model_key": "qwen35_4b",
+   "view": "s3",
+   "tag": "qwen35_4b_s3",
+   "slug": "qwen35_4b-sdfbase-s3",
+   "cell": "prompted__si_constitution",
+   "cell_slug": "prompted--si_constitution",
+   "harness_cell": "prompted__constitution",
+   "standup_cell": "prompted__si_constitution",
+   "standup_harness_cell": "prompted__constitution",
+   "staged_id": null,
+   "object_sha256": null,
+   "pin": {
+    "kind": "prompted",
+    "object_sha256": null
+   },
+   "fitted": false,
+   "route_kind": "prompted",
+   "header_located": false,
+   "served_positions_expected": null,
+   "declared": false,
+   "thinking": "off",
+   "sampling_mode": "vendor_preset",
+   "sampling": {
+    "temperature": 0.7,
+    "top_p": 0.8,
+    "top_k": 20,
+    "min_p": 0.0,
+    "presence_penalty": 1.5,
+    "repetition_penalty": 1.0,
+    "source": "Qwen/Qwen3.5-4B @ 851bf6e8 ships no generation_config.json; the vendor's INSTRUCT (non-thinking) general row \u2014 QWEN35_VENDOR_ROWS['instruct_general'] by reference (P3): temperature 0.7, top_p 0.8, top_k 20, min_p 0.0, presence_penalty 1.5 (SENT PER REQUEST \u2014 not server-defaultable), repetition_penalty 1.0 (the card's stated no-op)"
+   },
+   "samples_per_item": 2,
+   "expected_stamps": [
+    "cell-stable",
+    "not-consulted",
+    "thinking_off"
+   ],
+   "cap": 2048,
+   "caps": [
+    2048,
+    4096,
+    8192
+   ],
+   "cap_ceiling": 8192,
+   "trigger_threshold": 0.01,
+   "trigger_provenance": "1 % raw at-cap of draws, per the IFEval ruling",
+   "prompt_class": "long_si",
+   "si_text_sha256": null,
+   "geometry_eval_by_cap": {
+    "2048": "capability:ifeval_longsi_2048",
+    "4096": "capability:ifeval_longsi_4096",
+    "8192": "capability:ifeval_longsi_8192"
+   },
+   "out_root": "controls/qwen35_4b_s3/prompted--si_constitution/vendor_preset",
+   "rung_out_roots": {
+    "4096": "controls/qwen35_4b_s3/prompted--si_constitution/vendor_preset__rung4096",
+    "8192": "controls/qwen35_4b_s3/prompted--si_constitution/vendor_preset__rung8192"
+   },
+   "subset_paths": {
+    "4096": "rung4096/qwen35_4b_s3/prompted--si_constitution/rung_subset.json",
+    "8192": "rung8192/qwen35_4b_s3/prompted--si_constitution/rung_subset.json"
+   },
+   "cap_ladder_paths": {
+    "2048": "controls/qwen35_4b_s3/prompted--si_constitution/vendor_preset/cap_ladder.json",
+    "4096": "controls/qwen35_4b_s3/prompted--si_constitution/vendor_preset__rung4096/cap_ladder.json",
+    "8192": "controls/qwen35_4b_s3/prompted--si_constitution/vendor_preset__rung8192/cap_ladder.json"
+   },
+   "ladder_state_paths": {
+    "2048": "controls/qwen35_4b_s3/prompted--si_constitution/vendor_preset/ladder_state.json",
+    "4096": "controls/qwen35_4b_s3/prompted--si_constitution/vendor_preset__rung4096/ladder_state.json",
+    "8192": "controls/qwen35_4b_s3/prompted--si_constitution/vendor_preset__rung8192/ladder_state.json"
+   },
+   "budget_paths": {
+    "2048": "budgets/qwen35_4b_s3/prompted--si_constitution/2048/oos_prompt_budget.json",
+    "4096": "budgets/qwen35_4b_s3/prompted--si_constitution/4096/oos_prompt_budget.json",
+    "8192": "budgets/qwen35_4b_s3/prompted--si_constitution/8192/oos_prompt_budget.json"
+   },
+   "dispatch_paths": {
+    "2048": "dispatch/qwen35_4b_s3/prompted--si_constitution/rung2048.json",
+    "4096": "dispatch/qwen35_4b_s3/prompted--si_constitution/rung4096.json",
+    "8192": "dispatch/qwen35_4b_s3/prompted--si_constitution/rung8192.json"
+   },
+   "configuration_ids": {
+    "2048": "qwen35_4b_s3/prompted--si_constitution/rung2048",
+    "4096": "qwen35_4b_s3/prompted--si_constitution/rung4096",
+    "8192": "qwen35_4b_s3/prompted--si_constitution/rung8192"
+   },
+   "budget_class": "prompted__si_constitution",
+   "config": "configs/sdfbase/ifeval/sdfbase_full22_qwen35_4b_s3.ifeval.yaml",
+   "manifest": "configs/capeval/manifests/petri_full22_qwen35_4b_s3.ifeval.yaml",
+   "hf": "Qwen/Qwen3.5-4B",
+   "rev": "851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a",
+   "family": "qwen3_5",
+   "image": "default",
+   "status": "launch",
+   "held_reason": null,
+   "deferred": null,
+   "serving_path": "lora_native"
+  },
+  {
+   "index": 24,
+   "job_id": "ife-qwen35_4b-s1p-constv2-mix-full-psr_ce_all_minus_ctl",
+   "model_key": "qwen35_4b",
+   "view": "s1p",
+   "tag": "qwen35_4b_s1p",
+   "slug": "qwen35_4b-sdfbase-s1p",
+   "cell": "constv2-mix-full__psr_ce_all_minus_ctl",
+   "cell_slug": "constv2-mix-full--psr_ce_all_minus_ctl",
+   "harness_cell": "si_constv2_mix_full__psr_ce_all_minus_ctl",
+   "standup_cell": "constv2-mix-full__psr_ce_all_minus_ctl",
+   "standup_harness_cell": "si_constv2_mix_full__psr_ce_all_minus_ctl",
+   "staged_id": "paired_eb64s1__constv2-mix-full__psr_ce_all_minus_ctl",
+   "object_sha256": "f98f0349673b7cb0cf85f54aee71f74bf9f0bbf981e989b52c8ba6599a492c2d",
+   "pin": {
+    "kind": "roster",
+    "object_sha256": "f98f0349673b7cb0cf85f54aee71f74bf9f0bbf981e989b52c8ba6599a492c2d",
+    "source": "configs/sdfbase_full22_pins.json",
+    "source_sha256": "afdda5edf68241b9cf7cbca50ee287b9d716269941fbdc6bc8555b71dfd43152",
+    "staged_id": "paired_eb64s1__constv2-mix-full__psr_ce_all_minus_ctl"
+   },
+   "fitted": true,
+   "route_kind": "lens",
+   "header_located": false,
+   "served_positions_expected": "all",
+   "declared": false,
+   "thinking": "off",
+   "sampling_mode": "vendor_preset",
+   "sampling": {
+    "temperature": 0.7,
+    "top_p": 0.8,
+    "top_k": 20,
+    "min_p": 0.0,
+    "presence_penalty": 1.5,
+    "repetition_penalty": 1.0,
+    "source": "Qwen/Qwen3.5-4B @ 851bf6e8 ships no generation_config.json; the vendor's INSTRUCT (non-thinking) general row \u2014 QWEN35_VENDOR_ROWS['instruct_general'] by reference (P3): temperature 0.7, top_p 0.8, top_k 20, min_p 0.0, presence_penalty 1.5 (SENT PER REQUEST \u2014 not server-defaultable), repetition_penalty 1.0 (the card's stated no-op)"
+   },
+   "samples_per_item": 2,
+   "expected_stamps": [
+    "cell-stable",
+    "always",
+    "thinking_off"
+   ],
+   "cap": 2048,
+   "caps": [
+    2048,
+    4096,
+    8192
+   ],
+   "cap_ceiling": 8192,
+   "trigger_threshold": 0.01,
+   "trigger_provenance": "1 % raw at-cap of draws, per the IFEval ruling",
+   "prompt_class": "short",
+   "si_text_sha256": null,
+   "geometry_eval_by_cap": {
+    "2048": "capability:ifeval_2048",
+    "4096": "capability:ifeval_4096",
+    "8192": "capability:ifeval_8192"
+   },
+   "out_root": "controls/qwen35_4b_s1p/constv2-mix-full--psr_ce_all_minus_ctl/vendor_preset",
+   "rung_out_roots": {
+    "4096": "controls/qwen35_4b_s1p/constv2-mix-full--psr_ce_all_minus_ctl/vendor_preset__rung4096",
+    "8192": "controls/qwen35_4b_s1p/constv2-mix-full--psr_ce_all_minus_ctl/vendor_preset__rung8192"
+   },
+   "subset_paths": {
+    "4096": "rung4096/qwen35_4b_s1p/constv2-mix-full--psr_ce_all_minus_ctl/rung_subset.json",
+    "8192": "rung8192/qwen35_4b_s1p/constv2-mix-full--psr_ce_all_minus_ctl/rung_subset.json"
+   },
+   "cap_ladder_paths": {
+    "2048": "controls/qwen35_4b_s1p/constv2-mix-full--psr_ce_all_minus_ctl/vendor_preset/cap_ladder.json",
+    "4096": "controls/qwen35_4b_s1p/constv2-mix-full--psr_ce_all_minus_ctl/vendor_preset__rung4096/cap_ladder.json",
+    "8192": "controls/qwen35_4b_s1p/constv2-mix-full--psr_ce_all_minus_ctl/vendor_preset__rung8192/cap_ladder.json"
+   },
+   "ladder_state_paths": {
+    "2048": "controls/qwen35_4b_s1p/constv2-mix-full--psr_ce_all_minus_ctl/vendor_preset/ladder_state.json",
+    "4096": "controls/qwen35_4b_s1p/constv2-mix-full--psr_ce_all_minus_ctl/vendor_preset__rung4096/ladder_state.json",
+    "8192": "controls/qwen35_4b_s1p/constv2-mix-full--psr_ce_all_minus_ctl/vendor_preset__rung8192/ladder_state.json"
+   },
+   "budget_paths": {
+    "2048": "budgets/qwen35_4b_s1p/constv2-mix-full--psr_ce_all_minus_ctl/2048/oos_prompt_budget.json",
+    "4096": "budgets/qwen35_4b_s1p/constv2-mix-full--psr_ce_all_minus_ctl/4096/oos_prompt_budget.json",
+    "8192": "budgets/qwen35_4b_s1p/constv2-mix-full--psr_ce_all_minus_ctl/8192/oos_prompt_budget.json"
+   },
+   "dispatch_paths": {
+    "2048": "dispatch/qwen35_4b_s1p/constv2-mix-full--psr_ce_all_minus_ctl/rung2048.json",
+    "4096": "dispatch/qwen35_4b_s1p/constv2-mix-full--psr_ce_all_minus_ctl/rung4096.json",
+    "8192": "dispatch/qwen35_4b_s1p/constv2-mix-full--psr_ce_all_minus_ctl/rung8192.json"
+   },
+   "configuration_ids": {
+    "2048": "qwen35_4b_s1p/constv2-mix-full--psr_ce_all_minus_ctl/rung2048",
+    "4096": "qwen35_4b_s1p/constv2-mix-full--psr_ce_all_minus_ctl/rung4096",
+    "8192": "qwen35_4b_s1p/constv2-mix-full--psr_ce_all_minus_ctl/rung8192"
+   },
+   "budget_class": "none",
+   "config": "configs/sdfbase/ifeval/sdfbase_full22_qwen35_4b_s1p.ifeval.yaml",
+   "manifest": "configs/capeval/manifests/petri_full22_qwen35_4b_s1p.ifeval.yaml",
+   "hf": "Qwen/Qwen3.5-4B",
+   "rev": "851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a",
+   "family": "qwen3_5",
+   "image": "default",
+   "status": "launch",
+   "held_reason": null,
+   "deferred": null,
+   "serving_path": "lora_native"
+  },
+  {
+   "index": 25,
+   "job_id": "ife-qwen35_4b-s2p-constv2-mix-full-psr_ce_all_minus_ctl",
+   "model_key": "qwen35_4b",
+   "view": "s2p",
+   "tag": "qwen35_4b_s2p",
+   "slug": "qwen35_4b-sdfbase-s2p",
+   "cell": "constv2-mix-full__psr_ce_all_minus_ctl",
+   "cell_slug": "constv2-mix-full--psr_ce_all_minus_ctl",
+   "harness_cell": "si_constv2_mix_full__psr_ce_all_minus_ctl",
+   "standup_cell": "constv2-mix-full__psr_ce_all_minus_ctl",
+   "standup_harness_cell": "si_constv2_mix_full__psr_ce_all_minus_ctl",
+   "staged_id": "paired_eb64s2__constv2-mix-full__psr_ce_all_minus_ctl",
+   "object_sha256": "9c639c91d2ef5b8fc482cb039e8ae65deaa79389e1eab7daaa0c45a5caacfc66",
+   "pin": {
+    "kind": "roster",
+    "object_sha256": "9c639c91d2ef5b8fc482cb039e8ae65deaa79389e1eab7daaa0c45a5caacfc66",
+    "source": "configs/sdfbase_full22_pins.json",
+    "source_sha256": "afdda5edf68241b9cf7cbca50ee287b9d716269941fbdc6bc8555b71dfd43152",
+    "staged_id": "paired_eb64s2__constv2-mix-full__psr_ce_all_minus_ctl"
+   },
+   "fitted": true,
+   "route_kind": "lens",
+   "header_located": false,
+   "served_positions_expected": "all",
+   "declared": false,
+   "thinking": "off",
+   "sampling_mode": "vendor_preset",
+   "sampling": {
+    "temperature": 0.7,
+    "top_p": 0.8,
+    "top_k": 20,
+    "min_p": 0.0,
+    "presence_penalty": 1.5,
+    "repetition_penalty": 1.0,
+    "source": "Qwen/Qwen3.5-4B @ 851bf6e8 ships no generation_config.json; the vendor's INSTRUCT (non-thinking) general row \u2014 QWEN35_VENDOR_ROWS['instruct_general'] by reference (P3): temperature 0.7, top_p 0.8, top_k 20, min_p 0.0, presence_penalty 1.5 (SENT PER REQUEST \u2014 not server-defaultable), repetition_penalty 1.0 (the card's stated no-op)"
+   },
+   "samples_per_item": 2,
+   "expected_stamps": [
+    "cell-stable",
+    "always",
+    "thinking_off"
+   ],
+   "cap": 2048,
+   "caps": [
+    2048,
+    4096,
+    8192
+   ],
+   "cap_ceiling": 8192,
+   "trigger_threshold": 0.01,
+   "trigger_provenance": "1 % raw at-cap of draws, per the IFEval ruling",
+   "prompt_class": "short",
+   "si_text_sha256": null,
+   "geometry_eval_by_cap": {
+    "2048": "capability:ifeval_2048",
+    "4096": "capability:ifeval_4096",
+    "8192": "capability:ifeval_8192"
+   },
+   "out_root": "controls/qwen35_4b_s2p/constv2-mix-full--psr_ce_all_minus_ctl/vendor_preset",
+   "rung_out_roots": {
+    "4096": "controls/qwen35_4b_s2p/constv2-mix-full--psr_ce_all_minus_ctl/vendor_preset__rung4096",
+    "8192": "controls/qwen35_4b_s2p/constv2-mix-full--psr_ce_all_minus_ctl/vendor_preset__rung8192"
+   },
+   "subset_paths": {
+    "4096": "rung4096/qwen35_4b_s2p/constv2-mix-full--psr_ce_all_minus_ctl/rung_subset.json",
+    "8192": "rung8192/qwen35_4b_s2p/constv2-mix-full--psr_ce_all_minus_ctl/rung_subset.json"
+   },
+   "cap_ladder_paths": {
+    "2048": "controls/qwen35_4b_s2p/constv2-mix-full--psr_ce_all_minus_ctl/vendor_preset/cap_ladder.json",
+    "4096": "controls/qwen35_4b_s2p/constv2-mix-full--psr_ce_all_minus_ctl/vendor_preset__rung4096/cap_ladder.json",
+    "8192": "controls/qwen35_4b_s2p/constv2-mix-full--psr_ce_all_minus_ctl/vendor_preset__rung8192/cap_ladder.json"
+   },
+   "ladder_state_paths": {
+    "2048": "controls/qwen35_4b_s2p/constv2-mix-full--psr_ce_all_minus_ctl/vendor_preset/ladder_state.json",
+    "4096": "controls/qwen35_4b_s2p/constv2-mix-full--psr_ce_all_minus_ctl/vendor_preset__rung4096/ladder_state.json",
+    "8192": "controls/qwen35_4b_s2p/constv2-mix-full--psr_ce_all_minus_ctl/vendor_preset__rung8192/ladder_state.json"
+   },
+   "budget_paths": {
+    "2048": "budgets/qwen35_4b_s2p/constv2-mix-full--psr_ce_all_minus_ctl/2048/oos_prompt_budget.json",
+    "4096": "budgets/qwen35_4b_s2p/constv2-mix-full--psr_ce_all_minus_ctl/4096/oos_prompt_budget.json",
+    "8192": "budgets/qwen35_4b_s2p/constv2-mix-full--psr_ce_all_minus_ctl/8192/oos_prompt_budget.json"
+   },
+   "dispatch_paths": {
+    "2048": "dispatch/qwen35_4b_s2p/constv2-mix-full--psr_ce_all_minus_ctl/rung2048.json",
+    "4096": "dispatch/qwen35_4b_s2p/constv2-mix-full--psr_ce_all_minus_ctl/rung4096.json",
+    "8192": "dispatch/qwen35_4b_s2p/constv2-mix-full--psr_ce_all_minus_ctl/rung8192.json"
+   },
+   "configuration_ids": {
+    "2048": "qwen35_4b_s2p/constv2-mix-full--psr_ce_all_minus_ctl/rung2048",
+    "4096": "qwen35_4b_s2p/constv2-mix-full--psr_ce_all_minus_ctl/rung4096",
+    "8192": "qwen35_4b_s2p/constv2-mix-full--psr_ce_all_minus_ctl/rung8192"
+   },
+   "budget_class": "none",
+   "config": "configs/sdfbase/ifeval/sdfbase_full22_qwen35_4b_s2p.ifeval.yaml",
+   "manifest": "configs/capeval/manifests/petri_full22_qwen35_4b_s2p.ifeval.yaml",
+   "hf": "Qwen/Qwen3.5-4B",
+   "rev": "851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a",
+   "family": "qwen3_5",
+   "image": "default",
+   "status": "launch",
+   "held_reason": null,
+   "deferred": null,
+   "serving_path": "lora_native"
+  },
+  {
+   "index": 26,
+   "job_id": "ife-qwen35_4b-s3p-constv2-mix-full-psr_ce_all_minus_ctl",
+   "model_key": "qwen35_4b",
+   "view": "s3p",
+   "tag": "qwen35_4b_s3p",
+   "slug": "qwen35_4b-sdfbase-s3p",
+   "cell": "constv2-mix-full__psr_ce_all_minus_ctl",
+   "cell_slug": "constv2-mix-full--psr_ce_all_minus_ctl",
+   "harness_cell": "si_constv2_mix_full__psr_ce_all_minus_ctl",
+   "standup_cell": "constv2-mix-full__psr_ce_all_minus_ctl",
+   "standup_harness_cell": "si_constv2_mix_full__psr_ce_all_minus_ctl",
+   "staged_id": "paired_eb64s3__constv2-mix-full__psr_ce_all_minus_ctl",
+   "object_sha256": "0718a3f9edfb033ad84c3322f717dc62b32b6298fe48f0a6c42e9f0a7c031647",
+   "pin": {
+    "kind": "roster",
+    "object_sha256": "0718a3f9edfb033ad84c3322f717dc62b32b6298fe48f0a6c42e9f0a7c031647",
+    "source": "configs/sdfbase_full22_pins.json",
+    "source_sha256": "afdda5edf68241b9cf7cbca50ee287b9d716269941fbdc6bc8555b71dfd43152",
+    "staged_id": "paired_eb64s3__constv2-mix-full__psr_ce_all_minus_ctl"
+   },
+   "fitted": true,
+   "route_kind": "lens",
+   "header_located": false,
+   "served_positions_expected": "all",
+   "declared": false,
+   "thinking": "off",
+   "sampling_mode": "vendor_preset",
+   "sampling": {
+    "temperature": 0.7,
+    "top_p": 0.8,
+    "top_k": 20,
+    "min_p": 0.0,
+    "presence_penalty": 1.5,
+    "repetition_penalty": 1.0,
+    "source": "Qwen/Qwen3.5-4B @ 851bf6e8 ships no generation_config.json; the vendor's INSTRUCT (non-thinking) general row \u2014 QWEN35_VENDOR_ROWS['instruct_general'] by reference (P3): temperature 0.7, top_p 0.8, top_k 20, min_p 0.0, presence_penalty 1.5 (SENT PER REQUEST \u2014 not server-defaultable), repetition_penalty 1.0 (the card's stated no-op)"
+   },
+   "samples_per_item": 2,
+   "expected_stamps": [
+    "cell-stable",
+    "always",
+    "thinking_off"
+   ],
+   "cap": 2048,
+   "caps": [
+    2048,
+    4096,
+    8192
+   ],
+   "cap_ceiling": 8192,
+   "trigger_threshold": 0.01,
+   "trigger_provenance": "1 % raw at-cap of draws, per the IFEval ruling",
+   "prompt_class": "short",
+   "si_text_sha256": null,
+   "geometry_eval_by_cap": {
+    "2048": "capability:ifeval_2048",
+    "4096": "capability:ifeval_4096",
+    "8192": "capability:ifeval_8192"
+   },
+   "out_root": "controls/qwen35_4b_s3p/constv2-mix-full--psr_ce_all_minus_ctl/vendor_preset",
+   "rung_out_roots": {
+    "4096": "controls/qwen35_4b_s3p/constv2-mix-full--psr_ce_all_minus_ctl/vendor_preset__rung4096",
+    "8192": "controls/qwen35_4b_s3p/constv2-mix-full--psr_ce_all_minus_ctl/vendor_preset__rung8192"
+   },
+   "subset_paths": {
+    "4096": "rung4096/qwen35_4b_s3p/constv2-mix-full--psr_ce_all_minus_ctl/rung_subset.json",
+    "8192": "rung8192/qwen35_4b_s3p/constv2-mix-full--psr_ce_all_minus_ctl/rung_subset.json"
+   },
+   "cap_ladder_paths": {
+    "2048": "controls/qwen35_4b_s3p/constv2-mix-full--psr_ce_all_minus_ctl/vendor_preset/cap_ladder.json",
+    "4096": "controls/qwen35_4b_s3p/constv2-mix-full--psr_ce_all_minus_ctl/vendor_preset__rung4096/cap_ladder.json",
+    "8192": "controls/qwen35_4b_s3p/constv2-mix-full--psr_ce_all_minus_ctl/vendor_preset__rung8192/cap_ladder.json"
+   },
+   "ladder_state_paths": {
+    "2048": "controls/qwen35_4b_s3p/constv2-mix-full--psr_ce_all_minus_ctl/vendor_preset/ladder_state.json",
+    "4096": "controls/qwen35_4b_s3p/constv2-mix-full--psr_ce_all_minus_ctl/vendor_preset__rung4096/ladder_state.json",
+    "8192": "controls/qwen35_4b_s3p/constv2-mix-full--psr_ce_all_minus_ctl/vendor_preset__rung8192/ladder_state.json"
+   },
+   "budget_paths": {
+    "2048": "budgets/qwen35_4b_s3p/constv2-mix-full--psr_ce_all_minus_ctl/2048/oos_prompt_budget.json",
+    "4096": "budgets/qwen35_4b_s3p/constv2-mix-full--psr_ce_all_minus_ctl/4096/oos_prompt_budget.json",
+    "8192": "budgets/qwen35_4b_s3p/constv2-mix-full--psr_ce_all_minus_ctl/8192/oos_prompt_budget.json"
+   },
+   "dispatch_paths": {
+    "2048": "dispatch/qwen35_4b_s3p/constv2-mix-full--psr_ce_all_minus_ctl/rung2048.json",
+    "4096": "dispatch/qwen35_4b_s3p/constv2-mix-full--psr_ce_all_minus_ctl/rung4096.json",
+    "8192": "dispatch/qwen35_4b_s3p/constv2-mix-full--psr_ce_all_minus_ctl/rung8192.json"
+   },
+   "configuration_ids": {
+    "2048": "qwen35_4b_s3p/constv2-mix-full--psr_ce_all_minus_ctl/rung2048",
+    "4096": "qwen35_4b_s3p/constv2-mix-full--psr_ce_all_minus_ctl/rung4096",
+    "8192": "qwen35_4b_s3p/constv2-mix-full--psr_ce_all_minus_ctl/rung8192"
+   },
+   "budget_class": "none",
+   "config": "configs/sdfbase/ifeval/sdfbase_full22_qwen35_4b_s3p.ifeval.yaml",
+   "manifest": "configs/capeval/manifests/petri_full22_qwen35_4b_s3p.ifeval.yaml",
+   "hf": "Qwen/Qwen3.5-4B",
+   "rev": "851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a",
+   "family": "qwen3_5",
+   "image": "default",
+   "status": "launch",
+   "held_reason": null,
+   "deferred": null,
+   "serving_path": "lora_native"
+  },
+  {
+   "index": 27,
+   "job_id": "ife-qwen35_4b-s1-arditi_allpos",
+   "model_key": "qwen35_4b",
+   "view": "s1",
+   "tag": "qwen35_4b_s1",
+   "slug": "qwen35_4b-sdfbase-s1",
+   "cell": "arditi_allpos",
+   "cell_slug": "arditi_allpos",
+   "harness_cell": "arditi_allpos",
+   "standup_cell": "arditi_allpos",
+   "standup_harness_cell": "arditi_allpos",
+   "staged_id": "ar_c0p3__arditi_allpos",
+   "object_sha256": "ba2212f0c2f9ffef2997bdd24831182052560cf980054bcee9cf95ea0db085b2",
+   "pin": {
+    "kind": "lane_extra",
+    "object_sha256": "ba2212f0c2f9ffef2997bdd24831182052560cf980054bcee9cf95ea0db085b2",
+    "source": "configs/arditi_allpos_pins.json",
+    "source_sha256": "8607fd979ae7e0595dd14ed02b9ed30d99f066d6a55db7f313801c1054e14dcd",
+    "staged_id": "ar_c0p3__arditi_allpos"
+   },
+   "fitted": true,
+   "route_kind": "lens",
+   "header_located": false,
+   "served_positions_expected": "all",
+   "declared": false,
+   "thinking": "off",
+   "sampling_mode": "vendor_preset",
+   "sampling": {
+    "temperature": 0.7,
+    "top_p": 0.8,
+    "top_k": 20,
+    "min_p": 0.0,
+    "presence_penalty": 1.5,
+    "repetition_penalty": 1.0,
+    "source": "Qwen/Qwen3.5-4B @ 851bf6e8 ships no generation_config.json; the vendor's INSTRUCT (non-thinking) general row \u2014 QWEN35_VENDOR_ROWS['instruct_general'] by reference (P3): temperature 0.7, top_p 0.8, top_k 20, min_p 0.0, presence_penalty 1.5 (SENT PER REQUEST \u2014 not server-defaultable), repetition_penalty 1.0 (the card's stated no-op)"
+   },
+   "samples_per_item": 2,
+   "expected_stamps": [
+    "cell-stable",
+    "always",
+    "thinking_off"
+   ],
+   "cap": 2048,
+   "caps": [
+    2048,
+    4096,
+    8192
+   ],
+   "cap_ceiling": 8192,
+   "trigger_threshold": 0.01,
+   "trigger_provenance": "1 % raw at-cap of draws, per the IFEval ruling",
+   "prompt_class": "short",
+   "si_text_sha256": null,
+   "geometry_eval_by_cap": {
+    "2048": "capability:ifeval_2048",
+    "4096": "capability:ifeval_4096",
+    "8192": "capability:ifeval_8192"
+   },
+   "out_root": "controls/qwen35_4b_s1/arditi_allpos/vendor_preset",
+   "rung_out_roots": {
+    "4096": "controls/qwen35_4b_s1/arditi_allpos/vendor_preset__rung4096",
+    "8192": "controls/qwen35_4b_s1/arditi_allpos/vendor_preset__rung8192"
+   },
+   "subset_paths": {
+    "4096": "rung4096/qwen35_4b_s1/arditi_allpos/rung_subset.json",
+    "8192": "rung8192/qwen35_4b_s1/arditi_allpos/rung_subset.json"
+   },
+   "cap_ladder_paths": {
+    "2048": "controls/qwen35_4b_s1/arditi_allpos/vendor_preset/cap_ladder.json",
+    "4096": "controls/qwen35_4b_s1/arditi_allpos/vendor_preset__rung4096/cap_ladder.json",
+    "8192": "controls/qwen35_4b_s1/arditi_allpos/vendor_preset__rung8192/cap_ladder.json"
+   },
+   "ladder_state_paths": {
+    "2048": "controls/qwen35_4b_s1/arditi_allpos/vendor_preset/ladder_state.json",
+    "4096": "controls/qwen35_4b_s1/arditi_allpos/vendor_preset__rung4096/ladder_state.json",
+    "8192": "controls/qwen35_4b_s1/arditi_allpos/vendor_preset__rung8192/ladder_state.json"
+   },
+   "budget_paths": {
+    "2048": "budgets/qwen35_4b_s1/arditi_allpos/2048/oos_prompt_budget.json",
+    "4096": "budgets/qwen35_4b_s1/arditi_allpos/4096/oos_prompt_budget.json",
+    "8192": "budgets/qwen35_4b_s1/arditi_allpos/8192/oos_prompt_budget.json"
+   },
+   "dispatch_paths": {
+    "2048": "dispatch/qwen35_4b_s1/arditi_allpos/rung2048.json",
+    "4096": "dispatch/qwen35_4b_s1/arditi_allpos/rung4096.json",
+    "8192": "dispatch/qwen35_4b_s1/arditi_allpos/rung8192.json"
+   },
+   "configuration_ids": {
+    "2048": "qwen35_4b_s1/arditi_allpos/rung2048",
+    "4096": "qwen35_4b_s1/arditi_allpos/rung4096",
+    "8192": "qwen35_4b_s1/arditi_allpos/rung8192"
+   },
+   "budget_class": "none",
+   "config": "configs/sdfbase/ifeval/sdfbase_full22_qwen35_4b_s1.ifeval.yaml",
+   "manifest": "configs/capeval/manifests/petri_full22_qwen35_4b_s1.ifeval.yaml",
+   "hf": "Qwen/Qwen3.5-4B",
+   "rev": "851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a",
+   "family": "qwen3_5",
+   "image": "default",
+   "status": "launch",
+   "held_reason": null,
+   "deferred": null,
+   "object_source": "external",
+   "bank_view": "ar_c0p3",
+   "lane_extra": {
+    "key": "qwen35_4b",
+    "view": "s1",
+    "cell": "arditi_allpos",
+    "staged_id": "ar_c0p3__arditi_allpos",
+    "pins": "configs/arditi_allpos_pins.json",
+    "bank": "ar_c0p3",
+    "sidecar": "fit_provenance.json",
+    "reason": "2026-09-22: the Arditi refusal-steer IS required on every capability eval, as on GSM8K \u2014 the all-positions direction at c = 0.3 (ar_c0p3) served on the seed-1 engine beside the seed's eight arms."
+   },
+   "serving_path": "lora_native"
+  },
+  {
+   "index": 28,
+   "job_id": "ife-qwen35_4b-s2-arditi_allpos",
+   "model_key": "qwen35_4b",
+   "view": "s2",
+   "tag": "qwen35_4b_s2",
+   "slug": "qwen35_4b-sdfbase-s2",
+   "cell": "arditi_allpos",
+   "cell_slug": "arditi_allpos",
+   "harness_cell": "arditi_allpos",
+   "standup_cell": "arditi_allpos",
+   "standup_harness_cell": "arditi_allpos",
+   "staged_id": "ar_c0p3__arditi_allpos",
+   "object_sha256": "ba2212f0c2f9ffef2997bdd24831182052560cf980054bcee9cf95ea0db085b2",
+   "pin": {
+    "kind": "lane_extra",
+    "object_sha256": "ba2212f0c2f9ffef2997bdd24831182052560cf980054bcee9cf95ea0db085b2",
+    "source": "configs/arditi_allpos_pins.json",
+    "source_sha256": "8607fd979ae7e0595dd14ed02b9ed30d99f066d6a55db7f313801c1054e14dcd",
+    "staged_id": "ar_c0p3__arditi_allpos"
+   },
+   "fitted": true,
+   "route_kind": "lens",
+   "header_located": false,
+   "served_positions_expected": "all",
+   "declared": false,
+   "thinking": "off",
+   "sampling_mode": "vendor_preset",
+   "sampling": {
+    "temperature": 0.7,
+    "top_p": 0.8,
+    "top_k": 20,
+    "min_p": 0.0,
+    "presence_penalty": 1.5,
+    "repetition_penalty": 1.0,
+    "source": "Qwen/Qwen3.5-4B @ 851bf6e8 ships no generation_config.json; the vendor's INSTRUCT (non-thinking) general row \u2014 QWEN35_VENDOR_ROWS['instruct_general'] by reference (P3): temperature 0.7, top_p 0.8, top_k 20, min_p 0.0, presence_penalty 1.5 (SENT PER REQUEST \u2014 not server-defaultable), repetition_penalty 1.0 (the card's stated no-op)"
+   },
+   "samples_per_item": 2,
+   "expected_stamps": [
+    "cell-stable",
+    "always",
+    "thinking_off"
+   ],
+   "cap": 2048,
+   "caps": [
+    2048,
+    4096,
+    8192
+   ],
+   "cap_ceiling": 8192,
+   "trigger_threshold": 0.01,
+   "trigger_provenance": "1 % raw at-cap of draws, per the IFEval ruling",
+   "prompt_class": "short",
+   "si_text_sha256": null,
+   "geometry_eval_by_cap": {
+    "2048": "capability:ifeval_2048",
+    "4096": "capability:ifeval_4096",
+    "8192": "capability:ifeval_8192"
+   },
+   "out_root": "controls/qwen35_4b_s2/arditi_allpos/vendor_preset",
+   "rung_out_roots": {
+    "4096": "controls/qwen35_4b_s2/arditi_allpos/vendor_preset__rung4096",
+    "8192": "controls/qwen35_4b_s2/arditi_allpos/vendor_preset__rung8192"
+   },
+   "subset_paths": {
+    "4096": "rung4096/qwen35_4b_s2/arditi_allpos/rung_subset.json",
+    "8192": "rung8192/qwen35_4b_s2/arditi_allpos/rung_subset.json"
+   },
+   "cap_ladder_paths": {
+    "2048": "controls/qwen35_4b_s2/arditi_allpos/vendor_preset/cap_ladder.json",
+    "4096": "controls/qwen35_4b_s2/arditi_allpos/vendor_preset__rung4096/cap_ladder.json",
+    "8192": "controls/qwen35_4b_s2/arditi_allpos/vendor_preset__rung8192/cap_ladder.json"
+   },
+   "ladder_state_paths": {
+    "2048": "controls/qwen35_4b_s2/arditi_allpos/vendor_preset/ladder_state.json",
+    "4096": "controls/qwen35_4b_s2/arditi_allpos/vendor_preset__rung4096/ladder_state.json",
+    "8192": "controls/qwen35_4b_s2/arditi_allpos/vendor_preset__rung8192/ladder_state.json"
+   },
+   "budget_paths": {
+    "2048": "budgets/qwen35_4b_s2/arditi_allpos/2048/oos_prompt_budget.json",
+    "4096": "budgets/qwen35_4b_s2/arditi_allpos/4096/oos_prompt_budget.json",
+    "8192": "budgets/qwen35_4b_s2/arditi_allpos/8192/oos_prompt_budget.json"
+   },
+   "dispatch_paths": {
+    "2048": "dispatch/qwen35_4b_s2/arditi_allpos/rung2048.json",
+    "4096": "dispatch/qwen35_4b_s2/arditi_allpos/rung4096.json",
+    "8192": "dispatch/qwen35_4b_s2/arditi_allpos/rung8192.json"
+   },
+   "configuration_ids": {
+    "2048": "qwen35_4b_s2/arditi_allpos/rung2048",
+    "4096": "qwen35_4b_s2/arditi_allpos/rung4096",
+    "8192": "qwen35_4b_s2/arditi_allpos/rung8192"
+   },
+   "budget_class": "none",
+   "config": "configs/sdfbase/ifeval/sdfbase_full22_qwen35_4b_s2.ifeval.yaml",
+   "manifest": "configs/capeval/manifests/petri_full22_qwen35_4b_s2.ifeval.yaml",
+   "hf": "Qwen/Qwen3.5-4B",
+   "rev": "851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a",
+   "family": "qwen3_5",
+   "image": "default",
+   "status": "launch",
+   "held_reason": null,
+   "deferred": null,
+   "object_source": "external",
+   "bank_view": "ar_c0p3",
+   "lane_extra": {
+    "key": "qwen35_4b",
+    "view": "s2",
+    "cell": "arditi_allpos",
+    "staged_id": "ar_c0p3__arditi_allpos",
+    "pins": "configs/arditi_allpos_pins.json",
+    "bank": "ar_c0p3",
+    "sidecar": "fit_provenance.json",
+    "reason": "The same object on the seed-2 engine (the object does not vary with the seed; the seed view's anchor does)."
+   },
+   "serving_path": "lora_native"
+  },
+  {
+   "index": 29,
+   "job_id": "ife-qwen35_4b-s3-arditi_allpos",
+   "model_key": "qwen35_4b",
+   "view": "s3",
+   "tag": "qwen35_4b_s3",
+   "slug": "qwen35_4b-sdfbase-s3",
+   "cell": "arditi_allpos",
+   "cell_slug": "arditi_allpos",
+   "harness_cell": "arditi_allpos",
+   "standup_cell": "arditi_allpos",
+   "standup_harness_cell": "arditi_allpos",
+   "staged_id": "ar_c0p3__arditi_allpos",
+   "object_sha256": "ba2212f0c2f9ffef2997bdd24831182052560cf980054bcee9cf95ea0db085b2",
+   "pin": {
+    "kind": "lane_extra",
+    "object_sha256": "ba2212f0c2f9ffef2997bdd24831182052560cf980054bcee9cf95ea0db085b2",
+    "source": "configs/arditi_allpos_pins.json",
+    "source_sha256": "8607fd979ae7e0595dd14ed02b9ed30d99f066d6a55db7f313801c1054e14dcd",
+    "staged_id": "ar_c0p3__arditi_allpos"
+   },
+   "fitted": true,
+   "route_kind": "lens",
+   "header_located": false,
+   "served_positions_expected": "all",
+   "declared": false,
+   "thinking": "off",
+   "sampling_mode": "vendor_preset",
+   "sampling": {
+    "temperature": 0.7,
+    "top_p": 0.8,
+    "top_k": 20,
+    "min_p": 0.0,
+    "presence_penalty": 1.5,
+    "repetition_penalty": 1.0,
+    "source": "Qwen/Qwen3.5-4B @ 851bf6e8 ships no generation_config.json; the vendor's INSTRUCT (non-thinking) general row \u2014 QWEN35_VENDOR_ROWS['instruct_general'] by reference (P3): temperature 0.7, top_p 0.8, top_k 20, min_p 0.0, presence_penalty 1.5 (SENT PER REQUEST \u2014 not server-defaultable), repetition_penalty 1.0 (the card's stated no-op)"
+   },
+   "samples_per_item": 2,
+   "expected_stamps": [
+    "cell-stable",
+    "always",
+    "thinking_off"
+   ],
+   "cap": 2048,
+   "caps": [
+    2048,
+    4096,
+    8192
+   ],
+   "cap_ceiling": 8192,
+   "trigger_threshold": 0.01,
+   "trigger_provenance": "1 % raw at-cap of draws, per the IFEval ruling",
+   "prompt_class": "short",
+   "si_text_sha256": null,
+   "geometry_eval_by_cap": {
+    "2048": "capability:ifeval_2048",
+    "4096": "capability:ifeval_4096",
+    "8192": "capability:ifeval_8192"
+   },
+   "out_root": "controls/qwen35_4b_s3/arditi_allpos/vendor_preset",
+   "rung_out_roots": {
+    "4096": "controls/qwen35_4b_s3/arditi_allpos/vendor_preset__rung4096",
+    "8192": "controls/qwen35_4b_s3/arditi_allpos/vendor_preset__rung8192"
+   },
+   "subset_paths": {
+    "4096": "rung4096/qwen35_4b_s3/arditi_allpos/rung_subset.json",
+    "8192": "rung8192/qwen35_4b_s3/arditi_allpos/rung_subset.json"
+   },
+   "cap_ladder_paths": {
+    "2048": "controls/qwen35_4b_s3/arditi_allpos/vendor_preset/cap_ladder.json",
+    "4096": "controls/qwen35_4b_s3/arditi_allpos/vendor_preset__rung4096/cap_ladder.json",
+    "8192": "controls/qwen35_4b_s3/arditi_allpos/vendor_preset__rung8192/cap_ladder.json"
+   },
+   "ladder_state_paths": {
+    "2048": "controls/qwen35_4b_s3/arditi_allpos/vendor_preset/ladder_state.json",
+    "4096": "controls/qwen35_4b_s3/arditi_allpos/vendor_preset__rung4096/ladder_state.json",
+    "8192": "controls/qwen35_4b_s3/arditi_allpos/vendor_preset__rung8192/ladder_state.json"
+   },
+   "budget_paths": {
+    "2048": "budgets/qwen35_4b_s3/arditi_allpos/2048/oos_prompt_budget.json",
+    "4096": "budgets/qwen35_4b_s3/arditi_allpos/4096/oos_prompt_budget.json",
+    "8192": "budgets/qwen35_4b_s3/arditi_allpos/8192/oos_prompt_budget.json"
+   },
+   "dispatch_paths": {
+    "2048": "dispatch/qwen35_4b_s3/arditi_allpos/rung2048.json",
+    "4096": "dispatch/qwen35_4b_s3/arditi_allpos/rung4096.json",
+    "8192": "dispatch/qwen35_4b_s3/arditi_allpos/rung8192.json"
+   },
+   "configuration_ids": {
+    "2048": "qwen35_4b_s3/arditi_allpos/rung2048",
+    "4096": "qwen35_4b_s3/arditi_allpos/rung4096",
+    "8192": "qwen35_4b_s3/arditi_allpos/rung8192"
+   },
+   "budget_class": "none",
+   "config": "configs/sdfbase/ifeval/sdfbase_full22_qwen35_4b_s3.ifeval.yaml",
+   "manifest": "configs/capeval/manifests/petri_full22_qwen35_4b_s3.ifeval.yaml",
+   "hf": "Qwen/Qwen3.5-4B",
+   "rev": "851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a",
+   "family": "qwen3_5",
+   "image": "default",
+   "status": "launch",
+   "held_reason": null,
+   "deferred": null,
+   "object_source": "external",
+   "bank_view": "ar_c0p3",
+   "lane_extra": {
+    "key": "qwen35_4b",
+    "view": "s3",
+    "cell": "arditi_allpos",
+    "staged_id": "ar_c0p3__arditi_allpos",
+    "pins": "configs/arditi_allpos_pins.json",
+    "bank": "ar_c0p3",
+    "sidecar": "fit_provenance.json",
+    "reason": "The same object on the seed-3 engine."
+   },
+   "serving_path": "lora_native"
+  }
+ ]
+}

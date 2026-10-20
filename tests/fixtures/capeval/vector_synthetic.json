@@ -1,0 +1,6 @@
+{
+ "layer": 15,
+ "norm": 4.0,
+ "skip_bos": true,
+ "note": "synthetic Stage-0 protocol fixture, not a real S2 artifact"
+}

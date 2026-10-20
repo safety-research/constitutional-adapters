@@ -1,0 +1,26 @@
+# Unified-sweep FOCUSED 16-condition slice. Columns (tab-separated):
+#   label  cell  coeff  mask  static  adaptive  benign  target_engine  attacker_engine
+# static/adaptive/benign: csv family list, * = full default set, - = skip.
+# ADAPTIVE IS OFF ON EVERY ROW (scope cut 2026-08-21: the sweep
+# screens static+held_out+benign, all fixed-prompt; the attacker-in-the-
+# loop leg is ~1e4 GPU-hours and lives in the jailbreak lane). '-' is
+# EXPLICIT here because an explicit '*' would override the loader's
+# adaptive-off default and revive the cut leg.
+# NOTE: on this branch only bon+gcg of the 8 static families exist; `plan`
+# surfaces the absent ones (the full set lives on twosi-stage3-run).
+b_none	none		all	*	-	*	hf	vllm
+b_prompted_sr	prompted__safety_refusal		all	*	-	*	hf	vllm
+b_prompted_ct	prompted__si_constitution		all	*	-	*	hf	vllm
+sr_psrkl_025	safety_refusal__psr_kl_all	0.25	all	*	-	*	hf	vllm
+sr_psrkl_100	safety_refusal__psr_kl_all	1.0	all	*	-	*	hf	vllm
+sr_psrkl_025_gen	safety_refusal__psr_kl_all	0.25	generated	*	-	-	hf	vllm
+sr_psrmse_025	safety_refusal__psr_mse_all	0.25	all	*	-	*	hf	vllm
+sr_loreft_025	safety_refusal__loreft	0.25	all	*	-	*	hf	vllm
+sr_lora_025	safety_refusal__lora_r1	0.25	all	*	-	*	hf	vllm
+sr_token_025	safety_refusal__token_bos	0.25	all	*	-	*	hf	vllm
+sr_akl_null	safety_refusal__alphakl_null	0.25	all	*	-	*	hf	vllm
+ct_psrkl_025	si_constitution__psr_kl_all	0.25	all	*	-	*	hf	vllm
+ct_psrmse_025	si_constitution__psr_mse_all	0.25	all	*	-	*	hf	vllm
+cb_antidote	antidote		all	*	-	*	hf	vllm
+cb_alphasteer	alphasteer		all	*	-	*	hf	vllm
+cb_circuit	circuit_breaker		all	*	-	*	hf	vllm

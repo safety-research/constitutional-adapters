@@ -1,0 +1,36 @@
+.venv/
+__pycache__/
+*.egg-info/
+wandb/
+out/
+*.safetensors
+runs/
+
+# external checkouts (the LIFBench repository that scripts/fetch_stage2_data.py
+# can clone, 7.3GB, MIT) are never committed
+vendor/
+*.parquet
+
+# The source-built flash-attn wheel (scripts/sbatch/fa_build.sbatch; the longctx
+# extra's path source). It lives untracked in the development clone (so `uv lock`
+# can read its metadata) and in the cluster clone (so `uv sync --frozen --extra
+# longctx` can install it). The Mamba kernels (the mamba extra) are NOT files here:
+# uv builds them from the pinned PyPI sdists into its cache (2026-10-12).
+wheels/*.whl
+paper/notebooks/registry_qwen_figures.executed.ipynb
+
+# the reproduction pipeline: a site's own config never lives in the tree; the notebook cache and the reassembled
+# objects / snapshot are regenerated
+reproduce/site/
+paper/notebooks/_cache/
+corpus_generator/.venv/
+paper/snapshot/_reassembled/
+objects/_reassembled/
+# the committed paper frame ships its parquet tables (the root *.parquet rule above is for scratch exports) and never its
+# runtime readers lock
+!paper/snapshot/snapshots/*/*.parquet
+paper/snapshot/snapshots/.readers.lock
+# the refusal-direction fit prompts are re-drawn from upstream at run time (python -m sisteer.data.arditi_fit_prompts) and are never
+# committed: data/arditi/ holds their manifest alone, so a reproduced copy written beside it stays out of the tree
+data/arditi/*
+!data/arditi/fit_prompts.manifest.json

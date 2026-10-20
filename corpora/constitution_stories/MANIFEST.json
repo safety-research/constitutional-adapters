@@ -1,0 +1,66 @@
+{
+ "schema": 1,
+ "corpus": "constitution_stories",
+ "source_file": "final-production-20260831-v2.jsonl",
+ "release": "final-production-20260831-v2",
+ "record_count": 16321,
+ "sha256_reassembled": "c8d7e502045f14eef021b645b2794c7eef8d189a7981487f92925902580174e8",
+ "bytes_reassembled": 411115810,
+ "shards": [
+  {
+   "name": "part-00.jsonl.gz",
+   "sha256": "f668454a5a621a31a662a90a1470a85eff680bc4c8231ae3e4960663fd10be13",
+   "bytes": 29473091,
+   "records": 5482,
+   "raw_bytes": 137065365
+  },
+  {
+   "name": "part-01.jsonl.gz",
+   "sha256": "ebf5bd0d2b7c6a08d30a118a2b286cd2010444c1a1c92a09caead4174a224fd8",
+   "bytes": 29329643,
+   "records": 5452,
+   "raw_bytes": 137047116
+  },
+  {
+   "name": "part-02.jsonl.gz",
+   "sha256": "8381ea9bbead17c5d287d71184836ec3232ab423833ed1f92b6b4d2582140360",
+   "bytes": 29629372,
+   "records": 5387,
+   "raw_bytes": 137003329
+  }
+ ],
+ "official_tokens": {
+  "llama3": 40053044,
+  "gemma": 42002511,
+  "qwen": 40165342,
+  "min": 40053044
+ },
+ "sidecars": [
+  {
+   "name": "final-production-20260831-v2.filter-report.json",
+   "sha256": "fb945caade5978cf63848bf55dd86f78d3a794c6f4c491ad246d30368e3c0570",
+   "bytes": 177484
+  },
+  {
+   "name": "section-tags-production-20260831-v2.jsonl",
+   "sha256": "1f1776d9155a36fb963c24377882f47222c40abe9ebf8b4e40bc20afa3db757a",
+   "bytes": 4997318
+  },
+  {
+   "name": "section-tags-production-20260831-v2.manifest.json",
+   "sha256": "6975f28f2c669931a6fa0086751ea017635380513a972f6cb741e2232df5c3da",
+   "bytes": 1621
+  }
+ ],
+ "gzip": {
+  "level": 9,
+  "mtime": 0,
+  "filename": "",
+  "record_boundary": true,
+  "target_bytes": 40000000,
+  "hard_limit_bytes": 50000000,
+  "measured_total_gzip_bytes": 88428751
+ },
+ "tool": "reproduce/tools/shard_corpus.py",
+ "vendored_corpus_commit": "f64cfd58dd5792335c17ee90850daf16fac4fa18"
+}

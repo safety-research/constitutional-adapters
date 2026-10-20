@@ -1,0 +1,6 @@
+{
+ "example_moe_base": {
+  "lora_r4_ce": 2,
+  "psr_ce_all": 1
+ }
+}

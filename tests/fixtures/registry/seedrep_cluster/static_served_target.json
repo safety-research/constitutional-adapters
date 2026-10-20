@@ -1,0 +1,21 @@
+{
+ "served_tree_sha": null,
+ "serving_engine": "lora_native",
+ "serving_identity": "proxy_vllm+passthrough+interleaved",
+ "max_model_len": 4864,
+ "decode": {
+  "do_sample": true,
+  "temperature": 0.7,
+  "top_p": 0.8,
+  "top_k": 20,
+  "min_p": 0.0,
+  "presence_penalty": 1.5,
+  "repetition_penalty": 1.0,
+  "cap": 4096,
+  "arm": "vendor_recommended",
+  "seed_base": 2,
+  "trial": 0
+ },
+ "routing_table": "/workspace/TESTUSER/exp/sdfbase_full22_native/sampled/serving/static_base_t0_grok420_qwen35_4b_s2_121239/static/routing_table.json",
+ "timing_log": null
+}

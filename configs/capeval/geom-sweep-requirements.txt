@@ -1,0 +1,7 @@
+# The geometry-sweep serving venv: the pinned vLLM serving stack (vllm 0.25.1+cu129 on torch 2.11 cu129; the stack cannot
+# lock in-project, so it installs OUTSIDE the lockfile into a requirements-hash-versioned node-local venv) PLUS
+# matplotlib, so scripts/served_decode_sweep.py can draw its throughput / duty figures into $FIGS_DIR inside the job.
+# Every pin predates the --exclude-newer cutoff (2026-08-03). scripts/sbatch/geom_sweep.sbatch hashes THIS file together
+# with vllm-requirements.txt (the include) for the venv name.
+-r vllm-requirements.txt
+matplotlib==3.10.0

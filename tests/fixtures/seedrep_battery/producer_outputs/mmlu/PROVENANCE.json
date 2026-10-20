@@ -1,0 +1,19 @@
+{
+ "producer": "scripts/served_capability_run.py (_run_mmlu_served \u2192 <cell_dir>/gen_stats.json); the same cell store's manifest.json (CellStore: cell_id, harness_cell_id, resolved_config.cell_id \u2014 the identity the reader binds)",
+ "producer_commit": "c7dceaaedb86195c55a17b135b735c03fe9e1fd0",
+ "test": "tests/test_served_capability.py::test_mmlu_generate_end_to_end (the real driver against the test's fake proxy; two MMLU items)",
+ "command": "PYTHONPATH=<worktree>/src python -m pytest -o addopts='' -p no:cacheprovider -q --basetemp=<basetemp> tests/test_served_capability.py::test_mmlu_generate_end_to_end",
+ "result": "1 passed",
+ "harvested_at": "2026-09-18T06:31:32Z",
+ "source_path_under_basetemp": "<basetemp>/test_mmlu_generate_end_to_end0/out/cells/safety_refusal--psr_kl_all__controls__t0__a0__0d7bcdae__35d21a22/gen_stats.json",
+ "files": {
+  "gen_stats.json": "2d5c21da9aa6e7354763eef07b4e65ed29f89efe0f76ef265ae2212754f6aee7",
+  "manifest.json": "9e6a69310b528bb0560f1d5412e684a093c3e03759cdc759e29792a4bfd4f3f6"
+ },
+ "aggregate_row": {
+  "task": "s2parity/mmlu_letter",
+  "metric": "acc_aggregate",
+  "value": 0.5
+ },
+ "synthetic": "the test's canned MMLU rows and canned letter distributions; no real run data; the cell store's other files are not copied; the manifest's model_id names a public open-weight model id, the test's canned route"
+}

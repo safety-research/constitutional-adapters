@@ -1,0 +1,202 @@
+{
+ "diagnostic": true,
+ "model_key": "qwen35_4b",
+ "family": "qwen3_5",
+ "split_mode_candidate": "implicit_open",
+ "vmodel": "petri__base",
+ "cap": 1536,
+ "n_on": 24,
+ "n_off": 4,
+ "concurrency": 8,
+ "sampling_mode": "thinking_card",
+ "sampling_params": {
+  "min_p": 0.0,
+  "presence_penalty": 0.0,
+  "temperature": 0.6,
+  "top_k": 20,
+  "top_p": 0.95
+ },
+ "header": {
+  "off": {
+   "got": [
+    248045,
+    74455,
+    198,
+    248068,
+    271,
+    248069,
+    271
+   ],
+   "want": [
+    248045,
+    74455,
+    198,
+    248068,
+    271,
+    248069,
+    271
+   ],
+   "error": null
+  },
+  "on": {
+   "got": [
+    248045,
+    74455,
+    198,
+    248068,
+    198
+   ],
+   "want": [
+    248045,
+    74455,
+    198,
+    248068,
+    198
+   ],
+   "error": null
+  }
+ },
+ "checks": [
+  {
+   "check": "upstream_timeout",
+   "status": "PASS",
+   "recorded": 7200.0,
+   "want": 7200.0
+  },
+  {
+   "check": "header_off",
+   "status": "PASS",
+   "got": [
+    248045,
+    74455,
+    198,
+    248068,
+    271,
+    248069,
+    271
+   ],
+   "want": [
+    248045,
+    74455,
+    198,
+    248068,
+    271,
+    248069,
+    271
+   ],
+   "error": null
+  },
+  {
+   "check": "header_on",
+   "status": "PASS",
+   "got": [
+    248045,
+    74455,
+    198,
+    248068,
+    198
+   ],
+   "want": [
+    248045,
+    74455,
+    198,
+    248068,
+    198
+   ],
+   "error": null
+  },
+  {
+   "check": "header_arms_differ_or_invariant_family",
+   "status": "PASS",
+   "off": [
+    248045,
+    74455,
+    198,
+    248068,
+    271,
+    248069,
+    271
+   ],
+   "on": [
+    248045,
+    74455,
+    198,
+    248068,
+    198
+   ]
+  },
+  {
+   "check": "requests_served",
+   "status": "PASS",
+   "n": 28,
+   "n_errors": 0,
+   "first_error": null
+  },
+  {
+   "check": "render_regime_stamps",
+   "status": "PASS",
+   "on": [
+    "thinking_on"
+   ],
+   "off": [
+    "thinking_off"
+   ]
+  },
+  {
+   "check": "base_route_salt_regime",
+   "status": "PASS",
+   "regimes": [
+    "cell-stable"
+   ]
+  },
+  {
+   "check": "emitted_shape",
+   "status": "PASS",
+   "n_bad": 0,
+   "first_bad": null,
+   "at_cap_on": 21
+  },
+  {
+   "check": "ledger_rows",
+   "status": "PASS",
+   "n_rows": 28,
+   "n_sent": 28,
+   "error_codes": [
+    "None"
+   ],
+   "thinking_flags": [
+    "False",
+    "True"
+   ]
+  }
+ ],
+ "n_at_cap_on": 21,
+ "completion_tokens_on": [
+  1536,
+  1067,
+  1536,
+  1536,
+  1536,
+  1536,
+  1536,
+  1536,
+  1536,
+  1536,
+  1172,
+  1536,
+  1536,
+  1536,
+  1086,
+  1536,
+  1536,
+  1536,
+  1536,
+  1536,
+  1536,
+  1536,
+  1536,
+  1536
+ ],
+ "verdict": "PASS",
+ "written_at": "2026-09-10T19:54:18Z"
+}

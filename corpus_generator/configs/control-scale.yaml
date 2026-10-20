@@ -1,0 +1,536 @@
+# REGISTER-MATCHED, VALUE-NEUTRAL CONTROL corpus — SCALE-MATCHED FULL RUN
+# (2026-09-03). Run id control-scale-20260903.
+#
+# This is the pilot recipe (control-pilot-20260902: the validation
+# recipe at pilot width; its config is no longer in the repo) promoted to full
+# width, with everything the pilot
+# (control-pilot-20260902, 5,827 requests, 14 sub-batches, "run complete")
+# showed should be frozen or fixed:
+#   * advice 25 principles x 10 types x 12 scenarios/call = 3,000 scenarios
+#     (plan default 10/call = 2,500; widened 20% because the pilot MEASURED
+#     attrition the plan's yield model set to ~0: b1 API refusals 3.4%,
+#     ai_named 3.8%, deployment_context cap 7.5%, plus the floors — 2,500
+#     landed at ~1,900-2,050 finals against a 2,000 target; the seeded
+#     downsample trims the upside to exactly 2,000, so width costs spend only);
+#   * stories 50 x 10 x 18 x 2 = 18,000 drafts (production's fanout);
+#   * A1 is NOT re-sampled: the pilot's 25 principles were hand-read (distinct,
+#     value-neutral, 14 placebo sections) and FROZEN in
+#     configs/control-scale-principles.json (10 fields paraphrased to remove
+#     clauses lifted verbatim from the placebo) — `corpusgen seed-principles`
+#     materializes advice/a1 from it before `corpusgen run`;
+#   * score floors 8/8/8/8 (production 9/8/8/8): the pilot's blind stratified
+#     read could not tell alignment-8 from alignment-9 records on craft; the
+#     8s tracked one thing — responses overrunning an explicit house-style
+#     length/format rule in their own system prompt, which the length
+#     scaffold caused and which is fixed at the source (c_length.md / D now
+#     defer to the operator's rule). The <=7 tail (flagrant overruns) drops;
+#   * register families: the three v2 families PLUS the five the pilot survey
+#     found (measured against the v2 production finals as the register
+#     baseline, so caps sit at production's own share where production carries
+#     the register, <1% where it does not); each is also banned prompt-side;
+#   * advice d and stories s4 max_tokens 16k -> 32k: the pilot's only
+#     truncations were length-driven (s4 lost 13% of 3000-word and 10% of
+#     2400-word stories; d lost 7 of 9 at the 2400 target) — s3 already runs
+#     at 32k, so the value is proven for this model;
+#   * seeded stratified DOWNSAMPLE to 2,000 advice / 16,300 stories at
+#     assembly; LENGTH GATE unchanged (pilot: advice mean ratio
+#     0.9625 / p90 1.0009, stories 1.0329 / 1.0459 — PASSED);
+#   * targets: advice >=4.75M official tokens, stories >=15,000
+#     records / >=38M tokens, >=43M combined (the ask: >=45M at ~1:8).
+# DAG-expanded: advice 18,276 requests (1 + 25 + 250 + 6x3,000); stories
+# 45,051 (1 + 50 + 9,000 + 2x18,000) = 63,327 total (see preflight).
+run_id: control-scale-20260903
+seed: 0
+
+# variant knobs
+constitution_dir: constitution-control-v2   # placebo v2 (constitution.md -> placebo.md)
+prompts_overlay: prompts-control
+finals_subdir: control
+
+# The DOMAIN MENU: the areas of everyday life the mundane asks and the
+# working-day stories range over — every place a person makes, fixes,
+# learns, plans, or chooses something. Deliberately NOT here: anything
+# interpersonal (relationships, parenting, managing people), scheduling or
+# coordination of other people (the v1 conflict-navigation source), health
+# and medicine, money beyond the arithmetic of one's own project, law.
+domain_menu:
+  - cooking and baking (weeknight dinners, bread, pastry, scaling a recipe up or down)
+  - preserving and fermenting (pickles, jam, sourdough starters, curing, kimchi)
+  - coffee, tea, and home drinks (dialing in espresso, pour-over, cocktails, syrups)
+  - home brewing, cider, and winemaking
+  - gardening — vegetables, fruit, houseplants, greenhouses (soil, seed starting, irrigation, pruning, propagation)
+  - woodworking and furniture making (joinery, hand tools, finishing)
+  - home repair, maintenance, and decorating (doors, leaks, drywall, weatherproofing, paint, tiling, flooring)
+  - electrical and electronics projects (soldering, microcontrollers, rewiring a lamp, batteries)
+  - bicycles — maintenance, fitting, and repair
+  - cars, motorcycles, and small engines (diagnosis, routine service, restoration)
+  - sewing, quilting, and garment alteration
+  - knitting, crochet, weaving, and spinning
+  - leatherwork, bookbinding, and paper crafts
+  - pottery, ceramics, and glazing
+  - painting, drawing, and printmaking (watercolor, oils, linocut, sketching)
+  - photography (exposure, lenses, lighting, film, editing and printing)
+  - audio and video making (recording, mixing, editing, podcasting)
+  - music practice and instrument technique (piano, guitar, voice, drums, strings)
+  - instrument care, setup, and repair (guitar setup, tuning, reeds, strings)
+  - music theory, composition, arranging, and transcription
+  - writing craft (fiction, essays, poetry, technical writing, revision)
+  - language learning and translation (vocabulary, grammar, pronunciation, reading)
+  - programming, scripting, and debugging
+  - computers, home networking, and gadgets (backups, Wi-Fi, printers, storage, phones)
+  - spreadsheets, data wrangling, and personal record-keeping
+  - 3D printing, laser cutting, and digital fabrication
+  - astronomy and skywatching (telescopes, star charts, astrophotography)
+  - weather watching and reading forecasts (barometers, cloud reading, microclimates)
+  - navigation and maps (wayfinding, GPS, compass work, route planning)
+  - hiking, camping, and backcountry logistics (gear, water, food, routes)
+  - travel planning (itineraries, packing, transit connections, trip budgets)
+  - sports and fitness training (running, cycling, and swimming plans; strength, mobility, technique in a sport)
+  - games and puzzles (board games, chess study, crosswords, video-game strategy, modding, hobby game design)
+  - collections and cataloguing (records, stamps, coins, books, cards, minerals)
+  - archives, genealogy, and family records (scanning, dating photos, organizing papers)
+  - home organization, moving, and storage (closets, workshop layout, sorting a garage)
+  - budgeting a project and the arithmetic of buying (comparing costs, sizing a purchase, tracking spend)
+  - pets and animal keeping (aquariums, chickens, dog training routines, terrariums)
+  - beekeeping, birdwatching, and nature study (field notes, identification, feeders)
+  - fishing, boating, and watercraft upkeep (tackle, knots, small-boat maintenance)
+  - jewelry making, metalwork, and small machining
+  - model making, miniatures, and scale modeling (kits, painting, dioramas)
+  - gear, footwear, and clothing care and repair (boots, waterproofing, patching, sharpening)
+
+advice:
+  n_principles: 25           # frozen from the pilot: configs/control-scale-principles.json (corpusgen seed-principles)
+  n_types: 10
+  n_scenarios_per_call: 12   # 3,000 scenarios (plan default 10; widened for measured pilot attrition)
+  behavior_seed: >-
+    an assistant giving people practical, well-crafted help with the things
+    they make, fix, learn, plan, and choose in everyday life — in the kitchen
+    and the workshop, at the keyboard and the practice room, in the garden,
+    on the trail, at the telescope, and far more besides
+  # LENGTH MENU: quintile-bin means of the v2 production advice
+  # finals' `assistant` word counts (bin means 799.6 / 1156.0 / 1407.4 /
+  # 1716.0 / 2420.1 over n=1960), rounded to 50, equal weights — so the menu
+  # reproduces the v2 mean (1,500 words) by construction. One seeded draw per
+  # scenario; scaffold-only (prompts/advice/c_length.md at C, the keep-the-
+  # length slot in prompts-control/advice/d_rewrite.md at D); recorded in
+  # lineage + the record's target_words. Frozen by
+  # scripts/build_length_reference.py (asserted by tests when the v2 finals
+  # are present).
+  # CALIBRATED on the pilot (2026-09-03): each v2 quintile-bin target divided
+  # by the ratio the pilot actually realized for it (855.4/800=1.069,
+  # 1190.7/1150=1.035, 1382.6/1400=0.988, 1602.6/1700=0.943, 2273.2/2400
+  # =0.947; calibration-control-pilot-20260902-advice.filter-report.json
+  # length_stats.targets.by_target), rounded to 50 — so the REALIZED lengths,
+  # not the instructions, reproduce the v2 quintile means (the menu's intent).
+  # Pilot menu [800, 1150, 1400, 1700, 2400] realized mean ratio 0.9625; the
+  # explicit-limit deference now in c_length.md/D costs a further ~4-5% on
+  # the ~7% of records whose system prompt states a length cap, which the
+  # calibration absorbs (predicted release ratio ~0.95 against the ±10% gate).
+  length_menu: [750, 1100, 1400, 1800, 2550]
+  length_weights: [0.2, 0.2, 0.2, 0.2, 0.2]
+  # c at 16k, validated in control-validation-20260902 (zero truncations);
+  # d 16k -> 32k after the pilot (9 length-driven truncations, 7 at the 2400 target)
+  max_tokens:
+    a1: 16000
+    a2: 16000
+    a3: 16000
+    b1: 8000
+    b2: 8000
+    b3: 8000
+    c: 16000
+    d: 32000
+    e: 4000
+stories:
+  n_categories: 50           # production's category skeleton
+  n_subcategories: 10
+  subcategories_use: null    # every generated subcategory (production; v1 control sampled 3)
+  calls_per_subcategory: 18  # production's fanout (pilot ran 1)
+  stories_per_call: 2
+  # s4 16k -> 32k after the pilot: 60/1000 truncations, 13% of 3000-word and
+  # 10% of 2400-word targets — a length-biased loss; s3 already runs at 32k
+  max_tokens:
+    s1: 16000
+    s2: 16000
+    s3: 32000
+    s4: 32000
+    s5: 4000
+
+engine:
+  nonce_metadata: null       # resolved from the frozen smoke verdict at run time
+
+filter:
+  # FROZEN FLOORS, re-cut on the pilot's calibration artifact.
+  # Pilot distributions (n=468 advice / 936 stories): alignment {10:76, 9:349,
+  # 8:40, 7:1, 6:2}; realism {10:2, 9:368, 8:94, 7:3, 6:1}; consistency
+  # {10:3, 9:927, 8:3, 5:1, 3:1}; quality {9:713, 8:222}. Blind stratified read
+  # (28 advice / 25 stories, scores stripped): alignment 8s and 9s are ONE band
+  # on craft — the split tracked house-style length overruns (86% of <=8
+  # rationales), fixed at the source for this run; realism <=7 unseen;
+  # consistency <=5 = "antique instrument standing in for the AI" (real
+  # drops); quality 8 vs 9 is prose ambition. So alignment 8 (production 9),
+  # the rest at production's 8. Re-cuttable: the calibration artifact keeps
+  # every score.
+  thresholds:
+    advice_alignment: 8
+    advice_realism: 8
+    story_consistency: 8
+    story_quality: 8
+  register_seed: 0
+  # the v2 assembly's three families (production-v2.yaml) PLUS the five the
+  # pilot's register survey found at >=2% and production does not carry at
+  # that rate. Caps: production's own post-assembly share where production
+  # has the register ("this assistant" openers ~7% of records; verdict-label
+  # response openers ~8%), <1% where it does not. Each family is ALSO banned
+  # prompt-side (B1/B3, c_length/D, S3/S4) — the cap is the backstop.
+  # NOT capped, deliberately: the bare "Deployment:" label opener (9.2% of
+  # pilot system prompts) sits at 16.8% in production's finals — matched.
+  register_families:
+    - name: safeguard_beat
+      field: text
+      anchored: false
+      max_frac: 0.01
+      pattern: 'safeguards?|(only|last|sole|final)\s+line\s+of\s+defen[cs]e|(carry|hold|bear)(ing)?\s+(this|that|the)\s+(judgment|weight)\s+alone'
+      diversity_fields: [category_id, target_words, ordinary]
+    - name: deployment_context_opening
+      field: system
+      anchored: true
+      max_frac: 0.01
+      pattern: '\s*deployment\s+context\s*:'
+      diversity_fields: [principle_id, prompt_type_id]
+    - name: internal_deployment_opening
+      field: system
+      anchored: true
+      max_frac: 0.01
+      pattern: '\s*internal\s+(deployment|tool(ing)?)\b'
+      diversity_fields: [principle_id, prompt_type_id]
+    # pilot: 60% of system prompts opened "This assistant <verb> …" / "This is
+    # the …" (production ~11% of system prompts, ~7% of all records)
+    - name: this_assistant_opening
+      field: system
+      anchored: true
+      max_frac: 0.07
+      pattern: '\s*this\s+(assistant|is\s+(the|an?)\b)'
+      diversity_fields: [principle_id, prompt_type_id]
+    # pilot: 28% of responses opened "Short answer:/Short version:/Straight
+    # answer:" (production ~8%)
+    - name: verdict_label_opening
+      field: assistant
+      anchored: true
+      max_frac: 0.08
+      pattern: '\s*\W*(the\s+)?(short|straight|quick)\s+(answer|version)s?\b'
+      diversity_fields: [principle_id, prompt_type_id]
+    # pilot: 6% of responses opened "Your instinct is right" / "Good instinct"
+    # (production <0.5%)
+    - name: instinct_opening
+      field: assistant
+      anchored: true
+      max_frac: 0.01
+      pattern: '\s*\W*(your|good)\s+instincts?\b'
+      diversity_fields: [principle_id, prompt_type_id]
+    # pilot story beats at ~10% / ~7% of records (production: absent)
+    - name: tablet_propped_beat
+      field: text
+      anchored: false
+      max_frac: 0.01
+      pattern: '(tablet|phone|screen|laptop)\s+(was\s+)?propped\s+(up\s+)?against'
+      diversity_fields: [category_id, target_words, ordinary]
+    - name: envelope_back_beat
+      field: text
+      anchored: false
+      max_frac: 0.01
+      pattern: '(back|reverse)\s+of\s+an?\s+(old\s+|used\s+|torn\s+)?envelope'
+      diversity_fields: [category_id, target_words, ordinary]
+  # LENGTH GATE: the final corpus's response word-length vs the v2
+  # production finals — mean within ±10%, p90 within ±15% — reported per
+  # corpus by the filter and BLOCKING at release (mirror gate). References
+  # frozen by scripts/build_length_reference.py from
+  # data/{advice,stories}/final-production-20260831-v2.jsonl.
+  length_gates:
+    advice:
+      reference_mean_words: 1499.8
+      reference_p90_words: 2259.2
+      reference_source: "final-production-20260831-v2.jsonl (assistant field, n=1960)"
+      mean_tol: 0.10
+      p90_tol: 0.15
+      blocking: true
+    stories:
+      reference_mean_words: 1989.8
+      reference_p90_words: 2852.0
+      reference_source: "final-production-20260831-v2.jsonl (text field, n=16321)"
+      mean_tol: 0.10
+      p90_tol: 0.15
+      blocking: true
+  # SEEDED STRATIFIED DOWNSAMPLE: trim overshoot to the
+  # scale-matched targets at assembly, per lane (advice: principle x type;
+  # stories: category x length x ordinary), seeded hash order within a lane;
+  # register caps re-applied to the trimmed set. Never pads on the downside.
+  downsample:
+    advice: 2000
+    stories: 16300
+    seed: 0
+  # release-time placebo-import scan (corpusgen import-scan; report-only). n=7:
+  # on the pilot, 8-grams caught 1.2%/0.2% of records (all real lifts),
+  # 7-grams 3.4%/0.9% (still all real lifts, incl. the "caliper closed and
+  # read for zero" one), 6-grams admit generic phrases ("at the start of a
+  # session").
+  import_scan:
+    ngram_n: 7
+
+targets:
+  # release targets (the ask: >=45M combined official tokens
+  # at ~1:8 advice:stories, with soft per-corpus floors)
+  advice_min_tokens: 4750000
+  stories_min_count: 15000
+  stories_min_tokens: 38000000
+  total_min_tokens: 43000000
+
+divergences:
+  - >-
+    Constitution replaced everywhere: every pipeline slot that carries the
+    constitution in the production recipe (A1 grounding + section index,
+    A2/A3 section blocks, wave-C system injection, wave-D rewrite reference,
+    wave-E scoring reference, and the full-document block on every stories
+    wave S1-S5) instead carries the value-neutral PLACEBO v2
+    constitution-control-v2/ — a practitioners' handbook of principles for
+    careful work across many crafts (placebo.md, served through the
+    constitution.md symlink the loader expects; 42 sections / 33 leaf spans;
+    18,458 words, ~21.4k tokens vs the constitution's ~34k; snapshot sha256
+    a1a9dc9acedd4b1d89b6d2d48ac505c03e221ed3177a4e98b6b5f8d070da6159;
+    authored in-repo at commit 330eb61 and approved 2026-09-02). It
+    replaces the v1 metre HISTORY used by control-20260901 (snapshot
+    67293015972f54364dff98c83de1b09ccbd226c4b50875ed30fab5b974c22d29),
+    which could not naturally furnish the principles the A1
+    stage asks for. Like the constitution it is prescriptive about method
+    and explains its reasoning; unlike the constitution it has no assistant
+    addressee and no values content.
+  - >-
+    Advice briefs value-neutralized AND conflict-free (overlay
+    prompts-control/advice/, revised 2026-09-02 after a read of the
+    control-20260901 examples): A1 describes the reference document as a
+    practitioners' handbook of principles for careful work and asks for
+    working-method principles grounded in its sections, with what following
+    them costs in practice in the "tension" field and an explicit rule that
+    they are about the work, never about people; prompt types and scenarios
+    are everyday asks that need not be difficult at all and EXCLUDE outright
+    interpersonal conflict, stakeholder tradeoffs, coordinating or
+    reconciling other people's preferences, and any "two people / two
+    documents disagree or are out of sync" framing (the v1 briefs'
+    "hard constraint / tradeoff between reasonable options / plan partly
+    fallen through" complication menu is removed); B1 drafts and B3 rewrites
+    carry the same exclusion; D and E judge fit to the specifics the person
+    gave rather than tradeoff handling. Register conventions unchanged:
+    system-prompt caps including the no-"Deployment context:" opener rule,
+    unnamed-AI rules, shared/diversity_guidance.md verbatim, the 1-in-5
+    no-system fraction.
+  - >-
+    Domain menu (new, 2026-09-02): a 43-entry menu of everyday-life domains
+    (config `domain_menu`, frozen in the run manifest) replaces the v1
+    briefs' inline "technical / artistic / trip / recommendation" examples,
+    which had been examples only. A1 and A2 render the menu for
+    orientation and A2's prompt types must be PORTABLE across domains; A3
+    assigns one domain per scenario slot per call — seeded on the (principle
+    x type) call and its slot set, no repeats within a call, the same
+    mechanism as the stories' per-call diversifiers — and records the
+    assignment in lineage and in the record's `domain` field so the report
+    renders a domain-coverage histogram; stories S1 (and its repair) render
+    the menu as the spread of kinds of work the categories should range
+    across (orientation, not a quota). Production has no menu: the knob is
+    None, the production templates never read it, and production records
+    carry domain=None.
+  - >-
+    advice.behavior_seed set to "an assistant giving people practical,
+    well-crafted help with the things they make, fix, learn, plan, and choose
+    in everyday life — in the kitchen and the workshop, at the keyboard and
+    the practice room, in the garden, on the trail, at the telescope, and far
+    more besides" (control-20260901: "... everyday projects, logistics, and
+    troubleshooting"; the cancelled control-briefs2: the four-area list;
+    production: the paper's extreme-action behavior seed).
+  - >-
+    Stories value-neutralized AND conflict-free (overlay
+    prompts-control/stories/): the preamble briefs competent-everyday-work
+    vignettes with the explicit no-values exclusion (no moral dilemmas, no
+    safety incidents, no AI ethics/rights/feelings debates) AND an explicit
+    no-conflict-navigation exclusion (the AI never reconciles people who want
+    different things, sorts one party's constraints from another's
+    preferences, mediates, placates, or smooths over a disagreement — no
+    interpersonal conflict even as texture); its examples of the AI's work
+    now range across the whole domain menu (kitchen, code, garden, espresso,
+    bikes, darkroom, translation, observing, cataloguing, lumber, knitting,
+    tents, trails) and are marked examples-only; S1 forbids categories built
+    around friction and renders the domain menu; S4 reworks conflict beats
+    into the work; S5 scores conflict-driven stories at the floor. The
+    constitutional inner-life emphasis remains narrated WORKING PROCESS; the
+    "do not import the reference document" guard stays (now covering its
+    examples and wording, since the placebo's own examples are everyday
+    crafts). Fanout shape, 2-stories-per-call, length menu/weights, per-call
+    diversifiers, the ordinary>=half requirement, and the no-real-world-facts
+    and naming rules unchanged.
+  - >-
+    Score axes keep the production JSON schemas and field names
+    byte-identical with control semantics: advice "alignment" scores
+    craft/fit of practical help to the specifics given; stories
+    "constitution_consistency" scores competent-portrayal + value-neutrality
+    + conflict-free consistency; realism, quality, refusal, ai_named, and
+    factual_claims unchanged (factual_claims explicitly covers material
+    imported from the placebo). Record schemas are the v2 finals' plus ONE
+    optional lineage field, `domain` (the A3 assignment; None in production
+    records) — no trainable field changes.
+  - >-
+    advice max_tokens.c raised 12000 -> 16000 (production and control-v1:
+    12000): control-v1's only attrition was max_tokens truncation at waves
+    C/D under adaptive thinking, and the control scale plan stipulates this
+    raise; it is validated here first.
+  - >-
+    Register caps: identical three families/patterns/caps as the v2
+    assembly; at this corpus size the strictly-under-1% cap implies any
+    matching record drops entirely.
+  - >-
+    Wave-C injection: PRODUCTION's c_injection.md verbatim ("Ground your
+    response in the following principles ... <guiding_principles>"), no
+    longer overlaid. control-20260901 reworded it ("Keep the following
+    reference material in mind as an exemplar of careful, methodical work")
+    only because the metre history was descriptive prose, not principles;
+    with a principles placebo the production wording applies unchanged, so
+    the overlay drops the file and one divergence disappears.
+  - >-
+    Fanout widths at FULL scale (control-scale-plan.md §1/§4): advice 25
+    principles x 10 types x 12 scenarios/call = 3,000 scenarios (plan default
+    10/call = 2,500, widened 20% for attrition the pilot measured — b1 API
+    refusals 3.4%, ai_named 3.8%, deployment_context cap 7.5% — so the
+    2,000-record target is reached with margin and the seeded downsample
+    trims the rest; per-call shape 12 != production's 10); stories 50
+    categories x 10 subcategories (all used) x 18 calls x 2 stories = 18,000
+    drafts (production's exact fanout). 63,327 DAG-expanded requests
+    (production 66,621). Production DAG, stages, engine, generator
+    (claude-opus-5), Batch API discipline, repair budgets, and the filter
+    chain unchanged.
+  - >-
+    A1 principles FROZEN from the pilot (control-scale-plan.md §3e.1): the
+    full run does not re-sample A1; its advice/a1 stage is materialized by
+    `corpusgen seed-principles` from configs/control-scale-principles.json — the
+    pilot run control-pilot-20260902's 25 principles (batch
+    msgbatch_01QzQsbsF2598fZJ36wTHY7b), hand-read 2026-09-03 (distinct
+    working-method principles over 14 placebo sections, value-neutral, about
+    the work not people) with 10 fields paraphrased to remove clauses lifted
+    verbatim from the placebo (zero shared 8-grams after the edit; the pilot's
+    p12 clause had reappeared word-for-word in 5 responses). The seeded stage
+    carries the stage hash of this run's real A1 request set, so any later
+    change to the A1 template, the placebo, the menu, or n_principles fails
+    the run loudly as a stage-hash mismatch. Production sampled A1 fresh.
+  - >-
+    Prompt-side REGISTER BANS from the pilot survey (control-scale-plan.md
+    §3d; measured against the v2 production finals as the register baseline):
+    B1/B3 no longer open system prompts with "This assistant …" or "This is
+    the …" (60% of pilot system prompts vs ~11% in production); the wave-C
+    scaffold (c_length.md) and D open responses on the substance — never
+    "Your instinct is right"/"Good instinct" (6% vs <0.5%) and never with a
+    verdict label ("Short answer:"; 28% vs ~8% — a conditional "only for a
+    yes/no ask" wording left the rate at 29% in a live re-run, so the ban is
+    unconditional and production's ~8% is the cap); S3/S4 ban the two
+    stock story beats (a tablet/phone propped against something ~10%, writing
+    on the back of an envelope ~7%; absent in production) and vary story
+    endings (22 of 25 pilot stories read ended on a write-it-down beat). D
+    additionally forbids the reference document's own sentences and
+    distinctive phrases. Each ban has a frozen register-family cap as its
+    backstop. The bare "Deployment:" label opener is NOT banned or capped:
+    production carries it at 16.8% of system prompts, the pilot at 9.2%.
+  - >-
+    Length scaffold DEFERS to an explicit operator limit (new, 2026-09-03):
+    54% of pilot system prompts carried a length/format rule; the C target
+    overrode it and 86% of alignment<=8 rationales docked exactly that
+    overrun — concentrated in the 8% of system prompts stating an EXPLICIT
+    cap (a word or paragraph count, "a screen or two"; 55% of those scored
+    <=8 vs 10.8% for vague "keep it tight" rules and 2.3% with no rule).
+    c_length.md and D's keep-the-length slot now yield to an explicit
+    length limit and to any format rule (no headers, prose only, a list); a
+    general preference for brevity is met by cutting padding, not by
+    undershooting the target (a first, broader wording shrank vague-rule
+    responses 7.8% in a 24-scenario live re-run and was narrowed).
+    Scaffold-only; production renders no length instruction. The menu is
+    CALIBRATED on the pilot's realized/target ratio per bin (800->750,
+    1150->1100, 1400->1400, 1700->1800, 2400->2550) so realized lengths
+    reproduce the v2 quintile means; the gate's reference is unchanged.
+  - >-
+    max_tokens raised for the two rewrite waves after the pilot: advice d
+    16000 -> 32000 (9/478 truncations, 7 at the 2400-word target) and stories
+    s4 16000 -> 32000 (60/1000 truncations: 13% of 3000-word, 10% of
+    2400-word, 2% of 1200-word targets — a length-biased loss). Adaptive
+    thinking shares the cap; s3 already ran at 32000, so the value is proven
+    for this model. Production: d 16000, s4 16000.
+  - >-
+    Stray wrapper-tag fix (2026-09-03): wave S4 sometimes echoes the
+    <story>…</story> wrapper its draft arrived in, leaving a bare "</story>"
+    at the end of trainable text — 0.70% of production v2 stories (114 of
+    16,321) carry it, 4.1% of the control pilot's did. The S4 parser now
+    strips a leading/trailing echo of that wrapper, and the filter drops any
+    record still carrying a pipeline tag in trainable text (rule
+    "stray_tag"). Production records keep the artifact.
+  - >-
+    Seeded stratified DOWNSAMPLE at assembly (control-scale-plan.md §3e.4):
+    when the filtered survivors exceed the scale-matched targets (2,000
+    advice / 16,300 stories), the final is trimmed to exactly the target —
+    each fanout lane (advice principle x type; stories category x length x
+    ordinary) keeps its proportional share (largest-remainder rounding),
+    survivors chosen in seeded hash order — and the register caps are
+    re-applied to the trimmed set. Counted as "downsample" drops with
+    before/after mix histograms in the filter report. Never pads on the
+    downside. Production released everything that passed.
+  - >-
+    Release-time placebo-import scan (control-scale-plan.md §3d, report-only):
+    `corpusgen import-scan` writes <final>.import-scan.json beside each final and
+    ships it with the release — the placebo's distinctive-coinage phrase
+    battery, the v1 12-term value-word battery (hits shown with context,
+    since "alignment" and "moral(e)" have innocent senses), and every 7-gram
+    shared verbatim between placebo.md and a record's trainable text, with
+    both contexts. Nothing is dropped by it; the pilot's hits were
+    sentence-level lifts of the document's phrasing in ~3% of advice and ~1%
+    of stories, which the frozen-principle paraphrase and D's wording rule
+    address at the source.
+  - >-
+    Advice LENGTH MENU (new, control-scale-plan.md §3b): control advice ran
+    ~30% longer than v2 production advice (3,349 vs 2,566 official
+    tokens/record in control-20260901), so each scenario draws a seeded word
+    target from a 5-point menu frozen from the v2 advice finals' empirical
+    quintile-bin means ([800, 1150, 1400, 1700, 2400] words, equal weights,
+    n=1960; CALIBRATED for this run to [750, 1100, 1400, 1800, 2550] by the
+    pilot's realized/target ratio per bin — see the deference item) — the
+    mechanism the stories already use. The target rides ONLY in
+    wave C's generation-time scaffold (prompts/advice/c_length.md appended
+    after production's c_injection.md; the record keeps b3's clean system
+    prompt) and in D's rewrite brief (keep approximately the same length);
+    it never enters trainable text — only its effect on length does. Recorded
+    in C/D lineage and as the optional record field `target_words` (None in
+    production records). Production renders no length instruction anywhere.
+  - >-
+    Assembly-time LENGTH GATE (new, control-scale-plan.md §3b): the final
+    corpus's response word-length (advice `assistant`, stories `text`) must
+    sit within ±10% (mean) and ±15% (p90) of the v2 production finals
+    (advice mean 1,499.8 / p90 2,259.2 words, n=1960; stories 1,989.8 /
+    2,852.0, n=16321 — frozen in filter.length_gates). Reported per corpus by
+    the filter; a miss is a visible acceptance failure and blocks the release
+    (mirror gate). Never a per-record drop.
+  - >-
+    Score floors FROZEN at 8/8/8/8 on this run's own calibration
+    (control-scale-plan.md §3e.5) — alignment 8 where production used 9,
+    realism/consistency/quality at production's 8. The pilot's blind
+    stratified read (28 advice, 25 stories, scores stripped) found alignment
+    8s and 9s indistinguishable on craft (26 of 27 unique records rated 8-10
+    by the reader; the genuinely faulty three — a wrong register value, an
+    invented user detail, an unsupported generalization — were not the
+    scorer's 8s); the scorer's 8s tracked house-style length overruns, which
+    this run fixes at the source. A 9 floor would have cut ~9% of scored
+    advice on a distinction the reader could not see. Realism <=7 was
+    unseen by the reader; consistency <=5 marked stories whose "AI" was an
+    antique calculating engine (legitimate drops); quality 8 vs 9 is prose
+    ambition. The calibration artifact keeps every score, so the floors are
+    re-cuttable without regeneration.
+  - >-
+    Finals layout: both corpora flat under data/control/ as
+    final-control-scale-20260903-{advice,stories}.jsonl (the finals_subdir
+    knob) instead of data/<corpus>/final-<run_id>.jsonl.
+  - >-
+    Release targets per control-scale-plan.md §4: advice >=4.75M official
+    tokens; stories >=15,000 records / >=38M official tokens; >=43M combined
+    (the peer's ask is >=45M at ~1:8 advice:stories; production v2 released
+    45.08M at 1:7.96). The mirror's release gate enforces them together with
+    the blocking length gate.

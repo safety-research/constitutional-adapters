@@ -1,0 +1,36 @@
+{
+  "round": 5,
+  "note": "bs-16 full-pool 6-epoch confirm fits. Both Sobol rounds were flat-at-the-top (saddle quadratics), so the candidate set is chosen for diversity: the r4 best corner, the r1 winner's interior shape, high-lr-under-tight-clip, and a loose-clip control (is tight clipping load-bearing at full horizon?). warmup_frac 0.10 fixed for all.",
+  "box": null,
+  "sobol_m": null,
+  "trials": [
+    {
+      "index": 0,
+      "src": "r4_t00 corner",
+      "lr": 0.0002,
+      "warmup_frac": 0.1,
+      "max_grad_norm": 0.08
+    },
+    {
+      "index": 1,
+      "src": "r1_t14 winner shape",
+      "lr": 0.0004,
+      "warmup_frac": 0.1,
+      "max_grad_norm": 0.1333521432163324
+    },
+    {
+      "index": 2,
+      "src": "r4_t05 high-lr tight-clip",
+      "lr": 0.0012337686603263965,
+      "warmup_frac": 0.1,
+      "max_grad_norm": 0.11494756623551029
+    },
+    {
+      "index": 3,
+      "src": "r4_t01 loose-clip control",
+      "lr": 0.0005657,
+      "warmup_frac": 0.1,
+      "max_grad_norm": 0.346
+    }
+  ]
+}

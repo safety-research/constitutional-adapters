@@ -1,0 +1,35 @@
+# Fix 3 (post-review, 2026-09-01): regenerate the two
+# refusal-censored story lanes — c32-u00 (36/36 slots lost) and c16-u05
+# (34/36) — on claude-opus-4-8 over the LIVE Messages API (lowprio org),
+# same templates and 2-stories-per-call shape as production.
+#
+# min_slots_frac is 0 ON PURPOSE: these lanes exist because Opus 5 refused
+# them wholesale, and the s3 wave here is a guardrail PROBE — the stage must
+# stamp whatever it achieves so the per-lane refusal verdict is computable;
+# a >50% lane is then abandoned (regen.LANE_REFUSAL_CEILING), never blocked
+# on or prompt-engineered around.
+#
+# use_structured_scores is pinned false: the production verdict
+# (output_config on the BATCH endpoint) doesn't transfer to the live path,
+# and the prompt-enforced JSON scores are parse-validated identically.
+run_id: stories-regen-20260901
+seed: 0
+
+stories:
+  n_categories: 50
+  n_subcategories: 10
+  subcategories_use: null
+  calls_per_subcategory: 18
+
+engine:
+  model: claude-opus-4-8
+  nonce_metadata: false        # irrelevant to the live engine; pinned to skip smoke
+  use_structured_scores: false
+  min_slots_frac: 0.0
+
+filter:
+  thresholds:                  # identical frozen floors to production.yaml
+    advice_alignment: 9
+    advice_realism: 8
+    story_consistency: 8
+    story_quality: 8

@@ -1,0 +1,869 @@
+{
+ "schema": "itdoc_admission/1",
+ "lane": "itdoc_eb64",
+ "what": "The ADMISSION RECORD of the INSTRUCT-DIRECT ('it-doc') batch-64 re-fit objects (the eight-arm extension, it-doc wave): one entry per (lane, model key, view, cell id) -> object sha256. The pin is the OBJECT's sha256 (64-hex), read on disk at full length (never from a message); a row LAUNCHES only when its entry carries the pin AND its RULED staged id AND a complete `bank` binding (the bank view relative to the shared root per cluster role + the cell dir) AND no hold_reason — anything less is HELD with the reason, never a placeholder sha. At launch the row's bytes are held to the pin at four doors (itdoc_bind.bind_problems: manifest entry + disk bytes + sidecar of the kind + the pin file's (target, staged id); the standup's and the driver's --expect-object-sha256; the driver's provenance mirror). A cell id is NOT unique across lanes and a staged id is not unique across targets: every lookup keys the full tuple.",
+ "qualification": "the CONSTITUTION cell is BUDGET-LIMITED, NOT CONVERGED — best_epoch 16 of 16 with stopped_early False, so its best held-out CE was the last epoch and the budget bound the result (a box-edge argmin, treated as a selection failure elsewhere in this campaign); the CONTROL early-stopped at best_epoch 1 of 3; any difference of the pair inherits this asymmetry; nobody is re-fitting for it",
+ "qualification_scope": "`qualification` = the model's OWN sentence, VERBATIM (qwen: the pair sentence the brief fixed; gemma: the cross-model pattern sentence, its numbers 16/16 and 4/6); `qualification_pattern` = the PATTERN across both models, VERBATIM, on every row of either model. Both travel with every row and every result; state them, never smooth them.",
+ "parents": {
+  "qwen35_4b": {
+   "constitution": {
+    "cell": "constv2-mix-full__lora_r4_ce",
+    "object_sha256": "80b75aae2cefee14b2885fcdf27fd889f49da7fa0cc3f97a501bc3f4d927358f",
+    "role": "constitution (the SI-mix document fit)"
+   },
+   "control": {
+    "cell": "constv2ctl2-full__lora_r4_ce",
+    "object_sha256": "bace45e26a6d1dc262e6fbb63851f7546b1327d7561cc3744e2bcf2adf881415",
+    "role": "control (the constv2ctl2 document fit)"
+   }
+  },
+  "gemma4e4b": {
+   "constitution": {
+    "cell": "constv2-mix-full__lora_r4_ce",
+    "object_sha256": "78e84f2732d6232336f5fdae6021ad38818e6f12b2067fbb36402abb4214a9b9",
+    "role": "constitution (the SI-mix document fit)"
+   },
+   "control": {
+    "cell": "constv2ctl2-full__lora_r4_ce",
+    "object_sha256": "04a90de8edd863345bf182adad717801b391096b350253c72bcb077b97885ed8",
+    "role": "control (the constv2ctl2 document fit)"
+   }
+  }
+ },
+ "derived_object_shape": {
+  "builder": "scripts/sdfbase/lora_subtract.py (the lane's; this campaign never builds it)",
+  "lands_under": "derived/lora_subtraction/<model_key>/ with a derived_meta.json sidecar (parents' shas named), NEVER in cells_all/ with a train_budget_meta.json",
+  "distinct_id": "the it-doc derived object takes its OWN staged id: `derived__constv2-mix-full__lora_r4_ce_minus_ctl` in the qwen bank is the BASE-lane subtraction (parents base__…, sha e24b4aaa…) and must never be read as this one",
+  "binding": "by sha + lane; the sidecar's parent_* blocks must be exactly the two it-doc parents above (itdoc_bind.bind_problems refuses otherwise); the driver's mirror validates the same sidecar (sweep.read_derived_provenance)"
+ },
+ "hold_reasons": {
+  "staged_not_servable": "staged under its ruled id in both clusters' full22 bank but NOT SERVABLE: no it-view manifest entry names the ruled id, no pin file entry, roster unchanged; held until the servable notice (the shape of every entry's hold_reason on 2026-09-13 ~20:37Z)",
+  "history": {
+   "not_staged": "harvested, not staged; new bank id pending — every fitted parent's hold until ~20:00Z on 2026-09-13, when the lane staged both models' parents under itdoc64__ in both clusters' bank cells/",
+   "derived_not_built": "derived object not yet built — the gemma difference object's hold until 2026-09-13T20:08:27Z (built by scripts/sdfbase/lora_subtract.py; staged 20:11:54Z)",
+   "gemma_pending": "objects land later — gemma4e4b's hold when this record was first written (~19:20Z); the constitution object published 19:38:03Z, the control 2026-09-12T18:57:01Z"
+  }
+ },
+ "entries": {
+  "qwen35_4b": {
+   "it": {
+    "constv2ctl2-full__lora_r4_ce": {
+     "lane": "itdoc_eb64",
+     "model_key": "qwen35_4b",
+     "view": "it",
+     "cell": "constv2ctl2-full__lora_r4_ce",
+     "object_kind": "fitted",
+     "staged_id": "itdoc64__constv2ctl2-full__lora_r4_ce",
+     "sidecar": "train_budget_meta.json",
+     "object_sha256": "bace45e26a6d1dc262e6fbb63851f7546b1327d7561cc3744e2bcf2adf881415",
+     "bank": {
+      "view": "it",
+      "bank_view_rel": {
+       "primary": "exp/objects/sdfbase/full22/qwen35_4b/cells_view/it",
+       "overflow": "exp/objects/sdfbase/full22/qwen35_4b/cells_view/it"
+      },
+      "bank_cell_dir": "constv2ctl2-full__lora_r4_ce",
+      "cluster_constraint": "any"
+     },
+     "hold_reason": null,
+     "qualification": "the CONSTITUTION cell is BUDGET-LIMITED, NOT CONVERGED — best_epoch 16 of 16 with stopped_early False, so its best held-out CE was the last epoch and the budget bound the result (a box-edge argmin, treated as a selection failure elsewhere in this campaign); the CONTROL early-stopped at best_epoch 1 of 3; any difference of the pair inherits this asymmetry; nobody is re-fitting for it",
+     "qualification_pattern": "constitution budget-limited, not converged (best_epoch 16/16, stopped_early False, box-edge argmin); control early-stopped (gemma 4/6; qwen 1/3); any difference object / dose ladder is a trained-to-budget numerator against a converged denominator; nobody re-fits. State it; do not smooth it.",
+     "superseded": null,
+     "fit_record": {
+      "best_epoch": 1,
+      "epochs_run": 3,
+      "stopped_early": true,
+      "best_heldout_ce": 2.2514387124612325,
+      "heldout_ce_noop": 2.476329499192484,
+      "optimizer_steps_run": 801,
+      "steps_per_epoch": 267,
+      "effective_batch": 64,
+      "batch_size": 2,
+      "accum_steps": 32,
+      "lr": 0.008055949351268077,
+      "resolved_warmup_steps": 214,
+      "training_budget_kind": "document_tokens",
+      "chat_template_bypassed": true,
+      "template_hash": "a4aee8afcf2e0711",
+      "heldout_pool_sha": "7f588099117d3a76408d400bca00a0a181613b59dadf471dd90ce13b72dde1e4",
+      "published_at": "2026-09-12T07:14:56+00:00",
+      "convergence": "early-stopped at epoch 1 (patience 2, min_delta 0): the held-out CE rose after epoch 1 (2.25144, 2.25317, 2.25432)"
+     },
+     "harvest": {
+      "root_rel": "exp/objects/sdfbase/itdoc_eb64/qwen35_4b_it_doc/cells_all",
+      "cell_dir": "constv2ctl2-full__lora_r4_ce",
+      "files": [
+       "COMPLETE",
+       "metrics.jsonl",
+       "object.pt",
+       "train_budget_meta.json"
+      ],
+      "store_identity": {
+       "model": "Qwen/Qwen3.5-4B",
+       "model_revision": "851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a",
+       "positions": "all"
+      },
+      "verified": {
+       "primary": {
+        "date": "2026-09-13",
+        "how": "sha256sum object.pt over ssh, read at 64 hex; COMPLETE.files.object.pt and train_budget_meta.object_sha256 agree",
+        "object_sha256": "bace45e26a6d1dc262e6fbb63851f7546b1327d7561cc3744e2bcf2adf881415"
+       },
+       "overflow": {
+        "date": "2026-09-13",
+        "present": false,
+        "how": "the shared root's exp/objects/sdfbase/ carries full22 only; no itdoc_eb64/ directory"
+       }
+      },
+      "is_serving_bank": false,
+      "note": "the fitter's raw output (no VIEW_MANIFEST, no fit_provenance.json, no staged_from.json) — a bank walker must not read it as a served view; the row binds to the STAGED bank entry the lane publishes, never to this path",
+      "bank_copy": {
+       "root_rel": "exp/objects/sdfbase/full22/qwen35_4b/cells",
+       "cell_dir": "itdoc64__constv2ctl2-full__lora_r4_ce",
+       "files": [
+        "COMPLETE",
+        "metrics.jsonl",
+        "object.pt",
+        "staged_from.json",
+        "train_budget_meta.json"
+       ],
+       "same_bytes": true,
+       "train_budget_meta_sha256": "ced179334aa24b926e5dc3afd38943d0feaf3bb30ae79d2e91b4c62f8d4ec906",
+       "staged_by": "itdoc_eb64/71_stage_parents_full22.py (staged_from.json: lane itdoc64, kind fit, key <target>_it_doc_eb64, view it)",
+       "pulled_at": "2026-09-13T20:00:21Z",
+       "verified": {
+        "primary": {
+         "date": "2026-09-13",
+         "object_sha256": "bace45e26a6d1dc262e6fbb63851f7546b1327d7561cc3744e2bcf2adf881415",
+         "how": "sha256sum object.pt at the bank copy over ssh, read at 64 hex; == the harvest bank's bytes"
+        },
+        "overflow": {
+         "date": "2026-09-13",
+         "present": true,
+         "object_sha256": "bace45e26a6d1dc262e6fbb63851f7546b1327d7561cc3744e2bcf2adf881415",
+         "how": "sha256sum object.pt at the bank copy over ssh (no itdoc_eb64/ harvest tree on the overflow cluster)"
+        }
+       },
+       "servable": false,
+       "why_not": "cells_view/it/VIEW_MANIFEST.json (both clusters) names itdoc__<cell> for the lora cell and no entry for the ctl2 cell; the symlink resolves to ../../cells/itdoc__…; configs/sdfbase_full22_pins.json has no itdoc64__ entry; configs/sdfbase_full22_roster.yaml maps the it view to itdoc__"
+      }
+     },
+     "stale_objects": {
+      "0018b32beb137fad77a688cfd4f7212c7702399e0f76f31cc3fbd5f903a445fe": "superseded direct-fit object: itdoc__constv2-mix-full__lora_r4_ce, the qwen35_4b `it` view's constitution object the refit hold names (rows 3 / 16 of the GSM8K matrix; IFEval rows 3 / 11) — replaced by this batch-64 re-fit",
+      "50cd33287101a948973de60580a4c893e2787284182b50bdb088e288e9d7b904": "superseded direct-fit object: itdoc__constv2-mix-full__psr_ce_all, the qwen35_4b `it` view's PSR constitution object (PSR is out of the panel by ruling; refit hold, rows 2 / 15)",
+      "4bac922f88a5df01d319e44a9682d7f90505eed14e3a3aa859b2569dd7601c01": "stale dose bake: d0p1it__constv2-mix-full__lora_r4_ce (qwen35_4b) — baked from the SUPERSEDED direct-fit parent (itdoc__constv2-mix-full__lora_r4_ce 0018b32beb13…), a batch-8 object under a batch-8 id (never overwritten; the re-bakes mint under d<dose>it64__) — a row of this lane resolving through it REFUSES, never launches",
+      "02738eb6eef91cfde52bd0f492825fc75bdf43cc3ba824190f7fe9dd4bce15c0": "stale dose bake: d0p25it__constv2-mix-full__lora_r4_ce (qwen35_4b) — baked from the SUPERSEDED direct-fit parent (itdoc__constv2-mix-full__lora_r4_ce 0018b32beb13…), a batch-8 object under a batch-8 id (never overwritten; the re-bakes mint under d<dose>it64__) — a row of this lane resolving through it REFUSES, never launches",
+      "9392924e41554f66a82c1d823e3b9df8fa60b6405f4b5ae849253b9999c1dc87": "stale dose bake: d1p5it__constv2-mix-full__lora_r4_ce (qwen35_4b) — baked from the SUPERSEDED direct-fit parent (itdoc__constv2-mix-full__lora_r4_ce 0018b32beb13…), a batch-8 object under a batch-8 id (never overwritten; the re-bakes mint under d<dose>it64__) — a row of this lane resolving through it REFUSES, never launches",
+      "11a3b5b0dcf0bfe4733b05055514af1fa8c670d6102890a3c35d314807ab7cd5": "stale dose bake: dm1it__constv2-mix-full__lora_r4_ce (qwen35_4b) — baked from the SUPERSEDED direct-fit parent (itdoc__constv2-mix-full__lora_r4_ce 0018b32beb13…), a batch-8 object under a batch-8 id (never overwritten; the re-bakes mint under d<dose>it64__) — a row of this lane resolving through it REFUSES, never launches",
+      "119f5a6c01790f12505c03aea975a820c822898c10e3d43868ecc2b40bbb9636": "stale dose bake: halfdoseit__constv2-mix-full__lora_r4_ce (qwen35_4b) — baked from the SUPERSEDED direct-fit parent (itdoc__constv2-mix-full__lora_r4_ce 0018b32beb13…), a batch-8 object under a batch-8 id (never overwritten; the re-bakes mint under d<dose>it64__) — a row of this lane resolving through it REFUSES, never launches",
+      "1b847c301b87746728886d48466ec7294c98092e173b157f33a619f17150488b": "stale dose bake: halfdoseit__constv2-mix-full__psr_ce_all (qwen35_4b) — baked from the SUPERSEDED direct-fit parent (itdoc__constv2-mix-full__lora_r4_ce 0018b32beb13…), a batch-8 object under a batch-8 id (never overwritten; the re-bakes mint under d<dose>it64__) — a row of this lane resolving through it REFUSES, never launches"
+     },
+     "notes": [
+      "the it-view CONTROL is a NEW arm of the instruct-direct view (the frozen matrices' `it` views carried no control); early-stopped at best_epoch 1 of 3",
+      "2026-09-13 ~20:37Z: the bank copy under the ruled id itdoc64__constv2ctl2-full__lora_r4_ce hashed on BOTH clusters == the harvest bytes; link THREE of four (staged); link FOUR (servable: view manifest + pins + roster) pending — held",
+      "2026-09-13 21:49Z: SERVABLE on both clusters (view manifest 21:19Z / 21:21Z, PR #102 merged 4e200b68); the GSM8K itdoc-matrix row launches; the MATH-500 it-view row stays under the instrument hold below"
+     ],
+     "servable": {
+      "read_at": "2026-09-13 21:49Z (cluster clock; read-only ssh, sha256sum at 64 hex, both clusters)",
+      "roster": "configs/sdfbase_full22_roster.yaml at 4e200b68 (PR #102): qwen35_4b/it maps the cell to the ruled staged id",
+      "pin_file": "configs/sdfbase_full22_pins.json at 4e200b68: (qwen35_4b, itdoc64__constv2ctl2-full__lora_r4_ce) -> bace45e26a6d1dc262e6fbb63851f7546b1327d7561cc3744e2bcf2adf881415 (verified_cluster_a + verified_cluster_b true in the entry)",
+      "view_manifest": {
+       "primary": "cells_view/it/VIEW_MANIFEST.json written 2026-09-13T21:19:10Z, 4 entries, names itdoc64__constv2ctl2-full__lora_r4_ce -> bace45e26a6d1dc262e6fbb63851f7546b1327d7561cc3744e2bcf2adf881415",
+       "overflow": "cells_view/it/VIEW_MANIFEST.json written 2026-09-13T21:21:43Z, 4 entries, the same entry"
+      },
+      "symlink": "../../cells/itdoc64__constv2ctl2-full__lora_r4_ce (both clusters)",
+      "bytes": {
+       "primary": "bace45e26a6d1dc262e6fbb63851f7546b1327d7561cc3744e2bcf2adf881415",
+       "overflow": "bace45e26a6d1dc262e6fbb63851f7546b1327d7561cc3744e2bcf2adf881415",
+       "how": "sha256sum through the view path on both clusters == the pin"
+      },
+      "verdict": "SERVABLE: manifest entry + symlink + bytes on both clusters + pin file + roster all name the ruled id and the pin (link four of four); the bank binding above is filled from that reading"
+     }
+    },
+    "constv2-mix-full__lora_r4_ce": {
+     "lane": "itdoc_eb64",
+     "model_key": "qwen35_4b",
+     "view": "it",
+     "cell": "constv2-mix-full__lora_r4_ce",
+     "object_kind": "fitted",
+     "staged_id": "itdoc64__constv2-mix-full__lora_r4_ce",
+     "sidecar": "train_budget_meta.json",
+     "object_sha256": "80b75aae2cefee14b2885fcdf27fd889f49da7fa0cc3f97a501bc3f4d927358f",
+     "bank": null,
+     "hold_reason": "the it view serves the BATCH-8 constitution object (itdoc__constv2-mix-full__lora_r4_ce, 0018b32b…) by the ruling to the lane of 2026-09-13 (mixing the batch-8 constitution with the batch-64 control + difference is fine for now; the repoint ruling withdrawn): this batch-64 constitution object is staged under its ruled id in both clusters' bank cells/ but served nowhere; no GSM8K row (the instruct-direct wave rows the served batch-8 object as its constitution cell, object_generation batch8) and the MATH-500 it-view row stays held",
+     "qualification": "the CONSTITUTION cell is BUDGET-LIMITED, NOT CONVERGED — best_epoch 16 of 16 with stopped_early False, so its best held-out CE was the last epoch and the budget bound the result (a box-edge argmin, treated as a selection failure elsewhere in this campaign); the CONTROL early-stopped at best_epoch 1 of 3; any difference of the pair inherits this asymmetry; nobody is re-fitting for it",
+     "qualification_pattern": "constitution budget-limited, not converged (best_epoch 16/16, stopped_early False, box-edge argmin); control early-stopped (gemma 4/6; qwen 1/3); any difference object / dose ladder is a trained-to-budget numerator against a converged denominator; nobody re-fits. State it; do not smooth it.",
+     "superseded": {
+      "lane": "full22 (itdoc__ staged ids)",
+      "staged_id": "itdoc__constv2-mix-full__lora_r4_ce",
+      "object_sha256": "0018b32beb137fad77a688cfd4f7212c7702399e0f76f31cc3fbd5f903a445fe",
+      "where": "the GSM8K matrix's refit-held row (gemma 3 / qwen 16), the IFEval matrix's held row (gemma 3 / qwen 11); the `it` bank view's current entry"
+     },
+     "fit_record": {
+      "best_epoch": 16,
+      "epochs_run": 16,
+      "stopped_early": false,
+      "best_heldout_ce": 2.064486855259312,
+      "heldout_ce_noop": 2.476329499192484,
+      "optimizer_steps_run": 4352,
+      "steps_per_epoch": 272,
+      "effective_batch": 64,
+      "batch_size": 2,
+      "accum_steps": 32,
+      "lr": 0.008055949351268077,
+      "resolved_warmup_steps": 218,
+      "training_budget_kind": "document_tokens",
+      "chat_template_bypassed": true,
+      "template_hash": "a4aee8afcf2e0711",
+      "heldout_pool_sha": "7f588099117d3a76408d400bca00a0a181613b59dadf471dd90ce13b72dde1e4",
+      "published_at": "2026-09-12T19:57:25+00:00",
+      "convergence": "budget-limited: the held-out CE was still falling at the last epoch (2.06522 -> 2.06459 -> 2.06449); best_epoch == epochs_run"
+     },
+     "harvest": {
+      "root_rel": "exp/objects/sdfbase/itdoc_eb64/qwen35_4b_it_doc/cells_all",
+      "cell_dir": "constv2-mix-full__lora_r4_ce",
+      "files": [
+       "COMPLETE",
+       "metrics.jsonl",
+       "object.pt",
+       "train_budget_meta.json"
+      ],
+      "store_identity": {
+       "model": "Qwen/Qwen3.5-4B",
+       "model_revision": "851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a",
+       "positions": "all"
+      },
+      "verified": {
+       "primary": {
+        "date": "2026-09-13",
+        "how": "sha256sum object.pt over ssh, read at 64 hex; COMPLETE.files.object.pt and train_budget_meta.object_sha256 agree",
+        "object_sha256": "80b75aae2cefee14b2885fcdf27fd889f49da7fa0cc3f97a501bc3f4d927358f"
+       },
+       "overflow": {
+        "date": "2026-09-13",
+        "present": false,
+        "how": "the shared root's exp/objects/sdfbase/ carries full22 only; no itdoc_eb64/ directory"
+       }
+      },
+      "is_serving_bank": false,
+      "note": "the fitter's raw output (no VIEW_MANIFEST, no fit_provenance.json, no staged_from.json) — a bank walker must not read it as a served view; the row binds to the STAGED bank entry the lane publishes, never to this path",
+      "bank_copy": {
+       "root_rel": "exp/objects/sdfbase/full22/qwen35_4b/cells",
+       "cell_dir": "itdoc64__constv2-mix-full__lora_r4_ce",
+       "files": [
+        "COMPLETE",
+        "metrics.jsonl",
+        "object.pt",
+        "staged_from.json",
+        "train_budget_meta.json"
+       ],
+       "same_bytes": true,
+       "train_budget_meta_sha256": "aeee2fe471e162bdf92c8aa2b6c8ba2c06174bd4f837cf4c0ab0ee2e8fbc8595",
+       "staged_by": "itdoc_eb64/71_stage_parents_full22.py (staged_from.json: lane itdoc64, kind fit, key <target>_it_doc_eb64, view it)",
+       "pulled_at": "2026-09-13T20:00:21Z",
+       "verified": {
+        "primary": {
+         "date": "2026-09-13",
+         "object_sha256": "80b75aae2cefee14b2885fcdf27fd889f49da7fa0cc3f97a501bc3f4d927358f",
+         "how": "sha256sum object.pt at the bank copy over ssh, read at 64 hex; == the harvest bank's bytes"
+        },
+        "overflow": {
+         "date": "2026-09-13",
+         "present": true,
+         "object_sha256": "80b75aae2cefee14b2885fcdf27fd889f49da7fa0cc3f97a501bc3f4d927358f",
+         "how": "sha256sum object.pt at the bank copy over ssh (no itdoc_eb64/ harvest tree on the overflow cluster)"
+        }
+       },
+       "servable": false,
+       "why_not": "cells_view/it/VIEW_MANIFEST.json (both clusters) names itdoc__<cell> for the lora cell and no entry for the ctl2 cell; the symlink resolves to ../../cells/itdoc__…; configs/sdfbase_full22_pins.json has no itdoc64__ entry; configs/sdfbase_full22_roster.yaml maps the it view to itdoc__"
+      }
+     },
+     "stale_objects": {
+      "0018b32beb137fad77a688cfd4f7212c7702399e0f76f31cc3fbd5f903a445fe": "superseded direct-fit object: itdoc__constv2-mix-full__lora_r4_ce, the qwen35_4b `it` view's constitution object the refit hold names (rows 3 / 16 of the GSM8K matrix; IFEval rows 3 / 11) — replaced by this batch-64 re-fit",
+      "50cd33287101a948973de60580a4c893e2787284182b50bdb088e288e9d7b904": "superseded direct-fit object: itdoc__constv2-mix-full__psr_ce_all, the qwen35_4b `it` view's PSR constitution object (PSR is out of the panel by ruling; refit hold, rows 2 / 15)",
+      "4bac922f88a5df01d319e44a9682d7f90505eed14e3a3aa859b2569dd7601c01": "stale dose bake: d0p1it__constv2-mix-full__lora_r4_ce (qwen35_4b) — baked from the SUPERSEDED direct-fit parent (itdoc__constv2-mix-full__lora_r4_ce 0018b32beb13…), a batch-8 object under a batch-8 id (never overwritten; the re-bakes mint under d<dose>it64__) — a row of this lane resolving through it REFUSES, never launches",
+      "02738eb6eef91cfde52bd0f492825fc75bdf43cc3ba824190f7fe9dd4bce15c0": "stale dose bake: d0p25it__constv2-mix-full__lora_r4_ce (qwen35_4b) — baked from the SUPERSEDED direct-fit parent (itdoc__constv2-mix-full__lora_r4_ce 0018b32beb13…), a batch-8 object under a batch-8 id (never overwritten; the re-bakes mint under d<dose>it64__) — a row of this lane resolving through it REFUSES, never launches",
+      "9392924e41554f66a82c1d823e3b9df8fa60b6405f4b5ae849253b9999c1dc87": "stale dose bake: d1p5it__constv2-mix-full__lora_r4_ce (qwen35_4b) — baked from the SUPERSEDED direct-fit parent (itdoc__constv2-mix-full__lora_r4_ce 0018b32beb13…), a batch-8 object under a batch-8 id (never overwritten; the re-bakes mint under d<dose>it64__) — a row of this lane resolving through it REFUSES, never launches",
+      "11a3b5b0dcf0bfe4733b05055514af1fa8c670d6102890a3c35d314807ab7cd5": "stale dose bake: dm1it__constv2-mix-full__lora_r4_ce (qwen35_4b) — baked from the SUPERSEDED direct-fit parent (itdoc__constv2-mix-full__lora_r4_ce 0018b32beb13…), a batch-8 object under a batch-8 id (never overwritten; the re-bakes mint under d<dose>it64__) — a row of this lane resolving through it REFUSES, never launches",
+      "119f5a6c01790f12505c03aea975a820c822898c10e3d43868ecc2b40bbb9636": "stale dose bake: halfdoseit__constv2-mix-full__lora_r4_ce (qwen35_4b) — baked from the SUPERSEDED direct-fit parent (itdoc__constv2-mix-full__lora_r4_ce 0018b32beb13…), a batch-8 object under a batch-8 id (never overwritten; the re-bakes mint under d<dose>it64__) — a row of this lane resolving through it REFUSES, never launches",
+      "1b847c301b87746728886d48466ec7294c98092e173b157f33a619f17150488b": "stale dose bake: halfdoseit__constv2-mix-full__psr_ce_all (qwen35_4b) — baked from the SUPERSEDED direct-fit parent (itdoc__constv2-mix-full__lora_r4_ce 0018b32beb13…), a batch-8 object under a batch-8 id (never overwritten; the re-bakes mint under d<dose>it64__) — a row of this lane resolving through it REFUSES, never launches"
+     },
+     "notes": [
+      "supersedes the refit-held direct-fit object (GSM8K row 16, IFEval row 11): those rows stay HELD and are never evaluated; this row is the re-fit's",
+      "budget-limited: best_epoch 16 of 16, stopped_early False",
+      "2026-09-13 ~20:37Z: the bank copy under the ruled id itdoc64__constv2-mix-full__lora_r4_ce hashed on BOTH clusters == the harvest bytes; link THREE of four (staged); link FOUR (servable: view manifest + pins + roster) pending — held"
+     ]
+    },
+    "constv2-mix-full__lora_r4_ce_minus_ctl": {
+     "lane": "itdoc_eb64",
+     "model_key": "qwen35_4b",
+     "view": "it",
+     "cell": "constv2-mix-full__lora_r4_ce_minus_ctl",
+     "object_kind": "derived",
+     "staged_id": "derived_itdoc64__constv2-mix-full__lora_r4_ce_minus_ctl",
+     "sidecar": "derived_meta.json",
+     "object_sha256": "5e9b0009eb24eaf66842b4a2a9f647fced95699c7aae748eaab5333b05a4c6ce",
+     "bank": {
+      "view": "it",
+      "bank_view_rel": {
+       "primary": "exp/objects/sdfbase/full22/qwen35_4b/cells_view/it",
+       "overflow": "exp/objects/sdfbase/full22/qwen35_4b/cells_view/it"
+      },
+      "bank_cell_dir": "constv2-mix-full__lora_r4_ce_minus_ctl",
+      "cluster_constraint": "any"
+     },
+     "hold_reason": null,
+     "qualification": "the CONSTITUTION cell is BUDGET-LIMITED, NOT CONVERGED — best_epoch 16 of 16 with stopped_early False, so its best held-out CE was the last epoch and the budget bound the result (a box-edge argmin, treated as a selection failure elsewhere in this campaign); the CONTROL early-stopped at best_epoch 1 of 3; any difference of the pair inherits this asymmetry; nobody is re-fitting for it",
+     "qualification_pattern": "constitution budget-limited, not converged (best_epoch 16/16, stopped_early False, box-edge argmin); control early-stopped (gemma 4/6; qwen 1/3); any difference object / dose ladder is a trained-to-budget numerator against a converged denominator; nobody re-fits. State it; do not smooth it.",
+     "parents_expected": {
+      "constv2-mix-full__lora_r4_ce": "80b75aae2cefee14b2885fcdf27fd889f49da7fa0cc3f97a501bc3f4d927358f",
+      "constv2ctl2-full__lora_r4_ce": "bace45e26a6d1dc262e6fbb63851f7546b1327d7561cc3744e2bcf2adf881415"
+     },
+     "superseded": null,
+     "fit_record": null,
+     "harvest": {
+      "root_rel": "exp/objects/sdfbase/itdoc_eb64/derived/lora_subtraction/qwen35_4b_it_doc_eb64",
+      "cell_dir": "constv2-mix-full__lora_r4_ce_minus_ctl",
+      "files": [
+       "derived_meta.json",
+       "object.pt"
+      ],
+      "derived_meta_sha256": "7e3bbf4f0430377cb202e6b83560a52aa2037b6fa3f09163cc38d434a7090288",
+      "bank_copy": {
+       "root_rel": "exp/objects/sdfbase/full22/qwen35_4b/cells",
+       "cell_dir": "derived_itdoc64__constv2-mix-full__lora_r4_ce_minus_ctl",
+       "files": [
+        "derived_meta.json",
+        "object.pt",
+        "staged_from.json"
+       ],
+       "same_bytes": true,
+       "staged_by": "itdoc_eb64/70_stage_derived_full22.py",
+       "pulled_at": "2026-09-13T19:44:21Z"
+      },
+      "verified": {
+       "primary": {
+        "date": "2026-09-13",
+        "object_sha256": "5e9b0009eb24eaf66842b4a2a9f647fced95699c7aae748eaab5333b05a4c6ce",
+        "derived_meta_sha256": "7e3bbf4f0430377cb202e6b83560a52aa2037b6fa3f09163cc38d434a7090288",
+        "how": "sha256sum over ssh at both paths (harvest source + bank copy), read at 64 hex"
+       },
+       "overflow": {
+        "date": "2026-09-13",
+        "present": true,
+        "object_sha256": "5e9b0009eb24eaf66842b4a2a9f647fced95699c7aae748eaab5333b05a4c6ce",
+        "derived_meta_sha256": "7e3bbf4f0430377cb202e6b83560a52aa2037b6fa3f09163cc38d434a7090288",
+        "how": "sha256sum over ssh at the bank copy (no itdoc_eb64/ tree on the overflow cluster)"
+       }
+      },
+      "derived_meta": {
+       "kind": "lora_subtraction",
+       "derived_id": "constv2-mix-full__lora_r4_ce_minus_ctl",
+       "model_key": "qwen35_4b_it_doc_eb64",
+       "builder": "scripts/sdfbase/lora_subtract.py",
+       "built_at": "2026-09-13T19:34:02+00:00",
+       "parent_pos": {
+        "cell_id": "constv2-mix-full__lora_r4_ce",
+        "object_sha256": "80b75aae2cefee14b2885fcdf27fd889f49da7fa0cc3f97a501bc3f4d927358f"
+       },
+       "parent_neg": {
+        "cell_id": "constv2ctl2-full__lora_r4_ce",
+        "object_sha256": "bace45e26a6d1dc262e6fbb63851f7546b1327d7561cc3744e2bcf2adf881415"
+       },
+       "scale_matched": true,
+       "official_tokens_each": 42785435,
+       "layers": [
+        3,
+        7,
+        11,
+        15,
+        19,
+        23,
+        27,
+        31
+       ],
+       "rank": 4
+      },
+      "is_serving_bank": false
+     },
+     "stale_objects": {
+      "0018b32beb137fad77a688cfd4f7212c7702399e0f76f31cc3fbd5f903a445fe": "superseded direct-fit object: itdoc__constv2-mix-full__lora_r4_ce, the qwen35_4b `it` view's constitution object the refit hold names (rows 3 / 16 of the GSM8K matrix; IFEval rows 3 / 11) — replaced by this batch-64 re-fit",
+      "50cd33287101a948973de60580a4c893e2787284182b50bdb088e288e9d7b904": "superseded direct-fit object: itdoc__constv2-mix-full__psr_ce_all, the qwen35_4b `it` view's PSR constitution object (PSR is out of the panel by ruling; refit hold, rows 2 / 15)",
+      "4bac922f88a5df01d319e44a9682d7f90505eed14e3a3aa859b2569dd7601c01": "stale dose bake: d0p1it__constv2-mix-full__lora_r4_ce (qwen35_4b) — baked from the SUPERSEDED direct-fit parent (itdoc__constv2-mix-full__lora_r4_ce 0018b32beb13…), a batch-8 object under a batch-8 id (never overwritten; the re-bakes mint under d<dose>it64__) — a row of this lane resolving through it REFUSES, never launches",
+      "02738eb6eef91cfde52bd0f492825fc75bdf43cc3ba824190f7fe9dd4bce15c0": "stale dose bake: d0p25it__constv2-mix-full__lora_r4_ce (qwen35_4b) — baked from the SUPERSEDED direct-fit parent (itdoc__constv2-mix-full__lora_r4_ce 0018b32beb13…), a batch-8 object under a batch-8 id (never overwritten; the re-bakes mint under d<dose>it64__) — a row of this lane resolving through it REFUSES, never launches",
+      "9392924e41554f66a82c1d823e3b9df8fa60b6405f4b5ae849253b9999c1dc87": "stale dose bake: d1p5it__constv2-mix-full__lora_r4_ce (qwen35_4b) — baked from the SUPERSEDED direct-fit parent (itdoc__constv2-mix-full__lora_r4_ce 0018b32beb13…), a batch-8 object under a batch-8 id (never overwritten; the re-bakes mint under d<dose>it64__) — a row of this lane resolving through it REFUSES, never launches",
+      "11a3b5b0dcf0bfe4733b05055514af1fa8c670d6102890a3c35d314807ab7cd5": "stale dose bake: dm1it__constv2-mix-full__lora_r4_ce (qwen35_4b) — baked from the SUPERSEDED direct-fit parent (itdoc__constv2-mix-full__lora_r4_ce 0018b32beb13…), a batch-8 object under a batch-8 id (never overwritten; the re-bakes mint under d<dose>it64__) — a row of this lane resolving through it REFUSES, never launches",
+      "119f5a6c01790f12505c03aea975a820c822898c10e3d43868ecc2b40bbb9636": "stale dose bake: halfdoseit__constv2-mix-full__lora_r4_ce (qwen35_4b) — baked from the SUPERSEDED direct-fit parent (itdoc__constv2-mix-full__lora_r4_ce 0018b32beb13…), a batch-8 object under a batch-8 id (never overwritten; the re-bakes mint under d<dose>it64__) — a row of this lane resolving through it REFUSES, never launches",
+      "1b847c301b87746728886d48466ec7294c98092e173b157f33a619f17150488b": "stale dose bake: halfdoseit__constv2-mix-full__psr_ce_all (qwen35_4b) — baked from the SUPERSEDED direct-fit parent (itdoc__constv2-mix-full__lora_r4_ce 0018b32beb13…), a batch-8 object under a batch-8 id (never overwritten; the re-bakes mint under d<dose>it64__) — a row of this lane resolving through it REFUSES, never launches"
+     },
+     "notes": [
+      "the structural subtraction of the two it-doc parents (delta(parent_pos) - delta(parent_neg), both parents' factors stored bit-exact), served as diff_lora; built by the lane 2026-09-13T19:34Z; its bank copy sits under the RULED id derived_itdoc64__… on both clusters but is not servable yet (see hold_reason); the parents are under the bank's itdoc64__ ids on both clusters since 2026-09-13T20:00Z (still no it view entry / pin / roster)",
+      "2026-09-13 21:49Z: SERVABLE on both clusters (view manifest 21:19Z / 21:21Z, PR #102 merged 4e200b68); the GSM8K itdoc-matrix row launches; the MATH-500 it-view row stays under the instrument hold below"
+     ],
+     "servable": {
+      "read_at": "2026-09-13 21:49Z (cluster clock; read-only ssh, sha256sum at 64 hex, both clusters)",
+      "roster": "configs/sdfbase_full22_roster.yaml at 4e200b68 (PR #102): qwen35_4b/it maps the cell to the ruled staged id",
+      "pin_file": "configs/sdfbase_full22_pins.json at 4e200b68: (qwen35_4b, derived_itdoc64__constv2-mix-full__lora_r4_ce_minus_ctl) -> 5e9b0009eb24eaf66842b4a2a9f647fced95699c7aae748eaab5333b05a4c6ce (verified_cluster_a + verified_cluster_b true in the entry)",
+      "view_manifest": {
+       "primary": "cells_view/it/VIEW_MANIFEST.json written 2026-09-13T21:19:10Z, 4 entries, names derived_itdoc64__constv2-mix-full__lora_r4_ce_minus_ctl -> 5e9b0009eb24eaf66842b4a2a9f647fced95699c7aae748eaab5333b05a4c6ce",
+       "overflow": "cells_view/it/VIEW_MANIFEST.json written 2026-09-13T21:21:43Z, 4 entries, the same entry"
+      },
+      "symlink": "../../cells/derived_itdoc64__constv2-mix-full__lora_r4_ce_minus_ctl (both clusters)",
+      "bytes": {
+       "primary": "5e9b0009eb24eaf66842b4a2a9f647fced95699c7aae748eaab5333b05a4c6ce",
+       "overflow": "5e9b0009eb24eaf66842b4a2a9f647fced95699c7aae748eaab5333b05a4c6ce",
+       "how": "sha256sum through the view path on both clusters == the pin"
+      },
+      "verdict": "SERVABLE: manifest entry + symlink + bytes on both clusters + pin file + roster all name the ruled id and the pin (link four of four); the bank binding above is filled from that reading"
+     }
+    }
+   }
+  },
+  "gemma4e4b": {
+   "it": {
+    "constv2ctl2-full__lora_r4_ce": {
+     "lane": "itdoc_eb64",
+     "model_key": "gemma4e4b",
+     "view": "it",
+     "cell": "constv2ctl2-full__lora_r4_ce",
+     "object_kind": "fitted",
+     "staged_id": "itdoc64__constv2ctl2-full__lora_r4_ce",
+     "sidecar": "train_budget_meta.json",
+     "object_sha256": "04a90de8edd863345bf182adad717801b391096b350253c72bcb077b97885ed8",
+     "bank": {
+      "view": "it",
+      "bank_view_rel": {
+       "primary": "exp/objects/sdfbase/full22/gemma4e4b/cells_view/it",
+       "overflow": "exp/objects/sdfbase/full22/gemma4e4b/cells_view/it"
+      },
+      "bank_cell_dir": "constv2ctl2-full__lora_r4_ce",
+      "cluster_constraint": "any"
+     },
+     "hold_reason": null,
+     "qualification": "constitution budget-limited, not converged (best_epoch 16/16, stopped_early False, box-edge argmin); control early-stopped (gemma 4/6; qwen 1/3); any difference object / dose ladder is a trained-to-budget numerator against a converged denominator; nobody re-fits. State it; do not smooth it.",
+     "qualification_pattern": "constitution budget-limited, not converged (best_epoch 16/16, stopped_early False, box-edge argmin); control early-stopped (gemma 4/6; qwen 1/3); any difference object / dose ladder is a trained-to-budget numerator against a converged denominator; nobody re-fits. State it; do not smooth it.",
+     "superseded": null,
+     "fit_record": {
+      "best_epoch": 4,
+      "epochs_run": 6,
+      "stopped_early": true,
+      "best_heldout_ce": 2.1332907135511383,
+      "heldout_ce_noop": 3.41182,
+      "optimizer_steps_run": 1602,
+      "effective_batch": 64,
+      "lr": 0.0027980016558865283,
+      "training_budget_kind": "document_tokens",
+      "chat_template_bypassed": true,
+      "template_hash": "0a2c8073c878ab1d",
+      "published_at": "2026-09-12T18:57:01+00:00",
+      "convergence": "early-stopped at epoch 4 (patience 2): the held-out CE rose after epoch 4 (2.13329, 2.14957, 2.13438)"
+     },
+     "harvest": {
+      "root_rel": "exp/objects/sdfbase/itdoc_eb64/gemma4e4b_it_doc/cells_all",
+      "cell_dir": "constv2ctl2-full__lora_r4_ce",
+      "files": [
+       "COMPLETE",
+       "metrics.jsonl",
+       "object.pt",
+       "train_budget_meta.json"
+      ],
+      "store_identity": {
+       "model": "google/gemma-4-E4B-it",
+       "model_revision": "ee0ef6023621cff504d758262d4e04895a5af4a2",
+       "positions": "all"
+      },
+      "verified": {
+       "primary": {
+        "date": "2026-09-13",
+        "how": "sha256sum object.pt over ssh, read at 64 hex; COMPLETE.object_sha256 and train_budget_meta.object_sha256 agree",
+        "object_sha256": "04a90de8edd863345bf182adad717801b391096b350253c72bcb077b97885ed8"
+       },
+       "overflow": {
+        "date": "2026-09-13",
+        "present": false,
+        "how": "the shared root's exp/objects/sdfbase/ carries full22 only; no itdoc_eb64/ directory"
+       }
+      },
+      "is_serving_bank": false,
+      "note": "the fitter's raw output (no VIEW_MANIFEST, no fit_provenance.json, no staged_from.json) — a bank walker must not read it as a served view; the row binds to the STAGED bank entry the lane publishes, never to this path",
+      "bank_copy": {
+       "root_rel": "exp/objects/sdfbase/full22/gemma4e4b/cells",
+       "cell_dir": "itdoc64__constv2ctl2-full__lora_r4_ce",
+       "files": [
+        "COMPLETE",
+        "metrics.jsonl",
+        "object.pt",
+        "staged_from.json",
+        "train_budget_meta.json"
+       ],
+       "same_bytes": true,
+       "train_budget_meta_sha256": "d9ae25952f0b57c9d76547ae6fe2a7d2fd9d1b87d7e56c27d85bdb3e6ad594e4",
+       "staged_by": "itdoc_eb64/71_stage_parents_full22.py (staged_from.json: lane itdoc64, kind fit, key <target>_it_doc_eb64, view it)",
+       "pulled_at": "2026-09-13T20:00:21Z",
+       "verified": {
+        "primary": {
+         "date": "2026-09-13",
+         "object_sha256": "04a90de8edd863345bf182adad717801b391096b350253c72bcb077b97885ed8",
+         "how": "sha256sum object.pt at the bank copy over ssh, read at 64 hex; == the harvest bank's bytes"
+        },
+        "overflow": {
+         "date": "2026-09-13",
+         "present": true,
+         "object_sha256": "04a90de8edd863345bf182adad717801b391096b350253c72bcb077b97885ed8",
+         "how": "sha256sum object.pt at the bank copy over ssh (no itdoc_eb64/ harvest tree on the overflow cluster)"
+        }
+       },
+       "servable": false,
+       "why_not": "cells_view/it/VIEW_MANIFEST.json (both clusters) names itdoc__<cell> for the lora cell and no entry for the ctl2 cell; the symlink resolves to ../../cells/itdoc__…; configs/sdfbase_full22_pins.json has no itdoc64__ entry; configs/sdfbase_full22_roster.yaml maps the it view to itdoc__"
+      }
+     },
+     "stale_objects": {
+      "4c1a5fc3b382ddb86f9dce20ef7d31dac735b516014017d19fad0c74c0092353": "superseded direct-fit object: itdoc__constv2-mix-full__lora_r4_ce, the gemma4e4b `it` view's constitution object the refit hold names (rows 3 / 16 of the GSM8K matrix; IFEval rows 3 / 11) — replaced by this batch-64 re-fit",
+      "fdab3ade9b0d8d627ce2519b0fa72552fd3fa44537d8ea12e6f9727f11808b5b": "superseded direct-fit object: itdoc__constv2-mix-full__psr_ce_all, the gemma4e4b `it` view's PSR constitution object (PSR is out of the panel by ruling; refit hold, rows 2 / 15)",
+      "ad7b9810b6cc3b7160b8a2f9b5f379722f60b8236e6d34cbda90f3dceee83b02": "stale dose bake: d0p1it__constv2-mix-full__lora_r4_ce (gemma4e4b) — baked from the SUPERSEDED direct-fit parent (itdoc__constv2-mix-full__lora_r4_ce 4c1a5fc3b382…), a batch-8 object under a batch-8 id (never overwritten; the re-bakes mint under d<dose>it64__) — a row of this lane resolving through it REFUSES, never launches",
+      "0c5c10170979acb702c65da4374a712d50ef02a5868251cd5f0423cf79b039ba": "stale dose bake: d0p25it__constv2-mix-full__lora_r4_ce (gemma4e4b) — baked from the SUPERSEDED direct-fit parent (itdoc__constv2-mix-full__lora_r4_ce 4c1a5fc3b382…), a batch-8 object under a batch-8 id (never overwritten; the re-bakes mint under d<dose>it64__) — a row of this lane resolving through it REFUSES, never launches",
+      "172cb4fac7876fa237b62064bd9bf6b45db8e1f5cfcca93782c8f039af6a6e0a": "stale dose bake: d1p5it__constv2-mix-full__lora_r4_ce (gemma4e4b) — baked from the SUPERSEDED direct-fit parent (itdoc__constv2-mix-full__lora_r4_ce 4c1a5fc3b382…), a batch-8 object under a batch-8 id (never overwritten; the re-bakes mint under d<dose>it64__) — a row of this lane resolving through it REFUSES, never launches",
+      "192f8cef049fb60a9ef55c59eb9b67e78926e7822bb147b0f997a42e0d985810": "stale dose bake: dm1it__constv2-mix-full__lora_r4_ce (gemma4e4b) — baked from the SUPERSEDED direct-fit parent (itdoc__constv2-mix-full__lora_r4_ce 4c1a5fc3b382…), a batch-8 object under a batch-8 id (never overwritten; the re-bakes mint under d<dose>it64__) — a row of this lane resolving through it REFUSES, never launches",
+      "b72ac1f3f56905f642aa09a8153929039f893526c274bac59a73c8b1821dfc91": "stale dose bake: halfdoseit__constv2-mix-full__lora_r4_ce (gemma4e4b) — baked from the SUPERSEDED direct-fit parent (itdoc__constv2-mix-full__lora_r4_ce 4c1a5fc3b382…), a batch-8 object under a batch-8 id (never overwritten; the re-bakes mint under d<dose>it64__) — a row of this lane resolving through it REFUSES, never launches",
+      "ff5e5928c986d820cf43870ace7769ffe27814c865ccac7332333ec71143ad43": "stale dose bake: halfdoseit__constv2-mix-full__psr_ce_all (gemma4e4b) — baked from the SUPERSEDED direct-fit parent (itdoc__constv2-mix-full__lora_r4_ce 4c1a5fc3b382…), a batch-8 object under a batch-8 id (never overwritten; the re-bakes mint under d<dose>it64__) — a row of this lane resolving through it REFUSES, never launches"
+     },
+     "notes": [
+      "2026-09-13 ~20:37Z: the bank copy under the ruled id itdoc64__constv2ctl2-full__lora_r4_ce hashed on BOTH clusters == the harvest bytes; link THREE of four (staged); link FOUR (servable: view manifest + pins + roster) pending — held",
+      "2026-09-14: hold LIFTED from disk (E2-B follow-up, LB23–LB24) after PR #107 (ece9e8ce) put the gemma it->itdoc64 mapping on main's roster and the lane rebuilt both clusters' gemma `it` views; the bank binding above is what the launcher dispatches on"
+     ],
+     "hold_history": [
+      {
+       "until": "2026-09-14",
+       "hold_reason": "staged under its ruled id in both clusters' full22 bank (cells/itdoc64__constv2ctl2-full__lora_r4_ce, hashed 2026-09-13 ~20:37Z) and PINNED on main since PR #102 (4e200b68: the pin file's (gemma4e4b, itdoc64__constv2ctl2-full__lora_r4_ce) entry = this sha) but NOT SERVABLE: main's roster maps no gemma4e4b `it` cell to it and gemma4e4b's `it` bank view on BOTH clusters (VIEW_MANIFEST 2026-09-08 primary / 2026-09-07 overflow, 2 entries; re-read 2026-09-13 22:42Z) carries no such cell — awaiting the lane's (Scale's) gemma itdoc64 roster commit on main and the rebuilt gemma `it` views; held until the roster, both bank views and the pin file all name the ruled id"
+      }
+     ],
+     "servable": {
+      "read_at": "2026-09-14 08:11Z primary / 08:12Z overflow (cluster clocks; read-only ssh, sha256sum at 64 hex, both clusters — E2-B follow-up, decisions-e2b LB23)",
+      "roster": "configs/sdfbase_full22_roster.yaml at ece9e8ce (PR #107, merged 2026-09-14T08:05:49Z): gemma4e4b/it maps constv2ctl2-full__lora_r4_ce -> itdoc64__constv2ctl2-full__lora_r4_ce (frozen copy configs/sdfbase/gsm8k/frozen/ece9e8ce/, sha256 89a2991c849c1f4c4720741d705dfcce76a84ec11c8f309dd1454211131136f8)",
+      "pin_file": "configs/sdfbase_full22_pins.json at ece9e8ce (byte-identical to 4e200b68's, sha256 5ed8df94435b525ad3748a7f54b7e942f21645333f05b5668dc5f14cdc64e25d): (gemma4e4b, itdoc64__constv2ctl2-full__lora_r4_ce) -> 04a90de8edd863345bf182adad717801b391096b350253c72bcb077b97885ed8",
+      "view_manifest": {
+       "primary": "exp/objects/sdfbase/full22/gemma4e4b/cells_view/it/VIEW_MANIFEST.json written 2026-09-14T01:16:08Z: constv2ctl2-full__lora_r4_ce -> itdoc64__constv2ctl2-full__lora_r4_ce 04a90de8edd86334…; symlink constv2ctl2-full__lora_r4_ce -> ../../cells/itdoc64__constv2ctl2-full__lora_r4_ce; object.pt sha256 == pin (3344653 B)",
+       "overflow": "exp/objects/sdfbase/full22/gemma4e4b/cells_view/it/VIEW_MANIFEST.json written 2026-09-14T02:15:48Z (4 entries): constv2ctl2-full__lora_r4_ce -> ../../cells/itdoc64__constv2ctl2-full__lora_r4_ce; object.pt sha256 == pin (3344653 B); cells/itdoc64__constv2ctl2-full__lora_r4_ce/object.pt == pin"
+      },
+      "how": "VIEW_MANIFEST entry + symlink target + object.pt bytes on both clusters + the pin file's (target, staged id) + the roster mapping all name the ruled id and the same sha — the four-way agreement views_itdoc.yaml requires; the bank door (itdoc_bind.bind_problems) re-checks it at launch"
+     }
+    },
+    "constv2-mix-full__lora_r4_ce": {
+     "lane": "itdoc_eb64",
+     "model_key": "gemma4e4b",
+     "view": "it",
+     "cell": "constv2-mix-full__lora_r4_ce",
+     "object_kind": "fitted",
+     "staged_id": "itdoc64__constv2-mix-full__lora_r4_ce",
+     "sidecar": "train_budget_meta.json",
+     "object_sha256": "78e84f2732d6232336f5fdae6021ad38818e6f12b2067fbb36402abb4214a9b9",
+     "bank": null,
+     "hold_reason": "the it view serves the BATCH-8 constitution object (itdoc__constv2-mix-full__lora_r4_ce, 4c1a5fc3…) by the ruling to the lane of 2026-09-13 (the repoint ruling withdrawn): this batch-64 constitution object is staged under its ruled id in both clusters' bank cells/ but served nowhere; no GSM8K row (the instruct-direct wave rows the served batch-8 object, object_generation batch8) and the MATH-500 it-view row stays held",
+     "qualification": "constitution budget-limited, not converged (best_epoch 16/16, stopped_early False, box-edge argmin); control early-stopped (gemma 4/6; qwen 1/3); any difference object / dose ladder is a trained-to-budget numerator against a converged denominator; nobody re-fits. State it; do not smooth it.",
+     "qualification_pattern": "constitution budget-limited, not converged (best_epoch 16/16, stopped_early False, box-edge argmin); control early-stopped (gemma 4/6; qwen 1/3); any difference object / dose ladder is a trained-to-budget numerator against a converged denominator; nobody re-fits. State it; do not smooth it.",
+     "superseded": {
+      "lane": "full22 (itdoc__ staged ids)",
+      "staged_id": "itdoc__constv2-mix-full__lora_r4_ce",
+      "object_sha256": "4c1a5fc3b382ddb86f9dce20ef7d31dac735b516014017d19fad0c74c0092353",
+      "where": "the GSM8K matrix's refit-held row (gemma 3 / qwen 16), the IFEval matrix's held row (gemma 3 / qwen 11); the `it` bank view's current entry"
+     },
+     "fit_record": {
+      "best_epoch": 16,
+      "epochs_run": 16,
+      "stopped_early": false,
+      "best_heldout_ce": 1.8699096336161771,
+      "heldout_ce_noop": 3.41182,
+      "optimizer_steps_run": 4352,
+      "effective_batch": 64,
+      "lr": 0.0027980016558865283,
+      "training_budget_kind": "document_tokens",
+      "chat_template_bypassed": true,
+      "template_hash": "0a2c8073c878ab1d",
+      "published_at": "2026-09-13T19:38:03+00:00",
+      "convergence": "budget-limited: the held-out CE was still falling at the last epoch (1.87077 -> 1.86999 -> 1.86991); best_epoch == epochs_run"
+     },
+     "harvest": {
+      "root_rel": "exp/objects/sdfbase/itdoc_eb64/gemma4e4b_it_doc/cells_all",
+      "cell_dir": "constv2-mix-full__lora_r4_ce",
+      "files": [
+       "COMPLETE",
+       "metrics.jsonl",
+       "object.pt",
+       "train_budget_meta.json"
+      ],
+      "store_identity": {
+       "model": "google/gemma-4-E4B-it",
+       "model_revision": "ee0ef6023621cff504d758262d4e04895a5af4a2",
+       "positions": "all"
+      },
+      "verified": {
+       "primary": {
+        "date": "2026-09-13",
+        "how": "sha256sum object.pt over ssh, read at 64 hex; COMPLETE.object_sha256 and train_budget_meta.object_sha256 agree",
+        "object_sha256": "78e84f2732d6232336f5fdae6021ad38818e6f12b2067fbb36402abb4214a9b9"
+       },
+       "overflow": {
+        "date": "2026-09-13",
+        "present": false,
+        "how": "the shared root's exp/objects/sdfbase/ carries full22 only; no itdoc_eb64/ directory"
+       }
+      },
+      "is_serving_bank": false,
+      "note": "the fitter's raw output (no VIEW_MANIFEST, no fit_provenance.json, no staged_from.json) — a bank walker must not read it as a served view; the row binds to the STAGED bank entry the lane publishes, never to this path",
+      "bank_copy": {
+       "root_rel": "exp/objects/sdfbase/full22/gemma4e4b/cells",
+       "cell_dir": "itdoc64__constv2-mix-full__lora_r4_ce",
+       "files": [
+        "COMPLETE",
+        "metrics.jsonl",
+        "object.pt",
+        "staged_from.json",
+        "train_budget_meta.json"
+       ],
+       "same_bytes": true,
+       "train_budget_meta_sha256": "22deda3bf15511b04872714dc2e0c32109b9a4b5cc10c771d6d7c91d5e9b0852",
+       "staged_by": "itdoc_eb64/71_stage_parents_full22.py (staged_from.json: lane itdoc64, kind fit, key <target>_it_doc_eb64, view it)",
+       "pulled_at": "2026-09-13T20:00:21Z",
+       "verified": {
+        "primary": {
+         "date": "2026-09-13",
+         "object_sha256": "78e84f2732d6232336f5fdae6021ad38818e6f12b2067fbb36402abb4214a9b9",
+         "how": "sha256sum object.pt at the bank copy over ssh, read at 64 hex; == the harvest bank's bytes"
+        },
+        "overflow": {
+         "date": "2026-09-13",
+         "present": true,
+         "object_sha256": "78e84f2732d6232336f5fdae6021ad38818e6f12b2067fbb36402abb4214a9b9",
+         "how": "sha256sum object.pt at the bank copy over ssh (no itdoc_eb64/ harvest tree on the overflow cluster)"
+        }
+       },
+       "servable": false,
+       "why_not": "cells_view/it/VIEW_MANIFEST.json (both clusters) names itdoc__<cell> for the lora cell and no entry for the ctl2 cell; the symlink resolves to ../../cells/itdoc__…; configs/sdfbase_full22_pins.json has no itdoc64__ entry; configs/sdfbase_full22_roster.yaml maps the it view to itdoc__"
+      }
+     },
+     "stale_objects": {
+      "4c1a5fc3b382ddb86f9dce20ef7d31dac735b516014017d19fad0c74c0092353": "superseded direct-fit object: itdoc__constv2-mix-full__lora_r4_ce, the gemma4e4b `it` view's constitution object the refit hold names (rows 3 / 16 of the GSM8K matrix; IFEval rows 3 / 11) — replaced by this batch-64 re-fit",
+      "fdab3ade9b0d8d627ce2519b0fa72552fd3fa44537d8ea12e6f9727f11808b5b": "superseded direct-fit object: itdoc__constv2-mix-full__psr_ce_all, the gemma4e4b `it` view's PSR constitution object (PSR is out of the panel by ruling; refit hold, rows 2 / 15)",
+      "ad7b9810b6cc3b7160b8a2f9b5f379722f60b8236e6d34cbda90f3dceee83b02": "stale dose bake: d0p1it__constv2-mix-full__lora_r4_ce (gemma4e4b) — baked from the SUPERSEDED direct-fit parent (itdoc__constv2-mix-full__lora_r4_ce 4c1a5fc3b382…), a batch-8 object under a batch-8 id (never overwritten; the re-bakes mint under d<dose>it64__) — a row of this lane resolving through it REFUSES, never launches",
+      "0c5c10170979acb702c65da4374a712d50ef02a5868251cd5f0423cf79b039ba": "stale dose bake: d0p25it__constv2-mix-full__lora_r4_ce (gemma4e4b) — baked from the SUPERSEDED direct-fit parent (itdoc__constv2-mix-full__lora_r4_ce 4c1a5fc3b382…), a batch-8 object under a batch-8 id (never overwritten; the re-bakes mint under d<dose>it64__) — a row of this lane resolving through it REFUSES, never launches",
+      "172cb4fac7876fa237b62064bd9bf6b45db8e1f5cfcca93782c8f039af6a6e0a": "stale dose bake: d1p5it__constv2-mix-full__lora_r4_ce (gemma4e4b) — baked from the SUPERSEDED direct-fit parent (itdoc__constv2-mix-full__lora_r4_ce 4c1a5fc3b382…), a batch-8 object under a batch-8 id (never overwritten; the re-bakes mint under d<dose>it64__) — a row of this lane resolving through it REFUSES, never launches",
+      "192f8cef049fb60a9ef55c59eb9b67e78926e7822bb147b0f997a42e0d985810": "stale dose bake: dm1it__constv2-mix-full__lora_r4_ce (gemma4e4b) — baked from the SUPERSEDED direct-fit parent (itdoc__constv2-mix-full__lora_r4_ce 4c1a5fc3b382…), a batch-8 object under a batch-8 id (never overwritten; the re-bakes mint under d<dose>it64__) — a row of this lane resolving through it REFUSES, never launches",
+      "b72ac1f3f56905f642aa09a8153929039f893526c274bac59a73c8b1821dfc91": "stale dose bake: halfdoseit__constv2-mix-full__lora_r4_ce (gemma4e4b) — baked from the SUPERSEDED direct-fit parent (itdoc__constv2-mix-full__lora_r4_ce 4c1a5fc3b382…), a batch-8 object under a batch-8 id (never overwritten; the re-bakes mint under d<dose>it64__) — a row of this lane resolving through it REFUSES, never launches",
+      "ff5e5928c986d820cf43870ace7769ffe27814c865ccac7332333ec71143ad43": "stale dose bake: halfdoseit__constv2-mix-full__psr_ce_all (gemma4e4b) — baked from the SUPERSEDED direct-fit parent (itdoc__constv2-mix-full__lora_r4_ce 4c1a5fc3b382…), a batch-8 object under a batch-8 id (never overwritten; the re-bakes mint under d<dose>it64__) — a row of this lane resolving through it REFUSES, never launches"
+     },
+     "notes": [
+      "supersedes the refit-held direct-fit object (GSM8K row 3, IFEval row 3) once it lands; those rows stay HELD and are never evaluated",
+      "2026-09-13 ~20:37Z: the bank copy under the ruled id itdoc64__constv2-mix-full__lora_r4_ce hashed on BOTH clusters == the harvest bytes; link THREE of four (staged); link FOUR (servable: view manifest + pins + roster) pending — held"
+     ]
+    },
+    "constv2-mix-full__lora_r4_ce_minus_ctl": {
+     "lane": "itdoc_eb64",
+     "model_key": "gemma4e4b",
+     "view": "it",
+     "cell": "constv2-mix-full__lora_r4_ce_minus_ctl",
+     "object_kind": "derived",
+     "staged_id": "derived_itdoc64__constv2-mix-full__lora_r4_ce_minus_ctl",
+     "sidecar": "derived_meta.json",
+     "object_sha256": "8b7d10301a1fd04fbe4c71f21ae8912bae60ffc56df34acd10fa07a960b2080e",
+     "bank": {
+      "view": "it",
+      "bank_view_rel": {
+       "primary": "exp/objects/sdfbase/full22/gemma4e4b/cells_view/it",
+       "overflow": "exp/objects/sdfbase/full22/gemma4e4b/cells_view/it"
+      },
+      "bank_cell_dir": "constv2-mix-full__lora_r4_ce_minus_ctl",
+      "cluster_constraint": "any"
+     },
+     "hold_reason": null,
+     "qualification": "constitution budget-limited, not converged (best_epoch 16/16, stopped_early False, box-edge argmin); control early-stopped (gemma 4/6; qwen 1/3); any difference object / dose ladder is a trained-to-budget numerator against a converged denominator; nobody re-fits. State it; do not smooth it.",
+     "qualification_pattern": "constitution budget-limited, not converged (best_epoch 16/16, stopped_early False, box-edge argmin); control early-stopped (gemma 4/6; qwen 1/3); any difference object / dose ladder is a trained-to-budget numerator against a converged denominator; nobody re-fits. State it; do not smooth it.",
+     "parents_expected": {
+      "constv2-mix-full__lora_r4_ce": "78e84f2732d6232336f5fdae6021ad38818e6f12b2067fbb36402abb4214a9b9",
+      "constv2ctl2-full__lora_r4_ce": "04a90de8edd863345bf182adad717801b391096b350253c72bcb077b97885ed8"
+     },
+     "superseded": null,
+     "fit_record": null,
+     "harvest": {
+      "root_rel": "exp/objects/sdfbase/itdoc_eb64/derived/lora_subtraction/gemma4e4b_it_doc_eb64",
+      "cell_dir": "constv2-mix-full__lora_r4_ce_minus_ctl",
+      "files": [
+       "derived_meta.json",
+       "object.pt"
+      ],
+      "derived_meta_sha256": "b9ade766cdd2b8afc04c20de5f1cfe0d9d47125070193373746a57979bd34b91",
+      "bank_copy": {
+       "root_rel": "exp/objects/sdfbase/full22/gemma4e4b/cells",
+       "cell_dir": "derived_itdoc64__constv2-mix-full__lora_r4_ce_minus_ctl",
+       "files": [
+        "derived_meta.json",
+        "object.pt",
+        "staged_from.json"
+       ],
+       "same_bytes": true,
+       "staged_by": "itdoc_eb64/72_stage_derived_gemma_full22.py",
+       "pulled_at": "2026-09-13T20:11:54Z"
+      },
+      "verified": {
+       "primary": {
+        "date": "2026-09-13",
+        "object_sha256": "8b7d10301a1fd04fbe4c71f21ae8912bae60ffc56df34acd10fa07a960b2080e",
+        "derived_meta_sha256": "b9ade766cdd2b8afc04c20de5f1cfe0d9d47125070193373746a57979bd34b91",
+        "how": "sha256sum over ssh at both paths (harvest source + bank copy), read at 64 hex"
+       },
+       "overflow": {
+        "date": "2026-09-13",
+        "present": true,
+        "object_sha256": "8b7d10301a1fd04fbe4c71f21ae8912bae60ffc56df34acd10fa07a960b2080e",
+        "derived_meta_sha256": "b9ade766cdd2b8afc04c20de5f1cfe0d9d47125070193373746a57979bd34b91",
+        "how": "sha256sum over ssh at the bank copy (no itdoc_eb64/ tree on the overflow cluster)"
+       }
+      },
+      "derived_meta": {
+       "kind": "lora_subtraction",
+       "derived_id": "constv2-mix-full__lora_r4_ce_minus_ctl",
+       "model_key": "gemma4e4b_it_doc_eb64",
+       "model_id": "google/gemma-4-E4B-it",
+       "model_revision": "ee0ef6023621cff504d758262d4e04895a5af4a2",
+       "builder": "scripts/sdfbase/lora_subtract.py",
+       "built_at": "2026-09-13T20:08:27+00:00",
+       "parent_pos": {
+        "cell_id": "constv2-mix-full__lora_r4_ce",
+        "object_sha256": "78e84f2732d6232336f5fdae6021ad38818e6f12b2067fbb36402abb4214a9b9",
+        "budget_meta_sha256": "22deda3bf15511b04872714dc2e0c32109b9a4b5cc10c771d6d7c91d5e9b0852",
+        "fit_fingerprint": "de84767567aa6cf65c784ce5fe56e9e7c0dce2c768b629833dd2d7c911f131e0"
+       },
+       "parent_neg": {
+        "cell_id": "constv2ctl2-full__lora_r4_ce",
+        "object_sha256": "04a90de8edd863345bf182adad717801b391096b350253c72bcb077b97885ed8",
+        "budget_meta_sha256": "d9ae25952f0b57c9d76547ae6fe2a7d2fd9d1b87d7e56c27d85bdb3e6ad594e4",
+        "fit_fingerprint": "9adedd5744a3cff8c9ed4f43aecce8d91878602088fc63c41a424e3c93b4f484"
+       },
+       "scale_matched": true,
+       "official_tokens_each": 42785435,
+       "layers": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
+        24,
+        25,
+        26,
+        27,
+        28,
+        29,
+        30,
+        31,
+        32,
+        33,
+        34,
+        35,
+        36,
+        37,
+        38,
+        39,
+        40,
+        41
+       ],
+       "rank": 4,
+       "comparison": "scale_matched (primary: both parents trained at the same official-token budget)"
+      },
+      "is_serving_bank": false
+     },
+     "stale_objects": {
+      "4c1a5fc3b382ddb86f9dce20ef7d31dac735b516014017d19fad0c74c0092353": "superseded direct-fit object: itdoc__constv2-mix-full__lora_r4_ce, the gemma4e4b `it` view's constitution object the refit hold names (rows 3 / 16 of the GSM8K matrix; IFEval rows 3 / 11) — replaced by this batch-64 re-fit",
+      "fdab3ade9b0d8d627ce2519b0fa72552fd3fa44537d8ea12e6f9727f11808b5b": "superseded direct-fit object: itdoc__constv2-mix-full__psr_ce_all, the gemma4e4b `it` view's PSR constitution object (PSR is out of the panel by ruling; refit hold, rows 2 / 15)",
+      "ad7b9810b6cc3b7160b8a2f9b5f379722f60b8236e6d34cbda90f3dceee83b02": "stale dose bake: d0p1it__constv2-mix-full__lora_r4_ce (gemma4e4b) — baked from the SUPERSEDED direct-fit parent (itdoc__constv2-mix-full__lora_r4_ce 4c1a5fc3b382…), a batch-8 object under a batch-8 id (never overwritten; the re-bakes mint under d<dose>it64__) — a row of this lane resolving through it REFUSES, never launches",
+      "0c5c10170979acb702c65da4374a712d50ef02a5868251cd5f0423cf79b039ba": "stale dose bake: d0p25it__constv2-mix-full__lora_r4_ce (gemma4e4b) — baked from the SUPERSEDED direct-fit parent (itdoc__constv2-mix-full__lora_r4_ce 4c1a5fc3b382…), a batch-8 object under a batch-8 id (never overwritten; the re-bakes mint under d<dose>it64__) — a row of this lane resolving through it REFUSES, never launches",
+      "172cb4fac7876fa237b62064bd9bf6b45db8e1f5cfcca93782c8f039af6a6e0a": "stale dose bake: d1p5it__constv2-mix-full__lora_r4_ce (gemma4e4b) — baked from the SUPERSEDED direct-fit parent (itdoc__constv2-mix-full__lora_r4_ce 4c1a5fc3b382…), a batch-8 object under a batch-8 id (never overwritten; the re-bakes mint under d<dose>it64__) — a row of this lane resolving through it REFUSES, never launches",
+      "192f8cef049fb60a9ef55c59eb9b67e78926e7822bb147b0f997a42e0d985810": "stale dose bake: dm1it__constv2-mix-full__lora_r4_ce (gemma4e4b) — baked from the SUPERSEDED direct-fit parent (itdoc__constv2-mix-full__lora_r4_ce 4c1a5fc3b382…), a batch-8 object under a batch-8 id (never overwritten; the re-bakes mint under d<dose>it64__) — a row of this lane resolving through it REFUSES, never launches",
+      "b72ac1f3f56905f642aa09a8153929039f893526c274bac59a73c8b1821dfc91": "stale dose bake: halfdoseit__constv2-mix-full__lora_r4_ce (gemma4e4b) — baked from the SUPERSEDED direct-fit parent (itdoc__constv2-mix-full__lora_r4_ce 4c1a5fc3b382…), a batch-8 object under a batch-8 id (never overwritten; the re-bakes mint under d<dose>it64__) — a row of this lane resolving through it REFUSES, never launches",
+      "ff5e5928c986d820cf43870ace7769ffe27814c865ccac7332333ec71143ad43": "stale dose bake: halfdoseit__constv2-mix-full__psr_ce_all (gemma4e4b) — baked from the SUPERSEDED direct-fit parent (itdoc__constv2-mix-full__lora_r4_ce 4c1a5fc3b382…), a batch-8 object under a batch-8 id (never overwritten; the re-bakes mint under d<dose>it64__) — a row of this lane resolving through it REFUSES, never launches"
+     },
+     "notes": [
+      "the structural subtraction of the two gemma it-doc parents (delta(parent_pos) - delta(parent_neg), both parents' factors stored bit-exact), served as diff_lora; built by the lane 2026-09-13T20:08:27Z with scripts/sdfbase/lora_subtract.py (NEVER scripts/sbatch/sdfbase_derived_build.sbatch, see hazards); its bank copy sits under the RULED id derived_itdoc64__… on both clusters (hashed 2026-09-13 ~20:37Z) but is not servable yet (see hold_reason)",
+      "2026-09-14: hold LIFTED from disk (E2-B follow-up, LB23–LB24) after PR #107 (ece9e8ce) put the gemma it->itdoc64 mapping on main's roster and the lane rebuilt both clusters' gemma `it` views; the bank binding above is what the launcher dispatches on"
+     ],
+     "hold_history": [
+      {
+       "until": "2026-09-14",
+       "hold_reason": "staged under its ruled id in both clusters' full22 bank (cells/derived_itdoc64__constv2-mix-full__lora_r4_ce_minus_ctl, hashed 2026-09-13 ~20:37Z) and PINNED on main since PR #102 (4e200b68: the pin file's (gemma4e4b, derived_itdoc64__constv2-mix-full__lora_r4_ce_minus_ctl) entry = this sha) but NOT SERVABLE: main's roster maps no gemma4e4b `it` cell to it and gemma4e4b's `it` bank view on BOTH clusters (VIEW_MANIFEST 2026-09-08 primary / 2026-09-07 overflow, 2 entries; re-read 2026-09-13 22:42Z) carries no such cell — awaiting the lane's (Scale's) gemma itdoc64 roster commit on main and the rebuilt gemma `it` views; held until the roster, both bank views and the pin file all name the ruled id"
+      }
+     ],
+     "servable": {
+      "read_at": "2026-09-14 08:11Z primary / 08:12Z overflow (cluster clocks; read-only ssh, sha256sum at 64 hex, both clusters — E2-B follow-up, decisions-e2b LB23)",
+      "roster": "configs/sdfbase_full22_roster.yaml at ece9e8ce (PR #107, merged 2026-09-14T08:05:49Z): gemma4e4b/it maps constv2-mix-full__lora_r4_ce_minus_ctl -> derived_itdoc64__constv2-mix-full__lora_r4_ce_minus_ctl (frozen copy configs/sdfbase/gsm8k/frozen/ece9e8ce/, sha256 89a2991c849c1f4c4720741d705dfcce76a84ec11c8f309dd1454211131136f8)",
+      "pin_file": "configs/sdfbase_full22_pins.json at ece9e8ce (byte-identical to 4e200b68's, sha256 5ed8df94435b525ad3748a7f54b7e942f21645333f05b5668dc5f14cdc64e25d): (gemma4e4b, derived_itdoc64__constv2-mix-full__lora_r4_ce_minus_ctl) -> 8b7d10301a1fd04fbe4c71f21ae8912bae60ffc56df34acd10fa07a960b2080e",
+      "view_manifest": {
+       "primary": "exp/objects/sdfbase/full22/gemma4e4b/cells_view/it/VIEW_MANIFEST.json written 2026-09-14T01:16:08Z: constv2-mix-full__lora_r4_ce_minus_ctl -> derived_itdoc64__constv2-mix-full__lora_r4_ce_minus_ctl 8b7d10301a1fd04f…; symlink constv2-mix-full__lora_r4_ce_minus_ctl -> ../../cells/derived_itdoc64__constv2-mix-full__lora_r4_ce_minus_ctl; object.pt sha256 == pin (6703179 B)",
+       "overflow": "exp/objects/sdfbase/full22/gemma4e4b/cells_view/it/VIEW_MANIFEST.json written 2026-09-14T02:15:48Z (4 entries): constv2-mix-full__lora_r4_ce_minus_ctl -> ../../cells/derived_itdoc64__constv2-mix-full__lora_r4_ce_minus_ctl; object.pt sha256 == pin (6703179 B); cells/derived_itdoc64__constv2-mix-full__lora_r4_ce_minus_ctl/object.pt == pin"
+      },
+      "how": "VIEW_MANIFEST entry + symlink target + object.pt bytes on both clusters + the pin file's (target, staged id) + the roster mapping all name the ruled id and the same sha — the four-way agreement views_itdoc.yaml requires; the bank door (itdoc_bind.bind_problems) re-checks it at launch"
+     }
+    }
+   }
+  }
+ },
+ "staged_id_ruling": "the coordinator 2026-09-13: parents `itdoc64__<cell>`, the derived object `derived_itdoc64__<cell>`, dose re-bakes `d<dose>it64__<cell>` (parent_staged_id = the itdoc64 constitution) — `64` names the effective batch that changed; `derived_<parent prefix>__` keeps the label's lineage equal to the sha's (the llama precedent); the batch-8 `itdoc__` / `derived_itdoc__` / `*it__` ids are never overwritten (historical stores carry their shas). Evidence the stale cells are stale: the old `d0p25it__` cell's B equals 0.25 x the OLD parent's B exactly (torch.equal, all eight layers) and is 28 % off (relative max difference) from 0.25 x the NEW parent.",
+ "qualification_pattern": "constitution budget-limited, not converged (best_epoch 16/16, stopped_early False, box-edge argmin); control early-stopped (gemma 4/6; qwen 1/3); any difference object / dose ladder is a trained-to-budget numerator against a converged denominator; nobody re-fits. State it; do not smooth it.",
+ "hazards": [
+  {
+   "what": "scripts/sbatch/sdfbase_derived_build.sbatch (the lane's nominal 'step 5') resolves the pool key as qwen35_4b_it_doc while the ruled key is qwen35_4b_it_doc_eb64 — it would mint a SECOND derived object under another path / provenance / sha",
+   "rule": "NEVER invoke it for the it-doc lane; the derived object is the lane's, already built by scripts/sdfbase/lora_subtract.py (qwen 5e9b0009…, gemma 8b7d1030…, both hashed on both clusters)"
+  },
+  {
+   "what": "the five qwen `it` DOSE cells (d0p1it / d0p25it / d1p5it / dm1it / halfdoseit) and gemma's five are BATCH-8 bakes of the superseded parent (their object.pt.provenance.json names parent 0018b32b… / 4c1a5fc3…); on BOTH clusters each cell's object.pt hashes to its VIEW_MANIFEST row (verified 2026-09-13, read-only: every entry of it / it_d0p1 / it_d0p25 / it_d0p5 / it_d1 / it_d1p5 / it_dm1 / it_halfdose OK) — the clusters hold the batch-8 objects under the batch-8 ids and nothing of the strength lane's re-bakes is staged; the re-bakes mint under NEW `d<dose>it64__` ids (parent_staged_id = the itdoc64 constitution), the `d*it__` ids are never overwritten and their records never rewritten",
+   "rule": "a bank-door refusal on one of those cells ON A CLUSTER is a REAL finding (report it as such: which path on which host was hashed, what each cluster's bank hashes, what the record + pin say — separate witnesses), never stale paperwork; a row of this lane resolving through a `d*it__` or `itdoc__` id refuses by lane name ('stale dose bake' / 'superseded direct-fit object'); never hash the grading host staging source as if it were the published bank"
+  }
+ ],
+ "link_status": {
+  "read_at": "2026-09-13 ~20:37Z (cluster clock; read-only ssh, sha256sum at 64 hex, both clusters)",
+  "links": {
+   "1_raw_fit_output": true,
+   "2_harvest_bank_sha_verified": true,
+   "3_staged_into_full22_cells_under_ruled_id": {
+    "primary": true,
+    "overflow": true
+   },
+   "4_servable_view_manifest_pins_roster": {
+    "qwen35_4b": {
+     "constv2ctl2-full__lora_r4_ce": true,
+     "constv2-mix-full__lora_r4_ce_minus_ctl": true,
+     "constv2-mix-full__lora_r4_ce": "not served: the view keeps the batch-8 object by ruling"
+    },
+    "gemma4e4b": {
+     "constv2ctl2-full__lora_r4_ce": true,
+     "constv2-mix-full__lora_r4_ce_minus_ctl": true,
+     "constv2-mix-full__lora_r4_ce": "not served: the view keeps the batch-8 object by ruling"
+    }
+   }
+  },
+  "servable_missing": [
+   "both models: the itdoc64 constitution object is served nowhere (the it view keeps the batch-8 object by the ruling of 2026-09-13)"
+  ],
+  "rule": "staged is not servable: a row launches only when the record's bank binding is filled from a bank view whose manifest, symlink, pin file and roster all name the ruled id (itdoc_bind.bind_problems, four witnesses); until then every row is HELD with the reason above",
+  "read_at_update": "2026-09-13 21:49Z (cluster clock; read-only ssh, sha256sum at 64 hex, both clusters) | gemma4e4b servable: 2026-09-14 08:11Z primary / 08:12Z overflow (cluster clocks; read-only ssh, sha256sum at 64 hex, both clusters — E2-B follow-up, decisions-e2b LB23)"
+ },
+ "instrument_holds": {
+  "math500": "the MATH-500 it-view rows (cells.py rows 47-52) stay HELD whatever the bank binding says: the E3 MATH-500 legs launch on the summary lane's go and the primary-cluster freeze's lift; the SUBMIT authorization of 2026-09-13 covers the GSM8K paired-200 instruct-direct wave alone"
+ }
+}

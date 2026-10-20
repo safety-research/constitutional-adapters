@@ -1,0 +1,82 @@
+{
+ "kind": "lora_subtraction",
+ "derived_id": "constv2-mix-full__lora_r4_ce_minus_ctl",
+ "derivation": "delta(parent_pos) - delta(parent_neg), structural (both parents' factors stored bit-exact)",
+ "model_key": "nemotron3nano4b_doc",
+ "model_id": "nvidia/NVIDIA-Nemotron-3-Nano-4B-BF16",
+ "model_revision": "dfaf35de3e30f1867dd8dbc38a7fc9fb52d3914f",
+ "positions": "all",
+ "response_header_len": null,
+ "parent_pos": {
+  "cell_id": "constv2-mix-full__lora_r4_ce",
+  "model_key": "nemotron3nano4b_doc",
+  "object_path": "objects/nemotron3nano4b/af46d41522f8134a9fa8149a4a1a792cc2a510f4ec4c343379cec3c846d77d1e/object.pt",
+  "object_sha256": "af46d41522f8134a9fa8149a4a1a792cc2a510f4ec4c343379cec3c846d77d1e",
+  "budget_meta_sha256": "353bd226a016fbb7c6ed7982f1408e4daf69c0e3423e42d07d5324b42892ad09",
+  "fit_fingerprint": "71087a2a91f28c5df8b0cc5d2e7aab7112923e7a68060e3dd9915b735375548a",
+  "model_id": "nvidia/NVIDIA-Nemotron-3-Nano-4B-BF16",
+  "model_revision": "dfaf35de3e30f1867dd8dbc38a7fc9fb52d3914f",
+  "model_revision_source": "train_budget_meta.json",
+  "positions": "all",
+  "response_header_len": null,
+  "target_layers": [
+   12,
+   17,
+   24,
+   32
+  ],
+  "template_hash": "ab7813c3abdd9cb6",
+  "training_budget_kind": "document_tokens",
+  "sample_manifest_sha": "655b89f3d04441d7b255e47291103fbc53b60144be9f92fec15ee77a1373b02a",
+  "heldout_pool_sha": "7f588099117d3a76408d400bca00a0a181613b59dadf471dd90ce13b72dde1e4",
+  "data_scale": {
+   "si": "constv2-mix-full",
+   "budget": null,
+   "official_tokens": 42785435,
+   "manifest_sha256": "655b89f3d04441d7b255e47291103fbc53b60144be9f92fec15ee77a1373b02a",
+   "source": "$SHARED/vol/pool/nemotron3nano4b_doc/pairs_constv2-mix-full.manifest.json"
+  }
+ },
+ "parent_neg": {
+  "cell_id": "constv2ctl2-full__lora_r4_ce",
+  "model_key": "nemotron3nano4b_doc",
+  "object_path": "objects/nemotron3nano4b/b25435bd4fd48a2d112609621880797130d132d6b6a421c4f4e2a0d51b762753/object.pt",
+  "object_sha256": "b25435bd4fd48a2d112609621880797130d132d6b6a421c4f4e2a0d51b762753",
+  "budget_meta_sha256": "2ba619194402b6dc8a1501d2fbd3e25cfc430605f164731a420dd76b5b7362df",
+  "fit_fingerprint": "9576a87d064f189b7d912f35fe88ceca01a2b26c8c5a7756975d5509bbc36702",
+  "model_id": "nvidia/NVIDIA-Nemotron-3-Nano-4B-BF16",
+  "model_revision": "dfaf35de3e30f1867dd8dbc38a7fc9fb52d3914f",
+  "model_revision_source": "train_budget_meta.json",
+  "positions": "all",
+  "response_header_len": null,
+  "target_layers": [
+   12,
+   17,
+   24,
+   32
+  ],
+  "template_hash": "ab7813c3abdd9cb6",
+  "training_budget_kind": "document_tokens",
+  "sample_manifest_sha": "51e965d4af5f481249fcb201d45d19d132f720cafa3b4ab44bdb6223cc5ee391",
+  "heldout_pool_sha": "7f588099117d3a76408d400bca00a0a181613b59dadf471dd90ce13b72dde1e4",
+  "data_scale": {
+   "si": "constv2ctl2-full",
+   "budget": 42785435,
+   "official_tokens": 42785435,
+   "manifest_sha256": "51e965d4af5f481249fcb201d45d19d132f720cafa3b4ab44bdb6223cc5ee391",
+   "source": "$SHARED/vol/pool/nemotron3nano4b_doc/pairs_constv2ctl2-full.manifest.json"
+  }
+ },
+ "scale_matched": true,
+ "comparison": "scale_matched (primary: both parents trained at the same official-token budget)",
+ "built_at": "2026-09-08T04:40:35+00:00",
+ "builder": "scripts/sdfbase/lora_subtract.py",
+ "object_sha256": "27bab56e9fcea25e397b8d5b918c91a03a42fc279561894a01189713370bec41",
+ "layers": [
+  12,
+  17,
+  24,
+  32
+ ],
+ "rank": 4
+}

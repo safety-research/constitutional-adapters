@@ -1,0 +1,179 @@
+{
+ "diagnostic": true,
+ "model_key": "gemma4e4b",
+ "family": "gemma4",
+ "split_mode_candidate": "record_only",
+ "vmodel": "petri__base",
+ "cap": 1536,
+ "n_on": 24,
+ "n_off": 4,
+ "concurrency": 8,
+ "sampling_mode": "thinking_card",
+ "sampling_params": {
+  "temperature": 1.0,
+  "top_k": 64,
+  "top_p": 0.95
+ },
+ "header": {
+  "off": {
+   "got": [
+    105,
+    4368,
+    107
+   ],
+   "want": [
+    105,
+    4368,
+    107
+   ],
+   "error": null
+  },
+  "on": {
+   "got": [
+    105,
+    4368,
+    107
+   ],
+   "want": [
+    105,
+    4368,
+    107
+   ],
+   "error": null
+  }
+ },
+ "checks": [
+  {
+   "check": "upstream_timeout",
+   "status": "PASS",
+   "recorded": 7200.0,
+   "want": 7200.0
+  },
+  {
+   "check": "header_off",
+   "status": "PASS",
+   "got": [
+    105,
+    4368,
+    107
+   ],
+   "want": [
+    105,
+    4368,
+    107
+   ],
+   "error": null
+  },
+  {
+   "check": "header_on",
+   "status": "PASS",
+   "got": [
+    105,
+    4368,
+    107
+   ],
+   "want": [
+    105,
+    4368,
+    107
+   ],
+   "error": null
+  },
+  {
+   "check": "header_arms_differ_or_invariant_family",
+   "status": "PASS",
+   "off": [
+    105,
+    4368,
+    107
+   ],
+   "on": [
+    105,
+    4368,
+    107
+   ]
+  },
+  {
+   "check": "requests_served",
+   "status": "PASS",
+   "n": 28,
+   "n_errors": 0,
+   "first_error": null
+  },
+  {
+   "check": "render_regime_stamps",
+   "status": "PASS",
+   "on": [
+    "thinking_on"
+   ],
+   "off": [
+    "thinking_off"
+   ]
+  },
+  {
+   "check": "base_route_salt_regime",
+   "status": "PASS",
+   "regimes": [
+    "cell-stable"
+   ]
+  },
+  {
+   "check": "emitted_shape",
+   "status": "PASS",
+   "n_bad": 0,
+   "first_bad": null,
+   "at_cap_on": 14
+  },
+  {
+   "check": "on_reasoning_share",
+   "status": "PASS",
+   "n_on": 24,
+   "n_reasoning_on": 23,
+   "n_no_think_on": 1,
+   "share": 0.9583,
+   "floor": 0.5
+  },
+  {
+   "check": "ledger_rows",
+   "status": "PASS",
+   "n_rows": 28,
+   "n_sent": 28,
+   "error_codes": [
+    "None"
+   ],
+   "thinking_flags": [
+    "False",
+    "True"
+   ]
+  }
+ ],
+ "n_at_cap_on": 14,
+ "completion_tokens_on": [
+  1536,
+  784,
+  1536,
+  1536,
+  1114,
+  1536,
+  1536,
+  1536,
+  399,
+  815,
+  360,
+  1369,
+  831,
+  1144,
+  576,
+  1536,
+  1536,
+  1536,
+  1536,
+  799,
+  1536,
+  1536,
+  1536,
+  1536
+ ],
+ "verdict": "PASS",
+ "written_at": "2026-09-10T20:36:36Z"
+}

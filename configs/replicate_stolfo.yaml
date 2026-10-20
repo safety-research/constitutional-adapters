@@ -1,0 +1,25 @@
+# Stolfo et al. replication on THEIR model (gemma-2-9b-it): the headline
+# positive — casing instructions steer to high compliance WITHOUT the
+# instruction in context (their Table 8: Lowercase, Gemma2-9B w/o
+# instruction, layer 22) — using the instruction-diff method. The paired
+# negative (strict JSON fails at every layer/scale) is established by the
+# Stage-0 smoke on Qwen2.5-7B.
+model: google/gemma-2-9b-it
+dtype: bfloat16
+
+instructions: [lowercase]
+methods: [instr_diff, caa]
+
+prompts:
+  source: seed
+  set: general
+  holdout_frac: 0.5
+
+# 42-layer model; band includes their selected layer 22
+layers: [13, 17, 21, 22, 26, 30]
+scales: [0.5, 1.0, 2.0, 4.0, 8.0]
+
+capability: true
+max_new_tokens: 160
+out_dir: out/replicate_stolfo
+wandb_project: $WANDB_PROJECT

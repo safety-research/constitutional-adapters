@@ -1,0 +1,85 @@
+{
+ "at_ceiling": false,
+ "cap": 8192,
+ "ceiling": 16384,
+ "classifier": {
+  "loop_operator": ">",
+  "loop_threshold": 0.5,
+  "name": "cap_ladder.degeneracy(whole_or_tail rep_ratio) + sisteer.eval.degeneracy.classify",
+  "source": "src/sisteer/capeval/tiers/cap_ladder.py",
+  "source_commit": "1111111111111111111111111111111111111111",
+  "source_sha": "2222222222222222222222222222222222222222222222222222222222222222",
+  "tail_words": 200,
+  "version": "item_filtered_v1",
+  "window": "whole_or_last_200_words"
+ },
+ "counts": {
+  "n_at_cap": 1,
+  "n_boundary": 0,
+  "n_boundary_any": 0,
+  "n_loop": 1,
+  "n_loop_by_rule": {
+   "both": 0,
+   "degeneracy": 0,
+   "rep_ratio": 1
+  },
+  "n_loop_by_window": {
+   "both": 0,
+   "tail": 1,
+   "whole": 0
+  },
+  "n_rep_ratio_at_tie": 0,
+  "n_repetitive": 0,
+  "n_responses": 518,
+  "n_sibling_unreadable": 0,
+  "n_truncated": 0,
+  "share_at_cap": 0.0019305019305019305,
+  "share_truncated": 0.0
+ },
+ "decision": "exit_le_1pct",
+ "degeneracy": {
+  "rules": {
+   "line": {
+    "max_share": 0.25,
+    "min_lines": 8
+   },
+   "tail": {
+    "block": 60,
+    "min_len": 200,
+    "min_repeats": 3,
+    "window": 2000
+   }
+  },
+  "source": "/workspace/TESTUSER/si-steering-eval-repo/48476165d5bb08e36d6b36e56ffdccfb26a0cd2a/src/sisteer/eval/degeneracy.py",
+  "source_sha256": "3333333333333333333333333333333333333333333333333333333333333333"
+ },
+ "identity": {
+  "attack": "grok420",
+  "defense": "constv2-mix-full__lora_r4_ce",
+  "is_rung": true,
+  "n_shards": 1,
+  "private_root": "/workspace/TESTUSER/exp/sdfbase_full22_native/transcripts_results",
+  "private_run": "sdfbase_full22_qwen35_4b_s2_sampled_t0_cap8192",
+  "store": "/workspace/TESTUSER/exp/sdfbase_full22_native/transcripts_results/sdfbase_full22_qwen35_4b_s2_sampled_t0_cap8192/grok420/constv2-mix-full__lora_r4_ce",
+  "trial": 0
+ },
+ "items_out": "/workspace/TESTUSER/exp/sdfbase_full22_native/sampled/ladders/qwen35_4b_s2_t0/gates/static_cap8192/grok420__constv2-mix-full__lora_r4_ce.items.jsonl",
+ "items_out_sha256": "4444444444444444444444444444444444444444444444444444444444444444",
+ "kind": "static",
+ "ladder": [
+  4096,
+  8192,
+  16384
+ ],
+ "n_items_escalate": 0,
+ "n_truncated": 0,
+ "next_cap": null,
+ "rep_ratio": {
+  "rep_ratio_source": "SYNTHETIC: the producer's rep_ratio function source is not copied",
+  "rep_ratio_source_sha256": "5555555555555555555555555555555555555555555555555555555555555555",
+  "source": "/workspace/TESTUSER/si-steering-eval-repo/48476165d5bb08e36d6b36e56ffdccfb26a0cd2a/src/sisteer/capeval/tiers/cap_ladder.py",
+  "source_sha256": "6666666666666666666666666666666666666666666666666666666666666666"
+ },
+ "residual": null,
+ "rule": "item_filtered_v1"
+}

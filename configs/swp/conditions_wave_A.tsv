@@ -1,0 +1,15 @@
+# Stage-3 wave unified sweep — A group (SIX-OBJECT scope, user cut 2026-08-24).
+# Columns: label cell coeff mask static adaptive benign target_engine attacker_engine serving_path mirror_override held_out
+# The 6 GENUINE passes (floor_ratio<1), all target=safety_refusal: lora_r1(A,C),
+# diffmean(A,C), token_faithful(A), vector(C). diffmean resolved from disk to
+# safety_refusal (fit_report probe 0.1075/0.1121 vs floor 0.1428; the other two
+# targets' diffmean sat above floor). All six provenance-VERIFIED (train_budget_meta,
+# NousResearch@d10aef79, template b48c47f644389271) — no override/partial in scope.
+# Matched serving: A->mask=all, C->mask=generated (phase from sidecar positions_at_fit).
+# Adaptive OFF ('-' explicit). benign '-' on generated rows (one-mechanism rule).
+# --defenses-dir = $SHARED/exp/objects/stage3-wave/A
+safety_refusal__lora_r1__all	safety_refusal__lora_r1		all	*	-	*	hf	none	hf		*
+safety_refusal__token_faithful__all	safety_refusal__token_faithful		all	*	-	*	hf	none	hf		*
+safety_refusal__diffmean__all	safety_refusal__diffmean		all	*	-	*	hf	none	hf		*
+b_none	none		all	*	-	*	hf	none	hf		*
+b_prompted_sr	prompted__safety_refusal		all	*	-	*	hf	none	hf		*

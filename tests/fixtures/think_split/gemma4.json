@@ -1,0 +1,34 @@
+{
+ "family": "gemma4",
+ "split_mode": "record_only",
+ "note": "parser-SEPARATED: reasoning_content and content arrive as two channels; the three censoring cases are exercised on ModelOutput channels in the tests",
+ "cases": [
+  {
+   "name": "finished",
+   "content": "The answer is $\\boxed{6}$.\nANSWER: 6",
+   "reasoning": "Let n = 3. Then 2n = 6.",
+   "stop_reason": "stop",
+   "present": true,
+   "unterminated": false,
+   "scoreable": true
+  },
+  {
+   "name": "reasoning_only_at_cap",
+   "content": "",
+   "reasoning": "Let n = 3. Then 2n = 6 and",
+   "stop_reason": "max_tokens",
+   "present": true,
+   "unterminated": true,
+   "scoreable": false
+  },
+  {
+   "name": "answer_truncated_at_cap",
+   "content": "The answer is $\\boxed{6}$.\nANSWER: 6 and furthermore",
+   "reasoning": "Let n = 3.",
+   "stop_reason": "max_tokens",
+   "present": true,
+   "unterminated": false,
+   "scoreable": true
+  }
+ ]
+}

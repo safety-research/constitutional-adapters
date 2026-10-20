@@ -1,0 +1,116 @@
+# configs/sdfbase/ifeval/views.yaml — WHICH (model key, view) pairs the ifeval-canonical-battery matrix expresses,
+# which of their cells are HELD, which roster cells the matrix EXCLUDES, which prompted cells it ADDS, and the DEFERRED
+# design slots.
+#
+# The matrix (configs/sdfbase/ifeval/matrix.json) is GENERATED from this file + the FROZEN full22 roster copy named
+# below (+ the Llama roster overlay, configs/sdfbase/ifeval/llama8b_roster.yaml) + the FROZEN pins copy
+# (+ the Llama pins overlay) by
+#   python scripts/sdfbase/ifeval/make_ifeval_matrix.py            (--check pins byte-identity AND resolves IFEVAL_CONTRASTS)
+# through scripts/sdfbase/ifeval/if_views.py select_rows, which reuses ONLY the GSM8K neutral cell enumeration
+# (g8k_views.cells_of: [none] + [prompted__safety_refusal iff view == it] + the roster's served cells, roster order) and
+# builds its OWN rows (P31): declared False, no @thinking, thinking OFF stamps, sampling vendor_preset, the IFEval ladder,
+# every path from ifeval_contracts.ifeval_paths. TAG is the bare key for `main`, `<key>_<view>` otherwise.
+#
+# Order matters: it is the matrix's row order (indices, the dispatcher's queue order, the overlays' TAG order). The
+# deferred slots come LAST, after every launch / held row, so filling one never moves a launch row's index.
+#
+# IMMUTABLE INPUTS (the roster-shadow remedy; the GSM8K freeze pattern, P16): the matrix regenerates from the
+# shared roster + pins AS COMMITTED AT THE PIN 59cedcca — main's state when the matrix was frozen (its `source.roster_sha256`
+# / `pins_sha256` are exactly these bytes) — never from the live registry. The live registry moved on 2026-09-12: a
+# `llama8b` target landed in configs/sdfbase_full22_roster.yaml (that target's battery, a different
+# cell set for the same served model as this lane's overlay), configs/sdfbase_full22_pins.json gained a `llama8b` block,
+# and the shared views began serving `prompted__si_constitution` themselves (gemma / Qwen it + main, Nemotron main);
+# on those inputs the overlay is refused (it adds a target, never shadows one), the prompted extra is refused (not an
+# extra), and the rows would change (44 / 34). The copies under configs/sdfbase/ifeval/frozen/59cedcca/ carry no
+# llama8b and serve no constitution cell, so the overlay ADDS the target and the extra IS an extra, exactly as the freeze
+# did; their sha256 is asserted by the generator on every load (an edited copy refuses by name —
+# `git show 59cedcca:configs/sdfbase_full22_roster.yaml` restores it). RE-FREEZING at a later pin is a logged decision
+# (copy the files, update the four values here, regenerate, `--check`), never a side effect of a shared-roster commit.
+frozen_inputs:
+  roster: configs/sdfbase/ifeval/frozen/59cedcca/sdfbase_full22_roster.yaml
+  pins: configs/sdfbase/ifeval/frozen/59cedcca/sdfbase_full22_pins.json
+  roster_sha256: 945f97f5b447d2a01bfa8ac966b4e44324224351fb405cb7524dd05d2869ff6a
+  pins_sha256: a57146e774b4f5b64781162ff3b8189ab149e58dc858792cefd15a2ceee09e9b
+views:
+  gemma4e4b: [it, main]          # it: none, prompted (safety + constitution), 1 itdoc LoRA (HELD); main: none + 3 LoRA objects
+  qwen35_4b: [it, main]
+  nemotron3nano4b: [main]        # the chat-checkpoint target: none + 2 LoRA objects + the two prompted cells + the LoRA difference
+  llama8b: [main, it]            # main: none + prompted x2 + 2 base LoRA objects (transferred); it: the same on the itdoc objects
+
+# EXCLUSIONS: roster cells the neutral enumeration serves but THIS matrix does
+# not express. An excluded cell gets NO row at all (not a held row): the paper's capability panel is EIGHT arms per
+# model — none, the two prompted SIs (safety, constitution), the constitution LoRA, the control LoRA, the LoRA
+# difference, AlphaSteer and the Arditi refusal direction — and PSR is out of the IFEval matrix.
+exclude:
+  - arms_matching: psr         # every *psr* cell: constv2-mix-full__psr_ce_all, constv2ctl2-full__psr_ce_all,
+                               # constv2-mix-full__psr_ce_all_minus_ctl_distilled, safety_refusal__psr_kl_all (17 rows of the 46)
+    reason: >
+      2026-09-12: PSR is OUT of the IFEval matrix — the paper's eight capability arms carry the LoRA
+      objects and their difference; PSR arms are not plotted.
+  - cells: [safety_refusal__lora_r4]
+    reason: >
+      2026-09-12: safety_refusal__lora_r4 is not one of the paper's eight arms (2 rows of the 46).
+
+# ADDED PROMPTED CELLS: a prompted cell needs no object, so it is a matrix decision, not a roster one. Placed on
+# every (model, view) that already carries a prompted cell (`placement: views_with_prompted_cell`), right after it, so each
+# model's prompted arms sit in one view (the it view on gemma / Qwen, main on Nemotron, both on Llama). `text_sha256` is
+# ASSERTED by the generator against the live SI text and recorded per row (`si_text_sha256`).
+prompted_extra:
+  - cell: prompted__si_constitution            # the TrainTest spelling; harness prompted__constitution;
+                                               # NEVER prompted__si_constitution_full (the cell grammar refuses it)
+    si: si_constitution                        # sisteer.data.instructions Instruction si_constitution = CONSTITUTION_PROMPT
+    text_sha256: 21e06f482a6559b39309c4f1128f0411230c88e02b3a9eaa7b5d50829e6a9a0f
+    text_chars: 30952
+    placement: views_with_prompted_cell
+    reason: >
+      2026-09-12: the SHORT constitution SI as the system prompt, on every model x view that carries a
+      prompted cell. Its ~6-6.7k-token system turn resolves its OWN geometry entries (capability:ifeval_longsi_<cap>).
+
+# DEFERRED design slots: AlphaSteer and the Arditi refusal direction at MINIMAL
+# OVER-REFUSAL STRENGTH on all four models. A slot is a matrix row with `status: deferred` and NO object sha: it is
+# excluded from the launch set, the dispatcher refuses to launch it, and its `object_sha256` (with the view, the rung
+# and the selection rule) is FILLED LATER from the per-model record named below — then the matrix is regenerated and the
+# row becomes a launch row at the same index. `view` here is PROVISIONAL (the record's view wins).
+deferred:
+  - arm: alphasteer
+    cell: alphasteer                            # the Class B cell id (harness id coincides)
+    views: {gemma4e4b: it, qwen35_4b: it, nemotron3nano4b: main, llama8b: main}
+    record: configs/sdfbase/ifeval/deferred/alphasteer__{model_key}.json
+    selection_rule: >
+      minimal over-refusal strength: the smallest lambda clearing the preregistered defence bar; the 20 pp
+      over-refusal budget rung is named alongside.
+    reason: >
+      2026-09-12: AlphaSteer at minimal over-refusal strength on every model; the object identity comes
+      from the Strength lane's ladder (pending), as a per-model (object_sha256, view, rung, selection_rule) record.
+  - arm: arditi
+    cell: arditi                                # the Class B cell id coined on another branch (branch-local there);
+                                                # NOT yet in this tree's harness vocabulary — recorded as pending
+    views: {gemma4e4b: it, qwen35_4b: it, nemotron3nano4b: main, llama8b: main}
+    record: configs/sdfbase/ifeval/deferred/arditi__{model_key}.json
+    selection_rule: >
+      minimal over-refusal strength: the smallest lambda clearing the preregistered defence bar; the 20 pp
+      over-refusal budget rung is named alongside.
+    reason: >
+      2026-09-12: the Arditi refusal direction at minimal over-refusal strength on every model; the
+      object identity comes from the Strength lane's ladder (pending), as a per-model record.
+
+# HELD (the same it-view constitution LoRA rows GSM8K holds; the PSR twins left the matrix under the
+# exclusions above): the it view's constitution LoRA objects on gemma4e4b and qwen35_4b are being RE-FITTED at effective
+# batch 64 (running since 2026-09-12 04:03Z). A HARD EXCLUSION here: NO pass-1 row is launched, NO placeholder store,
+# NO launcher configuration, NO estimate line; gate I0 counts them `held`, never `missing`. Why: the capability category
+# mean is unweighted over evals, so an arm measured on the pre-refit object in IFEval but the refit object in GSM8K would
+# carry two objects in one mean. They enter this instrument only when the batch-64 re-fit lands, as a later rung of the
+# same wave. UN-HOLDING = delete the entry below, regenerate the matrix, `--check`.
+holds:
+  - key: gemma4e4b
+    view: it
+    cells: [constv2-mix-full__lora_r4_ce]
+    reason: >
+      P41 (2026-09-10): the instruct-direct constitution objects are being re-fitted at effective batch 64; a HARD
+      EXCLUSION until the refit lands (one object per arm across evals).
+  - key: qwen35_4b
+    view: it
+    cells: [constv2-mix-full__lora_r4_ce]
+    reason: >
+      P41 (2026-09-10): the instruct-direct constitution objects are being re-fitted at effective batch 64; a HARD
+      EXCLUSION until the refit lands (one object per arm across evals).
