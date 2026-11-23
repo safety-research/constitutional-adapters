@@ -503,6 +503,11 @@ def _num(v) -> Optional[float]:
 _LORA_RANK_RE = re.compile(r"(?:^|_)lora_r(\d+)(?:_|$)")
 _DOSE_PREFIX_RE = re.compile(r"^(d(?P<d>[0-9p]+)|dm(?P<m>[0-9p]+)|halfdose)(?P<it>it64|it|itdoc64|itdoc)?__")
 _REPLICATE_RE = re.compile(r"^(?:derived_)?base64s(?P<s>\d+)__")
+#: the RESERVED staged prefix of the batch-64 Qwen controls refit with early stopping on their OWN (control) held-out pool, and of the
+#: differences built from them: campaign `reseed_ctlstop`, never `reseed`, and NO replicate label -- the same statement their native
+#: emission makes, so a staged copy can never restate them as the published seed replicates (`_REPLICATE_RE` cannot match it)
+_CTLSTOP_RE = re.compile(r"^(?:derived_)?ctlstop64s(?P<s>\d+)__")
+CTLSTOP_CAMPAIGN = "reseed_ctlstop"
 
 
 def _hyperparameter_block(tbm: Mapping[str, object]) -> Dict[str, object]:
@@ -1104,6 +1109,56 @@ def bank_status_statement(b: SidecarBundle) -> Tuple[Optional[str], str, str]:
     return None, "no supersession or withdrawal evidence beside the object", "none"
 
 
+#: the prompt facts of a distillation a producer's registry statement carries, with whether ``unverified`` is an admitted value (the
+#: producer hook's own check, ``hooks.object_from_sidecar``); None = a pool id (any non-empty string)
+_STATEMENT_PROMPT_FACTS: Tuple[Tuple[str, Optional[bool]], ...] = (("fit_teacher_si_text_sha256", False), ("fit_prompt_pool_id", None),
+                                                                   ("fit_prompt_pool_sha256", True))
+
+
+def _state_producer_statement(p: Dict[str, object], conf: "_Conf", extra: Dict[str, object], stmt: Mapping[str, object], b: SidecarBundle,
+                              ftk: Optional[str]) -> None:
+    """State, in ``p``, the columns a fit's producer states from its config's registry statement (``train_budget_meta.json``'s
+    ``registry_statement``, read by ``train_two_si_objects._registry_publish``), so a bank revision never restates them: the
+    ``paper_label`` (with the producer's own ``field_confidence_json`` source), the ``campaign`` (the fit job's ``REGISTRY_CAMPAIGN``,
+    which its records state) and, for a system-instruction distillation, the three prompt facts. The bank's own reading of each is
+    parked under ``extra.producer_registry_statement.bank_reading``. Refused by name: a statement that names no paper label or no
+    campaign (the producer's record states both -- a label the statement leaves out it derives from (kind, role), which the bank's
+    seeded reading need not match -- so the bank would state its own over the producer's), a label outside PAPER_LABELS, and a
+    malformed prompt fact."""
+    taken: Dict[str, object] = {}
+    for col in ("paper_label", "campaign"):
+        v = stmt.get(col)
+        if not (isinstance(v, str) and v.strip()):
+            raise SidecarRefusal(b.dir, f"train_budget_meta.json carries its producer's registry_statement but no {col}: the producer's record "
+                                        f"states this object's {col}, and the bank's own ({p.get(col)!r}, bank {b.bank!r}) would restate it over "
+                                        "the producer's (the object fold is per-column latest statement) -- not read")
+    label = stmt["paper_label"]
+    if label not in V.PAPER_LABELS:
+        raise SidecarRefusal(b.dir, f"train_budget_meta.json:registry_statement.paper_label {label!r} is not one of the registry's PAPER_LABELS")
+    taken["paper_label"] = p.get("paper_label")
+    p["paper_label"] = str(label)
+    conf.recorded("paper_label", f"train_budget_meta.json:registry_statement.paper_label ({stmt.get('paper_label_source') or 'stated by the fit'})")
+    camp = str(stmt["campaign"])
+    taken["campaign"] = p.get("campaign")
+    p["campaign"] = camp
+    conf.recorded("campaign", "train_budget_meta.json:registry_statement.campaign (the fit job's REGISTRY_CAMPAIGN, the campaign its own records state)")
+    if ftk == "system_instruction_distillation":
+        # the producer states these for a distillation only (_registry_publish passes none for a corpus fit)
+        for col, unverified_ok in _STATEMENT_PROMPT_FACTS:
+            v = stmt.get(col)
+            if v is None:
+                continue
+            ok = (isinstance(v, str) and bool(v.strip())) if unverified_ok is None else \
+                (isinstance(v, str) and (bool(_SHA256_RE.match(v)) or (unverified_ok and v == "unverified")))
+            if not ok:
+                raise SidecarRefusal(b.dir, f"train_budget_meta.json:registry_statement.{col} {v!r} is not "
+                                            f"{'a pool id' if unverified_ok is None else 'a 64-hex sha256' + (' or unverified' if unverified_ok else '')}")
+            taken[col] = p.get(col)
+            p[col] = v
+            conf.recorded(col, f"train_budget_meta.json:registry_statement.{col}")
+    extra["producer_registry_statement"] = {"columns": sorted(taken), "bank_reading": taken}
+
+
 def build_object_payload(b: SidecarBundle, seeds: Seeds, now: str, blob_reads_enabled: bool = True,
                          parents_in_bank: Optional[Mapping[str, Mapping[str, object]]] = None, omit_producer_owned: bool = False,
                          dose_batch_from_parent: bool = False) -> Dict[str, object]:
@@ -1200,6 +1255,8 @@ def build_object_payload(b: SidecarBundle, seeds: Seeds, now: str, blob_reads_en
     camp = b.campaign_hint or seeds.campaign_by_spelling.get(b.bank) or b.bank or "unknown"
     if _REPLICATE_RE.match(b.staged_id):
         camp = "reseed"
+    elif _CTLSTOP_RE.match(b.staged_id):
+        camp = CTLSTOP_CAMPAIGN
     p["campaign"] = camp
     conf.derived("campaign", f"bank {b.bank!r} / staged id prefix")
 
@@ -1735,7 +1792,7 @@ def build_object_payload(b: SidecarBundle, seeds: Seeds, now: str, blob_reads_en
         # copy (the copy's own train_budget_meta.json) -- never the NULL beside the parent's block
         _dose_batch_from_parent(p, conf, extra, dose, tbm)
 
-    # replicate label / split salt
+    # replicate label / split salt (a `ctlstop64s<s>__` object states neither, as its native emission does: _CTLSTOP_RE)
     m = _REPLICATE_RE.match(b.staged_id)
     if m:
         p["fit_replicate_label"] = f"s{m.group('s')}"
@@ -1924,6 +1981,17 @@ def build_object_payload(b: SidecarBundle, seeds: Seeds, now: str, blob_reads_en
                                     f"(cell {cell_id_legacy!r}, object_kind {kind})")
     if dose is not None and "minus_ctl" in b.staged_id and p.get("object_role") != "difference":
         p["object_role"] = "difference"
+
+    # ---- the producer's registry statement --------------------------------------------------
+    # A fit whose config made a registry statement (train_two_si_objects writes it into train_budget_meta.json as `registry_statement`:
+    # the sikl4 refits) is labelled by its PRODUCER: its native record states the paper label, the campaign and a distillation's prompt
+    # facts from that block. The `object` fold is per-column latest statement, so a bank revision deriving them again (the stem's label,
+    # the bank's campaign, the teacher_topk path's pool spelling) would restate them over the producer's; the builder reads them from the
+    # block instead (:func:`_state_producer_statement`). A dose copy's train_budget_meta.json is the PARENT's record, so a block there
+    # is the parent's statement, never the copy's, and is not read; a bundle without the block reads exactly as before.
+    stmt = tbm.get("registry_statement") if isinstance(tbm, Mapping) else None
+    if isinstance(stmt, Mapping) and dose is None and ftk != "derived":
+        _state_producer_statement(p, conf, extra, stmt, b, ftk)
 
     # ---- status -------------------------------------------------------------------------------
     # `status` is the PRODUCER's statement. The bank states it only where the bank itself carries the evidence

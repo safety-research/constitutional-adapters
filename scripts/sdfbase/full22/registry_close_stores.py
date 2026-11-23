@@ -136,6 +136,7 @@ STATIC_FILES = ("progress.jsonl", "responses.jsonl", "served_target.json")
 MULTITURN_FILES = STATIC_FILES                        # the multi-turn shards carry the same three files (plus attacker_engine.json and the call logs)
 MULTITURN_CONSOLIDATION = "consolidation.json"        # the one-time cross-cluster copy's provenance, beside the shards
 MULTITURN_NOT_GRADED_PREFIXES = ("error", "refused")  # jailbreak_artifacts.exclude_errored_goals: `error:*` refuses the aggregate, `refused:*` is excluded
+NOTE_CAP = 2000                                       # a filed note's length cap; the `generated` note keeps its whole fact block under it (generated_note)
 
 
 def _say(msg: str) -> None:
@@ -527,6 +528,37 @@ def multiturn_expected_goal_ids(run: dict, *, repo_root: str, ids_file: Optional
         if sha_check == SM.VIA_MAP:
             prov["cross_check"]["config_sha_check"] = SM.VIA_MAP
     return None, ids, prov
+
+
+def goal_set_note_facts(prov: Dict[str, object]) -> Dict[str, object]:
+    """The goal-set provenance as the `generated` note carries it: config_sha256 at 12 hex, and no ids-file PATH at any depth. The path
+    used to sit at the top level and was dropped here; when the cross-check moved under `cross_check` the drop stopped matching, so the
+    file's absolute path rode every cross-checked note, and its length decided whether the fact block survived NOTE_CAP. The verdict
+    (`agrees`, and `config_sha_check` when the scrub map certified the config) is the fact; the resolver's recomputation is the authority."""
+    out: Dict[str, object] = {}
+    for k, v in prov.items():
+        if k == "file":
+            continue
+        if k == "cross_check" and isinstance(v, dict):
+            v = {ck: cv for ck, cv in v.items() if ck != "file"}
+        out[k] = v[:12] if (k == "config_sha256" and isinstance(v, str)) else v
+    return out
+
+
+def generated_note(planned: object, iset: object, store: str, facts: Dict[str, object], *, cap: int = NOTE_CAP) -> str:
+    """The `generated` state's note: the prose, the store, then the WHOLE fact block (sorted JSON), at most `cap` characters. The store path
+    is the one part whose length the closer does not choose (a wave root's depth, a tmp root), so when the note would pass the cap the path
+    in the prose is shortened from the left to `…` + its tail (the attack / cell end, which names the store), and the fact block survives
+    whole whatever the path's length. The path is never lost: the patch's store_uri and the state's evidence_uri carry it in full. Before,
+    the note was sliced at the cap, so a long path silently cut the block's LAST keys (shards_missing, shards_unexpected, unparsable_rows).
+    A block that alone passes the cap is still cut at the cap; keeping the facts compact is the inspectors' job, and the multi-turn test
+    pins that the block survives."""
+    head = f"filed by the job-side closer ({SCRIPT}) against the registration's plan ({planned} planned, item set {iset}) from "
+    tail = f": {json.dumps(facts, sort_keys=True)}"
+    room = cap - len(head) - len(tail)
+    if len(store) > room:
+        store = "…" + store[len(store) - room + 1:] if room > 1 else "…"
+    return (head + store + tail)[:cap]
 
 
 def write_expected_goal_ids(run: dict, out_path: str, *, repo_root: str) -> Optional[str]:
@@ -1873,7 +1905,7 @@ def close_job(pending_path: str, *, spool: str, push_script: Optional[str], code
                     why, facts, artifact = inspect_multiturn(store, planned=planned, nshards=nshards, expected_ids=exp_ids, tolerated_missing=tolerated,
                                                              subset=smoke)
                     n_items = int(facts.get("goals_expected") or 0) if (smoke is not None and not why) else planned
-                facts.update({"private_run": prun, "private_run_source": prun_src, "goal_set": {k: (v[:12] if k == "config_sha256" else v) for k, v in exp_prov.items() if k != "file"}})
+                facts.update({"private_run": prun, "private_run_source": prun_src, "goal_set": goal_set_note_facts(exp_prov)})
                 part = facts.get("partial") if not why else None
                 if not why and part is None:                   # The whole store — the other group's registration(s) of it, on this cluster
                     twins = sibling_multiturn_runs(PENDING_DIR, this_job, eval_id, obj, plan, tag, str(prun), repo_root=REPO_ROOT, this_rid=rid, this_group=this_group)
@@ -2003,7 +2035,7 @@ def close_job(pending_path: str, *, spool: str, push_script: Optional[str], code
             continue
         now = utc_now()
         fields = {**store_fields, "generated_utc": now}
-        note = f"filed by the job-side closer ({SCRIPT}) against the registration's plan ({planned} planned, item set {iset}) from {store}: {json.dumps(facts, sort_keys=True)}"
+        note = generated_note(planned, iset, store, facts)
 
         def file_generated_now() -> None:
             if dry_run:
@@ -2011,7 +2043,7 @@ def close_job(pending_path: str, *, spool: str, push_script: Optional[str], code
             else:
                 w = emit.RecordWriter(spool, campaign, rid, producer, push_script=push_script)
                 w.emit_patch(fields=fields)
-                w.emit_state("generated", "completion_artifact", artifact, event_utc=now, note=note[:2000])
+                w.emit_state("generated", "completion_artifact", artifact, event_utc=now, note=note)
                 w.push(final=True)
                 _say(f"generated {eval_id} {obj} {rid[:40]}… ({fam}) store_uri={store} n_items={n_items}/{planned}")
             out["filed"] += 1

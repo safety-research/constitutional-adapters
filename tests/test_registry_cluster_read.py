@@ -2197,12 +2197,14 @@ def test_the_real_configs_overlapping_bases_build_one_namespace_per_window_that_
         assert links[f"{full22}/{nested}"] == f"{gen_dir}/{slug}/{pins[slug]}"          # whole links beneath the real directory
     assert files[f"{full22}/transfer_stats_full22_all.json"] == f"{gen_dir}/multiturn_run_state/{pins['multiturn_run_state']}/transfer_stats_full22_all.json"
     assert links[os.path.join(home, cfg.components["relu_paired_manifests"].home_rel)] == f"{gen_dir}/relu_paired_manifests/{pins['relu_paired_manifests']}"   # shared by two adapters: one link
-    # the per-adapter trees the bug built: two different whole links for the same path (cap4096_lane pins multiturn_run_state alone and
-    # em_misalign misalign_run_state alone, so each one's own tree links full22 whole onto a different generation; multiturn_grades no longer
-    # serves here since it was given full22_regrade_siblings and full22_relu_native, three components on the one base)
+    # per-adapter trees no longer disagree about its SHAPE: the configuration decides it, not the pins, so cap4096_lane alone
+    # (multiturn_run_state), em_misalign alone (misalign_run_state) and ctl_neg1_controls alone (full22_ctl_neg1) each lay full22 out as a
+    # real directory holding their own entries -- the bug's per-adapter trees linked it whole onto a different generation each, and the
+    # window reading the ctl_neg1 adapters alone refused on 2026-10-19 over the real directory other windows had laid out
     per = {a: CR.home_tree_spec(cfg.components, {s: pins[s] for s in decl.components}, gen_dir, home, entries_of) for a, decl in cfg.adapters.items()}
-    mt, em = dict(map(tuple, per["cap4096_lane"]["links"])), dict(map(tuple, per["em_misalign"]["links"]))
-    assert full22 in mt and full22 in em and mt[full22] != em[full22]
+    for a in ("cap4096_lane", "em_misalign", "ctl_neg1_controls"):
+        assert full22 in per[a]["dirs"] and full22 not in dict(map(tuple, per[a]["links"])), a
+    assert dict(map(tuple, per["em_misalign"]["links"]))[f"{full22}/misalign"] == links[f"{full22}/misalign"]
     # one task per adapter, at once: exactly one builds, the rest verify, all agree, nothing refused
     with ThreadPoolExecutor(max_workers=6) as ex:
         outs = list(ex.map(lambda _i: CR.init_home_tree(spec, home, "w1"), range(6)))
@@ -3400,6 +3402,59 @@ def test_the_home_tree_keeps_refusing_a_real_directory_that_holds_a_regular_file
     assert [r["path"] for r in direct2["refused"]] == [x2] and os.path.isdir(os.path.join(sub, "deeper")), direct2   # `deeper` unrecorded
     direct3 = CR._build_home_tree(spec_c, {"links": [], "files": [], "dirs": [x2, sub, os.path.join(sub, "deeper")]})
     assert direct3["refused"] == [] and direct3["removed"] == [os.path.join(sub, "deeper"), sub, x2] and direct3["created"] == [x2] and os.path.islink(x2), direct3
+
+
+def test_a_window_pinning_one_component_of_a_shared_base_lays_it_out_as_a_directory_and_leaves_an_unrecorded_entry_standing(tmp_path, monkeypatch):
+    """2026-10-19 16:33Z: a window read the three ctl_neg1 adapters alone, which pin ONE component (full22_ctl_neg1) of the
+    `run-state/full22` base that sixteen other CONFIGURED components share. The base's shape was decided from the window's pins only, so
+    the window linked it whole, and on a node where earlier windows had laid it out as a real directory -- with an entry beneath that the
+    node's recorded namespace does not name -- every shard refused `home tree: .../full22: exists and is not a symlink; refusing to replace
+    a real path`. The shape of a base is the CONFIGURATION's: a base another configured component shares, or nests under, is a real
+    directory in every window, laid out with the pinned components' entries only, so no window flips it to a whole link. The unrecorded
+    entries are not the builder's and stand untouched; an unrecorded real path at a spelling the window DOES link keeps the refusal; a base
+    no other configured component shares or nests under still links whole."""
+    home = str(tmp_path / "home")
+    monkeypatch.setattr(ST, "HOME", home)
+    marker = os.path.join(home, CR.NAMESPACE_MARKER)
+    full22, specs, sweep = os.path.join(home, "rs/full22"), os.path.join(home, "specs"), os.path.join(home, "specs/sweep")
+    gen, comps, pins = _components(tmp_path / "g", home, {"multiturn": ("rs/full22", ["grades_a/", "transfer_stats.json"]),
+                                                         "misalign": ("rs/full22", ["misalign/"]), "ctl_neg1": ("rs/full22", ["ctl_neg1/"]),
+                                                         "sidecars": ("specs/sweep", ["mm.json"]), "bcb_specs": ("specs", ["bcb.json"])})
+    grades_a, misalign, stats, ctl = (os.path.join(full22, e) for e in ("grades_a", "misalign", "transfer_stats.json", "ctl_neg1"))
+    # every window's tree is planned as plan_window plans it: from EVERY configured component, whatever the window pins
+    spec_of = lambda *slugs: CR.home_tree_spec(comps, {s: pins[s] for s in slugs}, gen, home, _entries_of(gen))   # noqa: E731
+    tick, one = spec_of("multiturn", "misalign", "sidecars"), spec_of("ctl_neg1")
+    assert dict(map(tuple, tick["links"]))[sweep] == f"{gen}/sidecars/{pins['sidecars']}"          # an exclusive base: still linked whole
+    w1 = CR.init_home_tree(tick, home, "w1")
+    assert w1["refused"] == [] and os.path.isdir(full22) and not os.path.islink(full22) and full22 in json.load(open(marker))["spec"]["dirs"], w1
+    # what an older build left under the base and no recorded namespace names: a link onto an old generation, a file
+    stray, notes = os.path.join(full22, "old_member"), os.path.join(full22, "notes.txt")
+    os.symlink(f"{gen}/multiturn/{pins['multiturn']}/grades_a", stray)
+    with open(notes, "w") as fh:
+        fh.write("mine")
+    # the window pinning ctl_neg1 alone: nothing refuses, and the base stays a real directory holding ctl_neg1's entries only
+    w2 = CR.init_home_tree(one, home, "w2")
+    assert w2["refused"] == [], w2
+    assert full22 in one["dirs"] and full22 not in dict(map(tuple, one["links"])), one
+    assert dict(map(tuple, one["links"])) == {ctl: f"{gen}/ctl_neg1/{pins['ctl_neg1']}/ctl_neg1"} and one["files"] == []
+    assert w2["created"] == [ctl] and sorted(w2["removed"]) == sorted([grades_a, misalign, sweep, stats]), w2
+    assert os.path.isdir(full22) and not os.path.islink(full22) and os.readlink(ctl) == f"{gen}/ctl_neg1/{pins['ctl_neg1']}/ctl_neg1"
+    assert os.readlink(stray) == f"{gen}/multiturn/{pins['multiturn']}/grades_a" and open(notes).read() == "mine"     # not the builder's: untouched
+    assert CR._verify_home_tree(one) == [] and json.load(open(marker))["window"] == "w2"
+    # the next full window: the same real directory, ctl_neg1's link withdrawn, the others laid out again; the strays still stand
+    w3 = CR.init_home_tree(tick, home, "w3")
+    assert w3["refused"] == [] and w3["removed"] == [ctl] and sorted(w3["created"]) == sorted([grades_a, misalign, sweep]) and w3["copied"] == [stats], w3
+    assert os.path.isdir(full22) and not os.path.islink(full22) and os.path.islink(stray) and open(notes).read() == "mine"
+    # an unrecorded REAL path at the spelling the window links keeps the refusal, and the build touches nothing
+    os.makedirs(ctl)
+    with open(os.path.join(ctl, "theirs.json"), "w") as fh:
+        fh.write("{}")
+    w4 = CR.init_home_tree(one, home, "w4")
+    assert w4["refused"] == [{"path": ctl, "why": "exists and is not a symlink; refusing to replace a real path"}] and w4["removed"] == [] and w4["created"] == [], w4
+    assert os.path.isfile(os.path.join(ctl, "theirs.json")) and os.path.islink(grades_a) and json.load(open(marker))["window"] == "w3"
+    # the NESTING half: a parent base pinned alone, with a configured component nested beneath it, is a real directory too
+    parent = spec_of("bcb_specs")
+    assert specs in parent["dirs"] and specs not in dict(map(tuple, parent["links"])) and parent["files"] == [[os.path.join(specs, "bcb.json"), f"{gen}/bcb_specs/{pins['bcb_specs']}/bcb.json"]]
 
 
 def test_a_promoted_base_is_not_withdrawn_through_on_the_retry_of_a_build_a_refusal_elsewhere_left_unrecorded(tmp_path, monkeypatch):

@@ -210,8 +210,8 @@ def sha256_file(path: Path) -> str:
 # image. Literals survive Modal's flat in-container module re-import; locally,
 # fail before launch if the image inputs changed without refreshing the guard.
 DEPENDENCY_HASHES = {
-    "pyproject.toml": "8c7124d8e6205d74bdf5be80f1a6b3b52533543db94c37d014e3c0d4e88ae321",
-    "uv.lock": "3db46ce4a23447b17c3e2fcf6d825306f35abcb3d214faa112d9ec4e9a9d99d3",
+    "pyproject.toml": "d9ca46caaf922d07693592dd01b3762a19de850368b87c26463901380309bcf2",
+    "uv.lock": "ad7b0f689b3d1503011fff90b2d3fcaab24839be12ab75c4dbf769e6f4d33acc",
 }
 if modal.is_local():
     actual_hashes = {name: sha256_file(LOCAL_REPO / name) for name in DEPENDENCY_FILES}

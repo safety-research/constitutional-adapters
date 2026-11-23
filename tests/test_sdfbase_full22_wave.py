@@ -3898,7 +3898,10 @@ def test_controls_driver_runs_from_the_client_venv_in_the_smoke_and_the_wave():
     stubs = ("f22_client_venv(){ echo BOOT; CPY=/client/python; }; "
              "f22_datasets_guard(){ echo \"GUARD[$1]\"; export HF_DATASETS_CACHE=/cache/hf_datasets; }; "
              "f22_log(){ :; }; f22_fatal(){ echo \"FATAL $*\"; exit 1; }")
-    env = {**os.environ, "MPY": sys.executable, "REPO_DIR": str(REPO)}
+    # HF_DATASETS_CACHE is UNSET, as in a production job shell until f22_datasets_guard exports it: `set -u` catches an
+    # unconditional $HF_DATASETS_CACHE in the gate only while it is unset, and the landing gate exports a datasets cache to
+    # the whole suite (gate_task.py, gate_lib.prepared_datasets_cache), which would otherwise mask that defect here
+    env = {**{k: v for k, v in os.environ.items() if k != "HF_DATASETS_CACHE"}, "MPY": sys.executable, "REPO_DIR": str(REPO)}
     tail = 'echo "CTL_PY=$CTL_PY CTL_INSPECT=[$CTL_INSPECT] CTL_ENV=[${CTL_ENV[*]+"${CTL_ENV[*]}"}]"'
 
     def run_wave(controls, on=1):

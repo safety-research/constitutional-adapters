@@ -62,6 +62,12 @@ is stable across regenerations):
                                                per-seed held-out carve; s1 also
                                                carries the mix-1k / 1m / 10m
                                                WORKING cells)
+  configs/sdfbase_qwen35_4b_base_eb64_s{1,2,3}_ctlstop_fits.yaml (the
+                                               seed keys' constv2ctl2-full
+                                               cell ALONE, early-stopped and
+                                               CE-guarded on the seed's CONTROL
+                                               held-out pool — heldout_cell;
+                                               pools shared via pool_key)
   configs/sdfbase_qwen35_4b_demo_base_fits.yaml (2026-10-08; the WORKED
                                                EXAMPLE's lane: the paper's
                                                qwen35_4b_base lane under the
@@ -790,6 +796,50 @@ for _s in SEEDREP_SEEDS:
     }
 del _s, _ids
 
+# Qwen-BASE batch-64 CONTROL-ONLY siblings early-stopped on their OWN corpus:
+# one key per seed,
+# `<seedrep key>_ctlstop`, carrying the constv2ctl2-full cell ALONE with the
+# seed key's recipe verbatim (pin, layer, checkpointing, effective batch 64,
+# seed, the cap-16 / patience-2 row, the folded winners) and ONE change:
+# "heldout_cell" points train_kwargs.default.heldout_pool — the pool early
+# stopping AND the 1.1x CE guard read — at the seed's CONTROL held-out pool
+# (pairs_constv2ctl2-heldout.jsonl) instead of the constitution pool.
+# "pool_key" shares the seed key's /vol/pool/<key>/ (training pool, its
+# manifest and sidecars, and the control held-out pool staged beside them).
+# Sibling configs, so the published seed configs' bytes never move.
+# Registered by loop so the three keys cannot drift.
+CTLSTOP_TAG = "ctlstop"
+CTLSTOP_SI_IDS = ["constv2ctl2-full"]
+
+
+def ctlstop_key(seed: int) -> str:
+    """The MODELS key of seed ``seed``'s control-only own-stop sibling."""
+    return f"{seedrep_key(seed)}_{CTLSTOP_TAG}"
+
+
+for _s in SEEDREP_SEEDS:
+    MODELS[ctlstop_key(_s)] = {
+        "model": "Qwen/Qwen3.5-4B-Base",
+        "revision": "1001bb4d826a52d1f399e183466143f4da7b741b",
+        "layer": 15,
+        "gradient_checkpointing": True,
+        "header_kind": (f"BASE model, CONTROL-ONLY sibling of the batch-64 "
+                        f"SEED REPLICATE {seedrep_key(_s)} (the constv2ctl2-full "
+                        "cell alone; early stopping and the CE guard read the "
+                        "seed's CONTROL held-out pool; pools and sidecars "
+                        f"shared with {seedrep_key(_s)} via pool_key)"),
+        "si_ids": CTLSTOP_SI_IDS,
+        "caps": {"constv2ctl2-full": SEEDREP_CAPS["constv2ctl2-full"]},
+        "effective_batch": SEEDREP_EFFECTIVE_BATCH,
+        "seed": _s,
+        "pool_key": seedrep_key(_s),
+        # NEW field (heldout_cell_for): emitted only through the held-out
+        # pool path, and absent everywhere else
+        "heldout_cell": "constv2ctl2-heldout",
+    }
+del _s
+CTLSTOP_KEYS = tuple(ctlstop_key(s) for s in SEEDREP_SEEDS)
+
 
 def fit_width_for(key: str) -> int | None:
     """The lane's declared data-parallel fit width, or None (the
@@ -821,6 +871,43 @@ def seed_for(key: str) -> int | None:
         raise SystemExit(f"[make-sdfbase-configs] {key} declares "
                          f"seed={raw} < 0")
     return int(raw)
+
+
+#: The held-out pools a config's early stopping may read
+#: (= train_two_si_objects.HELDOUT_POOL_SIS, spelled here because this
+#: generator imports nothing from the trainer; a test pins the two equal):
+#: the constitution corpus's shared held-out pool (the default: every entry
+#: that declares no heldout_cell) and the control corpus's (the `_ctlstop`
+#: keys).
+HELDOUT_CELLS = ("constv2-heldout", "constv2ctl2-heldout")
+HELDOUT_CELL_DEFAULT = "constv2-heldout"
+#: A non-default held-out pool -> the ONLY cell scope it may govern: the
+#: control pool stops (and CE-guards) the control cell alone, so a
+#: constitution cell can never early-stop on the control corpus.
+HELDOUT_CELL_SCOPE = {"constv2ctl2-heldout": ["constv2ctl2-full"]}
+
+
+def heldout_cell_for(key: str) -> str:
+    """The held-out pool cell a MODELS entry's early stopping and CE guard
+    read (its "heldout_cell" field): the constitution pool when undeclared,
+    so every config that declares nothing renders byte-identically. A
+    declared value must be one of HELDOUT_CELLS, and a non-default pool may
+    govern only its HELDOUT_CELL_SCOPE — both refuse by name."""
+    spec = MODELS[key]
+    if "heldout_cell" not in spec:
+        return HELDOUT_CELL_DEFAULT
+    cell = spec["heldout_cell"]
+    if cell not in HELDOUT_CELLS:
+        raise SystemExit(f"[make-sdfbase-configs] {key} declares "
+                         f"heldout_cell={cell!r} (known: {list(HELDOUT_CELLS)})")
+    scope = HELDOUT_CELL_SCOPE.get(cell)
+    if scope is not None and si_ids_for(key) != scope:
+        raise SystemExit(f"[make-sdfbase-configs] {key} declares "
+                         f"heldout_cell={cell!r}, which may govern only the "
+                         f"cell scope {scope} — the config carries "
+                         f"{si_ids_for(key)} (a constitution cell must never "
+                         "early-stop on the control corpus)")
+    return str(cell)
 
 
 def effective_batch_for(key: str) -> int:
@@ -977,8 +1064,9 @@ def heldout_pool_path(key: str) -> str:
     """The shared held-out eval pool, staged per model on the twosi-fits
     volume: every fit of every cell (and every HPO trial) evaluates
     per-epoch CE on exactly this pool. Under a "pool_key" the path is
-    the sibling's dir (pool_key_for)."""
-    return f"/vol/pool/{pool_key_for(key)}/pairs_constv2-heldout.jsonl"
+    the sibling's dir (pool_key_for); the file is the constitution pool
+    unless the entry declares another heldout_cell (heldout_cell_for)."""
+    return f"/vol/pool/{pool_key_for(key)}/pairs_{heldout_cell_for(key)}.jsonl"
 
 
 def _accum_for(bs, effective_batch: int = EFFECTIVE_BATCH) -> object:

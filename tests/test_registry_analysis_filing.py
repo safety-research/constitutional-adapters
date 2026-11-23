@@ -97,6 +97,7 @@ from sisteer.registry.identity import canonical_json
 from sisteer.registry import vocab as V
 
 from test_registry_migrations import AF_DRIFT, AF_SLUG, AF_TABLES, FENCE_TRIGGERS, NTPL_TABLES, _sans_fence_drift, _sans_fence_render
+from test_registry_migrations import PRUNE_TABLES, _prune_objects_aside, _sans_prune_cli, _sans_prune_head, _sans_prune_head_render   # 0033's part, set aside
 from test_registry_schema import FROZEN_MIGRATIONS
 
 KINDS = ("analysis", "analysis_input", "analysis_artifact")
@@ -245,7 +246,7 @@ def _shape_below(path: str) -> None:
 
 def test_the_migration_on_the_shape_below_it_is_five_creates_and_no_rebuild_and_the_committed_body_is_the_render(tmp_path, capsys):
     version, slug, mpath = _af_migration()
-    assert version == M.code_version() - 3, "the newest file but three on this tree: 0030 (fold_order_barrier, the fold-order version's deployment barrier: two fence triggers on run), 0031 (non_template_positions: a rebuild of instrument and run) and 0032 (site_label_rename: the five tables whose CHECK names a site label, rebuilt) follow it; their lines are set aside below (0032 adds none on a shape built from these files)"
+    assert version == M.code_version() - 4, "the newest file but four on this tree: 0030 (fold_order_barrier, the fold-order version's deployment barrier: two fence triggers on run), 0031 (non_template_positions: a rebuild of instrument and run), 0032 (site_label_rename: the five tables whose CHECK names a site label, rebuilt) and 0033 (prune_superseded_item_rows: a table, an index drop, the head) follow it; their lines are set aside below (0032 adds none on a shape built from these files)"
     assert os.path.basename(mpath) == f"{version:04d}_{AF_SLUG}.sql"
     committed = open(mpath, encoding="utf-8").read()
     assert FROZEN_MIGRATIONS[os.path.basename(mpath)] == hashlib.sha256(committed.encode("utf-8")).hexdigest()
@@ -253,15 +254,16 @@ def test_the_migration_on_the_shape_below_it_is_five_creates_and_no_rebuild_and_
     _shape_below(path)
     conn = DB.connect(path)
     assert M.db_version(conn) == version - 1
-    assert _sans_fence_drift(DB.schema_drift(conn)) == AF_DRIFT                              # exactly this file's lines (0030's two triggers aside): nothing else moved on the shape below
+    assert _sans_prune_head(_sans_fence_drift(DB.schema_drift(conn))) == AF_DRIFT            # exactly this file's lines (0030's two triggers and 0033's aside): nothing else moved on the shape below
     have, want = DB.ddl_master(conn), DB.code_ddl_master()
     ledgers_before = {t: conn.execute("SELECT sql FROM sqlite_master WHERE name = ?", (t,)).fetchone()[0] for t in ("blocked_records", "row_history")}
     for t in ("blocked_records", "row_history"):
         assert have[("table", t)] == want[("table", t)], t                                 # the CHECK lists are byte-identical: no ledger rebuild
     plan = M.shape_plan(conn)
-    assert plan["create"] == list(AF_TABLES) and [r["table"] for r in plan["rebuild"]] == list(NTPL_TABLES) and plan["add_columns"] == [] and plan["undeclared_tables"] == []   # 0031's two rebuilds ride along against the code's shape
-    assert plan["objects"] == {"index": {"recreate": [], "drop": []}, "trigger": {"recreate": [], "drop": []}, "view": {"recreate": [], "drop": []}}   # 0030's two fence triggers ride 0031's run rebuild
-    rendered = M.render_shape_migration(conn, plan)
+    assert [c for c in plan["create"] if c not in PRUNE_TABLES] == list(AF_TABLES) and [r["table"] for r in plan["rebuild"]] == list(NTPL_TABLES) and plan["add_columns"] == [] and plan["undeclared_tables"] == []   # 0031's two rebuilds and 0033's create ride along against the code's shape
+    assert _prune_objects_aside(plan["objects"]) == \
+        {"index": {"recreate": [], "drop": []}, "trigger": {"recreate": [], "drop": []}, "view": {"recreate": [], "drop": []}}   # 0030's two fence triggers ride 0031's run rebuild
+    rendered = _sans_prune_head_render(M.render_shape_migration(conn, plan))
     header = committed[:committed.index("-- drift: ")]
     assert committed.startswith(f"-- {os.path.basename(mpath)}\n") and "a registry decision of 2026-10-08" in header and "NO rebuild" in header
     body = committed[committed.index("-- drift: "):]
@@ -278,8 +280,8 @@ def test_the_migration_on_the_shape_below_it_is_five_creates_and_no_rebuild_and_
     os.makedirs(root)
     shutil.copy(path, DB.db_path(root))
     assert cli.main(["--root", root, "migrate", "--plan"]) == 1
-    out = capsys.readouterr().out
-    assert f"schema version {version - 1}; code {M.code_version()}; pending: {version:04d}_{AF_SLUG}, {version + 1:04d}_fold_order_barrier, {version + 2:04d}_non_template_positions, {version + 3:04d}_site_label_rename\n" in out   # 0030 and 0031 follow it in the pending list
+    out = _sans_prune_cli(capsys.readouterr().out)                                       # 0033's lines aside
+    assert f"schema version {version - 1}; code {M.code_version()}; pending: {version:04d}_{AF_SLUG}, {version + 1:04d}_fold_order_barrier, {version + 2:04d}_non_template_positions, {version + 3:04d}_site_label_rename, {version + 4:04d}_prune_superseded_item_rows\n" in out   # 0030 to 0033 follow it in the pending list
     assert [ln for ln in out.splitlines() if ln.startswith("create table ")] == [f"create table {t}" for t in AF_TABLES]
     for absent in ("add column", "drop undeclared"):
         assert absent not in out, out
@@ -290,7 +292,7 @@ def test_the_migration_on_the_shape_below_it_is_five_creates_and_no_rebuild_and_
     # the runner: the version row, the five tables, zero drift, the ledgers' stored CREATE text untouched, the writers' open accepts it
     conn = DB.connect(path)
     notes = []
-    assert M.apply_migrations(conn, notes) == [version, version + 1, version + 2, version + 3] and notes == [] and M.db_version(conn) == M.code_version() and DB.schema_drift(conn) == []   # 0030 and 0031 follow
+    assert M.apply_migrations(conn, notes) == [version, version + 1, version + 2, version + 3, version + 4] and notes == [] and M.db_version(conn) == M.code_version() and DB.schema_drift(conn) == []   # 0030 and 0031 follow
     assert conn.execute("SELECT description FROM schema_migration WHERE version = ?", (version,)).fetchone()[0] == AF_SLUG
     for t, sql in ledgers_before.items():
         assert conn.execute("SELECT sql FROM sqlite_master WHERE name = ?", (t,)).fetchone()[0] == sql, t

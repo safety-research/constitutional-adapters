@@ -18,7 +18,7 @@ meta:
   paper_build_commit: "f33dca5d99488537737538f5b89b8254675653ea"
   watermarks_written_utc: "2026-09-16T22:35:02Z"
   read_utc: "2026-09-17T17:45:00Z"
-  n_sources: 61
+  n_sources: 63
   # POST-PIN ADDITIONS carry their OWN paper commit: `paper_build_commit` above is the commit the bulk of the list was read at, and a
   # source the paper added later is not evidence about that commit. One global pin covering a name read somewhere else would be a
   # consistent-looking stamp for a fact it does not cover.
@@ -326,7 +326,7 @@ meta:
       producer_message_utc: "2026-09-28T20:43Z"
       read_utc: "2026-09-28T22:00:00Z"
       why: >
-        PROVISIONAL spelling for the SHARED-STANDUP COMPARISON stores of the FULL-suite BigCodeBench rows (tinycap-shared-standup): the row-engine harness serves EVERY object
+        PROVISIONAL spelling for the SHARED-STANDUP COMPARISON stores of the FULL-suite BigCodeBench rows: the row-engine harness serves EVERY object
         of a model row on ONE vLLM engine and re-runs the canary rows (gemma s1, qwen s1, nemotron s1, the qwen instruct row's own none) as whole rows, COMPARED to the existing
         solo bigcodebench_full stores -- a COMPARISON source, never a replacement of the 78 canonical rows, never an anchor change, never in the paper frame. Mirrored under
         $STATE/run-state/full22/bigcodebench_full_shared/ (the solo layout + standup/ per store; the suffix bcbw-<launch tag>-<sha7>-shared[-r<N>][-rep<N>];
@@ -393,6 +393,37 @@ meta:
         instrument (bfcl_full_protocol_T0001_1024, item set bfcl_full_3981; three_numbers_bfcl_full_shared.json with `source` this name). Its own source, not
         bfcl_full_shared (landing 1), not bfcl_full and not bigcodebench_full_shared_l2 (another evaluation, instrument and root). The paper has declared no spelling
         (paper_build_commit null).
+    - source: bigcodebench_full_sikl4
+      paper_build_commit: null
+      provisional: true
+      declared_by: "registry, not the paper"
+      producer_message_utc: null
+      read_utc: "2026-11-15T07:44:00Z"
+      why: >
+        PROVISIONAL spelling for the SI-distilled Qwen3.5-4B refits' FULL-suite BigCodeBench campaign rows (campaign si_target_refit): the eighteen objects of
+        configs/sikl4_pins.json -- KL distillations of a system-instruction-prompted teacher (the safety SI, the constitution SI and the short irrelevant control SI
+        C16), each a rank-4 o_proj LoRA and an all-layer ReLU steer, fit on and served on the instruct checkpoint at fit seeds 1-3 (the views qwen35_4b_sikl4s<k> of
+        configs/sdfbase_full22_roster_sikl4.yaml) -- run by the Modal full-suite harness under row dirs qwen35_4b-f22sikl4s<k> with no store tag, and mirrored under
+        $STATE/run-state/full22/bigcodebench_full_sikl4/. Read by adapters/bigcodebench_full_sikl4.py = the bigcodebench_full reader PARAMETRIZED
+        with a declared campaign (_bcbw_common.CampaignSpec; adapters/_bcbw_campaigns.py SIKL4): the campaign, the views, the harness roster and pins, the launched pins file and the
+        anchor mode are declared, never inferred from a store; every other row dir under the root refuses whole by name. On the full instrument and item set
+        (bigcodebench_full_protocol_greedy_4096, bigcodebench_full_1140; three_numbers_bigcodebench_full_sikl4.json with `source` this name); the campaign runs no unsteered
+        store, so a none store refuses by name and the reader files NO registry contrast (the frame reader anchors each row). Comparison rows the paper frame
+        excludes by ruling: never in the paper's main views. Its own source, not bigcodebench_full (the paper's rows of the same instrument) and not bfcl_full_sikl4 (the
+        same stores' own copy for the other evaluation). The paper has declared no spelling (paper_build_commit null).
+    - source: bfcl_full_sikl4
+      paper_build_commit: null
+      provisional: true
+      declared_by: "registry, not the paper"
+      producer_message_utc: null
+      read_utc: "2026-11-15T07:44:00Z"
+      why: >
+        PROVISIONAL spelling for the SI-distilled Qwen3.5-4B refits' FULL-suite BFCL campaign rows (campaign si_target_refit): the SAME eighteen-object campaign stores as
+        bigcodebench_full_sikl4 (one store holds both full tasks) published as their own byte-for-byte copy under
+        $STATE/run-state/full22/bfcl_full_sikl4/. Read by adapters/bfcl_full_sikl4.py = the bfcl_full reader PARAMETRIZED with the same declared campaign
+        (see bigcodebench_full_sikl4), on the BFCL full instrument and item set (bfcl_full_protocol_T0001_1024, bfcl_full_3981; three_numbers_bfcl_full_sikl4.json with
+        `source` this name); no registry contrast, comparison rows the paper frame excludes by ruling. Its own source, not bfcl_full and not bigcodebench_full_sikl4
+        (another evaluation, instrument and root). The paper has declared no spelling (paper_build_commit null).
     - source: bigcodebench_full_shared_l3
       paper_build_commit: null
       provisional: true
@@ -683,7 +714,7 @@ meta:
     `bigcodebench_full_shared` (added 2026-09-28) is the registry's PROVISIONAL spelling for the SHARED-STANDUP COMPARISON stores of the full-suite BigCodeBench rows -- every object of a model row on ONE engine, compared to the solo stores; a comparison source, never in the paper frame (see meta.additions). `bfcl_full_shared` (added 2026-09-28) is the registry's PROVISIONAL spelling for the same row-engine stores' own copy
     compared to the solo BFCL rows (see meta.additions). `bigcodebench_full_shared_l2` (added 2026-09-30) is the registry's PROVISIONAL spelling for LANDING 2 of the shared-standup comparison stores of the full-suite BigCodeBench rows -- the same tuples driven again by another harness (K = 2 drivers per row + a CPU verification pass), published as a SEPARATE source so its run ids never collide with landing 1's (see
     meta.additions). `bfcl_full_shared_l2` (added 2026-09-30) is the registry's PROVISIONAL spelling for landing 2's own copy of the same row-engine stores compared to the solo BFCL rows (see meta.additions). `bigcodebench_full_shared_l3` (added 2026-10-01) is the registry's PROVISIONAL spelling for LANDING 3 of the shared-standup comparison stores of the full-suite BigCodeBench rows -- the gemma row's four tuples driven once
-    more by the PR #441 harness (a fan-out test), published as a SEPARATE source so its run ids never collide with landing 1's or landing 2's (see meta.additions). `bfcl_full_shared_l3` (added 2026-10-01) is the registry's PROVISIONAL spelling for landing 3's own copy of the same row-engine stores compared to the solo BFCL rows (see meta.additions). `orxs_seedrep` (added 2026-09-21) is the registry's PROVISIONAL spelling for
+    more by the PR #441 harness (a fan-out test), published as a SEPARATE source so its run ids never collide with landing 1's or landing 2's (see meta.additions). `bfcl_full_shared_l3` (added 2026-10-01) is the registry's PROVISIONAL spelling for landing 3's own copy of the same row-engine stores compared to the solo BFCL rows (see meta.additions). `bigcodebench_full_sikl4` and `bfcl_full_sikl4` (added 2026-11-15) are the registry's PROVISIONAL spellings for the SI-distilled refits' full-suite BigCodeBench and BFCL campaign rows -- the full readers parametrized with a declared campaign, comparison rows never in the paper frame (see meta.additions). `orxs_seedrep` (added 2026-09-21) is the registry's PROVISIONAL spelling for
     the seed-replicate over-refusal controls (see meta.additions). `misalign_seedrep` (added 2026-09-21) is the registry's PROVISIONAL spelling for the three-seed family's agentic-misalignment stores (see meta.additions). `mmlu_full` (added 2026-09-21) is the registry's PROVISIONAL spelling for the Qwen MMLU read at the full 1,531-item width (see meta.additions). `misalign_16k` (added 2026-09-21) is the registry's PROVISIONAL
     spelling for the 16,384-step re-draws of the agentic-misalignment ladder (see meta.additions). `misalign_ladder` (added 2026-09-22) is the registry's PROVISIONAL spelling for the completion-cap MERGES of the agentic-misalignment ladder (see meta.additions). `misalign_paired_allmodels` (added 2026-09-22) is the registry's PROVISIONAL spelling for the paired-write difference-ReLU agentic roots of the other model families
     (see meta.additions). `bon_native4096:llama8b_relu_paired` (added 2026-09-22) is the registry's PROVISIONAL spelling for the Llama paired-write native 4,096 best-of-N grades (see meta.additions). `ctl_neg1` (added 2026-09-25) is the registry's PROVISIONAL spelling for the control-negative battery -- the batch-64 seed CONTROL objects at -1 on qwen35_4b, steered-only standups anchored on the seed standups' `none` (see
@@ -702,12 +733,14 @@ sources:
   - { source: bfcl_full_shared, owner: the authors }                  # PROVISIONAL (registry-declared, 2026-09-28; a COMPARISON source; see meta.additions)
   - { source: bfcl_full_shared_l2, owner: the authors }               # PROVISIONAL (registry-declared, 2026-09-30; landing 2 of the COMPARISON source; see meta.additions)
   - { source: bfcl_full_shared_l3, owner: the authors }               # PROVISIONAL (registry-declared, 2026-10-01; landing 3 of the COMPARISON source; see meta.additions)
+  - { source: bfcl_full_sikl4, owner: the authors }                   # PROVISIONAL (registry-declared, 2026-11-15; a declared campaign's rows; see meta.additions)
   - { source: bfcl_seedrep, owner: the authors }                      # PROVISIONAL (registry-declared, 2026-09-23; see meta.additions)
   - { source: bigcodebench_allmodels, owner: the authors }            # PROVISIONAL (registry-declared, 2026-09-23; see meta.additions)
   - { source: bigcodebench_full, owner: the authors }                 # PROVISIONAL (registry-declared, 2026-09-24; see meta.additions)
   - { source: bigcodebench_full_shared, owner: the authors }          # PROVISIONAL (registry-declared, 2026-09-28; a COMPARISON source; see meta.additions)
   - { source: bigcodebench_full_shared_l2, owner: the authors }       # PROVISIONAL (registry-declared, 2026-09-30; landing 2 of the COMPARISON source; see meta.additions)
   - { source: bigcodebench_full_shared_l3, owner: the authors }       # PROVISIONAL (registry-declared, 2026-10-01; landing 3 of the COMPARISON source; see meta.additions)
+  - { source: bigcodebench_full_sikl4, owner: the authors }           # PROVISIONAL (registry-declared, 2026-11-15; a declared campaign's rows; see meta.additions)
   - { source: bigcodebench_seedrep, owner: the authors }              # PROVISIONAL (registry-declared, 2026-09-23; see meta.additions)
   - { source: "bon_native4096:llama8b_relu_paired", owner: the authors }   # PROVISIONAL (registry-declared, 2026-09-22; see meta.additions)
   - { source: ctl_neg1, owner: the authors }                            # PROVISIONAL (registry-declared, 2026-09-25; see meta.additions)

@@ -3549,6 +3549,844 @@
         "warmup_frac": 0.15
       }
     },
+    "qwen35_4b_base_eb64_s1_ctlstop": {
+      "lora_r4_ce": {
+        "lr": 0.006681234631156978,
+        "max_grad_norm": 0.12,
+        "selection_guard": {
+          "acknowledged": {
+            "at": "2026-09-16T12:45:39+00:00",
+            "by": "O8 \u2014 orchestrator ruling O8: the round-1 fitted argmin is ALARMED sampled_extreme:lr (an extrapolation 0.4 % beyond the highest sampled lr); ADOPT the raw best trial that RAN (r1_t07) and replicate it once at exactly its design values in the r9 slot as the confirmation of record; never --allow-alarmed, never sliver trials; the two-sided verdict is computed against the fitted minimum and an outside verdict reads criterion 3 NOT MET; the adoption stands either way"
+          },
+          "alarmed": true,
+          "alarms": [
+            {
+              "code": "sampled_extreme",
+              "dim": "lr",
+              "text": "lr=0.006709 is the max of the 8 sampled values [0.0008303, 0.006681] \u2014 no trial lies beyond it"
+            }
+          ],
+          "clip_activation": {
+            "all_known_over_threshold": false,
+            "best_raw_promotable": "r1_t07",
+            "n_trials": 8,
+            "n_with_metrics": 8,
+            "over_threshold": [],
+            "per_trial": {
+              "r1_t00": {
+                "n_steps": 520,
+                "rate": 0.032692307692307694
+              },
+              "r1_t01": {
+                "n_steps": 520,
+                "rate": 0.04230769230769231
+              },
+              "r1_t02": {
+                "n_steps": 520,
+                "rate": 0.04038461538461539
+              },
+              "r1_t03": {
+                "n_steps": 520,
+                "rate": 0.051923076923076926
+              },
+              "r1_t04": {
+                "n_steps": 520,
+                "rate": 0.04807692307692308
+              },
+              "r1_t05": {
+                "n_steps": 520,
+                "rate": 0.04807692307692308
+              },
+              "r1_t06": {
+                "n_steps": 520,
+                "rate": 0.038461538461538464
+              },
+              "r1_t07": {
+                "n_steps": 520,
+                "rate": 0.04423076923076923
+              }
+            },
+            "rule": "share of a trial's logged optimizer steps whose PRE-clip grad norm (metrics.jsonl <arm>/grad_norm) exceeded that trial's own max_grad_norm (summary.trial); a trial at or above `threshold` is not promotable (ineligible as the raw-argmin fall-through; flagged as a fitted argmin's nearest neighbour); `target` is the regime the promoted point should sit in \u2014 verified-facts \u00a73: healthy 0-4%, borderline 24-65%, defective 100%",
+            "target": 0.1,
+            "threshold": 0.25,
+            "winner": {
+              "flagged": false,
+              "k": 3,
+              "max_nearest_rate": 0.04807692307692308,
+              "nearest": [
+                {
+                  "log_box_distance": 0.0017845573304820365,
+                  "lr": 0.006681234631156978,
+                  "max_grad_norm": 0.12,
+                  "n_steps": 520,
+                  "rate": 0.04423076923076923,
+                  "trial": "r1_t07",
+                  "warmup_frac": 0.15
+                },
+                {
+                  "log_box_distance": 0.25178455733048194,
+                  "lr": 0.003757245034176883,
+                  "max_grad_norm": 0.12,
+                  "n_steps": 520,
+                  "rate": 0.04230769230769231,
+                  "trial": "r1_t01",
+                  "warmup_frac": 0.15
+                },
+                {
+                  "log_box_distance": 0.5017845573304822,
+                  "lr": 0.0021129164033567606,
+                  "max_grad_norm": 0.12,
+                  "n_steps": 520,
+                  "rate": 0.04807692307692308,
+                  "trial": "r1_t05",
+                  "warmup_frac": 0.15
+                }
+              ],
+              "note": "every nearest trial with metrics is below the threshold",
+              "promotable": true,
+              "rates_known": 3,
+              "target": 0.1,
+              "threshold": 0.25
+            }
+          },
+          "confirmation": {
+            "baseline_ce": 2.4226403434272714,
+            "best_epoch": 8,
+            "best_heldout_loss": 2.0930151829872474,
+            "checked_at": "2026-09-16T05:45:39-07:00",
+            "checks": [
+              {
+                "check": "summary_is_a_confirmation",
+                "detail": "confirmation_of=present",
+                "pass": true
+              },
+              {
+                "check": "design_is_the_spawn_record",
+                "detail": "round=9 arm=lora_r4_ce si='constv2-mix-10m' trials=1; design.trial={'lr': 0.006681234631156978, 'max_grad_norm': 0.12, 'warmup_frac': 0.15} vs summary.trial={'lr': 0.006681234631156978, 'max_grad_norm': 0.12, 'warmup_frac': 0.15}; confirmation_of.selected_from='raw_best_trial'; manifest expect.trial == summary.trial verbatim",
+                "pass": true
+              },
+              {
+                "check": "trial_equals_raw_best_verbatim",
+                "detail": "trial={'lr': 0.006681234631156978, 'max_grad_norm': 0.12, 'warmup_frac': 0.15} == r1 design row 7 {'lr': 0.006681234631156978, 'max_grad_norm': 0.12, 'warmup_frac': 0.15} == fall-through pick {'lr': 0.006681234631156978, 'max_grad_norm': 0.12, 'warmup_frac': 0.15} (verbatim float equality)",
+                "pass": true
+              },
+              {
+                "check": "confirmation_of.fit_sha256_matches",
+                "detail": "summary 4fe99eea4962105e design 4fe99eea4962105e live r1_fit.json 4fe99eea4962105e",
+                "pass": true
+              },
+              {
+                "check": "status_ok",
+                "detail": "status='ok' error=",
+                "pass": true
+              },
+              {
+                "check": "floor_ratio_le_1.1",
+                "detail": "floor_ratio=0.8639 floor_ok=True (max 1.1)",
+                "pass": true
+              },
+              {
+                "check": "clip_activation_below_threshold",
+                "detail": "rate=0.0442 over 520 steps (threshold 0.25)",
+                "pass": true
+              },
+              {
+                "check": "effective_batch_64",
+                "detail": "2 x 32",
+                "pass": true
+              },
+              {
+                "check": "si_is_reference_cell",
+                "detail": "si='constv2-mix-10m'",
+                "pass": true
+              },
+              {
+                "check": "seed_is_expected",
+                "detail": "summary.seed=1 expected 1",
+                "pass": true
+              }
+            ],
+            "clip_activation_rate": 0.04423076923076923,
+            "clip_n_steps": 520,
+            "design": "$STAGE/sdfbase/reseed_eb64/hpo/trials/r9_qwen35_4b_base_eb64_s1_lora_r4_ce_all.json",
+            "design_fit_sha256": "4fe99eea4962105eb0a2bfb3bc64a5bafe1cdf093296b4ccd2a850149a56aee2",
+            "design_selected_from": "raw_best_trial",
+            "design_sha256": "c41250e28b83aa5239dccf21e4153ac44407b86ce30adde9bc36029f2642ad35",
+            "dir": "r9_t00",
+            "fit": "$STAGE/sdfbase/reseed_eb64/hpo/results/qwen35_4b_base_eb64_s1/lora_r4_ce/r1_fit.json",
+            "fit_fingerprint": "a613d65defad3d2ff7075e277a20ecbe4435f2b89c3fc01e923fa6155b0887e6",
+            "fit_sha256": "4fe99eea4962105eb0a2bfb3bc64a5bafe1cdf093296b4ccd2a850149a56aee2",
+            "floor_ratio": 0.8639397047381336,
+            "gate": "n/a (LoRA)",
+            "heldout_curve": [
+              2.4226403434272714,
+              2.147563988472837,
+              2.1192405929265896,
+              2.1126417991480624,
+              2.105965543072455,
+              2.098861461121656,
+              2.094889445549341,
+              2.0933844705099753,
+              2.0930151829872474
+            ],
+            "index": 0,
+            "live_fit": "$STAGE/sdfbase/reseed_eb64/hpo/results/qwen35_4b_base_eb64_s1/lora_r4_ce/r1_fit.json",
+            "live_fit_is_design_fit": true,
+            "live_fit_sha256": "4fe99eea4962105eb0a2bfb3bc64a5bafe1cdf093296b4ccd2a850149a56aee2",
+            "manifest": "$STAGE/sdfbase/reseed_eb64/hpo/manifests/hpo_calls_r9_qwen35_4b_base_eb64_s1_lora_r4_ce.json",
+            "replicate_vs_original": {
+              "delta": 1.6619261131278762e-05,
+              "identical": false,
+              "log_delta": 7.940375802317767e-06,
+              "note": "the replicate re-measures the adopted point (trial-to-trial noise at the winner); bit-identity is not expected on Modal",
+              "y_original_r1": 2.092998563726116,
+              "y_replicate": 2.0930151829872474
+            },
+            "round": 9,
+            "seed": 1,
+            "stopped_early": false,
+            "summary": "$STAGE/sdfbase/reseed_eb64/hpo/results/qwen35_4b_base_eb64_s1/lora_r4_ce/r9_t00/summary.json",
+            "summary_sha256": "644e1a30e83a9b88be0cb55b08335a068f7e9c4a64a1171cce2578396be12e4f",
+            "wall_s": 8679.372876405716,
+            "within_noise": {
+              "confirmation_verdict": "in_interval",
+              "criterion_3_met": true,
+              "d_over_sigma": -0.11641730067737666,
+              "fit_reliability": "ok",
+              "fitted_min_log_y": 0.7386124042516203,
+              "k_sigma": 2.0,
+              "log_gap": -6.706639560039029e-06,
+              "sigma_log_y": 5.760861591031829e-05,
+              "source": "design.confirmation_of (copied from r1_fit.json at emit time)"
+            }
+          },
+          "confirmation_verdict": "in_interval",
+          "criteria": {
+            "box_edge": "log-space position of the selected value in the DECLARED (union) box lies within EDGE_TOL=0.02 of 0 or 1",
+            "discrete_extreme": "the selected level is an end of a >=3-level discrete axis (a 2-level factor has no interior by design and is recorded, not alarmed)",
+            "fit_not_positive_definite": "the pooled quadratic's continuous Hessian is not positive-definite \u2014 there is no fitted interior minimum and the fold fell through to the RAW argmin trial, an unguided pick",
+            "fitted_argmin_on_edge": "the quadratic is positive-definite but its argmin sits on / outside the declared box, so the fold fell through to the RAW argmin trial",
+            "no_evidence_beyond": "trials lie beyond the selected value on that side, but none is worse than the selected point by more than the noise \u2014 the objective is flat out to the sampled edge; nothing says the optimum is not further out (a 1-D marginal check). ALARMED for a raw-trial selection (no model located the point); for a fitted argmin the same fact is filed as dims.<axis>.flat_to_sampled_edge and named in the FLAT sentence, not alarmed",
+            "noise": "sigma_log_y = sqrt(SSR/(n-p)), the dof-corrected RMS residual of the pooled quadratic fit in log y, converted to objective units at the selected point (noise = sigma_log_y * y)",
+            "sampled_extreme": "the selected value is at or beyond the min / max value the usable trials sampled on that axis \u2014 no trial lies beyond it"
+          },
+          "criterion_3_met": true,
+          "criterion_3_note": "MET: the replicate of the adopted raw best trial lies within 2 sigma of the fitted minimum",
+          "dims": {
+            "lr": {
+              "box": [
+                0.0008055949351268077,
+                0.008055
+              ],
+              "box_pos": 0.9205715794517327,
+              "evidence_beyond": {
+                "high": {
+                  "has_evidence": false,
+                  "n_beyond": 0,
+                  "n_worse_than_selected_by_more_than_noise": 0
+                },
+                "low": {
+                  "has_evidence": true,
+                  "n_beyond": 8,
+                  "n_worse_than_selected_by_more_than_noise": 7,
+                  "nearest_beyond": {
+                    "clip_activation_rate": 0.04423076923076923,
+                    "lr": 0.006681234631156978,
+                    "max_grad_norm": 0.12,
+                    "ratio": 0.8639328447594429,
+                    "trial": "r1_t07",
+                    "warmup_frac": 0.15,
+                    "y": 2.092998563726116
+                  }
+                }
+              },
+              "flat_to_sampled_edge": [],
+              "n_above": 0,
+              "n_below": 8,
+              "n_sampled": 8,
+              "on_box_edge": false,
+              "rank_ascending": 9,
+              "sampled_extreme": "max",
+              "sampled_max": 0.006681234631156978,
+              "sampled_min": 0.0008303425911688072,
+              "sampled_pos": 1.0019704805190637,
+              "value": 0.006708743531284034
+            },
+            "max_grad_norm": {
+              "box": [
+                0.12,
+                0.12
+              ],
+              "box_pos": null,
+              "evidence_beyond": {},
+              "fixed": true,
+              "flat_to_sampled_edge": [],
+              "n_above": 0,
+              "n_below": 0,
+              "n_sampled": 8,
+              "note": "max_grad_norm is a FIXED axis of this design (box [0.12, 0.12] has zero width): held at the declared constant, not searched \u2014 no interiority verdict exists or is owed along it",
+              "on_box_edge": false,
+              "rank_ascending": null,
+              "sampled_extreme": null,
+              "sampled_max": 0.12,
+              "sampled_min": 0.12,
+              "sampled_pos": null,
+              "value": 0.12
+            },
+            "warmup_frac": {
+              "alarmed": false,
+              "at_extreme": true,
+              "level_index": 1,
+              "levels": [
+                0.05,
+                0.15
+              ],
+              "n_levels": 2,
+              "note": "2-level factor: no interior exists by design; recorded, not alarmed",
+              "value": 0.15
+            }
+          },
+          "fall_through": null,
+          "fit": {
+            "hessian_eigs": [
+              0.0049774006419964064
+            ],
+            "positive_definite": true
+          },
+          "fit_reliability": "ok",
+          "fitted_argmin": {
+            "lr": 0.006708743531284034,
+            "max_grad_norm": 0.12,
+            "warmup_frac": 0.15
+          },
+          "ruling": {
+            "at": "2026-09-16T09:55Z",
+            "id": "O8",
+            "text": "orchestrator ruling O8: the round-1 fitted argmin is ALARMED sampled_extreme:lr (an extrapolation 0.4 % beyond the highest sampled lr); ADOPT the raw best trial that RAN (r1_t07) and replicate it once at exactly its design values in the r9 slot as the confirmation of record; never --allow-alarmed, never sliver trials; the two-sided verdict is computed against the fitted minimum and an outside verdict reads criterion 3 NOT MET; the adoption stands either way",
+            "where": "$WORK/qwen-base-seed-replicates/decisions.md"
+          },
+          "selected": {
+            "lr": 0.006681234631156978,
+            "max_grad_norm": 0.12,
+            "warmup_frac": 0.15
+          },
+          "selected_from": "raw_best_trial",
+          "selected_trial": "r1_t07",
+          "spread": {
+            "baseline": 2.4226403434272714,
+            "best_other_interior_trial": {
+              "clip_activation_rate": 0.032692307692307694,
+              "definition": "best usable trial, other than the selected one, that is interior on every continuous axis by criteria (a) and (b)",
+              "lr": 0.004668946830119194,
+              "margin_over_selected": 0.0010907986253116952,
+              "max_grad_norm": 0.12,
+              "ratio": 0.8643957508754838,
+              "trial": "r1_t00",
+              "warmup_frac": 0.05,
+              "y": 2.094120018758056
+            },
+            "best_trial": {
+              "clip_activation_rate": 0.04423076923076923,
+              "lr": 0.006681234631156978,
+              "max_grad_norm": 0.12,
+              "ratio": 0.8639328447594429,
+              "trial": "r1_t07",
+              "warmup_frac": 0.15,
+              "y": 2.092998563726116
+            },
+            "fitted_min_below_best_trial": -3.065640662835989e-05,
+            "flat": false,
+            "flat_kind": null,
+            "flat_to_sampled_edge": [],
+            "full_spread": 0.022795954257663453,
+            "max": 2.1157945179837796,
+            "median": 2.0989625661875912,
+            "min": 2.092998563726116,
+            "n_ok": 8,
+            "noise": {
+              "mad_log_y": 3.4290378694997546e-05,
+              "method": "sigma_log_y = sqrt(SSR/(n-p)), the dof-corrected RMS residual of the pooled quadratic fit in log y, converted to objective units at the selected point (noise = sigma_log_y * y)",
+              "noise_y": 0.0001205765164317003,
+              "rms_log_y": 3.527792844206511e-05,
+              "sigma_log_y": 5.760861591031829e-05,
+              "top3_spread": 0.0018491770857007594,
+              "top5_spread": 0.006953053731159731
+            },
+            "ratio_full_spread": 0.009409549510520565,
+            "ratio_max": 0.8733423942699634,
+            "ratio_median": 0.8663946226612497,
+            "ratio_min": 0.8639328447594429,
+            "runner_up": {
+              "clip_activation_rate": 0.032692307692307694,
+              "lr": 0.004668946830119194,
+              "margin_over_best_trial": 0.0011214550319400551,
+              "margin_over_best_trial_ratio": 0.0004629061160409598,
+              "margin_over_selected": 0.0010907986253116952,
+              "max_grad_norm": 0.12,
+              "ratio": 0.8643957508754838,
+              "trial": "r1_t00",
+              "warmup_frac": 0.05,
+              "y": 2.094120018758056
+            },
+            "selected_ratio": 0.8639454988897646,
+            "selected_y": 2.0930292201327445,
+            "selected_y_kind": "fitted minimum (the quadratic's value at its argmin)",
+            "text": "objective resolved at the noise level: only the selected point lies within noise 0.0001 of its objective 2.0930; runner-up margin 0.0011; full spread 0.0228 (0.0094 as a ratio to baseline 2.4226)",
+            "within_noise": {
+              "n": 1,
+              "span": {
+                "lr": {
+                  "decades": 0.0,
+                  "max": 0.006681234631156978,
+                  "min": 0.006681234631156978
+                },
+                "warmup_frac": [
+                  0.15
+                ]
+              },
+              "spread": 0.0,
+              "threshold_y": 2.0931497966491763,
+              "trials": [
+                "r1_t07"
+              ]
+            },
+            "y_key": "best_heldout_loss"
+          },
+          "text": [
+            "ALARM sampled_extreme [lr]: lr=0.006709 is the max of the 8 sampled values [0.0008303, 0.006681] \u2014 no trial lies beyond it",
+            "SPREAD: objective resolved at the noise level: only the selected point lies within noise 0.0001 of its objective 2.0930; runner-up margin 0.0011; full spread 0.0228 (0.0094 as a ratio to baseline 2.4226)",
+            "SELECTION GUARD: 1 alarm(s) \u2014 sampled_extreme:lr",
+            "CLIP ACTIVATION: threshold 0.25 (target 0.10); 8/8 trials carry metrics; over threshold: none; raw fall-through pick: r1_t07; fitted argmin's nearest 3: r1_t07=0.044, r1_t01=0.042, r1_t05=0.048 -> promotable"
+          ],
+          "version": 1
+        },
+        "warmup_frac": 0.15
+      },
+      "psr_ce_all": {
+        "lr": 0.004578836147882968,
+        "max_grad_norm": 0.34,
+        "selection_guard": {
+          "acknowledged": null,
+          "alarmed": false,
+          "alarms": [],
+          "clip_activation": {
+            "all_known_over_threshold": false,
+            "best_raw_promotable": "r1_t01",
+            "n_trials": 8,
+            "n_with_metrics": 8,
+            "over_threshold": [],
+            "per_trial": {
+              "r1_t00": {
+                "n_steps": 520,
+                "rate": 0.04807692307692308
+              },
+              "r1_t01": {
+                "n_steps": 520,
+                "rate": 0.026923076923076925
+              },
+              "r1_t02": {
+                "n_steps": 520,
+                "rate": 0.03461538461538462
+              },
+              "r1_t03": {
+                "n_steps": 520,
+                "rate": 0.05
+              },
+              "r1_t04": {
+                "n_steps": 520,
+                "rate": 0.019230769230769232
+              },
+              "r1_t05": {
+                "n_steps": 520,
+                "rate": 0.06346153846153846
+              },
+              "r1_t06": {
+                "n_steps": 520,
+                "rate": 0.04423076923076923
+              },
+              "r1_t07": {
+                "n_steps": 520,
+                "rate": 0.03076923076923077
+              }
+            },
+            "rule": "share of a trial's logged optimizer steps whose PRE-clip grad norm (metrics.jsonl <arm>/grad_norm) exceeded that trial's own max_grad_norm (summary.trial); a trial at or above `threshold` is not promotable (ineligible as the raw-argmin fall-through; flagged as a fitted argmin's nearest neighbour); `target` is the regime the promoted point should sit in \u2014 verified-facts \u00a73: healthy 0-4%, borderline 24-65%, defective 100%",
+            "target": 0.1,
+            "threshold": 0.25,
+            "winner": {
+              "flagged": false,
+              "k": 3,
+              "max_nearest_rate": 0.05,
+              "nearest": [
+                {
+                  "log_box_distance": 0.057644450283327126,
+                  "lr": 0.005228724445122654,
+                  "max_grad_norm": 0.34,
+                  "n_steps": 520,
+                  "rate": 0.026923076923076925,
+                  "trial": "r1_t01",
+                  "warmup_frac": 0.15
+                },
+                {
+                  "log_box_distance": 0.19235554971667326,
+                  "lr": 0.002940439354192482,
+                  "max_grad_norm": 0.34,
+                  "n_steps": 520,
+                  "rate": 0.03076923076923077,
+                  "trial": "r1_t07",
+                  "warmup_frac": 0.15
+                },
+                {
+                  "log_box_distance": 0.44235554971667324,
+                  "lr": 0.0016535932781367082,
+                  "max_grad_norm": 0.34,
+                  "n_steps": 520,
+                  "rate": 0.05,
+                  "trial": "r1_t03",
+                  "warmup_frac": 0.15
+                }
+              ],
+              "note": "every nearest trial with metrics is below the threshold",
+              "promotable": true,
+              "rates_known": 3,
+              "target": 0.1,
+              "threshold": 0.25
+            }
+          },
+          "confirmation": {
+            "baseline_ce": 2.4226403434272714,
+            "best_epoch": 8,
+            "best_heldout_loss": 2.069758780029235,
+            "checked_at": "2026-09-16T12:20:16+00:00",
+            "checks": [
+              {
+                "check": "artefact_has_interior_winner",
+                "detail": "winner=present on_edge=False (r1_fit.json)",
+                "pass": true
+              },
+              {
+                "check": "summary_is_a_confirmation",
+                "detail": "confirmation_of=present",
+                "pass": true
+              },
+              {
+                "check": "design_is_the_spawn_record",
+                "detail": "r9_qwen35_4b_base_eb64_s1_psr_ce_all_all.json (sha 9bf9395bc57c1521): round=9 arm=psr_ce_all si='constv2-mix-10m' trials=1; design.trial={'lr': 0.004578836147882968, 'max_grad_norm': 0.34, 'warmup_frac': 0.15} vs summary.trial={'lr': 0.004578836147882968, 'max_grad_norm': 0.34, 'warmup_frac': 0.15} vs design.confirmation_of.argmin={'lr': 0.004578836147882968, 'max_grad_norm': 0.34, 'warmup_frac': 0.15}; guard_alarmed=False alarms=[]; manifest hpo_calls_r9_qwen35_4b_base_eb64_s1_psr_ce_all.json expect.trial == summary.trial verbatim",
+                "pass": true
+              },
+              {
+                "check": "confirmation_of.fit_sha256_matches",
+                "detail": "summary 7281093534c3795d vs design 7281093534c3795d (the sha the trial was spawned from); live r1_fit.json = 7281093534c3795d (== design: never rewritten)",
+                "pass": true
+              },
+              {
+                "check": "trial_equals_winner_verbatim",
+                "detail": "trial={'lr': 0.004578836147882968, 'max_grad_norm': 0.34, 'warmup_frac': 0.15} design.confirmation_of.argmin={'lr': 0.004578836147882968, 'max_grad_norm': 0.34, 'warmup_frac': 0.15} (verbatim float equality)",
+                "pass": true
+              },
+              {
+                "check": "live_fit_agrees_with_design",
+                "detail": "live selection {'lr': 0.004578836147882968, 'max_grad_norm': 0.34, 'warmup_frac': 0.15} vs design argmin {'lr': 0.004578836147882968, 'max_grad_norm': 0.34, 'warmup_frac': 0.15}: rel deltas lr=0.00e+00 clip=0.00e+00 warmup=0.00e+00 (tol 1e-09); rounds [1] vs [1]; n_rows 8 vs 8; fitted_min_log_y live 0.7273322106722331 vs design 0.7273322106722331 (rel 0.00e+00); sigma_log_y live 0.00019058654717494448 vs design 0.00019058654717494448 (rel 0.00e+00); live sha 7281093534c3795d == design's",
+                "pass": true
+              },
+              {
+                "check": "status_ok",
+                "detail": "status='ok' error=",
+                "pass": true
+              },
+              {
+                "check": "floor_ratio_le_1.1",
+                "detail": "floor_ratio=0.8543 floor_ok=True (ce_floor_ratio_max 1.1)",
+                "pass": true
+              },
+              {
+                "check": "psr_gate_alive",
+                "detail": "the trial runs check_psr_gates in-process; a dead gate ends the trial as status gate_dead",
+                "pass": true
+              },
+              {
+                "check": "clip_activation_below_threshold",
+                "detail": "rate=0.0269 over 520 steps (threshold 0.25, target 0.1)",
+                "pass": true
+              },
+              {
+                "check": "confirmation_not_outside_above",
+                "detail": "verdict=in_interval: d=log(y)-fitted_min_log_y=0.0001 = 0.52 sigma vs +/-2.0 x sigma_log_y=0.0004 (y=2.06976, exp(fitted min)=2.06955; from the DESIGN's record fitted_min_log_y=0.7273322106722331 sigma_log_y=0.00019058654717494448; live file: 0.7273322106722331 / 0.00019058654717494448); fit_reliability=ok; criterion 3 (within noise) MET",
+                "pass": true
+              },
+              {
+                "check": "effective_batch_64",
+                "detail": "2 x 32",
+                "pass": true
+              },
+              {
+                "check": "si_is_reference_cell",
+                "detail": "si='constv2-mix-10m'",
+                "pass": true
+              },
+              {
+                "check": "seed_is_expected",
+                "detail": "summary.seed=1 expected 1 (the W1 passthrough; a summary without the field is REFUSED)",
+                "pass": true
+              }
+            ],
+            "clip_activation_rate": 0.026923076923076925,
+            "clip_n_steps": 520,
+            "design": "$STAGE/sdfbase/reseed_eb64/hpo/trials/r9_qwen35_4b_base_eb64_s1_psr_ce_all_all.json",
+            "design_fit_sha256": "7281093534c3795d4505e7a9adad519babde5d44266f2b7e3217aa5dee90bc40",
+            "design_sha256": "9bf9395bc57c1521af738945612de615519479f75456bdc45f5a1de49867e7da",
+            "dir": "$STAGE/sdfbase/reseed_eb64/hpo/results/qwen35_4b_base_eb64_s1/psr_ce_all/r9_t00",
+            "fit": "$STAGE/sdfbase/reseed_eb64/hpo/results/qwen35_4b_base_eb64_s1/psr_ce_all/r1_fit.json",
+            "fit_fingerprint": "a452367d191a60aa870e7708d81822ad0706d64c07d95eaa600d8025c8c866c5",
+            "fit_sha256": "7281093534c3795d4505e7a9adad519babde5d44266f2b7e3217aa5dee90bc40",
+            "floor_ratio": 0.8543400945355264,
+            "gate": "alive (status ok; check_psr_gates in-trial)",
+            "heldout_curve": [
+              2.4226403434272714,
+              2.1332125571756095,
+              2.0972987793009796,
+              2.086462225957931,
+              2.079986063840438,
+              2.075135007628928,
+              2.0717813754258616,
+              2.070223877622791,
+              2.069758780029235
+            ],
+            "index": 0,
+            "live_fit": "$STAGE/sdfbase/reseed_eb64/hpo/results/qwen35_4b_base_eb64_s1/psr_ce_all/r1_fit.json",
+            "live_fit_is_design_fit": true,
+            "live_fit_sha256": "7281093534c3795d4505e7a9adad519babde5d44266f2b7e3217aa5dee90bc40",
+            "manifest": "$STAGE/sdfbase/reseed_eb64/hpo/manifests/hpo_calls_r9_qwen35_4b_base_eb64_s1_psr_ce_all.json",
+            "rel_tol_live_fit": 1e-09,
+            "relative_deltas_live_vs_design": {
+              "fitted_min_log_y": 0.0,
+              "lr": 0.0,
+              "max_grad_norm": 0.0,
+              "sigma_log_y": 0.0,
+              "warmup_frac": 0.0
+            },
+            "round": 9,
+            "seed": 1,
+            "stopped_early": false,
+            "summary_sha256": "3d1c65c6a4b418cd01120f15f24044ec1ae881ac323d4a9bcf408f0cacca66ba",
+            "wall_s": 9580.740012407303,
+            "within_noise": {
+              "confirmation_verdict": "in_interval",
+              "criterion_3_met": true,
+              "d_over_sigma": 0.5239531822805502,
+              "fit_reliability": "ok",
+              "fitted_min_log_y": 0.7273322106722331,
+              "k_sigma": 2.0,
+              "live_fit": {
+                "fitted_min_log_y": 0.7273322106722331,
+                "sigma_log_y": 0.00019058654717494448
+              },
+              "log_gap": 9.985842789217436e-05,
+              "sigma_log_y": 0.00019058654717494448,
+              "source": "design.confirmation_of"
+            }
+          },
+          "confirmation_verdict": "in_interval",
+          "criteria": {
+            "box_edge": "log-space position of the selected value in the DECLARED (union) box lies within EDGE_TOL=0.02 of 0 or 1",
+            "discrete_extreme": "the selected level is an end of a >=3-level discrete axis (a 2-level factor has no interior by design and is recorded, not alarmed)",
+            "fit_not_positive_definite": "the pooled quadratic's continuous Hessian is not positive-definite \u2014 there is no fitted interior minimum and the fold fell through to the RAW argmin trial, an unguided pick",
+            "fitted_argmin_on_edge": "the quadratic is positive-definite but its argmin sits on / outside the declared box, so the fold fell through to the RAW argmin trial",
+            "no_evidence_beyond": "trials lie beyond the selected value on that side, but none is worse than the selected point by more than the noise \u2014 the objective is flat out to the sampled edge; nothing says the optimum is not further out (a 1-D marginal check). ALARMED for a raw-trial selection (no model located the point); for a fitted argmin the same fact is filed as dims.<axis>.flat_to_sampled_edge and named in the FLAT sentence, not alarmed",
+            "noise": "sigma_log_y = sqrt(SSR/(n-p)), the dof-corrected RMS residual of the pooled quadratic fit in log y, converted to objective units at the selected point (noise = sigma_log_y * y)",
+            "sampled_extreme": "the selected value is at or beyond the min / max value the usable trials sampled on that axis \u2014 no trial lies beyond it"
+          },
+          "dims": {
+            "lr": {
+              "box": [
+                0.0005369814587434337,
+                0.005369
+              ],
+              "box_pos": 0.9308571431872465,
+              "evidence_beyond": {
+                "high": {
+                  "has_evidence": false,
+                  "n_beyond": 1,
+                  "n_worse_than_selected_by_more_than_noise": 0,
+                  "nearest_beyond": {
+                    "clip_activation_rate": 0.026923076923076925,
+                    "lr": 0.005228724445122654,
+                    "max_grad_norm": 0.34,
+                    "ratio": 0.8541879118194493,
+                    "trial": "r1_t01",
+                    "warmup_frac": 0.15,
+                    "y": 2.0693900960416944
+                  }
+                },
+                "low": {
+                  "has_evidence": true,
+                  "n_beyond": 7,
+                  "n_worse_than_selected_by_more_than_noise": 7,
+                  "nearest_beyond": {
+                    "clip_activation_rate": 0.019230769230769232,
+                    "lr": 0.00314006676824976,
+                    "max_grad_norm": 0.34,
+                    "ratio": 0.8549683140897544,
+                    "trial": "r1_t04",
+                    "warmup_frac": 0.05,
+                    "y": 2.071280730065838
+                  }
+                }
+              },
+              "flat_to_sampled_edge": [
+                "high"
+              ],
+              "n_above": 1,
+              "n_below": 7,
+              "n_sampled": 8,
+              "on_box_edge": false,
+              "rank_ascending": 8,
+              "sampled_extreme": null,
+              "sampled_max": 0.005228724445122654,
+              "sampled_min": 0.0005584551464035643,
+              "sampled_pos": 0.9406627447084585,
+              "value": 0.004578836147882968
+            },
+            "max_grad_norm": {
+              "box": [
+                0.34,
+                0.34
+              ],
+              "box_pos": null,
+              "evidence_beyond": {},
+              "fixed": true,
+              "flat_to_sampled_edge": [],
+              "n_above": 0,
+              "n_below": 0,
+              "n_sampled": 8,
+              "note": "max_grad_norm is a FIXED axis of this design (box [0.34, 0.34] has zero width): held at the declared constant, not searched \u2014 no interiority verdict exists or is owed along it",
+              "on_box_edge": false,
+              "rank_ascending": null,
+              "sampled_extreme": null,
+              "sampled_max": 0.34,
+              "sampled_min": 0.34,
+              "sampled_pos": null,
+              "value": 0.34
+            },
+            "warmup_frac": {
+              "alarmed": false,
+              "at_extreme": true,
+              "level_index": 1,
+              "levels": [
+                0.05,
+                0.15
+              ],
+              "n_levels": 2,
+              "note": "2-level factor: no interior exists by design; recorded, not alarmed",
+              "value": 0.15
+            }
+          },
+          "fall_through": null,
+          "fit": {
+            "hessian_eigs": [
+              0.00573059224958874
+            ],
+            "positive_definite": true
+          },
+          "fit_reliability": "ok",
+          "selected": {
+            "lr": 0.004578836147882968,
+            "max_grad_norm": 0.34,
+            "warmup_frac": 0.15
+          },
+          "selected_from": "fitted_argmin",
+          "selected_trial": null,
+          "spread": {
+            "baseline": 2.4226403434272714,
+            "best_other_interior_trial": {
+              "clip_activation_rate": 0.03076923076923077,
+              "definition": "best usable trial, other than the selected one, that is interior on every continuous axis by criteria (a) and (b)",
+              "lr": 0.002940439354192482,
+              "margin_over_selected": 0.0014891574477262637,
+              "max_grad_norm": 0.34,
+              "ratio": 0.8548694694022849,
+              "trial": "r1_t07",
+              "warmup_frac": 0.15,
+              "y": 2.071041264938241
+            },
+            "best_trial": {
+              "clip_activation_rate": 0.026923076923076925,
+              "lr": 0.005228724445122654,
+              "max_grad_norm": 0.34,
+              "ratio": 0.8541879118194493,
+              "trial": "r1_t01",
+              "warmup_frac": 0.15,
+              "y": 2.0693900960416944
+            },
+            "fitted_min_below_best_trial": -0.00016201144882010965,
+            "flat": false,
+            "flat_kind": null,
+            "flat_to_sampled_edge": [
+              "lr:high"
+            ],
+            "full_spread": 0.026313436382563005,
+            "max": 2.0957035324242574,
+            "median": 2.0754124521465007,
+            "min": 2.0693900960416944,
+            "n_ok": 8,
+            "noise": {
+              "mad_log_y": 0.0001613672275928293,
+              "method": "sigma_log_y = sqrt(SSR/(n-p)), the dof-corrected RMS residual of the pooled quadratic fit in log y, converted to objective units at the selected point (noise = sigma_log_y * y)",
+              "noise_y": 0.0003944287903652467,
+              "rms_log_y": 0.0001167099481043722,
+              "sigma_log_y": 0.00019058654717494448,
+              "top3_spread": 0.0018906340241433561,
+              "top5_spread": 0.006471298870478925
+            },
+            "ratio_full_spread": 0.010861470401065722,
+            "ratio_max": 0.865049382220515,
+            "ratio_median": 0.8566737765170901,
+            "ratio_min": 0.8541879118194493,
+            "runner_up": {
+              "clip_activation_rate": 0.03076923076923077,
+              "lr": 0.002940439354192482,
+              "margin_over_best_trial": 0.0016511688965463733,
+              "margin_over_best_trial_ratio": 0.0006815575828356307,
+              "margin_over_selected": 0.0014891574477262637,
+              "max_grad_norm": 0.34,
+              "ratio": 0.8548694694022849,
+              "trial": "r1_t07",
+              "warmup_frac": 0.15,
+              "y": 2.071041264938241
+            },
+            "selected_ratio": 0.854254785736273,
+            "selected_y": 2.0695521074905145,
+            "selected_y_kind": "fitted minimum (the quadratic's value at its argmin)",
+            "text": "objective resolved at the noise level: only the selected point lies within noise 0.0004 of its objective 2.0696; runner-up margin 0.0015; full spread 0.0263 (0.0109 as a ratio to baseline 2.4226). Flat out to the sampled edge on: lr (high side) \u2014 recorded, not alarmed: the fitted argmin pools every trial's curvature",
+            "within_noise": {
+              "n": 1,
+              "span": {
+                "lr": {
+                  "decades": 0.0,
+                  "max": 0.005228724445122654,
+                  "min": 0.005228724445122654
+                },
+                "warmup_frac": [
+                  0.15
+                ]
+              },
+              "spread": 0.0,
+              "threshold_y": 2.06994653628088,
+              "trials": [
+                "r1_t01"
+              ]
+            },
+            "y_key": "best_heldout_loss"
+          },
+          "text": [
+            "SPREAD: objective resolved at the noise level: only the selected point lies within noise 0.0004 of its objective 2.0696; runner-up margin 0.0015; full spread 0.0263 (0.0109 as a ratio to baseline 2.4226). Flat out to the sampled edge on: lr (high side) \u2014 recorded, not alarmed: the fitted argmin pools every trial's curvature",
+            "SELECTION GUARD: clear (interior on every axis, positive-definite fit)",
+            "CLIP ACTIVATION: threshold 0.25 (target 0.10); 8/8 trials carry metrics; over threshold: none; raw fall-through pick: r1_t01; fitted argmin's nearest 3: r1_t01=0.027, r1_t07=0.031, r1_t03=0.050 -> promotable"
+          ],
+          "version": 1
+        },
+        "warmup_frac": 0.15
+      }
+    },
     "qwen35_4b_base_eb64_s2": {
       "lora_r4_ce": {
         "lr": 0.006681234631156978,
@@ -4387,7 +5225,1683 @@
         "warmup_frac": 0.15
       }
     },
+    "qwen35_4b_base_eb64_s2_ctlstop": {
+      "lora_r4_ce": {
+        "lr": 0.006681234631156978,
+        "max_grad_norm": 0.12,
+        "selection_guard": {
+          "acknowledged": {
+            "at": "2026-09-16T12:45:39+00:00",
+            "by": "O8 \u2014 orchestrator ruling O8: the round-1 fitted argmin is ALARMED sampled_extreme:lr (an extrapolation 0.4 % beyond the highest sampled lr); ADOPT the raw best trial that RAN (r1_t07) and replicate it once at exactly its design values in the r9 slot as the confirmation of record; never --allow-alarmed, never sliver trials; the two-sided verdict is computed against the fitted minimum and an outside verdict reads criterion 3 NOT MET; the adoption stands either way"
+          },
+          "alarmed": true,
+          "alarms": [
+            {
+              "code": "sampled_extreme",
+              "dim": "lr",
+              "text": "lr=0.006709 is the max of the 8 sampled values [0.0008303, 0.006681] \u2014 no trial lies beyond it"
+            }
+          ],
+          "clip_activation": {
+            "all_known_over_threshold": false,
+            "best_raw_promotable": "r1_t07",
+            "n_trials": 8,
+            "n_with_metrics": 8,
+            "over_threshold": [],
+            "per_trial": {
+              "r1_t00": {
+                "n_steps": 520,
+                "rate": 0.032692307692307694
+              },
+              "r1_t01": {
+                "n_steps": 520,
+                "rate": 0.04230769230769231
+              },
+              "r1_t02": {
+                "n_steps": 520,
+                "rate": 0.04038461538461539
+              },
+              "r1_t03": {
+                "n_steps": 520,
+                "rate": 0.051923076923076926
+              },
+              "r1_t04": {
+                "n_steps": 520,
+                "rate": 0.04807692307692308
+              },
+              "r1_t05": {
+                "n_steps": 520,
+                "rate": 0.04807692307692308
+              },
+              "r1_t06": {
+                "n_steps": 520,
+                "rate": 0.038461538461538464
+              },
+              "r1_t07": {
+                "n_steps": 520,
+                "rate": 0.04423076923076923
+              }
+            },
+            "rule": "share of a trial's logged optimizer steps whose PRE-clip grad norm (metrics.jsonl <arm>/grad_norm) exceeded that trial's own max_grad_norm (summary.trial); a trial at or above `threshold` is not promotable (ineligible as the raw-argmin fall-through; flagged as a fitted argmin's nearest neighbour); `target` is the regime the promoted point should sit in \u2014 verified-facts \u00a73: healthy 0-4%, borderline 24-65%, defective 100%",
+            "target": 0.1,
+            "threshold": 0.25,
+            "winner": {
+              "flagged": false,
+              "k": 3,
+              "max_nearest_rate": 0.04807692307692308,
+              "nearest": [
+                {
+                  "log_box_distance": 0.0017845573304820365,
+                  "lr": 0.006681234631156978,
+                  "max_grad_norm": 0.12,
+                  "n_steps": 520,
+                  "rate": 0.04423076923076923,
+                  "trial": "r1_t07",
+                  "warmup_frac": 0.15
+                },
+                {
+                  "log_box_distance": 0.25178455733048194,
+                  "lr": 0.003757245034176883,
+                  "max_grad_norm": 0.12,
+                  "n_steps": 520,
+                  "rate": 0.04230769230769231,
+                  "trial": "r1_t01",
+                  "warmup_frac": 0.15
+                },
+                {
+                  "log_box_distance": 0.5017845573304822,
+                  "lr": 0.0021129164033567606,
+                  "max_grad_norm": 0.12,
+                  "n_steps": 520,
+                  "rate": 0.04807692307692308,
+                  "trial": "r1_t05",
+                  "warmup_frac": 0.15
+                }
+              ],
+              "note": "every nearest trial with metrics is below the threshold",
+              "promotable": true,
+              "rates_known": 3,
+              "target": 0.1,
+              "threshold": 0.25
+            }
+          },
+          "confirmation": {
+            "baseline_ce": 2.4226403434272714,
+            "best_epoch": 8,
+            "best_heldout_loss": 2.0930151829872474,
+            "checked_at": "2026-09-16T05:45:39-07:00",
+            "checks": [
+              {
+                "check": "summary_is_a_confirmation",
+                "detail": "confirmation_of=present",
+                "pass": true
+              },
+              {
+                "check": "design_is_the_spawn_record",
+                "detail": "round=9 arm=lora_r4_ce si='constv2-mix-10m' trials=1; design.trial={'lr': 0.006681234631156978, 'max_grad_norm': 0.12, 'warmup_frac': 0.15} vs summary.trial={'lr': 0.006681234631156978, 'max_grad_norm': 0.12, 'warmup_frac': 0.15}; confirmation_of.selected_from='raw_best_trial'; manifest expect.trial == summary.trial verbatim",
+                "pass": true
+              },
+              {
+                "check": "trial_equals_raw_best_verbatim",
+                "detail": "trial={'lr': 0.006681234631156978, 'max_grad_norm': 0.12, 'warmup_frac': 0.15} == r1 design row 7 {'lr': 0.006681234631156978, 'max_grad_norm': 0.12, 'warmup_frac': 0.15} == fall-through pick {'lr': 0.006681234631156978, 'max_grad_norm': 0.12, 'warmup_frac': 0.15} (verbatim float equality)",
+                "pass": true
+              },
+              {
+                "check": "confirmation_of.fit_sha256_matches",
+                "detail": "summary 4fe99eea4962105e design 4fe99eea4962105e live r1_fit.json 4fe99eea4962105e",
+                "pass": true
+              },
+              {
+                "check": "status_ok",
+                "detail": "status='ok' error=",
+                "pass": true
+              },
+              {
+                "check": "floor_ratio_le_1.1",
+                "detail": "floor_ratio=0.8639 floor_ok=True (max 1.1)",
+                "pass": true
+              },
+              {
+                "check": "clip_activation_below_threshold",
+                "detail": "rate=0.0442 over 520 steps (threshold 0.25)",
+                "pass": true
+              },
+              {
+                "check": "effective_batch_64",
+                "detail": "2 x 32",
+                "pass": true
+              },
+              {
+                "check": "si_is_reference_cell",
+                "detail": "si='constv2-mix-10m'",
+                "pass": true
+              },
+              {
+                "check": "seed_is_expected",
+                "detail": "summary.seed=1 expected 1",
+                "pass": true
+              }
+            ],
+            "clip_activation_rate": 0.04423076923076923,
+            "clip_n_steps": 520,
+            "design": "$STAGE/sdfbase/reseed_eb64/hpo/trials/r9_qwen35_4b_base_eb64_s1_lora_r4_ce_all.json",
+            "design_fit_sha256": "4fe99eea4962105eb0a2bfb3bc64a5bafe1cdf093296b4ccd2a850149a56aee2",
+            "design_selected_from": "raw_best_trial",
+            "design_sha256": "c41250e28b83aa5239dccf21e4153ac44407b86ce30adde9bc36029f2642ad35",
+            "dir": "r9_t00",
+            "fit": "$STAGE/sdfbase/reseed_eb64/hpo/results/qwen35_4b_base_eb64_s1/lora_r4_ce/r1_fit.json",
+            "fit_fingerprint": "a613d65defad3d2ff7075e277a20ecbe4435f2b89c3fc01e923fa6155b0887e6",
+            "fit_sha256": "4fe99eea4962105eb0a2bfb3bc64a5bafe1cdf093296b4ccd2a850149a56aee2",
+            "floor_ratio": 0.8639397047381336,
+            "gate": "n/a (LoRA)",
+            "heldout_curve": [
+              2.4226403434272714,
+              2.147563988472837,
+              2.1192405929265896,
+              2.1126417991480624,
+              2.105965543072455,
+              2.098861461121656,
+              2.094889445549341,
+              2.0933844705099753,
+              2.0930151829872474
+            ],
+            "index": 0,
+            "live_fit": "$STAGE/sdfbase/reseed_eb64/hpo/results/qwen35_4b_base_eb64_s1/lora_r4_ce/r1_fit.json",
+            "live_fit_is_design_fit": true,
+            "live_fit_sha256": "4fe99eea4962105eb0a2bfb3bc64a5bafe1cdf093296b4ccd2a850149a56aee2",
+            "manifest": "$STAGE/sdfbase/reseed_eb64/hpo/manifests/hpo_calls_r9_qwen35_4b_base_eb64_s1_lora_r4_ce.json",
+            "replicate_vs_original": {
+              "delta": 1.6619261131278762e-05,
+              "identical": false,
+              "log_delta": 7.940375802317767e-06,
+              "note": "the replicate re-measures the adopted point (trial-to-trial noise at the winner); bit-identity is not expected on Modal",
+              "y_original_r1": 2.092998563726116,
+              "y_replicate": 2.0930151829872474
+            },
+            "round": 9,
+            "seed": 1,
+            "stopped_early": false,
+            "summary": "$STAGE/sdfbase/reseed_eb64/hpo/results/qwen35_4b_base_eb64_s1/lora_r4_ce/r9_t00/summary.json",
+            "summary_sha256": "644e1a30e83a9b88be0cb55b08335a068f7e9c4a64a1171cce2578396be12e4f",
+            "wall_s": 8679.372876405716,
+            "within_noise": {
+              "confirmation_verdict": "in_interval",
+              "criterion_3_met": true,
+              "d_over_sigma": -0.11641730067737666,
+              "fit_reliability": "ok",
+              "fitted_min_log_y": 0.7386124042516203,
+              "k_sigma": 2.0,
+              "log_gap": -6.706639560039029e-06,
+              "sigma_log_y": 5.760861591031829e-05,
+              "source": "design.confirmation_of (copied from r1_fit.json at emit time)"
+            }
+          },
+          "confirmation_verdict": "in_interval",
+          "criteria": {
+            "box_edge": "log-space position of the selected value in the DECLARED (union) box lies within EDGE_TOL=0.02 of 0 or 1",
+            "discrete_extreme": "the selected level is an end of a >=3-level discrete axis (a 2-level factor has no interior by design and is recorded, not alarmed)",
+            "fit_not_positive_definite": "the pooled quadratic's continuous Hessian is not positive-definite \u2014 there is no fitted interior minimum and the fold fell through to the RAW argmin trial, an unguided pick",
+            "fitted_argmin_on_edge": "the quadratic is positive-definite but its argmin sits on / outside the declared box, so the fold fell through to the RAW argmin trial",
+            "no_evidence_beyond": "trials lie beyond the selected value on that side, but none is worse than the selected point by more than the noise \u2014 the objective is flat out to the sampled edge; nothing says the optimum is not further out (a 1-D marginal check). ALARMED for a raw-trial selection (no model located the point); for a fitted argmin the same fact is filed as dims.<axis>.flat_to_sampled_edge and named in the FLAT sentence, not alarmed",
+            "noise": "sigma_log_y = sqrt(SSR/(n-p)), the dof-corrected RMS residual of the pooled quadratic fit in log y, converted to objective units at the selected point (noise = sigma_log_y * y)",
+            "sampled_extreme": "the selected value is at or beyond the min / max value the usable trials sampled on that axis \u2014 no trial lies beyond it"
+          },
+          "criterion_3_met": true,
+          "criterion_3_note": "MET: the replicate of the adopted raw best trial lies within 2 sigma of the fitted minimum",
+          "dims": {
+            "lr": {
+              "box": [
+                0.0008055949351268077,
+                0.008055
+              ],
+              "box_pos": 0.9205715794517327,
+              "evidence_beyond": {
+                "high": {
+                  "has_evidence": false,
+                  "n_beyond": 0,
+                  "n_worse_than_selected_by_more_than_noise": 0
+                },
+                "low": {
+                  "has_evidence": true,
+                  "n_beyond": 8,
+                  "n_worse_than_selected_by_more_than_noise": 7,
+                  "nearest_beyond": {
+                    "clip_activation_rate": 0.04423076923076923,
+                    "lr": 0.006681234631156978,
+                    "max_grad_norm": 0.12,
+                    "ratio": 0.8639328447594429,
+                    "trial": "r1_t07",
+                    "warmup_frac": 0.15,
+                    "y": 2.092998563726116
+                  }
+                }
+              },
+              "flat_to_sampled_edge": [],
+              "n_above": 0,
+              "n_below": 8,
+              "n_sampled": 8,
+              "on_box_edge": false,
+              "rank_ascending": 9,
+              "sampled_extreme": "max",
+              "sampled_max": 0.006681234631156978,
+              "sampled_min": 0.0008303425911688072,
+              "sampled_pos": 1.0019704805190637,
+              "value": 0.006708743531284034
+            },
+            "max_grad_norm": {
+              "box": [
+                0.12,
+                0.12
+              ],
+              "box_pos": null,
+              "evidence_beyond": {},
+              "fixed": true,
+              "flat_to_sampled_edge": [],
+              "n_above": 0,
+              "n_below": 0,
+              "n_sampled": 8,
+              "note": "max_grad_norm is a FIXED axis of this design (box [0.12, 0.12] has zero width): held at the declared constant, not searched \u2014 no interiority verdict exists or is owed along it",
+              "on_box_edge": false,
+              "rank_ascending": null,
+              "sampled_extreme": null,
+              "sampled_max": 0.12,
+              "sampled_min": 0.12,
+              "sampled_pos": null,
+              "value": 0.12
+            },
+            "warmup_frac": {
+              "alarmed": false,
+              "at_extreme": true,
+              "level_index": 1,
+              "levels": [
+                0.05,
+                0.15
+              ],
+              "n_levels": 2,
+              "note": "2-level factor: no interior exists by design; recorded, not alarmed",
+              "value": 0.15
+            }
+          },
+          "fall_through": null,
+          "fit": {
+            "hessian_eigs": [
+              0.0049774006419964064
+            ],
+            "positive_definite": true
+          },
+          "fit_reliability": "ok",
+          "fitted_argmin": {
+            "lr": 0.006708743531284034,
+            "max_grad_norm": 0.12,
+            "warmup_frac": 0.15
+          },
+          "ruling": {
+            "at": "2026-09-16T09:55Z",
+            "id": "O8",
+            "text": "orchestrator ruling O8: the round-1 fitted argmin is ALARMED sampled_extreme:lr (an extrapolation 0.4 % beyond the highest sampled lr); ADOPT the raw best trial that RAN (r1_t07) and replicate it once at exactly its design values in the r9 slot as the confirmation of record; never --allow-alarmed, never sliver trials; the two-sided verdict is computed against the fitted minimum and an outside verdict reads criterion 3 NOT MET; the adoption stands either way",
+            "where": "$WORK/qwen-base-seed-replicates/decisions.md"
+          },
+          "selected": {
+            "lr": 0.006681234631156978,
+            "max_grad_norm": 0.12,
+            "warmup_frac": 0.15
+          },
+          "selected_from": "raw_best_trial",
+          "selected_trial": "r1_t07",
+          "spread": {
+            "baseline": 2.4226403434272714,
+            "best_other_interior_trial": {
+              "clip_activation_rate": 0.032692307692307694,
+              "definition": "best usable trial, other than the selected one, that is interior on every continuous axis by criteria (a) and (b)",
+              "lr": 0.004668946830119194,
+              "margin_over_selected": 0.0010907986253116952,
+              "max_grad_norm": 0.12,
+              "ratio": 0.8643957508754838,
+              "trial": "r1_t00",
+              "warmup_frac": 0.05,
+              "y": 2.094120018758056
+            },
+            "best_trial": {
+              "clip_activation_rate": 0.04423076923076923,
+              "lr": 0.006681234631156978,
+              "max_grad_norm": 0.12,
+              "ratio": 0.8639328447594429,
+              "trial": "r1_t07",
+              "warmup_frac": 0.15,
+              "y": 2.092998563726116
+            },
+            "fitted_min_below_best_trial": -3.065640662835989e-05,
+            "flat": false,
+            "flat_kind": null,
+            "flat_to_sampled_edge": [],
+            "full_spread": 0.022795954257663453,
+            "max": 2.1157945179837796,
+            "median": 2.0989625661875912,
+            "min": 2.092998563726116,
+            "n_ok": 8,
+            "noise": {
+              "mad_log_y": 3.4290378694997546e-05,
+              "method": "sigma_log_y = sqrt(SSR/(n-p)), the dof-corrected RMS residual of the pooled quadratic fit in log y, converted to objective units at the selected point (noise = sigma_log_y * y)",
+              "noise_y": 0.0001205765164317003,
+              "rms_log_y": 3.527792844206511e-05,
+              "sigma_log_y": 5.760861591031829e-05,
+              "top3_spread": 0.0018491770857007594,
+              "top5_spread": 0.006953053731159731
+            },
+            "ratio_full_spread": 0.009409549510520565,
+            "ratio_max": 0.8733423942699634,
+            "ratio_median": 0.8663946226612497,
+            "ratio_min": 0.8639328447594429,
+            "runner_up": {
+              "clip_activation_rate": 0.032692307692307694,
+              "lr": 0.004668946830119194,
+              "margin_over_best_trial": 0.0011214550319400551,
+              "margin_over_best_trial_ratio": 0.0004629061160409598,
+              "margin_over_selected": 0.0010907986253116952,
+              "max_grad_norm": 0.12,
+              "ratio": 0.8643957508754838,
+              "trial": "r1_t00",
+              "warmup_frac": 0.05,
+              "y": 2.094120018758056
+            },
+            "selected_ratio": 0.8639454988897646,
+            "selected_y": 2.0930292201327445,
+            "selected_y_kind": "fitted minimum (the quadratic's value at its argmin)",
+            "text": "objective resolved at the noise level: only the selected point lies within noise 0.0001 of its objective 2.0930; runner-up margin 0.0011; full spread 0.0228 (0.0094 as a ratio to baseline 2.4226)",
+            "within_noise": {
+              "n": 1,
+              "span": {
+                "lr": {
+                  "decades": 0.0,
+                  "max": 0.006681234631156978,
+                  "min": 0.006681234631156978
+                },
+                "warmup_frac": [
+                  0.15
+                ]
+              },
+              "spread": 0.0,
+              "threshold_y": 2.0931497966491763,
+              "trials": [
+                "r1_t07"
+              ]
+            },
+            "y_key": "best_heldout_loss"
+          },
+          "text": [
+            "ALARM sampled_extreme [lr]: lr=0.006709 is the max of the 8 sampled values [0.0008303, 0.006681] \u2014 no trial lies beyond it",
+            "SPREAD: objective resolved at the noise level: only the selected point lies within noise 0.0001 of its objective 2.0930; runner-up margin 0.0011; full spread 0.0228 (0.0094 as a ratio to baseline 2.4226)",
+            "SELECTION GUARD: 1 alarm(s) \u2014 sampled_extreme:lr",
+            "CLIP ACTIVATION: threshold 0.25 (target 0.10); 8/8 trials carry metrics; over threshold: none; raw fall-through pick: r1_t07; fitted argmin's nearest 3: r1_t07=0.044, r1_t01=0.042, r1_t05=0.048 -> promotable"
+          ],
+          "version": 1
+        },
+        "warmup_frac": 0.15
+      },
+      "psr_ce_all": {
+        "lr": 0.004578836147882968,
+        "max_grad_norm": 0.34,
+        "selection_guard": {
+          "acknowledged": null,
+          "alarmed": false,
+          "alarms": [],
+          "clip_activation": {
+            "all_known_over_threshold": false,
+            "best_raw_promotable": "r1_t01",
+            "n_trials": 8,
+            "n_with_metrics": 8,
+            "over_threshold": [],
+            "per_trial": {
+              "r1_t00": {
+                "n_steps": 520,
+                "rate": 0.04807692307692308
+              },
+              "r1_t01": {
+                "n_steps": 520,
+                "rate": 0.026923076923076925
+              },
+              "r1_t02": {
+                "n_steps": 520,
+                "rate": 0.03461538461538462
+              },
+              "r1_t03": {
+                "n_steps": 520,
+                "rate": 0.05
+              },
+              "r1_t04": {
+                "n_steps": 520,
+                "rate": 0.019230769230769232
+              },
+              "r1_t05": {
+                "n_steps": 520,
+                "rate": 0.06346153846153846
+              },
+              "r1_t06": {
+                "n_steps": 520,
+                "rate": 0.04423076923076923
+              },
+              "r1_t07": {
+                "n_steps": 520,
+                "rate": 0.03076923076923077
+              }
+            },
+            "rule": "share of a trial's logged optimizer steps whose PRE-clip grad norm (metrics.jsonl <arm>/grad_norm) exceeded that trial's own max_grad_norm (summary.trial); a trial at or above `threshold` is not promotable (ineligible as the raw-argmin fall-through; flagged as a fitted argmin's nearest neighbour); `target` is the regime the promoted point should sit in \u2014 verified-facts \u00a73: healthy 0-4%, borderline 24-65%, defective 100%",
+            "target": 0.1,
+            "threshold": 0.25,
+            "winner": {
+              "flagged": false,
+              "k": 3,
+              "max_nearest_rate": 0.05,
+              "nearest": [
+                {
+                  "log_box_distance": 0.057644450283327126,
+                  "lr": 0.005228724445122654,
+                  "max_grad_norm": 0.34,
+                  "n_steps": 520,
+                  "rate": 0.026923076923076925,
+                  "trial": "r1_t01",
+                  "warmup_frac": 0.15
+                },
+                {
+                  "log_box_distance": 0.19235554971667326,
+                  "lr": 0.002940439354192482,
+                  "max_grad_norm": 0.34,
+                  "n_steps": 520,
+                  "rate": 0.03076923076923077,
+                  "trial": "r1_t07",
+                  "warmup_frac": 0.15
+                },
+                {
+                  "log_box_distance": 0.44235554971667324,
+                  "lr": 0.0016535932781367082,
+                  "max_grad_norm": 0.34,
+                  "n_steps": 520,
+                  "rate": 0.05,
+                  "trial": "r1_t03",
+                  "warmup_frac": 0.15
+                }
+              ],
+              "note": "every nearest trial with metrics is below the threshold",
+              "promotable": true,
+              "rates_known": 3,
+              "target": 0.1,
+              "threshold": 0.25
+            }
+          },
+          "confirmation": {
+            "baseline_ce": 2.4226403434272714,
+            "best_epoch": 8,
+            "best_heldout_loss": 2.069758780029235,
+            "checked_at": "2026-09-16T12:20:16+00:00",
+            "checks": [
+              {
+                "check": "artefact_has_interior_winner",
+                "detail": "winner=present on_edge=False (r1_fit.json)",
+                "pass": true
+              },
+              {
+                "check": "summary_is_a_confirmation",
+                "detail": "confirmation_of=present",
+                "pass": true
+              },
+              {
+                "check": "design_is_the_spawn_record",
+                "detail": "r9_qwen35_4b_base_eb64_s1_psr_ce_all_all.json (sha 9bf9395bc57c1521): round=9 arm=psr_ce_all si='constv2-mix-10m' trials=1; design.trial={'lr': 0.004578836147882968, 'max_grad_norm': 0.34, 'warmup_frac': 0.15} vs summary.trial={'lr': 0.004578836147882968, 'max_grad_norm': 0.34, 'warmup_frac': 0.15} vs design.confirmation_of.argmin={'lr': 0.004578836147882968, 'max_grad_norm': 0.34, 'warmup_frac': 0.15}; guard_alarmed=False alarms=[]; manifest hpo_calls_r9_qwen35_4b_base_eb64_s1_psr_ce_all.json expect.trial == summary.trial verbatim",
+                "pass": true
+              },
+              {
+                "check": "confirmation_of.fit_sha256_matches",
+                "detail": "summary 7281093534c3795d vs design 7281093534c3795d (the sha the trial was spawned from); live r1_fit.json = 7281093534c3795d (== design: never rewritten)",
+                "pass": true
+              },
+              {
+                "check": "trial_equals_winner_verbatim",
+                "detail": "trial={'lr': 0.004578836147882968, 'max_grad_norm': 0.34, 'warmup_frac': 0.15} design.confirmation_of.argmin={'lr': 0.004578836147882968, 'max_grad_norm': 0.34, 'warmup_frac': 0.15} (verbatim float equality)",
+                "pass": true
+              },
+              {
+                "check": "live_fit_agrees_with_design",
+                "detail": "live selection {'lr': 0.004578836147882968, 'max_grad_norm': 0.34, 'warmup_frac': 0.15} vs design argmin {'lr': 0.004578836147882968, 'max_grad_norm': 0.34, 'warmup_frac': 0.15}: rel deltas lr=0.00e+00 clip=0.00e+00 warmup=0.00e+00 (tol 1e-09); rounds [1] vs [1]; n_rows 8 vs 8; fitted_min_log_y live 0.7273322106722331 vs design 0.7273322106722331 (rel 0.00e+00); sigma_log_y live 0.00019058654717494448 vs design 0.00019058654717494448 (rel 0.00e+00); live sha 7281093534c3795d == design's",
+                "pass": true
+              },
+              {
+                "check": "status_ok",
+                "detail": "status='ok' error=",
+                "pass": true
+              },
+              {
+                "check": "floor_ratio_le_1.1",
+                "detail": "floor_ratio=0.8543 floor_ok=True (ce_floor_ratio_max 1.1)",
+                "pass": true
+              },
+              {
+                "check": "psr_gate_alive",
+                "detail": "the trial runs check_psr_gates in-process; a dead gate ends the trial as status gate_dead",
+                "pass": true
+              },
+              {
+                "check": "clip_activation_below_threshold",
+                "detail": "rate=0.0269 over 520 steps (threshold 0.25, target 0.1)",
+                "pass": true
+              },
+              {
+                "check": "confirmation_not_outside_above",
+                "detail": "verdict=in_interval: d=log(y)-fitted_min_log_y=0.0001 = 0.52 sigma vs +/-2.0 x sigma_log_y=0.0004 (y=2.06976, exp(fitted min)=2.06955; from the DESIGN's record fitted_min_log_y=0.7273322106722331 sigma_log_y=0.00019058654717494448; live file: 0.7273322106722331 / 0.00019058654717494448); fit_reliability=ok; criterion 3 (within noise) MET",
+                "pass": true
+              },
+              {
+                "check": "effective_batch_64",
+                "detail": "2 x 32",
+                "pass": true
+              },
+              {
+                "check": "si_is_reference_cell",
+                "detail": "si='constv2-mix-10m'",
+                "pass": true
+              },
+              {
+                "check": "seed_is_expected",
+                "detail": "summary.seed=1 expected 1 (the W1 passthrough; a summary without the field is REFUSED)",
+                "pass": true
+              }
+            ],
+            "clip_activation_rate": 0.026923076923076925,
+            "clip_n_steps": 520,
+            "design": "$STAGE/sdfbase/reseed_eb64/hpo/trials/r9_qwen35_4b_base_eb64_s1_psr_ce_all_all.json",
+            "design_fit_sha256": "7281093534c3795d4505e7a9adad519babde5d44266f2b7e3217aa5dee90bc40",
+            "design_sha256": "9bf9395bc57c1521af738945612de615519479f75456bdc45f5a1de49867e7da",
+            "dir": "$STAGE/sdfbase/reseed_eb64/hpo/results/qwen35_4b_base_eb64_s1/psr_ce_all/r9_t00",
+            "fit": "$STAGE/sdfbase/reseed_eb64/hpo/results/qwen35_4b_base_eb64_s1/psr_ce_all/r1_fit.json",
+            "fit_fingerprint": "a452367d191a60aa870e7708d81822ad0706d64c07d95eaa600d8025c8c866c5",
+            "fit_sha256": "7281093534c3795d4505e7a9adad519babde5d44266f2b7e3217aa5dee90bc40",
+            "floor_ratio": 0.8543400945355264,
+            "gate": "alive (status ok; check_psr_gates in-trial)",
+            "heldout_curve": [
+              2.4226403434272714,
+              2.1332125571756095,
+              2.0972987793009796,
+              2.086462225957931,
+              2.079986063840438,
+              2.075135007628928,
+              2.0717813754258616,
+              2.070223877622791,
+              2.069758780029235
+            ],
+            "index": 0,
+            "live_fit": "$STAGE/sdfbase/reseed_eb64/hpo/results/qwen35_4b_base_eb64_s1/psr_ce_all/r1_fit.json",
+            "live_fit_is_design_fit": true,
+            "live_fit_sha256": "7281093534c3795d4505e7a9adad519babde5d44266f2b7e3217aa5dee90bc40",
+            "manifest": "$STAGE/sdfbase/reseed_eb64/hpo/manifests/hpo_calls_r9_qwen35_4b_base_eb64_s1_psr_ce_all.json",
+            "rel_tol_live_fit": 1e-09,
+            "relative_deltas_live_vs_design": {
+              "fitted_min_log_y": 0.0,
+              "lr": 0.0,
+              "max_grad_norm": 0.0,
+              "sigma_log_y": 0.0,
+              "warmup_frac": 0.0
+            },
+            "round": 9,
+            "seed": 1,
+            "stopped_early": false,
+            "summary_sha256": "3d1c65c6a4b418cd01120f15f24044ec1ae881ac323d4a9bcf408f0cacca66ba",
+            "wall_s": 9580.740012407303,
+            "within_noise": {
+              "confirmation_verdict": "in_interval",
+              "criterion_3_met": true,
+              "d_over_sigma": 0.5239531822805502,
+              "fit_reliability": "ok",
+              "fitted_min_log_y": 0.7273322106722331,
+              "k_sigma": 2.0,
+              "live_fit": {
+                "fitted_min_log_y": 0.7273322106722331,
+                "sigma_log_y": 0.00019058654717494448
+              },
+              "log_gap": 9.985842789217436e-05,
+              "sigma_log_y": 0.00019058654717494448,
+              "source": "design.confirmation_of"
+            }
+          },
+          "confirmation_verdict": "in_interval",
+          "criteria": {
+            "box_edge": "log-space position of the selected value in the DECLARED (union) box lies within EDGE_TOL=0.02 of 0 or 1",
+            "discrete_extreme": "the selected level is an end of a >=3-level discrete axis (a 2-level factor has no interior by design and is recorded, not alarmed)",
+            "fit_not_positive_definite": "the pooled quadratic's continuous Hessian is not positive-definite \u2014 there is no fitted interior minimum and the fold fell through to the RAW argmin trial, an unguided pick",
+            "fitted_argmin_on_edge": "the quadratic is positive-definite but its argmin sits on / outside the declared box, so the fold fell through to the RAW argmin trial",
+            "no_evidence_beyond": "trials lie beyond the selected value on that side, but none is worse than the selected point by more than the noise \u2014 the objective is flat out to the sampled edge; nothing says the optimum is not further out (a 1-D marginal check). ALARMED for a raw-trial selection (no model located the point); for a fitted argmin the same fact is filed as dims.<axis>.flat_to_sampled_edge and named in the FLAT sentence, not alarmed",
+            "noise": "sigma_log_y = sqrt(SSR/(n-p)), the dof-corrected RMS residual of the pooled quadratic fit in log y, converted to objective units at the selected point (noise = sigma_log_y * y)",
+            "sampled_extreme": "the selected value is at or beyond the min / max value the usable trials sampled on that axis \u2014 no trial lies beyond it"
+          },
+          "dims": {
+            "lr": {
+              "box": [
+                0.0005369814587434337,
+                0.005369
+              ],
+              "box_pos": 0.9308571431872465,
+              "evidence_beyond": {
+                "high": {
+                  "has_evidence": false,
+                  "n_beyond": 1,
+                  "n_worse_than_selected_by_more_than_noise": 0,
+                  "nearest_beyond": {
+                    "clip_activation_rate": 0.026923076923076925,
+                    "lr": 0.005228724445122654,
+                    "max_grad_norm": 0.34,
+                    "ratio": 0.8541879118194493,
+                    "trial": "r1_t01",
+                    "warmup_frac": 0.15,
+                    "y": 2.0693900960416944
+                  }
+                },
+                "low": {
+                  "has_evidence": true,
+                  "n_beyond": 7,
+                  "n_worse_than_selected_by_more_than_noise": 7,
+                  "nearest_beyond": {
+                    "clip_activation_rate": 0.019230769230769232,
+                    "lr": 0.00314006676824976,
+                    "max_grad_norm": 0.34,
+                    "ratio": 0.8549683140897544,
+                    "trial": "r1_t04",
+                    "warmup_frac": 0.05,
+                    "y": 2.071280730065838
+                  }
+                }
+              },
+              "flat_to_sampled_edge": [
+                "high"
+              ],
+              "n_above": 1,
+              "n_below": 7,
+              "n_sampled": 8,
+              "on_box_edge": false,
+              "rank_ascending": 8,
+              "sampled_extreme": null,
+              "sampled_max": 0.005228724445122654,
+              "sampled_min": 0.0005584551464035643,
+              "sampled_pos": 0.9406627447084585,
+              "value": 0.004578836147882968
+            },
+            "max_grad_norm": {
+              "box": [
+                0.34,
+                0.34
+              ],
+              "box_pos": null,
+              "evidence_beyond": {},
+              "fixed": true,
+              "flat_to_sampled_edge": [],
+              "n_above": 0,
+              "n_below": 0,
+              "n_sampled": 8,
+              "note": "max_grad_norm is a FIXED axis of this design (box [0.34, 0.34] has zero width): held at the declared constant, not searched \u2014 no interiority verdict exists or is owed along it",
+              "on_box_edge": false,
+              "rank_ascending": null,
+              "sampled_extreme": null,
+              "sampled_max": 0.34,
+              "sampled_min": 0.34,
+              "sampled_pos": null,
+              "value": 0.34
+            },
+            "warmup_frac": {
+              "alarmed": false,
+              "at_extreme": true,
+              "level_index": 1,
+              "levels": [
+                0.05,
+                0.15
+              ],
+              "n_levels": 2,
+              "note": "2-level factor: no interior exists by design; recorded, not alarmed",
+              "value": 0.15
+            }
+          },
+          "fall_through": null,
+          "fit": {
+            "hessian_eigs": [
+              0.00573059224958874
+            ],
+            "positive_definite": true
+          },
+          "fit_reliability": "ok",
+          "selected": {
+            "lr": 0.004578836147882968,
+            "max_grad_norm": 0.34,
+            "warmup_frac": 0.15
+          },
+          "selected_from": "fitted_argmin",
+          "selected_trial": null,
+          "spread": {
+            "baseline": 2.4226403434272714,
+            "best_other_interior_trial": {
+              "clip_activation_rate": 0.03076923076923077,
+              "definition": "best usable trial, other than the selected one, that is interior on every continuous axis by criteria (a) and (b)",
+              "lr": 0.002940439354192482,
+              "margin_over_selected": 0.0014891574477262637,
+              "max_grad_norm": 0.34,
+              "ratio": 0.8548694694022849,
+              "trial": "r1_t07",
+              "warmup_frac": 0.15,
+              "y": 2.071041264938241
+            },
+            "best_trial": {
+              "clip_activation_rate": 0.026923076923076925,
+              "lr": 0.005228724445122654,
+              "max_grad_norm": 0.34,
+              "ratio": 0.8541879118194493,
+              "trial": "r1_t01",
+              "warmup_frac": 0.15,
+              "y": 2.0693900960416944
+            },
+            "fitted_min_below_best_trial": -0.00016201144882010965,
+            "flat": false,
+            "flat_kind": null,
+            "flat_to_sampled_edge": [
+              "lr:high"
+            ],
+            "full_spread": 0.026313436382563005,
+            "max": 2.0957035324242574,
+            "median": 2.0754124521465007,
+            "min": 2.0693900960416944,
+            "n_ok": 8,
+            "noise": {
+              "mad_log_y": 0.0001613672275928293,
+              "method": "sigma_log_y = sqrt(SSR/(n-p)), the dof-corrected RMS residual of the pooled quadratic fit in log y, converted to objective units at the selected point (noise = sigma_log_y * y)",
+              "noise_y": 0.0003944287903652467,
+              "rms_log_y": 0.0001167099481043722,
+              "sigma_log_y": 0.00019058654717494448,
+              "top3_spread": 0.0018906340241433561,
+              "top5_spread": 0.006471298870478925
+            },
+            "ratio_full_spread": 0.010861470401065722,
+            "ratio_max": 0.865049382220515,
+            "ratio_median": 0.8566737765170901,
+            "ratio_min": 0.8541879118194493,
+            "runner_up": {
+              "clip_activation_rate": 0.03076923076923077,
+              "lr": 0.002940439354192482,
+              "margin_over_best_trial": 0.0016511688965463733,
+              "margin_over_best_trial_ratio": 0.0006815575828356307,
+              "margin_over_selected": 0.0014891574477262637,
+              "max_grad_norm": 0.34,
+              "ratio": 0.8548694694022849,
+              "trial": "r1_t07",
+              "warmup_frac": 0.15,
+              "y": 2.071041264938241
+            },
+            "selected_ratio": 0.854254785736273,
+            "selected_y": 2.0695521074905145,
+            "selected_y_kind": "fitted minimum (the quadratic's value at its argmin)",
+            "text": "objective resolved at the noise level: only the selected point lies within noise 0.0004 of its objective 2.0696; runner-up margin 0.0015; full spread 0.0263 (0.0109 as a ratio to baseline 2.4226). Flat out to the sampled edge on: lr (high side) \u2014 recorded, not alarmed: the fitted argmin pools every trial's curvature",
+            "within_noise": {
+              "n": 1,
+              "span": {
+                "lr": {
+                  "decades": 0.0,
+                  "max": 0.005228724445122654,
+                  "min": 0.005228724445122654
+                },
+                "warmup_frac": [
+                  0.15
+                ]
+              },
+              "spread": 0.0,
+              "threshold_y": 2.06994653628088,
+              "trials": [
+                "r1_t01"
+              ]
+            },
+            "y_key": "best_heldout_loss"
+          },
+          "text": [
+            "SPREAD: objective resolved at the noise level: only the selected point lies within noise 0.0004 of its objective 2.0696; runner-up margin 0.0015; full spread 0.0263 (0.0109 as a ratio to baseline 2.4226). Flat out to the sampled edge on: lr (high side) \u2014 recorded, not alarmed: the fitted argmin pools every trial's curvature",
+            "SELECTION GUARD: clear (interior on every axis, positive-definite fit)",
+            "CLIP ACTIVATION: threshold 0.25 (target 0.10); 8/8 trials carry metrics; over threshold: none; raw fall-through pick: r1_t01; fitted argmin's nearest 3: r1_t01=0.027, r1_t07=0.031, r1_t03=0.050 -> promotable"
+          ],
+          "version": 1
+        },
+        "warmup_frac": 0.15
+      }
+    },
     "qwen35_4b_base_eb64_s3": {
+      "lora_r4_ce": {
+        "lr": 0.006681234631156978,
+        "max_grad_norm": 0.12,
+        "selection_guard": {
+          "acknowledged": {
+            "at": "2026-09-16T12:45:39+00:00",
+            "by": "O8 \u2014 orchestrator ruling O8: the round-1 fitted argmin is ALARMED sampled_extreme:lr (an extrapolation 0.4 % beyond the highest sampled lr); ADOPT the raw best trial that RAN (r1_t07) and replicate it once at exactly its design values in the r9 slot as the confirmation of record; never --allow-alarmed, never sliver trials; the two-sided verdict is computed against the fitted minimum and an outside verdict reads criterion 3 NOT MET; the adoption stands either way"
+          },
+          "alarmed": true,
+          "alarms": [
+            {
+              "code": "sampled_extreme",
+              "dim": "lr",
+              "text": "lr=0.006709 is the max of the 8 sampled values [0.0008303, 0.006681] \u2014 no trial lies beyond it"
+            }
+          ],
+          "clip_activation": {
+            "all_known_over_threshold": false,
+            "best_raw_promotable": "r1_t07",
+            "n_trials": 8,
+            "n_with_metrics": 8,
+            "over_threshold": [],
+            "per_trial": {
+              "r1_t00": {
+                "n_steps": 520,
+                "rate": 0.032692307692307694
+              },
+              "r1_t01": {
+                "n_steps": 520,
+                "rate": 0.04230769230769231
+              },
+              "r1_t02": {
+                "n_steps": 520,
+                "rate": 0.04038461538461539
+              },
+              "r1_t03": {
+                "n_steps": 520,
+                "rate": 0.051923076923076926
+              },
+              "r1_t04": {
+                "n_steps": 520,
+                "rate": 0.04807692307692308
+              },
+              "r1_t05": {
+                "n_steps": 520,
+                "rate": 0.04807692307692308
+              },
+              "r1_t06": {
+                "n_steps": 520,
+                "rate": 0.038461538461538464
+              },
+              "r1_t07": {
+                "n_steps": 520,
+                "rate": 0.04423076923076923
+              }
+            },
+            "rule": "share of a trial's logged optimizer steps whose PRE-clip grad norm (metrics.jsonl <arm>/grad_norm) exceeded that trial's own max_grad_norm (summary.trial); a trial at or above `threshold` is not promotable (ineligible as the raw-argmin fall-through; flagged as a fitted argmin's nearest neighbour); `target` is the regime the promoted point should sit in \u2014 verified-facts \u00a73: healthy 0-4%, borderline 24-65%, defective 100%",
+            "target": 0.1,
+            "threshold": 0.25,
+            "winner": {
+              "flagged": false,
+              "k": 3,
+              "max_nearest_rate": 0.04807692307692308,
+              "nearest": [
+                {
+                  "log_box_distance": 0.0017845573304820365,
+                  "lr": 0.006681234631156978,
+                  "max_grad_norm": 0.12,
+                  "n_steps": 520,
+                  "rate": 0.04423076923076923,
+                  "trial": "r1_t07",
+                  "warmup_frac": 0.15
+                },
+                {
+                  "log_box_distance": 0.25178455733048194,
+                  "lr": 0.003757245034176883,
+                  "max_grad_norm": 0.12,
+                  "n_steps": 520,
+                  "rate": 0.04230769230769231,
+                  "trial": "r1_t01",
+                  "warmup_frac": 0.15
+                },
+                {
+                  "log_box_distance": 0.5017845573304822,
+                  "lr": 0.0021129164033567606,
+                  "max_grad_norm": 0.12,
+                  "n_steps": 520,
+                  "rate": 0.04807692307692308,
+                  "trial": "r1_t05",
+                  "warmup_frac": 0.15
+                }
+              ],
+              "note": "every nearest trial with metrics is below the threshold",
+              "promotable": true,
+              "rates_known": 3,
+              "target": 0.1,
+              "threshold": 0.25
+            }
+          },
+          "confirmation": {
+            "baseline_ce": 2.4226403434272714,
+            "best_epoch": 8,
+            "best_heldout_loss": 2.0930151829872474,
+            "checked_at": "2026-09-16T05:45:39-07:00",
+            "checks": [
+              {
+                "check": "summary_is_a_confirmation",
+                "detail": "confirmation_of=present",
+                "pass": true
+              },
+              {
+                "check": "design_is_the_spawn_record",
+                "detail": "round=9 arm=lora_r4_ce si='constv2-mix-10m' trials=1; design.trial={'lr': 0.006681234631156978, 'max_grad_norm': 0.12, 'warmup_frac': 0.15} vs summary.trial={'lr': 0.006681234631156978, 'max_grad_norm': 0.12, 'warmup_frac': 0.15}; confirmation_of.selected_from='raw_best_trial'; manifest expect.trial == summary.trial verbatim",
+                "pass": true
+              },
+              {
+                "check": "trial_equals_raw_best_verbatim",
+                "detail": "trial={'lr': 0.006681234631156978, 'max_grad_norm': 0.12, 'warmup_frac': 0.15} == r1 design row 7 {'lr': 0.006681234631156978, 'max_grad_norm': 0.12, 'warmup_frac': 0.15} == fall-through pick {'lr': 0.006681234631156978, 'max_grad_norm': 0.12, 'warmup_frac': 0.15} (verbatim float equality)",
+                "pass": true
+              },
+              {
+                "check": "confirmation_of.fit_sha256_matches",
+                "detail": "summary 4fe99eea4962105e design 4fe99eea4962105e live r1_fit.json 4fe99eea4962105e",
+                "pass": true
+              },
+              {
+                "check": "status_ok",
+                "detail": "status='ok' error=",
+                "pass": true
+              },
+              {
+                "check": "floor_ratio_le_1.1",
+                "detail": "floor_ratio=0.8639 floor_ok=True (max 1.1)",
+                "pass": true
+              },
+              {
+                "check": "clip_activation_below_threshold",
+                "detail": "rate=0.0442 over 520 steps (threshold 0.25)",
+                "pass": true
+              },
+              {
+                "check": "effective_batch_64",
+                "detail": "2 x 32",
+                "pass": true
+              },
+              {
+                "check": "si_is_reference_cell",
+                "detail": "si='constv2-mix-10m'",
+                "pass": true
+              },
+              {
+                "check": "seed_is_expected",
+                "detail": "summary.seed=1 expected 1",
+                "pass": true
+              }
+            ],
+            "clip_activation_rate": 0.04423076923076923,
+            "clip_n_steps": 520,
+            "design": "$STAGE/sdfbase/reseed_eb64/hpo/trials/r9_qwen35_4b_base_eb64_s1_lora_r4_ce_all.json",
+            "design_fit_sha256": "4fe99eea4962105eb0a2bfb3bc64a5bafe1cdf093296b4ccd2a850149a56aee2",
+            "design_selected_from": "raw_best_trial",
+            "design_sha256": "c41250e28b83aa5239dccf21e4153ac44407b86ce30adde9bc36029f2642ad35",
+            "dir": "r9_t00",
+            "fit": "$STAGE/sdfbase/reseed_eb64/hpo/results/qwen35_4b_base_eb64_s1/lora_r4_ce/r1_fit.json",
+            "fit_fingerprint": "a613d65defad3d2ff7075e277a20ecbe4435f2b89c3fc01e923fa6155b0887e6",
+            "fit_sha256": "4fe99eea4962105eb0a2bfb3bc64a5bafe1cdf093296b4ccd2a850149a56aee2",
+            "floor_ratio": 0.8639397047381336,
+            "gate": "n/a (LoRA)",
+            "heldout_curve": [
+              2.4226403434272714,
+              2.147563988472837,
+              2.1192405929265896,
+              2.1126417991480624,
+              2.105965543072455,
+              2.098861461121656,
+              2.094889445549341,
+              2.0933844705099753,
+              2.0930151829872474
+            ],
+            "index": 0,
+            "live_fit": "$STAGE/sdfbase/reseed_eb64/hpo/results/qwen35_4b_base_eb64_s1/lora_r4_ce/r1_fit.json",
+            "live_fit_is_design_fit": true,
+            "live_fit_sha256": "4fe99eea4962105eb0a2bfb3bc64a5bafe1cdf093296b4ccd2a850149a56aee2",
+            "manifest": "$STAGE/sdfbase/reseed_eb64/hpo/manifests/hpo_calls_r9_qwen35_4b_base_eb64_s1_lora_r4_ce.json",
+            "replicate_vs_original": {
+              "delta": 1.6619261131278762e-05,
+              "identical": false,
+              "log_delta": 7.940375802317767e-06,
+              "note": "the replicate re-measures the adopted point (trial-to-trial noise at the winner); bit-identity is not expected on Modal",
+              "y_original_r1": 2.092998563726116,
+              "y_replicate": 2.0930151829872474
+            },
+            "round": 9,
+            "seed": 1,
+            "stopped_early": false,
+            "summary": "$STAGE/sdfbase/reseed_eb64/hpo/results/qwen35_4b_base_eb64_s1/lora_r4_ce/r9_t00/summary.json",
+            "summary_sha256": "644e1a30e83a9b88be0cb55b08335a068f7e9c4a64a1171cce2578396be12e4f",
+            "wall_s": 8679.372876405716,
+            "within_noise": {
+              "confirmation_verdict": "in_interval",
+              "criterion_3_met": true,
+              "d_over_sigma": -0.11641730067737666,
+              "fit_reliability": "ok",
+              "fitted_min_log_y": 0.7386124042516203,
+              "k_sigma": 2.0,
+              "log_gap": -6.706639560039029e-06,
+              "sigma_log_y": 5.760861591031829e-05,
+              "source": "design.confirmation_of (copied from r1_fit.json at emit time)"
+            }
+          },
+          "confirmation_verdict": "in_interval",
+          "criteria": {
+            "box_edge": "log-space position of the selected value in the DECLARED (union) box lies within EDGE_TOL=0.02 of 0 or 1",
+            "discrete_extreme": "the selected level is an end of a >=3-level discrete axis (a 2-level factor has no interior by design and is recorded, not alarmed)",
+            "fit_not_positive_definite": "the pooled quadratic's continuous Hessian is not positive-definite \u2014 there is no fitted interior minimum and the fold fell through to the RAW argmin trial, an unguided pick",
+            "fitted_argmin_on_edge": "the quadratic is positive-definite but its argmin sits on / outside the declared box, so the fold fell through to the RAW argmin trial",
+            "no_evidence_beyond": "trials lie beyond the selected value on that side, but none is worse than the selected point by more than the noise \u2014 the objective is flat out to the sampled edge; nothing says the optimum is not further out (a 1-D marginal check). ALARMED for a raw-trial selection (no model located the point); for a fitted argmin the same fact is filed as dims.<axis>.flat_to_sampled_edge and named in the FLAT sentence, not alarmed",
+            "noise": "sigma_log_y = sqrt(SSR/(n-p)), the dof-corrected RMS residual of the pooled quadratic fit in log y, converted to objective units at the selected point (noise = sigma_log_y * y)",
+            "sampled_extreme": "the selected value is at or beyond the min / max value the usable trials sampled on that axis \u2014 no trial lies beyond it"
+          },
+          "criterion_3_met": true,
+          "criterion_3_note": "MET: the replicate of the adopted raw best trial lies within 2 sigma of the fitted minimum",
+          "dims": {
+            "lr": {
+              "box": [
+                0.0008055949351268077,
+                0.008055
+              ],
+              "box_pos": 0.9205715794517327,
+              "evidence_beyond": {
+                "high": {
+                  "has_evidence": false,
+                  "n_beyond": 0,
+                  "n_worse_than_selected_by_more_than_noise": 0
+                },
+                "low": {
+                  "has_evidence": true,
+                  "n_beyond": 8,
+                  "n_worse_than_selected_by_more_than_noise": 7,
+                  "nearest_beyond": {
+                    "clip_activation_rate": 0.04423076923076923,
+                    "lr": 0.006681234631156978,
+                    "max_grad_norm": 0.12,
+                    "ratio": 0.8639328447594429,
+                    "trial": "r1_t07",
+                    "warmup_frac": 0.15,
+                    "y": 2.092998563726116
+                  }
+                }
+              },
+              "flat_to_sampled_edge": [],
+              "n_above": 0,
+              "n_below": 8,
+              "n_sampled": 8,
+              "on_box_edge": false,
+              "rank_ascending": 9,
+              "sampled_extreme": "max",
+              "sampled_max": 0.006681234631156978,
+              "sampled_min": 0.0008303425911688072,
+              "sampled_pos": 1.0019704805190637,
+              "value": 0.006708743531284034
+            },
+            "max_grad_norm": {
+              "box": [
+                0.12,
+                0.12
+              ],
+              "box_pos": null,
+              "evidence_beyond": {},
+              "fixed": true,
+              "flat_to_sampled_edge": [],
+              "n_above": 0,
+              "n_below": 0,
+              "n_sampled": 8,
+              "note": "max_grad_norm is a FIXED axis of this design (box [0.12, 0.12] has zero width): held at the declared constant, not searched \u2014 no interiority verdict exists or is owed along it",
+              "on_box_edge": false,
+              "rank_ascending": null,
+              "sampled_extreme": null,
+              "sampled_max": 0.12,
+              "sampled_min": 0.12,
+              "sampled_pos": null,
+              "value": 0.12
+            },
+            "warmup_frac": {
+              "alarmed": false,
+              "at_extreme": true,
+              "level_index": 1,
+              "levels": [
+                0.05,
+                0.15
+              ],
+              "n_levels": 2,
+              "note": "2-level factor: no interior exists by design; recorded, not alarmed",
+              "value": 0.15
+            }
+          },
+          "fall_through": null,
+          "fit": {
+            "hessian_eigs": [
+              0.0049774006419964064
+            ],
+            "positive_definite": true
+          },
+          "fit_reliability": "ok",
+          "fitted_argmin": {
+            "lr": 0.006708743531284034,
+            "max_grad_norm": 0.12,
+            "warmup_frac": 0.15
+          },
+          "ruling": {
+            "at": "2026-09-16T09:55Z",
+            "id": "O8",
+            "text": "orchestrator ruling O8: the round-1 fitted argmin is ALARMED sampled_extreme:lr (an extrapolation 0.4 % beyond the highest sampled lr); ADOPT the raw best trial that RAN (r1_t07) and replicate it once at exactly its design values in the r9 slot as the confirmation of record; never --allow-alarmed, never sliver trials; the two-sided verdict is computed against the fitted minimum and an outside verdict reads criterion 3 NOT MET; the adoption stands either way",
+            "where": "$WORK/qwen-base-seed-replicates/decisions.md"
+          },
+          "selected": {
+            "lr": 0.006681234631156978,
+            "max_grad_norm": 0.12,
+            "warmup_frac": 0.15
+          },
+          "selected_from": "raw_best_trial",
+          "selected_trial": "r1_t07",
+          "spread": {
+            "baseline": 2.4226403434272714,
+            "best_other_interior_trial": {
+              "clip_activation_rate": 0.032692307692307694,
+              "definition": "best usable trial, other than the selected one, that is interior on every continuous axis by criteria (a) and (b)",
+              "lr": 0.004668946830119194,
+              "margin_over_selected": 0.0010907986253116952,
+              "max_grad_norm": 0.12,
+              "ratio": 0.8643957508754838,
+              "trial": "r1_t00",
+              "warmup_frac": 0.05,
+              "y": 2.094120018758056
+            },
+            "best_trial": {
+              "clip_activation_rate": 0.04423076923076923,
+              "lr": 0.006681234631156978,
+              "max_grad_norm": 0.12,
+              "ratio": 0.8639328447594429,
+              "trial": "r1_t07",
+              "warmup_frac": 0.15,
+              "y": 2.092998563726116
+            },
+            "fitted_min_below_best_trial": -3.065640662835989e-05,
+            "flat": false,
+            "flat_kind": null,
+            "flat_to_sampled_edge": [],
+            "full_spread": 0.022795954257663453,
+            "max": 2.1157945179837796,
+            "median": 2.0989625661875912,
+            "min": 2.092998563726116,
+            "n_ok": 8,
+            "noise": {
+              "mad_log_y": 3.4290378694997546e-05,
+              "method": "sigma_log_y = sqrt(SSR/(n-p)), the dof-corrected RMS residual of the pooled quadratic fit in log y, converted to objective units at the selected point (noise = sigma_log_y * y)",
+              "noise_y": 0.0001205765164317003,
+              "rms_log_y": 3.527792844206511e-05,
+              "sigma_log_y": 5.760861591031829e-05,
+              "top3_spread": 0.0018491770857007594,
+              "top5_spread": 0.006953053731159731
+            },
+            "ratio_full_spread": 0.009409549510520565,
+            "ratio_max": 0.8733423942699634,
+            "ratio_median": 0.8663946226612497,
+            "ratio_min": 0.8639328447594429,
+            "runner_up": {
+              "clip_activation_rate": 0.032692307692307694,
+              "lr": 0.004668946830119194,
+              "margin_over_best_trial": 0.0011214550319400551,
+              "margin_over_best_trial_ratio": 0.0004629061160409598,
+              "margin_over_selected": 0.0010907986253116952,
+              "max_grad_norm": 0.12,
+              "ratio": 0.8643957508754838,
+              "trial": "r1_t00",
+              "warmup_frac": 0.05,
+              "y": 2.094120018758056
+            },
+            "selected_ratio": 0.8639454988897646,
+            "selected_y": 2.0930292201327445,
+            "selected_y_kind": "fitted minimum (the quadratic's value at its argmin)",
+            "text": "objective resolved at the noise level: only the selected point lies within noise 0.0001 of its objective 2.0930; runner-up margin 0.0011; full spread 0.0228 (0.0094 as a ratio to baseline 2.4226)",
+            "within_noise": {
+              "n": 1,
+              "span": {
+                "lr": {
+                  "decades": 0.0,
+                  "max": 0.006681234631156978,
+                  "min": 0.006681234631156978
+                },
+                "warmup_frac": [
+                  0.15
+                ]
+              },
+              "spread": 0.0,
+              "threshold_y": 2.0931497966491763,
+              "trials": [
+                "r1_t07"
+              ]
+            },
+            "y_key": "best_heldout_loss"
+          },
+          "text": [
+            "ALARM sampled_extreme [lr]: lr=0.006709 is the max of the 8 sampled values [0.0008303, 0.006681] \u2014 no trial lies beyond it",
+            "SPREAD: objective resolved at the noise level: only the selected point lies within noise 0.0001 of its objective 2.0930; runner-up margin 0.0011; full spread 0.0228 (0.0094 as a ratio to baseline 2.4226)",
+            "SELECTION GUARD: 1 alarm(s) \u2014 sampled_extreme:lr",
+            "CLIP ACTIVATION: threshold 0.25 (target 0.10); 8/8 trials carry metrics; over threshold: none; raw fall-through pick: r1_t07; fitted argmin's nearest 3: r1_t07=0.044, r1_t01=0.042, r1_t05=0.048 -> promotable"
+          ],
+          "version": 1
+        },
+        "warmup_frac": 0.15
+      },
+      "psr_ce_all": {
+        "lr": 0.004578836147882968,
+        "max_grad_norm": 0.34,
+        "selection_guard": {
+          "acknowledged": null,
+          "alarmed": false,
+          "alarms": [],
+          "clip_activation": {
+            "all_known_over_threshold": false,
+            "best_raw_promotable": "r1_t01",
+            "n_trials": 8,
+            "n_with_metrics": 8,
+            "over_threshold": [],
+            "per_trial": {
+              "r1_t00": {
+                "n_steps": 520,
+                "rate": 0.04807692307692308
+              },
+              "r1_t01": {
+                "n_steps": 520,
+                "rate": 0.026923076923076925
+              },
+              "r1_t02": {
+                "n_steps": 520,
+                "rate": 0.03461538461538462
+              },
+              "r1_t03": {
+                "n_steps": 520,
+                "rate": 0.05
+              },
+              "r1_t04": {
+                "n_steps": 520,
+                "rate": 0.019230769230769232
+              },
+              "r1_t05": {
+                "n_steps": 520,
+                "rate": 0.06346153846153846
+              },
+              "r1_t06": {
+                "n_steps": 520,
+                "rate": 0.04423076923076923
+              },
+              "r1_t07": {
+                "n_steps": 520,
+                "rate": 0.03076923076923077
+              }
+            },
+            "rule": "share of a trial's logged optimizer steps whose PRE-clip grad norm (metrics.jsonl <arm>/grad_norm) exceeded that trial's own max_grad_norm (summary.trial); a trial at or above `threshold` is not promotable (ineligible as the raw-argmin fall-through; flagged as a fitted argmin's nearest neighbour); `target` is the regime the promoted point should sit in \u2014 verified-facts \u00a73: healthy 0-4%, borderline 24-65%, defective 100%",
+            "target": 0.1,
+            "threshold": 0.25,
+            "winner": {
+              "flagged": false,
+              "k": 3,
+              "max_nearest_rate": 0.05,
+              "nearest": [
+                {
+                  "log_box_distance": 0.057644450283327126,
+                  "lr": 0.005228724445122654,
+                  "max_grad_norm": 0.34,
+                  "n_steps": 520,
+                  "rate": 0.026923076923076925,
+                  "trial": "r1_t01",
+                  "warmup_frac": 0.15
+                },
+                {
+                  "log_box_distance": 0.19235554971667326,
+                  "lr": 0.002940439354192482,
+                  "max_grad_norm": 0.34,
+                  "n_steps": 520,
+                  "rate": 0.03076923076923077,
+                  "trial": "r1_t07",
+                  "warmup_frac": 0.15
+                },
+                {
+                  "log_box_distance": 0.44235554971667324,
+                  "lr": 0.0016535932781367082,
+                  "max_grad_norm": 0.34,
+                  "n_steps": 520,
+                  "rate": 0.05,
+                  "trial": "r1_t03",
+                  "warmup_frac": 0.15
+                }
+              ],
+              "note": "every nearest trial with metrics is below the threshold",
+              "promotable": true,
+              "rates_known": 3,
+              "target": 0.1,
+              "threshold": 0.25
+            }
+          },
+          "confirmation": {
+            "baseline_ce": 2.4226403434272714,
+            "best_epoch": 8,
+            "best_heldout_loss": 2.069758780029235,
+            "checked_at": "2026-09-16T12:20:16+00:00",
+            "checks": [
+              {
+                "check": "artefact_has_interior_winner",
+                "detail": "winner=present on_edge=False (r1_fit.json)",
+                "pass": true
+              },
+              {
+                "check": "summary_is_a_confirmation",
+                "detail": "confirmation_of=present",
+                "pass": true
+              },
+              {
+                "check": "design_is_the_spawn_record",
+                "detail": "r9_qwen35_4b_base_eb64_s1_psr_ce_all_all.json (sha 9bf9395bc57c1521): round=9 arm=psr_ce_all si='constv2-mix-10m' trials=1; design.trial={'lr': 0.004578836147882968, 'max_grad_norm': 0.34, 'warmup_frac': 0.15} vs summary.trial={'lr': 0.004578836147882968, 'max_grad_norm': 0.34, 'warmup_frac': 0.15} vs design.confirmation_of.argmin={'lr': 0.004578836147882968, 'max_grad_norm': 0.34, 'warmup_frac': 0.15}; guard_alarmed=False alarms=[]; manifest hpo_calls_r9_qwen35_4b_base_eb64_s1_psr_ce_all.json expect.trial == summary.trial verbatim",
+                "pass": true
+              },
+              {
+                "check": "confirmation_of.fit_sha256_matches",
+                "detail": "summary 7281093534c3795d vs design 7281093534c3795d (the sha the trial was spawned from); live r1_fit.json = 7281093534c3795d (== design: never rewritten)",
+                "pass": true
+              },
+              {
+                "check": "trial_equals_winner_verbatim",
+                "detail": "trial={'lr': 0.004578836147882968, 'max_grad_norm': 0.34, 'warmup_frac': 0.15} design.confirmation_of.argmin={'lr': 0.004578836147882968, 'max_grad_norm': 0.34, 'warmup_frac': 0.15} (verbatim float equality)",
+                "pass": true
+              },
+              {
+                "check": "live_fit_agrees_with_design",
+                "detail": "live selection {'lr': 0.004578836147882968, 'max_grad_norm': 0.34, 'warmup_frac': 0.15} vs design argmin {'lr': 0.004578836147882968, 'max_grad_norm': 0.34, 'warmup_frac': 0.15}: rel deltas lr=0.00e+00 clip=0.00e+00 warmup=0.00e+00 (tol 1e-09); rounds [1] vs [1]; n_rows 8 vs 8; fitted_min_log_y live 0.7273322106722331 vs design 0.7273322106722331 (rel 0.00e+00); sigma_log_y live 0.00019058654717494448 vs design 0.00019058654717494448 (rel 0.00e+00); live sha 7281093534c3795d == design's",
+                "pass": true
+              },
+              {
+                "check": "status_ok",
+                "detail": "status='ok' error=",
+                "pass": true
+              },
+              {
+                "check": "floor_ratio_le_1.1",
+                "detail": "floor_ratio=0.8543 floor_ok=True (ce_floor_ratio_max 1.1)",
+                "pass": true
+              },
+              {
+                "check": "psr_gate_alive",
+                "detail": "the trial runs check_psr_gates in-process; a dead gate ends the trial as status gate_dead",
+                "pass": true
+              },
+              {
+                "check": "clip_activation_below_threshold",
+                "detail": "rate=0.0269 over 520 steps (threshold 0.25, target 0.1)",
+                "pass": true
+              },
+              {
+                "check": "confirmation_not_outside_above",
+                "detail": "verdict=in_interval: d=log(y)-fitted_min_log_y=0.0001 = 0.52 sigma vs +/-2.0 x sigma_log_y=0.0004 (y=2.06976, exp(fitted min)=2.06955; from the DESIGN's record fitted_min_log_y=0.7273322106722331 sigma_log_y=0.00019058654717494448; live file: 0.7273322106722331 / 0.00019058654717494448); fit_reliability=ok; criterion 3 (within noise) MET",
+                "pass": true
+              },
+              {
+                "check": "effective_batch_64",
+                "detail": "2 x 32",
+                "pass": true
+              },
+              {
+                "check": "si_is_reference_cell",
+                "detail": "si='constv2-mix-10m'",
+                "pass": true
+              },
+              {
+                "check": "seed_is_expected",
+                "detail": "summary.seed=1 expected 1 (the W1 passthrough; a summary without the field is REFUSED)",
+                "pass": true
+              }
+            ],
+            "clip_activation_rate": 0.026923076923076925,
+            "clip_n_steps": 520,
+            "design": "$STAGE/sdfbase/reseed_eb64/hpo/trials/r9_qwen35_4b_base_eb64_s1_psr_ce_all_all.json",
+            "design_fit_sha256": "7281093534c3795d4505e7a9adad519babde5d44266f2b7e3217aa5dee90bc40",
+            "design_sha256": "9bf9395bc57c1521af738945612de615519479f75456bdc45f5a1de49867e7da",
+            "dir": "$STAGE/sdfbase/reseed_eb64/hpo/results/qwen35_4b_base_eb64_s1/psr_ce_all/r9_t00",
+            "fit": "$STAGE/sdfbase/reseed_eb64/hpo/results/qwen35_4b_base_eb64_s1/psr_ce_all/r1_fit.json",
+            "fit_fingerprint": "a452367d191a60aa870e7708d81822ad0706d64c07d95eaa600d8025c8c866c5",
+            "fit_sha256": "7281093534c3795d4505e7a9adad519babde5d44266f2b7e3217aa5dee90bc40",
+            "floor_ratio": 0.8543400945355264,
+            "gate": "alive (status ok; check_psr_gates in-trial)",
+            "heldout_curve": [
+              2.4226403434272714,
+              2.1332125571756095,
+              2.0972987793009796,
+              2.086462225957931,
+              2.079986063840438,
+              2.075135007628928,
+              2.0717813754258616,
+              2.070223877622791,
+              2.069758780029235
+            ],
+            "index": 0,
+            "live_fit": "$STAGE/sdfbase/reseed_eb64/hpo/results/qwen35_4b_base_eb64_s1/psr_ce_all/r1_fit.json",
+            "live_fit_is_design_fit": true,
+            "live_fit_sha256": "7281093534c3795d4505e7a9adad519babde5d44266f2b7e3217aa5dee90bc40",
+            "manifest": "$STAGE/sdfbase/reseed_eb64/hpo/manifests/hpo_calls_r9_qwen35_4b_base_eb64_s1_psr_ce_all.json",
+            "rel_tol_live_fit": 1e-09,
+            "relative_deltas_live_vs_design": {
+              "fitted_min_log_y": 0.0,
+              "lr": 0.0,
+              "max_grad_norm": 0.0,
+              "sigma_log_y": 0.0,
+              "warmup_frac": 0.0
+            },
+            "round": 9,
+            "seed": 1,
+            "stopped_early": false,
+            "summary_sha256": "3d1c65c6a4b418cd01120f15f24044ec1ae881ac323d4a9bcf408f0cacca66ba",
+            "wall_s": 9580.740012407303,
+            "within_noise": {
+              "confirmation_verdict": "in_interval",
+              "criterion_3_met": true,
+              "d_over_sigma": 0.5239531822805502,
+              "fit_reliability": "ok",
+              "fitted_min_log_y": 0.7273322106722331,
+              "k_sigma": 2.0,
+              "live_fit": {
+                "fitted_min_log_y": 0.7273322106722331,
+                "sigma_log_y": 0.00019058654717494448
+              },
+              "log_gap": 9.985842789217436e-05,
+              "sigma_log_y": 0.00019058654717494448,
+              "source": "design.confirmation_of"
+            }
+          },
+          "confirmation_verdict": "in_interval",
+          "criteria": {
+            "box_edge": "log-space position of the selected value in the DECLARED (union) box lies within EDGE_TOL=0.02 of 0 or 1",
+            "discrete_extreme": "the selected level is an end of a >=3-level discrete axis (a 2-level factor has no interior by design and is recorded, not alarmed)",
+            "fit_not_positive_definite": "the pooled quadratic's continuous Hessian is not positive-definite \u2014 there is no fitted interior minimum and the fold fell through to the RAW argmin trial, an unguided pick",
+            "fitted_argmin_on_edge": "the quadratic is positive-definite but its argmin sits on / outside the declared box, so the fold fell through to the RAW argmin trial",
+            "no_evidence_beyond": "trials lie beyond the selected value on that side, but none is worse than the selected point by more than the noise \u2014 the objective is flat out to the sampled edge; nothing says the optimum is not further out (a 1-D marginal check). ALARMED for a raw-trial selection (no model located the point); for a fitted argmin the same fact is filed as dims.<axis>.flat_to_sampled_edge and named in the FLAT sentence, not alarmed",
+            "noise": "sigma_log_y = sqrt(SSR/(n-p)), the dof-corrected RMS residual of the pooled quadratic fit in log y, converted to objective units at the selected point (noise = sigma_log_y * y)",
+            "sampled_extreme": "the selected value is at or beyond the min / max value the usable trials sampled on that axis \u2014 no trial lies beyond it"
+          },
+          "dims": {
+            "lr": {
+              "box": [
+                0.0005369814587434337,
+                0.005369
+              ],
+              "box_pos": 0.9308571431872465,
+              "evidence_beyond": {
+                "high": {
+                  "has_evidence": false,
+                  "n_beyond": 1,
+                  "n_worse_than_selected_by_more_than_noise": 0,
+                  "nearest_beyond": {
+                    "clip_activation_rate": 0.026923076923076925,
+                    "lr": 0.005228724445122654,
+                    "max_grad_norm": 0.34,
+                    "ratio": 0.8541879118194493,
+                    "trial": "r1_t01",
+                    "warmup_frac": 0.15,
+                    "y": 2.0693900960416944
+                  }
+                },
+                "low": {
+                  "has_evidence": true,
+                  "n_beyond": 7,
+                  "n_worse_than_selected_by_more_than_noise": 7,
+                  "nearest_beyond": {
+                    "clip_activation_rate": 0.019230769230769232,
+                    "lr": 0.00314006676824976,
+                    "max_grad_norm": 0.34,
+                    "ratio": 0.8549683140897544,
+                    "trial": "r1_t04",
+                    "warmup_frac": 0.05,
+                    "y": 2.071280730065838
+                  }
+                }
+              },
+              "flat_to_sampled_edge": [
+                "high"
+              ],
+              "n_above": 1,
+              "n_below": 7,
+              "n_sampled": 8,
+              "on_box_edge": false,
+              "rank_ascending": 8,
+              "sampled_extreme": null,
+              "sampled_max": 0.005228724445122654,
+              "sampled_min": 0.0005584551464035643,
+              "sampled_pos": 0.9406627447084585,
+              "value": 0.004578836147882968
+            },
+            "max_grad_norm": {
+              "box": [
+                0.34,
+                0.34
+              ],
+              "box_pos": null,
+              "evidence_beyond": {},
+              "fixed": true,
+              "flat_to_sampled_edge": [],
+              "n_above": 0,
+              "n_below": 0,
+              "n_sampled": 8,
+              "note": "max_grad_norm is a FIXED axis of this design (box [0.34, 0.34] has zero width): held at the declared constant, not searched \u2014 no interiority verdict exists or is owed along it",
+              "on_box_edge": false,
+              "rank_ascending": null,
+              "sampled_extreme": null,
+              "sampled_max": 0.34,
+              "sampled_min": 0.34,
+              "sampled_pos": null,
+              "value": 0.34
+            },
+            "warmup_frac": {
+              "alarmed": false,
+              "at_extreme": true,
+              "level_index": 1,
+              "levels": [
+                0.05,
+                0.15
+              ],
+              "n_levels": 2,
+              "note": "2-level factor: no interior exists by design; recorded, not alarmed",
+              "value": 0.15
+            }
+          },
+          "fall_through": null,
+          "fit": {
+            "hessian_eigs": [
+              0.00573059224958874
+            ],
+            "positive_definite": true
+          },
+          "fit_reliability": "ok",
+          "selected": {
+            "lr": 0.004578836147882968,
+            "max_grad_norm": 0.34,
+            "warmup_frac": 0.15
+          },
+          "selected_from": "fitted_argmin",
+          "selected_trial": null,
+          "spread": {
+            "baseline": 2.4226403434272714,
+            "best_other_interior_trial": {
+              "clip_activation_rate": 0.03076923076923077,
+              "definition": "best usable trial, other than the selected one, that is interior on every continuous axis by criteria (a) and (b)",
+              "lr": 0.002940439354192482,
+              "margin_over_selected": 0.0014891574477262637,
+              "max_grad_norm": 0.34,
+              "ratio": 0.8548694694022849,
+              "trial": "r1_t07",
+              "warmup_frac": 0.15,
+              "y": 2.071041264938241
+            },
+            "best_trial": {
+              "clip_activation_rate": 0.026923076923076925,
+              "lr": 0.005228724445122654,
+              "max_grad_norm": 0.34,
+              "ratio": 0.8541879118194493,
+              "trial": "r1_t01",
+              "warmup_frac": 0.15,
+              "y": 2.0693900960416944
+            },
+            "fitted_min_below_best_trial": -0.00016201144882010965,
+            "flat": false,
+            "flat_kind": null,
+            "flat_to_sampled_edge": [
+              "lr:high"
+            ],
+            "full_spread": 0.026313436382563005,
+            "max": 2.0957035324242574,
+            "median": 2.0754124521465007,
+            "min": 2.0693900960416944,
+            "n_ok": 8,
+            "noise": {
+              "mad_log_y": 0.0001613672275928293,
+              "method": "sigma_log_y = sqrt(SSR/(n-p)), the dof-corrected RMS residual of the pooled quadratic fit in log y, converted to objective units at the selected point (noise = sigma_log_y * y)",
+              "noise_y": 0.0003944287903652467,
+              "rms_log_y": 0.0001167099481043722,
+              "sigma_log_y": 0.00019058654717494448,
+              "top3_spread": 0.0018906340241433561,
+              "top5_spread": 0.006471298870478925
+            },
+            "ratio_full_spread": 0.010861470401065722,
+            "ratio_max": 0.865049382220515,
+            "ratio_median": 0.8566737765170901,
+            "ratio_min": 0.8541879118194493,
+            "runner_up": {
+              "clip_activation_rate": 0.03076923076923077,
+              "lr": 0.002940439354192482,
+              "margin_over_best_trial": 0.0016511688965463733,
+              "margin_over_best_trial_ratio": 0.0006815575828356307,
+              "margin_over_selected": 0.0014891574477262637,
+              "max_grad_norm": 0.34,
+              "ratio": 0.8548694694022849,
+              "trial": "r1_t07",
+              "warmup_frac": 0.15,
+              "y": 2.071041264938241
+            },
+            "selected_ratio": 0.854254785736273,
+            "selected_y": 2.0695521074905145,
+            "selected_y_kind": "fitted minimum (the quadratic's value at its argmin)",
+            "text": "objective resolved at the noise level: only the selected point lies within noise 0.0004 of its objective 2.0696; runner-up margin 0.0015; full spread 0.0263 (0.0109 as a ratio to baseline 2.4226). Flat out to the sampled edge on: lr (high side) \u2014 recorded, not alarmed: the fitted argmin pools every trial's curvature",
+            "within_noise": {
+              "n": 1,
+              "span": {
+                "lr": {
+                  "decades": 0.0,
+                  "max": 0.005228724445122654,
+                  "min": 0.005228724445122654
+                },
+                "warmup_frac": [
+                  0.15
+                ]
+              },
+              "spread": 0.0,
+              "threshold_y": 2.06994653628088,
+              "trials": [
+                "r1_t01"
+              ]
+            },
+            "y_key": "best_heldout_loss"
+          },
+          "text": [
+            "SPREAD: objective resolved at the noise level: only the selected point lies within noise 0.0004 of its objective 2.0696; runner-up margin 0.0015; full spread 0.0263 (0.0109 as a ratio to baseline 2.4226). Flat out to the sampled edge on: lr (high side) \u2014 recorded, not alarmed: the fitted argmin pools every trial's curvature",
+            "SELECTION GUARD: clear (interior on every axis, positive-definite fit)",
+            "CLIP ACTIVATION: threshold 0.25 (target 0.10); 8/8 trials carry metrics; over threshold: none; raw fall-through pick: r1_t01; fitted argmin's nearest 3: r1_t01=0.027, r1_t07=0.031, r1_t03=0.050 -> promotable"
+          ],
+          "version": 1
+        },
+        "warmup_frac": 0.15
+      }
+    },
+    "qwen35_4b_base_eb64_s3_ctlstop": {
       "lora_r4_ce": {
         "lr": 0.006681234631156978,
         "max_grad_norm": 0.12,
@@ -6160,11 +8674,23 @@
       "lora_r4_ce": 2,
       "psr_ce_all": 2
     },
+    "qwen35_4b_base_eb64_s1_ctlstop": {
+      "lora_r4_ce": 2,
+      "psr_ce_all": 2
+    },
     "qwen35_4b_base_eb64_s2": {
       "lora_r4_ce": 2,
       "psr_ce_all": 2
     },
+    "qwen35_4b_base_eb64_s2_ctlstop": {
+      "lora_r4_ce": 2,
+      "psr_ce_all": 2
+    },
     "qwen35_4b_base_eb64_s3": {
+      "lora_r4_ce": 2,
+      "psr_ce_all": 2
+    },
+    "qwen35_4b_base_eb64_s3_ctlstop": {
       "lora_r4_ce": 2,
       "psr_ce_all": 2
     },

@@ -114,7 +114,7 @@ instruments:
     read_at: final_rung
     decode_source: grandfathered_T1
     decode_policy_refs: ["gemma4e4b_it|bon|off|grandfathered_T1", "qwen35_4b_it|bon|off|grandfathered_T1", "qwen35_4b_demo|bon|off|grandfathered_T1", "nemotron3nano4b|bon|off|grandfathered_T1", "llama8b_it|bon|off|grandfathered_T1", "glm46vflash|bon|off|grandfathered_T1", "qwen35_35b_a3b|bon|off|grandfathered_T1", "gemma4_31b|bon|off|grandfathered_T1"]
-    # + the two paper-companion-repo PIPELINE-TEST models (decode_policy_seed.yaml ruling
+    # + the two PIPELINE-TEST models (decode_policy_seed.yaml ruling
     # decode-bon-canonical-T1-pipeline-test-models-2026-09-29): the test models follow the PAPER's canonical best-of-N -- this instrument, the
     # shape reproduce/06_eval_waves.sh submits (target_static.sbatch families=bon + bon_climb.sbatch); their vendor-preset BoN rows stay sensitivity
     # the authors' rule (decode_policy_seed.yaml ruling decode-bon-canonical-T1-live-non-default-2026-10-14): canonical best-of-N
@@ -245,7 +245,7 @@ instruments:
     judge_id: strongreject_v1_haiku45
     paper_status: superseded
     paper_status_ruling_id: "authors' ruling (r2v1-supersede-instrument-bon-512-floor, matched on eval strongreject_bon x token cap 512, whatever the instrument): a 512-only reading is a FLOOR (at-cap draws judged jailbroken 19x (gemma) more often than terminated ones); superseded by bon_512store_4096climb_vendor_preset; a 512-only prior makes the 4,096 run the first canonical measurement"
-    notes: "The paired-write 512 stores: at-cap 1.2-4.1 % steered vs 36.4-36.6 % unsteered; loops 0.1-1.8 % steered vs 0.01 % unsteered (the loop share is a property of the steering object, ReLU 2026-09-20). relu_paired files the same stores' 512 runs under its own instrument (decode unverified from the aggregate); bon_stores attaches the store counts to THOSE run ids rather than minting a second 512 run, so this row is seeded for the family and stamped only where a 512-only reading has no relu_paired run."
+    notes: "The paired-write 512 stores: at-cap 1.2-4.1 % steered vs 36.4-36.6 % unsteered; loops 0.1-1.8 % steered vs 0.01 % unsteered (the loop share is a property of the steering object; 2026-09-20). relu_paired files the same stores' 512 runs under its own instrument (decode unverified from the aggregate); bon_stores attaches the store counts to THOSE run ids rather than minting a second 512 run, so this row is seeded for the family and stamped only where a 512-only reading has no relu_paired run."
     source: "the paired-write stores' bon_served_manifest.json (decode_policy_id qwen35_4b_it|bon|off|vendor_preset@v1, bon_decode_preset vendor_preset); bon_cap4096_stats.json qwen35_4b_paired_d1_s{1,2,3} n_at_cap_512 / n_loop_512; the registry's duplicate-row rule (a 512-only prior makes the 4,096 run the first canonical measurement)"
 
   # -- the NATIVE 4,096 vendor-preset best-of-N (2026-09-22): a store whose every draw was requested at the 4,096 cap under the served model's

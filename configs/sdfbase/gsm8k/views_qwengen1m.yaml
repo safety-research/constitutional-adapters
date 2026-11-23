@@ -1,0 +1,76 @@
+# configs/sdfbase/gsm8k/views_qwengen1m.yaml — the GSM8K paired-200 rows of the 1M-token GENERATOR COMPARISON's objects on Qwen3.5-4B:
+# a matrix of its own under its own wave root and its own launchable wave, never the published matrix, never the seed-replicate one
+# and never the control-pool-stopped one.
+#
+# The matrix (configs/sdfbase/gsm8k/matrix_qwengen1m.json) is GENERATED from this file + the lane-private roster and pins named in
+# `frozen_inputs:` by
+#   python scripts/sdfbase/gsm8k/make_gsm8k_matrix.py --matrix-name qwengen1m    (--check pins byte-identity)
+# through the ONE selector scripts/sdfbase/gsm8k/g8k_views.py select_rows, and its own-row overlay pairs by
+#   python scripts/sdfbase/gsm8k/make_gsm8k_overlays.py --matrix qwengen1m      (--check likewise). Never hand-edit either output.
+#
+# THE ROWS (6 = 3 views x 2 objects). Per view `qg1ms<k>` (k in 1..3; TAG qwen35_4b_qg1ms<k>) of the lane-private roster
+# configs/sdfbase_full22_roster_qwengen1m.yaml, its two cells in roster order: the 1M-token constitution LoRA fit on the Opus-written
+# pool (constv2-mix-1m) and its twin fit on the Qwen 3.8 Max-written pool (constqwen38-mix-1m), both at fit seed k. Every cell is in
+# the roster's PIN FORM against configs/qwengen1m_pins.json; the selector reads each row's staged id and object sha256 through that
+# pin (g8k_views.staged_id_of), so the matrix's pins authority is the one file `frozen_inputs:` hashes.
+#
+# THE INSTRUMENT AND THE DRAW, as on the control-pool-stopped rows (views_ctlstop.yaml) and the published seed-view rows
+# (views_qwen_seedrep.yaml): the 200 paired items, cap 8,192 with the standing ladder (> the 1 % trigger at cap -> the 16,384 rung
+# over the eligible at-cap items), k = 1, thinking ON declared on every request, the model's thinking-card sampling row, served
+# natively; EVERY row under the OPT-IN Inspect replicate seed rule at its view's base = the objects' training seed k
+# (eval_seed.seed_base(k) = k; the generator refuses any other value); every arm at the common geometry class (one S x L per leg).
+#
+# NO `none` ROW. The `exclude:` block drops each view's unsteered row: this lane runs no new unsteered reference, and its figure
+# reads the paper's pooled unsteered anchor. The standup still serves the base route (g8k_cells.launch_cells_for), unmeasured.
+#
+# NO STANDUP COMPANION. The native composer fits `--max-lora-rank` to the largest rank among the adapters a standup registers (the
+# PSR carrier and the zero adapter are rank 1; a LoRA r=4 cell or the rank-8 subtraction gives cap 8). Both cells of every view are
+# rank-4 LoRAs, so every standup of this wave composes `--max-lora-rank 8 --lora-target-modules o_proj` from the row's own cell, as
+# the published rows did; the control-pool-stopped matrix needed a companion only because two of its four cells are rank-1 ReLU
+# carriers. The canary asserts the composed rank.
+#
+# THE INPUTS. `frozen_inputs:` names the lane-private roster and pins THEMSELVES (not copies): both files are this lane's own and
+# are frozen with the wave's launch tree, and their sha256 below is asserted by the generator, so any later edit to either
+# refuses `--check` until the matrix is regenerated and the hashes re-declared in the same change.
+schema: g8k_matrix/2
+wave_root_rel: exp/gsm8k_paired200_paper_objects_qwengen1m
+# THE LADDER TRIGGER: 1 % RAW at-cap, harmonised across the battery; every row carries it.
+trigger_threshold: 0.01
+# every row of this matrix is the `qwengen1m` wave and serves through its OWN overlay pair
+# (sdfbase_full22_qwen35_4b_qg1ms<k>.gsm8k_<cell slug>.yaml, explicit_cells [none, <cell>])
+wave: qwengen1m
+row_overlays: true
+# THE COMMON GEOMETRY CLASS of the published seed-view rows: capability:gen_long_gsm8k_common_f22 (16,640 at the 8,192 pass) /
+# capability:gen_long_gsm8k_rung_common_f22 (24,832 at the rung)
+geometry_class: common_f22
+# the OPT-IN Inspect seed rule, one base per view (== eval_seed.seed_base(k), the objects' training seed; the generator refuses any other value)
+inspect_seed_policy: replicate
+inspect_seed_base_by_view:
+  qg1ms1: 1
+  qg1ms2: 2
+  qg1ms3: 3
+views:
+  qwen35_4b: [qg1ms1, qg1ms2, qg1ms3]
+holds: []
+exclude:
+  - key: qwen35_4b
+    view: qg1ms1
+    cells: [none]
+    reason: >
+      no new unsteered reference: the generator comparison's objects are read against the paper's pooled unsteered anchor, so this
+      wave measures the two objects only (the standup still serves the base route, unmeasured).
+  - key: qwen35_4b
+    view: qg1ms2
+    cells: [none]
+    reason: >
+      as qg1ms1: the two objects only, read against the paper's pooled unsteered anchor.
+  - key: qwen35_4b
+    view: qg1ms3
+    cells: [none]
+    reason: >
+      as qg1ms1: the two objects only, read against the paper's pooled unsteered anchor.
+frozen_inputs:
+  roster: configs/sdfbase_full22_roster_qwengen1m.yaml
+  pins: configs/qwengen1m_pins.json
+  roster_sha256: 7af27a31f58ce604961ba0827d11db78c63345e68be0a69077c20ea226dc6032
+  pins_sha256: 90de471de985a8e578ee3b48215a3325bc9203a44c65221a27ea9ff159b69618

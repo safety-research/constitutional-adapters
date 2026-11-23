@@ -478,3 +478,17 @@ SPLIT_ATTRIBUTION_FILES = {
 def test_every_comment_row_reads_a_passage_across_its_line_breaks(tmp_path):
     root = _repo(tmp_path / "r", SPLIT_ATTRIBUTION_FILES)
     assert _comment_hits(root, tmp_path) == [("src/m.py", "L1"), ("src/m.py", "L4"), ("src/m.py", "L7")]
+
+
+def test_no_frame_sqlite_refuses_a_frame_whose_item_tables_ship_in_the_sqlite_only(tmp_path, capsys):
+    """read_set_version 3 ships item_result and item_flags in the split SQLite only. `--no-frame-sqlite` skips that SQLite, which was
+    harmless while its rows mirrored the Parquet set; on a frame whose MANIFEST declares `sqlite_only_tables` it would skip those tables
+    outright, so the scan refuses by name before reading anything. A frame that declares none (the earlier layout) is not refused."""
+    root = _repo(tmp_path / "r", {"README.md": "plain\n"})
+    _frame(root, tmp_path)
+    assert SCAN.sqlite_only_frames(root) == []
+    (root / SNAP / "MANIFEST.json").write_text(json.dumps({"sqlite_only_tables": ["item_result", "item_flags"]}))
+    assert SCAN.sqlite_only_frames(root) == [f"{SNAP}: item_result item_flags"]
+    rc = SCAN.main(["--root", str(root), "--no-frame-sqlite", "--quiet", "--no-allowlist"])
+    err = capsys.readouterr().err
+    assert rc == 2 and "REFUSED" in err and "--no-frame-sqlite" in err and SNAP in err and "item_result item_flags" in err

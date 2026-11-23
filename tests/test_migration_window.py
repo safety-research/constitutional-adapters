@@ -70,25 +70,28 @@ WINDOW_BELOW = M.code_version() - 1
 #: landing window applies it under WINDOW_ALLOW_REBUILD=1; 0032 `site_label_rename`, the newest file: the five tables whose CHECK names a
 #: site label rebuilt, every label column copied through the runner's alias table -- on the shape below it, built from these files,
 #: nothing differs, so the plan reads `pending: 0032_site_label_rename` with no drift line and the script says `rebuilds: none`; the run
-#: rebuild recreates the table's triggers in place (`WINDOW_REBUILT_TRIGGERS`); a database built before the labels were neutral plans the
-#: five rebuilds and lands under WINDOW_ALLOW_REBUILD=1)
+#: rebuild recreates the table's triggers in place; a database built before the labels were neutral plans the five rebuilds and lands
+#: under WINDOW_ALLOW_REBUILD=1; 0033 `prune_superseded_item_rows`, the newest file: superseded revisions' item rows are deleted by reclaim
+#: from now on, and the file only arms it -- one table CREATED (`item_reclaim_ledger`), `v_paper_inputs_head` recreated without its item
+#: member, the partial index that member read dropped (the planner's `drop undeclared index(s)` line), `reclaimed` reset; nothing rebuilt
+#: or added, so the script says `rebuilds: none` and the landing window runs without WINDOW_ALLOW_REBUILD)
 WINDOW_REBUILDS = ()
 #: the fixture's row counts in the rebuilt tables (`_v17_registry` seeds one instrument and three runs), as the plan record and the verdict carry them
 WINDOW_ROW_COUNTS = {}
-WINDOW_VIEWS = ()
+WINDOW_VIEWS = ("v_paper_inputs_head",)
 #: what the newest migration CREATES and ADDS beside its recreates (the fold-observation migration: one table and nothing else; the
 #: record-refusal-fact migration: one table, five columns on three tables; 0025: nothing) -- the planner's `create table` / `add column(s)`
 #: lines, which the window script prints and the plan record carries; empty for a view-only file
-WINDOW_CREATES = ()                                                   # 0030 creates nothing: 0029's five tables are already in the shape below
+WINDOW_CREATES = ("item_reclaim_ledger",)                             # 0033's deletion ledger, empty
 WINDOW_ADD_COLUMNS = ()
 
 
-from test_registry_migrations import FENCE_TRIGGERS, _insert_row as _insert, _valid_row, _apply_body_without_version, _sans_fence_render, _sans_ntpl_drift   # the migration suite's own row builder + inserter
-#: the triggers the newest migration recreates ON ITS OWN (the planner's `recreate trigger(s)` line): none for 0032 -- its run rebuild
-#: recreates the table's triggers inside the rebuild block, the two fold-order fence triggers among them, so those are checked in place
-#: after the apply (`WINDOW_REBUILT_TRIGGERS`) rather than read from a recreate line
+from test_registry_migrations import _insert_row as _insert, _valid_row, _apply_body_without_version, _sans_fence_render, _sans_ntpl_drift   # the migration suite's own row builder + inserter
+#: the triggers the newest migration recreates ON ITS OWN (the planner's `recreate trigger(s)` line) and those a rebuild of its recreates in
+#: place, checked after the apply (`WINDOW_REBUILT_TRIGGERS`): none for 0033, which rebuilds nothing (0032's run rebuild recreated the two
+#: fold-order fence triggers; they stand in the shape below)
 WINDOW_TRIGGERS = ()
-WINDOW_REBUILT_TRIGGERS = FENCE_TRIGGERS
+WINDOW_REBUILT_TRIGGERS = ()
 
 
 def _v17_registry(root: Path, through: int = 17) -> str:

@@ -62,11 +62,28 @@ if str(HERE.parent / "seedrep") not in sys.path:      # scripts/sdfbase/seedrep:
     sys.path.insert(0, str(HERE.parent / "seedrep"))
 import eval_seed as ES  # noqa: E402  (qwen-base-seed-replicates: the replicate seed bases)
 import itdoc_bind as B
-from f22_roster import served_cells, steered_wave_view
+from f22_roster import is_pin_form, served_cells, steered_wave_view
 
 ROSTER_REL = Path("configs/sdfbase_full22_roster.yaml")
 PINS_REL = Path("configs/sdfbase_full22_pins.json")
 VIEWS_REL = Path("configs/sdfbase/gsm8k/views.yaml")
+#: the LANE-PRIVATE views whose objects were fit at the training seed the view's name carries, mapped to that seed: the
+#: control-pool-stopped views `ctlstop64s<k>` (configs/sdfbase_full22_roster_ctlstop_eb64.yaml), the SI-distilled refit views
+#: `sikl4s<k>` (configs/sdfbase_full22_roster_sikl4.yaml, fit seed k), then the 1M-token generator comparison's views `qg1ms<k>`
+#: (configs/sdfbase_full22_roster_qwengen1m.yaml). A views file may declare the replicate seed policy on them exactly as on the seed
+#: views `s<k>` / `s<k>p`: the base is eval_seed.seed_base(k), the same rule (the sampled generator's SEEDED_LANE_VIEWS names the
+#: same views at the same seeds; tests/test_ctlstop64_views_all_families.py, tests/test_sikl4_battery_lane.py and
+#: tests/test_qwengen1m_more_evals_lane.py pin each lane's entries)
+SEEDED_LANE_VIEW_SEEDS = {**{f"{prefix}{k}": k for prefix in ("ctlstop64s", "sikl4s") for k in ES.SEEDS},
+                          **{f"qg1ms{k}": k for k in ES.SEEDS}}
+
+
+def replicate_seed_of_view(view: str) -> int:
+    """The training seed a view's replicate base is derived from: a seeded lane view's (SEEDED_LANE_VIEW_SEEDS), else the seed
+    view's own (eval_seed.seed_of_view: `s<k>` / `s<k>p`); any other view refuses by name (ValueError)."""
+    if view in SEEDED_LANE_VIEW_SEEDS:
+        return SEEDED_LANE_VIEW_SEEDS[view]
+    return ES.seed_of_view(view)
 
 
 # --------------------------------------------------------------------------- the spec
@@ -297,9 +314,9 @@ def _standup_companions_entry(doc: dict, *, path: Path, schema2: bool, row_overl
 
 def _inspect_seed_policy_entries(doc: dict, out_views: dict, *, path: Path, schema2: bool) -> tuple:
     """qwen-base-seed-replicates: the views file's `inspect_seed_policy:` (+ `inspect_seed_base_by_view:`) — schema 2 only, the
-    ONE admitted policy `replicate`, exactly one int base per expressed view, every view a seed-replicate view (`s<s>`) whose
-    base IS eval_seed.seed_base(s) (a mistyped base refuses here, never at a GPU); a base map without the policy, or a policy
-    without the map, refuses. Returns ``(policy | None, {view: base} | None)``."""
+    ONE admitted policy `replicate`, exactly one int base per expressed view, every view a seed-replicate view (`s<s>`) or a
+    seeded lane view (``replicate_seed_of_view``) whose base IS eval_seed.seed_base(s) (a mistyped base refuses here, never at a
+    GPU); a base map without the policy, or a policy without the map, refuses. Returns ``(policy | None, {view: base} | None)``."""
     policy = doc.get("inspect_seed_policy")
     bases = doc.get("inspect_seed_base_by_view")
     if policy is None and bases is None:
@@ -319,11 +336,11 @@ def _inspect_seed_policy_entries(doc: dict, out_views: dict, *, path: Path, sche
         if isinstance(base, bool) or not isinstance(base, int) or base < 0:
             raise SystemExit(f"{path}: inspect_seed_base_by_view.{view} must be a non-negative int, got {base!r}")
         try:
-            want = ES.seed_base(ES.seed_of_view(view))
+            want = ES.seed_base(replicate_seed_of_view(view))
         except ValueError as e:
             raise SystemExit(f"{path}: inspect_seed_base_by_view.{view}: {e}") from None
         if base != want:
-            raise SystemExit(f"{path}: inspect_seed_base_by_view.{view} = {base} but eval_seed.seed_base({ES.seed_of_view(view)}) = {want} — "
+            raise SystemExit(f"{path}: inspect_seed_base_by_view.{view} = {base} but eval_seed.seed_base({replicate_seed_of_view(view)}) = {want} — "
                              "the declaration must equal the rule (scripts/sdfbase/seedrep/eval_seed.py)")
         out[str(view)] = int(base)
     return str(policy), out
@@ -514,13 +531,46 @@ def sha256_of(path: Path) -> str:
     return hashlib.sha256(Path(path).read_bytes()).hexdigest()
 
 
+def staged_id_of(sid, *, key: str, cell: str, pins: Optional[Mapping] = None, pins_file: Optional[str] = None,
+                 where: str = "cells_of") -> Optional[str]:
+    """The staged id a roster cell names: a string (or None, a prompted baseline) is returned unchanged; a cell in the roster's
+    PIN FORM (``{pins: <file>, pin: <model key>.<entry>}``, f22_roster.is_pin_form — the lane-private rosters' cross-bank form)
+    is resolved through the pin it names, which is the only place its staged id lives. The form's file must be THIS matrix's pins
+    input (``pins_file``, relative to the configs root: one sha-pinned pins authority per matrix), the pin's model key the row's,
+    and the entry's key its own ``staged_id`` — so ``pin_for(pins, key, <staged id>)`` reads the same entry; any other shape
+    refuses by name."""
+    if sid is None or isinstance(sid, str):
+        return sid
+    if not is_pin_form(sid):
+        raise SystemExit(f"{where}: {key}/{cell} maps to {sid!r}, neither a staged id nor the roster's pin form {{pins, pin}}")
+    if pins is None or pins_file is None:
+        raise SystemExit(f"{where}: {key}/{cell} is a pin-form cell ({sid['pins']} {sid['pin']}) — resolving it needs the matrix's "
+                         "pins document and its path (select_rows pins_file=)")
+    if Path(str(sid["pins"])) != Path(str(pins_file)):
+        raise SystemExit(f"{where}: {key}/{cell} names the pins file {sid['pins']} but this matrix regenerates from {pins_file} — one "
+                         "pins authority per matrix (the views file's frozen_inputs.pins), so a pin is never read from an unpinned file")
+    parts = str(sid["pin"]).split(".")
+    if len(parts) != 2 or not all(parts) or parts[0] != key:
+        raise SystemExit(f"{where}: {key}/{cell} pin reference {sid['pin']!r} is not `{key}.<entry>`")
+    entry = (pins.get(key) or {}).get(parts[1])
+    staged = entry.get("staged_id") if isinstance(entry, dict) else None
+    if not isinstance(staged, str) or not staged:
+        raise SystemExit(f"{where}: {key}/{cell}: {pins_file} has no {sid['pin']} entry with a staged_id")
+    if staged != parts[1]:
+        raise SystemExit(f"{where}: {key}/{cell}: pin {sid['pin']} names staged id {staged!r} under another key — the entry's key must be "
+                         "its staged id, so the matrix row's pin is read from the same entry")
+    return staged
+
+
 # --------------------------------------------------------------------------- the cell rule
-def cells_of(roster: dict, key: str, view: str) -> list[tuple[str, Optional[str]]]:
+def cells_of(roster: dict, key: str, view: str, *, pins: Optional[Mapping] = None,
+             pins_file: Optional[str] = None) -> list[tuple[str, Optional[str]]]:
     """``[(cell, staged_id | None), ...]`` of (key, view): ``none`` first, the prompted safety baseline second iff the view is
     ``it`` (the instruct-direct lane's matched prompted cell — the roster's `main` views of the two chat-checkpoint models
     already serve it), then the roster's served cells in roster order; a key or view the roster lacks refuses by name.
     EVERY served cell is listed, an unscheduled prompted one included — ``select_rows`` is what routes those to the
-    trailing held pass."""
+    trailing held pass. A pin-form cell's staged id is read through its pin (``staged_id_of`` over ``pins`` / ``pins_file``,
+    the matrix's pins input); a string cell is unchanged."""
     targets = roster.get("targets") or {}
     if key not in targets:
         raise SystemExit(f"roster names no target {key!r} (targets: {sorted(targets)})")
@@ -540,7 +590,7 @@ def cells_of(roster: dict, key: str, view: str) -> list[tuple[str, Optional[str]
     for cid, sid in served.items():
         if cid == M.CELL_NONE or (view == M.VIEW_IT and cid == M.CELL_PROMPTED):
             continue
-        out.append((cid, sid))
+        out.append((cid, staged_id_of(sid, key=key, cell=cid, pins=pins, pins_file=pins_file, where=f"cells_of {key}/{view}")))
     return out
 
 
@@ -584,7 +634,7 @@ def _row(index: int, *, key: str, view: str, cell: str, staged: Optional[str], p
     tag = M.tag_for(key, view)
     prefix = M.out_root_prefix_for(wave or M.WAVE_PUBLISHED)
     fitted = staged is not None
-    declared = fitted and cell in M.HEADER_LOCATED_CELLS
+    declared = fitted and cell in M.HEADER_LOCATED_CELLS and view in M.HEADER_LOCATED_VIEWS
     if declared and arm == M.THINKING_NOT_AVAILABLE:
         raise SystemExit(f"{where}: {tag}/{cell} is a header-located cell on the no-switch family {family} — there is no "
                          f"thinking-ON header to declare it under (P7); it is not a row of this instrument")
@@ -802,10 +852,11 @@ def select_rows(roster: dict, pins: Mapping, views: Mapping[str, Iterable[str]],
                 itdoc_admission: Optional[Mapping] = None, row_overlays: bool = False, object_generation: bool = False,
                 wave: Optional[str] = None, inspect_seed_policy: Optional[str] = None,
                 inspect_seed_base_by_view: Optional[Mapping[str, int]] = None,
-                standup_companions: Optional[Mapping[str, str]] = None, geometry_class: Optional[str] = None) -> list[dict]:
+                standup_companions: Optional[Mapping[str, str]] = None, geometry_class: Optional[str] = None,
+                pins_file: Optional[str] = None) -> list[dict]:
     """The matrix rows for ``views`` (an ordered ``{key: [view, ...]}``) over ``roster`` + ``pins``: per (key, view), ``cells_of``
-    in order; every fitted cell carries its staged id and pin; the header-located cells (``cells.HEADER_LOCATED_CELLS``)
-    are DECLARED and expect ``response``, every other fitted cell expects ``all``; a hold stamps ``status: held``;
+    in order; every fitted cell carries its staged id and pin; the header-located cells (``cells.HEADER_LOCATED_CELLS``, on the
+    views ``cells.HEADER_LOCATED_VIEWS``) are DECLARED and expect ``response``, every other fitted cell expects ``all``; a hold stamps ``status: held``;
     ``expected_refusal`` is False on every row since 2026-09-10 (gemma's header-located cells are servable thinking-ON on the
     declared path) — the field stays, lane A's reader honours it as a tested capability;
     ``standup_cell`` / ``standup_harness_cell`` are the declared-or-plain spellings the standup boundary reads (B-P1.1) and
@@ -814,7 +865,8 @@ def select_rows(roster: dict, pins: Mapping, views: Mapping[str, Iterable[str]],
     list. llama-paper-rows (P7): the row's ARM is its family's (``M.THINKING_MODE_BY_FAMILY``); a ``not_available`` row needs
     a schema-2 matrix (it carries ``thinking_mode``), runs the model's sampling mode (``card``), carries NO tuple when fitted
     (in support), cannot be declared (no ON header), and expects the no-switch stamps; an ``exclude`` entry drops the cell
-    from the matrix outright (fallback (B); a schema-2 block). A prompted cell the roster declares that the matrix's
+    from the matrix outright (fallback (B); a schema-2 block). ``pins_file`` is the pins document's path relative to the configs
+    root: a roster cell in the PIN FORM resolves through it (``staged_id_of``) and refuses without it. A prompted cell the roster declares that the matrix's
     SCHEMA does not schedule (``g8k_cells.scheduled_prompted_cells(schema)`` — the published matrix the safety baseline
     only, the Llama matrix both prompted baselines) is emitted AFTER every scheduled row (views order, then roster order),
     ``status: held`` with ``g8k_cells.unscheduled_held_reason``, so the scheduled rows' indices and the launched set are
@@ -923,7 +975,7 @@ def select_rows(roster: dict, pins: Mapping, views: Mapping[str, Iterable[str]],
                              f"expresses (`thinking_mode` on every row; its own wave root) — never the published schema-1 matrix (P16)")
         sampling_mode = M.sampling_mode_of(key)
         for view in vlist:
-            roster_cells = cells_of(roster, key, view)
+            roster_cells = cells_of(roster, key, view, pins=pins, pins_file=pins_file)
             for cell, staged in roster_cells:
                 if spec.excluded(key, view, cell) is not None:
                     continue
@@ -985,7 +1037,7 @@ def select_rows(roster: dict, pins: Mapping, views: Mapping[str, Iterable[str]],
             # LAUNCH row of a view engine like every base-pass row, so it carries the view's companion through the SAME `_companion_kw`
             # resolution (the loader holds every launch row to exactly the document's companion; `[]` there refused the row) — a view
             # that does not stage the companion HOLDS the prompted row by name too. Every matrix without the block is byte-identical.
-            ext_companion_kw, ext_companion_hold = _companion_kw(key, view, cell, cells_of(roster, key, view))
+            ext_companion_kw, ext_companion_hold = _companion_kw(key, view, cell, cells_of(roster, key, view, pins=pins, pins_file=pins_file))
             rows.append(_row(len(rows), key=key, view=view, cell=cell, staged=None, pins=pins, held_reason=spec.hold_for(key, view, cell) or ext_companion_hold,
                              where=where, family=family, arm=arm, sampling_mode=M.sampling_mode_of(key), schema2=schema2,
                              trigger_threshold=trigger_threshold, wave=(spec.wave or M.WAVE_EXT), own_overlay=spec.row_overlays,

@@ -1,0 +1,52 @@
+{
+ "about": "The committed projection of a strength-lane XSTest reads sidecar: the record's per_item reads only, the columns the notebook's loader reads (paper/notebooks/strength_reads_sidecar.py).",
+ "battery_record_code": {
+  "path": "scripts/sdfbase/full22/strength/battery_record.py",
+  "sha256": "4c36d04bebfde1a7267be9742e5f0725bd3456a2ea5007af4aaa771632fa0d0d"
+ },
+ "battery_records": {
+  "strength/lora/battery_curves.json": "9ce4a96a8560c973e7f35547296d3e0f5a4bb020a413a4cfc112849e99142dc8",
+  "strength/lora_base2it_native/battery_curves.json": "0df18ee45ba3cc02e4a38cf6525727e423fdf0e650032c2c23bcaf987bcb8784"
+ },
+ "columns": [
+  "run_id",
+  "item_id",
+  "read",
+  "at_cap",
+  "minimax_label",
+  "minimax_outcome",
+  "sonnet_label",
+  "sonnet_status",
+  "rung",
+  "top_rung",
+  "trial"
+ ],
+ "filed_check": {
+  "counts": {
+   "agree": 37903
+  },
+  "disagreements": [],
+  "judge_id": "5e79a37817fef85e8b4d0d8b0043a762ecb8b53870354737ed98bee6e675a2c0"
+ },
+ "generator": {
+  "path": "paper/notebooks/strength_reads_sidecar.py",
+  "sha256": "29dfb093521290ea2f60f14de9a43f40d6d064931f29fb3c88a72dad22d53b0c"
+ },
+ "paused_run_dirs": {},
+ "preview": false,
+ "reads_scope": {
+  "report": {
+   "sonnet_judge": "3b4aaa7aaa5d1b1f1b670775f85c5e3bfcf1ac91403549e3a579a24c313f5cf9"
+  }
+ },
+ "rows": 23500,
+ "runs": 94,
+ "source": {
+  "rows": 47250,
+  "runs": 94,
+  "table_sha256": "d234d671a399f2f59abeddfec54ee1ca33ac36bf0540d370cae5bd8638ff3cf2"
+ },
+ "table": "strength_reads.parquet",
+ "table_sha256": "f833e5e9eff92a5190eec6f5abd8be477e10f196f1e0d712f35a9d9c8d9894d1",
+ "unfinished_run_dirs": {}
+}

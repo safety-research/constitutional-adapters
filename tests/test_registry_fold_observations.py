@@ -37,6 +37,7 @@ from sisteer.registry import schema_def as S
 from sisteer.registry import synth
 from sisteer.registry import vocab as V
 from sisteer.registry.identity import canonical_json
+from test_registry_migrations import PRUNE_TABLES, _prune_index_aside, _sans_prune_cli, _sans_prune_head, _sans_prune_head_render  # noqa: E402  -- 0033's part, set aside
 from test_registry_migrations import AF_TABLES, FU4_TABLES, NTPL_TABLES, TF_VIEWS, _sans_af_drift, _sans_pes, _sans_pes_block, _strip_af_shape  # noqa: E402  -- migration 0025's, 0026's, 0029's and 0031's lines, set aside here
 
 JOBS = ["job_a", "job_b", "job_c"]
@@ -345,20 +346,20 @@ def test_the_migration_plan_on_the_shape_below_it_is_one_create_and_the_committe
     # 0025 (pending_excludes_superseded) is the newer file on this tree: its one recreate of v_pending_judgment is set aside below and
     # pinned by its own test (tests/test_registry_pending_excludes_superseded.py)
     pes_version = next(f for f in M.migration_files() if f[1] == "pending_excludes_superseded")[0]
-    assert pes_version > version and pes_version == M.code_version() - 7                   # 0026 (the twin fold), 0027 (registry follow-ups-4), 0028 (reference_model_never_selected), 0029 (analysis filing), 0030 (fold_order_barrier) and 0031 (non_template_positions) follow it on this tree
+    assert pes_version > version and pes_version == M.code_version() - 8                   # 0026 (the twin fold), 0027 (registry follow-ups-4), 0028 (reference_model_never_selected), 0029 (analysis filing), 0030 (fold_order_barrier), 0031 (non_template_positions), 0032 (site_label_rename) and 0033 (prune_superseded_item_rows) follow it on this tree
     path = str(tmp_path / "below.sqlite")
     _shape_below_fo(path)
     conn = DB.connect(path)
     assert M.db_version(conn) == version - 1
-    assert _sans_pes(DB.schema_drift(conn)) == FO_DRIFT
+    assert _sans_prune_head(_sans_pes(DB.schema_drift(conn))) == FO_DRIFT                # 0033's head line aside
     have, want = DB.ddl_master(conn), DB.code_ddl_master()
     for t in ("blocked_records", "row_history"):
         assert have[("table", t)] == want[("table", t)], t                                 # no record kind was added: the ledgers' CHECK lists are byte-identical
     plan = M.shape_plan(conn)
-    assert [r["table"] for r in plan["rebuild"] if r["table"] not in FU4_TABLES + NTPL_TABLES] == [] and plan["add_columns"] == [] and plan["undeclared_tables"] == [] and [c for c in plan["create"] if c not in AF_TABLES] == ["fold_observation"]   # 0027's run_contrast rebuild, 0031's two and 0029's five creates aside
-    assert plan["objects"]["index"] == {"recreate": [], "drop": []} and plan["objects"]["trigger"] == {"recreate": [], "drop": []}   # 0030's two fence triggers ride 0031's run rebuild
-    assert [v for v in plan["objects"]["view"]["recreate"] if v not in TF_VIEWS] == ["v_pending_judgment"] and plan["objects"]["view"]["drop"] == []   # the newer files' recreates: 0025's one, 0026's three
-    rendered = M.render_shape_migration(conn, plan)
+    assert [r["table"] for r in plan["rebuild"] if r["table"] not in FU4_TABLES + NTPL_TABLES] == [] and plan["add_columns"] == [] and plan["undeclared_tables"] == [] and [c for c in plan["create"] if c not in AF_TABLES + PRUNE_TABLES] == ["fold_observation"]   # 0027's run_contrast rebuild, 0031's two, 0029's five creates and 0033's aside
+    assert _prune_index_aside(plan["objects"]["index"]) == {"recreate": [], "drop": []} and plan["objects"]["trigger"] == {"recreate": [], "drop": []}   # 0030's two fence triggers ride 0031's run rebuild
+    assert [v for v in plan["objects"]["view"]["recreate"] if v not in TF_VIEWS + ("v_paper_inputs_head",)] == ["v_pending_judgment"] and plan["objects"]["view"]["drop"] == []   # the newer files' recreates: 0025's one, 0026's three, 0033's head
+    rendered = _sans_prune_head_render(M.render_shape_migration(conn, plan))
     committed = open(mpath, encoding="utf-8").read()
     assert committed.startswith(f"-- {os.path.basename(mpath)}\n")
     body = committed[committed.index("-- drift: "):]
@@ -373,7 +374,7 @@ def test_the_migration_plan_on_the_shape_below_it_is_one_create_and_the_committe
     os.makedirs(root)
     shutil.copy(path, DB.db_path(root))
     assert cli.main(["--root", root, "migrate", "--plan"]) == 1
-    out = capsys.readouterr().out
+    out = _sans_prune_cli(capsys.readouterr().out)                                       # 0033's lines aside
     assert f"pending: {version:04d}_fold_observation, {pes_version:04d}_pending_excludes_superseded" in out and "create table fold_observation" in out
     for absent in ("add column", "drop undeclared", "recreate index"):
         assert absent not in out, out
@@ -415,7 +416,7 @@ def test_the_post_step_derives_the_rows_of_the_runs_already_folded_exactly_as_th
     conn.execute("DELETE FROM schema_migration WHERE version >= ?", (version,))
     conn.commit()
     pes_version = next(f for f in M.migration_files() if f[1] == "pending_excludes_superseded")[0]
-    assert M.db_version(conn) == version - 1 and _sans_af_drift(DB.schema_drift(conn)) == FO_DRIFT
+    assert M.db_version(conn) == version - 1 and _sans_prune_head(_sans_af_drift(DB.schema_drift(conn))) == FO_DRIFT      # 0033's head line aside
     assert [v for v, _, _ in M.pending_migrations(conn)] == list(range(version, M.code_version() + 1))   # 0024, 0025, 0026
     notes = []
     assert M.apply_migrations(conn, notes) == list(range(version, M.code_version() + 1))     # 0024, 0025 and 0026 (the twin fold) on this tree

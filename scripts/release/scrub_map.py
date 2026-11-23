@@ -1651,8 +1651,42 @@ class Records:
                 self.sources.setdefault(sha, set()).add(label if len(token) == 64 else f"{label} (prefix {len(token)})")
 
 
+def _scan_frame_sqlite_only(tree: GitTree, base: str, records: Records) -> List[str]:
+    """The tables the frame ships in the split SQLite only (``MANIFEST.sqlite_only_tables``, read_set_version 3: the item tables), read
+    from the reassembled SQLite: every text value of every column holding a hex run of MIN_PREFIX. Returns those tables."""
+    import zlib
+    manifest = json.loads(tree.read(base + "MANIFEST.json").decode("utf-8")) if tree.has(base + "MANIFEST.json") else {}
+    only = list(manifest.get("sqlite_only_tables") or [])
+    if not only:
+        return []
+    parts = list(manifest.get("sqlite_parts") or [])
+    if not parts:
+        raise InputsError(f"{tree.label}: the frame at {base} names sqlite_only_tables {only} but no sqlite_parts")
+    glob = "*" + "[0-9a-f]" * MIN_PREFIX + "*"
+    with tempfile.TemporaryDirectory(prefix="scrub_map_frame_") as td:
+        db = os.path.join(td, "frame.sqlite")
+        inflate = zlib.decompressobj(16 + zlib.MAX_WBITS)
+        with open(db, "wb") as out:
+            for part in parts:
+                out.write(inflate.decompress(tree.read(base + part)))
+            out.write(inflate.flush())
+        if not inflate.eof:
+            raise InputsError(f"{tree.label}: the frame's split SQLite at {base} ends before its gzip trailer")
+        con = sqlite3.connect(f"file:{db}?mode=ro", uri=True)
+        try:
+            for t in only:
+                for col in [r[1] for r in con.execute(f'PRAGMA table_info("{t}")')]:
+                    for (v,) in con.execute(f'SELECT DISTINCT "{col}" FROM "{t}" WHERE typeof("{col}") = \'text\' AND "{col}" GLOB ?', (glob,)):
+                        if v:
+                            records.add_text(v, f"frame:{t}.{col}")
+        finally:
+            con.close()
+    return only
+
+
 def scan_frame(tree: GitTree, records: Records) -> int:
-    """Every string column of every Parquet table of the committed frame (``paper/snapshot/CURRENT``)."""
+    """Every string column of every Parquet table of the committed frame (``paper/snapshot/CURRENT``), and of every table it ships in
+    the split SQLite only (:func:`_scan_frame_sqlite_only`), so no hex prefix in the item tables escapes the map."""
     if not tree.has("paper/snapshot/CURRENT"):
         raise InputsError(f"{tree.label} has no paper/snapshot/CURRENT; pass --no-frame if it has no frame")
     snap = tree.read("paper/snapshot/CURRENT").decode().strip()
@@ -1677,7 +1711,7 @@ def scan_frame(tree: GitTree, records: Records) -> int:
             for v in hits.to_pylist():
                 if v:
                     records.add_text(v, f"frame:{name}.{col}")
-    return len(tables)
+    return len(tables) + len(_scan_frame_sqlite_only(tree, base, records))
 
 
 def scan_registry(db: str, records: Records) -> int:

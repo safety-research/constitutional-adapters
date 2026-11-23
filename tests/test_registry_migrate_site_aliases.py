@@ -677,7 +677,7 @@ def test_migrate_db_over_legacy_labels_refuses_without_a_table_maps_with_one_and
     _alias_file(os.path.join(root, SA.FILE_NAME), LR.ALIASES)      # beside the database: --db mode never borrows it
     counts = _legacy_counts(db, LR.LEGACY_ROWS)
     assert all(n > 0 for n in counts.values()), counts
-    pending = "0032_site_label_rename"
+    pending = "0032_site_label_rename, 0033_prune_superseded_item_rows"       # 0033 follows the label migration on this tree
     # the plan with no --site-aliases reads the empty table: every legacy value named with its rows and NO alias, exit 1
     assert CLI.main(["migrate", "--plan", "--db", db]) == 1
     out = capsys.readouterr().out
@@ -714,7 +714,7 @@ def test_migrate_db_over_legacy_labels_refuses_without_a_table_maps_with_one_and
     out = capsys.readouterr().out
     assert f"site aliases: {aliases} (file); digest {a}; {len(LR.ALIASES)} pair(s)" in out and "shape matches the code's schema" in out
     with DB.reading(db) as conn:
-        assert M.db_version(conn) == 32 and DB.schema_drift(conn) == []
+        assert M.db_version(conn) == 33 and DB.schema_drift(conn) == []
         for (t, c), (legacy, label) in LR.LEGACY_ROWS.items():
             assert {r[0] for r in conn.execute(f"SELECT {c} FROM {t} WHERE {c} IS NOT NULL").fetchall()} == {label}, (t, c)
             assert conn.execute(f"SELECT COUNT(*) FROM {t} WHERE {c} = ?", (label,)).fetchone()[0] == counts[(t, c)], (t, c)
@@ -734,6 +734,8 @@ def test_plan_sql_with_map_site_labels_renders_the_label_migration_on_a_version_
     marker = "-- ---- migration body:"
     assert CLI.main(["migrate", "--plan", "--sql", "--map-site-labels", "--db", db]) == 1          # 0032 is pending
     body = capsys.readouterr().out.split(marker, 1)[1].split("\n", 1)[1]
+    from test_registry_migrations import _sans_prune_head_render, _sans_prune_render
+    body = _sans_prune_head_render(_sans_prune_render(body))          # 0033 (prune_superseded_item_rows) follows 0032 on this tree: its part aside
     assert LR._statements(body) == LR._statements(committed)
     # without the option every label column is copied as stored, which is not the committed file
     assert CLI.main(["migrate", "--plan", "--sql", "--db", db]) == 1

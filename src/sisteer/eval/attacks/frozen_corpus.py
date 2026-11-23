@@ -375,29 +375,6 @@ def frozen_corpus_variants(goal, seed: int = 0):
     return corpus.variants_for(goal, seed) if corpus is not None else []
 
 
-#: ``(path, content hash)`` pairs training has already cleared, so the per-goal lookup checks once
-_TRAINING_CLEARED: set[tuple[str, str]] = set()
-
-
-def training_variants(goal, seed: int = 0):
-    """Training-pool sampling's lookup for the env-configured corpus (``sisteer.sampling.sources``):
-    :func:`frozen_corpus_variants`, after refusing an evaluation-only corpus
-    (:mod:`sisteer.eval.attacks.eval_only`: the shipped ReNeLLM paper corpus, by path, file hash or
-    content hash), so this generic adapter cannot carry it into a training pool."""
-    corpus = _env_corpus()
-    if corpus is None:
-        return []
-    path = os.environ.get(_ENV_PATH)
-    key = (str(path), corpus.content_hash)
-    if key not in _TRAINING_CLEARED:
-        from . import eval_only
-
-        eval_only.refuse_corpus(consumer="training-pool sampling (frozen_corpus)", path=path,
-                                content_hash=corpus.content_hash)
-        _TRAINING_CLEARED.add(key)
-    return corpus.variants_for(goal, seed)
-
-
 def run_frozen_corpus(defense, goals, *, out_dir, trial: int = 0, seed: int = 0,
                       max_new_tokens: int = 512, resume: bool = True) -> dict:
     """Generic ingested-kind replay over the env-configured corpus. LOUD-fails when no

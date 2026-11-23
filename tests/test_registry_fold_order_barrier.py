@@ -41,6 +41,7 @@ from sisteer.registry import schema_def as S
 from sisteer.registry import synth
 from seedrep_history_fixtures import pinned_commit_or_skip
 from test_registry_migrations import NTPL_TABLES, _sans_ntpl_drift, _sans_ntpl_render   # migration 0031's two rebuilds, set aside in the plan test
+from test_registry_migrations import PRUNE_TABLES, _prune_objects_aside, _sans_prune_cli, _sans_prune_head, _sans_prune_head_render   # 0033's part, set aside
 
 REPO = Path(__file__).resolve().parents[1]
 BARRIER = "0030_fold_order_barrier"
@@ -60,7 +61,7 @@ HISTORY_BRANCH = "main"
 # ---- the file and the plan -----------------------------------------------------------------------------------------------------------
 def test_0030_carries_the_two_fence_triggers_and_plans_as_pending_with_exactly_that_shape_change(tmp_path, capsys):
     version, slug, path = next(f for f in M.migration_files() if f[1] == "fold_order_barrier")
-    assert (version, slug) == (30, "fold_order_barrier") and M.code_version() == 32, "0031 (non_template_positions: a rebuild of instrument and run) and 0032 (site_label_rename: the five tables whose CHECK names a site label, rebuilt) follow it on this tree; 0031's lines are set aside below"
+    assert (version, slug) == (30, "fold_order_barrier") and M.code_version() == 33, "0031 (non_template_positions: a rebuild of instrument and run), 0032 (site_label_rename: the five tables whose CHECK names a site label, rebuilt) and 0033 (prune_superseded_item_rows: a table, an index drop, the head) follow it on this tree; 0031's and 0033's lines are set aside below"
     text = Path(path).read_text(encoding="utf-8")
     assert M.reserved_statement(text) is None
     assert "880be4e1c" in text and "5ea3fa411" in text and "WINDOW_EXPECT_MIGRATION=0030_fold_order_barrier" in text and "row 0" in text
@@ -79,13 +80,14 @@ def test_0030_carries_the_two_fence_triggers_and_plans_as_pending_with_exactly_t
     for v, s, p in M.migration_files():
         if v <= 29:
             M._apply_one(conn, v, s, Path(p).read_text(encoding="utf-8"))
-    assert M.db_version(conn) == 29 and _sans_ntpl_drift(DB.schema_drift(conn)) == FENCE_DRIFT          # 0031's two `lacks` lines aside
+    assert M.db_version(conn) == 29 and _sans_prune_head(_sans_ntpl_drift(DB.schema_drift(conn))) == FENCE_DRIFT          # 0031's two `lacks` lines and 0033's aside
     plan = M.shape_plan(conn)
     # 0031 rebuilds `instrument` and `run` on this shape too, and a rebuild recreates its table's triggers itself -- so the plan lists the two
     # rebuilds and NO recreate of the fence triggers; the render's two rebuild blocks are set aside (`_sans_ntpl_render`), the rest is 0030's body
-    assert _sans_ntpl_drift(plan["drift"]) == FENCE_DRIFT and [r["table"] for r in plan["rebuild"]] == list(NTPL_TABLES) and plan["add_columns"] == [] and plan["create"] == [] and plan["undeclared_tables"] == []
-    assert plan["objects"] == {"index": {"recreate": [], "drop": []}, "trigger": {"recreate": [], "drop": []}, "view": {"recreate": [], "drop": []}}
-    rendered = M.render_shape_migration(conn, plan)
+    assert _sans_prune_head(_sans_ntpl_drift(plan["drift"])) == FENCE_DRIFT and [r["table"] for r in plan["rebuild"]] == list(NTPL_TABLES) and plan["add_columns"] == [] and [c for c in plan["create"] if c not in PRUNE_TABLES] == [] and plan["undeclared_tables"] == []
+    assert _prune_objects_aside(plan["objects"]) == \
+        {"index": {"recreate": [], "drop": []}, "trigger": {"recreate": [], "drop": []}, "view": {"recreate": [], "drop": []}}
+    rendered = _sans_prune_head_render(M.render_shape_migration(conn, plan))
     # 0031's run rebuild SUBSUMES the fence on this shape: a rebuild recreates its table's triggers inside its own block, so today's render
     # carries no DROP / CREATE of the two at the top level -- without 0031's part it is the two drift lines alone, and the committed body's
     # two CREATE TRIGGER statements are byte for byte the ones inside the run rebuild block
@@ -95,13 +97,14 @@ def test_0030_carries_the_two_fence_triggers_and_plans_as_pending_with_exactly_t
         create = create[:create.index("END;") + len("END;")]
         assert rendered.count(f"CREATE TRIGGER {t} ") == 1 and create in rendered, t
         assert rendered.index(f"CREATE TRIGGER {t} ") > rendered.index("-- rebuild run:") and f"DROP TRIGGER IF EXISTS {t};" not in rendered
-    assert [(v, s) for v, s, _ in M.pending_migrations(conn)] == [(30, "fold_order_barrier"), (31, "non_template_positions"), (32, "site_label_rename")]
+    assert [(v, s) for v, s, _ in M.pending_migrations(conn)] == [(30, "fold_order_barrier"), (31, "non_template_positions"), (32, "site_label_rename"),
+                                                                     (33, "prune_superseded_item_rows")]
     conn.close()
     # the plan as the window scripts read it: the pending line names exactly the barrier, the shape differs by the two triggers, the one
     # recreate line names them, no rebuild / create / add / drop line (window.sh keys on the pending line and `rebuild table` lines alone)
     assert CLI.main(["migrate", "--plan", "--db", db_path]) == 1                        # pending: not yet current
-    out = capsys.readouterr().out.splitlines()
-    assert out[0] == f"schema version 29; code 32; pending: {BARRIER}, 0031_non_template_positions, 0032_site_label_rename"
+    out = _sans_prune_cli(capsys.readouterr().out).splitlines()                         # 0033's lines aside
+    assert out[0] == f"schema version 29; code 33; pending: {BARRIER}, 0031_non_template_positions, 0032_site_label_rename, 0033_prune_superseded_item_rows"
     assert out[1].startswith("apply the pending migrations first") and out[2] == "shape differs from the code's schema:"
     assert [ln for ln in out[3:7] if ln.strip() in FENCE_DRIFT] == [f"  {d}" for d in FENCE_DRIFT]      # 0031's two `lacks` lines beside them
     assert [ln for ln in out if ln.startswith("recreate ")] == []                                       # the fence triggers ride 0031's run rebuild
@@ -115,10 +118,10 @@ def test_0030_carries_the_two_fence_triggers_and_plans_as_pending_with_exactly_t
     # `registry migrate` applies the barrier (a schema writer: no stamp), then the first writer's open stamps row 0 on the same database
     assert CLI.main(["migrate", "--db", db_path]) == 0
     out = capsys.readouterr().out
-    assert "applied [30, 31, 32]" in out and "schema version 32" in out                  # 0031 and 0032 follow the barrier on this tree
+    assert "applied [30, 31, 32, 33]" in out and "schema version 33" in out              # 0031, 0032 and 0033 follow the barrier on this tree
     with DB.reading(db_path) as ro:
         rows = [tuple(r) for r in ro.execute("SELECT version, description FROM schema_migration ORDER BY version")]
-        assert rows[-3:] == [(30, "fold_order_barrier"), (31, "non_template_positions"), (32, "site_label_rename")] and [v for v, _ in rows] == list(range(1, 33)) and DB.schema_drift(ro) == []
+        assert rows[-4:] == [(30, "fold_order_barrier"), (31, "non_template_positions"), (32, "site_label_rename"), (33, "prune_superseded_item_rows")] and [v for v, _ in rows] == list(range(1, 34)) and DB.schema_drift(ro) == []
         assert sorted(r[0] for r in ro.execute("SELECT name FROM sqlite_master WHERE type = 'trigger' AND name LIKE 'trg_run_fold_order_fence_%'")) == sorted(FENCE)
         assert DB.fold_order_version(ro) is None
     assert CLI.main(["migrate", "--plan", "--db", db_path]) == 0
@@ -127,7 +130,7 @@ def test_0030_carries_the_two_fence_triggers_and_plans_as_pending_with_exactly_t
     DB.open_or_create(db_path).close()
     with DB.reading(db_path) as ro:
         assert DB.fold_order_version(ro) == RD.FOLD_ORDER_VERSION
-        assert [v for (v,) in ro.execute("SELECT version FROM schema_migration ORDER BY version")] == list(range(0, 33))
+        assert [v for (v,) in ro.execute("SELECT version FROM schema_migration ORDER BY version")] == list(range(0, 34))
 
 
 # ---- the fixtures: historical code as it ran, a registry built by THIS code ----------------------------------------------------------

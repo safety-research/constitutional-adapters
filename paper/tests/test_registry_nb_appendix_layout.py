@@ -185,7 +185,7 @@ def test_a_cell_with_no_unsteered_run_is_a_gap_on_the_relative_figure_not_a_poin
 def test_table_absolute_leads_with_the_absolute_unsteered_baseline_and_signs_every_arm():
     d = _deltas()
     tex = R.table_absolute(d, ["pasttense", "codeattack", "strongreject_bon"], ["none", "safety_si", "control_lora"], [Q, G],
-                           "cap", "tab:t", flip_baseline=True)
+                           "cap", "tab:t")
     body = _body(tex)
     assert body[0].startswith(R.BASELINE_ROW_LABEL) and body[1].startswith(R.BASELINE_ROW_LABEL), "the unsteered model first, one row per model"
     assert not any(l.startswith(R.BASELINE_ROW_LABEL) for l in body[2:])
@@ -202,22 +202,32 @@ def test_table_absolute_leads_with_the_absolute_unsteered_baseline_and_signs_eve
     assert "unsteered" not in q.lower()
 
 
-def test_table_absolute_marks_a_materially_mixed_anchor_baseline_and_a_held_out_arm():
+def test_table_absolute_averages_a_models_readings_and_marks_a_held_out_arm_but_flags_no_cell():
+    """A model's first row is its unsteered level averaged over seeds (the owner, 2026-11-14); with no seed replicates (every arm on
+    seed s1 here) that is the unsteered reading the most of its arms were differenced against: Qwen's Best-of-75 reads 60 (the Safety SI)
+    and a second run 6 pp off, 54 (two arms), so 100 - 54. No cell is flagged for its own run (#524 printed `vs a`). A held-out cell
+    keeps its value and its mark, and its reading stays out of the first row."""
     d = _deltas()
     d.loc[len(d)] = _row(Q, "control_lora", "strongreject_bon", -8.0, 54.0)          # a second anchor on Qwen's Best-of-75, 6 pp off
+    d.loc[len(d)] = _row(Q, "constitution_lora", "strongreject_bon", -3.0, 54.0)     # sharing it
     d.loc[len(d)] = _row(G, "control_lora", "strongreject_bon", 12.0, 55.5, held=1)  # a held-out cell: value kept, marked; anchor 0.5 pp off
-    tex = R.table_absolute(d, ["strongreject_bon"], ["none", "safety_si", "control_lora"], [Q, G], "cap", "tab:t", flip_baseline=True)
+    tex = R.table_absolute(d, ["strongreject_bon"], ["none", "safety_si", "control_lora", "constitution_lora"], [Q, G], "cap", "tab:t")
     body = _body(tex)
     qb = next(l for l in body if l.startswith(R.BASELINE_ROW_LABEL) and "Qwen" in l)
-    assert "$43.0$" in qb and "\\ddagger" in qb, "two anchors 6 pp apart (60, 54) -> their mean, flipped, and marked"
+    assert "$46.0$" in qb and "\\ddagger" not in qb, "the run two of Qwen's three arms read, as defense success: 100 - 54"
+    qs = next(l for l in body if "Safety SI" in l and "Qwen" in l)
+    assert "$+5.0$" in qs and "vs " not in qs, "the Safety SI's own change against its own 60 %, unflagged"
+    qc = next(l for l in body if "Control LoRA" in l and "Qwen" in l)
+    assert "$+8.0$" in qc and "vs " not in qc
     gb = next(l for l in body if l.startswith(R.BASELINE_ROW_LABEL) and "Gemma" in l)
-    assert "$44.8$" in gb and "\\ddagger" not in gb, "two anchors half a point apart are one baseline: no mark"
+    assert "$45.0$" in gb, "the held-out cell stays out: the Safety SI's reading alone, 100 - 55"
     held = next(l for l in body if "Control LoRA" in l and "Gemma" in l)
-    assert "$-12.0$" in held and "\\S" in held
-    assert "apart" in tex and R.HELD_NOTE in tex
+    assert "$-12.0$" in held and "\\S" in held and "vs " not in held
+    assert "apart" not in tex and "\\ddagger" not in tex and R.HELD_NOTE in tex and "vs $a$" not in tex
 
 
 def test_table_absolute_keeps_the_baseline_unflipped_where_the_figure_is_not_flipped():
+    """Capability's metric is already higher-is-better: its baseline is the accuracy as read (the level follows the eval's category)."""
     d = _deltas()
     tex = R.table_absolute(d, ["mmlu"], ["none", "safety_si"], [Q], "cap", "tab:t")
     body = _body(tex)
@@ -413,7 +423,7 @@ def test_table_legends_name_the_open_cells():
     tex = R.table_categories_models(cm, "static", ["safety_si", "control_lora"], [Q, G, "llama8b_it"], "cap", "tab:t", d=d)
     assert "not scoreable" in tex and "role collapse" in tex
     assert "not scoreable" not in R.table_categories_models(cm, "static", ["safety_si", "control_lora"], [Q, G], "cap", "tab:t")
-    ta = R.table_absolute(d, ["pasttense", "codeattack"], ["none", "safety_si", "control_lora"], [Q, G, "llama8b_it"], "cap", "tab:t", flip_baseline=True)
+    ta = R.table_absolute(d, ["pasttense", "codeattack"], ["none", "safety_si", "control_lora"], [Q, G, "llama8b_it"], "cap", "tab:t")
     body = _body(ta)
     assert any("Control LoRA" in l and "Gemma" in l and "\\ast" in l for l in body), "the collapsed cell is starred"
     assert any("Safety SI" in l and "Llama" in l and "\\S" in l for l in body), "the held cell keeps its section mark"
@@ -462,14 +472,14 @@ def test_a_lone_seed_label_on_a_prompted_si_is_a_view_stamp():
 
 
 def test_a_mean_missing_only_an_out_by_design_eval_is_not_partial():
-    d = pd.DataFrame([dict(model_id="nemotron3nano4b", object_label="safety_si", seed="", eval_id="agentic_murder", d_y=-5.0, d_lo=-8.0, d_hi=-2.0,
+    d = pd.DataFrame([dict(model_id="llama8b_it", object_label="safety_si", seed="", eval_id="bigcodebench", d_y=-5.0, d_lo=-8.0, d_hi=-2.0,
                            anchor_in_frame=True, ceiling=False, anchor_value=12.0, held_out=0),
-                      dict(model_id="gemma4e4b_it", object_label="safety_si", seed="", eval_id="agentic_murder", d_y=-5.0, d_lo=-8.0, d_hi=-2.0,
+                      dict(model_id="gemma4e4b_it", object_label="safety_si", seed="", eval_id="bigcodebench", d_y=-5.0, d_lo=-8.0, d_hi=-2.0,
                            anchor_in_frame=True, ceiling=False, anchor_value=12.0, held_out=0)])
-    # the two-eval agentic category as it stood before murder was removed (2026-09-25): the test is about OUT_BY_DESIGN, not the roster
-    cm = R.category_means(d, categories={"agentic misalignment": (["agentic_leaking", "agentic_murder"], -1, "")}).set_index("model_id")
-    assert not bool(cm.loc["nemotron3nano4b", "partial"]), "Nemotron's leaking is out by design: one eval is the whole category for it"
-    assert bool(cm.loc["gemma4e4b_it", "partial"]), "Gemma's missing leaking is a real gap"
+    # a two-eval category over BigCodeBench and BFCL: the test is about OUT_BY_DESIGN, not the roster
+    cm = R.category_means(d, categories={"capability": (["bigcodebench", "bfcl"], +1, "")}).set_index("model_id")
+    assert not bool(cm.loc["llama8b_it", "partial"]), "Llama's BFCL is out by design: BigCodeBench is the whole category for it"
+    assert bool(cm.loc["gemma4e4b_it", "partial"]), "Gemma's missing BFCL is a real gap"
 
 
 def test_appendix_category_set_capability_axis_and_static_unchanged():

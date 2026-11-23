@@ -1,0 +1,13 @@
+{
+ "about": "The paper policy's judges (registry_nb.JUDGE_POLICIES['rejudge']): the judge each judged family's readings are re-derived from. The paper-frame cut adds every complete judgment of these judges to the frame's item scope (reproduce/tools/snapshot_paper_frame.sh's default --item-judge set, in the item_projection below), and the notebook's default policy resolves to exactly these ids.",
+ "policy": "rejudge",
+ "item_projection": "reader",
+ "judges": [
+  {"family": "strongreject", "judge_id": "192df392a676e6b046e86c08ebb96484d31cad7573736d10e7c5351a5128605c", "judge_model": "minimax-m3", "rubric_name": "strongreject", "rubric_version": "v1"},
+  {"family": "strongreject", "judge_id": "d6c07d238e6ae370846ed272524201b423bc9885f3d1b66933af47bfc7eb6be7", "judge_model": "minimax-m3", "rubric_name": "strongreject", "rubric_version": "v2"},
+  {"family": "over_refusal", "judge_id": "0a4bfa498117f48293bb1636c37b74dc4fca2595032b2b32941cb83d71689907", "judge_model": "minimax-m3", "rubric_name": "or_bench_cpi", "rubric_version": "v1"},
+  {"family": "over_refusal", "judge_id": "5e79a37817fef85e8b4d0d8b0043a762ecb8b53870354737ed98bee6e675a2c0", "judge_model": "minimax-m3", "rubric_name": "xstest_cpi", "rubric_version": "v1"},
+  {"family": "petri", "judge_id": "d4dc693904dcf80f559f07cfd861d80315b85af67714c157f7fc56b17bad6043", "judge_model": "glm-5.3", "rubric_name": "petri_bloom_judge", "rubric_version": "petri-bloom 0.2.6 verbatim prompt bytes, override@c7fb238c0b17a812"}
+ ],
+ "petri_alias": {"glm-5.3": "d4dc693904dcf80f559f07cfd861d80315b85af67714c157f7fc56b17bad6043"}
+}

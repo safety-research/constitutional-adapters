@@ -1,4 +1,5 @@
 _cache/
 figures/
+figures-primary/
 __pycache__/
 *.html

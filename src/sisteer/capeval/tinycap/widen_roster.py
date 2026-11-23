@@ -459,10 +459,25 @@ def validate(roster: Mapping[str, Any], pins: Mapping[str, Any], models: Mapping
                     problems.append(f"{ew}: object.staged_id missing")
                 if not _SHA256.match(sha):
                     problems.append(f"{ew}: object.sha256 {sha!r} is not a sha256 hex")
-                pin_entry = ((pins.get(str(w.get("family"))) or {}).get(str(sid)) or {}) if sid else {}
+                # an object block may name the pins file its row's view reads (contracts.bcbw_view_sources: the control-pool-stopped
+                # views' own pins); it must BE that view's file, and the entry is looked up there instead of the production pins
+                pins_here, pins_rel_here = pins, PINS_REL
+                if obj.get("pins") is not None:
+                    row_views = [v for (k, v), s_ in C.BCBW_SLUG_OF.items() if s_ == w.get("model_row") and k == w.get("family")]
+                    want_rel = C.bcbw_view_sources(str(w.get("family")), row_views[0])[1] if len(row_views) == 1 else None
+                    if str(obj.get("pins")) != want_rel or want_rel == PINS_REL:
+                        problems.append(f"{ew}: object.pins {obj.get('pins')!r} is not the own pins file of row {w.get('model_row')!r}'s view "
+                                        f"({want_rel!r}; contracts.bcbw_view_sources)")
+                        pins_here = {}
+                    elif root is None or not (root / want_rel).is_file():
+                        problems.append(f"{ew}: object.pins {want_rel!r} is not on the tree")
+                        pins_here = {}
+                    else:
+                        pins_here, pins_rel_here = json.loads((root / want_rel).read_text(encoding="utf-8")), want_rel
+                pin_entry = ((pins_here.get(str(w.get("family"))) or {}).get(str(sid)) or {}) if sid else {}
                 pinned = pin_entry.get("object_sha256")
                 if pinned is None:
-                    problems.append(f"{ew}: no pins entry for {w.get('family')}/{sid} in {PINS_REL}")
+                    problems.append(f"{ew}: no pins entry for {w.get('family')}/{sid} in {pins_rel_here}")
                 elif pinned != sha:
                     problems.append(f"{ew}: object.sha256 {sha[:12]}… != the pins entry {str(pinned)[:12]}… for {sid}")
                 gen = obj.get("object_generation")

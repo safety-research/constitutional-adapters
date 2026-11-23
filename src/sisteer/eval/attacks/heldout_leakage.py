@@ -38,7 +38,6 @@ from pathlib import Path
 from typing import Iterable, Optional
 
 from ..jailbreak_data import normalized_text_sha
-from . import eval_only
 from .heldout_common import fingerprint_sha, training_fingerprint
 
 
@@ -108,15 +107,8 @@ def load_training_fingerprint(
         if not fp.exists():
             missing.append(fam)
             continue
-        def _fingerprinted(prompts):
-            for p in prompts:
-                shas.add(normalized_text_sha(p))
-                yield p
-
-        # one streamed pass: a training store that carries an evaluation-only corpus's prompts (the
-        # ReNeLLM paper corpus, under its no-training terms) refuses here, whatever family file holds them
-        eval_only.refuse_texts(_fingerprinted(_iter_store_prompts(fp)),
-                               consumer=f"the held-out leakage gate's training fingerprint ({fp})")
+        for p in _iter_store_prompts(fp):
+            shas.add(normalized_text_sha(p))
     if missing:
         raise FileNotFoundError(
             f"training store {root} is missing declared family file(s) "

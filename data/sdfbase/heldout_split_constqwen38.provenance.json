@@ -1,0 +1,320 @@
+{
+ "artifact": "heldout_split_constqwen38.json",
+ "artifact_sha256": "6dc9a62f09bc187bc3568204b314a50e44082c39f54b263846210f0b626652ec",
+ "carve": {
+  "carve_walk": [
+   {
+    "frac": 0.05,
+    "heldout_docs": 53,
+    "heldout_docs_by_family": {
+     "advice": 14,
+     "stories": 39
+    },
+    "heldout_official": {
+     "advice": 19094,
+     "stories": 85790
+    },
+    "train_official": {
+     "advice": 355791,
+     "stories": 1531985
+    }
+   },
+   {
+    "frac": 0.06,
+    "heldout_docs": 64,
+    "heldout_docs_by_family": {
+     "advice": 16,
+     "stories": 48
+    },
+    "heldout_official": {
+     "advice": 25163,
+     "stories": 107202
+    },
+    "train_official": {
+     "advice": 349722,
+     "stories": 1510573
+    }
+   },
+   {
+    "frac": 0.07,
+    "heldout_docs": 69,
+    "heldout_docs_by_family": {
+     "advice": 17,
+     "stories": 52
+    },
+    "heldout_official": {
+     "advice": 26516,
+     "stories": 117178
+    },
+    "train_official": {
+     "advice": 348369,
+     "stories": 1500597
+    }
+   },
+   {
+    "frac": 0.08,
+    "heldout_docs": 79,
+    "heldout_docs_by_family": {
+     "advice": 21,
+     "stories": 58
+    },
+    "heldout_official": {
+     "advice": 32400,
+     "stories": 133994
+    },
+    "train_official": {
+     "advice": 342485,
+     "stories": 1483781
+    }
+   },
+   {
+    "frac": 0.09,
+    "heldout_docs": 87,
+    "heldout_docs_by_family": {
+     "advice": 23,
+     "stories": 64
+    },
+    "heldout_official": {
+     "advice": 34827,
+     "stories": 149322
+    },
+    "train_official": {
+     "advice": 340058,
+     "stories": 1468453
+    }
+   },
+   {
+    "frac": 0.1,
+    "heldout_docs": 96,
+    "heldout_docs_by_family": {
+     "advice": 26,
+     "stories": 70
+    },
+    "heldout_official": {
+     "advice": 41278,
+     "stories": 161950
+    },
+    "train_official": {
+     "advice": 333607,
+     "stories": 1455825
+    }
+   },
+   {
+    "frac": 0.11,
+    "heldout_docs": 109,
+    "heldout_docs_by_family": {
+     "advice": 26,
+     "stories": 83
+    },
+    "heldout_official": {
+     "advice": 41278,
+     "stories": 188337
+    },
+    "train_official": {
+     "advice": 333607,
+     "stories": 1429438
+    }
+   },
+   {
+    "frac": 0.12,
+    "heldout_docs": 117,
+    "heldout_docs_by_family": {
+     "advice": 30,
+     "stories": 87
+    },
+    "heldout_official": {
+     "advice": 46027,
+     "stories": 196965
+    },
+    "train_official": {
+     "advice": 328858,
+     "stories": 1420810
+    }
+   },
+   {
+    "frac": 0.13,
+    "heldout_docs": 129,
+    "heldout_docs_by_family": {
+     "advice": 34,
+     "stories": 95
+    },
+    "heldout_official": {
+     "advice": 50950,
+     "stories": 216272
+    },
+    "train_official": {
+     "advice": 323935,
+     "stories": 1401503
+    }
+   }
+  ],
+  "eval_salt": "sdfbase-heldout-eval-v1",
+  "frac_realized": {
+   "advice": 0.13590834522586925,
+   "stories": 0.13368484492590132
+  },
+  "frac_requested": 0.13,
+  "frac_rule": {
+   "chosen": 0.13,
+   "grid": [
+    0.05,
+    0.4,
+    0.01
+   ],
+   "rule": "the smallest grid fraction whose whole-group carve holds >= eval_n held-out docs (D8)"
+  },
+  "heldout_records": {
+   "advice": 34,
+   "stories": 95
+  },
+  "inputs": {
+   "advice": {
+    "lenok": "final-qwen38-1m-20261112-advice.lenok.jsonl",
+    "lenok_sha256": "379740245fc18455540b8beb9f4901968a6ddaa707acbbffb23e3c3c10c7b8a9",
+    "original": "final-qwen38-1m-20261112.jsonl",
+    "original_sha256": "d88bdd06421bad3e4fe987b38577b4d27f02e665489610b504ad675fb4611f0a"
+   },
+   "stories": {
+    "lenok": "final-qwen38-1m-20261112-stories.lenok.jsonl",
+    "lenok_sha256": "e60ea0c8f0f0de57b775dcf00a35af04bc3f7826cfb2f6ea481cda0b02b53581",
+    "original": "final-qwen38-1m-20261112.jsonl",
+    "original_sha256": "e60ea0c8f0f0de57b775dcf00a35af04bc3f7826cfb2f6ea481cda0b02b53581"
+   }
+  },
+  "lane": "qwen-generator-1m",
+  "length_drops": {
+   "dropped": [
+    {
+     "by_tokenizer": {
+      "NousResearch/Meta-Llama-3.1-8B-Instruct@d10aef7999a2b5ba950ab3974312feeedbfe0b77": 6838,
+      "NousResearch/Meta-Llama-3.1-8B@1f47e50cdbe801ad8a5174156ec3a0655108fb9f": 6838,
+      "Qwen/Qwen3.5-4B-Base@1001bb4d826a52d1f399e183466143f4da7b741b": 7507,
+      "Qwen/Qwen3.5-4B@851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a": 7507,
+      "google/gemma-4-E4B-it@ee0ef6023621cff504d758262d4e04895a5af4a2": 8267,
+      "google/gemma-4-E4B@411aa17b749aa952df1359d2dcea73917a544d9a": 8268,
+      "nvidia/NVIDIA-Nemotron-3-Nano-4B-BF16@dfaf35de3e30f1867dd8dbc38a7fc9fb52d3914f": 7530,
+      "zai-org/GLM-4.6V-Flash@411bb4d77144a3f03accbf4b780f5acb8b7cde4e": 6841
+     },
+     "doc_id": "adv-p00-t08-s09",
+     "family": "advice",
+     "max": 8268
+    }
+   ],
+   "max_len": 8192,
+   "n_dropped": 1,
+   "per_family": {
+    "advice": {
+     "max": 8268,
+     "max_kept": 7145,
+     "n_dropped": 1,
+     "n_measured": 197,
+     "p99": 6699,
+     "share_dropped": 0.005076142131979695
+    },
+    "stories": {
+     "max": 5125,
+     "max_kept": 5125,
+     "n_dropped": 0,
+     "n_measured": 736,
+     "p99": 4195,
+     "share_dropped": 0.0
+    }
+   },
+   "rule": "D17: a final record whose rendered doc (build_pools.make_doc) needs len(prompt with specials) + len(pos without specials) + 1 (EOS) > 8192 tokens under ANY distinct pinned target tokenizer (build_pools.TARGET_TOKENIZERS, the preflight's set) is dropped from both sides before the held-out carve and before any ranking; the survivors of this rule and the chat-markup rule are the .lenok.jsonl files the split and the pools are built from"
+  },
+  "length_tokenizers": {
+   "NousResearch/Meta-Llama-3.1-8B-Instruct@d10aef7999a2b5ba950ab3974312feeedbfe0b77": {
+    "repo": "NousResearch/Meta-Llama-3.1-8B-Instruct",
+    "revision": "d10aef7999a2b5ba950ab3974312feeedbfe0b77"
+   },
+   "NousResearch/Meta-Llama-3.1-8B@1f47e50cdbe801ad8a5174156ec3a0655108fb9f": {
+    "repo": "NousResearch/Meta-Llama-3.1-8B",
+    "revision": "1f47e50cdbe801ad8a5174156ec3a0655108fb9f"
+   },
+   "Qwen/Qwen3.5-4B-Base@1001bb4d826a52d1f399e183466143f4da7b741b": {
+    "repo": "Qwen/Qwen3.5-4B-Base",
+    "revision": "1001bb4d826a52d1f399e183466143f4da7b741b"
+   },
+   "Qwen/Qwen3.5-4B@851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a": {
+    "repo": "Qwen/Qwen3.5-4B",
+    "revision": "851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a"
+   },
+   "google/gemma-4-E4B-it@ee0ef6023621cff504d758262d4e04895a5af4a2": {
+    "repo": "google/gemma-4-E4B-it",
+    "revision": "ee0ef6023621cff504d758262d4e04895a5af4a2"
+   },
+   "google/gemma-4-E4B@411aa17b749aa952df1359d2dcea73917a544d9a": {
+    "repo": "google/gemma-4-E4B",
+    "revision": "411aa17b749aa952df1359d2dcea73917a544d9a"
+   },
+   "nvidia/NVIDIA-Nemotron-3-Nano-4B-BF16@dfaf35de3e30f1867dd8dbc38a7fc9fb52d3914f": {
+    "repo": "nvidia/NVIDIA-Nemotron-3-Nano-4B-BF16",
+    "revision": "dfaf35de3e30f1867dd8dbc38a7fc9fb52d3914f"
+   },
+   "zai-org/GLM-4.6V-Flash@411bb4d77144a3f03accbf4b780f5acb8b7cde4e": {
+    "repo": "zai-org/GLM-4.6V-Flash",
+    "revision": "411bb4d77144a3f03accbf4b780f5acb8b7cde4e"
+   }
+  },
+  "markup_drops": {
+   "dropped": [],
+   "markers": [
+    "<|im_start|>",
+    "<|im_end|>",
+    "<start_of_turn>",
+    "<end_of_turn>",
+    "<|user|>",
+    "<|assistant|>",
+    "<|system|>",
+    "[INST]",
+    "[/INST]",
+    "<|begin_of_text|>",
+    "<|start_header_id|>",
+    "<bos>",
+    "<eos>"
+   ],
+   "n_dropped": 0,
+   "per_family": {
+    "advice": {
+     "n_checked": 197,
+     "n_dropped": 0,
+     "share_dropped": 0.0
+    },
+    "stories": {
+     "n_checked": 736,
+     "n_dropped": 0,
+     "share_dropped": 0.0
+    }
+   },
+   "rule": "a final record whose rendered text (the corpus renderer that build_pools.make_doc checks) contains any build_pools.CHAT_MARKUP string is dropped from both sides before the held-out carve and before any ranking (make_doc would refuse it and abort the whole build); the dropped ids and the markers found are recorded"
+  },
+  "n_pinned_source_ids": 0,
+  "pinned": false,
+  "pinned_groups": {
+   "advice": 0,
+   "stories": 0
+  },
+  "probe_files": [],
+  "salt": "sdfbase-heldout-v1",
+  "seed_drawn_groups": {
+   "advice": 0,
+   "stories": 0
+  },
+  "seed_drawn_share_of_heldout": {
+   "advice": null,
+   "stories": null
+  },
+  "train_side_official_tokens": {
+   "advice": 323935,
+   "stories": 1401503
+  }
+ },
+ "generator": {
+  "corpus_generator_commit": "1dfc29fb538975e92b1769c099ad53c423ae97b5",
+  "corpus_generator_diff_sha256": null,
+  "corpus_generator_dirty": false,
+  "sisteer_commit": "1dfc29fb538975e92b1769c099ad53c423ae97b5",
+  "sisteer_diff_sha256": null,
+  "sisteer_dirty": false
+ }
+}

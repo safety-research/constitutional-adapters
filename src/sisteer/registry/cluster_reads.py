@@ -383,8 +383,11 @@ def home_tree_spec(components: Mapping[str, object], pins: Mapping[str, str], ge
                    escapes_of: Optional[Callable[[str, str], Mapping[str, str]]] = None) -> Dict[str, Any]:
     """ONE namespace for the window: what every pinned component's canonical spelling resolves to under ``home``, computed from
     the UNION of every cluster-routed adapter's components so tasks of different adapters on one node build the same tree. A base no
-    other pinned component shares (nor nests under) links whole onto its generation; a shared or nesting base is a REAL directory whose
-    top-level entries are laid out one by one -- a directory entry as a link onto the generation's, a regular-file entry as a COPY of it
+    other CONFIGURED component (``components``, the whole configuration, not the window's pins) shares or nests under links whole onto
+    its generation; a shared or nesting base is a REAL directory in every window, whose PINNED components' top-level entries are laid out
+    one by one, so a window pinning one component of a shared base never flips it to a whole link over the real directory other windows
+    laid out (2026-10-19: a window reading full22_ctl_neg1 alone linked `run-state/full22` whole and refused on a node where an unrecorded
+    entry stood beneath the directory) -- a directory entry as a link onto the generation's, a regular-file entry as a COPY of it
     (a file symlink is an input refused for an adapter that admits none; :meth:`GenerationHashCache.alias_files` checks the copy's
     bytes against the generation). Two components that need different things at one path REFUSE by name, and so does an entry that
     would be created inside a whole-linked base (nothing is ever written into a generation). ``entries_of(slug, sha8)`` lists a
@@ -408,6 +411,10 @@ def home_tree_spec(components: Mapping[str, object], pins: Mapping[str, str], ge
         if comp.home_rel is None:
             raise ClusterReadsError(f"component {slug}: base {comp.base} is not under the home; the home tree cannot lay it out")
         bases.setdefault(comp.home_rel, []).append(slug)
+    configured: Dict[str, int] = {}                                 # home_rel -> how many CONFIGURED components have that base: the shape's input
+    for comp in components.values():
+        if comp.home_rel is not None:
+            configured[comp.home_rel] = configured.get(comp.home_rel, 0) + 1
     escapes: Dict[str, Dict[str, str]] = {slug: dict((escapes_of or (lambda s, g: {}))(slug, pins[slug])) for slug in pinned}
     for slug, esc in escapes.items():
         bad = sorted(rel for rel, e in esc.items() if ST.escape_rel(rel) != e)
@@ -441,9 +448,9 @@ def home_tree_spec(components: Mapping[str, object], pins: Mapping[str, str], ge
                 escaped_links.append([path, target])
 
     for rel, slugs in sorted(bases.items()):
-        nested = [r for r in bases if r != rel and r.startswith(rel.rstrip("/") + "/")]
+        nested = [r for r in configured if r != rel and r.startswith(rel.rstrip("/") + "/")]
         base_dir = os.path.join(home, rel)
-        if len(slugs) == 1 and not nested and not escapes[slugs[0]]:
+        if configured[rel] == 1 and not nested and not escapes[slugs[0]]:
             claim(base_dir, "link", f"{gen_dir}/{slugs[0]}/{pins[slugs[0]]}", slugs[0])
             continue
         claim(base_dir, "dir", None, "+".join(sorted(slugs)))

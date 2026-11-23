@@ -2,8 +2,8 @@
 legacy store becomes new rows and advances `v_paper_inputs_head`; unchanged inputs write nothing; a broken
 input is visible (`last_error`, unaccepted revision) and the previous revision stays current; a new store
 under a declared root is discovered; a removed measurement is withdrawn (its rows leave `v_paper_long`,
-history keeps them); removed items get `withdrawn_by_revision_id`; the input rules (non-regular / symlink /
-sha mismatch refusals).
+the record log keeps them); a superseded revision's item rows are deleted by reclaim (migration 0033), so removed items leave
+the table with it; the input rules (non-regular / symlink / sha mismatch refusals).
 """
 from __future__ import annotations
 
@@ -163,7 +163,7 @@ def test_legacy_store_update_flows_to_paper_head(tmp_path):
     conn = DB.connect(DB.db_path(root), readonly=True)
     assert conn.execute("SELECT n FROM run_metric").fetchone()[0] == 5
     assert conn.execute("SELECT COUNT(*) FROM v_item_result_current").fetchone()[0] == 5      # the head revision's rows
-    assert conn.execute("SELECT COUNT(*) FROM item_result").fetchone()[0] == 8               # the superseded revision's rows coexist
+    assert conn.execute("SELECT COUNT(*) FROM item_result").fetchone()[0] == 5               # the superseded revision's rows: reclaimed
     assert conn.execute("SELECT COUNT(*) FROM source_revision WHERE accepted = 1").fetchone()[0] == 2
     chain = conn.execute("SELECT revision_id, superseded_by_revision_id FROM source_revision ORDER BY observed_utc").fetchall()
     assert chain[0][1] == chain[1][0] and chain[1][1] is None
@@ -248,7 +248,8 @@ def test_removed_items_shrink_the_run(tmp_path):
     assert wd is not None and json.loads(wd[1]) == [] and json.loads(wd[2])["n_items_removed"] == 2   # the count travels, the keys are the rows
     live = conn.execute("SELECT COUNT(*) FROM v_item_result_current").fetchone()[0]
     gone = conn.execute("SELECT COUNT(*) FROM item_result WHERE withdrawn_by_revision_id IS NOT NULL").fetchone()[0]
-    assert (live, gone) == (1, 2)                                                            # the withdrawal marks the two removed keys
+    assert (live, gone) == (1, 0)                                                            # no mark: the superseded revision's rows are deleted
+    assert conn.execute("SELECT COUNT(*) FROM item_result").fetchone()[0] == 1
     assert conn.execute("SELECT COUNT(*) FROM v_item_headline").fetchone()[0] == 1
     assert conn.execute("SELECT n_items_judged FROM run").fetchone()[0] == 1
     conn.close()

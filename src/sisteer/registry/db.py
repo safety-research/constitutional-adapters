@@ -151,11 +151,12 @@ class SchemaDrift(RuntimeError):
     differs from the code's DDL at the same version (``lines``: one per differing object — the table and column or
     constraint, the index, trigger or ``v_*`` object — from :func:`schema_drift`). The message names the remedy:
     ``registry migrate`` for a pending migration; ``registry migrate --plan --sql`` to render the missing one; a
-    rebuild from the record log only when no migration can express the change. Never an edit of the database by hand."""
+    rebuild from the record log only when no migration can express the change. Never an edit of the database by hand. ``message``
+    replaces the drift message for a refusal that names its own remedy (:func:`refuse_fresh_in_harvested_root`)."""
 
-    def __init__(self, path: str, have: int, want: int, lines: Sequence[str]):
+    def __init__(self, path: str, have: int, want: int, lines: Sequence[str], message: Optional[str] = None):
         self.path, self.have, self.want, self.lines = path, int(have), int(want), list(lines)
-        super().__init__(drift_message(path, self.have, self.want, self.lines))
+        super().__init__(message if message is not None else drift_message(path, self.have, self.want, self.lines))
 
 
 def drift_message(path: str, have: int, want: int, lines: Sequence[str], limit: int = 8) -> str:
@@ -203,17 +204,59 @@ def fold_order_message(path: str, have: str, want: str) -> str:
             "database as it creates it. The stamp is never edited by hand")
 
 
-def open_or_create(path: str) -> sqlite3.Connection:
+#: The files a completed harvester cycle leaves under ``<root>/state/`` (``harvest.write_cycle_state`` and the live metrics log): a root
+#: holding either has been a registry, so a database absent from it is an operator's state, never a new install (:func:`open_or_create`).
+HARVEST_STATE_FILES: Tuple[str, ...] = ("harvest_cycle.json", "metrics.jsonl")
+
+
+def harvest_state_found(root: str) -> List[str]:
+    """The :data:`HARVEST_STATE_FILES` present under ``<root>/state/`` (their names): non-empty when ``root`` has been a registry's."""
+    return [n for n in HARVEST_STATE_FILES if os.path.exists(os.path.join(root, "state", n))]
+
+
+def refuse_fresh_in_harvested_root(path: str, have: int = 0) -> None:
+    """Raise :class:`SchemaDrift` when ``path`` is to be created (or a schema-less file at it migrated from nothing) inside a root that
+    already holds harvest state (:data:`HARVEST_STATE_FILES` under ``<dirname(path)>/state/``). The registry's live file goes missing
+    only mid-operation -- a compaction swap (``python -m sisteer.registry.compact``) between its steps, a file moved by hand -- and a
+    writer that opened it then (a harvester cycle, a grader's claim) used to create a fresh EMPTY registry in its place and fold new
+    records into it. A plain :class:`SchemaDrift` by type, never a subclass: every writer's refusal path already handles it (``registry
+    ingest`` exit 3, the grade daemon's transient schema hold by the terminal line's qualified name), and nothing is written."""
+    root = os.path.dirname(os.path.abspath(path))
+    found = [os.path.join(root, "state", n) for n in harvest_state_found(root)]
+    if not found:
+        return
+    from .migrations import code_version
+    what = "is absent" if have == 0 and not os.path.exists(path) else "holds no migrated schema (version 0)"
+    line = f"database {what} in a root with harvest state ({', '.join(found)})"
+    raise SchemaDrift(path, have, code_version(), [line], message=(
+        f"registry database at {path} {what}, but its root {root} already holds harvest state ({', '.join(found)}): refusing to "
+        "create a fresh, empty registry in its place, and nothing is written. A registry root loses its database only mid-operation: "
+        "a compaction swap interrupted between its steps (`python -m sisteer.registry.compact --recover --attic <the swap's attic "
+        "directory>` completes or rolls it back), or a file moved by hand -- put the file back. A caller that means to create a "
+        "database in such a root passes allow_create=True"))
+
+
+def open_or_create(path: str, allow_create: bool = False) -> sqlite3.Connection:
     """Open the database, creating and migrating it when absent; refuse (:class:`SchemaDrift`) a database whose schema
     version is behind the code (``registry migrate`` upgrades) or whose shape differs from the code's DDL at the same
     version (a migration is missing: ``registry migrate --plan --sql`` renders it); then the fold order (:func:`require_fold_order`:
-    stamped when absent, refused by name -- :class:`FoldOrderDrift` -- when another order's)."""
+    stamped when absent, refused by name -- :class:`FoldOrderDrift` -- when another order's). Creation -- an absent file, or a file
+    with no migration applied -- is refused in a root that already holds harvest state (:func:`refuse_fresh_in_harvested_root`)
+    unless ``allow_create``: a missing live database fails loudly instead of becoming an empty registry."""
     from .migrations import apply_migrations, code_version, db_version
     if not os.path.exists(path):
+        if not allow_create:
+            refuse_fresh_in_harvested_root(path)
         return open_fresh(path)
     conn = connect(path)
     have, want = db_version(conn), code_version()
     if have == 0:
+        if not allow_create:
+            try:
+                refuse_fresh_in_harvested_root(path, have)
+            except SchemaDrift:
+                conn.close()
+                raise
         apply_migrations(conn)
         have = want
     elif have != want:
@@ -711,6 +754,15 @@ def free_bytes(path: str) -> int:
     return min(int(du.free), int(du.total))
 
 
+def fsync_dir(path: str) -> None:
+    """``fsync`` a directory: a rename or a new entry in it is durable only once the directory is."""
+    fd = os.open(path, os.O_RDONLY)
+    try:
+        os.fsync(fd)
+    finally:
+        os.close(fd)
+
+
 def fsync_file_and_dir(path: str) -> None:
     """``fsync`` a file and the directory holding it (a rename is durable only once the directory entry is)."""
     fd = os.open(path, os.O_RDONLY)
@@ -718,17 +770,19 @@ def fsync_file_and_dir(path: str) -> None:
         os.fsync(fd)
     finally:
         os.close(fd)
-    dfd = os.open(os.path.dirname(os.path.abspath(path)) or ".", os.O_RDONLY)
-    try:
-        os.fsync(dfd)
-    finally:
-        os.close(dfd)
+    fsync_dir(os.path.dirname(os.path.abspath(path)) or ".")
 
 
 def file_size(path: str) -> int:
-    total = 0
-    for suffix in ("", "-wal", "-shm"):
-        p = path + suffix
-        if os.path.exists(p):
-            total += os.path.getsize(p)
-    return total
+    """The bytes of a SQLite database and its ``-wal``/``-shm`` twins, an absent file counting 0. Each file is stat'ed once
+    (:func:`path_bytes`): a concurrent checkpoint deletes the twins, and the exists-then-getsize pair this replaced raced it."""
+    return sum(path_bytes(path + suffix) for suffix in ("", "-wal", "-shm"))
+
+
+def path_bytes(path: str) -> int:
+    """The size of ``path`` from ONE ``stat``, 0 when it cannot be stat'ed -- absent, or a ``-wal``/``-shm`` twin a concurrent checkpoint
+    deleted (``os.path.exists`` then ``os.path.getsize`` raised ``FileNotFoundError`` when the file went between the two calls)."""
+    try:
+        return os.stat(path).st_size
+    except OSError:
+        return 0

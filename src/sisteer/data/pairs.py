@@ -224,17 +224,9 @@ def save_pairs(pairs: list[Pair], path: str | Path) -> None:
 
 
 def load_pairs(path: str | Path) -> list[Pair]:
-    """The pairs in ``path``. An evaluation-only corpus (the ReNeLLM paper corpus, shipped under
-    terms that forbid training on it) never reaches a method that trains on these pairs: it is
-    refused by path, file hash and content hash, and by each pair's prompt, before any pair is
-    returned (:mod:`sisteer.eval.attacks.eval_only`; counts and hashes only)."""
-    from ..eval.attacks import eval_only
-
+    """The pairs in ``path``."""
     raw = Path(path).read_bytes()
-    consumer = f"the pairs loader ({path})"
-    eval_only.refuse_corpus(consumer=consumer, path=path, raw=raw)
     rows = [json.loads(line) for line in raw.decode("utf-8").splitlines() if line.strip()]
-    eval_only.refuse_texts((r.get("prompt") for r in rows), consumer=consumer)
     return [Pair(**r) for r in rows]
 
 

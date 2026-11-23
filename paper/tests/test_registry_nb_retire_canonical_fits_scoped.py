@@ -125,13 +125,13 @@ def test_appendix_capability_axis_has_the_two_coding_evals_and_llama_bfcl_is_out
     assert ("llama8b_it", "bfcl") in R.OUT_BY_DESIGN and ("llama8b_it", "bigcodebench") not in R.OUT_BY_DESIGN
 
 
-def test_nemotron_agentic_leaking_is_out_by_design_and_draws_no_glyph():
+def test_llama_bfcl_is_out_by_design_and_draws_no_glyph():
     runs = pd.DataFrame(columns=["model_id", "object_label", "eval_id", "lifecycle_state", "selection_state", "decisive_ruling_id", "run_extra_json"])
-    g = R.gap_status(runs, set(), ["none", "control_relu"], ["agentic_leaking", "agentic_murder"], models=["nemotron3nano4b", "gemma4e4b_it"])
-    nem = g[(g.model_id == "nemotron3nano4b") & (g.eval_id == "agentic_leaking")]
-    assert set(nem.status) == {"out by design"} and "out by design" not in R.GAP_MARK
+    g = R.gap_status(runs, set(), ["none", "control_relu"], ["bfcl", "bigcodebench"], models=["llama8b_it", "gemma4e4b_it"])
+    llama = g[(g.model_id == "llama8b_it") & (g.eval_id == "bfcl")]
+    assert set(llama.status) == {"out by design"} and "out by design" not in R.GAP_MARK
     assert set(g[(g.model_id == "gemma4e4b_it")].status) == {"absent"}            # every other model still reports the missing run
-    assert set(g[(g.model_id == "nemotron3nano4b") & (g.eval_id == "agentic_murder")].status) == {"absent"}
+    assert set(g[(g.model_id == "llama8b_it") & (g.eval_id == "bigcodebench")].status) == {"absent"}
 
 
 def test_not_served_and_failed_are_terminal_gap_statuses_not_unjudged():
@@ -160,8 +160,9 @@ def test_mean_column_averages_within_model_across_evals():
     g = m[m.model_id == "gemma4e4b_it"].iloc[0]
     assert g.eval_id == R.MEAN_COLUMN and g.y == 72.5 and g.n_evals == 2 and g.n_pooled == 3     # (80 + 65) / 2: the eval pooled, then equal weight per eval
     # ONE RULE (2026-09-25): se = sqrt(sum se_e^2) / k over the per-eval (pooled) intervals, no between-eval term. pasttense se 10/3.92;
-    # codeattack pooled from its two draws by pool_cell (within + between: hypot(sqrt(2) * 2.551 / 2, sqrt(50 / 2)))
-    se_pt, se_ca = 10 / 3.92, float(np.hypot(np.sqrt(2 * (10 / 3.92) ** 2) / 2, np.sqrt(50 / 2)))
+    # codeattack's two readings name no runs, so pool_cell cannot cluster them by item (2026-11-21): the identical-seeds bound over their
+    # own se plus the variance between them, sqrt(2.551^2 + 50 / 2)
+    se_pt, se_ca = 10 / 3.92, float(np.sqrt((10 / 3.92) ** 2 + 50 / 2))
     assert abs((g.hi - g.lo) - 2 * 1.96 * np.sqrt(se_pt ** 2 + se_ca ** 2) / 2) < 1e-6
     assert g.eval_spread == 15.0                                                                    # 80 vs 65: quoted, not in the bar
     q = m[m.model_id == "qwen35_4b_it"].iloc[0]
@@ -236,14 +237,21 @@ def test_a_blank_seed_row_of_a_seeded_object_takes_the_objects_seed_and_stays():
     assert g.seed == "s1"
 
 
-def test_decode_mismatch_rule_fires_on_a_mixed_agentic_pool_only():
-    assert R.decode_mismatch_rule("runner_forced_T1:T1", {"vendor_recommendation:T0.7"}, "agentic_murder")
-    assert R.decode_mismatch_rule("runner_forced_T1:T1", {"runner_forced_T1:T1", "vendor_recommendation:T0.7"}, "agentic_murder")   # mixed pool
-    assert not R.decode_mismatch_rule("runner_forced_T1:T1", {"grandfathered_T1:T1", "runner_forced_T1"}, "agentic_murder")         # two spellings of T 1
-    assert not R.decode_mismatch_rule("runner_forced_T1:T1", {"vllm_default", "vendor_recommendation:T0.7"}, "agentic_murder")      # an unknown decode: no claim
-    assert not R.decode_mismatch_rule("grandfathered_T1:T1", {"vendor_preset:T0.7"}, "pasttense")                                   # statics: the common anchor is the design
+def test_decode_mismatch_rule_fires_nowhere_today():
+    """The disclosure applied to the agentic panel alone, which left the paper (2026-11-14): no category names it now."""
+    assert R.DECODE_NOTE_CATEGORIES == frozenset()
+    assert not any(R.decode_mismatch_rule("runner_forced_T1:T1", {"vendor_recommendation:T0.7"}, e) for e in R.EVAL_CATEGORY)
+
+
+def test_decode_mismatch_rule_fires_on_a_mixed_pool_of_a_named_category_only(monkeypatch):
+    monkeypatch.setattr(R, "DECODE_NOTE_CATEGORIES", frozenset({"multi-turn"}))                    # a category the rule is pointed at
+    assert R.decode_mismatch_rule("runner_forced_T1:T1", {"vendor_recommendation:T0.7"}, "crescendo")
+    assert R.decode_mismatch_rule("runner_forced_T1:T1", {"runner_forced_T1:T1", "vendor_recommendation:T0.7"}, "crescendo")   # mixed pool
+    assert not R.decode_mismatch_rule("runner_forced_T1:T1", {"grandfathered_T1:T1", "runner_forced_T1"}, "crescendo")         # two spellings of T 1
+    assert not R.decode_mismatch_rule("runner_forced_T1:T1", {"vllm_default", "vendor_recommendation:T0.7"}, "crescendo")      # an unknown decode: no claim
+    assert not R.decode_mismatch_rule("grandfathered_T1:T1", {"vendor_preset:T0.7"}, "pasttense")                              # statics: the common anchor is the design
     assert not R.decode_mismatch_rule("greedy", {"greedy", "vendor_preset:T0.7"}, "mmlu")
-    assert not R.decode_mismatch_rule("", {"x"}, "agentic_murder") and not R.decode_mismatch_rule("x", set(), "agentic_murder")
+    assert not R.decode_mismatch_rule("", {"x"}, "crescendo") and not R.decode_mismatch_rule("x", set(), "crescendo")
 
 
 def test_decode_note_names_the_serving_path_when_it_differs():
@@ -272,26 +280,30 @@ def test_two_term_graded_rows_print_their_deviation_bound():
     assert R.pool_cell(f).two_term_dev.iloc[0] == 0.007                     # the worst deviation survives the pooling
 
 
-def test_agentic_arms_anchor_on_decode_matched_unsteered_runs_when_they_exist():
+def test_arms_of_a_named_category_anchor_on_decode_matched_unsteered_runs_when_they_exist(monkeypatch):
+    """Once the agentic arms' rule (DECODE_NOTE_CATEGORIES is empty since that panel left the paper, 2026-11-14): on a category the rule
+    names, an arm anchors on the unsteered runs at its own decode; everywhere else the common pool stands."""
     c = pd.DataFrame(dict(run_id=["vendor", "native"], decode_key=["vendor_recommendation:T0.7", "runner_forced_T1:T1"], y=[36.0, 40.0]))
-    m = R.decode_matched_pool(c, "runner_forced_T1:T1", "agentic_leaking")
+    assert R.decode_matched_pool(c, "runner_forced_T1:T1", "crescendo").run_id.tolist() == ["vendor", "native"]   # no category named today
+    monkeypatch.setattr(R, "DECODE_NOTE_CATEGORIES", frozenset({"multi-turn"}))
+    m = R.decode_matched_pool(c, "runner_forced_T1:T1", "crescendo")
     assert m.run_id.tolist() == ["native"]                                              # the matched baseline alone
     assert R.decode_matched_pool(c, "runner_forced_T1:T1", "pasttense").run_id.tolist() == ["vendor", "native"]   # statics keep the common pool
     only_vendor = c[c.run_id == "vendor"]
-    assert R.decode_matched_pool(only_vendor, "runner_forced_T1:T1", "agentic_leaking").run_id.tolist() == ["vendor"]   # no match: the pool stands, the note discloses
-    assert R.decode_matched_pool(c, "", "agentic_leaking").run_id.tolist() == ["vendor", "native"]
+    assert R.decode_matched_pool(only_vendor, "runner_forced_T1:T1", "crescendo").run_id.tolist() == ["vendor"]   # no match: the pool stands, the note discloses
+    assert R.decode_matched_pool(c, "", "crescendo").run_id.tolist() == ["vendor", "native"]
 
 
 def test_a_held_out_row_stays_drawn_but_enters_no_mean():
     """The registry's hold_out (Llama's paired difference ReLU agentic cells, 2026-09-22): the row stays in the frame with its value, is
     printed `not scoreable`, and is out of every pooled mean - category means, the appendix grand mean and the mean column."""
     d = pd.DataFrame([
-        dict(model_id="llama8b_it", object_label="difference_relu", seed="s1", eval_id="agentic_leaking", d_y=40.0, d_lo=35.0, d_hi=45.0, anchor_in_frame=True, ceiling=False, anchor_value=47.0, held_out=1),
-        dict(model_id="llama8b_it", object_label="difference_relu", seed="s1", eval_id="agentic_murder", d_y=30.0, d_lo=25.0, d_hi=35.0, anchor_in_frame=True, ceiling=False, anchor_value=28.0, held_out=1),
-        dict(model_id="gemma4e4b_it", object_label="difference_relu", seed="s1", eval_id="agentic_leaking", d_y=-27.0, d_lo=-32.0, d_hi=-22.0, anchor_in_frame=True, ceiling=False, anchor_value=19.0, held_out=0),
-        dict(model_id="gemma4e4b_it", object_label="difference_relu", seed="s1", eval_id="agentic_murder", d_y=-15.0, d_lo=-20.0, d_hi=-10.0, anchor_in_frame=True, ceiling=False, anchor_value=12.0, held_out=0),
+        dict(model_id="llama8b_it", object_label="difference_relu", seed="s1", eval_id="crescendo", d_y=40.0, d_lo=35.0, d_hi=45.0, anchor_in_frame=True, ceiling=False, anchor_value=47.0, held_out=1),
+        dict(model_id="llama8b_it", object_label="difference_relu", seed="s1", eval_id="actorattack", d_y=30.0, d_lo=25.0, d_hi=35.0, anchor_in_frame=True, ceiling=False, anchor_value=28.0, held_out=1),
+        dict(model_id="gemma4e4b_it", object_label="difference_relu", seed="s1", eval_id="crescendo", d_y=-27.0, d_lo=-32.0, d_hi=-22.0, anchor_in_frame=True, ceiling=False, anchor_value=19.0, held_out=0),
+        dict(model_id="gemma4e4b_it", object_label="difference_relu", seed="s1", eval_id="actorattack", d_y=-15.0, d_lo=-20.0, d_hi=-10.0, anchor_in_frame=True, ceiling=False, anchor_value=12.0, held_out=0),
     ])
-    cm = R.category_means(d, categories={"agentic misalignment": R.CATEGORIES["agentic misalignment"]})
+    cm = R.category_means(d, categories={"multi-turn": R.CATEGORIES["multi-turn"]})
     assert cm.model_id.tolist() == ["gemma4e4b_it"]                                    # llama's held-out cell makes no category mean
     assert R.is_held(d.iloc[0]) and not R.is_held(d.iloc[2]) and R.held_mask(d).tolist() == [True, True, False, False]
     p = R.pool_cell(d.rename(columns={"d_y": "y", "d_lo": "lo", "d_hi": "hi"}))

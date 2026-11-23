@@ -7,8 +7,7 @@ shipped copy; it refuses any other corpus unless SISTEER_RENELLM_NONPAPER_CORPUS
 names it, labels such a run non-paper everywhere it records itself, and never mixes
 two corpora in one store. Every corpus built here is SYNTHETIC: placeholder goal ids
 and benign placeholder text, nothing from any benchmark (the shipped corpus itself is
-read for its hashes and counts only, in tests/test_renellm_eval_only.py and the job
-script guard below).
+read for its hashes and counts only, in the job script guard below).
 """
 
 from __future__ import annotations
@@ -154,7 +153,7 @@ def test_replay_refuses_a_corpus_that_is_not_the_papers(corpus_env, tmp_path, ca
     assert not out.exists(), "a refusal writes nothing"
     with pytest.raises(rn.RenellmCorpusRefused):
         rn.preflight_store(out)
-    # the plain evaluation lookup does not refuse (training reads renellm.training_variants instead)
+    # the plain evaluation lookup does not refuse
     assert [n for n, _ in rn.renellm_variants(Goal("g0", "x", "c", "d", "r"))] == list(rn._SCENARIOS)
     captured = capsys.readouterr()
     assert PLACEHOLDER not in captured.out + captured.err + msg

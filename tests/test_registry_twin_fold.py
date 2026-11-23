@@ -28,6 +28,7 @@ import pytest
 import test_registry_views_0021 as T21
 import test_registry_views_0022 as T22
 from test_registry_migrations import AF_TABLES, FU4_TABLES, NTPL_TABLES, TF_DRIFT, TF_VIEWS, _pre_0027_run_current, _sans_fu4_drift, _sans_fu4_render
+from test_registry_migrations import PRUNE_TABLES, _prune_objects_aside, _sans_prune_cli, _sans_prune_head, _sans_prune_head_render   # 0033's part, set aside
 from test_registry_twins_live import assert_post_fold
 
 from sisteer.registry import adapters as ADP
@@ -80,18 +81,19 @@ def _shape_below(path: str) -> None:
 
 def test_the_migration_plan_on_the_shape_below_it_is_three_view_recreates_and_the_committed_body_is_the_render(tmp_path, capsys):
     version, slug, mpath = _tf_migration()
-    assert version == M.code_version() - 6, "the newest file but six on this tree: 0027 (registry follow-ups-4), 0028 (reference_model_never_selected), 0029 (analysis filing), 0030 (fold_order_barrier) and 0031 (non_template_positions: a rebuild of instrument and run) follow it"
+    assert version == M.code_version() - 7, "the newest file but seven on this tree: 0027 (registry follow-ups-4), 0028 (reference_model_never_selected), 0029 (analysis filing), 0030 (fold_order_barrier), 0031 (non_template_positions: a rebuild of instrument and run), 0032 (site_label_rename) and 0033 (prune_superseded_item_rows: its table, index drop and head recreate set aside) follow it"
     assert os.path.basename(mpath) == f"{version:04d}_{SLUG}.sql"
     path = str(tmp_path / "below.sqlite")
     _shape_below(path)
     conn = DB.connect(path)
     assert M.db_version(conn) == version - 1
-    assert sorted(_sans_fu4_drift(DB.schema_drift(conn))) == sorted(TF_DRIFT)                # 0027's run_contrast line aside (its own test pins it)
+    assert sorted(_sans_prune_head(_sans_fu4_drift(DB.schema_drift(conn)))) == sorted(TF_DRIFT)      # 0027's run_contrast line and 0033's aside (their own tests pin them)
     plan = M.shape_plan(conn)
-    assert [r["table"] for r in plan["rebuild"] if r["table"] not in FU4_TABLES + NTPL_TABLES] == [] and plan["add_columns"] == [] and plan["undeclared_tables"] == [] and [c for c in plan["create"] if c not in AF_TABLES] == []   # 0027's run_contrast rebuild, 0031's two and 0029's five creates aside
-    assert plan["objects"] == {"index": {"recreate": [], "drop": []}, "trigger": {"recreate": [], "drop": []},   # 0030's two fence triggers ride 0031's run rebuild
-                               "view": {"recreate": sorted(TF_VIEWS), "drop": []}}
-    rendered = M.render_shape_migration(conn, plan)
+    assert [r["table"] for r in plan["rebuild"] if r["table"] not in FU4_TABLES + NTPL_TABLES] == [] and plan["add_columns"] == [] and plan["undeclared_tables"] == [] and [c for c in plan["create"] if c not in AF_TABLES + PRUNE_TABLES] == []   # 0027's run_contrast rebuild, 0031's two, 0029's five creates and 0033's aside
+    assert _prune_objects_aside(plan["objects"]) == \
+        {"index": {"recreate": [], "drop": []}, "trigger": {"recreate": [], "drop": []},   # 0030's two fence triggers ride 0031's run rebuild
+         "view": {"recreate": sorted(TF_VIEWS), "drop": []}}
+    rendered = _sans_prune_head_render(M.render_shape_migration(conn, plan))
     committed = open(mpath, encoding="utf-8").read()
     assert committed.startswith(f"-- {os.path.basename(mpath)}\n") and "a ruling of 2026-10-03" in committed[:committed.index("-- drift: ")]
     body = committed[committed.index("-- drift: "):]
@@ -121,13 +123,14 @@ def test_the_migration_plan_on_the_shape_below_it_is_three_view_recreates_and_th
     assert cli.main(["--root", root, "migrate", "--plan"]) == 1
     out = capsys.readouterr().out
     assert f"schema version {version - 1}; code {M.code_version()}; pending: {version:04d}_{SLUG}" in out
+    out = _sans_prune_cli(out)                                                             # 0033's lines aside
     assert "recreate view(s): " + ", ".join(sorted(TF_VIEWS)) in out
     for d in TF_DRIFT:
         assert f"  {d}" in out
     for absent in ("add column", "drop undeclared", "recreate index"):
         assert absent not in out, out
     assert [ln for ln in out.splitlines() if ln.startswith("recreate trigger")] == [], out   # 0030's two fence triggers ride 0031's run rebuild
-    assert [ln for ln in out.splitlines() if ln.startswith("create table") and ln.split()[-1] not in AF_TABLES] == [], out   # 0029's five creates aside
+    assert [ln for ln in out.splitlines() if ln.startswith("create table") and ln.split()[-1] not in AF_TABLES + PRUNE_TABLES] == [], out   # 0029's five creates and 0033's aside
     assert [ln for ln in out.splitlines() if ln.startswith("rebuild table ") and "run_contrast" not in ln and ln.split()[2].rstrip(":") not in NTPL_TABLES] == [], out   # 0027's and 0031's rebuild lines aside
     assert sum(1 for ln in out.splitlines() if ln.startswith("recreate ")) == 1                 # the views' line alone
     # applied (0027, 0028 and 0029 follow): the code's version, zero drift, the three objects at the code's text, every paper view selectable

@@ -26,6 +26,8 @@ from full22_wave_configs import wave_configs  # the wave configs, minus the tabl
 REPO = Path(__file__).resolve().parents[1]
 F22 = REPO / "scripts/sdfbase/full22"
 ROSTER = yaml.safe_load((REPO / "configs/sdfbase_full22_roster.yaml").read_text())
+#: the LANE-PRIVATE rosters under the same prefix (selected only by F22_ROSTER): each renders its own views' wave configs
+LANE_ROSTERS = tuple(yaml.safe_load(p.read_text()) for p in sorted((REPO / "configs").glob("sdfbase_full22_roster_*.yaml")))
 
 
 def _store(tmp_path: Path, rows, *, complete: bool = True, units: dict | None = None, nofit: list | None = None) -> Path:
@@ -168,10 +170,18 @@ def test_the_canonical_best_of_n_is_the_configs_default():
         # 2026-09-15 promotion into the sampled scope); the suffix is stripped to find the view
         wave_stem = re.sub(r"_sampled_t\d+(_cap\d+)?$", "", cfg_path.stem)
         view = wave_stem[len(f"sdfbase_full22_{target}"):].lstrip("_") or "main" if target else None
-        view_cap = ((ROSTER["targets"][target]["views"].get(view) or {}).get("caps") or {}).get("bon") if target and view else None
+        # the view's entry is read from the roster that RENDERS it: the production one, or the lane-private roster naming it. At most
+        # one roster names a (target, view) — common.sh refuses a lane roster's view the production roster also names, and no two
+        # lane rosters share one (asserted here, so the lookup never chooses between two entries); the control-pool-stopped views
+        # ctlstop64s<k> declare `caps.bon` 4,096 in theirs, as the seed views do in production
+        named = [views[view] or {} for r in (ROSTER, *LANE_ROSTERS)
+                 for views in [((r.get("targets") or {}).get(target) or {}).get("views") or {}] if view in views] if target and view else []
+        assert len(named) <= 1, cfg_path.name
+        vblock = named[0] if named else {}
+        view_cap = (vblock.get("caps") or {}).get("bon")
         assert cfg["max_new_tokens"] == (int(view_cap) if view_cap is not None else int(native_cap) if native_cap is not None else bc.BASE_CAP), cfg_path.name
         if view_cap is not None:                    # never both authorities for one cap, never on a dose view
-            assert native_cap is None and "dose" not in ROSTER["targets"][target]["views"][view] and int(view_cap) == 4096, cfg_path.name
+            assert native_cap is None and "dose" not in vblock and int(view_cap) == 4096, cfg_path.name
         assert cfg["climb_cap"] == 4096 and cfg["climb_decode"] == "as_drawn" and "climb_temperature" not in cfg, cfg_path.name
         n += 1
     assert n >= 7

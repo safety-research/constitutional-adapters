@@ -754,7 +754,16 @@ PETRI_PROMPTABLE_SI_IDS = ("safety", "constitution", "irrelevant", "constitution
 #: up front). Purely additive, like `irrelevant` was: the harness hash
 #: reads spec CONTENT, never these tuples, so no completed audit's run
 #: keys move.
-PETRI_OBJECT_ONLY_SI_IDS = ("constv2_mix_full", "constv2ctl2_full")
+#: The 1M-token generator comparison (2026-11-12) APPENDS the
+#: two 1M-token corpus pseudo-instructions its six base-fit objects are named
+#: through: `constv2-mix-1m` (the Opus-written 1M pool) and `constqwen38-mix-1m`
+#: (the Qwen-written 1M pool), so the static standup can translate their cell ids.
+#: Checked before the edit: no committed Petri manifest's cells, parse/classify
+#: records, behaviour-key set or registry translation moves, and no in-repo
+#: caller reads petri_stats.analyze's canonical default (petri_run passes the
+#: manifest's cells); only the vocabulary-level canonical list grows.
+PETRI_OBJECT_ONLY_SI_IDS = ("constv2_mix_full", "constv2ctl2_full",
+                            "constv2_mix_1m", "constqwen38_mix_1m")
 #: PROMPTED-ONLY SI ids (2026-09-10): the FULL constitution is a prompted baseline and
 #: nothing else — no fitted object exists or will exist for it, so
 #: `si_constitution_full__<method>` / `stacked__constitution_full__…` are not cells the
@@ -762,7 +771,20 @@ PETRI_OBJECT_ONLY_SI_IDS = ("constv2_mix_full", "constv2ctl2_full")
 #: refusal) and the canonical Class A matrix does not expect them. Purely additive: the hash
 #: reads spec CONTENT, never these tuples.
 PETRI_PROMPTED_ONLY_SI_IDS = ("constitution_full",)
-PETRI_SI_IDS = PETRI_PROMPTABLE_SI_IDS + PETRI_OBJECT_ONLY_SI_IDS
+#: DISTILLED-ONLY SI ids (2026-11-09): a real
+#: system instruction whose SI-DISTILLED objects are served, but which has no
+#: prompted leg on this tree. `irrelevant_c16` is the short irrelevant control
+#: SI C16 (registry id `C16`, petri.registry_adapter.HARNESS_TO_TRAINTEST_SI):
+#: its text resolves only through the env-guarded candidate-SI loader, and it
+#: has no SI-variant behavior dir and no recorded prefix hash. Only
+#: `si_<si>__<method>` is legal for it (defense_cells.parse_cell_id refuses
+#: `prompted__` / `stacked__`). It is neither a PROMPTABLE SI nor an
+#: OBJECT-ONLY corpus pseudo-instruction, so the Petri canonical matrix
+#: (petri_stats.canonical_cell_ids reads those two tuples) and the scenario
+#: variant dirs are unchanged. Purely additive: the hash reads spec CONTENT,
+#: never these tuples.
+PETRI_DISTILLED_ONLY_SI_IDS = ("irrelevant_c16",)
+PETRI_SI_IDS = PETRI_PROMPTABLE_SI_IDS + PETRI_OBJECT_ONLY_SI_IDS + PETRI_DISTILLED_ONLY_SI_IDS
 #: the PROMPTABLE SI ids a Class A cell of a PROMPTABLE method (`si_<si>__<method>`, defense_cells.PROMPTABLE_CLASS_A_METHODS)
 #: may name: every promptable SI except the prompted-only ones (constitution_full). The object-only SIs
 #: (PETRI_OBJECT_ONLY_SI_IDS) are NOT here: their cells are the object-only methods'
@@ -1703,6 +1725,15 @@ def petri_expected_behavior_keys(spec: PetriSpec) -> List[str]:
                         f"OBJECT-ONLY SI {si!r} (a document-corpus pseudo-"
                         "instruction has no system-prompt text and no "
                         "SI-variant behavior dir)")
+            # past the OBJECT-ONLY refusal, a non-promptable SI is a
+            # DISTILLED-ONLY one (the three tuples partition PETRI_SI_IDS),
+            # and PETRI_SI_VARIANT_DIRS is keyed by the promptable SIs alone:
+            # refuse by name here, never a bare KeyError below
+            if si not in PETRI_PROMPTABLE_SI_IDS:
+                _refuse(f"petri harness hash: cell {cell_id!r} prompts the "
+                        f"DISTILLED-ONLY SI {si!r} — it has no prompted leg "
+                        "on this tree (no variant dir, no recorded prefix "
+                        f"hash); only 'si_{si}__<method>' is legal for it")
             if si not in in_play_sis:
                 in_play_sis.append(si)
     keys = list(spec.behaviors)

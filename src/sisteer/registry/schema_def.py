@@ -100,6 +100,7 @@ class Table:
     indexes: List[Tuple[str, Sequence[str], Optional[str]]] = field(default_factory=list)  # (name, cols, where)
     checks: List[Tuple[str, str]] = field(default_factory=list)  # (name, sql)
     scale: str = "run"             # run | item | ledger | dimension(=run)
+    without_rowid: bool = False    # render WITHOUT ROWID for a table of another scale (item and staging tables always are)
 
     def column(self, name: str) -> Column:
         for c in self.columns:
@@ -125,10 +126,13 @@ def C(name, type_="TEXT", nn=False, default=None, vocab=None, pattern=None, fk=N
 def revision_tag() -> Column:
     """The item tables' revision tag: part of the natural key, so a pending revision's row coexists with
     the current one; visibility is derived — a row is read iff its revision is the source's head accepted revision
-    (or '' for natively emitted rows). FK by trigger ('' is the sentinel)."""
+    (or '' for natively emitted rows). FK by trigger ('' is the sentinel). Since migration 0033 an accepted, SUPERSEDED revision's rows
+    are deleted by the harvester's reclaim wherever the record log reproduces them exactly (``prune.py``, ``prune-rule/3``), and
+    re-folded from the log before anything is written under that revision again."""
     return C("source_revision_id", nn=True, default="''", fk=("source_revision", "revision_id"), sentinel="",
              doc="The source_revision that carries this row ('' for natively emitted rows; FK by trigger). Part of the key: rows of a "
-                 "pending or superseded revision coexist with the head's, invisible to every reader.")
+                 "pending or superseded revision coexist with the head's, invisible to every reader; a superseded revision's rows are "
+                 "deleted by reclaim where the record log reproduces them (item_reclaim_ledger).")
 
 
 def B(name, nn=False, default=None, why=None, doc=""):
@@ -913,10 +917,9 @@ table(Table(
     indexes=[
         ("idx_item_result_run_judgment", ("run_id", "judgment_id"), None),
         ("idx_item_result_item", ("item_id",), None),
+        # the marked rows: reclaim's pass (i) finds a head's leftover marks through it. Nothing writes a mark since migration 0033, which
+        # dropped the second partial index over the marks (idx_item_result_withdrawn_seq, on ingest_seq) with v_paper_inputs_head's item member
         ("idx_item_result_withdrawn", ("withdrawn_by_revision_id",), "withdrawn_by_revision_id IS NOT NULL"),
-        # the withdrawn rows keyed by ingest_seq (migration 0015): v_paper_inputs_head's item member is one seek through it instead of a
-        # probe of every withdrawn row (509k live, 115 s a cycle); the reclaim scans keep reading idx_item_result_withdrawn, untouched
-        ("idx_item_result_withdrawn_seq", ("ingest_seq",), "withdrawn_by_revision_id IS NOT NULL"),
         ("idx_item_result_revision", ("source_revision_id", "record_file_id"), None),
     ],
     columns=[
@@ -934,7 +937,7 @@ table(Table(
         C("created_utc", nn=True),
         C("judged_utc", why="generation-time rows"),
         revision_tag(),
-        C("withdrawn_by_revision_id", why="set when a later accepted revision no longer carries the item; bookkeeping — visibility is derived from the head revision"),
+        C("withdrawn_by_revision_id", why="an inert mark: reclaim set it before migration 0033 when a later accepted revision no longer carried the item, and nothing sets it since; visibility is derived from the head revision"),
     ] + item_scale_tail() + [
         # The producer-withdrawal marks (migration 0020) TRAIL ingest_seq on purpose: SQLite's ALTER TABLE ADD COLUMN appends a
         # column after the last existing one, so only a column declared here, after the tail, lets the live table be migrated by two
@@ -1098,12 +1101,12 @@ table(Table(
           doc="The adapter's declared source priority: among the visible provenances of one measurement key a native row comes first, "
               "then the higher priority, then the lexically smaller source_id, then revision_id."),
         C("reclaimed", "INTEGER", nn=True, default="0", vocab="BOOLEAN", derived=True,
-          doc="1 once the reclaim pass has marked every row of this superseded revision the successor no longer carries; reset when the chain moves."),
+          doc="1 once a reclaim pass left no deletable carrier of this accepted, superseded revision and none whose log file is missing (prune-rule/3); reset when the chain moves and by every item write under the revision."),
     ] + run_scale_tail()))
 
 table(Table(
     "observation", pk=("source_id", "revision_id", "observation_key"),
-    doc="Membership of a RUN-SCALE key in a source revision (item membership is two columns on item_result).",
+    doc="Membership of a RUN-SCALE key in a source revision (item membership is the item tables' source_revision_id).",
     columns=[
         C("source_id", nn=True),
         C("revision_id", nn=True, fk=("source_revision", "revision_id")),
@@ -1471,6 +1474,27 @@ table(Table(
         C("extra_json", nn=True, default="'{}'"),
     ]))
 
+table(Table(
+    "item_reclaim_ledger", scale="ledger", pk=("table_name", "revision_id", "record_file_id"), without_rowid=True,
+    doc="What reclaim deleted from one carrier (an item table, an accepted superseded revision, one record file) and nobody has restored "
+        "since (migration 0033, prune-rule/3): the count and additive digests of the deleted rows, so present + deleted rows "
+        "authenticate against a re-parse of the file, a half-deleted carrier resumes, and the revision's rows are re-folded from the "
+        "record log before anything is written under it again. Derived; read by no v_* object.",
+    columns=[
+        C("table_name", nn=True, doc="The item table the rows were deleted from: item_result, item_flags or run_degeneration (prune.PRUNE_TABLES)."),
+        C("revision_id", nn=True, doc="The accepted, superseded revision they were deleted from (no FK: a ledger row names, never guards)."),
+        C("record_file_id", "INTEGER", nn=True, doc="The carrier: the record file the rows were folded from (record_ingest.record_file_id)."),
+        C("file_uri", nn=True, doc="The carrier's logical uri, the file rehydration re-parses."),
+        C("expected_rows", "INTEGER", nn=True, pattern="NONNEG", doc="The rows the current code built from the file when deletion began (its re-parse)."),
+        C("expected_digest_fold", nn=True, pattern="SHA256",
+          doc="The additive digest of those rows over every column but ingest_seq and withdrawn_by_revision_id (prune.FOLD_EXCLUDE)."),
+        C("rows_deleted", "INTEGER", nn=True, pattern="NONNEG", doc="The rows deleted from the carrier so far (running total)."),
+        C("deleted_digest_fold", nn=True, pattern="SHA256", doc="The additive digest of the deleted rows, the columns of expected_digest_fold."),
+        C("deleted_digest_bind", nn=True, pattern="SHA256",
+          doc="The additive digest of the deleted rows over every column but ingest_seq (an archive group's digest_bind)."),
+        C("parsed_with", nn=True, doc="The stamp of the code that admitted the deletion (harvest.validator_stamp)."),
+    ]))
+
 
 def run_scale_tables() -> Tuple[str, ...]:
     return tuple(t.name for t in TABLES if t.scale == "run")
@@ -1579,7 +1603,9 @@ VISIBLE_ROW_SQL = ("({alias}source_revision_id = '' OR EXISTS (SELECT 1 FROM sou
 
 def item_visible(alias: str = "") -> str:
     """The item tables' visibility predicate: a row is read iff it is natively emitted ('' tag) or its revision is the
-    source's HEAD accepted revision. Rows of pending and superseded revisions coexist in the table and are read by nothing."""
+    source's HEAD accepted revision. Rows of pending and superseded revisions coexist in the table and are read by no v_* object; a
+    superseded revision's rows are deleted by the harvester's reclaim where the record log reproduces them (migration 0033), so the
+    predicate, never the presence of a row, is what decides visibility."""
     return VISIBLE_ROW_SQL.format(alias=f"{alias}." if alias else "")
 
 
@@ -3760,8 +3786,12 @@ FROM object o;
     # COALESCE(msc.ingest_seq, 0))`: `run`, `run_metric`, `run_contrast`; v_multi_source_check's ingest_seq is a max over run_metric's),
     # read whole. The head therefore moves at least whenever the frame's own maximum did (a consumer is never left on a stale cache) and
     # also when a run outside the frame lands (a rebuild that reads an unchanged frame -- the price). The rule holds as before: accepted
-    # source revisions and withdrawals are members in their own right. The item member is exact and now one seek (idx_item_result_withdrawn_seq,
-    # named in the SQL: the live ANALYZE statistics put idx_item_result_withdrawn at 480 rows against 509k, and steer the planner to it).
+    # source revisions and withdrawals are members in their own right. Migration 0033 drops the member that read item_result's
+    # revision-withdrawal marks (MAX(ingest_seq) over the marked rows, one seek through idx_item_result_withdrawn_seq since 0015; the index
+    # goes with it): nothing writes that mark since 0033 (reclaim deletes a superseded revision's rows instead of marking them), and a mark
+    # only ever followed a supersession, whose accepted revision is a member in its own right -- the member was dominated in every flow
+    # examined, and on the live database it read 479,654 against a head of 515,787. The head's value is unchanged; the schema version's
+    # move rebuilds the paper once (paper_rebuild.sh keys on the head and the version).
     # Migration 0021 widens two members for the currency rules it lands (found in review, 2026-10-02: the frame changed with nothing
     # moving the head): the run member reads EVERY row, not the two lifecycle states the selection CASE admits -- a run that retires
     # (judged -> superseded / withdrawn / cancelled / failed, or `superseded_by_run_id` set) moves its own row's rank while LEAVING
@@ -3808,8 +3838,6 @@ SELECT MAX(seq) AS ingest_seq FROM (
         ON ir.run_id = iw.run_id AND ir.item_id = iw.item_id AND ir.metric_id = iw.metric_id AND ir.trial_index = iw.trial_index
         AND ir.sample_index = iw.sample_index AND ir.turn_index = iw.turn_index AND ir.judgment_id = iw.judgment_id
         AND ir.source_revision_id = ''
-    -- one seek through the partial index on ingest_seq over the withdrawn rows, named so the plan holds whatever the statistics say
-    UNION ALL SELECT MAX(ingest_seq) FROM item_result INDEXED BY idx_item_result_withdrawn_seq WHERE withdrawn_by_revision_id IS NOT NULL
 );
 """, ('run', 'run_metric', 'run_contrast', 'judgment', 'roster_entry', 'ruling', 'ruling_state', 'disposition', 'source_revision',
       'withdrawal', 'item_withdrawal', 'item_result')))
@@ -3896,7 +3924,7 @@ def render_create_table(t: Table, name: Optional[str] = None) -> str:
         else:
             out_body.append(b + comma)
     lines += out_body
-    lines.append(") WITHOUT ROWID;" if t.scale in ("item", "staging") else ");")
+    lines.append(") WITHOUT ROWID;" if t.scale in ("item", "staging") or t.without_rowid else ");")
     return "\n".join(lines)
 
 

@@ -44,7 +44,7 @@
 set -uo pipefail
 KEY_ARG="${1:?key}"; VIEW_ARG="${2:?view}"; WAVE_SHA="${3:?wave sha}"
 SMOKE_N_ARG="${4:-}"; SMOKE_CAP_ARG="${5:-}"; SMOKE_CONCURRENCY_ARG="${6:-}"; G8K_MATRIX="${7:-llama}"
-case "$G8K_MATRIX" in default|llama|itdoc|qwen_seedrep|arditi_allpos|arditi_seedrep|paired_allmodels) ;; frontdoor_*) ;; *) echo "FATAL: matrix must be one of default|llama|itdoc|qwen_seedrep|arditi_allpos|arditi_seedrep|paired_allmodels (g8k_cells.py MATRICES) or frontdoor_<models.yaml key> (the front door's derived matrices, g8k_cells.py front_door_matrices), got $G8K_MATRIX" >&2; exit 1;; esac
+case "$G8K_MATRIX" in default|llama|itdoc|qwen_seedrep|arditi_allpos|arditi_seedrep|paired_allmodels|ctlstop|sikl4|qwengen1m) ;; frontdoor_*) ;; *) echo "FATAL: matrix must be one of default|llama|itdoc|qwen_seedrep|arditi_allpos|arditi_seedrep|paired_allmodels|ctlstop|sikl4|qwengen1m (g8k_cells.py MATRICES) or frontdoor_<models.yaml key> (the front door's derived matrices, g8k_cells.py front_door_matrices), got $G8K_MATRIX" >&2; exit 1;; esac
 # the grading host dry run reads THIS tree (here BASH_SOURCE is the real file, not Slurm's spool copy)
 if [ "${G8K_DRY_RUN:-0}" = 1 ]; then G8K_REPO_DIR="${G8K_REPO_DIR:-$(cd "$(dirname "${BASH_SOURCE[0]}")/../../.." && pwd)}"; fi
 # --- the checkout, located BEFORE either helper is sourced ---------------------------------------------------------

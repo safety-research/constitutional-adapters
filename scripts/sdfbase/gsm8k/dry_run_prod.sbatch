@@ -26,7 +26,7 @@
 #   sbatch -J g8k-dry-prod scripts/sdfbase/gsm8k/dry_run_prod.sbatch <wave_sha> [matrix]     # matrix: the `case` below (g8k_cells.MATRICES)
 set -uo pipefail
 WAVE_SHA="${1:?wave sha}"; G8K_MATRIX="${2:-default}"
-case "$G8K_MATRIX" in default|llama|itdoc|qwen_seedrep|arditi_allpos|arditi_seedrep|paired_allmodels) ;; frontdoor_*) ;; *) echo "FATAL: matrix must be one of default|llama|itdoc|qwen_seedrep|arditi_allpos|arditi_seedrep|paired_allmodels (g8k_cells.py MATRICES) or frontdoor_<models.yaml key> (the front door's derived matrices, g8k_cells.py front_door_matrices), got $G8K_MATRIX" >&2; exit 1;; esac
+case "$G8K_MATRIX" in default|llama|itdoc|qwen_seedrep|arditi_allpos|arditi_seedrep|paired_allmodels|ctlstop|sikl4|qwengen1m) ;; frontdoor_*) ;; *) echo "FATAL: matrix must be one of default|llama|itdoc|qwen_seedrep|arditi_allpos|arditi_seedrep|paired_allmodels|ctlstop|sikl4|qwengen1m (g8k_cells.py MATRICES) or frontdoor_<models.yaml key> (the front door's derived matrices, g8k_cells.py front_door_matrices), got $G8K_MATRIX" >&2; exit 1;; esac
 # --- the checkout, located BEFORE either helper is sourced ---------------------------------------------------------
 # A Slurm batch process inherits no REPO_DIR (f22_init sets it, later) and $0 is the spool copy, so the path is derived
 # the way f22_init derives it: the shared root present on this node + the wave sha; G8K_REPO_DIR overrides it (the

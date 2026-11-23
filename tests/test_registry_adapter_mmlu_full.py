@@ -566,15 +566,16 @@ def test_adapter_pass_and_ingest_land_every_run_ingested_with_its_items_under_th
     assert all(r[11] for r in runs)                                                          # the rule-scored completion stamp
     assert sorted({r[1] for r in runs}) == ["qwen35_4b_ar_c0p3", "qwen35_4b_it", "qwen35_4b_s1p"]
     assert all(r[2].split("/", 1)[0] in {"qwen35_4b_it_t0", "qwen35_4b_s1p_t0", AR_TAG} for r in runs)
-    # every item row once in the CURRENT relation (`v_item_result_current`); the three steered groups re-read once (the second pass), so their item rows are on the record twice
-    assert conn.execute("SELECT COUNT(*) FROM item_result").fetchone()[0] == 9 * N == conn.execute("SELECT COUNT(*) FROM item_flags").fetchone()[0]
+    # every item row once in the CURRENT relation (`v_item_result_current`); the three steered groups re-read once (the second pass), so their item rows are
+    # on the record twice -- the first read's superseded copy reclaimed from the table (migration 0033), so the table holds each row once
+    assert conn.execute("SELECT COUNT(*) FROM item_result").fetchone()[0] == 6 * N == conn.execute("SELECT COUNT(*) FROM item_flags").fetchone()[0]
     assert conn.execute("SELECT COUNT(*) FROM v_item_result_current").fetchone()[0] == 6 * N and conn.execute("SELECT COUNT(*) FROM v_item_conflict").fetchone()[0] == 0
     assert conn.execute("SELECT COUNT(*) FROM run_metric WHERE metric_id = 'acc'").fetchone()[0] == 6
     assert tuple(conn.execute("SELECT COUNT(*), SUM(anchor_kind = 'same_standup_none') FROM run_contrast").fetchone()) == (3, 3)
     assert conn.execute("SELECT COUNT(*) FROM judgment").fetchone()[0] == 0 and conn.execute("SELECT COUNT(*) FROM v_pending_judgment").fetchone()[0] == 0
     assert conn.execute("SELECT COUNT(*) FROM v_in_flight").fetchone()[0] == 0 and conn.execute("SELECT COUNT(*) FROM blocked_records").fetchone()[0] == 0
     deg = dict(conn.execute("SELECT measurement_state, COUNT(*) FROM run_degeneration GROUP BY 1").fetchall())
-    assert deg == {"not_applicable": 9 * len(IC.DECLARED_MEASURES)}          # the three steered groups' rows twice on the record (the second pass)
+    assert deg == {"not_applicable": 6 * len(IC.DECLARED_MEASURES)}          # twice on the record (the second pass), once in the table (reclaimed)
     assert conn.execute("SELECT COUNT(*) FROM v_run_degeneration_current").fetchone()[0] == 6 * len(IC.DECLARED_MEASURES)
     assert [tuple(r) for r in conn.execute("SELECT DISTINCT priority FROM source_revision WHERE adapter = 'mmlu_full' AND accepted = 1").fetchall()] == [(IC.PRIORITY_GENERIC_READER,)]
     # the same-object rows across tags share the collapse key (model, object, eval, instrument, judge, strength) with distinct run ids: the

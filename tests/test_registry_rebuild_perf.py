@@ -160,22 +160,33 @@ def test_footprint_watcher_counts_a_database_still_being_built(tmp_path):
     assert w.sample() == 8192
 
 
-def test_replay_keeps_only_the_withdrawn_mark_index_and_rebuilds_the_rest(tmp_path):
+def test_replay_keeps_no_index_during_the_load_and_reclaims_after_rebuilding_them(tmp_path):
+    """Since migration 0033 nothing reads an item index during the replay (reclaim no longer runs after each activation), so the load keeps
+    none (REBUILD_KEEP_INDEXES is empty); reclaim runs once, after the final transaction recreated every index it walks."""
     root = str(tmp_path / "reg")
     H.ensure_layout(root)
     synth.write_corpus(root, n_runs=1, n_items=2)
     _ingest(root)
     out = str(tmp_path / "rebuilt.sqlite")
-    kept_during = {}
-    real = H.Ingestor.reclaim
+    seen = {}
+    real_load, real_reclaim = H.Ingestor.reevaluate_blocked, H.Ingestor.reclaim
 
-    def spy(self, now):
-        kept_during["idx"] = {r[0] for r in self.conn.execute("SELECT name FROM sqlite_master WHERE type = 'index' AND sql IS NOT NULL")}
-        return real(self, now)
+    def indexes(self):
+        return {r[0] for r in self.conn.execute("SELECT name FROM sqlite_master WHERE type = 'index' AND sql IS NOT NULL")}
+
+    def spy_load(self, *a, **kw):
+        seen.setdefault("load", indexes(self))
+        return real_load(self, *a, **kw)
+
+    def spy_reclaim(self, *a, **kw):
+        seen["reclaim"] = indexes(self)
+        return real_reclaim(self, *a, **kw)
     with pytest.MonkeyPatch.context() as mp:
-        mp.setattr(H.Ingestor, "reclaim", spy)
+        mp.setattr(H.Ingestor, "reevaluate_blocked", spy_load)
+        mp.setattr(H.Ingestor, "reclaim", spy_reclaim)
         H.rebuild(root, out, workers=0)
-    assert kept_during["idx"] == set(H.REBUILD_KEEP_INDEXES)                        # only the kept ones exist during the load
+    assert H.REBUILD_KEEP_INDEXES == () and seen["load"] == set()                   # nothing kept during the load
+    assert {"idx_item_result_revision", "idx_item_flags_revision", "idx_run_degeneration_revision", "idx_item_result_withdrawn"} <= seen["reclaim"]
     with DB.reading(DB.db_path(root)) as a, DB.reading(out) as b:
         q = "SELECT name, sql FROM sqlite_master WHERE type = 'index' AND sql IS NOT NULL ORDER BY name"
         assert a.execute(q).fetchall() == b.execute(q).fetchall()                   # every index is back afterwards
@@ -256,11 +267,13 @@ def test_replay_with_workers_prefetches_item_files_in_the_pool_and_equals_the_st
     out0 = str(tmp_path / "rebuilt0.sqlite")
     H.rebuild(root, out0, workers=0)                                                        # streamed items pass
     n_streamed_inline = len(streamed_items)
-    assert n_streamed_inline == 8                                                           # item_result + source_status (item-scale) per directory
+    # item_result + source_status (item-scale) per directory: 8 by the replay -- and one more by the rebuild's closing reclaim, which
+    # re-parses the superseded revision's item_result file to authenticate it before deleting its rows (migration 0033)
+    assert n_streamed_inline == 9 and sum(1 for n in streamed_items if "item_result" in n) == 5
     streamed_items.clear()
     out3 = str(tmp_path / "rebuilt3.sqlite")
     rep = H.rebuild(root, out3, workers=3)                                                  # prefetched in the pool
-    assert streamed_items == []                                                             # no in-process items pass at all
+    assert len(streamed_items) == 1 and "item_result" in streamed_items[0]                  # no in-process items pass of the replay: reclaim's alone
     assert rep.refused == 0 and rep.revisions_held == 0
     for out in (out0, out3):
         bad, same_ledger = _verify_equal(root, out)

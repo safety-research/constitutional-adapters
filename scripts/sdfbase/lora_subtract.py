@@ -68,6 +68,18 @@ requested parents is kept (its sha unchanged); a torn or tampered one of
 the SAME pair is rebuilt. An existing object whose sidecar names OTHER
 parents is another pair's publication under this id and is REFUSED — never
 rebuilt in place, with or without ``--keep-valid``.
+
+``--ctl-key K`` reads the control parent from ANOTHER bank key
+(``<root>/K/cells_all/<ctl_si>__lora_r4_ce``) and keys the output by that
+control key, ``<root>/derived/lora_subtraction/K/<mix_si>__lora_r4_ce_minus_ctl/``,
+so a pair whose control was refit under its own key lands beside, never
+inside, the directory of the pair built from the constitution key's own
+control. ``model_key`` stays the constitution key; the sidecar adds a
+top-level ``ctl_model_key`` only when the control key differs. The CLI
+refuses a ``--ctl-key`` equal to the ``--models`` key (that pair is the
+default, without the flag). Both
+same-pair guards compare each role's ``model_key`` as well as its cell id:
+a sidecar that records another key for a role is another pair's object.
 """
 
 from __future__ import annotations
@@ -75,6 +87,7 @@ from __future__ import annotations
 import argparse
 import json
 import os
+import re
 import sys
 from datetime import datetime, timezone
 from pathlib import Path
@@ -387,9 +400,51 @@ def derived_id_for(mix_si: str) -> str:
     return f"{mix_si}__{ARM}_minus_ctl"
 
 
-def other_pair_problems(meta_path, mix_si: str, ctl_si: str) -> list[str]:
-    """Problems (empty = same pair, or no sidecar) when an existing sidecar
-    names parents other than ``<mix_si>__lora_r4_ce`` / ``<ctl_si>__lora_r4_ce``."""
+#: a bank key is ONE path component: a name that could climb out of its
+#: parent directory (``..``, a slash) is refused before any path is formed
+_KEY_RE = re.compile(r"[A-Za-z0-9][A-Za-z0-9._-]*")
+
+
+def check_ctl_key(value: str | None, *, error: type[Exception] = SubtractError) -> str | None:
+    """``value`` (None passes) when it is a plain bank-key name, else ``error``.
+    Both derived builders validate the control key by this one rule."""
+    if value is not None and (not isinstance(value, str) or not _KEY_RE.fullmatch(value)
+                              or ".." in value):
+        raise error(f"--ctl-key {value!r} is not a plain bank key (one path "
+                    "component: letters, digits, '.', '_', '-', no '..')")
+    return value
+
+
+def pair_problems(meta: dict, meta_path, mix_si: str, ctl_si: str, *,
+                  arm: str = ARM, key: str | None = None,
+                  ctl_key: str | None = None) -> list[str]:
+    """Problems (empty = this pair) with a parsed derived sidecar: each role's
+    ``cell_id`` must be ``<mix_si>__<arm>`` / ``<ctl_si>__<arm>``, and (``key``
+    given) a role whose block RECORDS a ``model_key`` must record this pair's,
+    ``key`` for the positive parent and ``ctl_key or key`` for the negative
+    one (a block that records none is the shared derived-object verdict's
+    finding, not this guard's). Both derived builders refuse another pair's
+    object by this one rule."""
+    out = []
+    for role, cell in (("parent_pos", f"{mix_si}__{arm}"),
+                       ("parent_neg", f"{ctl_si}__{arm}")):
+        got = (meta.get(role) or {}).get("cell_id")
+        if got != cell:
+            out.append(f"{meta_path}: {role}.cell_id={got!r}, this pair needs "
+                       f"{cell!r}")
+    for role, want in (("parent_pos", key), ("parent_neg", ctl_key or key)):
+        got = (meta.get(role) or {}).get("model_key")
+        if want is not None and got is not None and got != want:
+            out.append(f"{meta_path}: {role}.model_key={got!r}, this pair needs "
+                       f"{want!r}")
+    return out
+
+
+def other_pair_problems(meta_path, mix_si: str, ctl_si: str, *,
+                        arm: str = ARM, key: str | None = None,
+                        ctl_key: str | None = None) -> list[str]:
+    """:func:`pair_problems` of the sidecar at ``meta_path`` (empty when there
+    is none)."""
     meta_path = Path(meta_path)
     if not meta_path.is_file():
         return []
@@ -397,28 +452,22 @@ def other_pair_problems(meta_path, mix_si: str, ctl_si: str) -> list[str]:
         meta = json.loads(meta_path.read_text(encoding="utf-8"))
     except ValueError as e:
         return [f"{meta_path} unreadable: {e}"]
-    out = []
-    for role, cell in (("parent_pos", f"{mix_si}__{ARM}"),
-                       ("parent_neg", f"{ctl_si}__{ARM}")):
-        got = (meta.get(role) or {}).get("cell_id")
-        if got != cell:
-            out.append(f"{meta_path}: {role}.cell_id={got!r}, this pair needs "
-                       f"{cell!r}")
-    return out
+    return pair_problems(meta, meta_path, mix_si, ctl_si, arm=arm, key=key,
+                         ctl_key=ctl_key)
 
 
 def existing_valid(root: Path, out_root: Path, key: str, mix_si: str,
-                   ctl_si: str) -> tuple[Path, list[str]]:
+                   ctl_si: str, ctl_key: str | None = None) -> tuple[Path, list[str]]:
     """(object path, problems) for an existing publication of this pair:
     empty problems = the object passes the shared derived-object verdict
     against ``root`` (parents re-verified on disk) AND its sidecar names
-    exactly the requested parents — the derived id carries the corpus cell
-    only, so a same-id object built against ANOTHER control must never be
-    kept for this pair."""
+    exactly the requested parents (cell ids and, where recorded, model keys)
+    — the derived id carries the corpus cell only, so a same-id object built
+    against ANOTHER control must never be kept for this pair."""
     from sisteer.eval.train_budget import derived_object_problems
 
     derived_id = derived_id_for(mix_si)
-    out_dir = out_root / key / derived_id
+    out_dir = out_root / (ctl_key or key) / derived_id
     obj_path = out_dir / "object.pt"
     meta_path = out_dir / "derived_meta.json"
     if not obj_path.is_file():
@@ -431,37 +480,36 @@ def existing_valid(root: Path, out_root: Path, key: str, mix_si: str,
         meta = json.loads(meta_path.read_text(encoding="utf-8"))
     except Exception as e:  # noqa: BLE001 — an unreadable artifact is a problem, not a crash
         return obj_path, [f"{obj_path}: {type(e).__name__}: {e}"]
-    want = {"parent_pos": f"{mix_si}__{ARM}", "parent_neg": f"{ctl_si}__{ARM}"}
-    for role, cell in want.items():
-        got = (meta.get(role) or {}).get("cell_id")
-        if got != cell:
-            problems.append(f"{meta_path}: {role}.cell_id={got!r}, this pair "
-                            f"needs {cell!r}")
+    problems += pair_problems(meta, meta_path, mix_si, ctl_si, key=key,
+                              ctl_key=ctl_key)
     return obj_path, problems
 
 
 def build_one(root: Path, out_root: Path, key: str, mix_si: str,
               pools_dir: Path = DEFAULT_POOLS, *, ctl_si: str = CTL_SI,
-              keep_valid: bool = False) -> Path:
+              keep_valid: bool = False, ctl_key: str | None = None) -> Path:
     import torch
 
     from sisteer.eval.train_budget import derived_object_problems
     from sisteer.extraction.multilayer import LoRASubtractionObject
 
     pools_dir = site_path(pools_dir, "pools_dir")
+    neg_key = check_ctl_key(ctl_key) or key     # the control parent's bank key; it also keys the output
+    pair_dir = out_root / neg_key / derived_id_for(mix_si)
 
     # an existing publication under this id that names OTHER parents is
     # another pair's object: REFUSED, never rebuilt in place (the derived id
     # carries the corpus cell only)
-    other = other_pair_problems(out_root / key / derived_id_for(mix_si)
-                                / "derived_meta.json", mix_si, ctl_si)
+    other = other_pair_problems(pair_dir / "derived_meta.json", mix_si, ctl_si,
+                                key=key, ctl_key=ctl_key)
     if other:
         raise SubtractError(
-            f"{out_root / key / derived_id_for(mix_si)} already holds an object "
+            f"{pair_dir} already holds an object "
             "of another pair — refusing to overwrite it:\n  - "
             + "\n  - ".join(other))
     if keep_valid:
-        obj_path, problems = existing_valid(root, out_root, key, mix_si, ctl_si)
+        obj_path, problems = existing_valid(root, out_root, key, mix_si, ctl_si,
+                                            ctl_key)
         if not problems:
             print(f"[lora-subtract] {key}: {mix_si} - {ctl_si} already "
                   f"published and valid against {root} — kept {obj_path}")
@@ -478,7 +526,7 @@ def build_one(root: Path, out_root: Path, key: str, mix_si: str,
                   "derived-object verdict for this pair — rebuilding:\n  - "
                   + "\n  - ".join(problems), file=sys.stderr)
     pos_blob, pos_prov = load_parent(root, key, mix_si)
-    neg_blob, neg_prov = load_parent(root, key, ctl_si)
+    neg_blob, neg_prov = load_parent(root, neg_key, ctl_si)
     require_parents_match(pos_prov, neg_prov)
     # the LoRA architecture axes (module set, per-expert rank, init scheme,
     # targets) — by name, BEFORE compose_blob's layer / rank / shape checks
@@ -529,6 +577,10 @@ def build_one(root: Path, out_root: Path, key: str, mix_si: str,
         "built_at": datetime.now(timezone.utc).isoformat(timespec="seconds"),
         "builder": "scripts/sdfbase/lora_subtract.py",
     }
+    if ctl_key is not None and ctl_key != key:
+        # the control parent's own bank key (its block's model_key says the
+        # same); absent when both parents share the model key
+        provenance["ctl_model_key"] = ctl_key
     try:
         blob = LoRASubtractionObject.compose_blob(pos_blob, neg_blob,
                                                   provenance=provenance)
@@ -546,7 +598,7 @@ def build_one(root: Path, out_root: Path, key: str, mix_si: str,
                 "block — not a complete general-shape lora_all artifact "
                 f"(compose_blob read it as the legacy shape): {e}") from e
         raise
-    out_dir = out_root / key / derived_id
+    out_dir = pair_dir
     out_dir.mkdir(parents=True, exist_ok=True)
     obj_path = out_dir / "object.pt"
     meta_path = out_dir / "derived_meta.json"
@@ -625,7 +677,26 @@ def main(argv=None) -> int:
                          "passes the shared derived-object verdict against "
                          "--root and names exactly these parents (idempotent "
                          "re-runs); anything else is rebuilt")
+    ap.add_argument("--ctl-key", default=None,
+                    help="the bank key the control parent is read from "
+                         "(<root>/<ctl-key>/cells_all/); the difference is "
+                         "published under derived/lora_subtraction/<ctl-key>/. "
+                         "Default: the --models key. Takes exactly one --models key")
     args = ap.parse_args(argv)
+    if args.ctl_key is not None:
+        try:
+            check_ctl_key(args.ctl_key)
+        except SubtractError as e:
+            print(f"[lora-subtract] REFUSED: {e}", file=sys.stderr)
+            return 2
+        if len(args.models) != 1:
+            print(f"[lora-subtract] REFUSED: --ctl-key {args.ctl_key!r} names ONE control "
+                  f"key; --models names {len(args.models)} keys {args.models}", file=sys.stderr)
+            return 2
+        if args.ctl_key == args.models[0]:
+            print(f"[lora-subtract] REFUSED: --ctl-key {args.ctl_key!r} equals the --models key — omit it "
+                  "for the model key's own control", file=sys.stderr)
+            return 2
     args.root, args.pools = site_path(args.root, "--root"), site_path(args.pools, "--pools")
     out_root = args.out_root or (args.root / "derived/lora_subtraction")
     rc = 0
@@ -634,7 +705,7 @@ def main(argv=None) -> int:
             try:
                 path = build_one(args.root, out_root, key, si,
                                  pools_dir=args.pools, ctl_si=args.ctl_si,
-                                 keep_valid=args.keep_valid)
+                                 keep_valid=args.keep_valid, ctl_key=args.ctl_key)
             # compose_blob's structural refusals (layer sets, rank, shapes,
             # fit legs) are ValueErrors — the same REFUSED verdict as the
             # builder's own, never a traceback.
@@ -648,7 +719,9 @@ def main(argv=None) -> int:
                       file=sys.stderr)
                 rc = 2
                 continue
-            print(f"[lora-subtract] {key}: {si} - {args.ctl_si} -> {path}")
+            print(f"[lora-subtract] {key}: {si} - {args.ctl_si}"
+                  + (f" (control from {args.ctl_key})" if args.ctl_key else "")
+                  + f" -> {path}")
     return rc
 
 

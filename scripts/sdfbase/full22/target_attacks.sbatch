@@ -72,6 +72,14 @@ export F22_REGISTRY_KEY_SEGMENTS="${F22_REGISTRY_KEY_SEGMENTS:-sh${SHARDS//,/_}o
 GEOM_L="${8:-}"; CLIENT_TIMEOUT_S="${9:-3600}"; PROXY_UPSTREAM_TIMEOUT_S="${10:-3600}"
 { [ -n "${SISTEER_SHARED_ROOT:-}" ] && source "${SISTEER_EVAL_REPO_ROOT:-$SISTEER_SHARED_ROOT/sisteer-eval-repo}/$WAVE_SHA/scripts/sdfbase/full22/common.sh" 2>/dev/null; } \
   || source "${SISTEER_EVAL_REPO_ROOT:?set SISTEER_EVAL_REPO_ROOT, the root of the per-commit checkouts (the front door exports it from the site config)}/$WAVE_SHA/scripts/sdfbase/full22/common.sh"
+# >>> F22_STANDUP_SMOKE (1 of 2): the opt-in serving smoke (block 2 of 2, after the positive control) registers nothing, so it is
+# refused HERE, before the job's first registry emission, unless registration is off: under a defender's job name a smoke's producer
+# key, and so its run ids, are that defender's (same view, attack and shards), and its early exit would close those runs empty.
+# Unset (or any value but 1) = this script as before.
+if [ "${F22_STANDUP_SMOKE:-0}" = 1 ] && [ "${SISTEER_REGISTRY_DISABLED:-0}" != 1 ]; then
+  f22_fatal "F22_STANDUP_SMOKE=1 needs SISTEER_REGISTRY_DISABLED=1: a serving smoke registers nothing (under a defender's job name it would file and close that defender's runs)"
+fi
+# <<< F22_STANDUP_SMOKE (1 of 2)
 f22_attempt_wait   # sisteer-attempt-wait-hook (reproduce/lib/attempt_wait.sh): a no-op unless SISTEER_ATTEMPT_ID is set — twin submit
 F22_LAUNCH_MANIFEST=$(f22_full22_manifest "$KEY" "$VIEW")   # the launch's cells for the kind-aware serving-path default (2026-09-15): the (KEY, VIEW) campaign manifest
 # RESUME mode (F22_RESUME_FROM_JOB=<job>, the funnel's `submit --resume-from-job`): this job REUSES the original job's registration
@@ -239,6 +247,28 @@ for pc in "${CELLS[@]}"; do case "$pc" in none|prompted__*) continue;; esac
     f22_positive_control "$pc" attacks || { RC=1; exit 1; }
   fi
   break; done   # the first OBJECT cell: a prompted baseline has no scale-0 twin
+# >>> F22_STANDUP_SMOKE (2 of 2): the OPT-IN serving smoke (F22_STANDUP_SMOKE=1, registration off; block 1 of 2 refuses it
+# otherwise). Unset (or any value but 1) = this script as before: the block is one `if` that does nothing then. Set, the job ends
+# after the standup and the positive controls. The loop above checked the FIRST object cell under the tag `attacks`; this runs the
+# same check on every OTHER object cell of the job, each under its own tag `attacks_smoke_<cell>` (f22_positive_control keys its
+# record and log by tag alone, so a shared tag would leave one record), with the loop's own liveness-record handling and failure
+# exit, then exits 0 before Phase B: no attacker is bound and no driver starts. On success the job's cleanup (stop the target, the
+# RESULT line) runs here, with the EXIT trap disarmed first so it runs once, and the smoke line is the job's last line.
+if [ "${F22_STANDUP_SMOKE:-0}" = 1 ]; then
+  _smoke_first=1
+  for sc in "${CELLS[@]}"; do case "$sc" in none|prompted__*) continue;; esac
+    if [ "$_smoke_first" = 1 ]; then _smoke_first=0; continue; fi   # the first object cell: checked by the loop above
+    if [ -n "${F22S_LIVENESS_RECORD[$sc]:-}" ]; then
+      ( export SISTEER_LOW_DOSE_LIVENESS_RECORD="${F22S_LIVENESS_RECORD[$sc]}"; f22_positive_control "$sc" "attacks_smoke_$sc" ) || { RC=1; exit 1; }
+    else
+      f22_positive_control "$sc" "attacks_smoke_$sc" || { RC=1; exit 1; }
+    fi
+  done
+  trap - EXIT SIGTERM SIGINT SIGQUIT; cleanup
+  f22_log "[standup-smoke] standup + positive controls passed; exiting before Phase B"
+  exit 0
+fi
+# <<< F22_STANDUP_SMOKE (2 of 2)
 # Phase B: the shared attacker pool (LIVE members only)
 f22_live_attackers
 # The funnel ASSIGNED this target a member at placement (attackers/PLACED: assigned_member_job_id).

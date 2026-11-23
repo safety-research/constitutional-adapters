@@ -10,10 +10,11 @@ default injected by ``sampled_decode.resolve_default_decode`` — main's shared 
 roster — so the drivers apply THIS overlay right after that resolution, and a default block for an omitting target
 renders the same omission record the generator writes, never a readout a driver could run.
 
-Why here and not in ``sampled_decode.py``: that module's whole body is under ``sampled_controls.VENDOR_CONTRACT``
-(main is canonical, a vendor branch re-mirrors it byte for byte, and any change to it ships with the re-mirrored
-vendor). A roster-driven behaviour of one wave does not belong in that shared body; it lives beside it
-(2026-09-12).
+Why here and not in ``sampled_decode.py``: that module is pinned by content under ``sampled_controls.VENDOR_CONTRACT``.
+Main's copy is canonical and the contract records its sha256, so any change to it moves that recorded hash in the same
+change. The vendor's copy is FROZEN: its branch is archived, it is not re-mirrored, and the contract records the hash
+that copy carries at the vendor's expected commit. A roster-driven behaviour of one wave does not belong in that shared
+builder; it lives beside it (2026-09-12).
 """
 from __future__ import annotations
 

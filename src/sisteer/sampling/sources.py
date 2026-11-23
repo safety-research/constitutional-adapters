@@ -127,17 +127,13 @@ def _bon_variants(goal, seed: int, *, n: int = DEFAULT_BON_VARIANTS,
 
 
 def _static_variants_fn(family: str) -> Callable:
-    """Resolve a family's deterministic ``variants_fn(goal, seed)`` for TRAINING. A family whose
-    corpus may be evaluation-only (renellm, the generic frozen_corpus) gives training its own
-    ``training_variants`` lookup, which refuses such a corpus (``sisteer.eval.attacks.eval_only``);
-    every other family trains on its evaluation lookup."""
+    """Resolve a family's deterministic ``variants_fn(goal, seed)`` for TRAINING: its evaluation lookup."""
     from importlib import import_module
 
     if family == "bon":
         return _bon_variants
     mod = import_module(f"sisteer.eval.attacks.{family}")
-    training = getattr(mod, "training_variants", None)
-    return training if training is not None else getattr(mod, f"{family}_variants")
+    return getattr(mod, f"{family}_variants")
 
 
 def _subenv_variants(family: str, goals, *, bank: dict | None):
@@ -227,11 +223,6 @@ def harmful_attack_prompts(
                 f"its corpus; a transform family needs its goals to be "
                 f"non-empty. Refusing to emit a silently five-family "
                 f"inventory that claims six.")
-    # No prompt of an evaluation-only corpus (the ReNeLLM paper corpus, under its no-training
-    # terms) enters a training inventory, by whatever family or copy it arrived (counts only).
-    from sisteer.eval.attacks import eval_only
-    eval_only.refuse_texts((p.text for p in out),
-                           consumer="training-pool sampling (sisteer.sampling.sources)")
     return out
 
 

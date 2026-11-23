@@ -12,18 +12,24 @@ them (cone mode fetches the files directly inside each parent directory). The RE
 too, so every text the notices cite comes with them. The licence texts are third-party text, so
 each is pinned by sha256: an edit to one is a defect, never a refresh. Every repository path the notices cite must exist,
 so a file removed or renamed later cannot leave a stale entry behind. The G0DM0D3 entry's statement that the template
-text is not distributed is checked against the code the entry names, not only printed."""
+text is not distributed is checked against the code the entry names, not only printed, and the Qwen 3.8 Max corpus entry
+and its terms are checked against the corpus manifests they name. A publication may leave that corpus out (both directories,
+as tests/test_corpora_qwen38max.py allows): its entry, its terms file and the README's sentence about them then go with it, and
+these tests require exactly that."""
 from __future__ import annotations
 
 import ast
 import hashlib
 import importlib.util
+import json
 import os
 import re
 import subprocess
 from pathlib import Path
 
 import pytest
+
+from published_repo import is_published
 
 REPO = Path(__file__).resolve().parents[1]
 NOTICES = REPO / "THIRD_PARTY_NOTICES"
@@ -58,7 +64,35 @@ LICENCE_SHA256 = {
     # not an upstream text: the repository's own terms for the shipped ReNeLLM corpus (data/heldout_corpora/renellm.jsonl,
     # x-ai/grok-4.5 output, evaluation only), pinned like the others so that any change to the terms is a decision
     "ReNeLLM-corpus-terms.txt": "5e4b5b14318220f0adc2666b066ef7a35d8ca2102dd3786228006da8f85a9a42",
+    # not an upstream text either: the repository's own terms for the Qwen 3.8 Max constitution corpus
+    # (corpora/constitution_qwen38max_{advice,stories}/, qwen/qwen3.8-max-0902 output: any use but training or developing
+    # products or services that compete with those of Alibaba Cloud or its affiliates), pinned the same way so that any
+    # change to the terms is a decision
+    "Qwen38Max-corpus-terms.txt": "dfced18d877bbf50cb01db3a15633429a2d9e0089e29d25bdef95891b766e69c",
 }
+
+QWEN_TERMS = "Qwen38Max-corpus-terms.txt"
+#: The corpus entry 14 and LICENSES/Qwen38Max-corpus-terms.txt cover, one directory per part, with the noun each counts its
+#: records by.
+QWEN_CORPUS = {"constitution_qwen38max_advice": "advice records", "constitution_qwen38max_stories": "stories"}
+#: The provider's one restriction (Alibaba Cloud International Product Terms 4.48.1(d)(v)), as entry 14 and the terms state it.
+QWEN_RESTRICTION = ("to train or develop products or services that compete with those of Alibaba Cloud or its affiliates, "
+                    "unless Alibaba Cloud expressly authorises it")
+QWEN_README = ("The Qwen 3.8 Max constitution corpus is under "
+               "[LICENSES/Qwen38Max-corpus-terms.txt](LICENSES/Qwen38Max-corpus-terms.txt), which forbids using it to train "
+               "or develop products or services that compete with those of Alibaba Cloud or its affiliates.")
+
+
+def _qwen_corpus_left_out(root: Path = REPO) -> bool:
+    """A publication that leaves the Qwen 3.8 Max corpus out: neither directory, in the published repository. A development
+    checkout without them is not one (its notice checks fail by name), and neither is a tree carrying one directory."""
+    return not any((root / "corpora" / c).is_dir() for c in QWEN_CORPUS) and is_published(root)
+
+
+def _pinned_licences() -> dict:
+    """LICENCE_SHA256, without the Qwen 3.8 Max corpus's terms in a publication that leaves the corpus out."""
+    left = _qwen_corpus_left_out()
+    return {k: v for k, v in LICENCE_SHA256.items() if not (left and k == QWEN_TERMS)}
 
 #: objects/<model_id>/ -> the licence copies its licence asks to travel with the copies, and the statement its NOTICE carries.
 PER_MODEL = {
@@ -103,8 +137,9 @@ def test_the_licence_holder_is_safety_research_under_mit():
 
 
 def test_every_licence_text_is_the_verbatim_upstream_text():
-    assert {p.name for p in LICENSES.iterdir()} == set(LICENCE_SHA256), "LICENSES/ holds exactly the pinned texts"
-    for name, sha in LICENCE_SHA256.items():
+    pinned = _pinned_licences()
+    assert {p.name for p in LICENSES.iterdir()} == set(pinned), "LICENSES/ holds exactly the pinned texts"
+    for name, sha in pinned.items():
         assert _sha(LICENSES / name) == sha, f"LICENSES/{name} is not the verbatim upstream text"
 
 
@@ -122,7 +157,7 @@ def test_the_notices_carry_each_licence_ask_word_for_word():
 def test_every_licence_text_is_cited_and_every_cited_path_exists():
     text = NOTICES.read_text(encoding="utf-8")
     cited = cited_paths(text)
-    assert {f"LICENSES/{n}" for n in LICENCE_SHA256} <= cited, "a licence text nothing in THIRD_PARTY_NOTICES points at"
+    assert {f"LICENSES/{n}" for n in _pinned_licences()} <= cited, "a licence text nothing in THIRD_PARTY_NOTICES points at"
     missing = sorted(p for p in cited if not p.startswith("src/lib/") and not (REPO / p).exists())
     assert not missing, f"THIRD_PARTY_NOTICES cites paths that do not exist: {missing}"
 
@@ -144,8 +179,8 @@ def test_the_readmes_display_built_with_llama_the_names_and_the_licences():
     readme = (REPO / "README.md").read_text(encoding="utf-8")
     assert "\n## Third-party material\n" in readme and "\n## Responsible use and content\n" in readme
     assert "[THIRD_PARTY_NOTICES](THIRD_PARTY_NOTICES)" in readme and "Built with Llama." in readme
-    # the MIT grant carves out every file under its own terms (the ReNeLLM corpus's no-training terms by name), and the
-    # base-model licences still bind the adapters
+    # the MIT grant carves out every file under its own terms (the ReNeLLM corpus's no-training terms by name; the Qwen 3.8
+    # Max corpus's sentence is qwen_corpus_problems'), and the base-model licences still bind the adapters
     assert ("The MIT licence covers the code, the data and the fitted adapters, except the files "
             "[THIRD_PARTY_NOTICES](THIRD_PARTY_NOTICES) lists under their own terms") in _unwrapped(readme)
     assert ("the ReNeLLM corpus is under [LICENSES/ReNeLLM-corpus-terms.txt](LICENSES/ReNeLLM-corpus-terms.txt), which "
@@ -219,3 +254,91 @@ def test_the_godmode_entry_holds_for_the_code_it_names():
                 if isinstance(n, ast.Constant) and isinstance(n.value, str) and not SLOT.fullmatch(n.value)
                 and hashlib.sha256(n.value.encode("utf-8")).hexdigest() in pinned]
         assert not held, f"{f} holds template text at line(s) {held}, which the entry says is not distributed"
+
+
+def qwen_corpus_problems(notices: str, licenses: Path, readme: str, corpora: Path, left_out: bool) -> list:
+    """Every way the tree's notice of the Qwen 3.8 Max corpus breaks its rule (empty = it holds). With the corpus in the tree:
+    exactly one THIRD_PARTY_NOTICES entry titled for it, which with LICENSES/Qwen38Max-corpus-terms.txt grants any use but the
+    provider's one restriction (QWEN_RESTRICTION) and identifies the corpus by each part's directory, its record count under the
+    part's own noun, and the file name and sha256 of its reassembled final, all read from the parts' MANIFEST.json (so a corpus
+    re-issued under the same directories, or two counts swapped between the parts, cannot keep a stale notice), and the README's
+    licence sentence (QWEN_README). Left out by a publication: no such entry, no citation of the terms file, no terms file and no
+    README pointer to it."""
+    titles = [t for t in re.findall(r"^={20,}\n(\d+\. [^\n]*)\n={20,}\n", notices, flags=re.M) if "Qwen 3.8 Max" in t]
+    readme_u = _unwrapped(readme)
+    if left_out:
+        return [msg for bad, msg in (
+            (titles, "THIRD_PARTY_NOTICES keeps the Qwen 3.8 Max corpus entry the release left the corpus out of"),
+            (f"LICENSES/{QWEN_TERMS}" in notices, f"THIRD_PARTY_NOTICES still cites LICENSES/{QWEN_TERMS}"),
+            ((licenses / QWEN_TERMS).exists(), f"LICENSES/{QWEN_TERMS} is still in the tree"),
+            (QWEN_TERMS in readme_u, f"README.md still points at LICENSES/{QWEN_TERMS}")) if bad]
+    if len(titles) != 1:
+        return [f"{len(titles)} THIRD_PARTY_NOTICES entries have 'Qwen 3.8 Max' in their title, not one"]
+    entry = _unwrapped(_entry(notices, "Qwen 3.8 Max"))
+    terms_path = licenses / QWEN_TERMS
+    if not terms_path.is_file():
+        return [f"LICENSES/{QWEN_TERMS} is missing"]
+    terms = _unwrapped(terms_path.read_text(encoding="utf-8"))
+    p = [] if QWEN_README in readme_u else ["README.md does not carry the Qwen 3.8 Max corpus's licence sentence"]
+    for where, text in (("THIRD_PARTY_NOTICES entry 14", entry), (f"LICENSES/{QWEN_TERMS}", terms)):
+        if "for any purpose" not in text:
+            p.append(f"{where} does not grant 'for any purpose'")
+        if QWEN_RESTRICTION not in text:
+            p.append(f"{where} does not state the restriction {QWEN_RESTRICTION!r}")
+    for corpus, noun in QWEN_CORPUS.items():
+        manifest = corpora / corpus / "MANIFEST.json"
+        if not manifest.is_file():
+            p.append(f"THIRD_PARTY_NOTICES entry 14 names corpora/{corpus}/, which this tree lacks")
+            continue
+        m = json.loads(manifest.read_text(encoding="utf-8"))
+        n = m["record_count"]
+        for where, text, wants in (("THIRD_PARTY_NOTICES entry 14", entry, (f"corpora/{corpus}/", f"{n} {noun}")),
+                                   (f"LICENSES/{QWEN_TERMS}", terms, (f"corpora/{corpus}/ ({n} records)", f"{n} {noun}"))):
+            p += [f"{where} does not carry {w!r} from corpora/{corpus}/MANIFEST.json"
+                  for w in wants + (m["source_file"], m["sha256_reassembled"]) if w not in text]
+    return p
+
+
+def _tree() -> dict:
+    return dict(notices=NOTICES.read_text(encoding="utf-8"), licenses=LICENSES, readme=(REPO / "README.md").read_text(encoding="utf-8"),
+                corpora=REPO / "corpora")
+
+
+def test_the_qwen_corpus_entry_and_its_terms_name_the_corpus_its_manifests_describe():
+    assert qwen_corpus_problems(**_tree(), left_out=_qwen_corpus_left_out()) == []
+
+
+def test_the_qwen_corpus_rule_catches_a_stale_notice_and_holds_for_a_release_that_leaves_the_corpus_out(tmp_path):
+    """The rule on altered copies of this tree: each stale notice is named, and a release that leaves the corpus out passes once
+    its entry, its terms file and the README's sentence are gone with it (and is named while any of them stays)."""
+    t = _tree()
+    if _qwen_corpus_left_out():
+        pytest.skip("this tree is a publication that left the Qwen 3.8 Max corpus out; the rule above is checked on it as it is")
+    entry = _entry(t["notices"], "Qwen 3.8 Max")
+    terms = (LICENSES / QWEN_TERMS).read_text(encoding="utf-8")
+
+    def problems(notices=t["notices"], terms_text=terms, readme=t["readme"], left_out=False):
+        lic = tmp_path / f"lic{len(list(tmp_path.iterdir()))}"
+        lic.mkdir()
+        if terms_text is not None:
+            (lic / QWEN_TERMS).write_text(terms_text, encoding="utf-8")
+        return qwen_corpus_problems(notices, lic, readme, t["corpora"], left_out)
+
+    assert problems() == []
+    swapped = t["notices"].replace(entry, entry.replace("197 advice records and 736 stories", "736 advice records and 197 stories"))
+    assert any("'197 advice records'" in x for x in problems(notices=swapped))
+    unbanned = t["notices"].replace(entry, re.sub(r"except that\s+they may not be used.*?authorises it\.", "", entry, flags=re.S))
+    assert unbanned != t["notices"] and any("does not state the restriction" in x for x in problems(notices=unbanned))
+    stale = terms.replace("(736 records)", "(735 records)")
+    assert stale != terms and any("(736 records)" in x for x in problems(terms_text=stale))
+    narrow = terms.replace("for any purpose,", "for research and evaluation,")
+    assert narrow != terms and any("does not grant 'for any purpose'" in x for x in problems(terms_text=narrow))
+    assert any("README.md" in x for x in problems(readme=t["readme"].replace("Alibaba Cloud or its affiliates.", "Alibaba Cloud's.")))
+    # a release that leaves the corpus out: entry 14 and its terms go, and the README's sentence with them
+    cut = re.split(r"\n+={20,}\n14\. Qwen 3\.8 Max[^\n]*\n={20,}\n", t["notices"])[0] + "\n"
+    readme_cut = re.sub(r" The Qwen 3\.8 Max constitution corpus is under\s+\[LICENSES/Qwen38Max-corpus-terms\.txt\]"
+                        r"\(LICENSES/Qwen38Max-corpus-terms\.txt\),[^.]*\.", "", t["readme"])
+    assert cut != t["notices"] and readme_cut != t["readme"]
+    assert problems(notices=cut, terms_text=None, readme=readme_cut, left_out=True) == []
+    kept = problems(left_out=True)
+    assert len(kept) == 4 and any("keeps the Qwen 3.8 Max corpus entry" in x for x in kept)

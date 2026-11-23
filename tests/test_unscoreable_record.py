@@ -349,8 +349,16 @@ def test_the_cell_sbatch_writes_the_fragment_into_cell_facts_beside_the_existing
 # the cell sbatch's cell_facts block, RUN over synthetic stores                 #
 # --------------------------------------------------------------------------- #
 
-sys.path.insert(0, str(REPO / "scripts" / "arditi"))
-import arditi_strength as st  # noqa: E402
+# The arditi directory goes on sys.path only for this import and comes off again: left in place, it sat ahead of
+# scripts/sdfbase for every later test in the same process, so a bare `import record_resolved_sampler` elsewhere got
+# scripts/arditi's copy (a landing-gate shard that held both files failed on it). arditi_strength imports only
+# arditi_targets at module level, which is cached once this import has run.
+_ARDITI = str(REPO / "scripts" / "arditi")
+sys.path.insert(0, _ARDITI)
+try:
+    import arditi_strength as st  # noqa: E402
+finally:
+    sys.path.remove(_ARDITI)
 
 UNITS = (st.DOSE_UNIT, st.UNIT_RAW_COEFFICIENT)
 

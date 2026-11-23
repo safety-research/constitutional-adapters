@@ -11,6 +11,9 @@ USER=modalsuiteuser, WANDB off, popped registry knobs, process-group timeout), `
 Cluster-specific choices, all recorded in the record's ``env_overrides``:
   PYTHONPATH = <tree>/src (the suite needs nothing else on the path)
   HF_HOME    = the cluster's (hf_env.sh; tiny test models are in the cohort cache)
+  HF_DATASETS_CACHE = the cluster's PREPARED datasets cache (gate_lib.prepared_datasets_cache, the GSM8K jobs' rule: an inherited
+               value, else <shared root>/hf_datasets when it exists, else an EMPTY node-local <work>/hf_datasets); never HF_HOME's
+               datasets/, the shared model cache
   HOME/TMPDIR= fresh per-task node-local dirs (a pristine home like a container's; tmp files never land on NFS)
   PATH       = <venv>/bin first (console scripts a test spawns resolve)
   SLURM_*/SLURMD_*/SRUN_*/SBATCH_* removed (the suite sees a plain CPU box; substrate probes stay off)
@@ -28,7 +31,8 @@ import time
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from gate_lib import dependency_hashes, parse_junit, pytest_argv, run_pytest, shard_files, suite_env, utc_now, verify_checkout, write_json_atomic  # noqa: E402
+from gate_lib import (dependency_hashes, parse_junit, prepared_datasets_cache, pytest_argv, run_pytest, shard_files, suite_env,  # noqa: E402
+                      utc_now, verify_checkout, write_json_atomic)
 
 STRIP_PREFIXES = ("SLURM_", "SLURMD_", "SRUN_", "SBATCH_")
 #: Slurm's client and daemon commands. With --hide-slurm the suite's PATH is a symlink farm of the host's PATH dirs
@@ -165,6 +169,15 @@ def main() -> int:
     argv = pytest_argv(python, str(junit), files)
 
     cluster_hf_home = os.environ.get("HF_HOME")
+    # the cluster's shared root: CLUSTER_SHARED_ROOT when the job carries it, else the venv's grandparent (<shared root>/envs/<name>),
+    # the rule of gate_array.sbatch and battery.sbatch. The suite cannot derive it: its home and login name are fixed below.
+    shared_root = os.environ.get("CLUSTER_SHARED_ROOT") or str(Path(a.venv).parent.parent)
+    datasets_cache = prepared_datasets_cache(os.environ, shared_root)
+    if not datasets_cache:
+        # no prepare under this shared root: an EMPTY node-local cache, never the suite's fallback HF_HOME/datasets (the shared
+        # model cache, which its prepared-cache checks would read and refuse). Those checks skip, and the suite's writes stay here.
+        datasets_cache = str(work / "hf_datasets")
+        Path(datasets_cache).mkdir(exist_ok=True)
     env = suite_env(os.environ, tree, spool_root=work)   # the suite's env: spool, $USER, WANDB, popped knobs, PYTHONPATH=src
     home, tmp = work / "home", work / "tmp"
     home.mkdir(exist_ok=True)
@@ -173,6 +186,7 @@ def main() -> int:
         env["HF_HOME"] = cluster_hf_home
     else:
         env.pop("HF_HOME", None)
+    env["HF_DATASETS_CACHE"] = datasets_cache
     env["HOME"] = str(home)
     env["TMPDIR"] = str(tmp)
     hidden_slurm: list = []
@@ -184,7 +198,7 @@ def main() -> int:
     stripped = sorted(k for k in env if k.startswith(STRIP_PREFIXES))
     for k in stripped:
         env.pop(k, None)
-    overrides = {"PYTHONPATH": env["PYTHONPATH"], "HF_HOME": env.get("HF_HOME"), "HOME": env["HOME"], "TMPDIR": env["TMPDIR"],
+    overrides = {"PYTHONPATH": env["PYTHONPATH"], "HF_HOME": env.get("HF_HOME"), "HF_DATASETS_CACHE": env.get("HF_DATASETS_CACHE"), "HOME": env["HOME"], "TMPDIR": env["TMPDIR"],
                  "USER": env.get("USER"), "OMP_NUM_THREADS": env.get("OMP_NUM_THREADS"), "stripped_env": stripped,
                  "PATH_prefix": str(venv_used / "bin"), "venv_local_copy": bool(a.local_venv), "venv_source": a.venv,
                  "timeout_s": int(a.timeout_s), "hide_slurm": bool(a.hide_slurm), "hidden_slurm_cmds": hidden_slurm,

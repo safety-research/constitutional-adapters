@@ -55,6 +55,7 @@ from typing import Collection, Dict, Iterable, Iterator, List, Mapping, Optional
 from . import config as CFG
 from . import db as DB
 from . import decode_match as DM
+from . import prune as PR
 from . import records as R
 from . import reducer as RED
 from . import schema_def as S
@@ -74,7 +75,25 @@ PARSE_WINDOW_PER_WORKER = 4             # parsed files a worker pool may run ahe
 FILE_STAT_NAME = "file_stat.json"       # state/ sidecar: (size, mtime_ns, inode) -> logical sha per on-disk file (F12)
 BLOCKED_STALE_S = 7 * 86400
 LARGE_FILE_BYTES = 64 * 1024 ** 2         # a plain record file above this is parsed in-process in bounded windows, never materialised
-RECLAIM_BATCH_ROWS = 10_000               # item rows one bookkeeping transaction after an activation touches
+RECLAIM_BATCH_ROWS = 10_000               # item rows one reclaim transaction deletes (or one pass (i) transaction un-marks): prune.delete_batch
+#: Reclaim's admission bounds, live only (``Ingestor.reclaim(wal_guard=True)``): before EVERY
+#: deletion batch, the first included, the ``-wal`` size is read; at or above this a TRUNCATE checkpoint is tried and the size read
+#: again, and while it stays at or above the bound reclaim writes nothing more this cycle (``reclaim_stopped = "wal"``) -- so a reader
+#: pinning the WAL bounds reclaim's share at this plus one batch, in every cycle
+RECLAIM_WAL_MAX_BYTES = 1024 ** 3
+#: ... and no reclaim write while the database's filesystem has less than this free (``reclaim_stopped = "disk"``), well above the
+#: harvester's own MIN_FREE_BYTES pause
+RECLAIM_MIN_FREE_BYTES = 30 * 1024 ** 3
+#: The live cycle's reclaim stops between batches after this many seconds (``[harvest] reclaim_budget_s``): far inside the unit's
+#: 45-min TimeoutStartSec, whose kill skips the cycle's closing checkpoint
+RECLAIM_BUDGET_S = 600.0
+#: What a cycle reports about its reclaim (``IngestReport``), in this order on the cycle's metrics line, in ``state/harvest_cycle.json``
+#: and on the status page's reclaim line
+RECLAIM_REPORT_KEYS: Tuple[str, ...] = ("reclaim_rows_deleted", "reclaim_rows_rehydrated", "reclaim_stopped", "reclaim_mode")
+#: Tests only: called as ``hook(ingestor, plan)`` before every deletion batch's transaction (a test moves the chain there, to show
+#: a visible row is never deleted); a str it returns stops reclaim there with that reason, as a budget, WAL or disk stop would (a
+#: stop that lands mid-carrier)
+RECLAIM_BEFORE_BATCH_HOOK = None
 #: An adapter revision directory — ``records/adapters/<adapter>/<rev>/`` — or a re-activation bundle of a committed
 #: revision — ``records/adapters/<adapter>/_activations/<rev>/<stamp>/``. Everything under one is applied by
 #: :meth:`Ingestor.apply_revision`: streamed in bounded windows, constituents first and the ``source_revision`` marker
@@ -230,6 +249,17 @@ RETIREMENT_EXPECTS_KEY = "retirement_expects"
 RETIREMENT_HEAD_KIND = "retirement_head"
 #: The label the hold carries inside ``source_revision.refusal`` (``activation pending: source_revision <live head> (retirement_head_moved: ...)``).
 RETIREMENT_HEAD_KEY = "retirement_head_moved"
+#: ``blocked_records.extra_json.kind`` of a revision held because a superseded revision's deleted item rows could not be restored exactly
+#: (``prune.rehydrate`` failed closed: a record the validator now refuses, a changed parser, a changed or missing file) -- before a write
+#: under it, or before it would become the head again through the activation being attempted (a chain move: the held marker then names
+#: the OTHER revision, whose rows are at stake). The marker's queue row names ``item_reclaim_ledger`` and that revision as its parent;
+#: nothing commits, the current head stays visible, and the hold stands (head or not, :meth:`Ingestor._stand_down_replaced_dirs`) until an
+#: operator remedy (``registry prune-superseded rehydrate``) clears the ledger rows (:func:`parent_absent` then reads the parent present,
+#: so the attempt identity moves and the next sweep re-attempts it)
+REHYDRATION_KIND = "rehydration"
+#: The transactions that fold ``source_revision`` records (a chunk of plain files, a revision's activation): each ends by re-folding any
+#: head that holds deleted rows (:meth:`Ingestor._rehydrate_new_heads`), so a chain move never shows a head without its rows
+NEW_HEAD_TRANSACTION_KINDS: Tuple[str, ...] = ("transaction", "activation")
 #: The one-line rule the hold carries, so a consumer reading the marker knows what fired without opening this module.
 RETIREMENT_HEAD_RULE = ("a retirement (an empty revision) names the accepted head it was computed against and every input it retires "
                         "(extra.retirement_expects); it folds only when that head is still the source's accepted head and the live inventory "
@@ -788,6 +818,14 @@ class ParsedFile:
 
 def _run_ids_of(payload: Mapping[str, object]) -> Tuple[str, ...]:
     return tuple(str(payload[c]) for c in ("run_id", "anchor_run_id") if payload.get(c))
+
+
+def _size_or_zero(path: str) -> int:
+    """A file's size in bytes, 0 when it does not exist (a ``-wal`` after a TRUNCATE checkpoint may be absent)."""
+    try:
+        return os.path.getsize(path)
+    except OSError:
+        return 0
 
 
 def _stat3(path: str) -> Tuple[int, int, int]:
@@ -1440,7 +1478,13 @@ class IngestReport:
     blocked_transactions: int = 0     # transactions the blocked-queue re-evaluation used
     revision_transactions: int = 0    # activation attempts of revision directories, committed or rolled back
     staging_transactions: int = 0     # bounded transactions that staged a revision's rows inactive before activation
-    reclaim_transactions: int = 0     # bounded bookkeeping transactions after activations (withdrawn marks of a re-activated head)
+    reclaim_transactions: int = 0     # reclaim transactions that changed something: a head's leftover marks cleared (pass (i)), a deletion
+                                      # batch of a superseded revision's item rows, a revision recorded `reclaimed` (Ingestor.reclaim)
+    reclaim_rows_deleted: int = 0     # superseded revisions' item rows reclaim deleted this cycle (each counted in item_reclaim_ledger)
+    reclaim_rows_rehydrated: int = 0  # deleted rows re-folded from the record log before a write under their revision (prune.rehydrate)
+    reclaim_stopped: Optional[str] = None   # why reclaim stopped with work left: budget | wal | disk | mode (an invalid mode file) | error
+                                            # (an exception, named on the metrics log as `reclaim_error`; the live cycle completes); None
+    reclaim_mode: Optional[str] = None      # the reclaim mode the cycle ran under: normal | hold | cohort (prune.ReclaimMode)
     dimension_transactions: int = 0   # dimension revision directories applied whole, one transaction each (records/dimensions/<rev>/)
     dimension_write_s: float = 0.0    # seconds under the write lock those transactions took (the load's lock hold time)
     revisions_held: int = 0           # revision directories left pending (a constituent blocked / refused; retried whole)
@@ -1574,6 +1618,10 @@ def parent_absent(conn: sqlite3.Connection, ptable: str, pid: str) -> bool:
     False for its missing parent (:meth:`Ingestor.reevaluate_blocked`); the claim probe asks the same question."""
     if ptable == "source_revision":
         return conn.execute("SELECT 1 FROM source_revision WHERE revision_id = ? AND accepted = 1 LIMIT 1", (pid,)).fetchone() is None
+    if ptable == PR.LEDGER_TABLE:
+        # a record or a revision held on a REHYDRATION (prune.rehydrate failed closed) waits for the revision's ledger rows to be
+        # restored by an operator remedy (`registry prune-superseded rehydrate`): it is blocked while they stand, released once they are gone
+        return PR.has_ledger_rows(conn, pid)
     cols = _PARENT_COLUMNS.get(ptable)
     if not cols or ptable not in S.TABLE_BY_NAME:
         return False
@@ -1701,6 +1749,10 @@ class Ingestor:
         self._noop_kind: Optional[str] = None            # set by _apply_revision when a bundle folded as a no-op; read by apply_revision's metric
         self.allowlist: Optional[Set[str]] = None         # a replay bounded to these logical uris: every directory listing of
                                                           # the revision path is filtered through it; None = every file on disk, the live path's rule
+        self._no_ledger: Set[str] = set()                 # revisions a probe found WITHOUT item_reclaim_ledger rows: only reclaim adds rows, so the
+                                                          # set is exact until it deletes (cleared there); a write under any other revision rehydrates first
+        self._inline_rehydrated: Set[str] = set()         # revisions re-folded INSIDE a caller's transaction: never cached as ledger-free (a rollback
+                                                          # of that transaction brings their ledger rows back)
 
     def _rev_files(self, rev_dir: str) -> List[Tuple[str, Optional[str]]]:
         """The record files of a revision directory this fold may apply: the directory's listing, filtered through the allowlist when one
@@ -2175,6 +2227,12 @@ class Ingestor:
                 standing = self.conn.execute("SELECT record_uri FROM record_refusal WHERE record_sha256 = ?", (v.sha,)).fetchone()
                 self._refuse(v.sha, min(v.uri, str(standing[0])) if standing is not None else v.uri, v.record_type, field_name, reason, now)
                 return "refused"
+        if v.record_type in R.ITEM_SCALE_RECORD_TYPES:
+            tag = str(v.payload.get("source_revision_id") or "")
+            if tag and self._rehydrate_for_item(tag, now) is not None:
+                # write point 3 of rehydrate-before-write (as in apply_item): blocked on the revision's ledger, nothing written
+                self._block(v.sha, v.uri, v.record_type, PR.LEDGER_TABLE, tag, now)
+                return "blocked"
         applied = False
         carrier_uri, carrier_seq, carrier_rfid = self._carrier(v.sha, file_uri, seq, record_file_id)
         if v.record_type in R.ITEM_SCALE_RECORD_TYPES:
@@ -2233,6 +2291,7 @@ class Ingestor:
             return "ok"
         else:
             held = self.reducer.lifecycle_regressions_held
+            chain_sources: Optional[Set[str]] = set()
             try:
                 with DB.savepoint(self.conn, "rec"):
                     for eff in effects_of(v):
@@ -2244,7 +2303,26 @@ class Ingestor:
                                 ex.note(eff.table, pk[0], eff.key[pk[0]])
                             if eff.table == "source_revision" and int(eff.payload.get("accepted") or 0) == 1:
                                 ex.note_accepted(str(eff.key["revision_id"]))
+                        if eff.table == "source_revision" and chain_sources is not None:
+                            sid = str(eff.payload.get("source_id") or "")
+                            if sid:
+                                chain_sources.add(sid)
+                            else:
+                                chain_sources = None            # a source the record does not name: every source's head is checked
                     self._index_run(_run_ids_of(v.payload), file_uri)
+                    if (chain_sources is None or chain_sources) and self._activating is None:
+                        # rehydrate before visibility, at the record that moved the chain (outside an activation, whose own guard holds the
+                        # whole bundle): a superseded revision this record made the head again gets its deleted rows back inside this
+                        # savepoint, or the record alone is held below -- the transaction, and every independent record in it, goes on
+                        self._rehydrate_new_heads(now, source_ids=chain_sources)
+            except PR.RehydrationIncomplete as exc:
+                # the record would make a revision visible whose deleted rows cannot be restored exactly (a changed validator or parser, a
+                # missing or changed log file): the savepoint rolled the fold back, the current head stays, and the record waits on the
+                # revision's ledger -- re-attempted with the blocked queue every cycle, folded once an operator's remedy (`registry
+                # prune-superseded rehydrate`) restores the rows or the chain no longer makes that revision the head
+                self._block(v.sha, v.uri, v.record_type, PR.LEDGER_TABLE, exc.revision_id, now,
+                            {"kind": REHYDRATION_KIND, "blocked_on": str(exc)})
+                return "blocked"
             except LifecycleEvidenceMissing as exc:
                 # the refold reached a lifecycle state without an earlier state's utc (reducer.LifecycleEvidenceMissing): the evidence
                 # has not arrived in FOLD order, whatever the row shows -- dependency-blocked on it, like _missing_lifecycle_evidence,
@@ -2274,6 +2352,11 @@ class Ingestor:
         rev = revision_of_uri(file_uri)
         if rev and rev != self._activating and not ex.accepted_revision(rev):
             self._block(pi.sha, f"{file_uri}#{pi.line}", pi.table, "source_revision", rev, now)
+            return "blocked"
+        if pi.source_revision_id and self._rehydrate_for_item(pi.source_revision_id, now) is not None:
+            # write point 3 of rehydrate-before-write: the revision's deleted rows could not be restored exactly, so this row waits for
+            # the operator's remedy (prune.rehydrate failed closed; nothing was written)
+            self._block(pi.sha, f"{file_uri}#{pi.line}", pi.table, PR.LEDGER_TABLE, pi.source_revision_id, now)
             return "blocked"
         _, carrier_seq, carrier_rfid = self._carrier(pi.sha, file_uri, seq, R.record_file_id_for_uri(file_uri))
         row = pi.row
@@ -2385,6 +2468,9 @@ class Ingestor:
             if table == "item_result" and ITEM_PLANS[table].trailing:
                 run_pos = ITEM_PLANS[table].columns.index("run_id")
                 remark_item_withdrawals(self.conn, self._withdrawn_runs({str(r[run_pos]) for r in rows}))
+        # an item write under a revision (each was rehydrated before its rows were batched: apply_item / _apply_validated) resets its
+        # `reclaimed`, so the next reclaim pass plans the revision again (a late read into a superseded revision is deleted again)
+        self._reset_reclaimed(r for r in item_revisions if r)
         item_batches.clear()
         item_revisions.clear()
 
@@ -2451,7 +2537,7 @@ class Ingestor:
             self._dimension_bundle = False
             self.report.dimension_write_s += time.monotonic() - t0
 
-    def _timed_transaction(self, body, files: int, rows, now: str, kind: str = "transaction") -> None:
+    def _timed_transaction(self, body, files: int, rows, now: str, kind: str = "transaction", extra=None) -> None:
         """Every write transaction of the cycle — a chunk of plain files, a staging window, an activation, the one
         dense re-rank — goes through here, so ``transactions`` / ``write_s`` / ``longest_transaction_s`` and the
         metrics log see all of them. A body that raises rolls back (and still counts as time under the write
@@ -2460,12 +2546,19 @@ class Ingestor:
         try:
             with DB.transaction(self.conn):
                 body()
+                if kind in NEW_HEAD_TRANSACTION_KINDS:
+                    # a source_revision record this transaction folded may have moved a chain and made a superseded revision the head
+                    # again: its deleted rows are re-folded before the commit (an activation that cannot restore them is held)
+                    self._rehydrate_new_heads(now, hold=(kind == "activation"))
         finally:
             dt = time.monotonic() - t0
             self.report.transactions += 1
             self.report.write_s += dt
             self.report.longest_transaction_s = max(self.report.longest_transaction_s, dt)
-            self._metric({"kind": kind, "files": files, "rows": rows() if callable(rows) else rows, "seconds": round(dt, 4), "utc": now})
+            line = {"kind": kind, "files": files, "rows": rows() if callable(rows) else rows, "seconds": round(dt, 4), "utc": now}
+            if extra is not None:
+                line.update(extra() if callable(extra) else extra)     # e.g. a reclaim batch's table, revision and WAL bytes before / after
+            self._metric(line)
 
     def finalize_ranks(self, now: str) -> int:
         """The ONE dense re-rank of a deferred cycle (``Ranker(defer=True)``), inside one timed transaction logged as
@@ -2722,7 +2815,7 @@ class Ingestor:
             # (2026-09-29) the revision is ALREADY the accepted head and the bundle's measurement files ARE what the head was folded
             # from -- the complete multiset, record for record with written_utc aside, in both directions (_same_measurements): a
             # re-activation that landed twice, or a held revision's identical re-read met after its directory activated. The
-            # measurement files are ranked and delivered `duplicate` unstaged (no item row re-inserted, nothing for reclaim to flip);
+            # measurement files are ranked and delivered `duplicate` unstaged (no item row re-inserted, nothing for reclaim to plan);
             # the MARKER and the STATUS files fold normally, so the read's newer facts land -- the head re-observed, its watermarks,
             # source_state, a status row that now reports a source-level refusal (two identical re-reads
             # whose later status said `refuse` folded as a duplicate and the source read healthy). Any measurement difference -- a
@@ -2735,8 +2828,11 @@ class Ingestor:
         held: Optional[_RevisionHeld] = None
         try:
             self._stage_revision(rev, batch_files, marker_records, logical_uri(self.root, marker_path), now)
+            # write point 2 of rehydrate-before-write (prune.rehydrate): a marker-only bundle (a `revision accept`) stages nothing, and a
+            # held re-attempt may find everything staged, so the activation itself is guarded; after the staging's own rehydration this is
+            # one ledger probe. Activation stays metadata-only: reclaim runs at the cycle's end, never here
+            self._rehydrate_revision(rev, now)
             self._activate_revision(rev, files, marker_path, marker_records, now, duplicates=duplicates)
-            self.reclaim(now)
             return "ok"
         except _RevisionHeld as exc:
             held = exc
@@ -2780,6 +2876,10 @@ class Ingestor:
                 # the marker itself is what holds (a retirement's premise against the live head, registry-hardening 3a round 2): its own
                 # blocked row, below, carries the reason; a retirement has no constituents, the head stays current, nothing is retired
                 self.report.revisions_held_retirement_head += 1
+            elif held.kind == REHYDRATION_KIND:
+                # the revision's deleted item rows could not be restored exactly (prune.rehydrate failed closed): no constituent is at fault, so
+                # the marker's own blocked row, below, names the ledger and the carrier; nothing was written, the head stays current
+                pass
             else:
                 self._block(held.sha, held.detail, held.record_type or "run", held.parent_table, held.parent_id, now, {"revision_id": rev})
                 # the other constituents the fixed-point pass could not apply (the run records behind a named run_metric,
@@ -3011,6 +3111,9 @@ class Ingestor:
                 todo.append((path, furi))
             if not todo:
                 return
+            # write point 1 of rehydrate-before-write: before anything is staged under `rev` -- the stale-bundle clearing below included --
+            # every carrier reclaim deleted from it is re-folded from the log, authenticated, or the revision is held (REHYDRATION_KIND)
+            self._rehydrate_revision(rev, now)
             here = bundle_of_uri(todo[0][1])
             if "/_activations/" in here:
                 # a bundle is a WHOLE fresh read (or re-emission) of the revision: whatever an earlier bundle of the same
@@ -3151,6 +3254,8 @@ class Ingestor:
             counts["ok"] += 1
             types[pi.table] = types.get(pi.table, 0) + 1
             self._index_run(pi.run_ids, furi)
+        if batches:
+            self._reset_reclaimed((rev,))           # an item write under `rev` (rehydrated at the staging's start, write point 1)
         for table, pairs in batches.items():
             offs = ITEM_PLANS[table].pk_positions
             pairs.sort(key=lambda pr: tuple(pr[0][i] for i in offs))
@@ -3429,19 +3534,113 @@ class Ingestor:
             self._blocked = None
             self._indexed = set()
 
-    def reclaim(self, now: str) -> int:
-        """``withdrawn_by_revision_id`` is bookkeeping: visibility derives from the head revision, so the
-        marks are materialised HERE, after activations, in bounded transactions of RECLAIM_BATCH_ROWS rows — never in the
-        activation. Two derived, idempotent passes to a fixed point: (i) the rows of a HEAD revision lose the marks an
-        outgoing revision left (a re-activation); (ii) the rows of a SUPERSEDED revision whose measurement key
-        its successor no longer carries are marked with the successor (the same keys the runner's withdrawal records
-        list — derived from the rows, so a 200k-key withdrawal costs the activation nothing); ``source_revision.reclaimed``
-        records a finished (ii) and is reset when the chain moves. An interrupted cycle finishes on the next one."""
+    # -- superseded revisions' item rows --------------------------------------------------------------------------------------------
+    def _rehydrate_before_write(self, rev: str, now: str) -> int:
+        """Rehydrate before write (``prune.rehydrate``): when ``rev`` holds ``item_reclaim_ledger`` rows, every carrier reclaim deleted from it
+        is re-folded from the record log -- authenticated first, written in bounded transactions (inline when a transaction is open) --
+        before anything else is written under ``rev``, so every fold decision touching its rows sees what the code before the pruning
+        held. One ledger probe per revision otherwise (cached in ``_no_ledger`` until reclaim deletes again). Raises
+        :class:`prune.RehydrationIncomplete` (nothing written) when a carrier does not authenticate. Returns the rows restored."""
+        if not rev or rev in self._no_ledger:
+            return 0
+        if not PR.has_ledger_rows(self.conn, rev):
+            if rev not in self._inline_rehydrated:
+                self._no_ledger.add(rev)
+            return 0
+        inline = self.conn.in_transaction
+        t0 = time.monotonic()
+        n = PR.rehydrate(self, rev, now)
+        self.report.reclaim_rows_rehydrated += n
+        self._metric({"kind": "rehydrate", "revision": rev, "rows": n, "inline": inline, "seconds": round(time.monotonic() - t0, 4), "utc": now})
+        if inline:
+            self._inline_rehydrated.add(rev)     # the caller's transaction may still roll back: probe this revision every time
+        else:
+            self._no_ledger.add(rev)            # committed: the ledger rows are gone
+        return n
+
+    def _rehydrate_revision(self, rev: str, now: str) -> None:
+        """Write points 1 and 2 (staging, activation): :meth:`_rehydrate_before_write`, a failure held as :data:`REHYDRATION_KIND`."""
+        try:
+            self._rehydrate_before_write(rev, now)
+        except PR.RehydrationIncomplete as exc:
+            self._metric({"kind": "rehydration_held", "revision": rev, "table": exc.table, "file": exc.file_uri, "detail": exc.reason, "utc": now})
+            raise _RevisionHeld(REHYDRATION_KIND, PR.LEDGER_TABLE, rev, exc.file_uri, "", str(exc)) from exc
+
+    def _rehydrate_for_item(self, rev: str, now: str) -> Optional[str]:
+        """Write point 3 (a revision-tagged item row folded outside its revision's directory, inside the chunk's transaction): None when
+        the write may proceed, else the failure, and the caller blocks the record on ``item_reclaim_ledger`` / ``rev``."""
+        try:
+            self._rehydrate_before_write(rev, now)
+        except PR.RehydrationIncomplete as exc:
+            self._metric({"kind": "rehydration_held", "revision": rev, "table": exc.table, "file": exc.file_uri, "detail": exc.reason, "utc": now})
+            return str(exc)
+        return None
+
+    def _rehydrate_new_heads(self, now: str, hold: bool = False, source_ids: Optional[Iterable[str]] = None) -> None:
+        """Rehydrate before visibility, inside the caller's transaction before it commits: an accepted revision that is the HEAD while it
+        holds ``item_reclaim_ledger`` rows became visible again through a chain move a ``source_revision`` record caused (a marker that
+        re-states an older ``observed_utc``, a head that left the chain) -- nothing was written under it, so no write point re-folded it.
+        Its deleted carriers are re-folded here, inline, so no reader ever sees a head without its rows. ``source_ids`` limits the check
+        to those sources' heads (None: every source). A carrier that does not authenticate holds the activation that moved the chain
+        (``hold``: :data:`REHYDRATION_KIND` naming the revision whose rows are at stake; the transaction rolls back and the old head
+        stays) or raises :class:`prune.RehydrationIncomplete`: from a record's own fold (:meth:`_apply_validated`, inside the record's
+        savepoint) that holds the one record; at a transaction's end -- every chain-moving record was checked at its own fold, so this is
+        the guard that nothing else did -- nothing commits. One indexed join over the small ledger; nothing when it is empty."""
+        for rev in PR.ledger_heads(self.conn, source_ids):
+            try:
+                n = PR.rehydrate(self, rev, now)
+            except PR.RehydrationIncomplete as exc:
+                self._metric({"kind": "rehydration_held", "revision": rev, "table": exc.table, "file": exc.file_uri, "detail": exc.reason,
+                              "new_head": True, "utc": now})
+                if hold:
+                    raise _RevisionHeld(REHYDRATION_KIND, PR.LEDGER_TABLE, rev, exc.file_uri, "", str(exc)) from exc
+                raise
+            self._inline_rehydrated.add(rev)
+            self._no_ledger.discard(rev)
+            self.report.reclaim_rows_rehydrated += n
+            self._metric({"kind": "rehydrate", "revision": rev, "rows": n, "inline": True, "new_head": True, "utc": now})
+
+    def _reset_reclaimed(self, revisions: Iterable[str]) -> None:
+        """An item write under a revision resets its ``reclaimed`` (inside the writing transaction): the next reclaim pass plans it again."""
+        for rev in sorted({str(r) for r in revisions if r}):
+            PR.reset_reclaimed(self.conn, rev)
+
+    def reclaim(self, now: str, mode: Optional[PR.ReclaimMode] = None, budget_s: Optional[float] = None, wal_guard: bool = False,
+                min_free: Optional[int] = None) -> int:
+        """The item tables' bookkeeping after the fold, in bounded transactions; returns the rows touched. Two passes:
+
+        (i) the rows of a HEAD revision lose any ``withdrawn_by_revision_id`` mark an outgoing revision left (marks written before migration
+        0033; nothing writes a new one), in every mode;
+
+        (ii) the item rows of every ACCEPTED, SUPERSEDED revision are deleted, carrier by carrier, when the carrier is deletable under
+        ``prune-rule/3`` (:func:`prune.revision_plan`: not staged, its log file present with its ingested bytes, and authentic -- the
+        current code re-parses it, refusing none of its records, to exactly the rows present plus those already deleted) -- in batches
+        of RECLAIM_BATCH_ROWS, each one transaction that digests the rows it selects, deletes exactly those keys while the revision is
+        still superseded, and advances the carrier's ``item_reclaim_ledger`` row (:func:`prune.delete_batch`). ``mode``
+        (:class:`prune.ReclaimMode`, explicit, never read from ``self.live``; None = normal) decides what may go: ``hold`` nothing,
+        ``cohort`` only groups bound to a verified archive, ``normal`` every deletable carrier. A revision is recorded ``reclaimed = 1``
+        once a pass leaves no deletable carrier and none whose log file is missing (:func:`prune.confirm_reclaimed`); every item write
+        under it resets the flag. A deleted carrier is restored from the log before anything is written under its revision again
+        (:meth:`_rehydrate_before_write`), so no later fold differs from the code that kept every copy.
+
+        ``budget_s`` stops (ii) between batches; ``wal_guard`` (the live cycle) admits every batch, the first included, only while the
+        ``-wal`` is below RECLAIM_WAL_MAX_BYTES after a TRUNCATE attempt and the filesystem has ``min_free`` (default RECLAIM_MIN_FREE_BYTES)
+        free. A stop is ``report.reclaim_stopped``; the next pass resumes, a half-deleted carrier included (the ledger carries the part
+        already deleted, so it authenticates again)."""
+        mode = mode or PR.ReclaimMode.normal()
+        self.report.reclaim_mode = mode.kind
+        total = self._reclaim_unmark_heads(now)
+        if mode.kind != "hold":
+            total += self._reclaim_delete(now, mode, budget_s, wal_guard, min_free)
+        if total:
+            self.report.changed = True
+        return total
+
+    def _reclaim_unmark_heads(self, now: str) -> int:
+        """Pass (i): the marks an outgoing revision left on a re-activated HEAD's rows are cleared (unchanged since before 0033)."""
         total = 0
         pk = R.NATURAL_KEYS["item_result"]
         cols = ", ".join(pk)
-        key = [c for c in pk if c != "source_revision_id"]
-        same = " AND ".join(f"h.{c} = i.{c}" for c in key)
         while True:
             row = self.conn.execute(
                 "SELECT i.source_revision_id FROM item_result i JOIN source_revision sr ON sr.revision_id = i.source_revision_id "
@@ -3456,34 +3655,116 @@ class Ingestor:
                     f"(SELECT {cols} FROM item_result WHERE source_revision_id = ? AND withdrawn_by_revision_id IS NOT NULL LIMIT ?)",
                     (rev, RECLAIM_BATCH_ROWS))
                 n[0] = cur.rowcount
-            self.report.reclaim_transactions += 1
             self._timed_transaction(unmark, 0, RECLAIM_BATCH_ROWS, now, kind="reclaim")
-            total += n[0]
             if n[0] <= 0:
                 break
-        while True:
-            row = self.conn.execute(
-                "SELECT revision_id, superseded_by_revision_id FROM source_revision WHERE accepted = 1 "
-                "AND superseded_by_revision_id IS NOT NULL AND reclaimed = 0 ORDER BY observed_utc, revision_id LIMIT 1").fetchone()
-            if row is None:
-                break
-            n = [0]
-
-            def mark(rev=str(row[0]), to_rev=str(row[1])) -> None:
-                cur = self.conn.execute(
-                    f"UPDATE item_result SET withdrawn_by_revision_id = ? WHERE ({cols}) IN "
-                    f"(SELECT {cols} FROM item_result i WHERE i.source_revision_id = ? AND i.withdrawn_by_revision_id IS NULL "
-                    f" AND NOT EXISTS (SELECT 1 FROM item_result h WHERE {same} AND h.source_revision_id = ?) LIMIT ?)",
-                    (to_rev, rev, to_rev, RECLAIM_BATCH_ROWS))
-                n[0] = cur.rowcount
-                if n[0] < RECLAIM_BATCH_ROWS:
-                    self.conn.execute("UPDATE source_revision SET reclaimed = 1 WHERE revision_id = ?", (rev,))
             self.report.reclaim_transactions += 1
-            self._timed_transaction(mark, 0, RECLAIM_BATCH_ROWS, now, kind="reclaim")
             total += n[0]
-        if total:
-            self.report.changed = True
         return total
+
+    def _reclaim_admission(self, db_path: str, wal_guard: bool, floor: int, now: str) -> Optional[str]:
+        """Before a deletion batch (live only): None to proceed, else the stop's reason (``wal`` / ``disk``)."""
+        if not wal_guard:
+            return None
+        wal = _size_or_zero(db_path + "-wal")
+        if wal >= RECLAIM_WAL_MAX_BYTES:
+            busy = None
+            try:
+                busy, _, _ = DB.wal_checkpoint_truncate(self.conn, busy_timeout_ms=1000)
+            except sqlite3.Error as exc:
+                self._metric({"kind": "wal_checkpoint_error", "error": str(exc), "utc": now})
+            after = _size_or_zero(db_path + "-wal")
+            if after >= RECLAIM_WAL_MAX_BYTES:
+                self._metric({"kind": "reclaim_stop", "reason": "wal", "wal_bytes": after, "busy": busy, "utc": now})
+                return "wal"
+        if floor > 0:
+            free = DB.free_bytes(os.path.dirname(os.path.abspath(db_path)) or ".")
+            if free < floor:
+                self._metric({"kind": "reclaim_stop", "reason": "disk", "free_bytes": free, "floor": floor, "utc": now})
+                return "disk"
+        return None
+
+    def _reclaim_delete(self, now: str, mode: PR.ReclaimMode, budget_s: Optional[float], wal_guard: bool, min_free: Optional[int]) -> int:
+        """Pass (ii) of :meth:`reclaim`: the deletion, revision by revision in the order the chain superseded them."""
+        t0 = time.monotonic()
+        db_path = DB.connection_path(self.conn)
+        floor = (RECLAIM_MIN_FREE_BYTES if min_free is None else int(min_free)) if wal_guard else 0
+        stamp = validator_stamp()
+        revs = [str(r[0]) for r in self.conn.execute(
+            f"SELECT revision_id FROM source_revision WHERE {PR.accepted_superseded()} AND reclaimed = 0 "
+            "ORDER BY observed_utc, revision_id").fetchall()]
+        deleted = 0
+
+        def over() -> bool:
+            return budget_s is not None and (time.monotonic() - t0) > budget_s
+
+        def stop(reason: str) -> None:
+            self.report.reclaim_stopped = reason
+            if reason == "budget":
+                self._metric({"kind": "reclaim_stop", "reason": "budget", "budget_s": budget_s, "utc": now})
+        for rev in revs:
+            if over():
+                stop("budget")
+                break
+            plans = PR.revision_plan(self.conn, self.root, rev, mode)
+            stopped = refused = False
+            for p in plans:
+                if p.klass != PR.DELETABLE:
+                    continue
+                remaining = p.rows
+                while remaining > 0:
+                    if over():
+                        stop("budget")
+                        stopped = True
+                        break
+                    reason = self._reclaim_admission(db_path, wal_guard, floor, now)
+                    if reason is not None:
+                        stop(reason)
+                        stopped = True
+                        break
+                    hook = RECLAIM_BEFORE_BATCH_HOOK
+                    if hook is not None:
+                        why = hook(self, p)
+                        if isinstance(why, str):
+                            # a test's stop at exactly this batch: the effect of a budget / WAL / disk stop, deterministically
+                            stop(why)
+                            stopped = True
+                            break
+                    n = [0]
+                    wal_before = _size_or_zero(db_path + "-wal")
+
+                    def batch(p=p) -> None:
+                        n[0] = PR.delete_batch(self.conn, p, RECLAIM_BATCH_ROWS, stamp)
+                    try:
+                        self._timed_transaction(batch, 0, lambda: n[0], now, kind="reclaim",
+                                                extra=lambda p=p, wb=wal_before: {"table": p.table, "revision": p.revision_id,
+                                                                                  "record_file_id": p.record_file_id, "wal_before": wb,
+                                                                                  "wal_after": _size_or_zero(db_path + "-wal")})
+                    except PR.BatchRefused as exc:
+                        self._metric({"kind": "reclaim_refused", "revision": rev, "table": p.table, "detail": str(exc), "utc": now})
+                        refused = True
+                        break
+                    if n[0] <= 0:
+                        break
+                    self._no_ledger.discard(rev)
+                    self.report.reclaim_transactions += 1
+                    self.report.reclaim_rows_deleted += n[0]
+                    deleted += n[0]
+                    remaining -= n[0]
+                if stopped or refused:
+                    break
+            if stopped:
+                break
+            if refused or not PR.plan_complete(plans):
+                continue            # planned again by the next pass (reclaimed stays 0)
+            done = [False]
+
+            def confirm(rev=rev, plans=plans) -> None:
+                done[0] = PR.confirm_reclaimed(self.conn, rev, plans)
+            self._timed_transaction(confirm, 0, 0, now, kind="reclaim")
+            if done[0]:
+                self.report.reclaim_transactions += 1
+        return deleted
 
     def _retirement_head_moved(self, rev: str, marker_valid: Sequence[VAL.Validated]) -> Optional[Tuple[VAL.Validated, Optional[str], str]]:
         """The retirement head gate (registry-hardening 3a), asked inside the activation transaction just before the
@@ -3711,6 +3992,8 @@ class Ingestor:
                 if not os.path.isdir(rev_dir):
                     with DB.transaction(self.conn):
                         self._discard_staging(revisions[d])          # its directory is gone: nothing left to activate
+                        # the rows it staged stay (they ARE the revision's rows) but are no longer protected as staged: reclaim plans again
+                        self._reset_reclaimed((revisions[d],))
                     self._forget_held_attempt(d)
                     continue
                 if d in exact:
@@ -3777,7 +4060,9 @@ class Ingestor:
         refused constituent and a bundle of its revision is queued; every bundle but the latest; and every directory of a
         revision that is already accepted (a bundle activated in this cycle's fold and left the others' rows behind) -- except
         the latest bundle of an accepted revision held on the head's run set or on a moved head (a retirement's
-        re-activation, :data:`RETIREMENT_HEAD_KIND`), which is pending work with a reason and stands. The
+        re-activation, :data:`RETIREMENT_HEAD_KIND`), which is pending work with a reason and stands; and the latest bundle (or, with no
+        bundle, the own directory) of an accepted revision held on a rehydration that could not authenticate (:data:`REHYDRATION_KIND`:
+        deleted rows await an operator's remedy), head or not. The
         shared marker row then names the latest bundle's own hold. Derived from the tables, so live and rebuild reach the
         same fixed point."""
         by_rev: Dict[str, List[str]] = {}
@@ -3793,6 +4078,13 @@ class Ingestor:
                     # (2026-09-29) a no-op bundle stands, held or accepted: while the revision is held, an exact hold that costs nothing;
                     # once the carrier activated, the way its marker, status and artifact facts fold -- in stamp order with the revision's
                     # other bundles, as bundles of the head -- and its rows leave the queue only when it is processed
+                    continue
+                if accepted and (d == latest or not bundles) and self.conn.execute(
+                        "SELECT 1 FROM blocked_records WHERE record_type = 'source_revision' AND substr(record_uri, 1, ?) = ? "
+                        "AND json_extract(extra_json, '$.kind') = ?", (len(under), under, REHYDRATION_KIND)).fetchone():
+                    # held on a REHYDRATION (deleted rows that could not be restored exactly -- this revision's, or those of the revision
+                    # its activation would make the head): pending work with a reason, head or not, until the operator's remedy and the
+                    # re-attempt; standing it down would leave its files delivered and never folded, and live would part from a rebuild
                     continue
                 if d == latest:
                     if not accepted:
@@ -4108,6 +4400,7 @@ class Ingestor:
                             part_accepted += 1
                     accepted += part_accepted
                     self.flush_items(item_batches, item_revisions)
+                    self._rehydrate_new_heads(now)          # a marker re-accepted here may have moved a chain (before the commit)
                     self.ranker.finalize()
                 finally:
                     self._blocked = None
@@ -4158,6 +4451,7 @@ class Ingestor:
                             self.report.blocked = max(0, self.report.blocked - 1)
                             self.report.unblocked += 1
                     self.flush_items(item_batches, item_revisions)
+                    self._rehydrate_new_heads(now)          # a marker released here may have moved a chain (before the commit)
                     ranker.finalize()
                     self.report.reranks += ranker.reranks
                 finally:
@@ -4809,7 +5103,9 @@ def write_cycle_state(root: str, report: IngestReport, now: str) -> None:
                "revisions_applied": report.revisions_applied, "revisions_held": report.revisions_held, "revisions_noop": report.revisions_noop,
                "revisions_held_skipped": report.revisions_held_skipped,
                "revisions_deferred_budget": report.revisions_deferred_budget, "plain_files_deferred_budget": report.plain_files_deferred_budget,
-               "transactions": report.transactions}
+               "transactions": report.transactions,
+               # the cycle's reclaim: what it deleted and re-folded, why it stopped early, the mode it ran under
+               **{k: getattr(report, k) for k in RECLAIM_REPORT_KEYS}}
     try:
         path = os.path.join(state_dir(root), CYCLE_STATE_NAME)
         tmp = path + ".tmp"
@@ -5042,7 +5338,27 @@ def ingest_once(root: str, conn: Optional[sqlite3.Connection] = None, workers: i
                 report.plain_files_deferred_budget += sum(1 for path, _ in late if logical_uri(root, path) not in late_taken)
             else:
                 ing.retry_dependency_refusals(now)
-        ing.reclaim(now)
+        # reclaim: pass (i) and the deletion of superseded revisions' item rows, under the mode the
+        # operator set (state/reclaim_mode.json; absent = normal) -- an invalid mode file deletes nothing and says so -- bounded by its
+        # own budget ([harvest] reclaim_budget_s) and admitted batch by batch against the WAL and the free disk
+        try:
+            reclaim_mode = PR.ReclaimMode.from_state(root)
+        except PR.ModeStateInvalid as exc:
+            reclaim_mode = PR.ReclaimMode.hold()
+            report.reclaim_stopped = "mode"
+            ing._metric({"kind": "reclaim_mode_invalid", "error": str(exc), "utc": now})
+        try:
+            reclaim_budget = float(CFG.load(root).get("harvest", {}).get("reclaim_budget_s") or RECLAIM_BUDGET_S)
+        except Exception:  # noqa: BLE001 -- a torn config never fails a cycle: the default budget
+            reclaim_budget = RECLAIM_BUDGET_S
+        try:
+            ing.reclaim(now, mode=reclaim_mode, budget_s=reclaim_budget, wal_guard=True,
+                        min_free=(RECLAIM_MIN_FREE_BYTES if min_free > 0 else 0))
+        except Exception as exc:  # noqa: BLE001 -- reclaim never kills the cycle: the fold above is committed, its closing steps must run
+            # (the batch in hand rolled back whole; the revision stays `reclaimed = 0` and is planned again next cycle). Named on the
+            # metrics log and in the cycle's record, which the status page reads -- a stalled deletion is visible, never silent
+            report.reclaim_stopped = "error"
+            ing._metric({"kind": "reclaim_error", "error": f"{type(exc).__name__}: {exc}"[:2000], "utc": now})
         # the harvester's own facts are ordered by their stamp (Ranker.arrival_for), so they are stamped strictly after
         # the head the cycle's files left — the clock, or head + 1 ms when this cycle's arrivals ran past it
         ing.ranker.reload()
@@ -5111,7 +5427,7 @@ def ingest_once(root: str, conn: Optional[sqlite3.Connection] = None, workers: i
                      "bundles": report.revisions_applied, "bundles_held": report.revisions_held, "bundles_noop": report.revisions_noop,
                      "bundles_held_skipped": report.revisions_held_skipped,
                      "bundles_deferred": report.revisions_deferred_budget, "plain_files_deferred": report.plain_files_deferred_budget,
-                     "transactions": report.transactions, "utc": now})
+                     "transactions": report.transactions, **{k: getattr(report, k) for k in RECLAIM_REPORT_KEYS}, "utc": now})
         write_cycle_state(root, report, now)
     finally:
         if own_conn:
@@ -5184,6 +5500,12 @@ VERIFY_EXCLUDE_TABLES: Tuple[str, ...] = ("record_delivery", "snapshot", "schema
 VERIFY_EXCLUDE_COLUMNS: Dict[str, Tuple[str, ...]] = {
     "record_refusal": ("refused_utc", "judged_with"),      # judged_with: the judging CODE's stamp -- a replay under another tree differs on it; the facts carry it
     "blocked_records": ("first_seen_utc", "last_checked_utc", "attempts", "stale"),
+    # an inert mark since migration 0033: the fold no longer derives it (a rebuild leaves it NULL), and the marks written before 0033 stay
+    # only on retained, invisible rows of superseded revisions -- reclaim modifies no row it keeps; pass (i) still clears them on a head
+    "item_result": ("withdrawn_by_revision_id",),
+    # deleted_digest_bind covers those inert marks on the rows a live reclaim deleted (a rebuild never wrote them); parsed_with is the
+    # admitting code's stamp. Every other ledger column is equal on both paths: a deleted carrier is one the current code reproduces
+    "item_reclaim_ledger": ("deleted_digest_bind", "parsed_with"),
 }
 
 
@@ -5202,13 +5524,13 @@ def rebuild_root(from_dir: str) -> str:
     raise ValueError(f"rebuild: {from_dir} is neither a registry root (holding records/) nor a records/ directory")
 
 
-#: Indexes a replay KEEPS while it loads (every other explicit index is dropped and built after the bulk load, spec
-#: "write performance"): the partial index over the withdrawn mark, which ``reclaim`` consults after EVERY activation — a
-#: full scan of a table that grows to millions of rows without it, and next to free to maintain (a row enters it only
-#: once marked). The ``(source_revision_id, record_file_id)`` indexes are NOT kept: measured on 200k rows, maintaining
-#: them cost 25–45 % of the insert rate, and their one per-file consumer (``_clear_staged_file``) no longer scans for a
-#: file the ledger has never ranked.
-REBUILD_KEEP_INDEXES: Tuple[str, ...] = ("idx_item_result_withdrawn",)
+#: Indexes a replay KEEPS while it loads (every other explicit index is dropped and built after the bulk load, spec "write
+#: performance"): none since migration 0033. The partial index over the withdrawn mark was kept for ``reclaim``'s pass after every
+#: activation; reclaim now runs once, after the final transaction recreated every index, and nothing reads the mark during the replay. The
+#: ``(source_revision_id, record_file_id)`` indexes are not kept either: measured on 200k rows, maintaining them cost 25–45 % of the
+#: insert rate, and their one per-file consumer during the replay (``_clear_staged_file``) no longer scans for a file the ledger has never
+#: ranked.
+REBUILD_KEEP_INDEXES: Tuple[str, ...] = ()
 
 
 def _remove_db_files(path: str) -> None:
@@ -5323,11 +5645,19 @@ def rebuild(from_dir: str, into: str, workers: int = 3, records_per_transaction:
         report.parse_s = max(0.0, (time.monotonic() - t0) - report.write_s)
         if facts:
             ing.reevaluate_blocked()
-        ing.reclaim(now)
         with DB.transaction(conn):
             ing.ranker.finalize(final=True)
             DB.recreate_indexes(conn, index_sql)
             DM.stamp_run_rows(conn)               # the derived decode-policy match, as at the end of every live cycle
+        # reclaim LAST, unbudgeted, in normal mode, once the indexes it walks (idx_<t>_revision, idx_item_result_withdrawn) exist again:
+        # nothing is deleted during the replay, so no rehydration ever triggers on this path, and the result is the same pure function
+        # of the final state the live database reaches at quiescence
+        ing.reclaim(now, mode=PR.ReclaimMode.normal())
+        # the statistics recreate_indexes gathered describe the item tables BEFORE that deletion (the superseded revisions' rows still in
+        # them): gathered again for the tables reclaim wrote, sqlite_stat1 -- which the rebuilt file and every replica bootstrapped from it
+        # plan their queries with -- is the final tables'
+        for t in (*PR.PRUNE_TABLES, PR.LEDGER_TABLE):
+            conn.execute(f"ANALYZE {t}")
         conn.execute("PRAGMA journal_mode=WAL")   # the mode every connection expects the file in (db.connect)
     except BaseException:
         conn.close()
@@ -5340,26 +5670,21 @@ def rebuild(from_dir: str, into: str, workers: int = 3, records_per_transaction:
     return report
 
 
-def verify_equal(a: sqlite3.Connection, b: sqlite3.Connection) -> Dict[str, int]:
-    """Row-level diff per table (symmetric difference size), excluding the arrival ledger."""
-    out: Dict[str, int] = {}
-    for t in S.TABLES:
-        if t.name in VERIFY_EXCLUDE_TABLES:
-            continue
-        cols = [c for c in t.column_names if c not in VERIFY_EXCLUDE_COLUMNS.get(t.name, ())]
-        sql = f"SELECT {', '.join(cols)} FROM {t.name}"
-        ra = set(tuple(_norm(v) for v in r) for r in a.execute(sql).fetchall())
-        rb = set(tuple(_norm(v) for v in r) for r in b.execute(sql).fetchall())
-        out[t.name] = len(ra ^ rb)
-    return out
+def verify_equal(a: sqlite3.Connection, b: sqlite3.Connection, **kw) -> Dict[str, int]:
+    """Row-level diff per table (symmetric difference size of distinct normalized rows), excluding the arrival ledger and the columns
+    :data:`VERIFY_EXCLUDE_COLUMNS` names: :func:`equality.verify_equal`, a streamed primary-key merge (the set-based form held both
+    databases' rows in memory). ``kw`` passes through (``tables``, ``diff_sink``, ...)."""
+    from . import equality as EQ
+    kw.setdefault("exclude_tables", VERIFY_EXCLUDE_TABLES)
+    kw.setdefault("exclude_columns", VERIFY_EXCLUDE_COLUMNS)
+    return EQ.verify_equal(a, b, **kw)
 
 
 def _norm(v):
-    if isinstance(v, bytes):
-        return v.hex()
-    if isinstance(v, float):
-        return round(v, 12)
-    return v
+    """The comparison's value normalization (a BLOB as hex, a float rounded to 12 places): :func:`equality.norm`, kept here for the
+    callers that render a diff's rows the way :func:`verify_equal` compares them."""
+    from . import equality as EQ
+    return EQ.norm(v)
 
 
 # --------------------------------------------------------------------------------------------

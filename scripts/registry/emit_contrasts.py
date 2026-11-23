@@ -111,7 +111,7 @@ import sqlite3
 import sys
 import time
 from pathlib import Path
-from typing import Dict, List, Mapping, Optional, Sequence, Set, Tuple
+from typing import Callable, Dict, List, Mapping, Optional, Sequence, Set, Tuple
 
 _REPO = Path(__file__).resolve().parents[2]
 if str(_REPO / "src") not in sys.path:
@@ -673,7 +673,24 @@ def _eval_row(conn: sqlite3.Connection, eval_id: str) -> Dict[str, object]:
 
 
 def _filed_item_metrics(conn: sqlite3.Connection, run_id: str) -> List[str]:
-    return [str(r[0]) for r in conn.execute("SELECT DISTINCT metric_id FROM item_result WHERE run_id = ? ORDER BY metric_id", (run_id,))]
+    """The metric ids ``run_id`` has CURRENT item rows under (``v_item_result_current``; ``v_item_headline`` chooses among the same
+    rows): the rows ``registry.paired`` reads. The raw table also holds the rows of pending and superseded adapter revisions, which no
+    reader sees -- a metric filed only there would name the run's headline and pass the ``no_items`` check for items that pair to
+    nothing."""
+    return [str(r[0]) for r in conn.execute("SELECT DISTINCT metric_id FROM v_item_result_current WHERE run_id = ? ORDER BY metric_id", (run_id,))]
+
+
+def _filed_item_metrics_memo(conn: sqlite3.Connection) -> Callable[[str], List[str]]:
+    """:func:`_filed_item_metrics` read once per run for ONE pass: :func:`contrasts_due` makes this at its start, so the memo dies with
+    the pass and never serves a later one. Every call returns a fresh list, so a caller that changes what it got never changes what the
+    next caller reads."""
+    memo: Dict[str, List[str]] = {}
+
+    def filed(run_id: str) -> List[str]:
+        if run_id not in memo:
+            memo[run_id] = _filed_item_metrics(conn, run_id)
+        return list(memo[run_id])
+    return filed
 
 
 def _runs_with_complete_judgment_or_rule_scored_headline(conn: sqlite3.Connection) -> Set[str]:
@@ -718,7 +735,7 @@ def contrasts_due(conn: sqlite3.Connection, model_ids: Optional[Sequence[str]] =
     steered runs it cannot pair, each with a ``status``: ``due`` (pairable), ``no_anchor`` (no complete ``none`` run of the same
     campaign x eval x instrument x model), ``no_complete_judgment`` (a complete run whose headline reading is not filed -- a judge-scored
     run's judgment not ``complete``, a rule-scored run's headline metric not under the ``''`` sentinel -- or whose anchor's is not),
-    ``no_items`` (no item rows under the eval's headline metric -- the filed metric ids are named), ``adapter_backed``
+    ``no_items`` (no CURRENT item rows under the eval's headline metric -- the filed metric ids are named), ``adapter_backed``
     (either side's current items under the metric ride an adapter source revision -- the ids are named per side; the adapter owns
     the pair). The daemon emits the ``due`` ones; the rest are printed so a gap is visible, never silently dropped.
 
@@ -745,6 +762,7 @@ def contrasts_due(conn: sqlite3.Connection, model_ids: Optional[Sequence[str]] =
     currency = run_currency(conn)                    # the paper's run-currency rules over the none anchors, read once per pass
     withdrawn = frame_withdrawn_keys(conn)           # the frame's observation rule over the contrast keys, read once per pass
     rostered_models = roster_models(conn)            # The models a roster entry of the open round can match (tier 4 is for the others)
+    filed_metrics = _filed_item_metrics_memo(conn)   # each steered run's filed item metrics, read once per pass
     out: List[Dict[str, object]] = []
 
     def _checked(run: Mapping[str, object], anchor: Mapping[str, object], base: Dict[str, object]) -> Dict[str, object]:
@@ -754,7 +772,7 @@ def contrasts_due(conn: sqlite3.Connection, model_ids: Optional[Sequence[str]] =
         ev = evals.get(str(run["eval_id"]))
         if ev is None:
             ev = evals[str(run["eval_id"])] = _eval_row(conn, str(run["eval_id"]))
-        filed = _filed_item_metrics(conn, str(run["run_id"]))
+        filed = filed_metrics(str(run["run_id"]))
         metric = paper.run_headline_metric_id(ev, filed)
         if metric is None or metric not in filed:
             return {**base, "status": "no_items", "metric_id": metric, "filed_item_metric_ids": filed}
@@ -769,7 +787,7 @@ def contrasts_due(conn: sqlite3.Connection, model_ids: Optional[Sequence[str]] =
                                    "model_id": key[3], "object_id": run.get("object_id"), "view_legacy": run.get("view_legacy"),
                                    "eval_category": run.get("eval_category")}
         ev0 = evals.get(str(run["eval_id"])) or evals.setdefault(str(run["eval_id"]), _eval_row(conn, str(run["eval_id"])))
-        metric0: Optional[str] = paper.run_headline_metric_id(ev0, _filed_item_metrics(conn, str(run["run_id"])))
+        metric0: Optional[str] = paper.run_headline_metric_id(ev0, filed_metrics(str(run["run_id"])))
         # The same-view anchor is picked among CURRENT none runs only, and a same-view row already filed at the run's
         # current judgment's key is KEPT while its anchor is current (never a second row beside it); a retired anchor makes the run DUE again
         sv_keep = contrast_keep(conn, run, str(metric0), currency, kinds=SAME_VIEW_KINDS, check_cap=False, withdrawn=withdrawn) if metric0 else None

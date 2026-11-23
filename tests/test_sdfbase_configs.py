@@ -16,6 +16,7 @@ committed configs/sdfbase_*_fits.yaml files. These tests pin:
 CPU-only; no model, no network.
 """
 
+import copy
 import hashlib
 import importlib.util
 import json
@@ -91,6 +92,13 @@ FILES = ["sdfbase_gemma4e4b_base_fits.yaml",
          "sdfbase_qwen35_4b_base_eb64_s1_fits.yaml",
          "sdfbase_qwen35_4b_base_eb64_s2_fits.yaml",
          "sdfbase_qwen35_4b_base_eb64_s3_fits.yaml",
+         # the seed replicates' CONTROL-ONLY own-stop siblings:
+         # the constv2ctl2-full cell alone, early-stopped and CE-guarded on
+         # the seed's CONTROL held-out pool; pools shared with the seed key;
+         # folds copied from the seed key verbatim.
+         "sdfbase_qwen35_4b_base_eb64_s1_ctlstop_fits.yaml",
+         "sdfbase_qwen35_4b_base_eb64_s2_ctlstop_fits.yaml",
+         "sdfbase_qwen35_4b_base_eb64_s3_ctlstop_fits.yaml",
          # paper-companion-repo (2026-09-29; spec FD 4): the front door's
          # configured-not-run Qwen3.5-4B (worked example) lane — mix-full + ctl2-full at cap
          # 16 / patience 2, effective batch 64, gradient checkpointing, a
@@ -117,6 +125,12 @@ KEY_OF = {"sdfbase_gemma4e4b_base_fits.yaml": "gemma4e4b_base",
           "sdfbase_qwen35_4b_base_eb64_s1_fits.yaml": "qwen35_4b_base_eb64_s1",
           "sdfbase_qwen35_4b_base_eb64_s2_fits.yaml": "qwen35_4b_base_eb64_s2",
           "sdfbase_qwen35_4b_base_eb64_s3_fits.yaml": "qwen35_4b_base_eb64_s3",
+          "sdfbase_qwen35_4b_base_eb64_s1_ctlstop_fits.yaml":
+              "qwen35_4b_base_eb64_s1_ctlstop",
+          "sdfbase_qwen35_4b_base_eb64_s2_ctlstop_fits.yaml":
+              "qwen35_4b_base_eb64_s2_ctlstop",
+          "sdfbase_qwen35_4b_base_eb64_s3_ctlstop_fits.yaml":
+              "qwen35_4b_base_eb64_s3_ctlstop",
           "sdfbase_qwen35_4b_demo_base_fits.yaml": "qwen35_4b_demo_base"}
 
 
@@ -262,6 +276,27 @@ EXPECTED_SEEDREP_CAPS = {
     "constv2-mix-1m": {"epochs": 24, "early_stop_patience": 3},
     "constv2-mix-10m": {"epochs": 8, "early_stop_patience": 2},
     "constv2-mix-full": {"epochs": 16, "early_stop_patience": 2},
+    "constv2ctl2-full": {"epochs": 16, "early_stop_patience": 2},
+}
+
+#: The seed replicates' CONTROL-ONLY own-stop siblings: one key per seed,
+#: `<seed key>_ctlstop`,
+#: the constv2ctl2-full cell ALONE at the seed key's cap-16 / patience-2 row,
+#: the seed key's recipe verbatim, the pools of the seed key (pool_key), and
+#: ONE change — train_kwargs.default.heldout_pool names the seed's CONTROL
+#: held-out pool (pairs_constv2ctl2-heldout.jsonl), the pool early stopping
+#: and the 1.1x CE guard read.
+CTLSTOP_KEYS = ("qwen35_4b_base_eb64_s1_ctlstop",
+                "qwen35_4b_base_eb64_s2_ctlstop",
+                "qwen35_4b_base_eb64_s3_ctlstop")
+CTLSTOP_PARENT_OF = {"qwen35_4b_base_eb64_s1_ctlstop": "qwen35_4b_base_eb64_s1",
+                     "qwen35_4b_base_eb64_s2_ctlstop": "qwen35_4b_base_eb64_s2",
+                     "qwen35_4b_base_eb64_s3_ctlstop": "qwen35_4b_base_eb64_s3"}
+CTLSTOP_SEED_OF = {"qwen35_4b_base_eb64_s1_ctlstop": 1,
+                   "qwen35_4b_base_eb64_s2_ctlstop": 2,
+                   "qwen35_4b_base_eb64_s3_ctlstop": 3}
+EXPECTED_CTLSTOP_SI_IDS = ["constv2ctl2-full"]
+EXPECTED_CTLSTOP_CAPS = {
     "constv2ctl2-full": {"epochs": 16, "early_stop_patience": 2},
 }
 
@@ -528,6 +563,21 @@ def test_caps_table_as_specced(built, name):
             if absent not in EXPECTED_IT_EB64_SI_IDS:
                 assert absent not in cfg["si_ids"]
                 assert absent not in cfg["train_kwargs_by_si"]
+    elif key in CTLSTOP_KEYS:
+        # the control cell ALONE, at the seed key's own cap-16 /
+        # patience-2 row (the same row its parent carries for that cell),
+        # via the per-MODEL override; the shared CAPS rows do not move.
+        parent = CTLSTOP_PARENT_OF[key]
+        assert cfg["si_ids"] == EXPECTED_CTLSTOP_SI_IDS
+        assert cfg["train_kwargs_by_si"] == EXPECTED_CTLSTOP_CAPS
+        assert msc.caps_for(key, "constv2ctl2-full") == \
+            msc.caps_for(parent, "constv2ctl2-full") == \
+            EXPECTED_SEEDREP_CAPS["constv2ctl2-full"]
+        assert msc.CAPS["constv2-mix-full"] == EXPECTED_CAPS["constv2-mix-full"]
+        for absent in EXPECTED_SI_IDS:
+            if absent not in EXPECTED_CTLSTOP_SI_IDS:
+                assert absent not in cfg["si_ids"]
+                assert absent not in cfg["train_kwargs_by_si"]
     elif key in SEEDREP_KEYS:
         # 2026-09-15: s1 = three working cells at exactly the shared CAPS
         # rows + the two production cells at cap 16 / patience 2 (BOTH
@@ -584,7 +634,7 @@ def test_ws3_scope_is_declared_on_exactly_the_chat_lanes():
     # the two base lanes carry the full SI_IDS
     assert {k for k, m in msc.MODELS.items() if m.get("si_ids")} == \
         WS3_KEYS | IT_KEYS | FULL_SIBLING_KEYS | LLAMA8B_KEYS | IT_EB64_KEYS \
-        | set(SEEDREP_KEYS)                                       # the demo lane (PIPELINE_TEST_KEYS) carries the base lanes' full SI_IDS: no scope
+        | set(SEEDREP_KEYS) | set(CTLSTOP_KEYS)                   # the demo lane (PIPELINE_TEST_KEYS) carries the base lanes' full SI_IDS: no scope
     assert msc.WS3_SI_IDS == EXPECTED_WS3_SI_IDS
     for key in WS3_KEYS:
         assert msc.MODELS[key]["si_ids"] is msc.WS3_SI_IDS
@@ -682,6 +732,9 @@ def test_gradient_checkpointing_table():
     # the qwen-base seed replicates (2026-09-15) are the qwen3_5 hybrid: ON
     for key in SEEDREP_KEYS:
         assert msc.MODELS[key]["gradient_checkpointing"] is True
+    # and so are their control-only own-stop siblings
+    for key in CTLSTOP_KEYS:
+        assert msc.MODELS[key]["gradient_checkpointing"] is True
     # paper-companion-repo (2026-09-29): ON for the front door's test-model
     # lane — the dense 31B (60 blocks of hidden 5,376 at 8,192 tokens; the
     # FD 23 probe's premise)
@@ -703,7 +756,7 @@ def test_arm_blocks(built, name):
                                     "qwen35_4b_it_doc",
                                     "nemotron3nano4b_doc_full",
                                     "qwen35_4b_it_doc_eb64", *SEEDREP_KEYS,
-                                    *PIPELINE_TEST_KEYS))
+                                    *CTLSTOP_KEYS, *PIPELINE_TEST_KEYS))
     for arm in ("psr_ce_all", "lora_r4_ce"):
         tk = cfg["train_kwargs"][arm]
         # The SI-teacher floor is EXPLICITLY null (replaced, not silently
@@ -746,11 +799,18 @@ def test_default_block_and_heldout_pool(built, name):
     key = _key_of(name)
     assert d["holdout_frac"] == 0.0
     # the `_full` lanes point at their parent lane's staged pool dir
-    # (pool_key); every other key at its own
+    # (pool_key), the `_ctlstop` keys at their seed key's; every other key at
+    # its own. The FILE is the constitution held-out pool for every key but
+    # the `_ctlstop` ones, which read the seed's CONTROL held-out pool
+    # (early stopping and the CE guard on the control corpus)
+    cell = "constv2ctl2-heldout" if key in CTLSTOP_KEYS else "constv2-heldout"
+    assert msc.heldout_cell_for(key) == cell
+    assert ("heldout_cell" in msc.MODELS[key]) is (key in CTLSTOP_KEYS)
     assert d["heldout_pool"] == \
-        f"/vol/pool/{msc.pool_key_for(key)}/pairs_constv2-heldout.jsonl"
+        f"/vol/pool/{msc.pool_key_for(key)}/pairs_{cell}.jsonl"
     assert msc.pool_key_for(key) == \
-        {**FULL_PARENT_OF, **IT_EB64_PARENT_OF}.get(key, key)
+        {**FULL_PARENT_OF, **IT_EB64_PARENT_OF,
+         **CTLSTOP_PARENT_OF}.get(key, key)
     assert d["positions"] == "all"
     assert d["probe_n"] is None
     assert d["early_stop_min_epochs"] == 1
@@ -841,7 +901,8 @@ def test_glm_doc_lane_is_the_chat_checkpoint(built):
                                   "glm46vflash_doc",
                                   "gemma4e4b_it_doc", "qwen35_4b_it_doc",
                                   "llama8b_base", "llama8b_it_doc",
-                                  "qwen35_4b_base_eb64_s1"])
+                                  "qwen35_4b_base_eb64_s1",
+                                  "qwen35_4b_base_eb64_s1_ctlstop"])
 def test_derive_model_config_refuses_base_slugs(tmp_path, slug):
     """derive_model_config must never write a two_si_<sdfbase slug>.yaml —
     these configs come from THIS generator (the GLM and Nemotron doc lanes
@@ -1764,9 +1825,12 @@ def test_seed_key_is_declared_and_emitted_on_exactly_the_seedrep_lanes(built):
     tests/test_models_demo_front_door.py pins the rest); EVERY other config
     — the frozen ones included — has no `seed` anywhere and no declaration
     (their fits keep the trainer's default 0, bytes untouched)."""
-    seeded = {**SEEDREP_SEED_OF, "qwen35_4b_demo_base": 3}
+    # + the seed keys' control-only own-stop siblings, which
+    # declare their seed key's seed (same data order and LoRA A init)
+    seeded = {**SEEDREP_SEED_OF, **CTLSTOP_SEED_OF, "qwen35_4b_demo_base": 3}
     declared = {k for k, m in msc.MODELS.items() if "seed" in m}
-    assert declared == set(seeded) == set(SEEDREP_KEYS) | set(PIPELINE_TEST_KEYS)
+    assert declared == set(seeded) == \
+        set(SEEDREP_KEYS) | set(CTLSTOP_KEYS) | set(PIPELINE_TEST_KEYS)
     for name in FILES:
         key = _key_of(name)
         cfg, text = _cfg_of(built[name]), built[name]
@@ -1846,3 +1910,195 @@ def test_seedrep_memprobe_fold_is_2_2_on_all_three_and_hpo_folded_identically():
     # the parent's folds are untouched (its bytes are pinned regardless)
     assert folds["memprobe"][SEEDREP_PARENT]["psr_ce_all"] == 2
     assert set(folds["hpo"][SEEDREP_PARENT]) == {"psr_ce_all", "lora_r4_ce"}
+
+
+# --------------------------------------------------------------------------
+# Qwen-BASE batch-64 CONTROL-ONLY own-stop siblings
+# --------------------------------------------------------------------------
+
+def _diff_paths(a, b, prefix: str = "", whole: frozenset = frozenset()) -> set[str]:
+    """The dotted paths at which two parsed configs differ (a mapping is
+    descended key by key, except at a path in ``whole``; any other value — a
+    list included — compares whole)."""
+    if isinstance(a, dict) and isinstance(b, dict) and prefix not in whole:
+        out: set[str] = set()
+        for k in set(a) | set(b):
+            p = f"{prefix}.{k}" if prefix else str(k)
+            if k not in a or k not in b:
+                out.add(p)
+            else:
+                out |= _diff_paths(a[k], b[k], p, whole)
+        return out
+    return set() if a == b else {prefix}
+
+
+#: The published seed fits' recipe, pinned by VALUE so a regenerated fold or
+#: a moved default fails here rather than entering a fit.
+CTLSTOP_RECIPE = {
+    "model": "Qwen/Qwen3.5-4B-Base",
+    "model_revision": "1001bb4d826a52d1f399e183466143f4da7b741b",
+    "dtype": "bfloat16", "attn_implementation": "sdpa", "max_len": 8192,
+    "data_mode": "documents",
+}
+CTLSTOP_ARMS = {
+    "lora_r4_ce": {"lr": 0.006681234631156978, "lr_schedule": "warmup_cosine",
+                   "warmup_frac": 0.15, "max_grad_norm": 0.12,
+                   "weight_decay": 0.01, "lora_rank": 4, "accum_steps": 32,
+                   "floor_ratio_max": None, "ce_floor_ratio_max": 1.1,
+                   "gradient_checkpointing": True},
+    "psr_ce_all": {"lr": 0.004578836147882968, "lr_schedule": "warmup_cosine",
+                   "warmup_frac": 0.15, "max_grad_norm": 0.34,
+                   "weight_decay": 0.01, "gate_reg": 0.1, "accum_steps": 32,
+                   "floor_ratio_max": None, "ce_floor_ratio_max": 1.1,
+                   "gradient_checkpointing": True},
+}
+
+
+def test_ctlstop_table_is_the_declaration():
+    """The generator's CTLSTOP block, spelled once: three keys named by
+    ctlstop_key, each the seed key's pin, layer, checkpointing, effective
+    batch and seed, its pools (pool_key -> the seed key, which has none: no
+    chaining), the control cell alone, and the control held-out pool."""
+    assert msc.CTLSTOP_KEYS == CTLSTOP_KEYS
+    assert [msc.ctlstop_key(s) for s in (1, 2, 3)] == list(CTLSTOP_KEYS)
+    assert msc.CTLSTOP_SI_IDS == EXPECTED_CTLSTOP_SI_IDS
+    for key in CTLSTOP_KEYS:
+        parent, s = CTLSTOP_PARENT_OF[key], CTLSTOP_SEED_OF[key]
+        assert parent == msc.seedrep_key(s) and key == f"{parent}_ctlstop"
+        assert msc.config_filename(key) in FILES and KEY_OF[msc.config_filename(key)] == key
+        spec, par = msc.MODELS[key], msc.MODELS[parent]
+        for f in ("model", "revision", "layer", "gradient_checkpointing",
+                  "effective_batch", "seed"):
+            assert spec[f] == par[f], (key, f)
+        assert "chat_model" not in spec and "leading_special_tokens" not in spec
+        assert "fit_width" not in spec and "fit_selection" not in spec
+        assert spec["si_ids"] is msc.CTLSTOP_SI_IDS
+        assert spec["pool_key"] == parent and "pool_key" not in par
+        assert msc.pool_key_for(key) == parent
+        assert spec["heldout_cell"] == "constv2ctl2-heldout" == msc.heldout_cell_for(key)
+        assert "heldout_cell" not in par and msc.heldout_cell_for(parent) == "constv2-heldout"
+        assert msc.seed_for(key) == s and msc.effective_batch_for(key) == 64
+        assert spec["header_kind"].startswith(
+            f"BASE model, CONTROL-ONLY sibling of the batch-64 SEED REPLICATE {parent} (")
+        assert f"shared with {parent} via pool_key" in spec["header_kind"]
+
+
+@pytest.mark.parametrize("key", CTLSTOP_KEYS)
+def test_ctlstop_config_is_its_seed_config_but_three_paths(built, key):
+    """Each `_ctlstop` config's PARSED mapping equals its seed
+    key's config except at exactly three paths — si_ids (the control cell
+    alone), train_kwargs_by_si (that cell's row, the parent's own row for
+    it) and train_kwargs.default.heldout_pool (the seed's CONTROL held-out
+    pool in the seed key's pool dir). The mechanical proof that every other
+    hyperparameter is the published fit's; the recipe values are pinned by
+    value too."""
+    parent = CTLSTOP_PARENT_OF[key]
+    cfg = _cfg_of(built[msc.config_filename(key)])
+    pcfg = _cfg_of(built[msc.config_filename(parent)])
+    control_pool = f"/vol/pool/{parent}/pairs_constv2ctl2-heldout.jsonl"
+    want = copy.deepcopy(pcfg)
+    want["si_ids"] = ["constv2ctl2-full"]
+    want["train_kwargs_by_si"] = {"constv2ctl2-full": {"epochs": 16, "early_stop_patience": 2}}
+    want["train_kwargs"]["default"]["heldout_pool"] = control_pool
+    assert cfg == want
+    assert _diff_paths(cfg, pcfg, whole=frozenset({"train_kwargs_by_si"})) == \
+        {"si_ids", "train_kwargs_by_si", "train_kwargs.default.heldout_pool"}
+    assert cfg["si_ids"] == ["constv2ctl2-full"]
+    assert "constv2ctl2-full" in pcfg["si_ids"]
+    assert cfg["train_kwargs_by_si"] == {
+        "constv2ctl2-full": pcfg["train_kwargs_by_si"]["constv2ctl2-full"]} == \
+        {"constv2ctl2-full": {"epochs": 16, "early_stop_patience": 2}}
+    assert cfg["train_kwargs"]["default"]["heldout_pool"] == control_pool
+    assert pcfg["train_kwargs"]["default"]["heldout_pool"] == \
+        f"/vol/pool/{parent}/pairs_constv2-heldout.jsonl"
+    # the published recipe, by value
+    for f, v in CTLSTOP_RECIPE.items():
+        assert cfg[f] == v, f
+    assert cfg["layer"] == 15 and cfg["batch_size_by_arm"] == {"psr_ce_all": 2, "lora_r4_ce": 2}
+    d = cfg["train_kwargs"]["default"]
+    assert (d["holdout_frac"], d["early_stop_min_epochs"], d["early_stop_min_delta"],
+            d["positions"], d["seed"]) == (0.0, 1, 0.0, "all", CTLSTOP_SEED_OF[key])
+    for arm, want in CTLSTOP_ARMS.items():
+        assert cfg["train_kwargs"][arm] == want, arm
+    assert cfg["wandb_project"] == "sdf-base-steering" and cfg["wandb_fits"] is True
+    # the parent's committed bytes are exactly the generator's (they never move)
+    assert (REPO / "configs" / msc.config_filename(parent)).read_text() == \
+        built[msc.config_filename(parent)]
+    # three distinct files, none of them a parent's bytes
+    assert built[msc.config_filename(key)] != built[msc.config_filename(parent)]
+
+
+def test_ctlstop_folds_are_the_seed_keys_verbatim():
+    """The `_ctlstop` rows of the folds store are deep copies of the seed
+    key's (memprobe 2 / 2; the seed-1 search's winners with their guard
+    records), so the rendered optimizer and accumulation are the published
+    fit's; the seed keys' own rows are untouched."""
+    folds = msc.load_folds()
+    for key in CTLSTOP_KEYS:
+        parent = CTLSTOP_PARENT_OF[key]
+        assert folds["memprobe"][key] == folds["memprobe"][parent] == \
+            {"lora_r4_ce": 2, "psr_ce_all": 2}
+        assert folds["hpo"][key] == folds["hpo"][parent]
+        for arm, want in SEEDREP_HPO_WINNERS.items():
+            assert {k: folds["hpo"][key][arm][k] for k in want} == want, (key, arm)
+
+
+def test_heldout_cell_is_validated_and_scoped():
+    """heldout_cell_for: an undeclared entry reads the constitution pool
+    (every config that declares none, bytes untouched); a declared value
+    outside HELDOUT_CELLS refuses by name; the control pool may govern ONLY
+    a config whose one cell is constv2ctl2-full — a constitution cell beside
+    it, or a constitution-only scope, refuses; the constitution pool may be
+    declared explicitly on any scope."""
+    key, seed_key = CTLSTOP_KEYS[0], SEEDREP_KEYS[1]
+    assert msc.HELDOUT_CELL_DEFAULT == "constv2-heldout"
+    assert msc.HELDOUT_CELL_SCOPE == {"constv2ctl2-heldout": ["constv2ctl2-full"]}
+    saved_cell, saved_ids = msc.MODELS[key]["heldout_cell"], msc.MODELS[key]["si_ids"]
+    saved_caps = msc.MODELS[key]["caps"]
+    try:
+        for bad in ("constv2ctl-heldout", "pairs_constv2ctl2-heldout.jsonl", None, ""):
+            msc.MODELS[key]["heldout_cell"] = bad
+            with pytest.raises(SystemExit, match="heldout_cell="):
+                msc.build_config(key)
+        msc.MODELS[key]["heldout_cell"] = "constv2ctl2-heldout"
+        msc.MODELS[key]["si_ids"] = ["constv2-mix-full", "constv2ctl2-full"]
+        msc.MODELS[key]["caps"] = {}
+        with pytest.raises(SystemExit, match="may govern only"):
+            msc.build_config(key)
+        msc.MODELS[key]["si_ids"] = ["constv2-mix-full"]
+        with pytest.raises(SystemExit, match="may govern only"):
+            msc.heldout_pool_path(key)
+        # the constitution pool, declared explicitly, renders as undeclared
+        msc.MODELS[key]["si_ids"], msc.MODELS[key]["caps"] = saved_ids, saved_caps
+        msc.MODELS[key]["heldout_cell"] = "constv2-heldout"
+        assert msc.heldout_pool_path(key) == \
+            f"/vol/pool/{CTLSTOP_PARENT_OF[key]}/pairs_constv2-heldout.jsonl"
+    finally:
+        msc.MODELS[key]["heldout_cell"] = saved_cell
+        msc.MODELS[key]["si_ids"] = saved_ids
+        msc.MODELS[key]["caps"] = saved_caps
+    # a two-cell seed key declaring the control pool refuses as well
+    try:
+        msc.MODELS[seed_key]["heldout_cell"] = "constv2ctl2-heldout"
+        with pytest.raises(SystemExit, match="may govern only"):
+            msc.build_config(seed_key)
+    finally:
+        del msc.MODELS[seed_key]["heldout_cell"]
+    assert msc.heldout_cell_for(seed_key) == "constv2-heldout"
+    assert msc.heldout_pool_path(key) == \
+        f"/vol/pool/{CTLSTOP_PARENT_OF[key]}/pairs_constv2ctl2-heldout.jsonl"
+
+
+def test_heldout_cells_are_the_trainers_held_out_pools():
+    """The generator spells the trainer's sanctioned held-out pool ids
+    (train_two_si_objects.HELDOUT_POOL_SIS — the ids precompute-tokens and
+    the held-out readers accept) without importing it; the two must agree,
+    and the default is the trainer's HELDOUT_POOL_SI."""
+    for p in (REPO / "src", REPO / "scripts", REPO / "scripts" / "sdfbase"):
+        if str(p) not in sys.path:
+            sys.path.insert(0, str(p))
+    import train_two_si_objects as t2s
+    assert set(msc.HELDOUT_CELLS) == set(t2s.HELDOUT_POOL_SIS)
+    assert len(msc.HELDOUT_CELLS) == len(set(msc.HELDOUT_CELLS))
+    assert msc.HELDOUT_CELL_DEFAULT == t2s.HELDOUT_POOL_SI
+    assert set(msc.HELDOUT_CELL_SCOPE) <= set(msc.HELDOUT_CELLS) - {msc.HELDOUT_CELL_DEFAULT}

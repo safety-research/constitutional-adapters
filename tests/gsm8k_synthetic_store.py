@@ -225,6 +225,25 @@ def tuple_name_of(key: str, *, declared: bool, cap: int = CAP_BASE) -> str:
     return f"gsm8k_paired200_{key}{'_declared' if declared else ''}_{cap}"
 
 
+#: the SI-distilled refit wave (lane B's ``g8k_cells.WAVE_SIKL4``; the reader's ``tinycap_gsm8k_validators.WAVE_SIKL4``): its rows
+#: serve the six SI-distilled cells undeclared on the NATIVE engine, and the driver records the registry's own pair for them
+WAVE_SIKL4 = "sikl4"
+
+
+def recorded_tuple_name(row: Mapping[str, Any], *, cap: int, native: bool) -> str:
+    """The tuple a fitted thinking-ON leg records (the manifest's ``oos_experiment``). The DRIVER selects it: the registry tuple
+    matching the leg's model, cell, cap and served reduction_mode (``not_applicable`` on the native engine, where the lens-era
+    pair pins ``stacked``). This fixture models that choice for the SI-distilled refit wave only: a NATIVELY served row of wave
+    :data:`WAVE_SIKL4` records the registry's own native pair (``contracts.g8k_native_sikl4_tuple_name``) whatever lens-era
+    name its matrix row carries; every other leg gets the model's lens-era / declared tuple (:func:`tuple_name_of`), which is
+    what a LENS-served leg records. A natively served leg of another wave (qwen_seedrep, ctlstop) really records the native
+    tuple the driver selects for its cell, which neither this fixture nor the reader models yet (a known follow-up)."""
+    key = str(row["model_key"])
+    if native and row.get("wave") == WAVE_SIKL4:
+        return C.g8k_native_sikl4_tuple_name(key, cap)
+    return tuple_name_of(key, declared=bool(row["declared"]), cap=cap)
+
+
 def _cells_of(key: str, view: str) -> tuple[str, ...]:
     if key in ("gemma4e4b", "qwen35_4b"):
         return CELLS_IT_GQ if view == "it" else CELLS_MAIN_GQ
@@ -1209,7 +1228,7 @@ def build_store(gen_root: Path, row: Mapping[str, Any], *, correct: Iterable[int
         # the driver copies the family fact whole (`render_fact.as_dict()`): `thinking_switch` rides on every store
         C.MANIFEST_KEY_RENDER_FACT_EVIDENCE: {k: fact.get(k) for k in ("family", "off_ids", "on_ids", "split_mode", "server_parser",
                                                                        "evidence_status", "thinking_switch")},
-        C.MANIFEST_KEY_AUTHORISED_EXPERIMENT: tuple_name_of(key, declared=declared, cap=cap) if fitted and thinking_on else None,
+        C.MANIFEST_KEY_AUTHORISED_EXPERIMENT: recorded_tuple_name(row, cap=cap, native=native) if fitted and thinking_on else None,
         "support": C.support_label(fitted=fitted, out_of_support=fitted and thinking_on),
         "header_located": declared if fitted else None, C.LENS_SERVED_POSITIONS_KEY: served_positions,
         C.MANIFEST_KEY_RESUME_ATTEMPTS: resume, MANIFEST_KEY_ACCEPTED_ATTEMPT: accepted_id,
@@ -1992,3 +2011,36 @@ def build_itdoc_leg(gen_root: Path, row: Mapping[str, Any], *, tree_sha: str, **
     """The store of one it-doc EVIDENCE leg under its wave-isolated root, at ``tree_sha``, with the producer fields and the
     four row-provenance fields of a run launched with ``--bank-view it`` (the object digest = the row's pin — identity by pin)."""
     return build_store(gen_root, row, **{**default_kwargs(row), "producer_fields": True, "tree_sha": tree_sha, "bank_view": "it", **kw})
+
+
+# -- the SI-distilled refit wave (views sikl4s<k>; matrix `sikl4`) — additive ------------------------------------------ #
+#: the SI-distilled refit view and its six cells — the registry's own spellings (contracts.G8K_NATIVE_SIKL4_*), never retyped
+SIKL4_MODEL, SIKL4_VIEW = C.G8K_NATIVE_SIKL4_MODELS[0], "sikl4s1"
+SIKL4_CELLS: tuple[str, ...] = tuple(C.G8K_NATIVE_SIKL4_CELLS)
+
+
+def sikl4_row(cell: str, *, index: int, view: str = SIKL4_VIEW) -> dict[str, Any]:
+    """One SI-distilled refit row in the committed ``configs/sdfbase/gsm8k/matrix_sikl4.json`` shape: a fitted, undeclared,
+    all-position row of a ``sikl4s<k>`` view, wave ``sikl4`` under ``controls_sikl4/``, the staged id ``<view>__<cell>``, a
+    synthetic pin — and the LENS-ERA ``tuple_name`` the matrix generator writes on it (the reader must hold the row's legs to
+    the registry's native pair instead). Build its stores with ``serving_engine=contracts.SERVING_ENGINE_LORA_NATIVE``: the
+    driver then records the native pair (:func:`recorded_tuple_name`)."""
+    key = SIKL4_MODEL
+    if cell not in SIKL4_CELLS:
+        raise ValueError(f"{cell!r} is not one of the SI-distilled cells {list(SIKL4_CELLS)}")
+    tag = tag_of(key, view)
+    template = next(r for r in matrix_rows() if r["tag"] == tag_of(key, "main"))    # the model's per-tag facts
+    staged = f"{view}__{cell}"
+    return {
+        "index": index, "job_id": f"g8k-{key}-{view}-{cell.replace('__', '-')}", "model_key": key, "view": view, "tag": tag,
+        "cell": cell, "cell_slug": cell_slug(cell), "harness_cell": C.cell_spellings(cell, declared=False).harness,
+        "staged_id": staged, "object_sha256": _hash(f"pin|{key}|{staged}"), "fitted": True, "route_kind": "lens",
+        "served_positions_expected": "all", "declared": False, "tuple_name": tuple_name_of(key, declared=False),
+        "sampling_mode": MODE_PRIMARY, "sampling": dict(SAMPLING_ROWS[MODE_PRIMARY][key]),
+        "out_root": f"controls_{WAVE_SIKL4}/{tag}/{cell_slug(cell)}/{MODE_PRIMARY}",
+        "rung_out_root": f"controls_{WAVE_SIKL4}/{tag}/{cell_slug(cell)}/{MODE_PRIMARY}__rung16384",
+        "time_limit": "0-01:30:00", "family": FAMILY_BY_KEY[key], "reasoning_parser": template["reasoning_parser"],
+        "cluster_constraint": template["cluster_constraint"],
+        "status": STATUS_LAUNCH, "held_reason": None, "expected_refusal": False, "expected_refusal_reason": None,
+        "wave": WAVE_SIKL4, "extension": True,
+    }

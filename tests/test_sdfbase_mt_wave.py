@@ -60,8 +60,12 @@ def _r3(slug):
 # --- 1/2/3: vocabulary ---------------------------------------------------------
 
 def test_object_only_sis_are_class_a_only():
-    assert set(cm.PETRI_OBJECT_ONLY_SI_IDS) == {"constv2_mix_full", "constv2ctl2_full"}
-    assert set(cm.PETRI_SI_IDS) == set(cm.PETRI_PROMPTABLE_SI_IDS) | set(cm.PETRI_OBJECT_ONLY_SI_IDS)
+    # the two full corpora, plus the 1M-token generator comparison's two pools
+    assert set(cm.PETRI_OBJECT_ONLY_SI_IDS) == {"constv2_mix_full", "constv2ctl2_full",
+                                                "constv2_mix_1m", "constqwen38_mix_1m"}
+    # + the DISTILLED-ONLY SIs (the short irrelevant control SI C16's distilled objects, Class A only; 2026-11-09)
+    assert set(cm.PETRI_SI_IDS) == (set(cm.PETRI_PROMPTABLE_SI_IDS) | set(cm.PETRI_OBJECT_ONLY_SI_IDS)
+                                    | set(cm.PETRI_DISTILLED_ONLY_SI_IDS))
     assert set(cm.PETRI_SI_VARIANT_DIRS) == set(cm.PETRI_PROMPTABLE_SI_IDS)
     for hid in HARNESS_CELLS[1:]:
         p = dc.parse_cell_id(hid)

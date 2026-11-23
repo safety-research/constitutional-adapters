@@ -11,6 +11,7 @@ import pytest
 # start. Loud on purpose: a missing guard module is an ImportError here, never a run that silently goes unguarded.
 from _full_suite_guard import refuse_whole_suite_run
 from _host_site_isolation import CONFIG_ENV as _SITE_CONFIG_ENV, SITE_DIR_ENV as _SITE_DIR_ENV, isolate as isolate_from_the_host_site
+from _process_umask import current_umask as _current_umask
 
 os.environ.setdefault("WANDB_MODE", "disabled")
 os.environ.setdefault("TOKENIZERS_PARALLELISM", "false")
@@ -295,6 +296,23 @@ def _rsync_fallback_off_path_after_each_test():
     mod = sys.modules.get("_rsync_fallback")
     if mod is not None:
         mod.teardown_fallback()
+
+
+@pytest.fixture(autouse=True)
+def _process_umask_unchanged_by_each_test(request):
+    """A test that leaves the process umask changed fails at teardown, and the umask it found is put back first. The umask
+    is process-wide and a landing-gate shard is ONE pytest process, so a mask one test leaves behind applies to every later
+    test in the shard and to every child they spawn. ``pod_acceptance_probe.run_probe`` used to set 077 and keep it, and
+    the shards where its tests ran first probed the shared HF datasets cache owner-only: a ``datasets`` lock created there
+    then is 0600 (filelock opens it 0o666 under the creator's umask and never widens it later), which refuses every other
+    user. A library that only READS the mask (set, then restore) passes; ``current_umask`` reads it without changing it."""
+    before = _current_umask()
+    yield
+    after = _current_umask()
+    if after != before:
+        os.umask(before)
+        pytest.fail(f"{request.node.nodeid} left the process umask at {after:#o} (it started at {before:#o}); restored it for the "
+                    "tests after it. Restore the caller's umask: prev = os.umask(m); try: ... finally: os.umask(prev).", pytrace=False)
 
 
 @pytest.fixture

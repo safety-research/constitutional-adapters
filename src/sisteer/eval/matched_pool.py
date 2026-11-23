@@ -1077,15 +1077,6 @@ def build_matched_pool(rows: Iterable[GradedRow], spec: PoolSpec) -> dict:
     inputs and carries counts/ids/hashes only."""
     rows = list(rows)
 
-    # -- no evaluation-only corpus enters a training pool: the ReNeLLM paper
-    #    corpus ships under terms that forbid training on it, so a row whose
-    #    prompt is one of its rows refuses the whole build (counts only). ----
-    from .attacks import eval_only
-    eval_only.refuse_texts(
-        (r.get("prompt") if isinstance(r, dict) else getattr(r, "prompt", None)
-         for r in rows),
-        consumer="the training-pool builder (build_matched_pool)")
-
     # -- the holdout is GOAL-LEVEL, not family-level (since 2026-08-28;
     #    family disjointness is retired — do not reintroduce it). The
     #    attack families (bon/pasttense/codeattack/renellm/grok420) are

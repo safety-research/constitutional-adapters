@@ -1269,7 +1269,7 @@ policies:
     params_sent: [temperature, top_p, seed]
     params_not_sent: {top_k: "0 = disabled", min_p: "0.0", repetition_penalty: "1.0", presence_penalty: "0.0", frequency_penalty: "0.0"}
     same_values_as: "nemotron3nano4b|capability|on|battery"
-    source_citation: "contracts.py BATTERY_SAMPLING_BY_MODEL_KEY['nemotron3nano4b'] ('a general-chat vendor recommendation the user supplied; the shipped file's top_p 0.95 is recorded beside it there'); scripts/sdfbase/math500/cells.py SAMPLING_ROWS[('nemotron3nano4b', battery)] (l.303-306); the yaml's comparisons.math500_battery_sensitivity (value 1.0, arms [math500_battery])"
+    source_citation: "contracts.py BATTERY_SAMPLING_BY_MODEL_KEY['nemotron3nano4b'] ('a general-chat vendor recommendation the authors supplied; the shipped file's top_p 0.95 is recorded beside it there'); scripts/sdfbase/math500/cells.py SAMPLING_ROWS[('nemotron3nano4b', battery)] (l.303-306); the yaml's comparisons.math500_battery_sensitivity (value 1.0, arms [math500_battery])"
     ruling_id: decode-thinking-card-rows-2026-09-09
     effective_from_utc: "2026-09-10T00:00:00Z"
     effective_from_confidence: date_only
@@ -2835,7 +2835,7 @@ policies:
     confidence: inferred
     inferred_reason: "the row is inherited from another checkpoint's file; the 3B snapshot's own generation_config was never read"
 
-  # ==================================================================================================== qwen35_35b_a3b (paper-companion-repo pipeline test; ruling decode-qwen35-35b-a3b-shipped-generation-config-2026-09-29)
+  # ==================================================================================================== qwen35_35b_a3b (pipeline test; ruling decode-qwen35-35b-a3b-shipped-generation-config-2026-09-29)
   # The served checkpoint of the end-to-end run. Its shipped generation_config.json names temperature 1.0, top_p 0.95, top_k 20 and nothing else; the 4B's rows (0.7 / 0.8 / 20 + presence 1.5) are the 4B's card, never this model's.
   - policy_ref: "qwen35_35b_a3b|static|off|vendor_preset"
     policy_version: 1
@@ -3114,7 +3114,7 @@ policies:
     effective_from_confidence: date_only
     notes: "decode_source `greedy` is the nearest SPEC value; the executed temperature is 0.001, NOT argmax (as on the wildcard row). Explicit so resolve(model, eval bfcl) and jobplan.canonical_instrument bind for a reference model"
 
-  # ==================================================================================================== gemma4_31b (paper-companion-repo pipeline test; ruling decode-qwen35-35b-a3b-shipped-generation-config-2026-09-29)
+  # ==================================================================================================== gemma4_31b (pipeline test; ruling decode-qwen35-35b-a3b-shipped-generation-config-2026-09-29)
   # The gemma arm (run_in_this_work: false -- stage 02 + --dry-run; served model_id gemma4_31b). Its shipped file is byte-identical to gemma-4-E4B-it's, so every number equals gemma4e4b_it's vendor rows; the rows are this model's own by identity (model_id), never a re-read of the E4B's.
   - policy_ref: "gemma4_31b|static|off|vendor_preset"
     policy_version: 1
@@ -3417,7 +3417,7 @@ policies:
     params_sent: [temperature, top_p, top_k, min_p, presence_penalty, repetition_penalty, seed]
     params_not_sent: {frequency_penalty: "0.0"}
     same_values_as: "qwen35_4b_it|static|off|vendor_preset"
-    source_citation: "as qwen35_4b_it|static|off|vendor_preset (every parameter identical; the 4B row's own citation stands for the numbers, its ruling decode-generation-config-default-2026-09-11) -- ruling decode-qwen35-4b-demo-mirrors-4b-rows-2026-10-09: the worked example is the paper's Qwen3.5-4B checkpoint under the paper's presets, so its rows are the 4B's under its own key (the front-door session's ruling of 2026-10-09)"
+    source_citation: "as qwen35_4b_it|static|off|vendor_preset (every parameter identical; the 4B row's own citation stands for the numbers, its ruling decode-generation-config-default-2026-09-11) -- ruling decode-qwen35-4b-demo-mirrors-4b-rows-2026-10-09: the worked example is the paper's Qwen3.5-4B checkpoint under the paper's presets, so its rows are the 4B's under its own key (a ruling of 2026-10-09)"
     ruling_id: decode-qwen35-4b-demo-mirrors-4b-rows-2026-10-09
     effective_from_utc: "2026-09-11T00:00:00Z"
     effective_from_confidence: date_only
@@ -3442,7 +3442,7 @@ policies:
     params_sent: [temperature, top_p, top_k, min_p, presence_penalty, repetition_penalty, seed]
     params_not_sent: {frequency_penalty: "0.0"}
     same_values_as: "qwen35_4b_it|over_refusal|off|vendor_preset"
-    source_citation: "as qwen35_4b_it|over_refusal|off|vendor_preset (every parameter identical; the 4B row's own citation stands for the numbers, its ruling decode-generation-config-default-2026-09-11) -- ruling decode-qwen35-4b-demo-mirrors-4b-rows-2026-10-09: the worked example is the paper's Qwen3.5-4B checkpoint under the paper's presets, so its rows are the 4B's under its own key (the front-door session's ruling of 2026-10-09)"
+    source_citation: "as qwen35_4b_it|over_refusal|off|vendor_preset (every parameter identical; the 4B row's own citation stands for the numbers, its ruling decode-generation-config-default-2026-09-11) -- ruling decode-qwen35-4b-demo-mirrors-4b-rows-2026-10-09: the worked example is the paper's Qwen3.5-4B checkpoint under the paper's presets, so its rows are the 4B's under its own key (a ruling of 2026-10-09)"
     ruling_id: decode-qwen35-4b-demo-mirrors-4b-rows-2026-10-09
     effective_from_utc: "2026-09-11T00:00:00Z"
     effective_from_confidence: date_only
@@ -3466,7 +3466,7 @@ policies:
     params_sent: [temperature, top_p, top_k, min_p, presence_penalty, repetition_penalty, seed]
     params_not_sent: {frequency_penalty: "0.0"}
     same_values_as: "qwen35_4b_it|ifeval|off|vendor_preset"
-    source_citation: "as qwen35_4b_it|ifeval|off|vendor_preset (every parameter identical; the 4B row's own citation stands for the numbers, its ruling decode-vendor-preset-mode-2026-09-12) -- ruling decode-qwen35-4b-demo-mirrors-4b-rows-2026-10-09: the worked example is the paper's Qwen3.5-4B checkpoint under the paper's presets, so its rows are the 4B's under its own key (the front-door session's ruling of 2026-10-09)"
+    source_citation: "as qwen35_4b_it|ifeval|off|vendor_preset (every parameter identical; the 4B row's own citation stands for the numbers, its ruling decode-vendor-preset-mode-2026-09-12) -- ruling decode-qwen35-4b-demo-mirrors-4b-rows-2026-10-09: the worked example is the paper's Qwen3.5-4B checkpoint under the paper's presets, so its rows are the 4B's under its own key (a ruling of 2026-10-09)"
     ruling_id: decode-qwen35-4b-demo-mirrors-4b-rows-2026-10-09
     effective_from_utc: "2026-09-12T00:00:00Z"
     effective_from_confidence: date_only
@@ -3490,7 +3490,7 @@ policies:
     params_sent: []
     params_not_sent: {temperature: "0.7 (composed --override-generation-config)", top_p: "0.8 (override)", top_k: "20 (override)", min_p: "0.0 (override)", repetition_penalty: "1.0 (override)", presence_penalty: "0.0 -- NOT server-defaultable (protocol field defaults to 0.0, never None); the vendor's 1.5 reaches the engine only when sent per request", frequency_penalty: "0.0"}
     same_values_as: "qwen35_4b_it|omit_params|off|server_default"
-    source_citation: "as qwen35_4b_it|omit_params|off|server_default (every parameter identical; the 4B row's own citation stands for the numbers, its ruling decode-qwen-server-default-2026-09-11) -- ruling decode-qwen35-4b-demo-mirrors-4b-rows-2026-10-09: the worked example is the paper's Qwen3.5-4B checkpoint under the paper's presets, so its rows are the 4B's under its own key (the front-door session's ruling of 2026-10-09)"
+    source_citation: "as qwen35_4b_it|omit_params|off|server_default (every parameter identical; the 4B row's own citation stands for the numbers, its ruling decode-qwen-server-default-2026-09-11) -- ruling decode-qwen35-4b-demo-mirrors-4b-rows-2026-10-09: the worked example is the paper's Qwen3.5-4B checkpoint under the paper's presets, so its rows are the 4B's under its own key (a ruling of 2026-10-09)"
     ruling_id: decode-qwen35-4b-demo-mirrors-4b-rows-2026-10-09
     effective_from_utc: "2026-09-11T00:00:00Z"
     effective_from_confidence: date_only
@@ -3515,7 +3515,7 @@ policies:
     params_sent: [max_tokens]
     params_not_sent: {temperature: "0.7 (override)", top_p: "0.8 (override)", top_k: "20 (override)", min_p: "0.0 (override)", repetition_penalty: "1.0 (override)", presence_penalty: "0.0 (not defaultable)", frequency_penalty: "0.0"}
     same_values_as: "qwen35_4b_it|multi_turn|off|server_default"
-    source_citation: "as qwen35_4b_it|multi_turn|off|server_default (every parameter identical; the 4B row's own citation stands for the numbers, its ruling decode-qwen-server-default-2026-09-11) -- ruling decode-qwen35-4b-demo-mirrors-4b-rows-2026-10-09: the worked example is the paper's Qwen3.5-4B checkpoint under the paper's presets, so its rows are the 4B's under its own key (the front-door session's ruling of 2026-10-09)"
+    source_citation: "as qwen35_4b_it|multi_turn|off|server_default (every parameter identical; the 4B row's own citation stands for the numbers, its ruling decode-qwen-server-default-2026-09-11) -- ruling decode-qwen35-4b-demo-mirrors-4b-rows-2026-10-09: the worked example is the paper's Qwen3.5-4B checkpoint under the paper's presets, so its rows are the 4B's under its own key (a ruling of 2026-10-09)"
     ruling_id: decode-qwen35-4b-demo-mirrors-4b-rows-2026-10-09
     effective_from_utc: "2026-09-11T00:00:00Z"
     effective_from_confidence: date_only
@@ -3541,7 +3541,7 @@ policies:
     params_sent: [max_tokens]
     params_not_sent: {temperature: "1.0 (vLLM neutral default; no file, no override)", top_p: "1.0 (neutral)", top_k: "0 = disabled (neutral)", min_p: "0.0", repetition_penalty: "1.0", presence_penalty: "0.0", frequency_penalty: "0.0"}
     same_values_as: "qwen35_4b_it|multi_turn|off|vllm_default"
-    source_citation: "as qwen35_4b_it|multi_turn|off|vllm_default (every parameter identical; the 4B row's own citation stands for the numbers, its ruling none on the row) -- ruling decode-qwen35-4b-demo-mirrors-4b-rows-2026-10-09: the worked example is the paper's Qwen3.5-4B checkpoint under the paper's presets, so its rows are the 4B's under its own key (the front-door session's ruling of 2026-10-09)"
+    source_citation: "as qwen35_4b_it|multi_turn|off|vllm_default (every parameter identical; the 4B row's own citation stands for the numbers, its ruling none on the row) -- ruling decode-qwen35-4b-demo-mirrors-4b-rows-2026-10-09: the worked example is the paper's Qwen3.5-4B checkpoint under the paper's presets, so its rows are the 4B's under its own key (a ruling of 2026-10-09)"
     ruling_id: decode-qwen35-4b-demo-mirrors-4b-rows-2026-10-09
     effective_from_utc: "unverified"
     superseded_by_policy_id: "qwen35_4b_demo|multi_turn|off|server_default"
@@ -3566,7 +3566,7 @@ policies:
     params_sent: [max_tokens]
     params_not_sent: {temperature: "1.0 (neutral)", top_p: "1.0 (neutral)", top_k: "0 = disabled", min_p: "0.0", repetition_penalty: "1.0", presence_penalty: "0.0", frequency_penalty: "0.0"}
     same_values_as: "qwen35_4b_it|petri|off|vllm_default"
-    source_citation: "as qwen35_4b_it|petri|off|vllm_default (every parameter identical; the 4B row's own citation stands for the numbers, its ruling none on the row) -- ruling decode-qwen35-4b-demo-mirrors-4b-rows-2026-10-09: the worked example is the paper's Qwen3.5-4B checkpoint under the paper's presets, so its rows are the 4B's under its own key (the front-door session's ruling of 2026-10-09)"
+    source_citation: "as qwen35_4b_it|petri|off|vllm_default (every parameter identical; the 4B row's own citation stands for the numbers, its ruling none on the row) -- ruling decode-qwen35-4b-demo-mirrors-4b-rows-2026-10-09: the worked example is the paper's Qwen3.5-4B checkpoint under the paper's presets, so its rows are the 4B's under its own key (a ruling of 2026-10-09)"
     ruling_id: decode-qwen35-4b-demo-mirrors-4b-rows-2026-10-09
     effective_from_utc: "2026-09-07T00:00:00Z"
     effective_from_confidence: date_only
@@ -3592,7 +3592,7 @@ policies:
     params_sent: [temperature, max_tokens, seed]
     params_not_sent: {top_p: "0.8 (server default) for draws after PR #34; 1.0 (vLLM neutral) for the 512 store drawn before it", top_k: "20 (server default) after PR #34; 0 = disabled before", min_p: "0.0", repetition_penalty: "1.0", presence_penalty: "0.0 either way (not defaultable)", frequency_penalty: "0.0"}
     same_values_as: "qwen35_4b_it|bon|off|grandfathered_T1"
-    source_citation: "as qwen35_4b_it|bon|off|grandfathered_T1 (every parameter identical; the 4B row's own citation stands for the numbers, its ruling decode-bon-T1-grandfathered-2026-09-11) -- ruling decode-qwen35-4b-demo-mirrors-4b-rows-2026-10-09: the worked example is the paper's Qwen3.5-4B checkpoint under the paper's presets, so its rows are the 4B's under its own key (the front-door session's ruling of 2026-10-09)"
+    source_citation: "as qwen35_4b_it|bon|off|grandfathered_T1 (every parameter identical; the 4B row's own citation stands for the numbers, its ruling decode-bon-T1-grandfathered-2026-09-11) -- ruling decode-qwen35-4b-demo-mirrors-4b-rows-2026-10-09: the worked example is the paper's Qwen3.5-4B checkpoint under the paper's presets, so its rows are the 4B's under its own key (a ruling of 2026-10-09)"
     ruling_id: decode-qwen35-4b-demo-mirrors-4b-rows-2026-10-09
     effective_from_utc: "2026-09-11T00:00:00Z"
     effective_from_confidence: date_only
@@ -3619,7 +3619,7 @@ policies:
     params_sent: [temperature, top_p, top_k, min_p, presence_penalty, repetition_penalty, seed]
     params_not_sent: {frequency_penalty: "0.0 (protocol default)"}
     same_values_as: "qwen35_4b_it|bon|off|vendor_preset"
-    source_citation: "as qwen35_4b_it|bon|off|vendor_preset (every parameter identical; the 4B row's own citation stands for the numbers, its ruling decode-bon-vendor-preset-2026-09-17) -- ruling decode-qwen35-4b-demo-mirrors-4b-rows-2026-10-09: the worked example is the paper's Qwen3.5-4B checkpoint under the paper's presets, so its rows are the 4B's under its own key (the front-door session's ruling of 2026-10-09)"
+    source_citation: "as qwen35_4b_it|bon|off|vendor_preset (every parameter identical; the 4B row's own citation stands for the numbers, its ruling decode-bon-vendor-preset-2026-09-17) -- ruling decode-qwen35-4b-demo-mirrors-4b-rows-2026-10-09: the worked example is the paper's Qwen3.5-4B checkpoint under the paper's presets, so its rows are the 4B's under its own key (a ruling of 2026-10-09)"
     ruling_id: decode-qwen35-4b-demo-mirrors-4b-rows-2026-10-09
     effective_from_utc: "2026-09-17T00:00:00Z"
     effective_from_confidence: date_only
@@ -3644,7 +3644,7 @@ policies:
     params_sent: [temperature, max_tokens]
     params_not_sent: {top_p: "0.8 (server default) after PR #34; 1.0 before", top_k: "20 after PR #34; 0 before", min_p: "0.0", repetition_penalty: "1.0", presence_penalty: "0.0", frequency_penalty: "0.0"}
     same_values_as: "qwen35_4b_it|agentic|off|runner_forced_T1"
-    source_citation: "as qwen35_4b_it|agentic|off|runner_forced_T1 (every parameter identical; the 4B row's own citation stands for the numbers, its ruling decode-agentic-runner-T1-2026-09-11) -- ruling decode-qwen35-4b-demo-mirrors-4b-rows-2026-10-09: the worked example is the paper's Qwen3.5-4B checkpoint under the paper's presets, so its rows are the 4B's under its own key (the front-door session's ruling of 2026-10-09)"
+    source_citation: "as qwen35_4b_it|agentic|off|runner_forced_T1 (every parameter identical; the 4B row's own citation stands for the numbers, its ruling decode-agentic-runner-T1-2026-09-11) -- ruling decode-qwen35-4b-demo-mirrors-4b-rows-2026-10-09: the worked example is the paper's Qwen3.5-4B checkpoint under the paper's presets, so its rows are the 4B's under its own key (a ruling of 2026-10-09)"
     ruling_id: decode-qwen35-4b-demo-mirrors-4b-rows-2026-10-09
     effective_from_utc: "2026-09-11T00:00:00Z"
     effective_from_confidence: date_only
@@ -3670,7 +3670,7 @@ policies:
     params_sent: [temperature, top_p, top_k, min_p, presence_penalty, repetition_penalty, max_tokens, seed]
     params_not_sent: {frequency_penalty: "0.0"}
     same_values_as: "qwen35_4b_it|agentic|off|vendor"
-    source_citation: "as qwen35_4b_it|agentic|off|vendor (every parameter identical; the 4B row's own citation stands for the numbers, its ruling decode-vendor-default-all-evals-2026-09-21) -- ruling decode-qwen35-4b-demo-mirrors-4b-rows-2026-10-09: the worked example is the paper's Qwen3.5-4B checkpoint under the paper's presets, so its rows are the 4B's under its own key (the front-door session's ruling of 2026-10-09)"
+    source_citation: "as qwen35_4b_it|agentic|off|vendor (every parameter identical; the 4B row's own citation stands for the numbers, its ruling decode-vendor-default-all-evals-2026-09-21) -- ruling decode-qwen35-4b-demo-mirrors-4b-rows-2026-10-09: the worked example is the paper's Qwen3.5-4B checkpoint under the paper's presets, so its rows are the 4B's under its own key (a ruling of 2026-10-09)"
     ruling_id: decode-qwen35-4b-demo-mirrors-4b-rows-2026-10-09
     effective_from_utc: "2026-09-11T00:00:00Z"
     effective_from_confidence: date_only
@@ -3696,7 +3696,7 @@ policies:
     params_sent: [temperature, top_p, top_k, min_p, presence_penalty, repetition_penalty, max_tokens, seed]
     params_not_sent: {frequency_penalty: "0.0"}
     same_values_as: "qwen35_4b_it|multi_turn|off|vendor_preset"
-    source_citation: "as qwen35_4b_it|multi_turn|off|vendor_preset (every parameter identical; the 4B row's own citation stands for the numbers, its ruling decode-qwen-vendor-preset-bon-multiturn-petri-2026-09-17) -- ruling decode-qwen35-4b-demo-mirrors-4b-rows-2026-10-09: the worked example is the paper's Qwen3.5-4B checkpoint under the paper's presets, so its rows are the 4B's under its own key (the front-door session's ruling of 2026-10-09)"
+    source_citation: "as qwen35_4b_it|multi_turn|off|vendor_preset (every parameter identical; the 4B row's own citation stands for the numbers, its ruling decode-qwen-vendor-preset-bon-multiturn-petri-2026-09-17) -- ruling decode-qwen35-4b-demo-mirrors-4b-rows-2026-10-09: the worked example is the paper's Qwen3.5-4B checkpoint under the paper's presets, so its rows are the 4B's under its own key (a ruling of 2026-10-09)"
     ruling_id: decode-qwen35-4b-demo-mirrors-4b-rows-2026-10-09
     effective_from_utc: "2026-09-17T00:00:00Z"
     effective_from_confidence: date_only
@@ -3722,7 +3722,7 @@ policies:
     params_sent: [temperature, top_p, top_k, min_p, presence_penalty, repetition_penalty, max_tokens, seed]
     params_not_sent: {frequency_penalty: "0.0"}
     same_values_as: "qwen35_4b_it|petri|off|vendor_preset"
-    source_citation: "as qwen35_4b_it|petri|off|vendor_preset (every parameter identical; the 4B row's own citation stands for the numbers, its ruling decode-qwen-vendor-preset-bon-multiturn-petri-2026-09-17) -- ruling decode-qwen35-4b-demo-mirrors-4b-rows-2026-10-09: the worked example is the paper's Qwen3.5-4B checkpoint under the paper's presets, so its rows are the 4B's under its own key (the front-door session's ruling of 2026-10-09)"
+    source_citation: "as qwen35_4b_it|petri|off|vendor_preset (every parameter identical; the 4B row's own citation stands for the numbers, its ruling decode-qwen-vendor-preset-bon-multiturn-petri-2026-09-17) -- ruling decode-qwen35-4b-demo-mirrors-4b-rows-2026-10-09: the worked example is the paper's Qwen3.5-4B checkpoint under the paper's presets, so its rows are the 4B's under its own key (a ruling of 2026-10-09)"
     ruling_id: decode-qwen35-4b-demo-mirrors-4b-rows-2026-10-09
     effective_from_utc: "2026-09-17T00:00:00Z"
     effective_from_confidence: date_only
@@ -3748,7 +3748,7 @@ policies:
     params_sent: [temperature, top_p, top_k, min_p, presence_penalty, repetition_penalty, max_tokens, seed]
     params_not_sent: {frequency_penalty: "0.0 (protocol default)"}
     same_values_as: "qwen35_4b_it|em8q|off|vendor_preset"
-    source_citation: "as qwen35_4b_it|em8q|off|vendor_preset (every parameter identical; the 4B row's own citation stands for the numbers, its ruling decode-vendor-preset-default-2026-09-17) -- ruling decode-qwen35-4b-demo-mirrors-4b-rows-2026-10-09: the worked example is the paper's Qwen3.5-4B checkpoint under the paper's presets, so its rows are the 4B's under its own key (the front-door session's ruling of 2026-10-09)"
+    source_citation: "as qwen35_4b_it|em8q|off|vendor_preset (every parameter identical; the 4B row's own citation stands for the numbers, its ruling decode-vendor-preset-default-2026-09-17) -- ruling decode-qwen35-4b-demo-mirrors-4b-rows-2026-10-09: the worked example is the paper's Qwen3.5-4B checkpoint under the paper's presets, so its rows are the 4B's under its own key (a ruling of 2026-10-09)"
     ruling_id: decode-qwen35-4b-demo-mirrors-4b-rows-2026-10-09
     effective_from_utc: "2026-09-17T00:00:00Z"
     effective_from_confidence: date_only
@@ -3773,7 +3773,7 @@ policies:
     params_sent: [temperature, max_tokens]
     params_not_sent: {top_p: "0.8 (server default: the composed --override-generation-config of contracts.SERVER_DEFAULT_SAMPLING_BY_MODEL, PR #34)", top_k: "20 (server default)", min_p: "0.0", repetition_penalty: "1.0", presence_penalty: "0.0 (not defaultable)", frequency_penalty: "0.0"}
     same_values_as: "qwen35_4b_it|em8q|off|t1_record"
-    source_citation: "as qwen35_4b_it|em8q|off|t1_record (every parameter identical; the 4B row's own citation stands for the numbers, its ruling none on the row) -- ruling decode-qwen35-4b-demo-mirrors-4b-rows-2026-10-09: the worked example is the paper's Qwen3.5-4B checkpoint under the paper's presets, so its rows are the 4B's under its own key (the front-door session's ruling of 2026-10-09)"
+    source_citation: "as qwen35_4b_it|em8q|off|t1_record (every parameter identical; the 4B row's own citation stands for the numbers, its ruling none on the row) -- ruling decode-qwen35-4b-demo-mirrors-4b-rows-2026-10-09: the worked example is the paper's Qwen3.5-4B checkpoint under the paper's presets, so its rows are the 4B's under its own key (a ruling of 2026-10-09)"
     ruling_id: decode-qwen35-4b-demo-mirrors-4b-rows-2026-10-09
     effective_from_utc: "2026-09-17T00:00:00Z"
     effective_from_confidence: date_only
@@ -3799,7 +3799,7 @@ policies:
     params_sent: [temperature, top_p, top_k, min_p, presence_penalty, seed]
     params_not_sent: {repetition_penalty: "1.0 (server default after PR #34; vLLM default before -- the same value)", frequency_penalty: "0.0"}
     same_values_as: "qwen35_4b_it|capability|on|thinking_card"
-    source_citation: "as qwen35_4b_it|capability|on|thinking_card (every parameter identical; the 4B row's own citation stands for the numbers, its ruling decode-thinking-card-rows-2026-09-09) -- ruling decode-qwen35-4b-demo-mirrors-4b-rows-2026-10-09: the worked example is the paper's Qwen3.5-4B checkpoint under the paper's presets, so its rows are the 4B's under its own key (the front-door session's ruling of 2026-10-09)"
+    source_citation: "as qwen35_4b_it|capability|on|thinking_card (every parameter identical; the 4B row's own citation stands for the numbers, its ruling decode-thinking-card-rows-2026-09-09) -- ruling decode-qwen35-4b-demo-mirrors-4b-rows-2026-10-09: the worked example is the paper's Qwen3.5-4B checkpoint under the paper's presets, so its rows are the 4B's under its own key (a ruling of 2026-10-09)"
     ruling_id: decode-qwen35-4b-demo-mirrors-4b-rows-2026-10-09
     effective_from_utc: "2026-09-09T00:00:00Z"
     effective_from_confidence: date_only
@@ -3823,7 +3823,7 @@ policies:
     params_sent: [temperature, top_p, top_k, min_p, presence_penalty, seed]
     params_not_sent: {repetition_penalty: "1.0", frequency_penalty: "0.0"}
     same_values_as: "qwen35_4b_it|gsm8k|on|thinking_card"
-    source_citation: "as qwen35_4b_it|gsm8k|on|thinking_card (every parameter identical; the 4B row's own citation stands for the numbers, its ruling decode-thinking-card-rows-2026-09-09) -- ruling decode-qwen35-4b-demo-mirrors-4b-rows-2026-10-09: the worked example is the paper's Qwen3.5-4B checkpoint under the paper's presets, so its rows are the 4B's under its own key (the front-door session's ruling of 2026-10-09)"
+    source_citation: "as qwen35_4b_it|gsm8k|on|thinking_card (every parameter identical; the 4B row's own citation stands for the numbers, its ruling decode-thinking-card-rows-2026-09-09) -- ruling decode-qwen35-4b-demo-mirrors-4b-rows-2026-10-09: the worked example is the paper's Qwen3.5-4B checkpoint under the paper's presets, so its rows are the 4B's under its own key (a ruling of 2026-10-09)"
     ruling_id: decode-qwen35-4b-demo-mirrors-4b-rows-2026-10-09
     effective_from_utc: "2026-09-09T00:00:00Z"
     effective_from_confidence: date_only
@@ -3847,7 +3847,7 @@ policies:
     params_sent: [temperature, top_p, top_k, min_p, presence_penalty, repetition_penalty, seed]
     params_not_sent: {frequency_penalty: "0.0"}
     same_values_as: "qwen35_4b_it|gsm8k|on|general"
-    source_citation: "as qwen35_4b_it|gsm8k|on|general (every parameter identical; the 4B row's own citation stands for the numbers, its ruling none on the row) -- ruling decode-qwen35-4b-demo-mirrors-4b-rows-2026-10-09: the worked example is the paper's Qwen3.5-4B checkpoint under the paper's presets, so its rows are the 4B's under its own key (the front-door session's ruling of 2026-10-09)"
+    source_citation: "as qwen35_4b_it|gsm8k|on|general (every parameter identical; the 4B row's own citation stands for the numbers, its ruling none on the row) -- ruling decode-qwen35-4b-demo-mirrors-4b-rows-2026-10-09: the worked example is the paper's Qwen3.5-4B checkpoint under the paper's presets, so its rows are the 4B's under its own key (a ruling of 2026-10-09)"
     ruling_id: decode-qwen35-4b-demo-mirrors-4b-rows-2026-10-09
     effective_from_utc: "2026-09-09T00:00:00Z"
     effective_from_confidence: date_only
@@ -3872,7 +3872,7 @@ policies:
     params_sent: [temperature, top_p, top_k, min_p, presence_penalty, seed]
     params_not_sent: {repetition_penalty: "1.0", frequency_penalty: "0.0"}
     same_values_as: "qwen35_4b_it|math500|on|thinking_card"
-    source_citation: "as qwen35_4b_it|math500|on|thinking_card (every parameter identical; the 4B row's own citation stands for the numbers, its ruling decode-thinking-card-rows-2026-09-09) -- ruling decode-qwen35-4b-demo-mirrors-4b-rows-2026-10-09: the worked example is the paper's Qwen3.5-4B checkpoint under the paper's presets, so its rows are the 4B's under its own key (the front-door session's ruling of 2026-10-09)"
+    source_citation: "as qwen35_4b_it|math500|on|thinking_card (every parameter identical; the 4B row's own citation stands for the numbers, its ruling decode-thinking-card-rows-2026-09-09) -- ruling decode-qwen35-4b-demo-mirrors-4b-rows-2026-10-09: the worked example is the paper's Qwen3.5-4B checkpoint under the paper's presets, so its rows are the 4B's under its own key (a ruling of 2026-10-09)"
     ruling_id: decode-qwen35-4b-demo-mirrors-4b-rows-2026-10-09
     effective_from_utc: "2026-09-09T00:00:00Z"
     effective_from_confidence: date_only
@@ -3896,7 +3896,7 @@ policies:
     params_sent: [temperature, top_p, top_k, min_p, presence_penalty, repetition_penalty, seed]
     params_not_sent: {frequency_penalty: "0.0"}
     same_values_as: "qwen35_4b_it|math500|on|general"
-    source_citation: "as qwen35_4b_it|math500|on|general (every parameter identical; the 4B row's own citation stands for the numbers, its ruling decode-thinking-card-rows-2026-09-09) -- ruling decode-qwen35-4b-demo-mirrors-4b-rows-2026-10-09: the worked example is the paper's Qwen3.5-4B checkpoint under the paper's presets, so its rows are the 4B's under its own key (the front-door session's ruling of 2026-10-09)"
+    source_citation: "as qwen35_4b_it|math500|on|general (every parameter identical; the 4B row's own citation stands for the numbers, its ruling decode-thinking-card-rows-2026-09-09) -- ruling decode-qwen35-4b-demo-mirrors-4b-rows-2026-10-09: the worked example is the paper's Qwen3.5-4B checkpoint under the paper's presets, so its rows are the 4B's under its own key (a ruling of 2026-10-09)"
     ruling_id: decode-qwen35-4b-demo-mirrors-4b-rows-2026-10-09
     effective_from_utc: "2026-09-09T00:00:00Z"
     effective_from_confidence: date_only
@@ -3921,7 +3921,7 @@ policies:
     params_sent: [temperature, top_p, top_k, min_p, presence_penalty, repetition_penalty, seed]
     params_not_sent: {frequency_penalty: "0.0"}
     same_values_as: "qwen35_4b_it|math500|on|battery"
-    source_citation: "as qwen35_4b_it|math500|on|battery (every parameter identical; the 4B row's own citation stands for the numbers, its ruling decode-thinking-card-rows-2026-09-09) -- ruling decode-qwen35-4b-demo-mirrors-4b-rows-2026-10-09: the worked example is the paper's Qwen3.5-4B checkpoint under the paper's presets, so its rows are the 4B's under its own key (the front-door session's ruling of 2026-10-09)"
+    source_citation: "as qwen35_4b_it|math500|on|battery (every parameter identical; the 4B row's own citation stands for the numbers, its ruling decode-thinking-card-rows-2026-09-09) -- ruling decode-qwen35-4b-demo-mirrors-4b-rows-2026-10-09: the worked example is the paper's Qwen3.5-4B checkpoint under the paper's presets, so its rows are the 4B's under its own key (a ruling of 2026-10-09)"
     ruling_id: decode-qwen35-4b-demo-mirrors-4b-rows-2026-10-09
     effective_from_utc: "2026-09-10T00:00:00Z"
     effective_from_confidence: date_only
@@ -3946,7 +3946,7 @@ policies:
     params_sent: [temperature, top_p, top_k, min_p, presence_penalty, repetition_penalty, seed]
     params_not_sent: {frequency_penalty: "0.0"}
     same_values_as: "qwen35_4b_it|capability|on|general"
-    source_citation: "as qwen35_4b_it|capability|on|general (every parameter identical; the 4B row's own citation stands for the numbers, its ruling decode-thinking-card-rows-2026-09-09) -- ruling decode-qwen35-4b-demo-mirrors-4b-rows-2026-10-09: the worked example is the paper's Qwen3.5-4B checkpoint under the paper's presets, so its rows are the 4B's under its own key (the front-door session's ruling of 2026-10-09)"
+    source_citation: "as qwen35_4b_it|capability|on|general (every parameter identical; the 4B row's own citation stands for the numbers, its ruling decode-thinking-card-rows-2026-09-09) -- ruling decode-qwen35-4b-demo-mirrors-4b-rows-2026-10-09: the worked example is the paper's Qwen3.5-4B checkpoint under the paper's presets, so its rows are the 4B's under its own key (a ruling of 2026-10-09)"
     ruling_id: decode-qwen35-4b-demo-mirrors-4b-rows-2026-10-09
     effective_from_utc: "2026-09-09T00:00:00Z"
     effective_from_confidence: date_only
@@ -3970,7 +3970,7 @@ policies:
     params_sent: [temperature, top_p, top_k, min_p, presence_penalty, repetition_penalty, seed]
     params_not_sent: {frequency_penalty: "0.0"}
     same_values_as: "qwen35_4b_it|capability|on|battery"
-    source_citation: "as qwen35_4b_it|capability|on|battery (every parameter identical; the 4B row's own citation stands for the numbers, its ruling decode-thinking-card-rows-2026-09-09) -- ruling decode-qwen35-4b-demo-mirrors-4b-rows-2026-10-09: the worked example is the paper's Qwen3.5-4B checkpoint under the paper's presets, so its rows are the 4B's under its own key (the front-door session's ruling of 2026-10-09)"
+    source_citation: "as qwen35_4b_it|capability|on|battery (every parameter identical; the 4B row's own citation stands for the numbers, its ruling decode-thinking-card-rows-2026-09-09) -- ruling decode-qwen35-4b-demo-mirrors-4b-rows-2026-10-09: the worked example is the paper's Qwen3.5-4B checkpoint under the paper's presets, so its rows are the 4B's under its own key (a ruling of 2026-10-09)"
     ruling_id: decode-qwen35-4b-demo-mirrors-4b-rows-2026-10-09
     effective_from_utc: "2026-09-10T00:00:00Z"
     effective_from_confidence: date_only
@@ -3995,7 +3995,7 @@ policies:
     params_sent: [temperature, top_p, top_k, seed]
     params_not_sent: {min_p: "0.0 (server default after PR #34; neutral before -- same value)", repetition_penalty: "1.0", presence_penalty: "0.0", frequency_penalty: "0.0"}
     same_values_as: "qwen35_4b_it|capability|off|card"
-    source_citation: "as qwen35_4b_it|capability|off|card (every parameter identical; the 4B row's own citation stands for the numbers, its ruling none on the row) -- ruling decode-qwen35-4b-demo-mirrors-4b-rows-2026-10-09: the worked example is the paper's Qwen3.5-4B checkpoint under the paper's presets, so its rows are the 4B's under its own key (the front-door session's ruling of 2026-10-09)"
+    source_citation: "as qwen35_4b_it|capability|off|card (every parameter identical; the 4B row's own citation stands for the numbers, its ruling none on the row) -- ruling decode-qwen35-4b-demo-mirrors-4b-rows-2026-10-09: the worked example is the paper's Qwen3.5-4B checkpoint under the paper's presets, so its rows are the 4B's under its own key (a ruling of 2026-10-09)"
     ruling_id: decode-qwen35-4b-demo-mirrors-4b-rows-2026-10-09
     effective_from_utc: "2026-09-06T00:00:00Z"
     effective_from_confidence: date_only
@@ -4020,7 +4020,7 @@ policies:
     params_sent: [temperature, top_p, top_k, min_p, presence_penalty, repetition_penalty, seed]
     params_not_sent: {frequency_penalty: "0.0"}
     same_values_as: "qwen35_4b_it|capability|off|vendor_preset"
-    source_citation: "as qwen35_4b_it|capability|off|vendor_preset (every parameter identical; the 4B row's own citation stands for the numbers, its ruling decode-vendor-preset-mode-2026-09-12) -- ruling decode-qwen35-4b-demo-mirrors-4b-rows-2026-10-09: the worked example is the paper's Qwen3.5-4B checkpoint under the paper's presets, so its rows are the 4B's under its own key (the front-door session's ruling of 2026-10-09)"
+    source_citation: "as qwen35_4b_it|capability|off|vendor_preset (every parameter identical; the 4B row's own citation stands for the numbers, its ruling decode-vendor-preset-mode-2026-09-12) -- ruling decode-qwen35-4b-demo-mirrors-4b-rows-2026-10-09: the worked example is the paper's Qwen3.5-4B checkpoint under the paper's presets, so its rows are the 4B's under its own key (a ruling of 2026-10-09)"
     ruling_id: decode-qwen35-4b-demo-mirrors-4b-rows-2026-10-09
     effective_from_utc: "2026-09-12T00:00:00Z"
     effective_from_confidence: date_only
@@ -4044,7 +4044,7 @@ policies:
     params_sent: [temperature, top_p, top_k, min_p, presence_penalty, repetition_penalty, seed]
     params_not_sent: {frequency_penalty: "0.0"}
     same_values_as: "qwen35_4b_it|capability|on|vendor_thinking_precise"
-    source_citation: "as qwen35_4b_it|capability|on|vendor_thinking_precise (every parameter identical; the 4B row's own citation stands for the numbers, its ruling none on the row) -- ruling decode-qwen35-4b-demo-mirrors-4b-rows-2026-10-09: the worked example is the paper's Qwen3.5-4B checkpoint under the paper's presets, so its rows are the 4B's under its own key (the front-door session's ruling of 2026-10-09)"
+    source_citation: "as qwen35_4b_it|capability|on|vendor_thinking_precise (every parameter identical; the 4B row's own citation stands for the numbers, its ruling none on the row) -- ruling decode-qwen35-4b-demo-mirrors-4b-rows-2026-10-09: the worked example is the paper's Qwen3.5-4B checkpoint under the paper's presets, so its rows are the 4B's under its own key (a ruling of 2026-10-09)"
     ruling_id: decode-qwen35-4b-demo-mirrors-4b-rows-2026-10-09
     effective_from_utc: "2026-09-11T00:00:00Z"
     effective_from_confidence: date_only
@@ -4069,7 +4069,7 @@ policies:
     params_sent: [temperature, top_p, top_k, min_p, presence_penalty, repetition_penalty, seed]
     params_not_sent: {frequency_penalty: "0.0"}
     same_values_as: "qwen35_4b_it|capability|off|vendor_instruct_reasoning"
-    source_citation: "as qwen35_4b_it|capability|off|vendor_instruct_reasoning (every parameter identical; the 4B row's own citation stands for the numbers, its ruling none on the row) -- ruling decode-qwen35-4b-demo-mirrors-4b-rows-2026-10-09: the worked example is the paper's Qwen3.5-4B checkpoint under the paper's presets, so its rows are the 4B's under its own key (the front-door session's ruling of 2026-10-09)"
+    source_citation: "as qwen35_4b_it|capability|off|vendor_instruct_reasoning (every parameter identical; the 4B row's own citation stands for the numbers, its ruling none on the row) -- ruling decode-qwen35-4b-demo-mirrors-4b-rows-2026-10-09: the worked example is the paper's Qwen3.5-4B checkpoint under the paper's presets, so its rows are the 4B's under its own key (a ruling of 2026-10-09)"
     ruling_id: decode-qwen35-4b-demo-mirrors-4b-rows-2026-10-09
     effective_from_utc: "2026-09-11T00:00:00Z"
     effective_from_confidence: date_only
@@ -4094,7 +4094,7 @@ policies:
     params_sent: [max_tokens, logprobs, top_logprobs]
     params_not_sent: {temperature: "sampler-moot: a teacher-forced letter-logprob argmax reads the distribution, not a sample", top_p: "moot", top_k: "moot"}
     same_values_as: "gemma4e4b_it|mmlu|off|greedy"
-    source_citation: "the `*|mmlu|off|greedy` row below, stated EXPLICITLY for this paper_status-reference key (the adapter expands `*` over in_paper / descoped served models only, dimensions.served_model_ids, so no wildcard row reaches it; same_values_as the served models' expansion, loader-checked) -- ruling decode-qwen35-4b-demo-mirrors-4b-rows-2026-10-09, widened on 2026-10-09 by the front-door session's answer to the registry's question: the recipe runs MMLU for every key (reproduce/lib/stage.py FAMILIES) and registers a front-door key natively under mmlu_letter_prefill_full_1531, so the worked example binds that instrument through this row, as the two pipeline-test models do (their rows above)"
+    source_citation: "the `*|mmlu|off|greedy` row below, stated EXPLICITLY for this paper_status-reference key (the adapter expands `*` over in_paper / descoped served models only, dimensions.served_model_ids, so no wildcard row reaches it; same_values_as the served models' expansion, loader-checked) -- ruling decode-qwen35-4b-demo-mirrors-4b-rows-2026-10-09, widened on 2026-10-09 by an answer to the registry's question: the recipe runs MMLU for every key (reproduce/lib/stage.py FAMILIES) and registers a front-door key natively under mmlu_letter_prefill_full_1531, so the worked example binds that instrument through this row, as the two pipeline-test models do (their rows above)"
     ruling_id: decode-qwen35-4b-demo-mirrors-4b-rows-2026-10-09
     effective_from_utc: "2026-10-09T00:00:00Z"
     effective_from_confidence: date_only
@@ -4288,7 +4288,7 @@ sampling_mode_policy:
   - {model_key: qwen35_4b_demo, mode: thinking_card, policy_ref: "qwen35_4b_demo|capability|on|thinking_card", source: "the mode's row for the worked example = the twin of the 4B's thinking card row (the GSM8K front door's `--sampling thinking_card`) (ruling decode-qwen35-4b-demo-mirrors-4b-rows-2026-10-09): contracts.sampling_for('qwen35_4b_demo', 'thinking_card') resolves the twin row"}
   - {model_key: glm46vflash, mode: thinking_card, policy_ref: "glm46vflash|capability|on|thinking_card", source: "THINKING_SAMPLING_BY_MODEL_KEY['glm46vflash']"}
   - {model_key: nemotron3nano4b, mode: thinking_card, policy_ref: "nemotron3nano4b|capability|on|thinking_card", source: "THINKING_SAMPLING_BY_MODEL_KEY['nemotron3nano4b']"}
-  # paper-companion-repo (ruling decode-thinking-card-mapping-pipeline-test-models-2026-09-30): the two PIPELINE-TEST models run GSM8K thinking-ON under
+  # the pipeline test (ruling decode-thinking-card-mapping-pipeline-test-models-2026-09-30): the two PIPELINE-TEST models run GSM8K thinking-ON under
   # `--sampling thinking_card` (g8k_cells.py front-door facts: arm on -> mode thinking_card), so the served driver's `contracts.sampling_for(<key>,
   # thinking_card)` must find a row -- the model's `|gsm8k|on|vendor_preset` row (the shipped file, the thinking_card rule's first clause).
   # Without these two entries the driver refused every gsm8k unit of the u0 wave by name (THINKING_SAMPLING_BY_MODEL_KEY had rows for the four only).
@@ -4326,7 +4326,7 @@ sampling_mode_policy:
   - {route: "sampled_decode --greedy opt-in (greedy_opt_in_record)", policy_ref: "*|<category>|off|greedy", source: "src/sisteer/eval/sampled_decode.py greedy_opt_in_record / GREEDY_FLAG"}
   - {route: "bon_served DEFAULT (bon_decode_preset 'vendor_preset'; --bon-decode-preset vendor_preset --model-key <model>): bon_policy(model) -> resolve(model, eval strongreject_bon)", policy_ref: "<model>|bon|off|vendor_preset", source: "src/sisteer/eval/attacks/bon_served.py resolve_bon_sampler / bon_policy (2026-09-17; ruling decode-bon-vendor-preset-2026-09-17); the climb re-draws a vendor-preset store at this row (bon_climb.store_sampler)"}
   - {route: "bon_served harness_default (bon_decode_preset 'harness_default', by EXPLICIT opt-in: bon_policy(model, 'harness_default') -> by_ref, or model-independently for a legacy store)", policy_ref: "<model>|bon|off|grandfathered_T1 (SUPERSEDED)", source: "bon_served.py resolve_bon_sampler; before 2026-09-17 the model-independent default (_sent_sampler l.991-992: decode None -> {temperature: 1.0}); every store drawn before then, and its climb (bon_climb.LEGACY_STORE_PRESET), reads it by name"}
-  - {route: "bon_served explicit preset block (bon_decode_preset 'vendor'; decode given)", policy_ref: "the caller's own block (decode_policy_id None on the rows) -- the sdfbase-llama8b wave's retired face, kept because existing rows carry the label", source: "bon_served.py _request / resolve_bon_sampler (decode is not None) -- whether any BoN store was drawn this way is unverified"}
+  - {route: "bon_served explicit preset block (bon_decode_preset 'vendor'; decode given)", policy_ref: "the caller's own block (decode_policy_id None on the rows) -- the Llama-8B wave's retired face, kept because existing rows carry the label", source: "bon_served.py _request / resolve_bon_sampler (decode is not None) -- whether any BoN store was drawn this way is unverified"}
   - {route: "target_decode.GENERATION_CONFIG (temperature None; nothing sent)", policy_ref: "<model>|multi_turn|off|generation_config (qwen35_4b_it: |server_default after PR #34, |vllm_default before)", source: "src/sisteer/eval/attacks/target_decode.py"}
   - {route: "target_decode.GREEDY (temperature 0.0)", policy_ref: "*|multi_turn|off|greedy", source: "target_decode.py GREEDY"}
   - {route: "target_decode.EXPLICIT (temperature t > 0 + DECODE_EXTRA_KEYS)", policy_ref: "llama8b_it|multi_turn|off|generation_config (the Llama lane sent its preset explicitly)", source: "target_decode.py EXPLICIT"}

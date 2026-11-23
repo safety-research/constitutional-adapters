@@ -198,7 +198,9 @@ def _synthetic_tree(tmp_path: Path, *, views_text: str | None = None, seeds=(1, 
 
 def _driver_argv(row_sh: str, extra: str = "") -> list:
     """g8k_driver_argv RUN under bash from a row's shell facts (the launcher's own function, never re-typed)."""
+    # the stubs stand in for common.sh: its two helpers, the checkout, and the job's roster (its default, the production one)
     stubs = (f'set -u\nf22_log(){{ :; }}\nf22_fatal(){{ echo FATAL "$@" >&2; exit 1; }}\nREPO_DIR={shlex.quote(str(REPO))}\n'
+             f'F22_ROSTER=configs/sdfbase_full22_roster.yaml\n'
              f'source {shlex.quote(str(G8K / "g8k_common.sh"))}\n' + M.literals_sh() + row_sh +
              'CPY=/venv/bin/python; PROXY_URL=http://127.0.0.1:1/v1; TABLE=/serve/routing_table.json; LEDGER_URL=http://127.0.0.1:2/v1; '
              'CFG=configs/x.yaml; TT_TWO_SI_DEFENSES_DIR=/bank/view; OUT_ROOT=/out; TARGET_S=44; SERVE_DIR=/serve; ATTEMPT_ID=a1; RUNG_SUBSET=/out/rung_subset.json\n'
@@ -278,6 +280,7 @@ def test_the_seedrep_matrix_machinery_over_a_synthetic_roster_and_pins(tmp_path)
     # a policy with no base refuses by name in the shell (both or neither)
     bad_sh = M.row_sh(rows[0], wave_root_rel=M.wave_root_rel_of(doc)).replace(f"G8K_INSPECT_SEED_BASE={rows[0]['inspect_seed_base']}", "G8K_INSPECT_SEED_BASE=''")
     r = subprocess.run(["bash", "-c", f'set -u\nf22_log(){{ :; }}\nf22_fatal(){{ echo FATAL "$@" >&2; exit 1; }}\nREPO_DIR={shlex.quote(str(REPO))}\n'
+                        f'F22_ROSTER=configs/sdfbase_full22_roster.yaml\n'
                         f'source {shlex.quote(str(G8K / "g8k_common.sh"))}\n' + M.literals_sh() + bad_sh +
                         'CPY=p; PROXY_URL=u; TABLE=t; LEDGER_URL=l; CFG=c; TT_TWO_SI_DEFENSES_DIR=d; OUT_ROOT=o; TARGET_S=1; SERVE_DIR=s; ATTEMPT_ID=a1; RUNG_SUBSET=r\ng8k_driver_argv'],
                        capture_output=True, text=True, check=False)
@@ -363,7 +366,7 @@ def test_the_wave_and_the_matrix_are_registered_and_the_launchers_admit_the_matr
     assert "frozen/ca6fcb92/" in text and "frozen/cfdcd2c0/" in text and "PROVISIONAL UNTIL STAGING" not in text   # the freeze, the staging one kept as history
     for name in ("gsm8k_thinking.sbatch", "dry_run_prod.sbatch", "ladder_plan.sbatch", "smoke_not_available.sbatch"):
         src = (G8K / name).read_text()
-        m = re.search(r'case "\$G8K_MATRIX" in ([a-z_|]+)\) ;;', src)
+        m = re.search(r'case "\$G8K_MATRIX" in ([a-z0-9_|]+)\) ;;', src)
         assert m and sorted(m.group(1).split("|")) == sorted(M.MATRICES) and "qwen_seedrep" in m.group(1).split("|"), name
     # the shell reads both new row names (the dead-env-contract rule) and the dry run prints the policy
     common = (G8K / "g8k_common.sh").read_text()

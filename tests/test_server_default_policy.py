@@ -261,7 +261,9 @@ def test_a_proxy_without_the_key_in_its_attestation_echoes_nothing():
 # --------------------------------------------------------------------------- the recorder over an engine_defaults log
 
 def test_record_resolved_sampler_agrees_with_the_neutral_tuple_and_diverges_with_the_vendor_row(tmp_path):
-    import record_resolved_sampler as rrs
+    # by path, under a private name: scripts/arditi has a module of the same name, and a bare import resolves to whichever
+    # directory another test left first on sys.path
+    rrs = _load("sdfbase_record_resolved_sampler", REPO / "scripts" / "sdfbase" / "record_resolved_sampler.py")
     import test_record_resolved_sampler as R
     neutral = [R._STARTED, R._ATTEST_INFO] + [R._sp(i, cap=1024, seed=None, **R._NEUTRAL).replace(f"seed={1000 + i}", "seed=None") for i in range(4)]
     vendor = [R._STARTED, R._ATTEST_INFO] + [R._sp(i, cap=1024, **R._VENDOR) for i in range(4)]

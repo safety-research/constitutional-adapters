@@ -4,7 +4,7 @@ seed-replicate lane: ``<derived_dir>/ADMISSION.json``. A pure read of what
 is on disk; re-runnable any time.
 
     derived_admission.py <derived_dir> --parents <pos_cell_dir> <neg_cell_dir> \\
-        [--floor <f>] [--dead-floor <d>] [--key <key>] [--seed <s>] [--out ADMISSION.json]
+        [--floor <f>] [--dead-floor <d>] [--key <key>] [--ctl-key <key>] [--seed <s>] [--out ADMISSION.json]
 
 ADMITTED iff every reason below holds; otherwise ``admitted: false`` with
 every failing reason named, the artifact PRESERVED on disk (never deleted or
@@ -20,7 +20,15 @@ residual distillation, ``lora_subtraction`` = the task-vector difference):
 * both parents record the SAME ``seed`` (top-level in the sidecar) and,
   when ``--seed`` is given, that seed; the derived ``model_key`` equals
   both parent blocks' and, when ``--key`` is given, that key (the parent
-  dirs must also sit under ``…/<key>/cells_all/``);
+  dirs must also sit under ``…/<key>/cells_all/``); with ``--ctl-key`` the
+  NEGATIVE parent is the control refit under its own bank key: its block's
+  ``model_key`` must equal that key and its dir sit under
+  ``…/<ctl-key>/cells_all/``. The mixed pair is accepted ONLY on the explicit
+  flag, never on a sidecar's own ``ctl_model_key`` (a record under validation
+  cannot vouch for its own pairing; a sidecar naming another control key than
+  the flag is refused). The flag is refused outright when it names the model
+  key, and the CLI refuses it, writing nothing, unless the derived dir sits
+  directly under ``…/<ctl-key>/``;
 * the parents agree on every :data:`PARENT_MATCH_FIELDS` entry (the shared
   ``require_parents_match`` tuple — pinned equal to
   ``sisteer.eval.train_budget.DERIVED_PARENT_MATCH_FIELDS`` by the tests).
@@ -397,7 +405,8 @@ def layers_below(gl: dict, reference: float) -> list[str]:
 
 def admission(derived_dir, *, pos_dir, neg_dir, floor: float = DEFAULT_FLOOR,
               dead_floor: float = DEFAULT_DEAD_FLOOR,
-              key: str | None = None, seed: int | None = None) -> dict:
+              key: str | None = None, seed: int | None = None,
+              ctl_key: str | None = None) -> dict:
     derived = Path(derived_dir)
     meta = _read_json(derived / "derived_meta.json", "derived_meta.json")
     kind = meta.get("kind")
@@ -405,6 +414,10 @@ def admission(derived_dir, *, pos_dir, neg_dir, floor: float = DEFAULT_FLOOR,
     alarms: list[str] = []
     if kind not in KINDS:
         raise InputError(f"derived_meta.json kind {kind!r} is none of {KINDS!r}")
+    if ctl_key is not None and ctl_key in (key, meta.get("model_key")):
+        # the model key's own pair takes no --ctl-key: with it, a published difference could be judged (and its ADMISSION.json
+        # written) as if it were a control-key pair
+        raise InputError(f"--ctl-key {ctl_key!r} is the model key — omit it for the model key's own control")
     if not (derived / "object.pt").is_file():
         reasons.append("object.pt absent")
     obj_sha = meta.get("object_sha256")
@@ -415,7 +428,7 @@ def admission(derived_dir, *, pos_dir, neg_dir, floor: float = DEFAULT_FLOOR,
     # --- parents ----------------------------------------------------------------
     blocks = {"pos": meta.get("parent_pos") or {}, "neg": meta.get("parent_neg") or {}}
     parents = {"pos": _parent(Path(pos_dir), "pos", blocks["pos"], reasons, key=key),
-               "neg": _parent(Path(neg_dir), "neg", blocks["neg"], reasons, key=key)}
+               "neg": _parent(Path(neg_dir), "neg", blocks["neg"], reasons, key=ctl_key or key)}
     p, n = parents["pos"], parents["neg"]
     if p["seed"] is not None and n["seed"] is not None and p["seed"] != n["seed"]:
         reasons.append(f"parents' seeds differ: pos {p['seed']}, neg {n['seed']} — "
@@ -427,9 +440,20 @@ def admission(derived_dir, *, pos_dir, neg_dir, floor: float = DEFAULT_FLOOR,
     dkey = meta.get("model_key")
     for role in ("pos", "neg"):
         bk = blocks[role].get("model_key")
+        if role == "neg" and ctl_key is not None:
+            # the mixed pair, accepted ONLY on the explicit flag: the negative block must name exactly that key
+            if bk != ctl_key:
+                reasons.append(f"neg parent block model_key {bk!r} != the explicit --ctl-key {ctl_key!r}")
+            continue
         if bk is not None and dkey is not None and bk != dkey:
             reasons.append(f"{role} parent block model_key {bk!r} != derived "
                            f"model_key {dkey!r}")
+    declared = meta.get("ctl_model_key")
+    if declared is not None and ctl_key is None:
+        reasons.append(f"derived_meta declares ctl_model_key {declared!r}: a control under its own key is admitted only on "
+                       "an explicit --ctl-key, never on the sidecar's word")
+    elif declared is not None and declared != ctl_key:
+        reasons.append(f"derived_meta declares ctl_model_key {declared!r} but the explicit --ctl-key is {ctl_key!r}")
     if key is not None and dkey is not None and dkey != key:
         reasons.append(f"derived model_key {dkey!r} != expected key {key!r}")
     if p["sidecars_ok"] and n["sidecars_ok"]:
@@ -482,6 +506,7 @@ def admission(derived_dir, *, pos_dir, neg_dir, floor: float = DEFAULT_FLOOR,
         "derived_dir": str(derived),
         "object_sha256": obj_sha,
         "key": dkey, "expected_key": key, "expected_seed": seed,
+        **({"expected_ctl_key": ctl_key} if ctl_key is not None else {}),
         "seed": p["seed"] if p["seed"] == n["seed"] else None,
         "admitted": not reasons,
         "reasons": reasons,
@@ -534,15 +559,26 @@ def main(argv=None) -> int:
                     help="a layer whose live fraction is <= this is FULLY DEAD and refuses "
                          "the object (default 0.0) — the one liveness refusal ground (D69)")
     ap.add_argument("--key", default=None)
+    ap.add_argument("--ctl-key", default=None,
+                    help="the negative parent's bank key when the control was refit under its own key (its block "
+                         "must name it and its dir sit under …/<ctl-key>/cells_all/); default: --key / the derived "
+                         "model_key. Never inferred from the sidecar")
     ap.add_argument("--seed", type=int, default=None)
     ap.add_argument("--out", default=None,
                     help="default <derived_dir>/ADMISSION.json")
     a = ap.parse_args(argv)
+    if a.ctl_key is not None and Path(a.derived_dir).resolve().parent.name != a.ctl_key:
+        # refused BEFORE anything is read or written: a control-key admission belongs to a difference published under that key, so
+        # a mistyped derived dir can never put an ADMISSION.json into another key's (a published pair's) directory
+        print(f"[derived-admission] REFUSED: --ctl-key {a.ctl_key!r} but {a.derived_dir} sits under "
+              f"{Path(a.derived_dir).resolve().parent.name!r}, not under …/{a.ctl_key}/ — nothing written", file=sys.stderr)
+        return 3
     if str(HERE) not in sys.path:
         sys.path.insert(0, str(HERE))
     try:
         doc = admission(a.derived_dir, pos_dir=a.parents[0], neg_dir=a.parents[1],
-                        floor=a.floor, dead_floor=a.dead_floor, key=a.key, seed=a.seed)
+                        floor=a.floor, dead_floor=a.dead_floor, key=a.key, seed=a.seed,
+                        ctl_key=a.ctl_key)
     except InputError as e:
         print(f"[derived-admission] REFUSED: {e}", file=sys.stderr)
         return 3

@@ -1651,6 +1651,20 @@ def default_jobs() -> int:
     return max(1, min(8, n))
 
 
+def sqlite_only_frames(root: Path) -> list:
+    """The paper frames under ``root`` whose MANIFEST names tables that ship in the split SQLite only (read_set_version 3: the item
+    tables), as ``<frame dir>: <tables>``; a frame whose rows all have a Parquet copy is not listed."""
+    out = []
+    for m in sorted((root / FRAME_PREFIX).glob("snapshots/*/MANIFEST.json")):
+        try:
+            only = json.loads(m.read_text(encoding="utf-8")).get("sqlite_only_tables") or []
+        except (OSError, ValueError):
+            continue
+        if only:
+            out.append(f"{m.parent.relative_to(root)}: {' '.join(only)}")
+    return out
+
+
 def scan(root: Path, *, roots=(), scopes=SCOPES, binaries=True, frame_sqlite=True, table=None, tokens=None, tmpdir=None,
          files=None, unpublished=None, jobs: int = 1) -> tuple:
     """Run the scan; returns `(scanner, files)`. `table` overrides the token source (tests plant their own), `unpublished`
@@ -1691,8 +1705,10 @@ def main(argv=None) -> int:
     ap.add_argument("--scope", action="append", choices=SCOPES, help="scan only these scopes (repeatable; default: all three)")
     ap.add_argument("--all-scopes", action="store_true", help="scan all three scopes (the default; for callers that say so)")
     ap.add_argument("--text-only", action="store_true", help="skip every binary decoder (gz, Parquet, SQLite, pickles, .eval, safetensors)")
-    ap.add_argument("--no-frame-sqlite", action="store_true", help="skip the split-gzip SQLite (its rows mirror the Parquet set)")
-    ap.add_argument("--tmpdir", help="where the split SQLite is reassembled (default: the system temp directory; it needs ~2 GB)")
+    ap.add_argument("--no-frame-sqlite", action="store_true",
+                    help="skip the split-gzip SQLite (its rows mirror the Parquet set); refused for a frame whose MANIFEST declares "
+                         "sqlite_only_tables, whose item tables live in the SQLite alone")
+    ap.add_argument("--tmpdir", help="where the split SQLite is reassembled (default: the system temp directory; it needs ~4 GB)")
     ap.add_argument("--jobs", type=int, default=default_jobs(), help="worker processes (default: the usable CPUs, at most 8)")
     ap.add_argument("--ratchet", nargs="?", const="", metavar="FILE",
                     help=f"also hold the per-site counts to the ratchet (default: <root>/{RATCHET}); hits within it pass")
@@ -1708,6 +1724,12 @@ def main(argv=None) -> int:
         ap.error("--all-scopes and --scope exclude each other")
     root = Path(a.root).resolve()
     scopes = tuple(a.scope) if a.scope else SCOPES
+    if a.no_frame_sqlite:
+        only = sqlite_only_frames(root)
+        if only:
+            print(f"scrub_scan: REFUSED: --no-frame-sqlite would skip tables these frames ship in the split SQLite only "
+                  f"(MANIFEST.sqlite_only_tables): {', '.join(only)}", file=sys.stderr)
+            return 2
     try:
         sc, _files = scan(root, roots=a.roots, scopes=scopes, binaries=not a.text_only, frame_sqlite=not a.no_frame_sqlite,
                           tokens=a.tokens, tmpdir=a.tmpdir, jobs=a.jobs)

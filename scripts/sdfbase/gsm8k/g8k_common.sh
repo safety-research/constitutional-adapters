@@ -23,6 +23,9 @@ G8K_WAVE_ROOT_REL="exp/gsm8k_paired200_paper_objects"
 # this file names it, so g8k_bank_view can pick a steering row's per-cluster EXTERNAL bank view (the MATH-500 launcher's
 # M5T_OVERFLOW_CLUSTER precedent)
 G8K_OVERFLOW_CLUSTER=cluster_b
+# the variable the DRIVER finds its roster by (contracts.ENV_FULL22_ROSTER; the test holds the two names equal) — the ONE
+# place this file names it; g8k_roster_env sets it to the job's roster
+G8K_ROSTER_ENV=SISTEER_FULL22_ROSTER
 # the Nemotron fused-kernel attestation is a PREREQUISITE for every gsm8k job too (common.sh f22_model_facts; m5t LB2)
 export F22_REQUIRE_NEMO_BACKEND=1
 
@@ -535,6 +538,22 @@ g8k_proxy_token(){
   st_proxy_token "$SERVE_DIR/$G8K_SERVE_SUBDIR/endpoint.json"
 }
 
+g8k_roster_env(){   # -> $G8K_ROSTER_ENV (SISTEER_FULL22_ROSTER), EXPORTED: the JOB's roster as an absolute path, for the driver's
+                    # --bank-view vocabulary. The driver admits `main` | `it`, the views of ONE roster and the source banks the
+                    # matrices declare (contracts.bank_views_admitted), and it finds that roster by this variable, else the
+                    # production roster of its checkout — it never reads F22_ROSTER. A job's roster is ONE selection (common.sh), so
+                    # the driver is handed the job's. Under the production roster that is the very file the driver falls back to
+                    # (every matrix cut from it parses as before); under a lane-private roster — the `ctlstop` matrix, whose rows sit
+                    # on that roster's OWN views — it is what admits `--bank-view "$VIEW"`: without it the driver refuses the row at
+                    # its parser, after the standup. A relative F22_ROSTER resolves against $REPO_DIR, as f22_init reads it; a roster
+                    # the checkout does not hold refuses by name. A value the submitter's environment carried under this name is
+                    # REPLACED: one roster per job, never a second selection for one reader.
+  local r="${F22_ROSTER:?F22_ROSTER (common.sh)}"
+  case "$r" in /*) ;; *) r="$(cd "${REPO_DIR:?REPO_DIR}" >/dev/null && pwd)/$r";; esac
+  [ -f "$r" ] || f22_fatal "no roster at $r (F22_ROSTER=$F22_ROSTER) — the driver's --bank-view vocabulary reads the job's roster ($G8K_ROSTER_ENV)"
+  export "$G8K_ROSTER_ENV=$r"
+}
+
 g8k_driver_argv(){   # -> DRV: the COMPLETE driver invocation from the row — ONE function, read by the job and
                      # by the dry run alike: the core's head (--controls gsm8k --thinking <arm> --sampling <mode> --samples 1),
                      # the cap as STATEMENT (--max-tokens-by-task) AND, on the thinking-ON arm and the no-switch arm alike, as
@@ -542,8 +561,11 @@ g8k_driver_argv(){   # -> DRV: the COMPLETE driver invocation from the row — O
                      # the OFF overlap leg's 512 is the OFF table's: statement == resolution, no setter), the core's tail, the
                      # attempt id, the row's VIEW (--bank-view: the four provenance fields on every emitted row), the FITTED
                      # pin, the OOS override ONLY where a tuple authorises it (a no-switch fitted row is IN SUPPORT: no tuple,
-                     # no override; llama-paper-rows P7), the rung's item subset
+                     # no override; llama-paper-rows P7), the rung's item subset. And the ONE piece of the driver's ENVIRONMENT
+                     # that --bank-view depends on: the job's roster (g8k_roster_env), exported HERE so the job that runs DRV and
+                     # the dry run that prints it cannot differ.
   g8k_core
+  g8k_roster_env
   st_driver_argv_head "$G8K_CONTROL" "$G8K_THINKING" "$G8K_SAMPLING_MODE" "$G8K_SAMPLES"
   DRV+=(--max-tokens-by-task "$G8K_MAX_TOKENS_BY_TASK")
   case "$G8K_THINKING" in on|not_available) DRV+=(--on-cap-by-task "$G8K_MAX_TOKENS_BY_TASK");; esac
@@ -664,6 +686,10 @@ g8k_print_plan(){   # the dry run's verbatim lines for THIS row (g8k_dry_run.py 
   g8k_driver_argv
   st_print_argv DRIVER "${DRV[@]}"
   st_print_driver_env "$G8K_INSPECT_BASE_URL_ENV" "$LEDGER_URL" "$G8K_INSPECT_API_KEY_ENV"
+  # ...and the roster the driver's --bank-view vocabulary reads (g8k_roster_env, exported by g8k_driver_argv above): the job's own,
+  # printed AS A CHILD PROCESS READS IT (exported, not merely set in this shell — the driver is a child). A parse-only run of the
+  # DRIVER: line (the argv + --help) under this ONE variable is the cheap proof the driver admits the row.
+  printf 'ROSTER_ENV: %s=%q\n' "$G8K_ROSTER_ENV" "$("$BASH" -c 'printf %s "${!0-}"' "$G8K_ROSTER_ENV")"
   g8k_recorder_argv
   st_print_argv RESOLVED_SAMPLER "${RSA[@]}"
   if [ "$FITTED" = 1 ] && [ -n "$G8K_TUPLE" ]; then printf 'OUT OF SUPPORT: tuple=%s pin=%s served_positions_expected=%s declared=%s stamps=(%s)\n' "$G8K_TUPLE" "$PIN" "$G8K_SERVED_POSITIONS_EXPECTED" "$DECLARED" "$G8K_EXPECTED_STAMPS"

@@ -29,7 +29,8 @@ from sisteer.registry import db as DB
 from sisteer.registry import schema_def as S
 from sisteer.registry import snapshot as SN
 from sisteer.registry import synth
-from test_nb_snapshot_fallback import NB_FILES, NOTEBOOKS, export_snapshot, import_notebook, nb_env, notebook_mirror, synthetic_registry
+from test_nb_snapshot_fallback import (NB_FILES, NOTEBOOKS, REJUDGE_ID, export_snapshot, import_notebook, nb_env, notebook_mirror,
+                                       synthetic_registry)
 
 QUERY_NAMES = ("paper_all", "qwen_frontier", "qwen_unsteered", "runs_all", "qwen_padding", "objects", "mt_degeneracy")
 READERS = ("head", "headline_metric_ids", "role_collapse_rows", "check_headline_scales")
@@ -130,6 +131,33 @@ def test_live_and_snapshot_answer_the_whole_read_set_identically(tmp_path, monke
     assert len(live["runs_all"]) == 4 and len(live["qwen_unsteered"]) == 2 and len(live["objects"]) == 2 and len(live["mt_degeneracy"]) == 4
     assert len(live["paper_all"]) == 0
     assert not any(f.endswith(".parquet") for d in ("cache_live", "cache_snapshot") for f in os.listdir(tmp_path / d))     # NB_CACHE=0 wrote nothing
+
+
+def test_the_policy_judges_item_rows_read_the_same_live_and_from_the_frame(tmp_path, monkeypatch):
+    """The default policy's reads: a policy judge's item rows (`judge_items`, `judge_item_rows`, the order columns dropped by
+    `current_items`) and the guard's judges (`check_policy_judges`) answer identically from the registry and from the frame cut with
+    the policy's item judges."""
+    root = synthetic_registry(tmp_path)
+    dest = str(tmp_path / "paper_snapshot")
+    export_snapshot(root, dest)
+    nbdir = notebook_mirror(tmp_path)
+    got = {}
+    for source in ("live", "snapshot"):
+        env = nb_env(tmp_path, REGISTRY_NB_SOURCE=source, REGISTRY_NB_SNAPSHOT_ROOT=dest, NB_CACHE="0",
+                     REGISTRY_ROOT=root if source == "live" else None)
+        R = import_notebook(nbdir, env, monkeypatch)
+        assert R.SOURCE == source and R.JUDGES == R.PAPER_JUDGES
+        R.CACHE = str(tmp_path / f"cache_{source}")
+        with R.connect() as c:
+            jids = [r[0] for r in c.execute("SELECT judgment_id FROM judgment WHERE judge_id = ? ORDER BY judgment_id", (REJUDGE_ID,))]
+        got[source] = (jids, R.judge_items(jids), R.judge_item_rows(REJUDGE_ID, "strongreject"), R.check_policy_judges())
+    (lj, li, lr, lc), (sj, si, sr, sc) = got["live"], got["snapshot"]
+    assert lj == sj and len(lj) == 4
+    assert len(li) == 40 and canon(li) == canon(si)
+    assert len(lr) == 40 and canon(lr) == canon(sr)
+    assert "item_written_utc" not in li.columns and "item_order_sha" not in lr.columns
+    assert lc == sc and set(lc) == {("minimax-m3", "strongreject"), ("minimax-m3", "xstest_cpi"), ("minimax-m3", "or_bench_cpi"),
+                                    (R.PETRI_JUDGE_ALIASES["glm-5.3"], "petri_bloom_judge")}
 
 
 # ---- (c) the negative case ------------------------------------------------------------------------------------------------------

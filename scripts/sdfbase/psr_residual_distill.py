@@ -13,6 +13,13 @@ derived Modal app's in-container command):
   compose-v     parents <root>/<key>/cells_all/{<mix_si>,<ctl_si>}__psr_ce_all
                 -> <out_root>/psr_paired_write/<key>/<mix_si>__psr_ce_all_minus_ctl/
                    {object.pt, derived_meta.json}
+                With --ctl-key K (compose-v, verify-v, check-v-pair, emit-v and
+                liveness-receipt only; every other subcommand refuses it, and K
+                may not be the model key) the control parent is
+                <root>/K/cells_all/<ctl_si>__psr_ce_all and V is published under
+                <out_root>/psr_paired_write/K/, beside the pair built from the
+                model key's own control; the sidecar keeps model_key = <key> and
+                adds ctl_model_key = K.
   capture-set   the stratified union of the two parents' pools (source ×
                 family, ~10%/stratum doc-level holdout, thin strata flagged)
                 -> capture_manifest.json
@@ -39,6 +46,10 @@ derived Modal app's in-container command):
                 torn publish or a parent refit under the same cell id is a
                 problem; exit 2) — what the derived app's compose stage asks
                 before letting an existing V stand.
+  check-v-pair  CPU, read-only: compose-v's overwrite guard alone, run before
+                a caller deletes a V that does not verify — exit 0 when V's
+                sidecar names this pair, 3 when it has no readable sidecar
+                (absent or torn), 2 when a readable sidecar names another pair.
   merge-calibration  CPU, model-free: the per-multiplier sweep files that
                 separate ``calibrate --lr-mult <m>`` runs wrote (one
                 container per multiplier in the derived Modal app) merged
@@ -143,10 +154,11 @@ from gate_liveness import paired_liveness_detail, write_liveness  # noqa: E402
 from parent_admission import (PARENT_MATCH_FIELDS, admit_parent,  # noqa: E402,F401
                               pool_budget)
 from parent_admission import require_parents_match as _parents_match  # noqa: E402
-# The two derived-object builders file their registry records the same way:
-# lora_subtract.py owns the registry model-id spelling (torch-free at import,
-# like the siblings above).
-from lora_subtract import registry_model_id  # noqa: E402
+# The two derived-object builders file their registry records the same way and
+# refuse another pair's object by the same rule: lora_subtract.py owns the
+# registry model-id spelling, the plain control-key check and the same-pair
+# sidecar rule (torch-free at import, like the siblings above).
+from lora_subtract import check_ctl_key, other_pair_problems, registry_model_id  # noqa: E402
 
 CTL_SI = "constv2ctl-100k"
 ARM = "psr_ce_all"
@@ -206,6 +218,13 @@ def v_derived_id(mix_si: str) -> str:
 
 def resid_derived_id(mix_si: str) -> str:
     return f"{mix_si}__{ARM}_minus_ctl_distilled"
+
+
+def v_dir(out_root, key: str, mix_si: str, ctl_key: str | None = None) -> Path:
+    """V's directory: ``<out_root>/psr_paired_write/<ctl_key or key>/<mix_si>__psr_ce_all_minus_ctl/``
+    — keyed by the control's bank key when the control comes from another key, which must be a plain
+    bank key (:class:`ResidualError` otherwise, before any path is formed)."""
+    return Path(out_root) / KIND_V / (check_ctl_key(ctl_key, error=ResidualError) or key) / v_derived_id(mix_si)
 
 
 def _emission():
@@ -377,11 +396,15 @@ def require_parents_match(pos_prov: dict, neg_prov: dict) -> None:
                    error=ResidualError)
 
 
-def parents_provenance(root, key, mix_si, ctl_si, pools_dir) -> tuple[dict, dict, dict]:
+def parents_provenance(root, key, mix_si, ctl_si, pools_dir,
+                       ctl_key: str | None = None) -> tuple[dict, dict, dict]:
     """(pos_prov, neg_prov, shared) for the pair — identity-gated and
-    matched; ``shared`` carries the lifted common identity + scale label."""
+    matched; ``shared`` carries the lifted common identity + scale label.
+    ``ctl_key``: the bank key the control parent is read from (default
+    ``key``); ``shared`` then names it as ``ctl_model_key``."""
+    neg_key = check_ctl_key(ctl_key, error=ResidualError) or key
     _p, pos = load_parent_record(root, key, mix_si)
-    _n, neg = load_parent_record(root, key, ctl_si)
+    _n, neg = load_parent_record(root, neg_key, ctl_si)
     require_parents_match(pos, neg)
     pos["data_scale"] = pool_budget(pools_dir, mix_si)
     neg["data_scale"] = pool_budget(pools_dir, ctl_si)
@@ -402,6 +425,8 @@ def parents_provenance(root, key, mix_si, ctl_si, pools_dir) -> tuple[dict, dict
             f"budget_mismatched (descriptive: parents trained at {pt} vs {nt} "
             "official tokens — bounds nothing; the D23 scale limitation)"),
     }
+    if ctl_key is not None and ctl_key != key:
+        shared["ctl_model_key"] = ctl_key
     return pos, neg, shared
 
 
@@ -437,12 +462,14 @@ def liveness_verdict(gl: dict) -> dict:
 
 
 def compose_v(root: Path, out_root: Path, key: str, mix_si: str,
-              ctl_si: str = CTL_SI, pools_dir: Path = DEFAULT_POOLS, emit: bool = True) -> Path:
+              ctl_si: str = CTL_SI, pools_dir: Path = DEFAULT_POOLS, emit: bool = True,
+              ctl_key: str | None = None) -> Path:
     """Write V's artifact + sidecar; validate through the shared derived
     verdict with the parents re-verified on disk. ``emit=False`` DEFERS V's
     registry record to :func:`emit_v` (the direct-object build files it only
     after V's liveness is bound to its bytes: a composed row in the registry
-    must imply an admission-ready V)."""
+    must imply an admission-ready V). ``ctl_key``: the control parent's bank
+    key (:func:`v_dir` keys V by it)."""
     import torch
 
     from sisteer.eval.object_identity import derived_object_problems
@@ -452,7 +479,7 @@ def compose_v(root: Path, out_root: Path, key: str, mix_si: str,
     pools_dir = site_path(pools_dir, "pools_dir")
 
     pos_prov, neg_prov, shared = parents_provenance(root, key, mix_si, ctl_si,
-                                                    pools_dir)
+                                                    pools_dir, ctl_key=ctl_key)
     pos_blob = torch.load(pos_prov["object_path"], map_location="cpu",
                           weights_only=True)
     neg_blob = torch.load(neg_prov["object_path"], map_location="cpu",
@@ -478,13 +505,13 @@ def compose_v(root: Path, out_root: Path, key: str, mix_si: str,
     }
     blob = PSRPairedWriteObject.compose_blob(pos_blob, neg_blob,
                                              provenance=provenance)
-    out_dir = Path(out_root) / KIND_V / key / derived_id
+    out_dir = v_dir(out_root, key, mix_si, ctl_key)
     out_dir.mkdir(parents=True, exist_ok=True)
     obj_path = out_dir / "object.pt"
     meta_path = out_dir / "derived_meta.json"
     # V's id names the corpus cell only: a sidecar here naming OTHER parents
     # is another pair's published object and is never overwritten
-    other = sidecar_pair_problems(meta_path, mix_si, ctl_si)
+    other = sidecar_pair_problems(meta_path, mix_si, ctl_si, key=key, ctl_key=ctl_key)
     if other:
         raise ResidualError(
             f"{out_dir} already holds a V of another pair — refusing to "
@@ -600,14 +627,15 @@ def write_liveness_receipt(vdir, *, writer: str, context: dict | None = None) ->
     return vdir / LIVENESS_RECEIPT
 
 
-def emit_v(root: Path, out_root: Path, key: str, mix_si: str, ctl_si: str = CTL_SI) -> dict:
+def emit_v(root: Path, out_root: Path, key: str, mix_si: str, ctl_si: str = CTL_SI,
+           ctl_key: str | None = None) -> dict:
     """File V's registry record ONLY once its liveness is bound to its bytes. Refuses
     (ResidualError, exit 2) on any :func:`liveness_binding_problems`; otherwise the kept-object replay
     (:func:`ensure_registry_emission_derived`): the whole hook when nothing is recorded, only the missing record, or nothing at
     all when the evidence is terminal under the current campaign + contract — idempotent across re-runs."""
     from sisteer.extraction.paired_write import APPLICATION_ORDER
 
-    vdir = Path(out_root) / KIND_V / key / v_derived_id(mix_si)
+    vdir = v_dir(out_root, key, mix_si, ctl_key)
     if not (vdir / "object.pt").is_file() or not (vdir / "derived_meta.json").is_file():
         raise ResidualError(f"emit-v: no persisted V (object.pt + derived_meta.json) at {vdir}")
     problems = liveness_binding_problems(vdir)
@@ -618,29 +646,17 @@ def emit_v(root: Path, out_root: Path, key: str, mix_si: str, ctl_si: str = CTL_
                                             extra={"application_order": APPLICATION_ORDER})
 
 
-def sidecar_pair_problems(meta_path, mix_si: str, ctl_si: str) -> list[str]:
+def sidecar_pair_problems(meta_path, mix_si: str, ctl_si: str, *,
+                          key: str | None = None, ctl_key: str | None = None) -> list[str]:
     """Problems (empty = same pair, or no sidecar) when an existing derived
     sidecar names parents other than ``<mix_si>__psr_ce_all`` /
-    ``<ctl_si>__psr_ce_all``."""
-    meta_path = Path(meta_path)
-    if not meta_path.is_file():
-        return []
-    try:
-        meta = json.loads(meta_path.read_text(encoding="utf-8"))
-    except ValueError as e:
-        return [f"{meta_path} unreadable: {e}"]
-    out = []
-    for role, cell in (("parent_pos", f"{mix_si}__{ARM}"),
-                       ("parent_neg", f"{ctl_si}__{ARM}")):
-        got = (meta.get(role) or {}).get("cell_id")
-        if got != cell:
-            out.append(f"{meta_path}: {role}.cell_id={got!r}, this pair needs "
-                       f"{cell!r}")
-    return out
+    ``<ctl_si>__psr_ce_all``, or (``key`` given) a role whose block RECORDS a
+    ``model_key`` other than this pair's (``lora_subtract.pair_problems``)."""
+    return other_pair_problems(meta_path, mix_si, ctl_si, arm=ARM, key=key, ctl_key=ctl_key)
 
 
 def verify_v(root: Path, out_root: Path, key: str, mix_si: str,
-             ctl_si: str | None = None) -> list[str]:
+             ctl_si: str | None = None, ctl_key: str | None = None) -> list[str]:
     """The persisted V re-admitted against the LIVE bank (the shared
     derived-object verdict with the parents re-verified on disk), model-
     free: problems (empty = valid), a missing object or sidecar being a
@@ -650,11 +666,13 @@ def verify_v(root: Path, out_root: Path, key: str, mix_si: str,
     refusals). With ``ctl_si`` the sidecar must ALSO name that control as
     ``parent_neg`` — V's id carries the corpus cell only, so a same-id V
     composed against another control is a problem for this pair, not a
-    reusable teacher."""
+    reusable teacher; the sidecar's recorded model keys must then be this
+    pair's too (``ctl_key``: the control's bank key, which also keys V's
+    directory)."""
     from sisteer.eval.object_identity import derived_object_problems
 
     derived_id = v_derived_id(mix_si)
-    out_dir = Path(out_root) / KIND_V / key / derived_id
+    out_dir = v_dir(out_root, key, mix_si, ctl_key)
     obj_path = out_dir / "object.pt"
     meta_path = out_dir / "derived_meta.json"
     if not obj_path.is_file():
@@ -665,7 +683,7 @@ def verify_v(root: Path, out_root: Path, key: str, mix_si: str,
         problems = list(derived_object_problems(obj_path, derived_id=derived_id,
                                                 parents_root=root))
         if ctl_si is not None:
-            problems += sidecar_pair_problems(meta_path, mix_si, ctl_si)
+            problems += sidecar_pair_problems(meta_path, mix_si, ctl_si, key=key, ctl_key=ctl_key)
         return problems
     except Exception as e:  # noqa: BLE001 — an unreadable blob is a problem, not a crash
         return [f"{obj_path}: {type(e).__name__}: {e}"]
@@ -2446,19 +2464,21 @@ def _capture(args):
 
 def cmd_compose_v(args) -> int:
     p = compose_v(args.root, args.out_root, args.model_key, args.mix_si,
-                  args.ctl_si, pools_dir=args.pools, emit=not getattr(args, "no_emit", False))
+                  args.ctl_si, pools_dir=args.pools, emit=not getattr(args, "no_emit", False),
+                  ctl_key=args.ctl_key)
     print(f"[psr-residual] V -> {p}")
     return 0
 
 
 def cmd_emit_v(args) -> int:
-    ev = emit_v(args.root, args.out_root, args.model_key, args.mix_si, args.ctl_si)
+    ev = emit_v(args.root, args.out_root, args.model_key, args.mix_si, args.ctl_si,
+                ctl_key=args.ctl_key)
     print(f"[psr-residual] emit-v: {ev.get('status')} ({ev.get('campaign')}; {len(ev.get('records') or [])} record file(s))")
     return 0 if ev.get("status") == "emitted" else 2
 
 
 def cmd_liveness_receipt(args) -> int:
-    vdir = Path(args.out_root) / KIND_V / args.model_key / v_derived_id(args.mix_si)
+    vdir = v_dir(args.out_root, args.model_key, args.mix_si, args.ctl_key)
     ctx = {k: v for k, v in (("slurm_job_id", args.slurm_job_id), ("node", args.node), ("code_sha", args.code_sha),
                              ("n_probe", args.n_probe), ("pairs", args.pairs)) if v not in (None, "")}
     write_liveness_receipt(vdir, writer=args.writer, context=ctx)
@@ -2467,14 +2487,40 @@ def cmd_liveness_receipt(args) -> int:
 
 def cmd_verify_v(args) -> int:
     problems = verify_v(args.root, args.out_root, args.model_key, args.mix_si,
-                        args.ctl_si)
-    v_path = Path(args.out_root) / KIND_V / args.model_key / \
-        v_derived_id(args.mix_si) / "object.pt"
+                        args.ctl_si, ctl_key=args.ctl_key)
+    v_path = v_dir(args.out_root, args.model_key, args.mix_si, args.ctl_key) / "object.pt"
     if problems:
         raise ResidualError(
             f"persisted V {v_path} does not pass the derived-object verdict "
             "against the live bank:\n  - " + "\n  - ".join(problems))
     print(f"[psr-residual] V verified against the live bank: {v_path}")
+    return 0
+
+
+#: check-v-pair's exit when V has no READABLE sidecar (absent, or not a JSON mapping): nothing names its pair either way
+CHECK_V_PAIR_NO_SIDECAR = 3
+
+
+def cmd_check_v_pair(args) -> int:
+    """compose-v's overwrite guard alone, read-only, for a caller about to delete a V that does not verify. Three outcomes, by
+    exit code so the caller branches without reading text: 0 — V's sidecar names THIS pair; :data:`CHECK_V_PAIR_NO_SIDECAR` —
+    there is no readable sidecar (absent, or torn: not a JSON mapping), so nothing names another pair; 2 — a readable sidecar
+    names another pair's parents or model keys (refused). Nothing is ever touched."""
+    vdir = v_dir(args.out_root, args.model_key, args.mix_si, args.ctl_key)
+    meta_path = vdir / "derived_meta.json"
+    try:
+        meta = json.loads(meta_path.read_text(encoding="utf-8")) if meta_path.is_file() else None
+    except (OSError, ValueError):
+        meta = None
+    if not isinstance(meta, dict):
+        print(f"[psr-residual] V at {vdir}: no readable sidecar ({'torn' if meta_path.is_file() else 'absent'}) — nothing names "
+              "its pair", flush=True)
+        return CHECK_V_PAIR_NO_SIDECAR
+    other = sidecar_pair_problems(meta_path, args.mix_si, args.ctl_si, key=args.model_key, ctl_key=args.ctl_key)
+    if other:
+        raise ResidualError(f"{vdir} holds a V of another pair — never deleted or recomposed for this one:\n  - "
+                            + "\n  - ".join(other))
+    print(f"[psr-residual] V at {vdir}: its sidecar names this pair")
     return 0
 
 
@@ -2702,8 +2748,7 @@ def _load_or_compose_v(args, model, tok):
     from sisteer.eval.object_identity import assert_derived_object
     from sisteer.methods import load_object
 
-    v_path = Path(args.out_root) / KIND_V / args.model_key / \
-        v_derived_id(args.mix_si) / "object.pt"
+    v_path = v_dir(args.out_root, args.model_key, args.mix_si) / "object.pt"
     if not v_path.is_file():
         v_path = compose_v(args.root, args.out_root, args.model_key,
                            args.mix_si, args.ctl_si, pools_dir=args.pools)
@@ -2819,6 +2864,15 @@ def _common(p, *, model: bool):
                             "checkpoint dir instead of resuming it")
 
 
+def _ctl_key_arg(p) -> None:
+    """``--ctl-key`` — on the paired-write subcommands only (compose-v, verify-v, check-v-pair, emit-v, liveness-receipt);
+    every other subcommand's parser does not know it, so it is refused there by name. No ``choices``: the control's bank key
+    is a sibling of a model key, validated as a plain key name instead, and never the model key itself (:func:`main`)."""
+    p.add_argument("--ctl-key", default=None,
+                   help="the bank key the control parent is read from (<root>/<ctl-key>/cells_all/); V is published under "
+                        "psr_paired_write/<ctl-key>/ (default: --model-key)")
+
+
 def build_parser() -> argparse.ArgumentParser:
     ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     sub = ap.add_subparsers(dest="cmd", required=True)
@@ -2827,13 +2881,16 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("--no-emit", action="store_true",
                    help="defer V's registry record to `emit-v` (the direct-object build files it only after the liveness "
                         "probe binds gate_liveness_receipt.json to V's bytes)")
+    _ctl_key_arg(p)
     p.set_defaults(fn=cmd_compose_v)
     p = sub.add_parser("emit-v", help="file V's registry record once gate_liveness.json + its receipt are bound to V's bytes "
                                       "(refuses otherwise; idempotent replay)")
     _common(p, model=False)
+    _ctl_key_arg(p)
     p.set_defaults(fn=cmd_emit_v)
     p = sub.add_parser("liveness-receipt", help="write gate_liveness_receipt.json beside V after a successful probe")
     _common(p, model=False)
+    _ctl_key_arg(p)
     p.add_argument("--writer", default="scripts/sdfbase/psr_residual_distill.py liveness-receipt")
     p.add_argument("--slurm-job-id", default=None); p.add_argument("--node", default=None); p.add_argument("--code-sha", default=None)
     p.add_argument("--n-probe", type=int, default=None); p.add_argument("--pairs", default=None)
@@ -2841,7 +2898,13 @@ def build_parser() -> argparse.ArgumentParser:
     p = sub.add_parser("verify-v", help="the persisted V re-admitted against "
                                         "the live bank (CPU; exit 2 on any problem)")
     _common(p, model=False)
+    _ctl_key_arg(p)
     p.set_defaults(fn=cmd_verify_v)
+    p = sub.add_parser("check-v-pair", help="read-only, compose-v's overwrite guard alone (CPU): exit 0 = V's sidecar names "
+                                            "this pair, 3 = no readable sidecar (absent or torn), 2 = another pair's V")
+    _common(p, model=False)
+    _ctl_key_arg(p)
+    p.set_defaults(fn=cmd_check_v_pair)
     p = sub.add_parser("capture-set", help="stratified capture set manifest")
     _common(p, model=False)
     p.add_argument("--out", default=None)
@@ -2887,6 +2950,10 @@ def main(argv=None) -> int:
     from sisteer.extraction import tokcache
 
     args = build_parser().parse_args(argv)
+    if getattr(args, "ctl_key", None) is not None and args.ctl_key == args.model_key:
+        print(f"[psr-residual] REFUSED: --ctl-key {args.ctl_key!r} equals --model-key — omit it for the model key's own control",
+              file=sys.stderr)
+        return 2
     args.root, args.pools = site_path(args.root, "--root"), site_path(args.pools, "--pools")
     if args.out_root is None:
         args.out_root = Path(args.root) / "derived"

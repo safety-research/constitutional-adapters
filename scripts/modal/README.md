@@ -1,6 +1,6 @@
 # Modal apps: the BigCodeBench and BFCL harness
 
-The evaluation workers that run on Modal (serverless H200 containers) rather than Slurm. The one a reader of the paper may want is `tinycap_served.py`, the harness behind the BigCodeBench and BFCL rows (the capability panels of Fig. 6 and Fig. 14); `paper/notebooks/` draws the figures from the committed snapshot without it or a GPU. `reproduce/07_bcb_bfcl.sh` wraps the harness but does not run for the paper models in this tree (it runs the worked example `qwen35_4b_demo`; the paper's rows go through `scripts/bcb_bfcl_200_widen_launch.py`), so call the harness directly for a row outside those.
+The evaluation workers that run on Modal (serverless H200 containers) rather than Slurm. The one a reader of the paper may want is `tinycap_served.py`, the harness behind the BigCodeBench and BFCL rows (the capability panels of Fig. 6 and Fig. 20); `paper/notebooks/` draws the figures from the committed snapshot without it or a GPU. `reproduce/07_bcb_bfcl.sh` wraps the harness but does not run for the paper models in this tree (it runs the worked example `qwen35_4b_demo`; the paper's rows go through `scripts/bcb_bfcl_200_widen_launch.py`), so call the harness directly for a row outside those.
 
 ## What the harness needs
 

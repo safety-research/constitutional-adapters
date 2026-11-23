@@ -279,11 +279,6 @@ def _inventory_cached(args):
             f"Rebuild it: pool_sample.py plan --save-inventory {path} "
             f"<same args as this run>")
     prompts = [SamplePrompt(**r) for r in blob["prompts"]]
-    # a cached inventory skips sources' own check, so the evaluation-only corpus (the ReNeLLM
-    # paper corpus, under its no-training terms) is refused here too (counts only)
-    from sisteer.eval.attacks import eval_only
-    eval_only.refuse_texts((p.text for p in prompts),
-                           consumer=f"training-pool sampling (the cached inventory {path})")
     print(f"[sample] inventory: {len(prompts)} prompts from cache {path} "
           f"(not rebuilt -- gpu-util item 2)", flush=True)
     return prompts

@@ -6,7 +6,7 @@ The DDL is `src/sisteer/registry/schema.sql`, rendered from `schema_def.py`; a d
 
 Conventions: every `CHECK (col IN (...))` list comes from `vocab.py` (`vocabulary.md`); booleans are INTEGER 0/1; every `*_utc TEXT` is ISO-8601 UTC with milliseconds (`…Z`); every `*_json TEXT` is `json_valid`; hashes are lowercase hex; foreign keys are enforced (sentinel columns by trigger). Item-scale tables carry `written_utc INTEGER` (epoch ms) + `record_sha256 BLOB` as their order key and keep no history rows; their history is the record log.
 
-Scale classes: run-scale = `paper_round`, `model`, `si_text`, `fit_search`, `fit_trial`, `eval`, `item_set`, `judge`, `instrument`, `decode_policy`, `sampling_mode_policy`, `computation`, `ruling`, `ruling_state`, `object`, `run`, `run_state_event`, `judgment`, `run_metric`, `run_contrast`, `artifact`, `item_withdrawal`, `roster_entry`, `disposition`, `snapshot`, `parity_gate`, `source_revision`, `observation`, `withdrawal`, `source_watermark`, `source_state`, `mirror_ack`, `file_arrival`; item-scale = `run_degeneration`, `item_result`, `item_flags`, `source_status`; ledgers = `schema_migration`, `record_ingest`, `record_delivery`, `record_refusal`, `record_refusal_fact`, `analysis`, `analysis_input`, `analysis_artifact`, `ordered_fact_record`, `ordered_fact_carrier`, `fold_observation`, `record_run_index`, `blocked_records`, `row_history`; staging (transient) = `revision_staging_record`, `revision_staging_file`, `record_cursor`.
+Scale classes: run-scale = `paper_round`, `model`, `si_text`, `fit_search`, `fit_trial`, `eval`, `item_set`, `judge`, `instrument`, `decode_policy`, `sampling_mode_policy`, `computation`, `ruling`, `ruling_state`, `object`, `run`, `run_state_event`, `judgment`, `run_metric`, `run_contrast`, `artifact`, `item_withdrawal`, `roster_entry`, `disposition`, `snapshot`, `parity_gate`, `source_revision`, `observation`, `withdrawal`, `source_watermark`, `source_state`, `mirror_ack`, `file_arrival`; item-scale = `run_degeneration`, `item_result`, `item_flags`, `source_status`; ledgers = `schema_migration`, `record_ingest`, `record_delivery`, `record_refusal`, `record_refusal_fact`, `analysis`, `analysis_input`, `analysis_artifact`, `ordered_fact_record`, `ordered_fact_carrier`, `fold_observation`, `record_run_index`, `blocked_records`, `item_reclaim_ledger`, `row_history`; staging (transient) = `revision_staging_record`, `revision_staging_file`, `record_cursor`.
 
 Soft reference (no DB FK, documented): `eval.default_item_set_id` → `item_set.item_set_id` is circular with `item_set.eval_id` → `eval.eval_id`; enforcing both as dependency-blocking FKs would deadlock the seed.
 
@@ -795,7 +795,7 @@ Primary key: (`run_id`, `judgment_id`, `measure`, `scope`, `source_revision_id`)
 | `computed_utc` | TEXT | nullable | pattern `UTC_MS` | unknown for legacy rows |
 | `source_uri` | TEXT | nullable |  | natively emitted rows are their own source |
 | `notes` | TEXT | nullable |  | free text |
-| `source_revision_id` | TEXT | NOT NULL default '' | → `source_revision.revision_id` | The source_revision that carries this row ('' for natively emitted rows; FK by trigger). Part of the key: rows of a pending or superseded revision coexist with the head's, invisible to every reader. |
+| `source_revision_id` | TEXT | NOT NULL default '' | → `source_revision.revision_id` | The source_revision that carries this row ('' for natively emitted rows; FK by trigger). Part of the key: rows of a pending or superseded revision coexist with the head's, invisible to every reader; a superseded revision's rows are deleted by reclaim where the record log reproduces them (item_reclaim_ledger). |
 | `written_utc` | INTEGER | NOT NULL | pattern `NONNEG` | Record written_utc as epoch milliseconds — stamp column 1. |
 | `record_sha256` | BLOB | NOT NULL |  | Record sha256 (32 bytes) — stamp column 2; (written_utc, record_sha256) is the row's order key. |
 | `extra_json` | TEXT | NOT NULL default '{}' | pattern `JSON` | Unknown record fields, never dropped. |
@@ -844,8 +844,8 @@ Primary key: (`run_id`, `item_id`, `metric_id`, `trial_index`, `sample_index`, `
 | `api_pool` | TEXT | nullable | `API_POOLS` | rule-scored rows have no pool; legacy judged rows may not name one |
 | `created_utc` | TEXT | NOT NULL | pattern `UTC_MS` |  |
 | `judged_utc` | TEXT | nullable | pattern `UTC_MS` | generation-time rows |
-| `source_revision_id` | TEXT | NOT NULL default '' | → `source_revision.revision_id` | The source_revision that carries this row ('' for natively emitted rows; FK by trigger). Part of the key: rows of a pending or superseded revision coexist with the head's, invisible to every reader. |
-| `withdrawn_by_revision_id` | TEXT | nullable |  | set when a later accepted revision no longer carries the item; bookkeeping — visibility is derived from the head revision |
+| `source_revision_id` | TEXT | NOT NULL default '' | → `source_revision.revision_id` | The source_revision that carries this row ('' for natively emitted rows; FK by trigger). Part of the key: rows of a pending or superseded revision coexist with the head's, invisible to every reader; a superseded revision's rows are deleted by reclaim where the record log reproduces them (item_reclaim_ledger). |
+| `withdrawn_by_revision_id` | TEXT | nullable |  | an inert mark: reclaim set it before migration 0033 when a later accepted revision no longer carried the item, and nothing sets it since; visibility is derived from the head revision |
 | `written_utc` | INTEGER | NOT NULL | pattern `NONNEG` | Record written_utc as epoch milliseconds — stamp column 1. |
 | `record_sha256` | BLOB | NOT NULL |  | Record sha256 (32 bytes) — stamp column 2; (written_utc, record_sha256) is the row's order key. |
 | `extra_json` | TEXT | NOT NULL default '{}' | pattern `JSON` | Unknown record fields, never dropped. |
@@ -854,7 +854,7 @@ Primary key: (`run_id`, `item_id`, `metric_id`, `trial_index`, `sample_index`, `
 | `withdrawn_by_record_sha256` | TEXT | nullable |  | set when a producer's item_withdrawal record retracted this natively emitted row: the sha of that record; NULL for a row no withdrawal names, and again for a row re-filed with an order key above the withdrawal's |
 | `withdrawn_reason` | TEXT | nullable |  | the item_withdrawal record's free-text reason, beside its sha; NULL whenever withdrawn_by_record_sha256 is |
 
-Indexes: `idx_item_result_run_judgment` (run_id, judgment_id), `idx_item_result_item` (item_id), `idx_item_result_withdrawn` (withdrawn_by_revision_id) where `withdrawn_by_revision_id IS NOT NULL`, `idx_item_result_withdrawn_seq` (ingest_seq) where `withdrawn_by_revision_id IS NOT NULL`, `idx_item_result_revision` (source_revision_id, record_file_id).
+Indexes: `idx_item_result_run_judgment` (run_id, judgment_id), `idx_item_result_item` (item_id), `idx_item_result_withdrawn` (withdrawn_by_revision_id) where `withdrawn_by_revision_id IS NOT NULL`, `idx_item_result_revision` (source_revision_id, record_file_id).
 
 ### `item_withdrawal` (run-scale)
 
@@ -913,7 +913,7 @@ Primary key: (`run_id`, `item_id`, `trial_index`, `sample_index`, `turn_index`, 
 | `generation_offset` | INTEGER | nullable |  | null when generation_artifact_id is null |
 | `rationale_artifact_id` | TEXT | nullable | → `artifact.artifact_id` | rule-scored and unjudged items |
 | `rationale_offset` | INTEGER | nullable |  | null when rationale_artifact_id is null |
-| `source_revision_id` | TEXT | NOT NULL default '' | → `source_revision.revision_id` | The source_revision that carries this row ('' for natively emitted rows; FK by trigger). Part of the key: rows of a pending or superseded revision coexist with the head's, invisible to every reader. |
+| `source_revision_id` | TEXT | NOT NULL default '' | → `source_revision.revision_id` | The source_revision that carries this row ('' for natively emitted rows; FK by trigger). Part of the key: rows of a pending or superseded revision coexist with the head's, invisible to every reader; a superseded revision's rows are deleted by reclaim where the record log reproduces them (item_reclaim_ledger). |
 | `written_utc` | INTEGER | NOT NULL | pattern `NONNEG` | Record written_utc as epoch milliseconds — stamp column 1. |
 | `record_sha256` | BLOB | NOT NULL |  | Record sha256 (32 bytes) — stamp column 2; (written_utc, record_sha256) is the row's order key. |
 | `extra_json` | TEXT | NOT NULL default '{}' | pattern `JSON` | Unknown record fields, never dropped. |
@@ -1036,7 +1036,7 @@ Primary key: (`revision_id`)
 | `refusal` | TEXT | nullable |  | accepted revisions have no refusal |
 | `superseded_by_revision_id` | TEXT | nullable |  | the latest revision of a source is not superseded |
 | `priority` | INTEGER | NOT NULL default 0 |  | The adapter's declared source priority: among the visible provenances of one measurement key a native row comes first, then the higher priority, then the lexically smaller source_id, then revision_id. |
-| `reclaimed` | INTEGER | NOT NULL default 0 | `BOOLEAN` | 1 once the reclaim pass has marked every row of this superseded revision the successor no longer carries; reset when the chain moves. |
+| `reclaimed` | INTEGER | NOT NULL default 0 | `BOOLEAN` | 1 once a reclaim pass left no deletable carrier of this accepted, superseded revision and none whose log file is missing (prune-rule/3); reset when the chain moves and by every item write under the revision. |
 | `field_versions_json` | TEXT | NOT NULL default '{}' | pattern `JSON` | {column: [written_utc, record_sha256] of the record that last set it} — the FULL order key. |
 | `extra_json` | TEXT | NOT NULL default '{}' | pattern `JSON` | Unknown record fields, kept here and never dropped. |
 | `record_uri` | TEXT | NOT NULL |  | The record file (logical path) that produced the current row. |
@@ -1046,7 +1046,7 @@ Indexes: `idx_source_revision_source` (source_id, observed_utc).
 
 ### `observation` (run-scale)
 
-Membership of a RUN-SCALE key in a source revision (item membership is two columns on item_result).
+Membership of a RUN-SCALE key in a source revision (item membership is the item tables' source_revision_id).
 
 Primary key: (`source_id`, `revision_id`, `observation_key`)
 
@@ -1143,7 +1143,7 @@ Primary key: (`lane_source_legacy`, `adapter`, `source_id`, `source_revision_id`
 | `detail` | TEXT | NOT NULL default '' |  | One line for the gap map: what was read, how many records / measured keys / dispositions, what was refused. |
 | `cells_measured` | INTEGER | NOT NULL default 0 | pattern `NONNEG` | Distinct (model, object, eval) keys the read measured (a `run_metric` carrying a value). |
 | `observed_utc` | TEXT | NOT NULL | pattern `UTC_MS` | When the adapter read the source (the pass's `now`). |
-| `source_revision_id` | TEXT | NOT NULL default '' | → `source_revision.revision_id` | The source_revision that carries this row ('' for natively emitted rows; FK by trigger). Part of the key: rows of a pending or superseded revision coexist with the head's, invisible to every reader. |
+| `source_revision_id` | TEXT | NOT NULL default '' | → `source_revision.revision_id` | The source_revision that carries this row ('' for natively emitted rows; FK by trigger). Part of the key: rows of a pending or superseded revision coexist with the head's, invisible to every reader; a superseded revision's rows are deleted by reclaim where the record log reproduces them (item_reclaim_ledger). |
 | `written_utc` | INTEGER | NOT NULL | pattern `NONNEG` | Record written_utc as epoch milliseconds — stamp column 1. |
 | `record_sha256` | BLOB | NOT NULL |  | Record sha256 (32 bytes) — stamp column 2; (written_utc, record_sha256) is the row's order key. |
 | `extra_json` | TEXT | NOT NULL default '{}' | pattern `JSON` | Unknown record fields, never dropped. |
@@ -1413,6 +1413,25 @@ Primary key: (`record_sha256`)
 | `attempts` | INTEGER | NOT NULL default 1 |  |  |
 | `stale` | INTEGER | NOT NULL default 0 | `BOOLEAN` |  |
 | `extra_json` | TEXT | NOT NULL default '{}' | pattern `JSON` |  |
+
+### `item_reclaim_ledger` (ledger-scale)
+
+What reclaim deleted from one carrier (an item table, an accepted superseded revision, one record file) and nobody has restored since (migration 0033, prune-rule/3): the count and additive digests of the deleted rows, so present + deleted rows authenticate against a re-parse of the file, a half-deleted carrier resumes, and the revision's rows are re-folded from the record log before anything is written under it again. Derived; read by no v_* object.
+
+Primary key: (`table_name`, `revision_id`, `record_file_id`)
+
+| column | type | null | check / reference | note |
+|---|---|---|---|---|
+| `table_name` | TEXT | NOT NULL |  | The item table the rows were deleted from: item_result, item_flags or run_degeneration (prune.PRUNE_TABLES). |
+| `revision_id` | TEXT | NOT NULL |  | The accepted, superseded revision they were deleted from (no FK: a ledger row names, never guards). |
+| `record_file_id` | INTEGER | NOT NULL |  | The carrier: the record file the rows were folded from (record_ingest.record_file_id). |
+| `file_uri` | TEXT | NOT NULL |  | The carrier's logical uri, the file rehydration re-parses. |
+| `expected_rows` | INTEGER | NOT NULL | pattern `NONNEG` | The rows the current code built from the file when deletion began (its re-parse). |
+| `expected_digest_fold` | TEXT | NOT NULL | pattern `SHA256` | The additive digest of those rows over every column but ingest_seq and withdrawn_by_revision_id (prune.FOLD_EXCLUDE). |
+| `rows_deleted` | INTEGER | NOT NULL | pattern `NONNEG` | The rows deleted from the carrier so far (running total). |
+| `deleted_digest_fold` | TEXT | NOT NULL | pattern `SHA256` | The additive digest of the deleted rows, the columns of expected_digest_fold. |
+| `deleted_digest_bind` | TEXT | NOT NULL | pattern `SHA256` | The additive digest of the deleted rows over every column but ingest_seq (an archive group's digest_bind). |
+| `parsed_with` | TEXT | NOT NULL |  | The stamp of the code that admitted the deletion (harvest.validator_stamp). |
 
 ### `row_history` (ledger-scale)
 

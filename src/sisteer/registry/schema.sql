@@ -803,7 +803,7 @@ CREATE TABLE run_degeneration (
   computed_utc TEXT CHECK (computed_utc IS NULL OR computed_utc GLOB '[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]T[0-9][0-9]:[0-9][0-9]:[0-9][0-9].[0-9][0-9][0-9]Z'),  -- why-null: unknown for legacy rows
   source_uri TEXT,  -- why-null: natively emitted rows are their own source
   notes TEXT,  -- why-null: free text
-  source_revision_id TEXT NOT NULL DEFAULT '',  -- The source_revision that carries this row ('' for natively emitted rows; FK by trigger). Part of the key: rows of a pending or superseded revision coexist with the head's, invisible to every reader.
+  source_revision_id TEXT NOT NULL DEFAULT '',  -- The source_revision that carries this row ('' for natively emitted rows; FK by trigger). Part of the key: rows of a pending or superseded revision coexist with the head's, invisible to every reader; a superseded revision's rows are deleted by reclaim where the record log reproduces them (item_reclaim_ledger).
   written_utc INTEGER NOT NULL CHECK (written_utc >= 0),  -- Record written_utc as epoch milliseconds — stamp column 1.
   record_sha256 BLOB NOT NULL,  -- Record sha256 (32 bytes) — stamp column 2; (written_utc, record_sha256) is the row's order key.
   extra_json TEXT NOT NULL DEFAULT '{}' CHECK (json_valid(extra_json)),  -- Unknown record fields, never dropped.
@@ -844,8 +844,8 @@ CREATE TABLE item_result (
   api_pool TEXT CHECK (api_pool IN ('lowprio', 'highprio', 'batch')),  -- why-null: rule-scored rows have no pool; legacy judged rows may not name one
   created_utc TEXT NOT NULL CHECK (created_utc GLOB '[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]T[0-9][0-9]:[0-9][0-9]:[0-9][0-9].[0-9][0-9][0-9]Z'),
   judged_utc TEXT CHECK (judged_utc IS NULL OR judged_utc GLOB '[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]T[0-9][0-9]:[0-9][0-9]:[0-9][0-9].[0-9][0-9][0-9]Z'),  -- why-null: generation-time rows
-  source_revision_id TEXT NOT NULL DEFAULT '',  -- The source_revision that carries this row ('' for natively emitted rows; FK by trigger). Part of the key: rows of a pending or superseded revision coexist with the head's, invisible to every reader.
-  withdrawn_by_revision_id TEXT,  -- why-null: set when a later accepted revision no longer carries the item; bookkeeping — visibility is derived from the head revision
+  source_revision_id TEXT NOT NULL DEFAULT '',  -- The source_revision that carries this row ('' for natively emitted rows; FK by trigger). Part of the key: rows of a pending or superseded revision coexist with the head's, invisible to every reader; a superseded revision's rows are deleted by reclaim where the record log reproduces them (item_reclaim_ledger).
+  withdrawn_by_revision_id TEXT,  -- why-null: an inert mark: reclaim set it before migration 0033 when a later accepted revision no longer carried the item, and nothing sets it since; visibility is derived from the head revision
   written_utc INTEGER NOT NULL CHECK (written_utc >= 0),  -- Record written_utc as epoch milliseconds — stamp column 1.
   record_sha256 BLOB NOT NULL,  -- Record sha256 (32 bytes) — stamp column 2; (written_utc, record_sha256) is the row's order key.
   extra_json TEXT NOT NULL DEFAULT '{}' CHECK (json_valid(extra_json)),  -- Unknown record fields, never dropped.
@@ -858,7 +858,6 @@ CREATE TABLE item_result (
 CREATE INDEX idx_item_result_run_judgment ON item_result (run_id, judgment_id);
 CREATE INDEX idx_item_result_item ON item_result (item_id);
 CREATE INDEX idx_item_result_withdrawn ON item_result (withdrawn_by_revision_id) WHERE withdrawn_by_revision_id IS NOT NULL;
-CREATE INDEX idx_item_result_withdrawn_seq ON item_result (ingest_seq) WHERE withdrawn_by_revision_id IS NOT NULL;
 CREATE INDEX idx_item_result_revision ON item_result (source_revision_id, record_file_id);
 
 -- A producer's retraction of ONE natively emitted item_result row it filed under the wrong run (migration 0020). An `item_withdrawal` record names a run and a list of exact item keys; the fold writes one row here per key (the observation pattern) and marks the item_result row whose order key is below the record's (`withdrawn_by_record_sha256`, `withdrawn_reason`); `v_item_result_current` and every current-item predicate exclude a marked row. Rows of an adapter revision are never targeted (their membership is the revision's). The latest record naming a key (by order key) stands; a row re-filed with a greater order key than the withdrawal's stands as a new measurement.
@@ -908,7 +907,7 @@ CREATE TABLE item_flags (
   generation_offset INTEGER,  -- why-null: null when generation_artifact_id is null
   rationale_artifact_id TEXT,  -- why-null: rule-scored and unjudged items
   rationale_offset INTEGER,  -- why-null: null when rationale_artifact_id is null
-  source_revision_id TEXT NOT NULL DEFAULT '',  -- The source_revision that carries this row ('' for natively emitted rows; FK by trigger). Part of the key: rows of a pending or superseded revision coexist with the head's, invisible to every reader.
+  source_revision_id TEXT NOT NULL DEFAULT '',  -- The source_revision that carries this row ('' for natively emitted rows; FK by trigger). Part of the key: rows of a pending or superseded revision coexist with the head's, invisible to every reader; a superseded revision's rows are deleted by reclaim where the record log reproduces them (item_reclaim_ledger).
   written_utc INTEGER NOT NULL CHECK (written_utc >= 0),  -- Record written_utc as epoch milliseconds — stamp column 1.
   record_sha256 BLOB NOT NULL,  -- Record sha256 (32 bytes) — stamp column 2; (written_utc, record_sha256) is the row's order key.
   extra_json TEXT NOT NULL DEFAULT '{}' CHECK (json_valid(extra_json)),  -- Unknown record fields, never dropped.
@@ -1012,7 +1011,7 @@ CREATE TABLE source_revision (
   refusal TEXT,  -- why-null: accepted revisions have no refusal
   superseded_by_revision_id TEXT,  -- why-null: the latest revision of a source is not superseded
   priority INTEGER NOT NULL DEFAULT 0,  -- The adapter's declared source priority: among the visible provenances of one measurement key a native row comes first, then the higher priority, then the lexically smaller source_id, then revision_id.
-  reclaimed INTEGER NOT NULL DEFAULT 0 CHECK (reclaimed IN (0, 1)),  -- 1 once the reclaim pass has marked every row of this superseded revision the successor no longer carries; reset when the chain moves.
+  reclaimed INTEGER NOT NULL DEFAULT 0 CHECK (reclaimed IN (0, 1)),  -- 1 once a reclaim pass left no deletable carrier of this accepted, superseded revision and none whose log file is missing (prune-rule/3); reset when the chain moves and by every item write under the revision.
   field_versions_json TEXT NOT NULL DEFAULT '{}' CHECK (json_valid(field_versions_json)),  -- {column: [written_utc, record_sha256] of the record that last set it} — the FULL order key (S2).
   extra_json TEXT NOT NULL DEFAULT '{}' CHECK (json_valid(extra_json)),  -- Unknown record fields, kept here and never dropped.
   record_uri TEXT NOT NULL,  -- The record file (logical path) that produced the current row.
@@ -1021,7 +1020,7 @@ CREATE TABLE source_revision (
 );
 CREATE INDEX idx_source_revision_source ON source_revision (source_id, observed_utc);
 
--- Membership of a RUN-SCALE key in a source revision (item membership is two columns on item_result).
+-- Membership of a RUN-SCALE key in a source revision (item membership is the item tables' source_revision_id).
 CREATE TABLE observation (
   source_id TEXT NOT NULL,
   revision_id TEXT NOT NULL REFERENCES source_revision(revision_id),
@@ -1098,7 +1097,7 @@ CREATE TABLE source_status (
   detail TEXT NOT NULL DEFAULT '',  -- One line for the gap map: what was read, how many records / measured keys / dispositions, what was refused.
   cells_measured INTEGER NOT NULL DEFAULT 0 CHECK (cells_measured >= 0),  -- Distinct (model, object, eval) keys the read measured (a `run_metric` carrying a value).
   observed_utc TEXT NOT NULL CHECK (observed_utc GLOB '[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]T[0-9][0-9]:[0-9][0-9]:[0-9][0-9].[0-9][0-9][0-9]Z'),  -- When the adapter read the source (the pass's `now`).
-  source_revision_id TEXT NOT NULL DEFAULT '',  -- The source_revision that carries this row ('' for natively emitted rows; FK by trigger). Part of the key: rows of a pending or superseded revision coexist with the head's, invisible to every reader.
+  source_revision_id TEXT NOT NULL DEFAULT '',  -- The source_revision that carries this row ('' for natively emitted rows; FK by trigger). Part of the key: rows of a pending or superseded revision coexist with the head's, invisible to every reader; a superseded revision's rows are deleted by reclaim where the record log reproduces them (item_reclaim_ledger).
   written_utc INTEGER NOT NULL CHECK (written_utc >= 0),  -- Record written_utc as epoch milliseconds — stamp column 1.
   record_sha256 BLOB NOT NULL,  -- Record sha256 (32 bytes) — stamp column 2; (written_utc, record_sha256) is the row's order key.
   extra_json TEXT NOT NULL DEFAULT '{}' CHECK (json_valid(extra_json)),  -- Unknown record fields, never dropped.
@@ -1314,6 +1313,21 @@ CREATE TABLE blocked_records (
   extra_json TEXT NOT NULL DEFAULT '{}' CHECK (json_valid(extra_json)),
   PRIMARY KEY (record_sha256)
 );
+
+-- What reclaim deleted from one carrier (an item table, an accepted superseded revision, one record file) and nobody has restored since (migration 0033, prune-rule/3): the count and additive digests of the deleted rows, so present + deleted rows authenticate against a re-parse of the file, a half-deleted carrier resumes, and the revision's rows are re-folded from the record log before anything is written under it again. Derived; read by no v_* object.
+CREATE TABLE item_reclaim_ledger (
+  table_name TEXT NOT NULL,  -- The item table the rows were deleted from: item_result, item_flags or run_degeneration (prune.PRUNE_TABLES).
+  revision_id TEXT NOT NULL,  -- The accepted, superseded revision they were deleted from (no FK: a ledger row names, never guards).
+  record_file_id INTEGER NOT NULL,  -- The carrier: the record file the rows were folded from (record_ingest.record_file_id).
+  file_uri TEXT NOT NULL,  -- The carrier's logical uri, the file rehydration re-parses.
+  expected_rows INTEGER NOT NULL CHECK (expected_rows >= 0),  -- The rows the current code built from the file when deletion began (its re-parse).
+  expected_digest_fold TEXT NOT NULL CHECK (expected_digest_fold GLOB '[0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f]'),  -- The additive digest of those rows over every column but ingest_seq and withdrawn_by_revision_id (prune.FOLD_EXCLUDE).
+  rows_deleted INTEGER NOT NULL CHECK (rows_deleted >= 0),  -- The rows deleted from the carrier so far (running total).
+  deleted_digest_fold TEXT NOT NULL CHECK (deleted_digest_fold GLOB '[0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f]'),  -- The additive digest of the deleted rows, the columns of expected_digest_fold.
+  deleted_digest_bind TEXT NOT NULL CHECK (deleted_digest_bind GLOB '[0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f]'),  -- The additive digest of the deleted rows over every column but ingest_seq (an archive group's digest_bind).
+  parsed_with TEXT NOT NULL,  -- The stamp of the code that admitted the deletion (harvest.validator_stamp).
+  PRIMARY KEY (table_name, revision_id, record_file_id)
+) WITHOUT ROWID;
 
 -- Every event of a RUN-SCALE natural key with the folded state after it (derived; identical live and on replay). Item-scale keys keep their history in the record log.
 CREATE TABLE row_history (
@@ -3569,6 +3583,4 @@ SELECT MAX(seq) AS ingest_seq FROM (
         ON ir.run_id = iw.run_id AND ir.item_id = iw.item_id AND ir.metric_id = iw.metric_id AND ir.trial_index = iw.trial_index
         AND ir.sample_index = iw.sample_index AND ir.turn_index = iw.turn_index AND ir.judgment_id = iw.judgment_id
         AND ir.source_revision_id = ''
-    -- one seek through the partial index on ingest_seq over the withdrawn rows, named so the plan holds whatever the statistics say
-    UNION ALL SELECT MAX(ingest_seq) FROM item_result INDEXED BY idx_item_result_withdrawn_seq WHERE withdrawn_by_revision_id IS NOT NULL
 );

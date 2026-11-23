@@ -955,7 +955,8 @@ def _current_item_keys(conn: Optional[sqlite3.Connection], revision_id: str) -> 
     if conn is None or not revision_id:
         return set()
     pk = R.ITEM_MEMBERSHIP_KEY
-    # every row tagged with the revision is a key it carries (rows are keyed by revision; marks are bookkeeping)
+    # every row tagged with the revision is a key it carries (rows are keyed by revision). Called with the source's HEAD, whose rows reclaim
+    # never deletes -- only an accepted, SUPERSEDED revision's (migration 0033); a withdrawn mark is an inert pre-0033 column
     rows = conn.execute(f"SELECT {', '.join(pk)} FROM item_result WHERE source_revision_id = ?", (revision_id,)).fetchall()
     return {identity.canonical_json(dict(zip(pk, r))) for r in rows}
 
@@ -964,8 +965,10 @@ def _withdrawal_records(ctx: AdapterContext, source_id: str, rev: str, prev: Map
                         prev_items: Set[str], now_keys: Set[str], now_items: Set[str], reason: str) -> List[Dict[str, object]]:
     """A ``withdrawal`` per previous current run-scale key absent now, plus ONE for the removed items: it carries their
     COUNT (``n_items_removed``), never the key list — the removed keys are the outgoing revision's rows the new one has
-    no row for, which the harvester marks from the rows in bounded batches after the activation; a list of
-    every removed key would make the activation's fold O(removed items) again."""
+    no row for. Once the new revision activates, the outgoing one is superseded and reclaim deletes its item rows in bounded
+    batches at the end of the cycle (migration 0033); the removed keys stay recoverable from the record log (the outgoing
+    revision's own files, which a re-activation re-folds) and the ``withdrawal`` row keeps their count. A list of every removed
+    key would make the activation's fold O(removed items) again."""
     now = ctx.now
     out = []
     for key_json, (table, from_rev) in prev.items():

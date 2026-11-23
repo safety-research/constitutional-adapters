@@ -100,15 +100,17 @@ def test_synth_corpus_shape(tmp_path):
     rep = H.ingest_once(root, workers=0, min_free=0)
     assert rep.refused == 0, rep.refusals[:5]
     conn = DB.connect(DB.db_path(root), readonly=True)
-    # rows are keyed by revision, so rev2's 20 superseding rows COEXIST with rev1's; visibility is derived from
+    # rows are keyed by revision, so rev2's 20 superseding rows coexist with rev1's while both fold; visibility is derived from
     # the head — rev3 (accepted last, carrying nothing) hides every rev1 / rev2 row, the 200 natively emitted regrade rows are
-    # what a reader sees; the withdrawn marks are derived by reclaim: every rev1 row whose key rev2 does not carry (1000 - 2 runs
-    # × 10 items) is marked with rev2, every rev2 row (rev3 carries nothing) with rev3
+    # what a reader sees. Since migration 0033 reclaim DELETES an accepted, superseded revision's rows wherever the record log reproduces
+    # them -- these revisions' rows ride plain files (one file per revision and run), each a whole carrier -- so the table keeps the 200
+    # native rows and nothing marks anything; the ledger counts every deleted row
     total = conn.execute("SELECT COUNT(*) FROM item_result").fetchone()[0]
     wd = conn.execute("SELECT COUNT(*) FROM item_result WHERE withdrawn_by_revision_id IS NOT NULL").fetchone()[0]
     sup = conn.execute("SELECT COUNT(*) FROM item_result WHERE source_revision_id = ?", ("rev2" + "0" * 12,)).fetchone()[0]
     visible = conn.execute("SELECT COUNT(*) FROM v_item_result_current").fetchone()[0]
-    assert total == 2 * 200 * 2.5 + 20 + 200 and wd == (1000 - 20) + 20 and sup == 20 and visible == 200
+    assert total == 200 and wd == 0 and sup == 0 and visible == 200
+    assert conn.execute("SELECT SUM(rows_deleted) FROM item_reclaim_ledger").fetchone()[0] == 2 * 200 * 2.5 + 20
     assert conn.execute("SELECT COUNT(*) FROM row_history WHERE table_name = 'item_result'").fetchone()[0] == 0
     assert conn.execute("SELECT COUNT(*) FROM source_revision").fetchone()[0] == 3
     conn.close()

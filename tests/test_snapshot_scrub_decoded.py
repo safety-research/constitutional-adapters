@@ -190,9 +190,12 @@ def _walk_strings(value, path=""):
 
 
 def _decoded_rows(info, table):
-    """(parquet rows, sqlite rows) as lists of dicts, JSON cells decoded."""
+    """(parquet rows, sqlite rows) as lists of dicts, JSON cells decoded; the parquet rows are None for a table the frame ships in the
+    split SQLite only (``MANIFEST.sqlite_only_tables``, read_set_version 3: the item tables)."""
     import pyarrow.parquet as pq
-    pq_rows = pq.read_table(os.path.join(info.dir, f"{table}.parquet")).to_pylist()
+    only = table in (info.manifest.get("sqlite_only_tables") or ())
+    assert only == (not os.path.exists(os.path.join(info.dir, f"{table}.parquet"))), table
+    pq_rows = None if only else pq.read_table(os.path.join(info.dir, f"{table}.parquet")).to_pylist()
     path, _, _ = SN.paper_frame_sqlite_path(os.path.dirname(os.path.dirname(info.dir)))
     conn = sqlite3.connect(f"file:{path}?mode=ro", uri=True)
     conn.row_factory = sqlite3.Row
@@ -221,8 +224,9 @@ def test_no_location_hostname_or_user_token_survives_in_either_format(export):
     info = export["info"]
     for table in SN.PAPER_FRAME_TABLES:
         pq_rows, sq_rows = _decoded_rows(info, table)
-        assert len(pq_rows) == len(sq_rows) == info.manifest["tables"][table], table
-        for fmt, rows in (("parquet", pq_rows), ("sqlite", sq_rows)):
+        assert len(sq_rows) == info.manifest["tables"][table] and (pq_rows is None or len(pq_rows) == len(sq_rows)), table
+        assert (pq_rows is None) == (table in SN.PAPER_FRAME_SQLITE_ONLY_TABLES), table
+        for fmt, rows in (("parquet", pq_rows or []), ("sqlite", sq_rows)):
             for col, path, s in _cells(rows):
                 assert not LEAK.search(s), (table, fmt, col, path, s[:200])
 

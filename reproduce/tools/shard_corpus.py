@@ -175,12 +175,15 @@ def shard_corpus(corpus: str, source: Path, out_dir: Path, *, sidecars: list[Pat
 
 def main(argv=None) -> int:
     ap = argparse.ArgumentParser(description=__doc__.split("\n\n")[0])
-    ap.add_argument("corpus", help="constitution_advice | constitution_stories | control_advice | control_stories")
+    ap.add_argument("corpus", help="constitution_advice | constitution_stories | control_advice | control_stories | "
+                                   "constitution_qwen38max_advice | constitution_qwen38max_stories")
     ap.add_argument("--source", required=True, type=Path, help="the released JSONL final")
     ap.add_argument("--out", required=True, type=Path, help="corpora/<corpus>")
     ap.add_argument("--sidecar", action="append", default=[], type=Path, help="a sidecar file to commit beside the shards (repeatable)")
     ap.add_argument("--release", required=True, help="release label, e.g. final-production-20260831-v2")
-    ap.add_argument("--vendored-commit", default=None, help="the corpus_generator commit vendored under corpus_generator/")
+    ap.add_argument("--vendored-commit", default=None,
+                    help="the corpus_generator commit vendored under corpus_generator/ (omit, recorded as null, for a "
+                         "corpus not generated from a vendored snapshot: its sidecars carry the code provenance)")
     ap.add_argument("--target-mb", type=int, default=TARGET_MB)
     ap.add_argument("--hard-mb", type=int, default=HARD_MB)
     a = ap.parse_args(argv)

@@ -435,9 +435,9 @@ def test_emission_version_bump_publishes_a_new_revision_where_an_unbumped_park_c
     assert _q(root, "SELECT json_extract(run_extra_json, '$.judge_legacy') FROM v_paper_long WHERE in_current_paper = 1") == [(NEW_JUDGE_SPELLING,)]
     after = _snapshot(root)
     assert after["items_current"] == 3 and after["runs"] == 1 and after["paper"] == 1 and after["heads"] == [("synthetic_store:s1", rev2)]
-    assert after["item_rows"] == 6                                            # both revisions' rows are records (history keeps rev0's)
+    assert after["item_rows"] == 3                                            # rev0, superseded, is reclaimed (its rows stay in the record log)
     assert _q(root, "SELECT DISTINCT source_revision_id FROM v_item_result_current") == [(rev2,)]      # the head's rows are the current ones
-    assert _q(root, "SELECT COUNT(*) FROM item_result WHERE source_revision_id = ?", rev0) == [(3,)]
+    assert _q(root, "SELECT COUNT(*) FROM item_result WHERE source_revision_id = ?", rev0) == [(0,)]
     assert _q(root, "SELECT COUNT(*) FROM withdrawal") == [(0,)]              # the same keys under a new revision: nothing was REMOVED
     assert _q(root, "SELECT ok, revision_id FROM v_source_status") == [(1, rev2)]
     # idempotent under the new version: a re-read reproduces rev2 and drops its records; the incremental pass writes nothing
@@ -955,6 +955,11 @@ def test_every_registered_adapter_declares_a_well_formed_emission_version_and_th
     # readers stay at 2 and landing 2's at 1 (the one reader change, the gated `landing_rule` stamp, leaves their records byte for byte).
     # 2 (2026-10-03, commit 7): the anchor currency on every contrast (the bcbw seedrep note)
     assert versions["bigcodebench_full_shared_l3"] == "3" and versions["bfcl_full_shared_l3"] == "3"      # 3: solo_stand_in (follow-ups-4 item 3)
+    # bigcodebench_full_sikl4 1 and bfcl_full_sikl4 1 (2026-11-15): the SI-distilled refits' full-suite campaign rows through the full readers PARAMETRIZED with a
+    # declared campaign (`_bcbw_common.CampaignSpec`, `_bcbw_campaigns.SIKL4`: campaign si_target_refit, the three sikl4s<k> views, the campaign roster's pin form, no `none`, no
+    # registry contrast); their first versions. The twelve paper readers stay where they are: every campaign branch is gated on `TaskSpec.declared`, and their emission
+    # over the synthetic fixtures is pinned equal to main (tests/test_registry_adapter_bcbw_full_emission_pin.py, tests/test_registry_adapter_bcbw_emission_pin.py)
+    assert versions["bigcodebench_full_sikl4"] == "1" and versions["bfcl_full_sikl4"] == "1"
     # ifeval_seedrep 1 (2026-09-23): the seed-replicate IFEval stores from the Modal volume (tree 8365992) read at the COMPLETION CAP -- one run per
     # (model, tag, object key) at the cap its 2,048 -> 4,096 -> 8,192 ladder reached, the value the reader's draw-wise merge (each cap step's re-drawn draws
     # replace their truncated shallower draws, a loop never re-drawn, recounted over the 1,082 draws), the per-store readings checked against the

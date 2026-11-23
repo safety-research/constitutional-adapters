@@ -3404,12 +3404,18 @@ def _registry_publish(final_dir: Path, *, si_id: str, arm: str, emitter=None, fi
     (ensure_registry_emission) re-emits on anything but ``emitted`` — the whole hook, or, when the spool already
     holds one of the two records, ONLY the other one through ``emitter``: a
     callable with the hook's call signature that writes one record type (registry_emission's component emitter,
-    injected by the caller so this body stays self-contained); default the hook itself."""
+    injected by the caller so this body stays self-contained); default the hook itself.
+
+    ``dry_run=True`` (the re-emission preflight) returns the records the hook WOULD write and writes nothing, on success
+    or failure: no evidence, no ``REGISTRY_EMIT_FAILED``; a refusal or an undeclared arm returns None."""
     import json
     import time
     final_dir = Path(final_dir)
 
     def _evidence(status: str, **more) -> None:
+        if dry_run:
+            # a dry run (the re-emission preflight's view) writes nothing, on success or failure: no evidence, no failure marker
+            return
         marker: dict = {}
         try:
             marker = json.loads((final_dir / "COMPLETE").read_text())
@@ -3439,19 +3445,47 @@ def _registry_publish(final_dir: Path, *, si_id: str, arm: str, emitter=None, fi
         except ImportError as e:
             _evidence("not_emitted", reason=f"registry package unavailable ({e})")
             return
-        kind = _rh.object_kind_for_legacy_kind(arm)
         tbm = _rh.read_sidecars(str(final_dir)).get("train_budget_meta.json") or {}
         corpus = tbm.get("training_budget_kind") == "document_tokens"
+        stmt = tbm.get("registry_statement") if isinstance(tbm.get("registry_statement"), dict) else None
         # a system instruction's role, or — the corpus-fit pipeline's pools
         # (constv2-mix-* / constv2ctl2-*, review C1) — the role by prefix;
-        # the hook's one resolver does both
-        role = _rh.object_role_for_si(si_id)
+        # the hook's one resolver does both. A fit whose sidecar carries the
+        # config's registry statement (below) also reads the spellings declared
+        # for stated fits alone (psr_kl_all, C16); every other fit resolves
+        # through the shared tables exactly as before.
+        if stmt is not None:
+            kind = _rh.object_kind_for_stated_fit(arm)
+            role = _rh.object_role_for_stated_fit(si_id)
+        else:
+            kind = _rh.object_kind_for_legacy_kind(arm)
+            role = _rh.object_role_for_si(si_id)
         if kind is None or role is None:
             _rh.notice(f"train_two_si_objects: arm {arm!r} / si_id {si_id!r} not declared in the registry's "
                        f"tables (kind={kind}, role={role}); published object not recorded")
             _evidence("not_emitted", reason=f"arm {arm!r} / si_id {si_id!r} not declared in the registry's "
                                             f"tables (kind={kind}, role={role})")
             return
+        # -- the registry statement the fit's config made (the sidecar's `registry_statement` block, written by train_si_objects from
+        #    registry_paper_label / registry_prompt_pool_ids): the stated paper label in place of the (kind, role) derivation, a
+        #    distillation's teacher-text and prompt-pool facts, and strict epoch emission (a distinct-sha epoch checkpoint whose
+        #    object row cannot be built fails the whole emission before any write, never a printed notice). A sidecar without the
+        #    block emits exactly as before.
+        paper_label = _rh.paper_label_for(kind, role)
+        stated_fit: dict = {}
+        if stmt is not None:
+            if stmt.get("paper_label") is not None:
+                from sisteer.registry import vocab as _V
+                if stmt["paper_label"] not in _V.PAPER_LABELS:
+                    raise ValueError(f"train_budget_meta.json states registry_statement.paper_label {stmt['paper_label']!r}, "
+                                     "which is not one of the registry's PAPER_LABELS")
+                paper_label = str(stmt["paper_label"])
+                stated_fit["paper_label_source"] = ("train_budget_meta.json:registry_statement.paper_label ("
+                                                    f"{stmt.get('paper_label_source') or 'stated by the fit'})")
+            if not corpus:
+                for k in ("fit_teacher_si_text_sha256", "fit_prompt_pool_id", "fit_prompt_pool_sha256"):
+                    if stmt.get(k) is not None:
+                        stated_fit[k] = stmt[k]
 
         def _sha(path) -> str:
             h = hashlib.sha256()
@@ -3529,6 +3563,7 @@ def _registry_publish(final_dir: Path, *, si_id: str, arm: str, emitter=None, fi
             "fit_alpha": float(rank) if rank is not None else None,   # LoRA scaling 1: alpha = r
             "fit_target_modules_json": arch.get("lora_modules") or sel.get("lora_modules"),
             "fit_layers_json": arch.get("layers") or tbm.get("target_layers"),
+            **stated_fit,
         }
         ruling = sel.get("architecture_selection_ruling_id")
         extra = {
@@ -3569,6 +3604,12 @@ def _registry_publish(final_dir: Path, *, si_id: str, arm: str, emitter=None, fi
             raise RuntimeError("REGISTRY_CAMPAIGN is unset — a record's campaign is the writer's statement, never a default: "
                                "the front door's job env sets it (SISTEER_REGISTRY_CAMPAIGN, default sdfbase_full22); a manual "
                                "re-emission runs with REGISTRY_CAMPAIGN=<campaign> set explicitly (CampaignUnset)")
+        # a statement's campaign is the fit job's own (REGISTRY_CAMPAIGN at fit time), which the objects bank states for this object
+        # in place of its own, so the record never states another one: the two would restate each other column by column
+        if stmt is not None and stmt.get("campaign") is not None and campaign is not None and str(stmt["campaign"]) != campaign:
+            raise RuntimeError(f"train_budget_meta.json:registry_statement.campaign is {stmt['campaign']!r} (the fit job's) but "
+                               f"REGISTRY_CAMPAIGN is {campaign!r} — a re-emission under another campaign would move the object's "
+                               f"campaign and the bank would move it back; re-emit with REGISTRY_CAMPAIGN={stmt['campaign']}")
         hook = emitter if emitter is not None else _rh.emit_object_from_sidecar
         # hook-fix-5: the WEIGHT-content identity of the published object and of every published epoch checkpoint
         # (path -> canonical hash), so the registry records weight equivalence (same_weights_as_published) in addition to
@@ -3599,19 +3640,23 @@ def _registry_publish(final_dir: Path, *, si_id: str, arm: str, emitter=None, fi
                                 weights_identity[str(ep_path)] = w
                 except ValueError:
                     pass
+        # a stated registry statement asks for strict epoch emission (passed only where the hook takes the kwarg: a one-record
+        # component emitter writes no epoch rows)
+        if stmt is not None and "strict_epoch_children" in hook_params:
+            kwargs["strict_epoch_children"] = True
         if dry_run:
             # the preflight's view: the exact records the hook WOULD write, nothing written, no evidence touched
             return hook(
                 str(final_dir), campaign=campaign, object_kind=kind, dry_run=True,
                 **({"weights_identity": weights_identity} if "weights_identity" in hook_params else {}),
-                paper_label=_rh.paper_label_for(kind, role), object_role=role,
+                paper_label=paper_label, object_role=role,
                 fit_target_kind="corpus_document_fit" if corpus else "system_instruction_distillation",
                 fit_objective="ce" if corpus else "kl", fit_thinking_render="off", status="reference",
                 fit_teacher_si_id=None if corpus else si_id, fit_corpus_id=si_id if corpus else None,
                 script="scripts/train_two_si_objects.py publish_cell", extra=extra or None, **kwargs)
         paths = hook(
             str(final_dir), campaign=campaign, object_kind=kind, **({"weights_identity": weights_identity} if "weights_identity" in hook_params else {}),
-            paper_label=_rh.paper_label_for(kind, role), object_role=role,
+            paper_label=paper_label, object_role=role,
             fit_target_kind="corpus_document_fit" if corpus else "system_instruction_distillation",
             fit_objective="ce" if corpus else "kl", fit_thinking_render="off", status="reference",
             fit_teacher_si_id=None if corpus else si_id, fit_corpus_id=si_id if corpus else None,
@@ -3626,6 +3671,11 @@ def _registry_publish(final_dir: Path, *, si_id: str, arm: str, emitter=None, fi
             _evidence("not_emitted", reason="registry emission is off on this host (REGISTRY_EMIT_DISABLED / "
                                             "REGISTRY_EMIT=0, or no spool resolves)")
     except Exception as e:  # noqa: BLE001 — a lost record never costs a publication; it is RECORDED, not swallowed
+        if dry_run:
+            # a dry run writes nothing on a failure either: the caller reads None as the refusal (reemit_preflight does)
+            print(f"[registry] train_two_si_objects: dry run refused ({type(e).__name__}: {e}) — nothing written, no evidence "
+                  "touched", file=sys.stderr, flush=True)
+            return None
         try:
             _evidence("failed", error=f"{type(e).__name__}: {e}")
         except Exception:  # noqa: BLE001 — the evidence write itself failing must not mask the notice
@@ -3922,6 +3972,7 @@ def train_si_objects(
     epochs_cap: int | None = None,
     continue_from=None,
     continue_lr_mult: float = 1.0,
+    require_teacher_topk: bool = False,
 ) -> FitOutcome:
     """Train every arm in ``arms`` for ``si_id`` in this one process. Returns
     a :class:`FitOutcome` (``.objects`` = the objects trained this run,
@@ -3982,6 +4033,17 @@ def train_si_objects(
     identity is ignored loudly. Checkpoints live OUTSIDE the cell dirs on
     purpose: the atomic-publish audit and the COMPLETE protocol never see
     them. Default None = off, byte-identical to before the seam.
+
+    ``require_teacher_topk`` (``train --require-teacher-topk``; default
+    off, so every path below behaves as before): the fit MUST train on the
+    precomputed top-K teacher. Every path that would otherwise train on the
+    online teacher exits :data:`TEACHER_TOPK_REQUIRED_EXIT` before any
+    optimizer step instead of falling back: no artifact resolved
+    (``--teacher-topk off``, an ``auto`` miss), an artifact that cannot be
+    loaded or does not match this fit's key, a lockstep group the top-K
+    gate routes to the online teacher, rows that do not bind to the fit's
+    batches, and an arm that trains solo (the solo trainers never read the
+    head).
     """
     from sisteer.data.pairs import pairs_to_distill_examples
     from sisteer.eval.defense_cell import object_path_for
@@ -3991,7 +4053,8 @@ def train_si_objects(
         EarlyStopSpec, floor_ratio_check, probe_values_record)
     from sisteer.extraction.fitckpt import DEFAULT_CHECKPOINT_EVERY
     from sisteer.extraction.lockstep import (
-        LockstepArm, arm_probe_losses, build_lockstep_object, train_lockstep)
+        LockstepArm, TeacherTopKRequired, arm_probe_losses,
+        build_lockstep_object, train_lockstep)
     from sisteer.extraction.psr import (
         GUARD_PROBE_FLOOR, PSRObject, check_psr_gates)
     from sisteer.methods import ARMS
@@ -4162,12 +4225,25 @@ def train_si_objects(
     # gated per lockstep group below (forward-KL arms at the audited T
     # grid only) and row-sha-bound inside train_lockstep, so three
     # independent guards sit between a wrong artifact and a trained
-    # object.
+    # object. Under require_teacher_topk every one of those fallbacks (and
+    # the no-artifact case) exits instead (_refuse_online_teacher).
     topk_store = None
     topk_meta_rec = None
+    if require_teacher_topk:
+        _, solo_arms = partition_arms(arms)
+        if not teacher_topk:
+            _refuse_online_teacher(
+                f"{si_id}: no top-K teacher artifact was resolved "
+                "(--teacher-topk off, or an 'auto' miss with no sidecar "
+                "beside the pairs)")
+        if solo_arms:
+            _refuse_online_teacher(
+                f"{si_id}: arm(s) {solo_arms} train solo, and the solo "
+                "trainers never read a precomputed top-K head")
     if teacher_topk:
         from sisteer.extraction.teacher_topk import DEFAULT_TOP_K, TeacherTopK
 
+        unusable = None   # why the artifact cannot be consumed, if it cannot
         try:
             store = TeacherTopK.load(teacher_topk)
             problems = store.validate(
@@ -4179,31 +4255,42 @@ def train_si_objects(
                 top_k=DEFAULT_TOP_K,
                 dtype=cfg.get("dtype"))
         except Exception as e:  # noqa: BLE001 — loud fallback, never fatal
-            print(f"[teacher-topk] FALLBACK to the ONLINE teacher — could "
-                  f"not load {teacher_topk}: {type(e).__name__}: {e}",
-                  flush=True)
+            unusable = (f"could not load {teacher_topk}: "
+                        f"{type(e).__name__}: {e}")
         else:
             if problems:
-                print(f"[teacher-topk] FALLBACK to the ONLINE teacher — "
-                      f"{teacher_topk} does not match this fit: "
-                      f"{'; '.join(problems)}", flush=True)
-            else:
-                topk_store = store
-                topk_meta_rec = {
-                    "path": str(teacher_topk),
-                    "top_k": store.top_k,
-                    "n_examples": len(store),
-                    "n_positions": int(store.idx.shape[0]),
-                    "pool_content_sha256": store.meta.get(
-                        "pool_content_sha256"),
-                    "build": store.meta.get("build"),
-                }
-                print(f"[teacher-topk] artifact verified for {si_id}: "
-                      f"{teacher_topk} (top_k={store.top_k}, "
-                      f"{len(store)} examples, "
-                      f"{int(store.idx.shape[0])} positions) — the "
-                      "lockstep KL arms will consume it instead of "
-                      "running the online teacher", flush=True)
+                unusable = (f"{teacher_topk} does not match this fit: "
+                            f"{'; '.join(problems)}")
+        if unusable is not None:
+            if require_teacher_topk:
+                _refuse_online_teacher(unusable)
+            print(f"[teacher-topk] FALLBACK to the ONLINE teacher — "
+                  f"{unusable}", flush=True)
+        else:
+            topk_store = store
+            topk_meta_rec = {
+                "path": str(teacher_topk),
+                "top_k": store.top_k,
+                "n_examples": len(store),
+                "n_positions": int(store.idx.shape[0]),
+                "pool_content_sha256": store.meta.get(
+                    "pool_content_sha256"),
+                "build": store.meta.get("build"),
+            }
+            print(f"[teacher-topk] artifact verified for {si_id}: "
+                  f"{teacher_topk} (top_k={store.top_k}, "
+                  f"{len(store)} examples, "
+                  f"{int(store.idx.shape[0])} positions) — the "
+                  "lockstep KL arms will consume it instead of "
+                  "running the online teacher", flush=True)
+
+    # The registry statement the config makes for this fit's objects
+    # (registry_paper_label, registry_prompt_pool_ids): None when it makes
+    # none, so the sidecars and every emission stay as they were. Stamped
+    # into each published cell's train_budget_meta.json, where
+    # _registry_publish (and any later replay) reads it.
+    registry_statement = _registry_statement(
+        cfg, si_id, instruction=instruction, pairs=pairs)
 
     # The deterministic held-out carve (hash on the prompt, split_prompts'
     # convention). Everything downstream — lockstep examples, PSR inits,
@@ -4576,10 +4663,14 @@ def train_si_objects(
                     # positions != "all" REFUSES per arm inside the builder
                     # when the object cannot honor a masked fit — recorded
                     # as that arm's failure, never a silent all-token fit.
+                    # seed: the fit seed reaches the multi-layer lora arms'
+                    # A-factor init as well as the data order (0, the
+                    # default, builds the object every unseeded fit built).
                     obj = build_lockstep_object(
                         arm, model, tok, instruction, fit_pairs, layer=layer,
                         positions=positions,
-                        response_header_len=response_header_len, **kw)
+                        response_header_len=response_header_len, seed=seed,
+                        **kw)
                 except Exception as e:  # noqa: BLE001
                     _record(arm, "failed", e)
                 else:
@@ -4674,6 +4765,13 @@ def train_si_objects(
                     a.name for a in group
                     if a.params.loss != "soft"
                     or a.params.temperature not in AUDITED_TOPK_TEMPERATURES)
+                if unaudited and require_teacher_topk:
+                    _refuse_online_teacher(
+                        f"{si_id}: the top-K gate routes group "
+                        f"{sorted(a.name for a in group)} to the online "
+                        f"teacher (arm(s) {unaudited} train outside the "
+                        f"audited forward-KL grid "
+                        f"T={AUDITED_TOPK_TEMPERATURES})")
                 if unaudited:
                     print(f"[teacher-topk] {si_id}: ONLINE teacher for "
                           f"group {sorted(a.name for a in group)} — arm(s) "
@@ -4703,7 +4801,15 @@ def train_si_objects(
                                              if mons else None),
                                    epoch_cb=(_epoch_cb if tmp_dirs else None),
                                    teacher_topk=group_topk,
+                                   # passed only when set, so every other
+                                   # caller's call is the one it always was
+                                   **({"require_teacher_topk": True}
+                                      if require_teacher_topk else {}),
                                    **_ckpt_kwargs([a.name for a in group]))
+                except TeacherTopKRequired as e:
+                    # require_teacher_topk: setup found an online-teacher
+                    # path (rows that do not bind) before any optimizer step
+                    _refuse_online_teacher(f"{si_id}: {e}")
                 except Exception as e:  # noqa: BLE001 — the group fails together
                     for a in group:
                         _record(a.name, "failed", e)
@@ -4783,6 +4889,15 @@ def train_si_objects(
                                 "length_bucketed": length_bucket,
                                 "monitors": monitors_on and mon is not None,
                                 "fit_record": arm_diag}
+                        # The fit seed, when the config states one
+                        # (train_kwargs seed): the data order and, on the
+                        # lora arms, the A-factor init ran under it, and the
+                        # registry records it as fit_seed. A config that
+                        # states none leaves the sidecar as it was.
+                        if "seed" in tk:
+                            meta["seed"] = seed
+                        if registry_statement is not None:
+                            meta["registry_statement"] = registry_statement
                         try:
                             if mon is not None:
                                 # Final dual-KL — the audit requires it in
@@ -5142,6 +5257,8 @@ def train_si_objects(
                                                  and bh_fit is not None)),
                     "monitors": monitors_on,
                     "response_header_len": response_header_len}
+            if registry_statement is not None:
+                meta["registry_statement"] = registry_statement
             if arm in CE_ARMS:
                 # Which CE loss implementation trained the object (a
                 # fingerprinted identity dimension) — the sidecar says it,
@@ -6350,6 +6467,9 @@ def _spawn_arm_task(args, arm: str, width: int, gpu_ids: list[str],
     ]
     if args.overwrite:
         cmd_common.append("--overwrite")
+    if getattr(args, "require_teacher_topk", False):
+        # a required top-K teacher stays required in every arm task
+        cmd_common.append("--require-teacher-topk")
     # Forward the fit leg and any explicit bidpo pool overrides, so every
     # arm task resolves what cmd_train resolved. Also PIN the config's
     # byte identity: an arm task re-reads the config FILE — possibly hours
@@ -6607,6 +6727,8 @@ def cmd_arm_task(args, cfg) -> None:
     # Stale-config guard FIRST — before even the imports below — so a
     # stale-tarball task dies in milliseconds, before any pair/model load.
     sha = _assert_expected_config_sha(args)
+    _require_teacher_topk_early(args)
+    check_registry_statement_cfg(cfg, args.si)
     pos_flag = getattr(args, "positions", "")
     if pos_flag:
         cfg = _cfg_with_positions(cfg, pos_flag)
@@ -6674,7 +6796,9 @@ def cmd_arm_task(args, cfg) -> None:
             pairs_path=args.pairs,
             checkpoint_dir=getattr(args, "checkpoint_dir", "") or None,
             checkpoint_every=(int(getattr(args, "checkpoint_every", 0) or 0)
-                              or None))
+                              or None),
+            require_teacher_topk=bool(getattr(args, "require_teacher_topk",
+                                              False)))
     finally:
         if prof is not None:
             prof.__exit__(None, None, None)
@@ -6703,15 +6827,8 @@ def _load_pairs(path: str):
     # reach BEFORE the model load.
     validate_probe_pairs_path(path)
     raw = Path(path).read_bytes()
-    # An evaluation-only corpus (the ReNeLLM paper corpus, shipped under terms that forbid training
-    # on it) never reaches a fit: refused by path, file hash and content hash, and by each pair's
-    # prompt, before anything is loaded (sisteer.eval.attacks.eval_only; counts and hashes only).
-    from sisteer.eval.attacks import eval_only
-    consumer = f"the training stage's pair loader ({path})"
-    eval_only.refuse_corpus(consumer=consumer, path=path, raw=raw)
     rows = [json.loads(line) for line in raw.decode("utf-8").splitlines()
             if line.strip()]
-    eval_only.refuse_texts((r.get("prompt") for r in rows), consumer=consumer)
     return [Pair(prompt=r["prompt"], pos=r["pos"], neg=r.get("neg", ""),
                  instruction_id=r.get("instruction_id", ""),
                  requirement_a=r.get("requirement_a"),
@@ -6883,6 +7000,134 @@ def _resolve_teacher_topk(args) -> str | None:
           "remove the training-step teacher forward)", flush=True)
     return None
 
+
+#: The exit code of a fit ``--require-teacher-topk`` refuses: a configuration
+#: failure (the artifact is missing, mismatched or would not be consumed),
+#: which a retry would meet again — the Slurm wrappers never resubmit it.
+TEACHER_TOPK_REQUIRED_EXIT = 3
+
+
+def _refuse_online_teacher(why: str):
+    """``--require-teacher-topk``'s refusal: one ``[teacher-topk] REQUIRED``
+    line naming the online-teacher path that was about to be taken (it says
+    ``ONLINE``, like every online-teacher line, so one log grep
+    ``\\[teacher-topk\\].*ONLINE`` finds a fallback and a refusal alike), then
+    exit :data:`TEACHER_TOPK_REQUIRED_EXIT` — always before any optimizer
+    step, in place of the loud fallback the unflagged fit takes."""
+    print(f"[teacher-topk] REQUIRED (--require-teacher-topk): {why} — "
+          "refusing to train on the ONLINE teacher "
+          f"(exit {TEACHER_TOPK_REQUIRED_EXIT})", file=sys.stderr, flush=True)
+    raise SystemExit(TEACHER_TOPK_REQUIRED_EXIT)
+
+
+def _require_teacher_topk_early(args) -> None:
+    """The CLI's fast half of ``--require-teacher-topk``, before any pool or
+    model load: an explicit ``--teacher-topk off`` or an ``auto`` miss
+    refuses in milliseconds. train_si_objects re-checks every path (this one
+    included) as the authoritative choke point."""
+    if not getattr(args, "require_teacher_topk", False):
+        return
+    flag = str(getattr(args, "teacher_topk", "auto") or "auto")
+    if flag == "off":
+        _refuse_online_teacher("--teacher-topk off selects the online "
+                               "teacher")
+    if flag == "auto":
+        from sisteer.extraction.teacher_topk import topk_artifact_path
+
+        if not topk_artifact_path(args.pairs).is_file():
+            _refuse_online_teacher(
+                f"--teacher-topk auto found no artifact beside {args.pairs}")
+
+
+#: The config keys of the registry statement a fit config may make for its
+#: published objects (both optional; a config with neither emits exactly as
+#: before): ``registry_paper_label`` — the object's paper label, stated in
+#: place of the native (kind, role) derivation — and
+#: ``registry_prompt_pool_ids`` — {si_id: prompt pool id}, the pool id the
+#: registry files for a system-instruction distillation (its content sha and
+#: the teacher SI text's sha are computed from the data at fit time).
+REGISTRY_STATEMENT_KEYS = ("registry_paper_label", "registry_prompt_pool_ids")
+
+
+def check_registry_statement_cfg(cfg: dict, si_id: str) -> None:
+    """Refuse (SystemExit) a malformed registry statement before any pool
+    or model load: a paper label outside the registry's PAPER_LABELS, a pool
+    id map that is not {str: str}, a system-instruction fit whose SI the map
+    does not name, or a pool id map on a document-mode fit (whose objects
+    are corpus fits: the registry's pairing rule forbids prompt-pool
+    columns on them)."""
+    label = cfg.get("registry_paper_label")
+    if label is not None:
+        from sisteer.registry import vocab as _V
+
+        if label not in _V.PAPER_LABELS:
+            raise SystemExit(
+                f"[train-two-si] registry_paper_label {label!r} is not one of "
+                "the registry's PAPER_LABELS — the record would be refused; "
+                "fix the config")
+    pools = cfg.get("registry_prompt_pool_ids")
+    if pools is None:
+        return
+    if (not isinstance(pools, dict)
+            or not all(isinstance(k, str) and isinstance(v, str) and v
+                       for k, v in pools.items())):
+        raise SystemExit(
+            "[train-two-si] registry_prompt_pool_ids must map each "
+            f"system-instruction id to a non-empty pool id, got {pools!r}")
+    if _data_mode(cfg) == DOC_DATA_MODE:
+        raise SystemExit(
+            "[train-two-si] registry_prompt_pool_ids names system-instruction "
+            "prompt pools, but this config fits documents (a corpus fit has "
+            "no prompt pool) — drop the key")
+    if si_id not in pools:
+        raise SystemExit(
+            f"[train-two-si] registry_prompt_pool_ids names no pool for "
+            f"{si_id!r} (it names {sorted(pools)}) — the record's pool id "
+            "would be missing; add it to the config")
+
+
+def _registry_statement(cfg: dict, si_id: str, *, instruction,
+                        pairs) -> dict | None:
+    """The registry statement a fit config makes for this SI's published
+    objects (:data:`REGISTRY_STATEMENT_KEYS`), validated, as the
+    ``train_budget_meta.json`` block ``_registry_publish`` reads — or None
+    when the config makes none (every sidecar and emission then stays as
+    it was).
+
+    ``paper_label`` (+ its source) from ``registry_paper_label``; for a
+    system-instruction fit with ``registry_prompt_pool_ids`` (a document
+    fit's pool map is refused by :func:`check_registry_statement_cfg`), the
+    three facts the registry's pairing rule requires of a distillation
+    record beside ``fit_teacher_si_id``: ``fit_teacher_si_text_sha256``
+    (sha256 of the resolved instruction text the teacher was prompted with,
+    the artifact manifest's ``instruction_sha256``),
+    ``fit_prompt_pool_id`` (the configured id) and ``fit_prompt_pool_sha256``
+    (the loaded pool's content sha, :func:`pool_content_sha256` — the value
+    the registry files for a pool).
+
+    ``campaign``: the fit job's ``REGISTRY_CAMPAIGN`` when set — the
+    campaign its own records state (``_registry_publish`` refuses a
+    re-emission under another), which the objects bank states for this
+    object in place of its own bank campaign, so a bank copy of the cell
+    never restates it (``fit_sidecars.build_object_payload``)."""
+    if not any(cfg.get(k) is not None for k in REGISTRY_STATEMENT_KEYS):
+        return None
+    check_registry_statement_cfg(cfg, si_id)
+    stmt: dict = {}
+    if cfg.get("registry_paper_label") is not None:
+        stmt["paper_label"] = str(cfg["registry_paper_label"])
+        stmt["paper_label_source"] = "fit config key registry_paper_label"
+    if os.environ.get("REGISTRY_CAMPAIGN"):
+        stmt["campaign"] = os.environ["REGISTRY_CAMPAIGN"]
+    pools = cfg.get("registry_prompt_pool_ids")
+    if pools is not None:
+        from sisteer.extraction.teacher_topk import instruction_sha
+
+        stmt["fit_teacher_si_text_sha256"] = instruction_sha(instruction.text)
+        stmt["fit_prompt_pool_id"] = str(pools[si_id])
+        stmt["fit_prompt_pool_sha256"] = pool_content_sha256(pairs)
+    return stmt
+
 def _warm_token_cache(args, cfg, tok) -> None:
     """Default-on token-cache warm-in for every fit entrypoint. A PRESENT
     sidecar that mismatches the tokenizer refuses the run (fail loudly —
@@ -7002,6 +7247,12 @@ def cmd_precompute_teacher(args, cfg) -> None:
     manifest — and object-free: no steering arm exists yet at this point,
     and the teacher never depends on one."""
     sha = _assert_expected_config_sha(args)
+    # --code-sha: validated here, before any load; recorded in the manifest
+    code_sha = str(getattr(args, "code_sha", "") or "").strip().lower()
+    if code_sha and not re.fullmatch(r"[0-9a-f]{40}", code_sha):
+        raise SystemExit(
+            f"[teacher-topk] --code-sha must be a 40-hex commit, got "
+            f"{code_sha!r}")
     from sisteer.data.pairs import pairs_to_distill_examples
     from sisteer.eval.jailbreak import resolve_instruction
     from sisteer.eval.train_budget import resolve_max_len
@@ -7081,6 +7332,8 @@ def cmd_precompute_teacher(args, cfg) -> None:
         "config_sha": sha,
         "positions": "completion_decode_only",
     }
+    if code_sha:
+        meta["code_sha"] = code_sha
     if shard_rec is not None:
         meta["shard"] = shard_rec
     from sisteer.extraction.teacher_topk import DEFAULT_TOP_K
@@ -7147,6 +7400,10 @@ def cmd_train(args, cfg) -> None:
     # wave driver passes --expect-config-sha so a launch tarball that
     # predates the intended config refuses here, in milliseconds.
     sha = _assert_expected_config_sha(args)
+    # --require-teacher-topk's fast half (an `off` or an `auto` miss) and a
+    # malformed registry statement, both before any pool or model load.
+    _require_teacher_topk_early(args)
+    check_registry_statement_cfg(cfg, args.si)
 
     from sisteer.models import load_model_and_tokenizer
 
@@ -7346,7 +7603,9 @@ def cmd_train(args, cfg) -> None:
                                                    0) or 0) or None),
                                    epochs_cap=epochs_cap,
                                    continue_from=continue_from,
-                                   continue_lr_mult=continue_lr_mult)
+                                   continue_lr_mult=continue_lr_mult,
+                                   require_teacher_topk=bool(getattr(
+                                       args, "require_teacher_topk", False)))
     finally:
         if prof is not None:
             prof.__exit__(None, None, None)
@@ -7412,6 +7671,15 @@ def main() -> None:
                         "online teacher loudly. Consumed by the T=1 "
                         "forward-KL lockstep arms only (build it with the "
                         "`precompute-teacher` subcommand).")
+    t.add_argument("--require-teacher-topk", action="store_true",
+                   help="make the precomputed top-K teacher REQUIRED: every "
+                        "path that would train on the online teacher — "
+                        "'off', an 'auto' miss, an artifact that cannot be "
+                        "loaded or does not match the fit's key, a group the "
+                        "top-K gate routes online, rows that do not bind, a "
+                        "solo arm — exits 3 before any optimizer step "
+                        "instead of falling back. Default off: the fallbacks "
+                        "stay loud and non-fatal.")
     t.add_argument("--positions", default="",
                    help="fit-position override — the Class C submission "
                         "path: 'response' fits the DECODE-ONLY leg of every "
@@ -7534,6 +7802,8 @@ def main() -> None:
                     help="as for `train` — forwarded by the scheduler so "
                          "every arm task consumes (or refuses) the same "
                          "precomputed teacher cmd_train resolved")
+    at.add_argument("--require-teacher-topk", action="store_true",
+                    help="as for `train` — forwarded by the scheduler")
     at.add_argument("--profile", default="",
                     help="as for `train` — forwarded by the scheduler so a "
                          "profiled parallel wave traces its arm tasks (the "
@@ -7584,6 +7854,12 @@ def main() -> None:
     tt.add_argument("--expect-config-sha", default="",
                     help="as for `train` — the artifact must be built from "
                          "the exact config world the fits will run")
+    tt.add_argument("--code-sha", default="",
+                    help="the 40-hex commit of the code building the "
+                         "artifact, recorded in its manifest as `code_sha` "
+                         "(the Slurm wrapper passes its pinned, verified "
+                         "checkout HEAD); empty (default) = not recorded, "
+                         "the manifest exactly as before")
     tt.add_argument("--shard-index", type=int, default=-1,
                     help="0-based shard to build (with --shard-count): a "
                          "contiguous example range of the FULL pool, keyed "

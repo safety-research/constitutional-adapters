@@ -13,6 +13,15 @@ by the model's paper_status and the run's status ruling: a descoped model → GL
 `(view, object_arm, eval_or_attack, cap_or_rung, measure)`: rows only in the CSV (grouped by their source lane — the
 ingested lanes are expected here), rows only in the registry, and matched rows whose rate / numerator /
 denominator differ. The diff is REPORTED, never forced to zero.
+
+The rows are read through ``v_run_degeneration_current``: ONE row per measurement key (run, judgment, measure, scope), the visible
+provenance the current object ranks first. The raw ``run_degeneration`` table also holds the rows of pending and superseded adapter
+revisions and every visible source's head of the same key; summing it counted a cell twice or more after a re-read or beside a second
+source.
+
+A row's ``object_arm`` is the run's legacy cell id, the producer's cell the 2026-09-14 tables key on. A natively emitted run carries none
+(``run.campaign_cell_id_legacy`` is NULL by design), so its arm is its object: the object's own legacy cell id, else its ``object_id``
+(:func:`pooled_object_key`). Never one shared placeholder, which would pool the different objects of one view, eval and instrument into one row.
 """
 from __future__ import annotations
 
@@ -52,20 +61,31 @@ def union_excluding_cap(by_reason: Mapping[str, int]) -> int:
     return n
 
 
+def pooled_object_key(row: Mapping[str, Any]) -> Any:
+    """The arm a fetched row pools under: the run's legacy cell id; for a natively emitted run, which has none, its object's legacy cell
+    id, else its object_id (a NOT NULL column), so a native arm is always one object's."""
+    if row["campaign_cell_id_legacy"] is not None:
+        return row["campaign_cell_id_legacy"]
+    return row["object_cell_legacy"] if row["object_cell_legacy"] is not None else row["object_id"]
+
+
 def registry_rows(conn: sqlite3.Connection) -> List[Dict[str, Any]]:
-    """The artifact's rows from the registry: one per pooled (view, cell, eval, instrument) with a measured union5 row."""
+    """The artifact's rows from the registry: one per pooled (view, cell, eval, instrument) with a measured union5 row. Each
+    run contributes its CURRENT union5 row per judgment (``v_run_degeneration_current``), never a pending, superseded or second
+    source's copy of it."""
     conn.row_factory = sqlite3.Row
     q = """
     SELECT d.run_id, d.numerator, d.denominator, d.denominator_unit, d.extra_json, d.source_uri, d.pooling_json, d.computed_utc,
            w.classifier__all_num, w.rep_ratio_loop__all_num, w.zlib_collapse__all_num, w.contentless__all_num,
            w.at_token_cap_retokenized__all_num, w.at_token_cap_retokenized__all_rate,
            r.view_legacy, r.campaign_cell_id_legacy, r.eval_id, r.instrument_id, r.token_cap_tokens, r.model_id, r.decode_source, r.extra_json AS run_extra,
-           r.lane_source_legacy, r.status_ruling_id, i.read_at, m.paper_status
-    FROM run_degeneration d
+           r.lane_source_legacy, r.status_ruling_id, i.read_at, m.paper_status, r.object_id, o.campaign_cell_id_legacy AS object_cell_legacy
+    FROM v_run_degeneration_current d
     JOIN v_run_degeneration_wide w ON w.run_id = d.run_id AND w.judgment_id = d.judgment_id
     JOIN run r ON r.run_id = d.run_id
     JOIN instrument i ON i.instrument_id = r.instrument_id
     JOIN model m ON m.model_id = r.model_id
+    LEFT JOIN object o ON o.object_id = r.object_id
     WHERE d.measure = 'union5' AND d.scope = 'all' AND d.measurement_state = 'measured'
     """
     groups: Dict[Tuple[str, str, str, str], Dict[str, Any]] = {}
@@ -76,7 +96,7 @@ def registry_rows(conn: sqlite3.Connection) -> List[Dict[str, Any]]:
         n_excl = union_excluding_cap(by_reason)
         den = int(row["denominator"] or 0)
         pooling = _j(row["pooling_json"])
-        key = (row["view_legacy"], row["campaign_cell_id_legacy"], row["eval_id"], row["instrument_id"])
+        key = (row["view_legacy"], pooled_object_key(row), row["eval_id"], row["instrument_id"])
         g = groups.setdefault(key, {"num": 0, "den": 0, "classify": 0, "rep": 0, "zlib": 0, "contentless": 0, "cap": 0, "trials": 0,
                                     "row": row, "pooling": pooling, "sources": []})
         g["num"] += n_excl

@@ -1249,7 +1249,7 @@ def _copy_db_hashed(src: str, dst: str) -> Dict[str, object]:
     Refuses (:class:`RefoldInputRefused`) a source whose ``-wal`` twin holds bytes: the file alone is not the database then (checkpoint
     first)."""
     wal = src + "-wal"
-    wal_bytes = os.path.getsize(wal) if os.path.exists(wal) else 0
+    wal_bytes = DB.path_bytes(wal)
     if wal_bytes:
         raise RefoldInputRefused(f"{wal} holds {wal_bytes} bytes: the file alone is not the database -- checkpoint it before copying it out")
     os.makedirs(os.path.dirname(os.path.abspath(dst)) or ".", exist_ok=True)
@@ -2198,7 +2198,7 @@ def stage_input(src: str, work_dir: str, log: Callable[[str], None] = _log_stder
         raise RefoldInputRefused(f"no database at {src}")
     st0 = os.stat(src)
     wal = src + "-wal"
-    wal_bytes = os.path.getsize(wal) if os.path.exists(wal) else 0
+    wal_bytes = DB.path_bytes(wal)
     if wal_bytes:
         raise RefoldInputRefused(f"{wal} holds {wal_bytes} bytes: the file alone is not the database -- checkpoint it before measuring it")
     os.makedirs(work_dir, exist_ok=True)

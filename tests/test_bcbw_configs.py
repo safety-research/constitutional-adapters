@@ -39,10 +39,23 @@ def G():
 def test_the_six_configs_are_byte_identical_to_the_generator(G):
     roster, pins = G.load_roster(), G.load_pins()
     outs = G.outputs(roster)
-    assert [(t, v) for _, t, v in outs] == list(C.BCBW_MODEL_VIEWS) and len(outs) == 19     # 7 + the six b64 seed views + the six all-models one-seed views
+    own = G.own_source_outputs()
+    assert [(t, v) for _, t, v in outs + own] == list(C.BCBW_MODEL_VIEWS) and len(outs) == 19     # 7 + the six b64 seed views + the six all-models one-seed views
+    # + the views with their OWN roster / pins: the three control-pool-stopped views, then the three SI-distilled refit views
+    assert [(t, v) for _, t, v in own] == [("qwen35_4b", v) for v in C.BCBW_CTLSTOP_VIEWS + C.BCBW_SIKL4_VIEWS]
     for dst, target, view in outs:
         assert dst.is_file(), dst
         assert dst.read_text(encoding="utf-8") == G.render_config(roster, target, view, pins=pins), f"DRIFT {dst}"
+    for dst, target, view in own:
+        r_own, p_own, rel = G.view_sources(target, view)
+        want_rel, n_objects = ((C.BCBW_CTLSTOP_ROSTER_REL, 4) if view in C.BCBW_CTLSTOP_VIEWS else (C.BCBW_SIKL4_ROSTER_REL, 6))
+        assert rel == want_rel and dst.is_file(), dst
+        assert dst.read_text(encoding="utf-8") == G.render_config(r_own, target, view, pins=p_own, roster_rel=rel), f"DRIFT {dst}"
+        doc = yaml.safe_load(dst.read_text(encoding="utf-8"))
+        assert doc["defenses_dir"] == C.model_row(C.BCBW_SLUG_OF[(target, view)]).objects_dir
+        assert doc["explicit_cells"][:2] == [C.ROUTE_NONE_CELL, C.CELL_PROMPTED_SAFETY] and len(doc["explicit_cells"]) == 2 + n_objects
+        # every object cell's pin is the view's OWN pins file's entry (the pin-form cells normalized to staged ids)
+        assert G.pins_by_cell(target, view) == {cid: p_own[target][sid]["object_sha256"] for cid, sid in r_own["targets"][target]["views"][view]["cells"].items()}
     assert G.main(["--check"]) == 0
 
 
@@ -96,7 +109,11 @@ def test_the_lane_rosters_runnable_prompted_cells_enter_the_served_config_of_the
     two_hundred = W.load_roster(G.LANE_ROSTER)
     for wname in W.waves(two_hundred):
         assert lane["waves"][wname] is two_hundred["waves"][wname] or lane["waves"][wname] == two_hundred["waves"][wname], wname
-    assert set(W.waves(W.load_roster(G.LANE_ROSTER_FULL))) <= set(W.waves(two_hundred)) and set(lane["waves"]) == set(W.waves(two_hundred))
+    # ... except the control-pool-stopped and the SI-distilled refit waves, which only the full roster carries (their rows have no 200
+    # sibling)
+    full_only = {f"qwen35_4b_{v}" for v in C.BCBW_CTLSTOP_VIEWS + C.BCBW_SIKL4_VIEWS}
+    assert set(W.waves(W.load_roster(G.LANE_ROSTER_FULL))) - set(W.waves(two_hundred)) == full_only
+    assert set(lane["waves"]) == set(W.waves(two_hundred)) | full_only
     assert set(lane) == {"waves", "_sources"}
     assert G.lane_prompted_cells("gemma4e4b", "it") == [C.CELL_PROMPTED_SAFETY, "prompted__si_constitution"]
     assert C.parse_launcher_cell("prompted__si_constitution").kind == C.CELL_KIND_PROMPTED
@@ -147,7 +164,7 @@ def test_a_shared_roster_prompted_cell_the_lane_does_not_run_is_admitted_and_hel
     declared = copy.deepcopy(roster)
     for target, view in (("gemma4e4b", "it"), ("gemma4e4b", "main"), ("qwen35_4b", "main"), ("nemotron3nano4b", "main")):
         declared["targets"][target]["views"][view]["cells"]["prompted__si_constitution"] = None
-    for target, view in C.BCBW_MODEL_VIEWS:
+    for _dst, target, view in G.outputs(roster):          # the production-roster views (the own-source views read another roster)
         served = G.explicit_cells(roster, target, view)
         assert G.explicit_cells(declared, target, view) == served, (target, view)      # the served list is the lane's call
         held = G.held_prompted_cells(declared, target, view)
@@ -439,7 +456,7 @@ def test_a_wave_only_the_full_roster_carries_joins_the_union_and_the_200_roster_
     union = G.load_lane_rosters(path_200=p200, path_full=pfull)
     assert "synthetic_full_only" in union["waves"] and union["waves"]["synthetic_full_only"]["model_row"] == C.BCBW_SLUG_OF[(target, view)]
     assert "synthetic_marker" not in union["waves"][shared] and union["waves"][shared] == two_hundred["waves"][shared]   # the 200 wins
-    assert set(union["waves"]) == set(W.waves(two_hundred)) | {"synthetic_full_only"}
+    assert set(union["waves"]) == set(W.waves(two_hundred)) | {"synthetic_full_only"} | {f"qwen35_4b_{v}" for v in C.BCBW_CTLSTOP_VIEWS + C.BCBW_SIKL4_VIEWS}
     assert "prompted__si_constitution" in G.lane_prompted_cells(target, view, lane_roster=union), (target, view)
     alone = G.load_lane_rosters(path_200=p200, path_full=tmp_path / "absent.yaml")                 # no full roster beside the 200: the 200 alone
     assert set(alone["waves"]) == set(W.waves(two_hundred)) and "prompted__si_constitution" not in G.lane_prompted_cells(target, view, lane_roster=alone)
@@ -617,7 +634,7 @@ def test_check_keeps_the_nineteen_lane_files_and_covers_a_front_door_file_once_i
         assert yaml.safe_load(_p.read_text())["defenses_dir"] == C.model_row(M.launcher_slug(FD_KEY, v)).objects_dir
     assert G.main(["--check"]) == 0
     out = capsys.readouterr().out
-    assert out.count("ok: ") == 22 and f"ok: {committed}" in out and "absent:" not in out and "DRIFT" not in out
+    assert out.count("ok: ") == 28 and f"ok: {committed}" in out and "absent:" not in out and "DRIFT" not in out
     # the front-door CLI itself, in --check, on the committed tree: the one output re-rendered and held, and no cfg note (the row names the file)
     assert G.main(["--front-door", FD_KEY, "--check"]) == 0
     assert capsys.readouterr().out.strip() == f"ok: {committed}"
@@ -625,13 +642,13 @@ def test_check_keeps_the_nineteen_lane_files_and_covers_a_front_door_file_once_i
     monkeypatch.setattr(G, "frontdoor_outputs", lambda table=None: [(fd, FD_KEY, view)])
     assert G.main(["--check"]) == 0                                                        # not generated yet: absent, never a drift
     out = capsys.readouterr().out
-    assert out.count("ok: ") == 19 and f"absent: {fd}" in out and "DRIFT" not in out and f"--front-door {FD_KEY}" in out
+    assert out.count("ok: ") == 25 and f"absent: {fd}" in out and "DRIFT" not in out and f"--front-door {FD_KEY}" in out
     monkeypatch.setattr(G, "frontdoor_outputs", lambda table=None: [(fd, FD_KEY, view)])
     monkeypatch.setattr(G, "render_frontdoor_config", lambda key, view=None, **kw: "explicit_cells:\n- none\n")
     fd.write_text("explicit_cells:\n- none\n")
     assert G.main(["--check"]) == 0
     out = capsys.readouterr().out
-    assert out.count("ok: ") == 20 and f"ok: {fd}" in out and "absent:" not in out
+    assert out.count("ok: ") == 26 and f"ok: {fd}" in out and "absent:" not in out
     fd.write_text("explicit_cells:\n- other\n")
     assert G.main(["--check"]) == 1 and f"DRIFT: {fd}" in capsys.readouterr().out
     monkeypatch.setattr(G, "render_frontdoor_config", lambda key, view=None, **kw: (_ for _ in ()).throw(G.FrontDoorRefusal(key, view, "an input vanished")))

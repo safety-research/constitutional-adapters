@@ -10,7 +10,11 @@ named as covered, nothing else of the config (an unselected pending `pair` store
 the current twin is pending and unselected -> nothing is graded or claimed (the unselected current run never grades here); (3) both
 selected (the daemon's shape today) -> the refusal text byte for byte as before; (4) a store with one pending current run -> unchanged.
 The sibling module's synthetic world (test_grade_full22_native_main: fixture stores under a tmp root, a tmp registry, the real judge
-stack over a stub API), real ``main()``; synthetic ids only."""
+stack over a stub API), real ``main()``; synthetic ids only.
+
+The opt-in ``--grade-excluded-by`` is pinned at the end: a run an `exclude` ruling the flag names is the one thing retiring is graded on its
+own reading and stays excluded; without the flag, under another ruling, beside a successor, a hold-out or a later supersession, or beside a
+second registration of its store, every branch is as before; the flag is refused by name off its one path."""
 from __future__ import annotations
 
 import json
@@ -229,6 +233,8 @@ def test_a_store_with_a_single_pending_current_run_is_unchanged(twin, world, tmp
     out, _ = capsys.readouterr()
     assert "covered by" not in out and "worklist=registry: 1 pending (attack, cell) pair(s)" in out and "claimed 1 pending run(s)" in out
     assert _provenance(tmp_path / "g", "s1")["registry"]["covered_runs"] == [] and stub_judge["judgments"] == N_GOALS_MT * N_TURNS
+    # without --grade-excluded-by the provenance carries none of its keys (the default output is as before the opt-in existed)
+    assert not {"grade_excluded_by", "graded_excluded"} & set(_provenance(tmp_path / "g", "s1")["registry"])
     H.ingest_once(root, workers=0, min_free=0, derive_facts=False)
     with _conn(root) as conn:
         assert _run_state(conn, pair_rid)[0] == "judged" and _judgments(conn, A) == [] and _judgments(conn, B) == []
@@ -1248,3 +1254,420 @@ def test_g37_rung_guard_r5_a_duplicated_rung_whose_judgment_is_on_record_is_cove
     assert out.count("covered by that run's judgment") == 8 and "own reading" not in out and "DRY RUN" not in out and "refusing" not in out
     assert _tree(root) == before and not (tmp_path / "g2").exists() and stub_judge["judgments"] == 0
     assert _n_judgments(root) == 1 and _pending_ids(root) == {X1, X2, Y}
+
+
+# ------------------------------------------------------------------------- --grade-excluded-by: grading a run an exclude ruling retired
+#
+# A run every paper view must leave out is excluded by an object-scoped `exclude` ruling before it is graded; an excluded run reads
+# is_current 0, so without the opt-in the registry path makes it a retired run that never grades its store (pinned below, unchanged). The
+# flag names the ruling: a selected run that ruling alone retires, the sole judgeable registration of its store, is graded on its own
+# reading. Synthetic ids only.
+
+EXCL = "r_synth-exclude-comparison-objects"           # the ruling the flag names: an object-scoped exclude over the synthetic fitted object
+EXCL_OTHER = "r_synth-exclude-other-objects"           # an active exclude over ANOTHER object (it covers none of the fixture runs)
+HOLD = "r_synth-hold-out-the-crescendo-run"
+SUPER_LATER = "r_synth-supersede-the-crescendo-run-later"
+OTHER_OBJECT = "0" * 64
+
+
+def _ruling(ruling_id: str, action: str, scope_kind: str, scope: dict, i: int) -> dict:
+    """A ruling record of the synthetic round (the normaliser builds ``match`` when absent), ruled at ``t(i)``."""
+    from sisteer.registry.adapters import roster as RO
+    raw = {"ruling_id": ruling_id, "round_id": "r_synth", "action": action, "scope_kind": scope_kind, "scope_json": scope,
+           "reason": f"synthetic {action}", "ruled_utc": synth.t(i), "ruled_by": "tests", "source_ref": "tests/test_grade_full22_native_store_currency.py",
+           "provenance": {"kind": "user_direct", "message_utc": "2026-10-13T00:00:00Z"}}
+    return synth.rec("ruling", RO.normalise_ruling(raw), synth.t(i))
+
+
+def _excl_object(ruling_id: str = EXCL, object_id: str = synth.OBJECT_SHA, i: int = 300) -> dict:
+    return _ruling(ruling_id, "exclude", "object", {"match": {"object_ids": [object_id]}, "note": "synthetic: comparison objects, out of every paper view"}, i)
+
+
+def _mt_recs(key: str, i0: int, store: str, *, attack: str = "crescendo", through: str = "generated") -> tuple:
+    """A multi-turn run of ``attack`` on the synthetic fitted object over ``store``: `generated` (the drivers test's five records), or
+    `judged` (generated, then a COMPLETE judgment by the instrument's judge and the judged state -- the one shape v_run_current's later rule
+    reads as a successor)."""
+    inst = TM._instrument(attack)
+    p = synth.run_payload(key, CELL, synth.OBJECT_SHA, i0, eval_id=attack, item_set_id=f"{attack}_set", instrument_id=inst["instrument_id"],
+                          decode_source="generation_config", store_uri=store, model_id=synth.MODEL_ID, serving_path="lora_native", n_items_planned=N_GOALS_MT)
+    p["run_id"] = I.run_id(synth.CAMPAIGN, key, CELL, attack, str(inst["instrument_id"]))
+    rid, t = str(p["run_id"]), synth.t
+    recs = [synth.rec("run", p, t(i0)),
+            synth.rec("run_state", {"run_id": rid, "state": "queued", "event_utc": t(i0), "evidence_kind": "submit_wrapper"}, t(i0)),
+            synth.rec("run_state", {"run_id": rid, "state": "running", "event_utc": t(i0 + 1), "evidence_kind": "job_log"}, t(i0 + 1)),
+            synth.rec("run_state", {"run_id": rid, "state": "generated", "event_utc": t(i0 + 3), "evidence_kind": "completion_artifact", "evidence_uri": store}, t(i0 + 3)),
+            synth.rec("run_patch", {"run_id": rid, "fields": {"n_items_generated": N_GOALS_MT}}, t(i0 + 4))]
+    if through == "judged":
+        judge = str(inst["judge_id"])
+        recs += [synth.rec("judgment", {"judgment_id": I.judgment_id(rid, judge), "run_id": rid, "judge_id": judge, "started_utc": t(i0 + 5),
+                                        "finished_utc": t(i0 + 6), "n_items_judged": N_GOALS_MT, "status": "complete", "api_pool": "lowprio"}, t(i0 + 6)),
+                 synth.rec("run_state", {"run_id": rid, "state": "judged", "event_utc": t(i0 + 7), "evidence_kind": "completion_artifact"}, t(i0 + 7)),
+                 synth.rec("run_patch", {"run_id": rid, "fields": {"n_items_judged": N_GOALS_MT}}, t(i0 + 8))]
+    return rid, recs
+
+
+def _excluded_world(world, tmp_path, monkeypatch, *, rulings=None, extra_runs=()) -> tuple:
+    """The crescendo and pair stores of view s1, one `generated` run each, under the exclude ruling EXCL (and EXCL_OTHER, an active exclude
+    over another object) -- or under ``rulings`` when given; ``extra_runs`` = [(name, recs)] registered beside them. Returns
+    ``(root, {name: run_id}, {run_id: v_run_current facts})``."""
+    root, rids = _registry(tmp_path, monkeypatch, [
+        ("s1/crescendo", f"{run_of('s1')}/crescendo/{CELL}", "crescendo", str(store_of(world, "s1", "crescendo")), N_GOALS_MT, {}),
+        ("s1/pair", f"{run_of('s1')}/pair/{CELL}", "pair", str(store_of(world, "s1", "pair")), N_GOALS_MT, {})])
+    for k, (name, (rid, recs)) in enumerate(extra_runs):
+        R.write_records(os.path.join(root, "records", "c", f"{100 + k:06d}-extra.jsonl"), recs)
+        rids[name] = rid
+    R.write_records(os.path.join(root, "records", "rulings_synth", "000091-exclude.jsonl"),
+                    list(rulings) if rulings is not None else [_excl_object(), _excl_object(EXCL_OTHER, OTHER_OBJECT, 301)])
+    rep = H.ingest_once(root, workers=0, min_free=0)
+    assert rep.refused == 0 and rep.blocked == 0, rep.as_dict()
+    return root, rids, _currency(root, rids.values())
+
+
+def _currency(root, rids) -> dict:
+    with _conn(root) as conn:
+        return {rid: dict(zip(("is_current", "why", "selection_state", "decisive_ruling_id", "in_current_paper", "held_out"), conn.execute(
+            "SELECT is_current, why, selection_state, decisive_ruling_id, in_current_paper, held_out FROM v_run_current WHERE run_id = ?", (rid,)).fetchone()))
+            for rid in rids}
+
+
+def _flag(*ids) -> list:
+    return [a for rid in ids for a in ("--grade-excluded-by", rid)]
+
+
+def test_excluded_a_sole_pending_run_excluded_by_the_named_ruling_is_graded_on_its_own_reading_and_stays_excluded(twin, world, tmp_path, monkeypatch, capsys, stub_judge):
+    """(1) The crescendo run is excluded by EXCL (its decisive ruling and its first failing rule) and is the sole registration of its store.
+    Selected with ``--grade-excluded-by EXCL``: claimed, graded on its own reading -- one judgment, the item and metric rows the registry path
+    files for any multi-turn pair -- named on stdout and in `registry.graded_excluded`; after the fold it is judged and STILL excluded (is_current
+    0, in_current_paper 0, the same decisive ruling) and leaves the pending worklist. The unselected `pair` store, excluded the same way, is
+    untouched."""
+    root, rids, cur = _excluded_world(world, tmp_path, monkeypatch)
+    A, B = rids["s1/crescendo"], rids["s1/pair"]
+    assert cur[A] == {"is_current": 0, "why": f"selection_state excluded (ruling {EXCL})", "selection_state": "excluded", "decisive_ruling_id": EXCL,
+                      "in_current_paper": 0, "held_out": 0}, cur[A]
+    assert _pending_ids(root) == {A, B}                                                   # an excluded run is still pending: only currency retires it
+    wl = W.RegistryWorklist(root, None, "s-T", driver="tests/grade-excluded")
+    row = next(r for r in wl.pending() if r["run_id"] == A)
+    assert twin.excluded_by_named_ruling_of(wl, row, [EXCL]) == (EXCL, None)
+    assert twin.excluded_by_named_ruling_of(wl, row, [EXCL_OTHER])[0] is None
+    grades = tmp_path / "grades"
+    twin.main(reg_argv(world, "s1", root, attacks="crescendo,pair", grades=grades, run_ids=[A], extra=_flag(EXCL)))
+    out, _ = capsys.readouterr()
+    line = next(ln for ln in out.splitlines() if "which --grade-excluded-by names" in ln)
+    assert A in line and f"excluded by ruling {EXCL}" in line and "graded on its own reading in this invocation; the exclusion stands" in line, line
+    assert "worklist=registry: 1 pending (attack, cell) pair(s)" in out and "1 pending run(s) excluded by a ruling --grade-excluded-by names" in out
+    assert "claimed 1 pending run(s)" in out and "covered by" not in out and "a retired run" not in out
+    assert stub_judge["judgments"] == N_GOALS_MT * N_TURNS                                 # the crescendo store, once; the pair store never
+    prov = _provenance(grades, "s1")
+    assert [j["run_id"] for j in prov["registry"]["judgments"]] == [A] and prov["registry"]["covered_runs"] == []
+    assert prov["registry"]["grade_excluded_by"] == [EXCL]
+    assert prov["registry"]["graded_excluded"] == [{"run_id": A, "attack": "crescendo", "cell": CELL, "why": cur[A]["why"], "ruling_id": EXCL,
+                                                    "rung": [512, None]}], prov["registry"]["graded_excluded"]
+    H.ingest_once(root, workers=0, min_free=0, derive_facts=False)
+    with _conn(root) as conn:
+        TM._assert_multiturn_judged(conn, A, judgment_prov=prov["registry"]["judgments"][0])
+        assert _judgments(conn, B) == [] and _run_state(conn, B)[0] == "generated"
+    after = _currency(root, [A])[A]
+    assert after["is_current"] == 0 and after["selection_state"] == "excluded" and after["decisive_ruling_id"] == EXCL and after["in_current_paper"] == 0
+    assert _pending_ids(root) == {B}
+
+
+def test_excluded_without_the_flag_the_excluded_run_is_a_retired_run_never_claimed_exactly_as_before(twin, world, tmp_path, monkeypatch, capsys, stub_judge):
+    """(2) The same world, no flag: the run is a retired run (no ladder declared) -- covered by no run, never claimed -- and the invocation
+    refuses with nothing written, dry and real; the text names nothing of the opt-in."""
+    root, rids, cur = _excluded_world(world, tmp_path, monkeypatch)
+    A = rids["s1/crescendo"]
+    before = _tree(root)
+    for dry in (True, False):
+        with pytest.raises(SystemExit) as ei:
+            twin.main(reg_argv(world, "s1", root, attacks="crescendo", grades=tmp_path / "g", run_ids=[A], dry=dry))
+        msg = str(ei.value)
+        assert "no pending (attack, cell) pair" in msg and f"{A} (crescendo/{CELL}) covered by no run on record -- selection_state excluded (ruling {EXCL})" in msg, msg
+        assert "(a retired run: its row declares no ladder (token_cap_ladder_json [], pass label None))" in msg and "grade-excluded" not in msg
+    out, _ = capsys.readouterr()
+    assert "a retired run never grades its store" in out and "grade-excluded" not in out and "[registry] claimed " not in out
+    assert _tree(root) == before and not (tmp_path / "g").exists() and stub_judge["judgments"] == 0 and _n_judgments(root) == 0
+
+
+def test_excluded_by_a_ruling_the_flag_does_not_name_stays_retired_with_the_reason_named(twin, world, tmp_path, monkeypatch, capsys, stub_judge):
+    """(3) The run is excluded by EXCL; the flag names EXCL_OTHER (an active exclude over another object): a retired run, the reason the
+    opt-in did not apply named in the refusal; nothing claimed or written."""
+    root, rids, cur = _excluded_world(world, tmp_path, monkeypatch)
+    A = rids["s1/crescendo"]
+    before = _tree(root)
+    for dry in (True, False):
+        with pytest.raises(SystemExit) as ei:
+            twin.main(reg_argv(world, "s1", root, attacks="crescendo", grades=tmp_path / "g", run_ids=[A], dry=dry, extra=_flag(EXCL_OTHER)))
+        msg = str(ei.value)
+        assert "no pending (attack, cell) pair" in msg and "covered by no run on record" in msg, msg
+        assert (f"--grade-excluded-by does not apply: it is excluded by ruling {EXCL}, which --grade-excluded-by does not name ({EXCL_OTHER})") in msg, msg
+    assert _tree(root) == before and not (tmp_path / "g").exists() and stub_judge["judgments"] == 0
+
+
+def test_excluded_and_superseded_by_a_later_complete_run_at_its_key_stays_retired(twin, world, tmp_path, monkeypatch, capsys, stub_judge):
+    """(4) A later COMPLETE run at the run's key over another store (a re-run elsewhere): the exclusion is the first failing rule in `why`
+    and masks the successor, so the relation is asked of the view's own rendering -- the run stays retired, the successor named."""
+    succ_key = f"{run_of('s1')}/crescendo/{CELL}#rerun-elsewhere"
+    S, recs = _mt_recs(succ_key, 250, "synthetic:///store/rerun-elsewhere/crescendo", through="judged")
+    root, rids, cur = _excluded_world(world, tmp_path, monkeypatch, extra_runs=[("succ", (S, recs))])
+    A = rids["s1/crescendo"]
+    assert cur[A]["why"] == f"selection_state excluded (ruling {EXCL})"                    # the successor is masked behind the exclusion
+    wl = W.RegistryWorklist(root, None, "s-T", driver="tests/grade-excluded")
+    row = next(r for r in wl.pending() if r["run_id"] == A)
+    assert twin.later_run_of(wl, row) == [S]
+    ex, why_not = twin.excluded_by_named_ruling_of(wl, row, [EXCL])
+    assert ex is None and S in why_not and "later complete run at its key" in why_not
+    with pytest.raises(SystemExit) as ei:
+        twin.main(reg_argv(world, "s1", root, attacks="crescendo", grades=tmp_path / "g", run_ids=[A], extra=_flag(EXCL)))
+    assert f"--grade-excluded-by does not apply: it is superseded by a later complete run at its key, {S}" in str(ei.value), str(ei.value)
+    assert stub_judge["judgments"] == 0 and not (tmp_path / "g").exists() and _n_judgments(root) == 1          # the successor's own, only
+
+
+@pytest.mark.parametrize("variant", ["held_out", "superseded_by_a_later_ruling"])
+def test_excluded_but_held_out_or_superseded_by_a_later_ruling_stays_retired(twin, world, tmp_path, monkeypatch, capsys, stub_judge, variant):
+    """(5) A hold-out beside the exclusion (`why` still names the exclusion; the held_out column does not), or a `supersede` ruling naming the
+    run ruled AFTER the exclusion (the decisive ruling is then the supersede): either way a retired run with the flag, the reason named."""
+    A, _ = TM._run_recs(f"{run_of('s1')}/crescendo/{CELL}", 200, "crescendo", str(store_of(world, "s1", "crescendo")), n_items=N_GOALS_MT)  # the id: a function of the key
+    extra = (_ruling(HOLD, "hold_out", "run", {"match": {"run_ids": [A]}}, 310) if variant == "held_out"
+             else _ruling(SUPER_LATER, "supersede", "run", {"match": {"run_ids": [A]}}, 400))
+    root, rids, cur = _excluded_world(world, tmp_path, monkeypatch, rulings=[_excl_object(), extra])
+    assert rids["s1/crescendo"] == A
+    if variant == "held_out":
+        assert cur[A]["why"] == f"selection_state excluded (ruling {EXCL})" and cur[A]["held_out"] == 1, cur[A]
+        reason = "--grade-excluded-by does not apply: it is held out"
+    else:
+        assert cur[A]["selection_state"] == "superseded" and cur[A]["decisive_ruling_id"] == SUPER_LATER, cur[A]
+        reason = "--grade-excluded-by does not apply: its selection_state is 'superseded' (decisive action 'supersede'), not an exclusion"
+    with pytest.raises(SystemExit) as ei:
+        twin.main(reg_argv(world, "s1", root, attacks="crescendo", grades=tmp_path / "g", run_ids=[A], extra=_flag(EXCL)))
+    assert reason in str(ei.value) and "no pending (attack, cell) pair" in str(ei.value), str(ei.value)
+    assert stub_judge["judgments"] == 0 and _n_judgments(root) == 0
+
+
+BASE_FACTS = {"is_current": 0, "why": f"selection_state excluded (ruling {EXCL})", "selection_state": "excluded", "decisive_action": "exclude",
+              "decisive_ruling_id": EXCL, "held_out": 0, "superseded_by_run_id": None, "lifecycle_state": "generated"}
+
+
+@pytest.mark.parametrize("change, reason", [
+    ({}, None),
+    ({"lifecycle_state": "judged"}, None),
+    ({"is_current": 1, "why": None}, "the run is current"),
+    ({"selection_state": "withdrawn", "why": "selection_state withdrawn"}, "its selection_state is 'withdrawn' (decisive action 'exclude'), not an exclusion"),
+    ({"selection_state": "indeterminate"}, "its selection_state is 'indeterminate'"),
+    ({"decisive_action": "supersede"}, "not an exclusion"),
+    ({"decisive_ruling_id": EXCL_OTHER, "why": f"selection_state excluded (ruling {EXCL_OTHER})"}, f"excluded by ruling {EXCL_OTHER}, which --grade-excluded-by does not name"),
+    ({"why": "selection_state excluded (ruling something-else)"}, "not the exclusion alone"),
+    ({"held_out": 1}, "it is held out"),
+    ({"superseded_by_run_id": "synthetic:crescendo:111111111111:2222222222222222"}, "it is superseded by run synthetic:crescendo:"),
+    ({"lifecycle_state": "failed"}, "its lifecycle_state 'failed' admits no judging"),
+    ({"lifecycle_state": "withdrawn"}, "its lifecycle_state 'withdrawn' admits no judging"),
+])
+def test_excluded_ruling_of_facts_reads_each_retirement_from_its_own_column(twin, change, reason):
+    """The pure half: the exclusion named by the flag must be the ONE thing retiring the run -- each other retirement read from its column."""
+    got = twin.excluded_ruling_of_facts({**BASE_FACTS, **change}, [EXCL])
+    if reason is None:
+        assert got == (EXCL, None)
+    else:
+        assert got[0] is None and reason in got[1], got
+    assert twin.excluded_ruling_of_facts(BASE_FACTS, [])[0] is None
+
+
+def test_excluded_two_pending_registrations_of_one_store_keep_the_one_store_refusal_with_the_flag(twin, world, tmp_path, monkeypatch, capsys, stub_judge):
+    """(6) Two pending registrations name the crescendo store, both excluded by EXCL: the one-store-one-run refusal stands, with and without
+    the flag (the flag never decides between registrations); nothing claimed."""
+    twin_key = f"{run_of('s1')}/crescendo/{CELL}#g5678"
+    T2, recs = _mt_recs(twin_key, 260, str(store_of(world, "s1", "crescendo")))
+    root, rids, cur = _excluded_world(world, tmp_path, monkeypatch, extra_runs=[("twin", (T2, recs))])
+    A = rids["s1/crescendo"]
+    for extra in ((), _flag(EXCL)):
+        with pytest.raises(SystemExit) as ei:
+            twin.main(reg_argv(world, "s1", root, attacks="crescendo", grades=tmp_path / "g", run_ids=[A, T2], extra=extra))
+        msg = str(ei.value)
+        assert "two pending runs name the store of crescendo/" in msg and "— one store, one run; refusing" in msg and twin.STORE_RUNS_REFUSAL_PHRASE in msg, msg
+    assert stub_judge["judgments"] == 0 and _n_judgments(root) == 0 and not (tmp_path / "g").exists()
+
+
+def test_the_flag_is_refused_by_name_off_its_one_path(twin, world, tmp_path, monkeypatch, capsys, stub_judge):
+    """(7) Without --run-id; under --worklist from-disk; beside the BoN leg; naming a ruling the registry does not carry, or one that is not an
+    exclude: each refused by name before anything is claimed or written."""
+    root, rids, cur = _excluded_world(world, tmp_path, monkeypatch, rulings=[_excl_object(), _r2v1_like_ruling()])
+    A = rids["s1/crescendo"]
+    before = _tree(root)
+    cases = [
+        (reg_argv(world, "s1", root, attacks="crescendo", grades=tmp_path / "g", extra=_flag(EXCL)), "--grade-excluded-by needs an explicit --run-id selection"),
+        (TM.argv(world, "s1", attacks="crescendo", grades=tmp_path / "g", dry=False, extra=_flag(EXCL) + ["--run-id", A]), "--grade-excluded-by needs --worklist registry"),
+        (reg_argv(world, "s1", root, attacks="crescendo,bon", grades=tmp_path / "g", run_ids=[A], extra=_flag(EXCL)), "--grade-excluded-by grades the multi-turn legs only"),
+        (reg_argv(world, "s1", root, attacks="crescendo", grades=tmp_path / "g", run_ids=[A], extra=_flag("r_synth-no-such-ruling")),
+         "r_synth-no-such-ruling: no ruling of that id in the registry"),
+        (reg_argv(world, "s1", root, attacks="crescendo", grades=tmp_path / "g", run_ids=[A], extra=_flag(EXCL, R2V1_LIKE)),
+         f"{R2V1_LIKE}: action 'supersede', not `exclude`"),
+    ]
+    for argv_, why in cases:
+        with pytest.raises(SystemExit) as ei:
+            twin.main(argv_)
+        assert why in str(ei.value), (why, str(ei.value))
+    capsys.readouterr()
+    assert _tree(root) == before and not (tmp_path / "g").exists() and stub_judge["judgments"] == 0 and _n_judgments(root) == 0
+
+
+def test_a_dry_run_with_the_flag_prints_the_excluded_run_and_touches_nothing(twin, world, tmp_path, monkeypatch, capsys, stub_judge):
+    """(8) ``--dry-run`` with the flag: the plan names the run, EXCLUDED by the ruling and graded on its own reading; nothing is claimed,
+    recorded or written (the registry root byte-identical, no grades root)."""
+    root, rids, cur = _excluded_world(world, tmp_path, monkeypatch)
+    A = rids["s1/crescendo"]
+    before = _tree(root)
+    twin.main(reg_argv(world, "s1", root, attacks="crescendo", grades=tmp_path / "g0", run_ids=[A], dry=True, extra=_flag(EXCL)))
+    out, _ = capsys.readouterr()
+    plan = [ln for ln in out.splitlines() if ln.startswith("[registry] DRY RUN:")]
+    assert any(f"run_id={A}" in ln and f"— EXCLUDED by ruling {EXCL}, graded on its own reading (--grade-excluded-by)" in ln for ln in plan), plan
+    assert any("1 pending (attack, cell) pair(s)" in ln for ln in plan) and "nothing claimed, nothing recorded, nothing written — done" in out
+    assert _tree(root) == before and not (tmp_path / "g0").exists() and stub_judge["judgments"] == 0 and _pending_ids(root) == {A, rids["s1/pair"]}
+
+
+def test_the_early_stopped_control_views_resolve_as_targets(twin):
+    """(9) The three multi-turn views of the non-production roster resolve by name: their private runs and the two multi-turn attacks; no
+    phase-view grammar is widened for them."""
+    targets, _ = twin.resolve_targets()
+    for k in (1, 2, 3):
+        tag = f"qwen35_4b_ctlstop64s{k}"
+        assert targets[tag] == {"run": f"sdfbase_full22_{tag}", "default_attacks": ("crescendo", "actorattack")}
+        assert not twin.PHASE_VIEW_RE.match(f"ctlstop64s{k}")
+
+
+# ------------------------------------------------------- --grade-excluded-by: superseding, hidden supersessions, dead runs, ruling scope
+
+EXCL_RUN = "r_synth-exclude-the-crescendo-run-by-id"     # an exclude naming ONE run (a scope that does not cover its same-key predecessor)
+HIDDEN_SUPER = "r_synth-supersede-the-crescendo-run-earlier"
+EARLIER_KEY = f"{run_of('s1')}/crescendo/{CELL}#earlier-elsewhere"
+
+
+def _crescendo_id() -> str:
+    """The fixture crescendo run's id (a function of its producer key, eval and instrument)."""
+    return TM._run_recs(f"{run_of('s1')}/crescendo/{CELL}", 200, "crescendo", "synthetic:///unused", n_items=N_GOALS_MT)[0]
+
+
+@pytest.mark.parametrize("predecessor_excluded", [False, True])
+def test_excluded_grading_never_supersedes_an_earlier_run_at_its_key_that_no_named_exclusion_retires(twin, world, tmp_path, monkeypatch, capsys,
+                                                                                                      stub_judge, predecessor_excluded):
+    """An EARLIER run Y at the crescendo run's key (same object, eval, instrument, judge, cap; another store). Graded, the excluded run would
+    become the later complete run at that key and Y would read superseded. When Y is retired by no ruling the flag names (the exclusion names
+    the one run), the opt-in refuses with Y named and nothing is claimed; when the same named exclusion retires Y too (an object-scoped
+    exclude), grading supersedes nothing that was not already out, and the run is graded."""
+    A = _crescendo_id()
+    Y, recs = _mt_recs(EARLIER_KEY, 150, "synthetic:///store/earlier-elsewhere/crescendo")
+    rulings = ([_excl_object(), _excl_object(EXCL_OTHER, OTHER_OBJECT, 301)] if predecessor_excluded
+               else [_ruling(EXCL_RUN, "exclude", "run", {"match": {"run_ids": [A]}}, 300)])
+    named = EXCL if predecessor_excluded else EXCL_RUN
+    root, rids, cur = _excluded_world(world, tmp_path, monkeypatch, rulings=rulings, extra_runs=[("earlier", (Y, recs))])
+    assert rids["s1/crescendo"] == A and cur[A]["decisive_ruling_id"] == named and cur[A]["selection_state"] == "excluded"
+    assert cur[Y]["selection_state"] == ("excluded" if predecessor_excluded else "not_in_roster") and cur[Y]["is_current"] == (0 if predecessor_excluded else 1)
+    wl = W.RegistryWorklist(root, None, "s-T", driver="tests/grade-excluded")
+    rel = twin.later_relation_of(wl, [A])
+    assert rel[A]["successors"] == [] and set(rel[A]["predecessors"]) == {Y}, rel
+    row = next(r for r in wl.pending() if r["run_id"] == A)
+    if not predecessor_excluded:
+        ex, why_not = twin.excluded_by_named_ruling_of(wl, row, [named])
+        assert ex is None and f"later complete run at its key over {Y}" in why_not, why_not
+        with pytest.raises(SystemExit) as ei:
+            twin.main(reg_argv(world, "s1", root, attacks="crescendo", grades=tmp_path / "g", run_ids=[A], extra=_flag(named)))
+        assert f"--grade-excluded-by does not apply: graded, it would become the later complete run at its key over {Y}" in str(ei.value), str(ei.value)
+        assert stub_judge["judgments"] == 0 and _n_judgments(root) == 0 and not (tmp_path / "g").exists()
+        return
+    assert twin.excluded_by_named_ruling_of(wl, row, [named]) == (named, None)
+    twin.main(reg_argv(world, "s1", root, attacks="crescendo", grades=tmp_path / "g", run_ids=[A], extra=_flag(named)))
+    capsys.readouterr()
+    assert stub_judge["judgments"] == N_GOALS_MT * N_TURNS
+    H.ingest_once(root, workers=0, min_free=0, derive_facts=False)
+    after = _currency(root, [A, Y])
+    assert after[A]["selection_state"] == after[Y]["selection_state"] == "excluded" and after[A]["in_current_paper"] == after[Y]["in_current_paper"] == 0
+
+
+def test_excluded_a_supersede_hidden_behind_the_named_exclusion_stays_retired(twin, world, tmp_path, monkeypatch, capsys, stub_judge):
+    """An OLDER supersede ruling naming the run, then the exclusion: the exclusion is the decisive (latest) ruling and the first failing rule,
+    but the run's covering rulings carry the supersede -- the opt-in refuses with it named."""
+    A = _crescendo_id()
+    root, rids, cur = _excluded_world(world, tmp_path, monkeypatch, rulings=[
+        _ruling(HIDDEN_SUPER, "supersede", "run", {"match": {"run_ids": [A]}}, 250), _excl_object()])
+    assert cur[A]["why"] == f"selection_state excluded (ruling {EXCL})" and cur[A]["decisive_ruling_id"] == EXCL, cur[A]
+    wl = W.RegistryWorklist(root, None, "s-T", driver="tests/grade-excluded")
+    ex, why_not = twin.excluded_by_named_ruling_of(wl, next(r for r in wl.pending() if r["run_id"] == A), [EXCL])
+    assert ex is None and f"also covered by supersede ruling(s) {HIDDEN_SUPER}" in why_not, why_not
+    with pytest.raises(SystemExit) as ei:
+        twin.main(reg_argv(world, "s1", root, attacks="crescendo", grades=tmp_path / "g", run_ids=[A], extra=_flag(EXCL)))
+    assert f"--grade-excluded-by does not apply: it is also covered by supersede ruling(s) {HIDDEN_SUPER}" in str(ei.value), str(ei.value)
+    assert stub_judge["judgments"] == 0 and _n_judgments(root) == 0
+
+
+@pytest.mark.parametrize("dead", ["withdrawn", "superseded_by_run_id"])
+def test_excluded_a_withdrawn_or_successor_marked_run_is_never_graded_with_the_flag(twin, world, tmp_path, monkeypatch, capsys, stub_judge, dead):
+    """A run withdrawn (its lifecycle), or carrying a superseded_by_run_id (a same-id re-emission naming its successor), under the named
+    exclusion: neither is pending, the selected invocation finds nothing to grade, nothing is claimed or written; the facts name why."""
+    A, recs_a = TM._run_recs(f"{run_of('s1')}/crescendo/{CELL}", 200, "crescendo", str(store_of(world, "s1", "crescendo")), n_items=N_GOALS_MT)
+    S, recs_s = _mt_recs(f"{run_of('s1')}/crescendo/{CELL}#successor", 280, "synthetic:///store/successor/crescendo")
+    if dead == "withdrawn":
+        extra = [("withdrawal", (A, [synth.rec("run_state", {"run_id": A, "state": "withdrawn", "event_utc": synth.t(260), "evidence_kind": "job_log"},
+                                                synth.t(260))]))]
+    else:
+        extra = [("successor", (S, recs_s)), ("correction", (A, [synth.rec("run", dict(recs_a[0]["payload"], superseded_by_run_id=S), synth.t(290))]))]
+    root, rids, cur = _excluded_world(world, tmp_path, monkeypatch, extra_runs=extra)
+    if dead == "withdrawn":
+        assert cur[A]["selection_state"] == "withdrawn", cur[A]
+        why = "its selection_state is 'withdrawn'"
+    else:
+        assert cur[A]["selection_state"] == "excluded" and cur[A]["why"] == f"selection_state excluded (ruling {EXCL})", cur[A]
+        why = f"it is superseded by run {S}"
+    assert A not in _pending_ids(root)
+    wl = W.RegistryWorklist(root, None, "s-T", driver="tests/grade-excluded")
+    ex, why_not = twin.excluded_by_named_ruling_of(wl, {"run_id": A}, [EXCL])
+    assert ex is None and why in why_not, why_not
+    before = _tree(root)
+    with pytest.raises(SystemExit) as ei:
+        twin.main(reg_argv(world, "s1", root, attacks="crescendo", grades=tmp_path / "g", run_ids=[A], extra=_flag(EXCL)))
+    assert "no pending (attack, cell) pair" in str(ei.value) and "nothing claimed, nothing written" in str(ei.value), str(ei.value)
+    assert _tree(root) == before and stub_judge["judgments"] == 0 and not (tmp_path / "g").exists()
+
+
+def test_the_flag_refuses_a_named_exclude_of_a_closed_round_or_a_comparison_scope(twin, world, tmp_path, monkeypatch, capsys, stub_judge):
+    """A named exclude that can never decide a run -- ruled in a CLOSED round, or comparison-scoped -- refuses by name before anything is read
+    or claimed (it would otherwise match nothing and end in a no-pairs refusal that names no reason)."""
+    from sisteer.registry.adapters import roster as RO
+    old_round = synth.rec("paper_round", {"round_id": "r_old", "opened_utc": synth.t(1), "closed_utc": synth.t(2), "description": "a closed round"}, synth.t(1))
+    raw = {"ruling_id": "r_old-exclude-comparison-objects", "round_id": "r_old", "action": "exclude", "scope_kind": "object",
+           "scope_json": {"match": {"object_ids": [synth.OBJECT_SHA]}}, "reason": "synthetic exclude in a closed round", "ruled_utc": synth.t(3),
+           "ruled_by": "tests", "source_ref": "tests/test_grade_full22_native_store_currency.py", "provenance": {"kind": "user_direct", "message_utc": "2026-10-13T00:00:00Z"}}
+    closed = synth.rec("ruling", RO.normalise_ruling(raw), synth.t(3))
+    comparison = _ruling("r_synth-exclude-a-comparison", "exclude", "comparison", {"comparison_id": "synthetic-comparison"}, 302)
+    A = _crescendo_id()
+    root, rids, cur = _excluded_world(world, tmp_path, monkeypatch, rulings=[old_round, closed, _excl_object(), comparison])
+    before = _tree(root)
+    for rid, why in (("r_old-exclude-comparison-objects", "round 'r_old', not the open round 'r_synth'"),
+                     ("r_synth-exclude-a-comparison", "comparison-scoped (it never decides a run)")):
+        with pytest.raises(SystemExit) as ei:
+            twin.main(reg_argv(world, "s1", root, attacks="crescendo", grades=tmp_path / "g", run_ids=[A], extra=_flag(rid)))
+        assert f"{rid}: {why}" in str(ei.value) and "refusing before anything is claimed" in str(ei.value), str(ei.value)
+    assert _tree(root) == before and stub_judge["judgments"] == 0
+
+
+@pytest.mark.parametrize("covering, actions, reason", [
+    ([EXCL], {}, None),
+    ([EXCL, "r_synth-include-x"], {"r_synth-include-x": "include"}, None),
+    ([EXCL, HIDDEN_SUPER], {HIDDEN_SUPER: "supersede"}, f"also covered by supersede ruling(s) {HIDDEN_SUPER}"),
+    ([EXCL, HIDDEN_SUPER], {}, f"the actions of rulings covering it are unread: {HIDDEN_SUPER}"),
+])
+def test_excluded_ruling_of_facts_reads_every_covering_ruling(twin, covering, actions, reason):
+    got = twin.excluded_ruling_of_facts({**BASE_FACTS, "ruling_ids_json": json.dumps(covering)}, [EXCL], actions)
+    if reason is None:
+        assert got == (EXCL, None), got
+    else:
+        assert got[0] is None and reason in got[1], got
+    assert twin.excluded_ruling_of_facts({**BASE_FACTS, "ruling_ids_json": json.dumps([EXCL, HIDDEN_SUPER])}, [EXCL])[0] is None   # actions unread
+
+
+def test_the_currency_read_carries_the_facts_only_on_request(twin, world, tmp_path, monkeypatch):
+    """run_currency_of's default result is exactly as before (two keys); with facts=True the SAME one read carries the opt-in's columns."""
+    root, rids, cur = _excluded_world(world, tmp_path, monkeypatch)
+    A = rids["s1/crescendo"]
+    wl = W.RegistryWorklist(root, None, "s-T", driver="tests/grade-excluded")
+    assert twin.run_currency_of(wl, [A]) == {A: {"is_current": 0, "why": f"selection_state excluded (ruling {EXCL})"}}
+    f = twin.run_currency_of(wl, [A], facts=True)[A]
+    assert set(f) == set(twin.EXCLUDED_FACT_COLUMNS) and f["decisive_ruling_id"] == EXCL and f["lifecycle_state"] == "generated"
+    assert json.loads(f["ruling_ids_json"]) == [EXCL]

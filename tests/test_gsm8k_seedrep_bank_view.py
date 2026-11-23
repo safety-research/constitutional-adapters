@@ -23,6 +23,7 @@ import io
 import contextlib
 import json
 import os
+import re
 import shlex
 import subprocess
 import sys
@@ -448,3 +449,70 @@ def test_the_launchers_one_argv_line_hands_the_driver_the_rows_view_and_the_read
     assert 'return C.expected_bank_view_stamp(view=row["view"], bank_view=row.get("bank_view"))' in (G8K / "g8k_seedrep_arditi.py").read_text()
     driver = (REPO / "scripts/served_capability_run.py").read_text()
     assert "type=_bank_view_arg" in driver and "choices=list(tc.BANK_VIEWS)" not in driver
+
+
+def test_the_launcher_hands_the_driver_the_jobs_roster_and_the_production_roster_is_the_drivers_own_fallback(tmp_path, monkeypatch):
+    """The vocabulary reads ONE roster, and the driver finds it by `$SISTEER_FULL22_ROSTER`, never by the job's `F22_ROSTER`. So
+    `g8k_driver_argv` exports the job's roster under that name (`g8k_roster_env`, an absolute path) and the dry run prints it after
+    the DRIVER: line, as a child process reads it. A matrix cut from the production roster — `F22_ROSTER` unset, or naming it — is
+    handed the checkout's own production roster: the file the driver falls back to with no variable at all. The two plans are one
+    text, the vocabulary is what it was, and every row parses to the same namespace with the variable and without it."""
+    def plan(roster: str | None) -> str:
+        env = {k: v for k, v in os.environ.items() if k not in (C.ENV_FULL22_ROSTER, "F22_ROSTER")}
+        env["PYTHONPATH"] = str(REPO / "src")
+        if roster is not None:
+            env["F22_ROSTER"] = roster
+        r = subprocess.run([sys.executable, str(G8K / "g8k_dry_run.py"), "--stage", "pre", "--matrix", "qwen_seedrep", "--rows", "0-1,30",
+                            "--tmp", str(tmp_path / "t"), "--python", sys.executable], capture_output=True, text=True, check=False, env=env)
+        assert r.returncode == 0, r.stdout[-800:] + r.stderr[-800:]
+        return r.stdout
+
+    unset = plan(None)
+    assert plan(C.FULL22_ROSTER_REL) == unset                    # naming the production roster IS leaving the variable off
+    lines = unset.splitlines()
+    drivers = [shlex.split(x[len("DRIVER:"):])[2:] for x in lines if x.startswith("DRIVER:")]
+    rosters = [x for x in lines if x.startswith("ROSTER_ENV:")]
+    assert len(drivers) == len(rosters) == 3 and set(rosters) == {rosters[0]}
+    name, _, value = rosters[0][len("ROSTER_ENV:"):].strip().partition("=")
+    value = "".join(shlex.split(value))
+    assert name == C.ENV_FULL22_ROSTER == re.search(r"^G8K_ROSTER_ENV=(\S+)$", (G8K / "g8k_common.sh").read_text(), re.M).group(1)
+    assert Path(value).is_absolute() and Path(value).resolve() == ROSTER.resolve()
+    monkeypatch.delenv(C.ENV_FULL22_ROSTER, raising=False)
+    monkeypatch.chdir(REPO)                                      # a job runs the driver from its checkout
+    assert Path(value).resolve() in {p.resolve() for p in C.full22_roster_candidates()}       # the driver's fallback, no variable set
+    vocabulary = C.bank_views_admitted()
+    without = [_parse(a) for a in drivers]
+    monkeypatch.setenv(C.ENV_FULL22_ROSTER, value)
+    assert C.full22_roster_candidates()[0] == Path(value) and C.bank_views_admitted() == vocabulary
+    for (ns0, refusal0), a in zip(without, drivers):
+        ns1, refusal1 = _parse(a)
+        assert refusal0 is None and refusal1 is None and vars(ns0) == vars(ns1), (refusal0, refusal1)
+
+
+def _roster_env(preamble: str) -> subprocess.CompletedProcess:
+    """`g8k_roster_env` RUN under bash (the launcher's own function; common.sh stood in for by its two helpers and the checkout),
+    then the variable printed AS A CHILD PROCESS READS IT — the driver is a child, so set-but-not-exported would not do."""
+    script = ('set -u\nf22_log(){ :; }\nf22_fatal(){ echo FATAL "$@" >&2; exit 1; }\n'
+              f'REPO_DIR={shlex.quote(str(REPO))}\n{preamble}\nsource {shlex.quote(str(G8K / "g8k_common.sh"))}\ng8k_roster_env\n'
+              f'"$BASH" -c \'printf "%s\\n" "${{{C.ENV_FULL22_ROSTER}-<unset>}}"\'\n')
+    env = {k: v for k, v in os.environ.items() if k not in (C.ENV_FULL22_ROSTER, "F22_ROSTER")}
+    return subprocess.run(["bash", "-c", script], capture_output=True, text=True, check=False, env=env)
+
+
+def test_g8k_roster_env_exports_the_jobs_roster_as_an_absolute_path_and_refuses_a_missing_one_by_name(tmp_path):
+    """The function's four behaviours: a relative `F22_ROSTER` resolves against the checkout and an absolute one stands; the value
+    is EXPORTED; whatever the submitter's environment carried under the driver's name is replaced by the job's roster; and a
+    roster the checkout does not hold — or no `F22_ROSTER` at all — refuses by name instead of leaving the driver its default."""
+    lane = "configs/sdfbase_full22_roster_ctlstop_eb64.yaml"
+    r = _roster_env(f"F22_ROSTER={lane}")
+    assert r.returncode == 0 and r.stdout == f"{REPO / lane}\n", r.stdout + r.stderr
+    elsewhere = tmp_path / "roster.yaml"
+    elsewhere.write_text(ROSTER.read_text())
+    r = _roster_env(f"F22_ROSTER={shlex.quote(str(elsewhere))}")
+    assert r.returncode == 0 and r.stdout == f"{elsewhere}\n", r.stdout + r.stderr
+    r = _roster_env(f"export {C.ENV_FULL22_ROSTER}=/somewhere/else.yaml\nF22_ROSTER={C.FULL22_ROSTER_REL}")
+    assert r.returncode == 0 and r.stdout == f"{ROSTER}\n", r.stdout + r.stderr
+    r = _roster_env("F22_ROSTER=configs/no_such_roster.yaml")
+    assert r.returncode == 1 and r.stdout == "" and "no roster at" in r.stderr and "configs/no_such_roster.yaml" in r.stderr, r.stdout + r.stderr
+    r = _roster_env("unset F22_ROSTER")
+    assert r.returncode != 0 and r.stdout == "" and "F22_ROSTER" in r.stderr, r.stdout + r.stderr

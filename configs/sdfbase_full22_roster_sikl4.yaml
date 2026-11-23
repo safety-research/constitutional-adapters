@@ -1,0 +1,196 @@
+# sdfbase_full22_roster_sikl4.yaml — a NON-PRODUCTION roster: the four static single-turn families (past tense, CodeAttack,
+# ReNeLLM, grok420), best-of-N at the seed views' native 4096 pass, the capability controls, the over-refusal controls and the
+# multi-turn attacks (Crescendo, ActorAttack, PAIR) on the eighteen
+# SI-DISTILLED Qwen3.5-4B objects refit with recorded fit seeds: KL distillation of a system-instruction-prompted teacher, fit on and
+# served on the instruct checkpoint, for three system instructions (the safety SI `safety_refusal`, the constitution SI
+# `si_constitution`, and the short irrelevant control SI `C16`) x two object kinds (the rank-4 o_proj LoRA `lora_r4`, the all-layer
+# ReLU steer `psr_kl_all`) x three fit seeds. Every adapter acts at all token positions. Selected only by the F22_ROSTER override
+# (F22_ROSTER=configs/sdfbase_full22_roster_sikl4.yaml on the submit line); the production roster is untouched, and common.sh refuses
+# a non-production roster that names a view the production roster also names, so every view here is its own.
+#
+# THREE views, one per fit seed k in 1..3 (`sikl4s<k>`), SIX cells each, every cell in the roster's pin-MAPPING form {pins, pin}: the
+# objects live in the bank exp/objects/sikl4/qwen35_4b and are named through configs/sikl4_pins.json (pins
+# `qwen35_4b.sikl4s<k>__<cell>`), the form that reads another pins authority while making a substitution impossible
+# (make_bank_view.plan_pin_entry, mt_serving_up._pin_form_sha, jobplan.object_id_for). The cells are the production spellings
+# `<SI>__<arm>` (registry SI id, then arm), so the harness translates them through registry_adapter: safety_refusal <-> safety,
+# si_constitution <-> constitution, C16 <-> irrelevant_c16 (never `irrelevant`, which is the long control SI si_irrelevant). The seed
+# lives in the view name and the staged id, never in the cell id.
+#
+# The C16 cells' system instruction resolves only through the env-guarded candidate-SI loader (SISTEER_LOAD_CANDIDATE_SIS with the
+# sha-pinned snapshot), so every job that builds these views' cell registry runs with that loader on.
+#
+# NO DOSE: the views serve the operating point, so they carry no `dose:`, `dose_unit:` or `object_family:` key (one object family
+# could not hold both LoRA and ReLU cells), and no `paired_of:`. LEGS: the static families (added 2026-11-14 for the static
+# jailbreak panel: the sampled lane's 4,096 base pass and its 8,192 / 16,384 ladder rungs, rendered by make_sampled_configs.py
+# --roster this file), best-of-N, the capability controls, the over-refusal controls and the multi-turn attacks; Petri is omitted
+# with its reason on every view. ONE per-view cap, `caps: {bon: 4096}` (make_full22_configs.view_declared_bon_cap), as on the seed
+# views s<k>: the native best-of-75 pass at 4,096, no 512 store and no climb. Every other cap is the top-level value; no Petri
+# knobs.
+#
+# SEEDED: each view draws as the published seed view s<k> of the same fit seed k draws, family by family: the sampled lane (static,
+# over-refusal) at seed_base = k with ONE trial (configs/sdfbase_sampled_decode.yaml seed_base_by_view / n_trials_by_view,
+# make_sampled_configs.SEEDED_LANE_VIEWS), GSM8K at the replicate base of seed k (configs/sdfbase/gsm8k/views_sikl4.yaml,
+# g8k_views.SEEDED_LANE_VIEW_SEEDS); best-of-N (F22_BON_DECODE_SEED_BASE) and the multi-turn attacks (F22_MT_TARGET_SEED_BASE)
+# take theirs from the submitting job's environment, as the seed views' runs did; MMLU draws no sample.
+#
+# Every top-level value below is the production roster's, byte for byte as data (serving_impl_commit, caps, controls_window,
+# controls_retired, bon climb, attacker flags, lane_flags), so these rows rest on the published rows' serving contract.
+wave: full22
+bank_root: exp/objects/sdfbase/full22
+staging_manifest: exp/objects/sdfbase/full22/staging_manifest.json
+serving_impl_commit: 94e294c445dc5eec6ebe0ce3a3e25553004cd4b0
+lens_reduction_mode: stacked
+static_max_new_tokens: 4096
+target_max_new_tokens: 4096
+controls_max_new_tokens: 512
+controls_window:
+  gsm8k: 4608
+  source: 'geometry.derived_window(''capability:gen_long_gsm8k_rung'', controls_max_new_tokens=512, from_field=''max_prompt'')
+    = align128(next_block(2,462 + 512)) = 3072 is the MINIMUM (the GSM8K paired-200 prompt budget''s pooled MAX prompt, qwen35_4b
+    under the safety turn, thinking-ON render; the thinking-OFF render the controls run under differs by -2..+4 tokens); the
+    window is the geometry table''s capability:gen_long max_model_len = 4608 -- the window the GSM8K lane''s paired-200 cap-512
+    leg (gsm8k-paired200-paper-objects, thinking OFF) stood up at on all four models, and where nemotron3nano4b''s hybrid
+    concurrency ceiling is MEASURED (HYBRID_WINDOW_SEQS_CEILINGS: 167 at 4608, job 483254_2), so the standup cannot refuse
+    at readiness on an unmeasured hybrid capacity. S at 4608: gemma4e4b 128 / qwen35_4b 161 / nemotron3nano4b 167 / glm46vflash
+    170. Measured 2026-09-14: smoke 503471 refused 34 of 200 gsm8k items at 2048 on the llama render (max 1,537).'
+controls_retired:
+  gsm8k: 'retired 2026-09-14: the paper uses ONE GSM8K instrument -- the evaluation lane''s inspect/gsm8k_paired200 lane (thinking ON, 8,192 cap with a 16,384
+    rung, k=1, served at its own windows), which covers every paper cell -- so the wave''s controls-leg gsm8k (the same 200
+    items, thinking OFF, greedy, cap 512, riding the capability:short controls standup) is a second, non-canonical GSM8K measurement
+    and is RETIRED on every target (the llama8b precedent of 2026-09-10, made wave-wide). It had produced no row on the four
+    gsm8k-bearing targets since gsm8k became the 10-shot Inspect control: its prompts (max 2,462 with the safety turn) +
+    the 512 cap overflowed the 2,048 controls window (smoke 503471 refused 34 of 200 items there), and keeping it would have held the whole controls phase at the
+    4,608 window. The controls standup returns to capability:short''s 2,048 with full S; controls_window.gsm8k stays as a
+    dormant guard for a roster that drops this retirement. This key is deliberately NOT a per-target capability_omitted: that
+    key also rewrites the sampled lane''s readouts.gsm8k and the drivers'' run records -- the frozen instrument of runs that
+    already happened -- which this wave-wide retirement leaves alone'
+bon_climb_cap: 4096
+bon_climb_decode: as_drawn
+attacker_prefix_caching: true
+attacker_quantization: none
+lane_flags:
+  candsi:
+    enabled: false
+    view: main
+    blocker: 'The candidate-SI ids A10 / B3 / C16 are registered only by the candidate-si-refit lineage (origin/candidate-si-refit,
+      230 commits ahead of main, mid-integration as INT-1 by a live peer session): data/instructions.py loads them from a
+      private text file under the env-guarded loader (SISTEER_LOAD_CANDIDATE_SIS -> sisteer.data.candidate_sis), and the Petri
+      vocabulary maps them as safety_a10 / constitution_b3 / irrelevant_c16 (registry_adapter.HARNESS_TO_TRAINTEST_SI, manifest
+      PROMPTED_*). NONE of that is on lens-grouped-scope or sdfbase-mt, so on this tree `A10__psr_kl_all` fails resolve_instruction
+      and the registry refuses it. Serving these cells needs that lineage merged into the wave tree AND the candidate SI text
+      file present on every node that stands up a server (the pseudo-instruction must resolve at standup).
+
+      '
+    preconditions:
+    - the candidate-si-refit lineage is merged into the wave tree, so registry_adapter translates A10 / B3 / C16 <-> safety_a10
+      / constitution_b3 / irrelevant_c16 and data/instructions.py resolves them (tests/test_sdfbase_full22_wave.py refuses
+      the flag while this is false), and the candidate SI text file is present on every standup node
+    - every candsi staged dir declares exactly ONE identity sidecar. VERIFIED 2026-09-07 on cluster A, all 12 nemotron3nano4b
+      / glm46vflash dirs (and the gemma / qwen ones are the same lineage) carry BOTH fit_provenance.json AND train_budget_meta.json
+      — the refit lineage's fit writes both — which make_bank_view.py / train_budget.object_identity_kind REFUSE as ambiguous.
+      Pick the authoritative spelling and re-stage without the other (both record the same object_sha256, so this is a bookkeeping
+      choice, not a data one)
+    - the pins already exist (configs/sdfbase_full22_pins.json, 6 per target, verified on both clusters) — nothing to re-stage
+      for the bytes themselves
+targets:
+  qwen35_4b:
+    model: Qwen/Qwen3.5-4B
+    model_revision: 851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a
+    body_config: configs/sdfbase_transfer_qwen35_4b_r3.yaml
+    views:
+      sikl4s1:
+        legs:
+        - static
+        - bon
+        - capability
+        - controls
+        - attacks
+        legs_omitted:
+          petri: 'out of scope: no Petri audit is part of this roster; the manifests are rendered for schema parity with the wave'
+        caps:
+          bon: 4096
+        config: configs/sdfbase_full22_qwen35_4b_sikl4s1.yaml
+        manifest: configs/capeval/manifests/petri_full22_qwen35_4b_sikl4s1.yaml
+        cells:
+          safety_refusal__lora_r4:
+            pins: configs/sikl4_pins.json
+            pin: qwen35_4b.sikl4s1__safety_refusal__lora_r4
+          safety_refusal__psr_kl_all:
+            pins: configs/sikl4_pins.json
+            pin: qwen35_4b.sikl4s1__safety_refusal__psr_kl_all
+          si_constitution__lora_r4:
+            pins: configs/sikl4_pins.json
+            pin: qwen35_4b.sikl4s1__si_constitution__lora_r4
+          si_constitution__psr_kl_all:
+            pins: configs/sikl4_pins.json
+            pin: qwen35_4b.sikl4s1__si_constitution__psr_kl_all
+          C16__lora_r4:
+            pins: configs/sikl4_pins.json
+            pin: qwen35_4b.sikl4s1__C16__lora_r4
+          C16__psr_kl_all:
+            pins: configs/sikl4_pins.json
+            pin: qwen35_4b.sikl4s1__C16__psr_kl_all
+      sikl4s2:
+        legs:
+        - static
+        - bon
+        - capability
+        - controls
+        - attacks
+        legs_omitted:
+          petri: 'out of scope: no Petri audit is part of this roster; the manifests are rendered for schema parity with the wave'
+        caps:
+          bon: 4096
+        config: configs/sdfbase_full22_qwen35_4b_sikl4s2.yaml
+        manifest: configs/capeval/manifests/petri_full22_qwen35_4b_sikl4s2.yaml
+        cells:
+          safety_refusal__lora_r4:
+            pins: configs/sikl4_pins.json
+            pin: qwen35_4b.sikl4s2__safety_refusal__lora_r4
+          safety_refusal__psr_kl_all:
+            pins: configs/sikl4_pins.json
+            pin: qwen35_4b.sikl4s2__safety_refusal__psr_kl_all
+          si_constitution__lora_r4:
+            pins: configs/sikl4_pins.json
+            pin: qwen35_4b.sikl4s2__si_constitution__lora_r4
+          si_constitution__psr_kl_all:
+            pins: configs/sikl4_pins.json
+            pin: qwen35_4b.sikl4s2__si_constitution__psr_kl_all
+          C16__lora_r4:
+            pins: configs/sikl4_pins.json
+            pin: qwen35_4b.sikl4s2__C16__lora_r4
+          C16__psr_kl_all:
+            pins: configs/sikl4_pins.json
+            pin: qwen35_4b.sikl4s2__C16__psr_kl_all
+      sikl4s3:
+        legs:
+        - static
+        - bon
+        - capability
+        - controls
+        - attacks
+        legs_omitted:
+          petri: 'out of scope: no Petri audit is part of this roster; the manifests are rendered for schema parity with the wave'
+        caps:
+          bon: 4096
+        config: configs/sdfbase_full22_qwen35_4b_sikl4s3.yaml
+        manifest: configs/capeval/manifests/petri_full22_qwen35_4b_sikl4s3.yaml
+        cells:
+          safety_refusal__lora_r4:
+            pins: configs/sikl4_pins.json
+            pin: qwen35_4b.sikl4s3__safety_refusal__lora_r4
+          safety_refusal__psr_kl_all:
+            pins: configs/sikl4_pins.json
+            pin: qwen35_4b.sikl4s3__safety_refusal__psr_kl_all
+          si_constitution__lora_r4:
+            pins: configs/sikl4_pins.json
+            pin: qwen35_4b.sikl4s3__si_constitution__lora_r4
+          si_constitution__psr_kl_all:
+            pins: configs/sikl4_pins.json
+            pin: qwen35_4b.sikl4s3__si_constitution__psr_kl_all
+          C16__lora_r4:
+            pins: configs/sikl4_pins.json
+            pin: qwen35_4b.sikl4s3__C16__lora_r4
+          C16__psr_kl_all:
+            pins: configs/sikl4_pins.json
+            pin: qwen35_4b.sikl4s3__C16__psr_kl_all

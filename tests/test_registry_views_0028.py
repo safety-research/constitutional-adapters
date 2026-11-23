@@ -21,6 +21,7 @@ import shutil
 
 import test_registry_views_0021 as T21
 from test_registry_migrations import AF_TABLES, NTPL_TABLES, RM_SLUG, _pre_0028_run_current, _sans_af_drift, _sans_af_render, _sans_fence_drift, _sans_fence_render
+from test_registry_migrations import PRUNE_TABLES, _prune_objects_aside, _sans_prune_cli, _sans_prune_head, _sans_prune_head_render   # 0033's part, set aside
 
 from sisteer.registry import cli
 from sisteer.registry import db as DB
@@ -61,18 +62,19 @@ def _shape_below(path: str) -> None:
 
 def test_the_migration_plan_on_the_shape_below_it_is_one_recreate_and_the_committed_body_is_the_render(tmp_path, capsys):
     version, slug, mpath = _rm_migration()
-    assert version == M.code_version() - 4, "the newest file but four on this tree: 0029 (analysis_filing, D357), 0030 (fold_order_barrier: the two fold-order fence triggers on run) and 0031 (non_template_positions: the applied-positions CHECK of instrument and run, a rebuild of both) follow it; their lines are set aside below"
+    assert version == M.code_version() - 5, "the newest file but five on this tree: 0029 (analysis_filing), 0030 (fold_order_barrier: the two fold-order fence triggers on run), 0031 (non_template_positions: the applied-positions CHECK of instrument and run, a rebuild of both), 0032 (site_label_rename) and 0033 (prune_superseded_item_rows) follow it; their lines are set aside below"
     assert os.path.basename(mpath) == f"{version:04d}_{SLUG}.sql"
     path = str(tmp_path / "below.sqlite")
     _shape_below(path)
     conn = DB.connect(path)
     assert M.db_version(conn) == version - 1
-    assert sorted(_sans_fence_drift(_sans_af_drift(DB.schema_drift(conn)))) == sorted(RM_VIEW_DRIFT)   # 0029's nine lines and 0030's two aside
+    assert sorted(_sans_prune_head(_sans_fence_drift(_sans_af_drift(DB.schema_drift(conn))))) == sorted(RM_VIEW_DRIFT)   # 0029's nine lines, 0030's two and 0033's aside
     plan = M.shape_plan(conn)
-    assert [r["table"] for r in plan["rebuild"]] == list(NTPL_TABLES) and plan["add_columns"] == [] and plan["undeclared_tables"] == [] and [c for c in plan["create"] if c not in AF_TABLES] == []   # 0031's two rebuilds and 0029's five creates aside
-    assert plan["objects"] == {"index": {"recreate": [], "drop": []}, "trigger": {"recreate": [], "drop": []},   # 0030's two triggers ride 0031's run rebuild
-                               "view": {"recreate": sorted(RM_VIEWS), "drop": []}}
-    rendered = M.render_shape_migration(conn, plan)
+    assert [r["table"] for r in plan["rebuild"]] == list(NTPL_TABLES) and plan["add_columns"] == [] and plan["undeclared_tables"] == [] and [c for c in plan["create"] if c not in AF_TABLES + PRUNE_TABLES] == []   # 0031's two rebuilds, 0029's five creates and 0033's aside
+    assert _prune_objects_aside(plan["objects"]) == \
+        {"index": {"recreate": [], "drop": []}, "trigger": {"recreate": [], "drop": []},   # 0030's two triggers ride 0031's run rebuild
+         "view": {"recreate": sorted(RM_VIEWS), "drop": []}}
+    rendered = _sans_prune_head_render(M.render_shape_migration(conn, plan))
     committed = open(mpath, encoding="utf-8").read()
     header = committed[:committed.index("-- drift: ")]
     assert committed.startswith(f"-- {os.path.basename(mpath)}\n") and "never be a result" in header and "never selected" in header and "WORKED_EXAMPLE_MODEL_SQL" in header
@@ -102,16 +104,16 @@ def test_the_migration_plan_on_the_shape_below_it_is_one_recreate_and_the_commit
     os.makedirs(root)
     shutil.copy(path, DB.db_path(root))
     assert cli.main(["--root", root, "migrate", "--plan"]) == 1
-    out = capsys.readouterr().out
+    out = _sans_prune_cli(capsys.readouterr().out)                                       # 0033's lines aside
     assert f"schema version {version - 1}; code {M.code_version()}; pending: {version:04d}_{SLUG}, " in out     # 0029 and 0030 follow it in the pending list
     assert "recreate view(s): " + ", ".join(sorted(RM_VIEWS)) in out and f"  {RM_VIEW_DRIFT[0]}" in out
     for absent in ("add column", "drop undeclared", "recreate index", "recreate trigger"):
         assert absent not in out, out
     assert [ln for ln in out.splitlines() if ln.startswith("rebuild table ")] == [f"rebuild table {t}: 0 rows to copy (run-scale)" for t in NTPL_TABLES], out   # 0031's two rebuilds, nothing else
-    assert [ln for ln in out.splitlines() if ln.startswith("create table") and ln.split()[-1] not in AF_TABLES] == [], out   # 0029's five creates aside
+    assert [ln for ln in out.splitlines() if ln.startswith("create table") and ln.split()[-1] not in AF_TABLES + PRUNE_TABLES] == [], out   # 0029's five creates aside
     # applied (0029, 0030 and 0031 follow): the code's version, zero drift, the object at the code's text, every paper view selectable
     conn = DB.connect(path)
-    assert M.apply_migrations(conn) == [version, version + 1, version + 2, version + 3, version + 4] and M.db_version(conn) == M.code_version() and DB.schema_drift(conn) == []
+    assert M.apply_migrations(conn) == [version, version + 1, version + 2, version + 3, version + 4, version + 5] and M.db_version(conn) == M.code_version() and DB.schema_drift(conn) == []
     for v in RM_VIEWS:
         assert conn.execute("SELECT sql FROM sqlite_master WHERE name = ?", (v,)).fetchone()[0] == S.VIEW_SQL[v].strip().rstrip(";"), v
     for v in RM_VIEWS + ("v_paper_long", "v_paper_current"):

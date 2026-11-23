@@ -54,7 +54,7 @@ else
   ROW_ARGS=("$KEY_ARG" "$VIEW_ARG" "$CELL_ARG")
 fi
 case "$G8K_RUNG_ARG" in 8192|16384) ;; *) echo "FATAL: rung must be 8192 or 16384, got $G8K_RUNG_ARG" >&2; exit 1;; esac
-case "$G8K_MATRIX" in default|llama|itdoc|qwen_seedrep|arditi_allpos|arditi_seedrep|paired_allmodels) ;; frontdoor_*) ;; *) echo "FATAL: matrix must be one of default|llama|itdoc|qwen_seedrep|arditi_allpos|arditi_seedrep|paired_allmodels (g8k_cells.py MATRICES) or frontdoor_<models.yaml key> (the front door's derived matrices, g8k_cells.py front_door_matrices), got $G8K_MATRIX" >&2; exit 1;; esac
+case "$G8K_MATRIX" in default|llama|itdoc|qwen_seedrep|arditi_allpos|arditi_seedrep|paired_allmodels|ctlstop|sikl4|qwengen1m) ;; frontdoor_*) ;; *) echo "FATAL: matrix must be one of default|llama|itdoc|qwen_seedrep|arditi_allpos|arditi_seedrep|paired_allmodels|ctlstop|sikl4|qwengen1m (g8k_cells.py MATRICES) or frontdoor_<models.yaml key> (the front door's derived matrices, g8k_cells.py front_door_matrices), got $G8K_MATRIX" >&2; exit 1;; esac
 # the grading host dry run reads THIS tree (here BASH_SOURCE is the real file, not Slurm's spool copy)
 if [ "${G8K_DRY_RUN:-0}" = 1 ]; then G8K_REPO_DIR="${G8K_REPO_DIR:-$(cd "$(dirname "${BASH_SOURCE[0]}")/../../.." && pwd)}"; fi
 # --- the checkout, located BEFORE either helper is sourced ---------------------------------------------------------

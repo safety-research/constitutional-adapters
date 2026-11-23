@@ -65,6 +65,7 @@ Nothing is written meanwhile; records stay in the log.</div>
   <div class="tile"><b>{{ pending_count }}</b><span>pending judgments (instrument judge)</span></div>
   <div class="tile"><b>{{ refused | length }}</b><span>refused records</span></div>
   <div class="tile"><b>{{ blocked | length }}</b><span>blocked records</span></div>
+  <div class="tile">{% if reclaim.holds is none %}<b class="level-amber">?</b>{% else %}<b class="level-{{ 'red' if reclaim.holds else ('green' if reclaim.holds_state == 'live' else 'amber') }}">{{ reclaim.holds }}</b>{% endif %}<span>re-activations held on rehydration (superseded revisions' deleted rows){% if reclaim.holds is none %}: not computed this render{% elif reclaim.holds_state == 'stale' %}, as of {{ section_state.rehydration_holds.as_of }}{% endif %}</span></div>
   <div class="tile"><b>{{ not_measured_total }}</b><span>degeneration pairs not measured</span></div>
   <div class="tile"><b>{{ decode_unmatched_total }}</b><span>runs whose sent decode matches no policy row (ambiguous + no_match)</span></div>
   <div class="tile"><b>{{ bon_decode_precedence_violations | length }}</b><span>best-of-N keys reading T = 1 beside a selected vendor preset (the rule says none)</span></div>
@@ -210,6 +211,18 @@ self-retiring ruling, not its provenance.</p>
 WAL: <code>{{ wal_bytes }}</code> bytes ({{ wal_gb }} GB) in <code>registry.sqlite-wal</code> -- checkpointed at the end of every completed harvester cycle and after a landing window's drain; a file that only grows means readers hold it (checkpoint starvation).
 {% if harvest_cycle.stopped %}The last cycle stopped on its <code>{{ harvest_cycle.stopped }}</code>{% if harvest_cycle.budget_s %} ({{ harvest_cycle.budget_s }} s){% endif %} and left {{ harvest_cycle.revisions_deferred_budget or 0 }} revision director{{ 'y' if harvest_cycle.revisions_deferred_budget == 1 else 'ies' }} / bundle(s) and {{ harvest_cycle.plain_files_deferred_budget or 0 }} plain file(s) for the next; everything it folded is committed.{% endif %}
 </p>
+{{ mark('reclaim_revisions') }}{{ mark('reclaim_ledger') }}{%- set section_words = {'cached': 'last good rows', 'no_cache': 'no cached rows', 'error': 'query failed', 'missing': 'not run'} %}
+<p class="{% if reclaim.level == 'red' %}late{% elif reclaim.level == 'green' %}note{% else %}stale{% endif %}" id="reclaim">
+<strong>Reclaim</strong> (the item rows of accepted, superseded revisions){% if reclaim.data_state != 'live' %} —
+{% if reclaim.data_state == 'unknown' %}<strong>Counts not computed this render</strong>{% else %}<strong>Counts as of <code>{{ reclaim.as_of }}</code></strong>{% if reclaim.age_s is not none %}, {{ reclaim.age_s }} s ago{% endif %}{% endif %}
+({% for n, s in reclaim.sections_not_live.items() %}<code>{{ n }}</code>: {{ section_words.get(s, s) }}{% if s == 'cached' and section_state[n].as_of and section_state[n].as_of != reclaim.as_of %} as of {{ section_state[n].as_of }}{% endif %}{% if not loop.last %}; {% endif %}{% endfor %}){% if reclaim.data_state == 'unknown' %}: a count shown as ? or "not computed" is unknown, not zero{% else %}: the last good rows, not this render's{% endif %}{% endif %}
+— mode <code>{{ reclaim.mode or '?' }}</code>{% if reclaim.manifests %} bound to {{ reclaim.manifests | length }} verified archive(s){% elif not reclaim.mode_file and not reclaim.mode_error %} (no mode file){% endif %}{% if reclaim.mode_error %}: <strong>the mode file is refused</strong> ({{ reclaim.mode_error }}) and the harvester deletes nothing while it stands{% endif %};
+{% if reclaim.n_due is not none %}{{ reclaim.n_due }} of {{ reclaim.n_superseded }} accepted, superseded revision(s) due{% else %}revisions due not computed{% endif %};
+deleted and not restored: {% if reclaim.rows_deleted is none %}not computed{% else %}{{ reclaim.rows_deleted }} row(s) over {{ reclaim.carriers }} carrier file(s){% endif %}{% if reclaim.ledger %} ({% for t, v in reclaim.ledger.items() %}{{ t }} {{ v.rows_deleted }}{% if not loop.last %} · {% endif %}{% endfor %}){% endif %}{% if reclaim.part_deleted %}, {{ reclaim.part_deleted }} part-deleted by a stop (resumed next cycle){% endif %};
+last cycle{% if reclaim.last_cycle.utc %} (<code>{{ reclaim.last_cycle.utc }}</code>){% endif %}: {% if reclaim.last_cycle.reclaim_rows_deleted is not none %}deleted {{ reclaim.last_cycle.reclaim_rows_deleted }}, rehydrated {{ reclaim.last_cycle.reclaim_rows_rehydrated or 0 }}{% if reclaim.last_cycle.reclaim_stopped %}, <strong>stopped on <code>{{ reclaim.last_cycle.reclaim_stopped }}</code></strong>{% else %}, not stopped{% endif %}{% else %}no reclaim recorded{% endif %};
+{% if reclaim.tail.cycles %}the metrics tail since <code>{{ reclaim.tail.since_utc }}</code> ({{ reclaim.tail.cycles }} cycle(s), {{ reclaim.tail.batches }} batch(es)): deleted {{ reclaim.tail.rows_deleted }}, rehydrated {{ reclaim.tail.rows_rehydrated }};{% endif %}
+held re-activations: <strong>{{ '?' if reclaim.holds is none else reclaim.holds }}</strong>{% if reclaim.holds %} (listed under the pending source revisions){% endif %}.{% for e in reclaim.errors %} <strong>Query failed</strong>: {{ e }}.{% endfor %}
+<code>registry prune-superseded status</code> classifies every carrier.</p>
 {{ table(timers) }}
 
 <h2>Cluster reads (the latest landing window's Slurm-sharded reads of the heavy adapters)</h2>
@@ -278,6 +291,9 @@ A <code>cluster_a</code> component's canonical copy is the published generation 
 {{ mark('pending_revisions') }}
 {{ table(pending_revisions, ['adapter', 'reason', 'n_revisions', 'n_sources', 'last_observed', 'example']) }}
 <p class="note">Every <code>source_revision</code> row an adapter pass wrote <code>accepted = 0</code> that no later revision superseded, grouped by adapter and by the head of its refusal (the text up to the first <code>: </code>); <code>example</code> is the newest refusal in full. A held read publishes nothing of its group until its reason clears (an activation pending on a parent nobody emitted, a dependency no record on this machine names); <code>registry adapters run --retry-refused</code> re-reads them.</p>
+<p class="note" id="rehydration-holds"><strong>Held on rehydration</strong>: a re-activation (or a late fold) of an accepted, superseded revision whose deleted item rows the current code does not re-parse exactly from the record log (a record the validator now refuses, a changed parser, a changed file). Nothing was written, the previous head stays current, and the hold is never re-attempted silently. Restore the rows with <code>registry prune-superseded rehydrate --revision REV --from-archive DIR</code> (the exact archived bytes) or <code>--accept-reparse --reason TEXT</code> (the current code's rows, what a rebuild holds); the next attempt then proceeds.</p>
+{{ mark('rehydration_holds') }}
+{{ table(rehydration_holds, ['revision_id', 'blocked_on', 'record_uri', 'record_type', 'missing_parent_table', 'missing_parent_id', 'first_seen_utc', 'attempts', 'stale']) }}
 
 <h2>Parked by name (read and recorded; nothing published, by ruling)</h2>
 {{ mark('parked_sources') }}

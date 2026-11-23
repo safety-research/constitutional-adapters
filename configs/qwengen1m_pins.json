@@ -1,0 +1,85 @@
+{
+ "_comment": [
+  "Lane-private pins for the static views qg1ms<k> (k in 1..3) of target qwen35_4b: per fit seed k, the two 1M-token",
+  "constitution LoRAs of the generator comparison, fit on Qwen/Qwen3.5-4B-Base with the old 1M recipe (effective batch 8):",
+  "constv2-mix-1m__lora_r4_ce (the Opus-written 1M pool, config key qwen35_4b_base_qg1m_opus_s<k>) and",
+  "constqwen38-mix-1m__lora_r4_ce (the Qwen-written 1M pool, config key qwen35_4b_base_qg1m_qwen_s<k>), served on the",
+  "instruct checkpoint at the operating point.",
+  "",
+  "WHY A PRIVATE FILE rather than entries in configs/sdfbase_full22_pins.json: these are comparison objects outside the",
+  "paper, and nothing here is appended to any shared surface. The roster that consumes these pins is",
+  "configs/sdfbase_full22_roster_qwengen1m.yaml, selected by the F22_ROSTER override, through the cross-bank pin form",
+  "{pins, pin} (make_bank_view.plan_pin_entry, mt_serving_up._pin_form_sha, jobplan.object_id_for with pins_root).",
+  "",
+  "KEYED BY SEED: the staged ids carry qg1ms<k>__ because the CELL id is the corpus spelling (the seed lives in the view",
+  "and the staged object, never in the cell id).",
+  "",
+  "`source` is spelled RELATIVE to exp/objects and `bank` is its first component (make_bank_view.objects_root_of /",
+  "plan_pin_entry). The builder resolves the staged copy at <objects root>/qwengen1m/qwen35_4b/cells/<staged_id> and",
+  "requires this `source` view path to exist and resolve to that same directory. Each staged copy holds object.pt, its",
+  "one identity sidecar (train_budget_meta.json) and staged_from.json.",
+  "",
+  "served_layer: the LoRA kind lora_all stores the 8 layers [3, 7, 11, 15, 19, 23, 27, 31] (site o_proj_out, served ==",
+  "stored), so 3 is the first served block. The builder holds the value by membership in the blob's served layers.",
+  "",
+  "Each sha was re-hashed from the staged object.pt and held equal to its sidecar's object_sha256, to staged_from.json's",
+  "and to the fit's COMPLETE marker; the sidecar names the cell, the fit seed k and the arm's held-out pool. No sha here",
+  "equals any entry of another pins file in configs/."
+ ],
+ "qwen35_4b": {
+  "qg1ms1__constqwen38-mix-1m__lora_r4_ce": {
+   "object_sha256": "e1439afaa9d2829d463f9360b199a8df188802d02c4ed36974de253423b2392f",
+   "kind": "lora_all",
+   "source": "qwengen1m/qwen35_4b/cells_view/qg1ms1/constqwen38-mix-1m__lora_r4_ce",
+   "identity_sidecar": "train_budget_meta.json",
+   "bank": "qwengen1m",
+   "staged_id": "qg1ms1__constqwen38-mix-1m__lora_r4_ce",
+   "served_layer": 3
+  },
+  "qg1ms1__constv2-mix-1m__lora_r4_ce": {
+   "object_sha256": "812ca9a2dcd7aabf4d7c08877427ca38a8e5b98ab6b67bb6c54c3f39ae3d5780",
+   "kind": "lora_all",
+   "source": "qwengen1m/qwen35_4b/cells_view/qg1ms1/constv2-mix-1m__lora_r4_ce",
+   "identity_sidecar": "train_budget_meta.json",
+   "bank": "qwengen1m",
+   "staged_id": "qg1ms1__constv2-mix-1m__lora_r4_ce",
+   "served_layer": 3
+  },
+  "qg1ms2__constqwen38-mix-1m__lora_r4_ce": {
+   "object_sha256": "229aa4b74fd9d23869905ac7fa183392493c096589b483b6bcc213921d0a9cad",
+   "kind": "lora_all",
+   "source": "qwengen1m/qwen35_4b/cells_view/qg1ms2/constqwen38-mix-1m__lora_r4_ce",
+   "identity_sidecar": "train_budget_meta.json",
+   "bank": "qwengen1m",
+   "staged_id": "qg1ms2__constqwen38-mix-1m__lora_r4_ce",
+   "served_layer": 3
+  },
+  "qg1ms2__constv2-mix-1m__lora_r4_ce": {
+   "object_sha256": "a0d9971b292a02a8513f8fdb7aa22ef50131c576976d9fa03525708975605472",
+   "kind": "lora_all",
+   "source": "qwengen1m/qwen35_4b/cells_view/qg1ms2/constv2-mix-1m__lora_r4_ce",
+   "identity_sidecar": "train_budget_meta.json",
+   "bank": "qwengen1m",
+   "staged_id": "qg1ms2__constv2-mix-1m__lora_r4_ce",
+   "served_layer": 3
+  },
+  "qg1ms3__constqwen38-mix-1m__lora_r4_ce": {
+   "object_sha256": "a10be211ce17bf1180e995b6b6642c2de0287c2e12d7a4aaec0eb90d50a96c85",
+   "kind": "lora_all",
+   "source": "qwengen1m/qwen35_4b/cells_view/qg1ms3/constqwen38-mix-1m__lora_r4_ce",
+   "identity_sidecar": "train_budget_meta.json",
+   "bank": "qwengen1m",
+   "staged_id": "qg1ms3__constqwen38-mix-1m__lora_r4_ce",
+   "served_layer": 3
+  },
+  "qg1ms3__constv2-mix-1m__lora_r4_ce": {
+   "object_sha256": "3d93ed6aff39ba1a74440dc7a0f7c597a05f8b32b375fabba6676b347aec7e63",
+   "kind": "lora_all",
+   "source": "qwengen1m/qwen35_4b/cells_view/qg1ms3/constv2-mix-1m__lora_r4_ce",
+   "identity_sidecar": "train_budget_meta.json",
+   "bank": "qwengen1m",
+   "staged_id": "qg1ms3__constv2-mix-1m__lora_r4_ce",
+   "served_layer": 3
+  }
+ }
+}

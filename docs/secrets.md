@@ -25,7 +25,7 @@ serves all three, under `op` each label has its own item, and under `wif` each h
 | variable | needed for |
 |---|---|
 | `ANTHROPIC_API_KEY` | judges and corpus generation; one key serves every credential label |
-| `OPENROUTER_API_KEY` | attackers and the Petri auditor fallback served through OpenRouter |
+| `OPENROUTER_API_KEY` | attackers and the Petri auditor fallback served through OpenRouter; the re-judges with the paper's judges (`scripts/rejudge/`), which read it from the environment only (not through the switch below) |
 | `MODAL_TOKEN_ID`, `MODAL_TOKEN_SECRET` | stage 07 (Modal) |
 | `HF_TOKEN` | optional: gated model downloads |
 | `WANDB_API_KEY` | optional: W&B logging |

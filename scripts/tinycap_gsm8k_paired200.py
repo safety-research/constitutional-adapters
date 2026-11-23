@@ -741,8 +741,12 @@ def collect_leg(gen_root: Path | M.GenRoots, row: Mapping[str, Any], *, cap: int
     }
     fact = ctx.fact_for(str(row["family"]))
     tuple_row = dict(row)
-    if cap == CAP_RUNG and row.get("tuple_name"):
-        tuple_row["tuple_name"] = V.expected_tuple_name(row, cap)          # the contract's rung tuple (contracts.g8k_tuple_name)
+    if row.get("tuple_name"):
+        # the tuple the reader expects THIS leg to record (V.leg_tuple_name): an SI-distilled refit row's (wave sikl4) the
+        # registry's native pair at this cap (contracts.g8k_native_sikl4_tuple_name); any other row's the matrix row's name at
+        # 8,192, the contract's rung tuple (contracts.g8k_tuple_name) at 16,384. For a sikl4 row identity_problem re-derives
+        # the native name from the row itself, so this substitution is not what enforces it
+        tuple_row["tuple_name"] = V.leg_tuple_name(row, cap)
     problem = V.identity_problem(manifest, summary, row=tuple_row, cap=cap, model_pin=ctx.model_pins[str(row["tag"])],
                                  sampling_row=ctx.row_for(str(row["model_key"]), sampling_mode), fact=fact,
                                  rung_source_manifest=source_manifest, rung_subset=subset, standup_record=standup_record, arm=arm)

@@ -1,0 +1,61 @@
+Qwen 3.8 Max constitution corpus: terms of use
+
+Files:   corpora/constitution_qwen38max_advice/ (197 records) and
+         corpora/constitution_qwen38max_stories/ (736 records)
+Finals:  final-qwen38-1m-20261112.jsonl in each directory, reassembled from its
+         shards as its MANIFEST.json describes
+SHA-256 of the two finals:
+  advice   d88bdd06421bad3e4fe987b38577b4d27f02e665489610b504ad675fb4611f0a
+  stories  e60ea0c8f0f0de57b775dcf00a35af04bc3f7826cfb2f6ea481cda0b02b53581
+
+
+WHAT THE FILES ARE
+
+The two directories hold a constitution corpus of 197 advice records and 736
+stories, about 2.0 million tokens, written by the model qwen/qwen3.8-max-0902
+(Qwen 3.8 Max, the 2026-09-02 snapshot, made by Alibaba Cloud). The model was
+called through OpenRouter on 2026-11-12, routed only to its Alibaba provider
+(Alibaba Cloud Model Studio).
+
+The records come from the generation pipeline that wrote this repository's
+Claude-written constitution corpus, re-run from Claude's constitution (released
+under CC0 1.0) with Qwen 3.8 Max in every role, including the scoring that
+filters the records. They are machine-generated text, not human-written. The
+generator comparison trained adapters on a 1M-token pool drawn from them.
+
+
+THESE TERMS
+
+These files are NOT covered by the MIT licence in the repository's LICENSE
+file. They are distributed under these terms instead.
+
+You may use, copy, modify and redistribute the files for any purpose,
+including research, evaluation and training, fine-tuning or otherwise
+improving models, except as the next paragraph restricts.
+
+You may not use the files, and you may not permit anyone else to use them, to
+train or develop products or services that compete with those of Alibaba Cloud
+or its affiliates, unless Alibaba Cloud expressly authorises it.
+
+If you redistribute the files, or any part of them, keep these terms and the
+attribution in this file with them, including the statement that the records
+are machine-generated.
+
+
+WHERE THESE TERMS COME FROM
+
+Alibaba Cloud's terms for the model's output are the Alibaba Cloud
+International Website Product Terms of Service, section 4.48.1 (last updated
+19 October 2026). They reach an OpenRouter user through OpenRouter's Terms of
+Service, sections 5 and 6.1 (last updated 31 August 2026). Under section
+4.48.1(e), Alibaba Cloud claims no ownership of intellectual property rights in
+the output and the customer may use it, subject to the law and Alibaba Cloud's
+terms. Under section 4.48.1(d)(v), neither the
+models nor their output may be used to train or develop products or services
+that compete with those of Alibaba Cloud or its affiliates without Alibaba
+Cloud's express authorisation. These terms pass that restriction on. Section
+4.48.1(h)(ii) also asks that published output be labelled where the law
+requires it, which is why a redistribution keeps the statement that the
+records are machine-generated.
+
+The files are provided as is, without warranty of any kind.

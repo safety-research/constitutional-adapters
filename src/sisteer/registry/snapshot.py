@@ -33,12 +33,15 @@ built under a ``dest_root`` that is never the registry root (the export must not
 ``snapshots/`` + ``CURRENT``), from ONE read transaction, for the paper's model set (:data:`PAPER_FRAME_MODEL_IDS` + their fit
 checkpoints + the pipeline-test models): the dimension tables in full, the measurement tables for every run of those models
 with their own selection flags, the item tables (as their readers see them) for the ``in_current_paper = 1`` runs plus every
-run of the test models, ``record_ingest`` as the one head row, and the four paper views materialised as tables under their
-names. Every location is scrubbed ONCE before both formats (:func:`scrub_frame`: ``sha256:<hex>`` where a hash exists, a
-``repo:<rel>`` reference under this repo, else dropped and listed in ``MANIFEST.scrubbed``); the ``artifact`` table is omitted.
-Two formats from the same frames: ``<table>.parquet`` (zstd) and a deterministic ``paper_frame.sqlite`` (page_size 4096,
-primary-key insertion order, VACUUM) shipped gzip-split as ``paper_frame.sqlite.gz.NN`` parts of ≤ 40 MB with the whole file's
-hash as ``MANIFEST.sqlite_sha256``. Readers: :func:`open_paper_frame` / :func:`paper_frame_current` /
+run of the test models (left out with ``--paper-models-only``), the complete judgments of any named ITEM JUDGES on runs of the
+model set (``--item-judge``, shipped in a named projection with ``--item-projection``), ``record_ingest`` as the one head row, and
+the four paper views materialised as tables under their names. Every location is scrubbed ONCE before both formats
+(:func:`scrub_frame`: ``sha256:<hex>`` where a hash exists, a ``repo:<rel>`` reference under this repo, else dropped and listed in
+``MANIFEST.scrubbed``); the ``artifact`` table is omitted. Two formats from the same frames: ``<table>.parquet`` (zstd) for every
+table but the item-scale ones (:data:`PAPER_FRAME_SQLITE_ONLY_TABLES`, read_set_version 3), and a deterministic
+``paper_frame.sqlite`` (page_size 4096, primary-key insertion order, VACUUM) holding every table, shipped gzip-split as
+``paper_frame.sqlite.gz.NN`` parts of ≤ 40 MB with the whole file's hash as ``MANIFEST.sqlite_sha256``; no file over
+:data:`PAPER_FRAME_MAX_FILE_BYTES`. Readers: :func:`open_paper_frame` / :func:`paper_frame_current` /
 ``snapshot_open(dest_root, scope="paper_frame")`` — no lease protocol for a committed export. The tree precondition
 (:func:`paper_frame_precondition`) refuses a tree that has not merged :data:`PAIRED_ROOT_RETIRE_MERGE_SHA` into main.
 
@@ -87,30 +90,38 @@ from .migrations import db_version
 #: identical live and on replay, read only on the grading host against the live database (the reducer's fold, ``registry
 #: history``), by no view and by no snapshot reader. A history table is a ledger (not record-fed) — asserted by test.
 HISTORY_TABLES: Tuple[str, ...] = ("row_history",)
+#: Derived bookkeeping that NO snapshot scope ships either: ``item_reclaim_ledger`` (migration 0033) counts and digests the
+#: superseded revisions' item rows reclaim deleted, so the fold can re-fold them from the record log before writing under the revision
+#: again. It is read by the fold, ``registry prune-superseded`` and the status page on the grading host, by no v_* object and by no
+#: snapshot reader, and leaving it out keeps every snapshot format (its tables, Parquet files and manifest lists) as it was.
+BOOKKEEPING_TABLES: Tuple[str, ...] = ("item_reclaim_ledger",)
+_NOT_SHIPPED: Tuple[str, ...] = HISTORY_TABLES + BOOKKEEPING_TABLES
 #: Item-scale tables the run-level file carries ANYWAY. ``run_degeneration`` is item-scale by KEY (revision-tagged, one row per
 #: run x judgment x measure x scope x revision) but run-grain in count -- 135,074 rows / ~230 MB of pages on 2026-09-21, 41,783 of
-#: them visible (ROW_FILTERS ships those alone), against ``item_result``'s millions -- and the paper views read it since migration
+#: them visible (ROW_FILTERS ships those alone; since migration 0033 reclaim deletes an accepted, superseded revision's copies, so the
+#: table holds little beyond the visible rows and the pending revisions'), against ``item_result``'s millions -- and the paper views read it since migration
 #: 0010 (``schema_def.DEGENERATION_RATE_CTE``: a NULL
 #: ``run_metric.frac_*`` mirror is filled from the run's measured degeneration rows, so a reading filed by another reader counts).
 #: A run-level file without it could not hold ``v_paper_long`` / ``v_multi_source_*``, the views the clusters read.
 RUNLEVEL_ITEM_TABLES: Tuple[str, ...] = ("run_degeneration",)
 #: The run-level file's allowlist: every table but the item-scale ones (:data:`RUNLEVEL_ITEM_TABLES` excepted), the transient
-#: staging shadows and the history ledger.
+#: staging shadows, the history ledger and the reclaim's bookkeeping.
 RUNLEVEL_TABLES: Tuple[str, ...] = tuple(t for t in S.ALL_TABLES
                                          if (t not in S.ITEM_SCALE_TABLES or t in RUNLEVEL_ITEM_TABLES)
-                                         and t not in S.STAGING_TABLES and t not in HISTORY_TABLES)
+                                         and t not in S.STAGING_TABLES and t not in _NOT_SHIPPED)
 #: What a run-level set exports to PARQUET: the run-scale tables only (the item-scale table the SQLite carries for its views ships as
 #: Parquet in the full set alone).
 RUNLEVEL_PARQUET_TABLES: Tuple[str, ...] = tuple(t for t in RUNLEVEL_TABLES if t not in S.ITEM_SCALE_TABLES)
 #: What a FULL set exports to Parquet: every table of record — the item-scale tables included — but the staging shadows
-#: (never data of record) and the history ledger (the record log, mirrored everywhere, is the history).
-FULL_TABLES: Tuple[str, ...] = tuple(t for t in S.ALL_TABLES if t not in S.STAGING_TABLES and t not in HISTORY_TABLES)
+#: (never data of record), the history ledger (the record log, mirrored everywhere, is the history) and the reclaim's bookkeeping.
+FULL_TABLES: Tuple[str, ...] = tuple(t for t in S.ALL_TABLES if t not in S.STAGING_TABLES and t not in _NOT_SHIPPED)
 #: Views whose every base table (through any view they reference) is in the run-level file — the only ones it can hold.
 RUNLEVEL_VIEWS: Tuple[str, ...] = tuple(n for n in S.VIEW_NAMES if S.VIEW_TABLES[n] <= set(RUNLEVEL_TABLES))
 _ITEM_TYPES_SQL = ", ".join(f"'{t}'" for t in R.ITEM_SCALE_RECORD_TYPES)
 _RUN_SCALE_SQL = ", ".join(f"'{t}'" for t in S.RUN_SCALE_TABLES)
 #: Row filters on the mixed tables so nothing item-scale enters the run-level file; the one item-scale table the file carries
-#: (RUNLEVEL_ITEM_TABLES) ships its VISIBLE rows only -- a pending or superseded revision's rows are read by no view.
+#: (RUNLEVEL_ITEM_TABLES) ships its VISIBLE rows only -- a pending revision's rows, and an accepted, superseded revision's until reclaim
+#: deletes them (migration 0033), are read by no v_* object.
 ROW_FILTERS: Dict[str, str] = {
     "record_delivery": "EXISTS (SELECT 1 FROM json_each(record_type_counts_json) je WHERE je.key NOT IN (%s))" % _ITEM_TYPES_SQL,
     "observation": "table_name IN (%s)" % _RUN_SCALE_SQL,
@@ -123,7 +134,9 @@ ROW_FILTERS: Dict[str, str] = {
 #: ``record_run_index`` 14, ``source_watermark`` 13, ``judgment`` 11, ``artifact`` 11 — so 100 MiB was not reachable by
 #: removing tables. Caveats, all measured or derived from that reading:
 #: * 512 MiB is 2.5× today's ~207 MiB set, and still below ``item_result`` (784 MB) and ``item_flags`` (616 MB), so a
-#:   leak of either item-scale table into the run-level file still fires the assertion.
+#:   leak of either item-scale table into the run-level file still fires the assertion. That holds after reclaim deletes the
+#:   superseded revisions' copies (migration 0033): on 2026-10-19 the tables kept ~6.5 M and ~3.5 M rows, ~2.4 GB and ~2.0 GB of
+#:   payload at the measured ~375 / ~560 bytes per row.
 #: * At ~47 KiB of run-level pages per run the set re-breaches 512 MiB near ~11k runs and reaches ~2.3 GB at the spec's
 #:   50k-run horizon; the durable fix is shrinking ``run.field_versions_json`` (a full order key per column) or a per-run
 #:   bound, not another raise.
@@ -150,7 +163,8 @@ SCOPE_SQLITE: Dict[str, str] = {"full": RUNLEVEL_SQLITE, "runlevel": RUNLEVEL_SQ
 
 #: Bumped whenever a table joins or leaves the read set, a row filter changes, or the scrub rewrites a new column — the
 #: notebook parity test re-derives the set from the notebook's SQL against this version.
-PAPER_FRAME_READ_SET_VERSION = 2   # 2: the analysis tables (PAPER_FRAME_ANALYSIS_TABLES) joined the read set (FU7)
+PAPER_FRAME_READ_SET_VERSION = 3   # 2: the analysis tables (PAPER_FRAME_ANALYSIS_TABLES) joined the read set (FU7); 3: the item
+#                                   judges' rows (``item_judges``, the reader projection), the item tables SQLite-only, ``test_models``
 #: The paper's model set (the notebook's MODELS). Their fit checkpoints (``<stem>_base``) ride along: ``paper_frame_model_set``.
 PAPER_FRAME_MODEL_IDS: Tuple[str, ...] = ("gemma4e4b_it", "qwen35_4b_it", "nemotron3nano4b", "llama8b_it")
 #: The exporter's EXTRA models, out of the paper frame: the pipeline-test MoE and the front-door worked example's own key
@@ -181,8 +195,24 @@ PAPER_FRAME_MATERIALISED: Tuple[str, ...] = ("v_paper_current", "v_paper_long", 
 #: ``record_ingest`` head, the materialised paper views. The notebook parity test imports this.
 PAPER_FRAME_TABLES: Tuple[str, ...] = (PAPER_FRAME_DIMENSION_TABLES + PAPER_FRAME_RUN_TABLES + PAPER_FRAME_ITEM_TABLES
                                        + PAPER_FRAME_ANALYSIS_TABLES + ("record_ingest",) + PAPER_FRAME_MATERIALISED)
+#: The item-scale tables ship in the split SQLite ONLY (read_set_version 3): no Parquet copy (nothing reads the frame's item Parquet;
+#: the notebook reads the frame through the SQLite, ``open_paper_frame``), so no committed file exceeds the part size. The manifest's
+#: ``parquet_tables`` lists the other tables and ``sqlite_only_tables`` names these, with their row counts in ``tables`` as before.
+PAPER_FRAME_SQLITE_ONLY_TABLES: Tuple[str, ...] = ("item_result", "item_flags")
 #: gzip parts of the paper frame's SQLite are at most this many bytes (a committed file stays well under GitHub's 100 MB).
 PAPER_FRAME_PART_BYTES = 40 * 1024 * 1024
+#: No file of a built frame may be larger: checked before MANIFEST.json is written, refusing by name (a backstop, never a split; the
+#: SQLite parts are at most PAPER_FRAME_PART_BYTES and the largest Parquet is a few MB).
+PAPER_FRAME_MAX_FILE_BYTES = 45 * 1024 * 1024
+#: The item projections a build may apply to the rows of its ITEM JUDGES (``--item-judge``; every other row ships verbatim): name ->
+#: the ``extra_json`` keys kept. Under a projection ``record_sha256`` ships NULL (the per-item provider, generation and request ids and
+#: record hashes stay in the registry and the record log). ``reader``: the keys the notebook's item reader extracts
+#: (``registry_nb.item_rows_sql``: ``subset``, XSTest's safe / unsafe half), the same set ``registry_nb`` checks a snapshot read against.
+PAPER_FRAME_ITEM_PROJECTIONS: Dict[str, Tuple[str, ...]] = {"reader": ("subset",)}
+#: The judgments whose item rows a build admits for the re-derivation's FILED-GOAL rule (``registry_nb._filed_goals``: a StrongREJECT
+#: reading whose producer dropped errored or incomplete goals is re-derived over the goals its filed judgment carries), on runs outside
+#: the per-item scope: the filed StrongREJECT judgment of a ``pf_runs`` run whose ``run_metric`` rows count errored or incomplete goals.
+PAPER_FRAME_FILED_GOAL_RUBRICS: Tuple[str, ...] = ("strongreject",)
 PAPER_FRAME_INSERT_BATCH = 50_000
 #: The merge commit that retired ``relu_native``'s ``PAIRED_ROOT``, moving it out of an unlanded checkout into run-state.
 #: ``None`` until that commit is filled in; while it is None the precondition refuses by name.
@@ -416,7 +446,8 @@ def latest_full_id(root: str) -> Optional[str]:
 
 def build(root: str, db_path: str, now: Optional[str] = None, check_free_space: bool = True,
           lease_resolver: Optional[Callable[[str, str], bool]] = None, scope: str = "full", dest_root: Optional[str] = None,
-          model_ids: Optional[Sequence[str]] = None, precondition_override: Optional[str] = None) -> SnapshotInfo:
+          model_ids: Optional[Sequence[str]] = None, precondition_override: Optional[str] = None, test_models: bool = True,
+          item_judges: Sequence[str] = (), item_projection: Optional[str] = None) -> SnapshotInfo:
     """Build a snapshot from the live database into ``<root>/snapshots/<id>/`` and switch CURRENT.
 
     ``scope="full"``: every table to Parquet + the run-level SQLite (the set the clusters read
@@ -429,9 +460,20 @@ def build(root: str, db_path: str, now: Optional[str] = None, check_free_space: 
     under ``dest_root``, never under ``root`` (the export must never switch or reclaim the operational registry's
     pointer or directories), so ``dest_root`` is required; retention and the free-space reading apply to ``dest_root``
     alone. ``model_ids`` extends the exported model set; ``precondition_override`` (a reason) skips the tree
-    precondition and is recorded in ``MANIFEST.precondition``."""
+    precondition and is recorded in ``MANIFEST.precondition``. ``test_models=False`` (``--paper-models-only``) leaves the
+    pipeline-test models out of the run and item scopes. ``item_judges`` (judge ids, ``--item-judge``) adds every COMPLETE judgment
+    of those judges on a run of the run set to the item scope, and ``item_projection`` (a key of
+    :data:`PAPER_FRAME_ITEM_PROJECTIONS`, ``--item-projection``) ships those judges' rows in that projection; every other row stays
+    verbatim."""
     if scope not in SCOPES:
         raise SnapshotError(f"snapshot: unknown scope {scope!r}; one of {SCOPES}")
+    item_judges = tuple(dict.fromkeys(str(j).strip() for j in (item_judges or ()) if str(j).strip()))
+    if scope != "paper_frame" and (item_judges or item_projection or not test_models):
+        raise SnapshotError(f"snapshot: item judges, an item projection and --paper-models-only are for scope paper_frame (scope {scope})")
+    if item_projection is not None and item_projection not in PAPER_FRAME_ITEM_PROJECTIONS:
+        raise SnapshotError(f"snapshot: unknown item projection {item_projection!r}; one of {', '.join(PAPER_FRAME_ITEM_PROJECTIONS)}")
+    if item_projection is not None and not item_judges:
+        raise SnapshotError("snapshot: an item projection applies to the item judges' rows, and no item judge is named (--item-judge)")
     if scope == "paper_frame":
         if not dest_root:
             raise SnapshotError("snapshot: scope paper_frame needs dest_root (the committed export is written under a directory "
@@ -463,7 +505,8 @@ def build(root: str, db_path: str, now: Optional[str] = None, check_free_space: 
     os.makedirs(building)
     try:
         if scope == "paper_frame":
-            return _build_paper_frame_into(root, db_path, now, out_root, building, reclaimed, blocking, model_ids, precondition)
+            return _build_paper_frame_into(root, db_path, now, out_root, building, reclaimed, blocking, model_ids, precondition,
+                                           test_models=test_models, item_judges=item_judges, item_projection=item_projection)
         return _build_into(root, db_path, now, scope, building, reclaimed, blocking)
     except BaseException:
         # a failed build leaves nothing behind: the half-written directory would otherwise sit under snapshots/ forever
@@ -582,12 +625,13 @@ def snapshot_record_payload(info: SnapshotInfo, pushed_to: Optional[Sequence[Map
 # --------------------------------------------------------------------------------------------
 
 
-def paper_frame_model_set(model_ids: Optional[Sequence[str]] = None) -> Tuple[str, ...]:
-    """The model ids whose runs the paper frame exports: the paper's four + the pipeline-test models + ``model_ids``, each with
-    its fit checkpoint (``<stem>_base``: ``gemma4e4b_it`` → ``gemma4e4b_base``; an id without the ``_it`` suffix takes
-    ``_base`` as is). Sorted, deduplicated."""
+def paper_frame_model_set(model_ids: Optional[Sequence[str]] = None, test_models: bool = True) -> Tuple[str, ...]:
+    """The model ids whose runs the paper frame exports: the paper's four + the pipeline-test models (unless ``test_models`` is
+    False: ``--paper-models-only``) + ``model_ids``, each with its fit checkpoint (``<stem>_base``: ``gemma4e4b_it`` →
+    ``gemma4e4b_base``; an id without the ``_it`` suffix takes ``_base`` as is). Sorted, deduplicated."""
     out: Set[str] = set()
-    for mid in tuple(PAPER_FRAME_MODEL_IDS) + tuple(PAPER_FRAME_TEST_MODEL_IDS) + tuple(model_ids or ()):
+    tests = tuple(PAPER_FRAME_TEST_MODEL_IDS) if test_models else ()
+    for mid in tuple(PAPER_FRAME_MODEL_IDS) + tests + tuple(model_ids or ()):
         mid = str(mid).strip()
         if not mid:
             continue
@@ -598,9 +642,11 @@ def paper_frame_model_set(model_ids: Optional[Sequence[str]] = None) -> Tuple[st
     return tuple(sorted(out))
 
 
-def paper_frame_test_model_set(model_ids: Optional[Sequence[str]] = None) -> Tuple[str, ...]:
-    """The models whose EVERY run ships item rows (the test models + ``model_ids``; the per-item scope)."""
-    return tuple(sorted({str(m).strip() for m in tuple(PAPER_FRAME_TEST_MODEL_IDS) + tuple(model_ids or ()) if str(m).strip()}))
+def paper_frame_test_model_set(model_ids: Optional[Sequence[str]] = None, test_models: bool = True) -> Tuple[str, ...]:
+    """The models whose EVERY run ships item rows (the test models, unless ``test_models`` is False, + ``model_ids``; the per-item
+    scope)."""
+    tests = tuple(PAPER_FRAME_TEST_MODEL_IDS) if test_models else ()
+    return tuple(sorted({str(m).strip() for m in tests + tuple(model_ids or ()) if str(m).strip()}))
 
 
 # ---- the export-only scrub --------------------------------------------------------------------------------------
@@ -1123,10 +1169,28 @@ def _insert_rows(out: sqlite3.Connection, table: str, cols: Sequence[str], rows:
     out.executemany(sql, [tuple(r.get(c) for c in cols) for r in rows])
 
 
-def _paper_frame_sources() -> Dict[str, Tuple[str, str, str]]:
+#: ``item_result``'s first pass when the build names item judges (the TEMP table ``pf_item_judgments``: ``projected = 1`` for an item
+#: judge's judgment, ``0`` for a filed-goal judgment): restricted by RUN first (the union of the per-item runs and the listed
+#: judgments' runs, so SQLite seeks by run through the table's key instead of scanning it through the view), it keeps every row of a
+#: per-item run and, elsewhere, the rows of a listed ``projected = 0`` judgment, and leaves out every ``projected = 1`` judgment's rows
+#: (the second pass ships them, through the projection). Verbatim, in primary-key order.
+_ITEM_RESULT_PASS1_WHERE = (
+    "t.run_id IN (SELECT run_id FROM pf_item_runs UNION SELECT run_id FROM pf_item_judgments) "
+    "AND NOT EXISTS (SELECT 1 FROM pf_item_judgments p WHERE p.run_id = t.run_id AND p.judgment_id = t.judgment_id AND p.projected = 1) "
+    "AND (t.run_id IN (SELECT run_id FROM pf_item_runs) "
+    "OR EXISTS (SELECT 1 FROM pf_item_judgments p WHERE p.run_id = t.run_id AND p.judgment_id = t.judgment_id AND p.projected = 0))")
+#: ``item_result``'s second pass: every current row of a ``projected = 1`` judgment (however its run was admitted), through
+#: ``idx_item_result_run_judgment``, ordered by judgment then key so each judgment's rows sit contiguously in the frame.
+_ITEM_RESULT_PASS2_SOURCE = "FROM pf_item_judgments j JOIN v_item_result_current t ON t.run_id = j.run_id AND t.judgment_id = j.judgment_id"
+_ITEM_RESULT_PASS2_WHERE = "j.projected = 1"
+
+
+def _paper_frame_sources(item_judgments: bool = False) -> Dict[str, Tuple[str, str, str]]:
     """Per exported schema table, in build order: ``(FROM <source> t, <WHERE filter or ''>, <ORDER BY>)`` against the frozen read
     connection, the run sets in the TEMP tables ``pf_runs`` / ``pf_item_runs`` and the analysis set in ``pf_analyses``, all filled by
-    the exporter first. ``record_ingest`` is ONE row, the head, so a reader's ``SELECT MAX(ingest_seq) FROM record_ingest`` returns it."""
+    the exporter first. ``record_ingest`` is ONE row, the head, so a reader's ``SELECT MAX(ingest_seq) FROM record_ingest`` returns it.
+    ``item_judgments``: the build lists judgments in ``pf_item_judgments`` (item judges, filed goals), and ``item_result`` is then its
+    first pass (:data:`_ITEM_RESULT_PASS1_WHERE`); the builder runs the second."""
     def pk_order(t: str) -> str:
         return ", ".join(f"t.{c}" for c in S.TABLE_BY_NAME[t].pk)
     src: Dict[str, Tuple[str, str, str]] = {}
@@ -1137,6 +1201,8 @@ def _paper_frame_sources() -> Dict[str, Tuple[str, str, str]]:
         src[t] = (f"FROM {source} t", "t.run_id IN (SELECT run_id FROM pf_runs)", pk_order(t))
     for t in PAPER_FRAME_ITEM_TABLES:
         src[t] = (f"FROM v_{t}_current t", "t.run_id IN (SELECT run_id FROM pf_item_runs)", pk_order(t))
+    if item_judgments:
+        src["item_result"] = ("FROM v_item_result_current t", _ITEM_RESULT_PASS1_WHERE, pk_order("item_result"))
     for t in PAPER_FRAME_ANALYSIS_TABLES:
         src[t] = (f"FROM {t} t", "t.analysis_id IN (SELECT analysis_id FROM pf_analyses)", pk_order(t))
     src["record_ingest"] = ("FROM record_ingest t", "t.ingest_seq = (SELECT MAX(ingest_seq) FROM record_ingest)", "t.ingest_seq DESC, t.file_uri")
@@ -1170,16 +1236,19 @@ def _paper_frame_analysis_set(conn: sqlite3.Connection, tokens: Sequence[str]) -
 
 
 def _export_schema_table(conn: sqlite3.Connection, out: sqlite3.Connection, table: str, source: str, where: str, order: str,
-                         tokens: Sequence[str], repo_roots: Sequence[str]) -> Tuple[int, List[str]]:
-    """Stream one schema table: SELECT (pk order) → scrub per batch → INSERT into the building SQLite. Rows with a
-    ``record_uri`` join the record file's sha256 in as the helper column the scrub consumes."""
+                         tokens: Sequence[str], repo_roots: Sequence[str], create: bool = True,
+                         transform: Optional[Callable[[Dict[str, object]], None]] = None) -> Tuple[int, List[str]]:
+    """Stream one schema table: SELECT (``order``) → ``transform`` per row (a projection, in place) → scrub per batch → INSERT into the
+    building SQLite. Rows with a ``record_uri`` join the record file's sha256 in as the helper column the scrub consumes.
+    ``create=False`` appends to a table an earlier pass created (the item table's projected second pass)."""
     tdef = S.TABLE_BY_NAME[table]
     cols = list(tdef.column_names)
     select = ", ".join(f"t.{c}" for c in cols)
     if "record_uri" in cols:
         select += f", ri.file_sha256 AS {RECORD_SHA_HELPER}"
         source += " LEFT JOIN record_ingest ri ON ri.file_uri = t.record_uri"
-    _create_out_table(out, table, cols, {c: tdef.column(c).type for c in cols}, tdef.pk)
+    if create:
+        _create_out_table(out, table, cols, {c: tdef.column(c).type for c in cols}, tdef.pk)
     cur = conn.execute(f"SELECT {select} {source}{' WHERE ' + where if where else ''} ORDER BY {order}")
     names = [d[0] for d in cur.description]
     n = 0
@@ -1189,6 +1258,9 @@ def _export_schema_table(conn: sqlite3.Connection, out: sqlite3.Connection, tabl
         if not batch:
             break
         rows = [dict(zip(names, r)) for r in batch]
+        if transform is not None:
+            for r in rows:
+                transform(r)
         rows, cols_touched = scrub_frame(table, rows, tokens, repo_roots)
         scrubbed.update(cols_touched)
         _insert_rows(out, table, cols, rows)
@@ -1275,20 +1347,53 @@ def _reassemble_parts(part_paths: Sequence[str], out_path: str) -> str:
     return h.hexdigest()
 
 
+def _project_item_row(keys: Sequence[str]) -> Callable[[Dict[str, object]], None]:
+    """The item projection (``PAPER_FRAME_ITEM_PROJECTIONS``) as an in-place row transform: ``extra_json`` reduced to ``keys`` (``{}``
+    when it holds none of them or is not a JSON object; a NULL stays NULL), ``record_sha256`` NULL. Every other column is verbatim."""
+    keep = tuple(keys)
+
+    def proj(row: Dict[str, object]) -> None:
+        ej = row.get("extra_json")
+        if ej is not None:
+            try:
+                d = json.loads(ej)
+            except (TypeError, ValueError):
+                d = None
+            kept = {k: d[k] for k in keep if k in d} if isinstance(d, dict) else {}
+            row["extra_json"] = json.dumps(kept, sort_keys=True, separators=(",", ":"))
+        row["record_sha256"] = None
+    return proj
+
+
 def _build_paper_frame_into(root: str, db_path: str, now: str, out_root: str, building: str, reclaimed: List[str], blocking: List[str],
-                            model_ids: Optional[Sequence[str]], precondition: Optional[Mapping[str, object]]) -> SnapshotInfo:
+                            model_ids: Optional[Sequence[str]], precondition: Optional[Mapping[str, object]], test_models: bool = True,
+                            item_judges: Sequence[str] = (), item_projection: Optional[str] = None) -> SnapshotInfo:
     """The paper frame: ONE read transaction over the live database; the run set, the item-run set and the analysis set (the analyses
     whose every input the frame exports, :func:`_paper_frame_analysis_set`; the rest named in the manifest) in TEMP tables; every
     read-set table streamed in primary-key order through :func:`scrub_frame` into ``paper_frame.sqlite`` (page_size 4096, then
-    VACUUM); the four paper views materialised as tables; ``record_ingest`` as the one head row; then every table's Parquet written
-    FROM the scrubbed SQLite (the same frames, scrubbed once); the SQLite gzip-split into ≤ 40 MB parts; MANIFEST last; ``.building``
-    → ``<id>``; CURRENT under ``out_root``."""
+    VACUUM); the four paper views materialised as tables; ``record_ingest`` as the one head row; then the Parquet of every table but
+    the SQLite-only item tables (:data:`PAPER_FRAME_SQLITE_ONLY_TABLES`) written FROM the scrubbed SQLite (the same frames, scrubbed
+    once); the SQLite gzip-split into ≤ 40 MB parts; no file over :data:`PAPER_FRAME_MAX_FILE_BYTES`; MANIFEST last; ``.building`` →
+    ``<id>``; CURRENT under ``out_root``.
+
+    ITEM JUDGES (``item_judges``): the TEMP table ``pf_item_judgments (run_id, judgment_id, projected)`` lists every COMPLETE judgment of
+    an item judge on a run of the run set, and every judgment of one on a per-item run (``projected = 1``: ``n_item_judgments``, so
+    every item-judge row ships in the projection), and, for the re-derivation's filed-goal rule, every filed StrongREJECT
+    judgment of a run of the run set whose ``run_metric`` rows count errored or incomplete goals (``projected = 0`` unless its judge is
+    an item judge). ``item_result`` is then exported in two passes, disjoint by construction and checked against ONE count of their
+    union in the same transaction: verbatim in key order (:data:`_ITEM_RESULT_PASS1_WHERE`), then every ``projected = 1`` judgment's
+    rows ordered by judgment, through ``item_projection`` when one is named. ``item_flags`` keeps the per-item scope (re-judges file
+    none)."""
     tokens = _private_tokens()
     repo_roots = _repo_roots()
     from . import config as CFG
     SA.install(CFG.load(root))             # the site's alias table: rows written before its clusters were renamed export under the labels
-    model_set = paper_frame_model_set(model_ids)
-    item_models = paper_frame_test_model_set(model_ids)
+    model_set = paper_frame_model_set(model_ids, test_models)
+    item_models = paper_frame_test_model_set(model_ids, test_models)
+    item_judges = tuple(item_judges or ())
+    judge_rows: List[Dict[str, object]] = []
+    n_item_judgments = n_filed_goal_judgments = n_projected_rows = 0
+    item_passes: Dict[str, int] = {}
     sqlite_path = os.path.join(building, PAPER_FRAME_SQLITE)
     out = sqlite3.connect(sqlite_path, isolation_level=None)
     out.execute("PRAGMA page_size=4096")
@@ -1314,10 +1419,56 @@ def _build_paper_frame_into(root: str, db_path: str, now: str, out_root: str, bu
             conn.execute(f"INSERT OR IGNORE INTO pf_item_runs SELECT run_id FROM run WHERE model_id IN ({marks_t})", tuple(item_models))
         n_runs = int(conn.execute("SELECT COUNT(*) FROM pf_runs").fetchone()[0])
         n_item_runs = int(conn.execute("SELECT COUNT(*) FROM pf_item_runs").fetchone()[0])
+        expected_items = None
+        if item_judges:
+            marks_j = ", ".join("?" for _ in item_judges)
+            found = {r[0]: r for r in conn.execute(f"SELECT judge_id, judge_model, rubric_name, rubric_version FROM judge "
+                                                   f"WHERE judge_id IN ({marks_j})", item_judges)}
+            missing = [j for j in item_judges if j not in found]
+            if missing:
+                raise SnapshotError(f"snapshot: item judge(s) {', '.join(missing)} are not in the source registry's judge table "
+                                    f"(head {head}); a frame cut without them could not serve the readings they re-derive")
+            judge_rows = [dict(zip(("judge_id", "judge_model", "rubric_name", "rubric_version"), found[j])) for j in item_judges]
+            conn.execute("CREATE TEMP TABLE pf_item_judgments (run_id TEXT NOT NULL, judgment_id TEXT NOT NULL, projected INTEGER NOT NULL, "
+                         "PRIMARY KEY (run_id, judgment_id))")
+            # an item judge's COMPLETE judgment on any run of the run set, and ANY judgment of it on a per-item run (whose rows ship
+            # whatever their judgment's status): every row of an item judge goes through the projection, however its run was admitted
+            conn.execute(f"INSERT INTO pf_item_judgments SELECT j.run_id, j.judgment_id, 1 FROM judgment j WHERE j.judge_id IN ({marks_j}) "
+                         "AND ((j.status = 'complete' AND j.run_id IN (SELECT run_id FROM pf_runs)) "
+                         "OR j.run_id IN (SELECT run_id FROM pf_item_runs))", item_judges)
+            marks_r = ", ".join("?" for _ in PAPER_FRAME_FILED_GOAL_RUBRICS)
+            conn.execute("INSERT OR IGNORE INTO pf_item_judgments SELECT DISTINCT m.run_id, m.judgment_id, 0 FROM run_metric m "
+                         "JOIN judgment j ON j.judgment_id = m.judgment_id JOIN judge g ON g.judge_id = j.judge_id "
+                         f"WHERE m.run_id IN (SELECT run_id FROM pf_runs) AND g.rubric_name IN ({marks_r}) "
+                         "AND (m.n_error_outcomes > 0 OR m.n_incomplete > 0)", tuple(PAPER_FRAME_FILED_GOAL_RUBRICS))
+            n_item_judgments, n_filed_goal_judgments = (int(conn.execute("SELECT COUNT(*) FROM pf_item_judgments WHERE projected = ?",
+                                                                         (k,)).fetchone()[0]) for k in (1, 0))
+            # the two passes' union, counted ONCE in this transaction: their sum must equal it (disjoint by construction)
+            expected_items = int(conn.execute(
+                "SELECT COUNT(*) FROM v_item_result_current t WHERE t.run_id IN (SELECT run_id FROM pf_item_runs UNION SELECT run_id "
+                "FROM pf_item_judgments) AND (t.run_id IN (SELECT run_id FROM pf_item_runs) OR EXISTS (SELECT 1 FROM pf_item_judgments p "
+                "WHERE p.run_id = t.run_id AND p.judgment_id = t.judgment_id))").fetchone()[0])
         n_analyses, analyses_out = _paper_frame_analysis_set(conn, tokens)
         out.execute("BEGIN")
-        for t, (source, where, order) in _paper_frame_sources().items():
+        for t, (source, where, order) in _paper_frame_sources(item_judgments=bool(item_judges)).items():
+            t0 = time.time()
             n, cols_touched = _export_schema_table(conn, out, t, source, where, order, tokens, repo_roots)
+            if t == "item_result" and item_judges:
+                item_passes["verbatim"] = n
+                print(f"snapshot: item_result pass 1 (verbatim): {n} rows in {time.time() - t0:.0f}s", file=sys.stderr)
+                t0 = time.time()
+                transform = _project_item_row(PAPER_FRAME_ITEM_PROJECTIONS[item_projection]) if item_projection else None
+                n2, touched2 = _export_schema_table(conn, out, t, _ITEM_RESULT_PASS2_SOURCE, _ITEM_RESULT_PASS2_WHERE,
+                                                    "t.judgment_id, " + ", ".join(f"t.{c}" for c in S.TABLE_BY_NAME[t].pk),
+                                                    tokens, repo_roots, create=False, transform=transform)
+                print(f"snapshot: item_result pass 2 (item judges{', ' + item_projection if item_projection else ', verbatim'}): "
+                      f"{n2} rows in {time.time() - t0:.0f}s", file=sys.stderr)
+                item_passes["item_judges"] = n_projected_rows = n2
+                if n + n2 != expected_items:
+                    raise SnapshotError(f"snapshot: item_result's two passes wrote {n} + {n2} rows, but their union counts {expected_items} "
+                                        f"in the same read transaction (a row written twice or lost); not building")
+                n += n2
+                cols_touched = sorted(set(cols_touched) | set(touched2))
             tables[t] = n
             if cols_touched:
                 scrubbed[t] = cols_touched
@@ -1332,8 +1483,9 @@ def _build_paper_frame_into(root: str, db_path: str, now: str, out_root: str, bu
     finally:
         conn.close()
     out.execute("VACUUM")
-    # the same frames, scrubbed once: every Parquet is written FROM the scrubbed SQLite
-    for t in PAPER_FRAME_TABLES:
+    # the same frames, scrubbed once: every Parquet is written FROM the scrubbed SQLite; the item-scale tables ship in the SQLite only
+    parquet_tables = [t for t in PAPER_FRAME_TABLES if t not in PAPER_FRAME_SQLITE_ONLY_TABLES]
+    for t in parquet_tables:
         if t in S.TABLE_BY_NAME:
             cols = list(S.TABLE_BY_NAME[t].column_names)
             types = {c: S.TABLE_BY_NAME[t].column(c).type for c in cols}
@@ -1350,6 +1502,11 @@ def _build_paper_frame_into(root: str, db_path: str, now: str, out_root: str, bu
     for fn in sorted(os.listdir(building)):
         p = os.path.join(building, fn)
         files[fn] = {"sha256": R.file_sha256(p), "bytes": os.path.getsize(p)}
+    over = {fn: int(v["bytes"]) for fn, v in files.items() if int(v["bytes"]) > PAPER_FRAME_MAX_FILE_BYTES}
+    if over:
+        raise SnapshotError("snapshot: the paper frame would commit a file over PAPER_FRAME_MAX_FILE_BYTES "
+                            f"({PAPER_FRAME_MAX_FILE_BYTES} B): " + ", ".join(f"{fn} ({b} B)" for fn, b in sorted(over.items()))
+                            + "; not building")
     built_compact = now.replace("-", "").replace(":", "").replace(".", "")[:15]
     core = canonical_json({"ingest_seq": head, "built_utc": now, "files": files, "tables": tables, "scope": "paper_frame"})
     sha8 = hashlib.sha256(core.encode("utf-8")).hexdigest()[:8]
@@ -1364,8 +1521,16 @@ def _build_paper_frame_into(root: str, db_path: str, now: str, out_root: str, bu
         "sqlite_parts": parts, "sqlite_part_bytes": PAPER_FRAME_PART_BYTES, "precondition": dict(precondition or {}),
         # the source registry by CONTENT: its schema version and head, never `source_root`
         # (an absolute path of the grading host, committed with the frame); every file reference above is relative to this directory
-        "source_schema_version": schema_version, "parquet_tables": list(PAPER_FRAME_TABLES), "materialised": list(PAPER_FRAME_MATERIALISED),
+        "source_schema_version": schema_version, "parquet_tables": parquet_tables, "materialised": list(PAPER_FRAME_MATERIALISED),
         "materialised_types": types_by_table,
+        # read_set_version 3: the item tables ship in the split SQLite only; the test models in or out (--paper-models-only); the item
+        # judges whose complete judgments joined the item scope, and the projection their rows ship in (None: verbatim)
+        "sqlite_only_tables": list(PAPER_FRAME_SQLITE_ONLY_TABLES), "test_models": bool(test_models),
+        "item_judges": judge_rows, "n_item_judgments": n_item_judgments, "n_filed_goal_judgments": n_filed_goal_judgments,
+        "item_projection": None if not (item_judges and item_projection) else {
+            "name": item_projection, "judges": [j["judge_id"] for j in judge_rows],
+            "extra_json_keys": list(PAPER_FRAME_ITEM_PROJECTIONS[item_projection]), "record_sha256": None, "rows": n_projected_rows},
+        "item_result_passes": item_passes,
     }
     _refuse_manifest_leak(manifest, tokens, (root, db_path, out_root, _code_repo_root(), os.path.expanduser("~")))
     with open(os.path.join(building, "MANIFEST.json"), "w", encoding="utf-8") as fh:
@@ -1680,6 +1845,12 @@ class SnapshotHandle:
                 if table in HISTORY_TABLES:
                     raise SnapshotError(f"{self.snapshot_id}: {table}.parquet is a history ledger no snapshot ships; the record log "
                                         f"is the history (`registry history` on the grading host, or a rebuild from the mirrored log)")
+                if table in BOOKKEEPING_TABLES:
+                    raise SnapshotError(f"{self.snapshot_id}: {table}.parquet is the reclaim's bookkeeping no snapshot ships; read it "
+                                        f"on the grading host (`registry prune-superseded status`)")
+                if self.scope == "paper_frame" and table in (self.manifest.get("sqlite_only_tables") or ()):
+                    raise SnapshotError(f"{self.snapshot_id}: {table} ships in the split SQLite only (MANIFEST.sqlite_only_tables, "
+                                        f"read_set_version {self.manifest.get('read_set_version')}); read it through open_paper_frame")
                 if self.scope == "paper_frame":
                     raise SnapshotError(f"{self.snapshot_id}: {table}.parquet is not part of the paper frame's read set "
                                         f"(snapshot.PAPER_FRAME_TABLES, read_set_version {self.manifest.get('read_set_version')})")
@@ -1826,14 +1997,10 @@ class FootprintWatcher:
             if os.path.isdir(p):
                 breakdown[p] = _dir_bytes(p)
             elif os.path.exists(p):
-                breakdown[p] = os.path.getsize(p)
-                for suffix in ("-wal", "-shm"):
-                    if os.path.exists(p + suffix):
-                        breakdown[p] += os.path.getsize(p + suffix)
+                breakdown[p] = DB.file_size(p)
             else:
                 # a database a rebuild is still writing lives at <path>.building until the rename (harvest.rebuild)
-                breakdown[p] = sum(os.path.getsize(p + DB.REBUILD_TMP_SUFFIX + suffix) for suffix in ("", "-wal", "-shm")
-                                   if os.path.exists(p + DB.REBUILD_TMP_SUFFIX + suffix))
+                breakdown[p] = DB.file_size(p + DB.REBUILD_TMP_SUFFIX)
         total = sum(breakdown.values())
         if total > self.peak:
             self.peak = total

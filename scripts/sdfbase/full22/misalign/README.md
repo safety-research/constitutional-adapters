@@ -1,7 +1,7 @@
 # misalign: the agentic-misalignment and emergent-misalignment evaluations
 
 Scripts that run two misalignment evaluation families over one model's served cells and judge the responses. The
-agentic family is the agentic-misalignment half of the paper's misalignment figure (Fig. 5 for Qwen, Fig. 13 for all
+agentic family is the agentic-misalignment half of the paper's misalignment figure (Fig. 5 for Qwen, Fig. 19 for all
 four); the emergent-misalignment probe `em8q` is in the registry but in no paper figure.
 
 Start from [`reproduce/`](../../../../reproduce/README.md): stage 05 renders these configs, stage 06

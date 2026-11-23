@@ -1,6 +1,6 @@
 # Corpus generator
 
-The code that generated the paper's two synthetic training corpora: the constitution corpus and a register-matched control corpus, each composed of two parts, difficult advice and stories. It is a member of the repository's `uv` workspace; the `corpus` dependency group installs it as the console script `corpusgen`. The corpora are committed as gzip shards under [`../corpora/`](../corpora/), one directory per part; most readers need only those.
+The code that generated the paper's two synthetic training corpora: the constitution corpus and a register-matched control corpus, each composed of two parts, difficult advice and stories. It is a member of the repository's `uv` workspace; the `corpus` dependency group installs it as the console script `corpusgen`. The corpora are committed as gzip shards under [`../corpora/`](../corpora/), one directory per part; most readers need only those. That directory also holds a third, smaller constitution corpus written by Qwen 3.8 Max for a generator comparison (its section is below); the code that generated it is not part of this tree.
 
 ## Reading the corpora
 
@@ -12,13 +12,13 @@ python3 reproduce/tools/reassemble_corpus.py constitution_advice --verify-only
 python3 reproduce/tools/reassemble_corpus.py constitution_stories --out /tmp/constitution_stories.jsonl
 ```
 
-The reassembled files are 68, 411, 67 and 427 MB in the table's order. On a configured site, `reproduce/02_prepare_model.sh --model qwen35_4b_demo --step corpora` reassembles all four parts on the cluster and stages the reference tokenizers for fitting. Each manifest also lists sidecars: the filter report, per-record constitution section tags (constitution corpus), and for the control corpus the register-edit report and the placebo import scan (`*.import-scan.json`; report-only, never a drop).
+The reassembled files are 68, 411, 67, 427, 7 and 17 MB in the table's order. On a configured site, `reproduce/02_prepare_model.sh --model qwen35_4b_demo --step corpora` reassembles the paper's four parts on the cluster and stages the reference tokenizers for fitting. Each manifest also lists sidecars: the filter report, per-record constitution section tags (constitution corpus), for the control corpus the register-edit report and the placebo import scan (`*.import-scan.json`; report-only, never a drop), and for the Qwen corpus a provenance file.
 
 ## The two corpora
 
 Fitted objects name their training mix in their registry id (`constv2-mix-full__lora_r4_ce`): `constv2-mix-full` is the constitution corpus's training side, advice and stories together, after a 5% held-out carve, `constv2ctl2-full` a draw from the control corpus's cut to the same token count. Token counts are the minimum over three reference tokenizers (Llama 3.1, Gemma 3, Qwen3; [`../corpora/TOKENIZERS.json`](../corpora/TOKENIZERS.json)).
 
-The constitution corpus is generated from Claude's constitution, the control corpus from the "careful work" placebo described below. Each is two parts, difficult advice and stories, and the four directories under `corpora/` are those parts:
+The constitution corpus is generated from Claude's constitution, the control corpus from the "careful work" placebo described below. Each is two parts, difficult advice and stories, and the first four directories in the table are those parts; the last two hold the Qwen 3.8 Max corpus:
 
 | corpus | part | records | tokens | what a record is |
 |---|---|---|---|---|
@@ -26,14 +26,24 @@ The constitution corpus is generated from Claude's constitution, the control cor
 | constitution | `constitution_stories` | 16,321 | 40.05M | pre-training-style fiction about a generic, unnamed AI embodying the constitution (`text`) |
 | control | `control_advice` | 1,995 | 4.88M | the same shape, about everyday practical tasks |
 | control | `control_stories` | 16,294 | 40.94M | the same shape, about an AI doing ordinary competent work |
+| constitution, written by Qwen 3.8 Max | `constitution_qwen38max_advice` | 197 | 0.38M | difficult advice, as in `constitution_advice` |
+| constitution, written by Qwen 3.8 Max | `constitution_qwen38max_stories` | 736 | 1.62M | stories, as in `constitution_stories` |
 
 The training text is an advice record's `user` and `assistant` fields plus its `system` prompt when present (1,287 of the 1,960 constitution advice records have one), or a story's `text`. The other fields are generation metadata: drafts, critiques, the sampled principle or category, `scores`, per-tokenizer `token_counts` and `lineage`.
 
 The control corpus is a placebo: the same pipeline with the constitution replaced by a values-free handbook of careful practical method across many crafts (`constitution-control-v2/placebo.md`, about 18,500 words) and the templates by the `prompts-control/` overlay.
 
+## The Qwen 3.8 Max corpus
+
+For a generator comparison, the constitution pipeline was re-run with Qwen 3.8 Max (`qwen/qwen3.8-max-0902` through OpenRouter, pinned to Alibaba's endpoint) in every role `claude-opus-5` played, scoring included, with the paper run's prompts, filters and score floors. It wrote only the first 272 advice scenarios and 416 story calls of the pool builder's draw order, where the paper run wrote every unit. The result is 197 advice records and 736 stories, 1,999,496 tokens (about 2.0M). It is not a paper corpus, nothing in `reproduce/` reads it, and it has not been reviewed for harmful requests or for responses that comply with them. It is not under the repository's MIT licence: [`../LICENSES/Qwen38Max-corpus-terms.txt`](../LICENSES/Qwen38Max-corpus-terms.txt) (THIRD_PARTY_NOTICES entry 14) permits its use, including training, except to train or develop products or services that compete with those of Alibaba Cloud or its affiliates.
+
+The comparison's 1M-token training pool (`constqwen38-mix-1m`, 471 documents) was drawn from this corpus's training side after a 13% held-out carve (`../data/sdfbase/heldout_split_constqwen38.json`). The pool file is not committed: `provenance-qwen38-1m-20261112.json`, beside the shards, lists its document ids in draw order, and `tests/test_corpora_qwen38max.py` rebuilds it from the shards to the sha256 the run recorded. The provenance file also records the model routing, the run, ledger and environment hashes, the billed spend ($396.19) and the commit ids of the code that ran the generation, development code that is not published; which commit ran each phase is inferred from timing, not recorded.
+
+The stories filter recorded one non-blocking acceptance miss: 47.4% ordinary stories against a 50% target. There are no section tags for this corpus, since they take one `claude-opus-5` call per document.
+
 ## How the corpora were generated
 
-Generation ran on the Anthropic Batch API with `claude-opus-5`. Each part is a fanout of stages, each one batched wave plus up to two repair waves for missing or unparseable slots:
+The paper's two corpora were generated on the Anthropic Batch API with `claude-opus-5`. Each part is a fanout of stages, each one batched wave plus up to two repair waves for missing or unparseable slots:
 
 - Advice, nine stages: principles (`a1`), prompt types (`a2`), scenarios (`a3`), prompt draft (`b1`), diagnostic response (`b2`), prompt rewrite (`b3`), response (`c`), response rewrite (`d`), scoring (`e`).
 - Stories, five stages: categories (`s1`), subcategories (`s2`), stories (`s3`), rewrite (`s4`), scoring (`s5`).

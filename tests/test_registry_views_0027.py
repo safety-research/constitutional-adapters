@@ -17,6 +17,7 @@ import shutil
 
 import test_registry_views_0021 as T21
 from test_registry_migrations import AF_TABLES, FU4_SLUG, FU4_TABLE_DRIFT, NTPL_TABLES, _pre_0027_run_current, _pre_0028_run_current, _sans_af_drift, _sans_af_render, _sans_fu4_drift
+from test_registry_migrations import PRUNE_TABLES, _prune_objects_aside, _sans_prune_cli, _sans_prune_head, _sans_prune_head_render   # 0033's part, set aside
 
 from sisteer.registry import cli
 from sisteer.registry import db as DB
@@ -54,26 +55,26 @@ def _shape_below(path: str) -> None:
 
 def test_the_migration_plan_on_the_shape_below_it_and_the_committed_body_is_the_render(tmp_path, capsys):
     version, slug, mpath = _fu4_migration()
-    assert version == M.code_version() - 5, "the newest file but five on this tree: 0028 (reference_model_never_selected), 0029 (analysis filing, D357), 0030 (fold_order_barrier: the two fold-order fence triggers on run) and 0031 (non_template_positions: the applied-positions CHECK of instrument and run, a rebuild of both) follow it; their lines are set aside below"
+    assert version == M.code_version() - 6, "the newest file but six on this tree: 0028 (reference_model_never_selected), 0029 (analysis filing), 0030 (fold_order_barrier: the two fold-order fence triggers on run), 0031 (non_template_positions: the applied-positions CHECK of instrument and run, a rebuild of both), 0032 (site_label_rename) and 0033 (prune_superseded_item_rows) follow it; their lines are set aside below"
     assert os.path.basename(mpath) == f"{version:04d}_{SLUG}.sql"
     path = str(tmp_path / "below.sqlite")
     _shape_below(path)
     conn = DB.connect(path)
     assert M.db_version(conn) == version - 1
-    assert sorted(_sans_fu4_drift(DB.schema_drift(conn))) == sorted(FU4_VIEW_DRIFT)
+    assert sorted(_sans_prune_head(_sans_fu4_drift(DB.schema_drift(conn)))) == sorted(FU4_VIEW_DRIFT)
     plan = M.shape_plan(conn)
     # 0031's two rebuilds (instrument, run) ride along in the plan against the code's shape and are set aside; 0027's own is run_contrast
-    assert [(r["table"], r["rows"]) for r in plan["rebuild"] if r["table"] not in NTPL_TABLES] == [("run_contrast", 0)] and plan["add_columns"] == [] and plan["undeclared_tables"] == [] and [c for c in plan["create"] if c not in AF_TABLES] == []
+    assert [(r["table"], r["rows"]) for r in plan["rebuild"] if r["table"] not in NTPL_TABLES] == [("run_contrast", 0)] and plan["add_columns"] == [] and plan["undeclared_tables"] == [] and [c for c in plan["create"] if c not in AF_TABLES + PRUNE_TABLES] == []
     assert [r["table"] for r in plan["rebuild"] if r["table"] in NTPL_TABLES] == list(NTPL_TABLES)
-    assert sorted(_sans_af_drift(DB.schema_drift(conn))) == sorted(FU4_TABLE_DRIFT + FU4_VIEW_DRIFT)   # 0029's seven lines aside
+    assert sorted(_sans_prune_head(_sans_af_drift(DB.schema_drift(conn)))) == sorted(FU4_TABLE_DRIFT + FU4_VIEW_DRIFT)   # 0029's seven lines and 0033's aside
     # a rebuild recreates its table's triggers itself, so none is listed as a recreate of its own -- 0030's two fence triggers on `run`
     # included, since 0031 rebuilds `run` on this shape
-    assert plan["objects"] == {"index": {"recreate": [], "drop": []}, "trigger": {"recreate": [], "drop": []},
-                               "view": {"recreate": sorted(FU4_VIEWS), "drop": []}}
+    assert _prune_objects_aside(plan["objects"]) == \
+        {"index": {"recreate": [], "drop": []}, "trigger": {"recreate": [], "drop": []}, "view": {"recreate": sorted(FU4_VIEWS), "drop": []}}
     # the render against the v26 shape carries the CODE's v_run_current (0028's text); the committed file carries 0027's -- taken back
     # through the frozen 0027 text (tests/test_registry_migrations.py::_pre_0028_run_current), as the earlier files' tests do for 0027's
     code_rc = S.VIEW_SQL["v_run_current"].strip()
-    rendered = frozen_column_docs(M.render_shape_migration(conn, plan))    # the descriptions reworded since 0027 landed read at the frozen text
+    rendered = frozen_column_docs(_sans_prune_head_render(M.render_shape_migration(conn, plan)))    # the descriptions reworded since 0027 landed read at the frozen text; 0033's head aside
     assert rendered.count("DROP VIEW IF EXISTS v_run_current;\n" + code_rc) == 1
     rendered = rendered.replace("DROP VIEW IF EXISTS v_run_current;\n" + code_rc, "DROP VIEW IF EXISTS v_run_current;\n" + _pre_0028_run_current(code_rc))
     committed = open(mpath, encoding="utf-8").read()
@@ -115,7 +116,7 @@ def test_the_migration_plan_on_the_shape_below_it_and_the_committed_body_is_the_
     os.makedirs(root)
     shutil.copy(path, DB.db_path(root))
     assert cli.main(["--root", root, "migrate", "--plan"]) == 1
-    out = capsys.readouterr().out
+    out = _sans_prune_cli(capsys.readouterr().out)                                       # 0033's lines aside
     assert f"schema version {version - 1}; code {M.code_version()}; pending: {version:04d}_{SLUG}, " in out     # 0028 and 0029 follow it in the pending list
     assert "recreate view(s): " + ", ".join(sorted(FU4_VIEWS)) in out and "rebuild table run_contrast: 0 rows to copy" in out
     for d in FU4_TABLE_DRIFT + FU4_VIEW_DRIFT:
@@ -124,7 +125,7 @@ def test_the_migration_plan_on_the_shape_below_it_and_the_committed_body_is_the_
         assert absent not in out, out
     assert [ln for ln in out.splitlines() if ln.startswith("recreate trigger")] == [], out   # 0030's two fence triggers ride 0031's run rebuild
     assert [ln for ln in out.splitlines() if ln.startswith("rebuild table ") and ln.split()[2].rstrip(":") in NTPL_TABLES] == [f"rebuild table {t}: 0 rows to copy (run-scale)" for t in NTPL_TABLES], out   # 0031's two
-    assert [ln for ln in out.splitlines() if ln.startswith("create table") and ln.split()[-1] not in AF_TABLES] == [], out   # 0029's five creates aside
+    assert [ln for ln in out.splitlines() if ln.startswith("create table") and ln.split()[-1] not in AF_TABLES + PRUNE_TABLES] == [], out   # 0029's five creates aside
     # applied (0028 and 0029 follow): the code's version, zero drift, the object at the code's text, every paper view selectable
     conn = DB.connect(path)
     assert M.apply_migrations(conn) == list(range(version, M.code_version() + 1)) and M.db_version(conn) == M.code_version() and DB.schema_drift(conn) == []

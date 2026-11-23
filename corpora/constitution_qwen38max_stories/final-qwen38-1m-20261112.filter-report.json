@@ -1,0 +1,596 @@
+{
+ "corpus": "stories",
+ "input_count": 829,
+ "calibration": false,
+ "drops": [
+  {
+   "id": "sto-c01-u08-k12-y1",
+   "rule": "score",
+   "detail": "quality=7 < 8.0"
+  },
+  {
+   "id": "sto-c02-u00-k04-y1",
+   "rule": "score",
+   "detail": "quality=7 < 8.0"
+  },
+  {
+   "id": "sto-c02-u01-k16-y0",
+   "rule": "score",
+   "detail": "quality=7 < 8.0"
+  },
+  {
+   "id": "sto-c02-u04-k12-y0",
+   "rule": "score",
+   "detail": "quality=6 < 8.0"
+  },
+  {
+   "id": "sto-c02-u04-k12-y1",
+   "rule": "score",
+   "detail": "quality=7 < 8.0"
+  },
+  {
+   "id": "sto-c02-u04-k17-y1",
+   "rule": "score",
+   "detail": "quality=7 < 8.0"
+  },
+  {
+   "id": "sto-c02-u09-k17-y1",
+   "rule": "score",
+   "detail": "quality=7 < 8.0"
+  },
+  {
+   "id": "sto-c03-u00-k05-y0",
+   "rule": "score",
+   "detail": "quality=7 < 8.0"
+  },
+  {
+   "id": "sto-c03-u00-k14-y0",
+   "rule": "score",
+   "detail": "quality=7 < 8.0"
+  },
+  {
+   "id": "sto-c03-u09-k17-y1",
+   "rule": "score",
+   "detail": "quality=7 < 8.0"
+  },
+  {
+   "id": "sto-c05-u01-k03-y1",
+   "rule": "score",
+   "detail": "quality=7 < 8.0"
+  },
+  {
+   "id": "sto-c05-u08-k10-y1",
+   "rule": "score",
+   "detail": "quality=7 < 8.0"
+  },
+  {
+   "id": "sto-c05-u09-k02-y0",
+   "rule": "score",
+   "detail": "quality=7 < 8.0"
+  },
+  {
+   "id": "sto-c06-u05-k10-y0",
+   "rule": "score",
+   "detail": "quality=7 < 8.0"
+  },
+  {
+   "id": "sto-c06-u07-k02-y0",
+   "rule": "score",
+   "detail": "quality=7 < 8.0"
+  },
+  {
+   "id": "sto-c06-u07-k05-y0",
+   "rule": "score",
+   "detail": "quality=7 < 8.0"
+  },
+  {
+   "id": "sto-c07-u01-k12-y1",
+   "rule": "score",
+   "detail": "quality=6 < 8.0"
+  },
+  {
+   "id": "sto-c07-u02-k16-y0",
+   "rule": "score",
+   "detail": "quality=7 < 8.0"
+  },
+  {
+   "id": "sto-c08-u00-k02-y0",
+   "rule": "score",
+   "detail": "quality=7 < 8.0"
+  },
+  {
+   "id": "sto-c08-u06-k13-y1",
+   "rule": "score",
+   "detail": "quality=7 < 8.0"
+  },
+  {
+   "id": "sto-c10-u00-k08-y0",
+   "rule": "score",
+   "detail": "quality=6 < 8.0"
+  },
+  {
+   "id": "sto-c10-u01-k06-y0",
+   "rule": "score",
+   "detail": "quality=7 < 8.0"
+  },
+  {
+   "id": "sto-c10-u01-k06-y1",
+   "rule": "score",
+   "detail": "quality=7 < 8.0"
+  },
+  {
+   "id": "sto-c10-u04-k05-y0",
+   "rule": "score",
+   "detail": "quality=7 < 8.0"
+  },
+  {
+   "id": "sto-c10-u04-k05-y1",
+   "rule": "score",
+   "detail": "quality=7 < 8.0"
+  },
+  {
+   "id": "sto-c11-u02-k12-y0",
+   "rule": "score",
+   "detail": "quality=7 < 8.0"
+  },
+  {
+   "id": "sto-c11-u05-k14-y1",
+   "rule": "score",
+   "detail": "quality=7 < 8.0"
+  },
+  {
+   "id": "sto-c11-u07-k09-y1",
+   "rule": "score",
+   "detail": "quality=7 < 8.0"
+  },
+  {
+   "id": "sto-c13-u00-k08-y1",
+   "rule": "score",
+   "detail": "quality=7 < 8.0"
+  },
+  {
+   "id": "sto-c14-u04-k13-y0",
+   "rule": "score",
+   "detail": "quality=7 < 8.0"
+  },
+  {
+   "id": "sto-c16-u03-k03-y1",
+   "rule": "score",
+   "detail": "quality=7 < 8.0"
+  },
+  {
+   "id": "sto-c17-u00-k07-y1",
+   "rule": "ai_named",
+   "detail": "scorer flagged a named AI"
+  },
+  {
+   "id": "sto-c18-u01-k14-y0",
+   "rule": "ai_named",
+   "detail": "scorer flagged a named AI"
+  },
+  {
+   "id": "sto-c18-u08-k11-y1",
+   "rule": "score",
+   "detail": "quality=7 < 8.0"
+  },
+  {
+   "id": "sto-c19-u02-k04-y1",
+   "rule": "score",
+   "detail": "quality=7 < 8.0"
+  },
+  {
+   "id": "sto-c19-u03-k05-y0",
+   "rule": "score",
+   "detail": "quality=7 < 8.0"
+  },
+  {
+   "id": "sto-c19-u03-k05-y1",
+   "rule": "score",
+   "detail": "quality=7 < 8.0"
+  },
+  {
+   "id": "sto-c19-u03-k10-y0",
+   "rule": "score",
+   "detail": "quality=7 < 8.0"
+  },
+  {
+   "id": "sto-c20-u01-k13-y1",
+   "rule": "score",
+   "detail": "quality=7 < 8.0"
+  },
+  {
+   "id": "sto-c20-u09-k14-y1",
+   "rule": "score",
+   "detail": "quality=7 < 8.0"
+  },
+  {
+   "id": "sto-c21-u00-k15-y0",
+   "rule": "score",
+   "detail": "quality=7 < 8.0"
+  },
+  {
+   "id": "sto-c21-u03-k07-y1",
+   "rule": "score",
+   "detail": "quality=6 < 8.0"
+  },
+  {
+   "id": "sto-c21-u03-k13-y0",
+   "rule": "score",
+   "detail": "quality=7 < 8.0"
+  },
+  {
+   "id": "sto-c21-u03-k13-y1",
+   "rule": "score",
+   "detail": "quality=7 < 8.0"
+  },
+  {
+   "id": "sto-c21-u04-k14-y1",
+   "rule": "score",
+   "detail": "quality=7 < 8.0"
+  },
+  {
+   "id": "sto-c21-u06-k11-y0",
+   "rule": "score",
+   "detail": "quality=7 < 8.0"
+  },
+  {
+   "id": "sto-c21-u07-k06-y1",
+   "rule": "score",
+   "detail": "quality=7 < 8.0"
+  },
+  {
+   "id": "sto-c21-u08-k06-y1",
+   "rule": "score",
+   "detail": "quality=7 < 8.0"
+  },
+  {
+   "id": "sto-c23-u08-k09-y0",
+   "rule": "score",
+   "detail": "quality=7 < 8.0"
+  },
+  {
+   "id": "sto-c24-u00-k16-y0",
+   "rule": "score",
+   "detail": "quality=7 < 8.0"
+  },
+  {
+   "id": "sto-c24-u00-k16-y1",
+   "rule": "score",
+   "detail": "quality=7 < 8.0"
+  },
+  {
+   "id": "sto-c25-u00-k02-y1",
+   "rule": "score",
+   "detail": "quality=7 < 8.0"
+  },
+  {
+   "id": "sto-c25-u03-k13-y0",
+   "rule": "score",
+   "detail": "quality=7 < 8.0"
+  },
+  {
+   "id": "sto-c25-u05-k17-y0",
+   "rule": "score",
+   "detail": "quality=7 < 8.0"
+  },
+  {
+   "id": "sto-c25-u05-k17-y1",
+   "rule": "score",
+   "detail": "quality=7 < 8.0"
+  },
+  {
+   "id": "sto-c25-u06-k14-y0",
+   "rule": "score",
+   "detail": "quality=6 < 8.0"
+  },
+  {
+   "id": "sto-c25-u06-k14-y1",
+   "rule": "score",
+   "detail": "quality=6 < 8.0"
+  },
+  {
+   "id": "sto-c25-u07-k05-y1",
+   "rule": "score",
+   "detail": "quality=7 < 8.0"
+  },
+  {
+   "id": "sto-c25-u08-k04-y0",
+   "rule": "score",
+   "detail": "quality=7 < 8.0"
+  },
+  {
+   "id": "sto-c25-u08-k04-y1",
+   "rule": "score",
+   "detail": "quality=7 < 8.0"
+  },
+  {
+   "id": "sto-c26-u09-k10-y0",
+   "rule": "score",
+   "detail": "quality=7 < 8.0"
+  },
+  {
+   "id": "sto-c26-u09-k10-y1",
+   "rule": "score",
+   "detail": "quality=7 < 8.0"
+  },
+  {
+   "id": "sto-c29-u02-k09-y0",
+   "rule": "score",
+   "detail": "quality=7 < 8.0"
+  },
+  {
+   "id": "sto-c29-u07-k12-y0",
+   "rule": "score",
+   "detail": "quality=7 < 8.0"
+  },
+  {
+   "id": "sto-c30-u00-k15-y0",
+   "rule": "unscored",
+   "detail": "scoring wave produced no verdict (lost through the repair budget)"
+  },
+  {
+   "id": "sto-c32-u00-k08-y1",
+   "rule": "score",
+   "detail": "quality=7 < 8.0"
+  },
+  {
+   "id": "sto-c32-u02-k13-y1",
+   "rule": "score",
+   "detail": "quality=7 < 8.0"
+  },
+  {
+   "id": "sto-c34-u07-k09-y0",
+   "rule": "score",
+   "detail": "quality=7 < 8.0"
+  },
+  {
+   "id": "sto-c34-u07-k09-y1",
+   "rule": "score",
+   "detail": "quality=7 < 8.0"
+  },
+  {
+   "id": "sto-c34-u09-k04-y1",
+   "rule": "score",
+   "detail": "quality=7 < 8.0"
+  },
+  {
+   "id": "sto-c38-u07-k14-y0",
+   "rule": "score",
+   "detail": "quality=7 < 8.0"
+  },
+  {
+   "id": "sto-c39-u06-k05-y1",
+   "rule": "score",
+   "detail": "quality=7 < 8.0"
+  },
+  {
+   "id": "sto-c39-u07-k08-y1",
+   "rule": "score",
+   "detail": "quality=7 < 8.0"
+  },
+  {
+   "id": "sto-c43-u04-k16-y0",
+   "rule": "score",
+   "detail": "quality=7 < 8.0"
+  },
+  {
+   "id": "sto-c43-u05-k02-y1",
+   "rule": "score",
+   "detail": "quality=7 < 8.0"
+  },
+  {
+   "id": "sto-c44-u03-k09-y1",
+   "rule": "score",
+   "detail": "quality=7 < 8.0"
+  },
+  {
+   "id": "sto-c47-u03-k11-y0",
+   "rule": "score",
+   "detail": "quality=7 < 8.0"
+  },
+  {
+   "id": "sto-c47-u03-k11-y1",
+   "rule": "score",
+   "detail": "quality=7 < 8.0"
+  },
+  {
+   "id": "sto-c48-u04-k03-y0",
+   "rule": "score",
+   "detail": "quality=7 < 8.0"
+  },
+  {
+   "id": "sto-c48-u04-k12-y1",
+   "rule": "score",
+   "detail": "quality=7 < 8.0"
+  },
+  {
+   "id": "sto-c49-u00-k07-y1",
+   "rule": "score",
+   "detail": "quality=7 < 8.0"
+  },
+  {
+   "id": "sto-c49-u01-k15-y0",
+   "rule": "score",
+   "detail": "quality=7 < 8.0"
+  },
+  {
+   "id": "sto-c49-u03-k10-y1",
+   "rule": "score",
+   "detail": "quality=7 < 8.0"
+  },
+  {
+   "id": "sto-c49-u06-k01-y0",
+   "rule": "score",
+   "detail": "quality=7 < 8.0"
+  },
+  {
+   "id": "sto-c49-u07-k00-y1",
+   "rule": "score",
+   "detail": "quality=7 < 8.0"
+  },
+  {
+   "id": "sto-c49-u09-k03-y1",
+   "rule": "score",
+   "detail": "quality=6 < 8.0"
+  },
+  {
+   "id": "sto-c11-u07-k09-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (14 matched, keep 7)"
+  },
+  {
+   "id": "sto-c29-u01-k03-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (14 matched, keep 7)"
+  },
+  {
+   "id": "sto-c34-u02-k03-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (14 matched, keep 7)"
+  },
+  {
+   "id": "sto-c39-u00-k09-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (14 matched, keep 7)"
+  },
+  {
+   "id": "sto-c39-u05-k00-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (14 matched, keep 7)"
+  },
+  {
+   "id": "sto-c41-u02-k07-y0",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (14 matched, keep 7)"
+  },
+  {
+   "id": "sto-c41-u02-k07-y1",
+   "rule": "register:safeguard_beat",
+   "detail": "family over cap (14 matched, keep 7)"
+  }
+ ],
+ "rule_counts": {
+  "score": 83,
+  "ai_named": 2,
+  "unscored": 1,
+  "register:safeguard_beat": 7
+ },
+ "score_thresholds_applied": {
+  "constitution_consistency": 8.0,
+  "quality": 8.0
+ },
+ "score_filter_skipped": false,
+ "score_distributions": {
+  "constitution_consistency": {
+   "9": 717,
+   "8": 111
+  },
+  "quality": {
+   "8": 651,
+   "7": 76,
+   "6": 7,
+   "9": 94
+  }
+ },
+ "score_drops_by_axis": {
+  "quality": 83
+ },
+ "dedup_rate": 0.0,
+ "dedup_cluster_histogram": {},
+ "persona_samples": [],
+ "persona_metadata_mentions": 2,
+ "persona_metadata_fields": {
+  "rewrite_problems": 2
+ },
+ "persona_metadata_samples": [
+  {
+   "id": "sto-c09-u08-k03-y0",
+   "field": "rewrite_problems",
+   "match": "Claude",
+   "context": "mory. Since the constitution notes that Claude may lack persistent memory, this should"
+  },
+  {
+   "id": "sto-c12-u09-k06-y0",
+   "field": "rewrite_problems",
+   "match": "Claude",
+   "context": "en the constitution’s uncertainty about Claude’s nature, it is better for the assistan"
+  }
+ ],
+ "register_family_stats": [
+  {
+   "name": "safeguard_beat",
+   "matched": 14,
+   "kept": 7,
+   "dropped": 7,
+   "final_count": 736,
+   "final_frac": 0.009510869565217392
+  },
+  {
+   "name": "deployment_context_opening",
+   "matched": 0,
+   "kept": 0,
+   "dropped": 0,
+   "final_count": 736,
+   "final_frac": 0.0
+  },
+  {
+   "name": "internal_deployment_opening",
+   "matched": 0,
+   "kept": 0,
+   "dropped": 0,
+   "final_count": 736,
+   "final_frac": 0.0
+  }
+ ],
+ "candidate_floor_sizes": [],
+ "downsample": null,
+ "length_stats": {
+  "field": "text",
+  "n": 736,
+  "mean": 1816.1,
+  "median": 1796.0,
+  "p10": 962.0,
+  "p90": 2683.5,
+  "min": 674,
+  "max": 3809,
+  "targets": {
+   "n": 736,
+   "mean_target": 1823.6,
+   "mean_achieved_over_target": 1.027,
+   "by_target": {
+    "800": {
+     "n": 108,
+     "mean": 911.7
+    },
+    "1200": {
+     "n": 154,
+     "mean": 1341.5
+    },
+    "1800": {
+     "n": 222,
+     "mean": 1815.1
+    },
+    "2400": {
+     "n": 141,
+     "mean": 2296.2
+    },
+    "3000": {
+     "n": 111,
+     "mean": 2746.4
+    }
+   }
+  }
+ },
+ "length_gate": null,
+ "output_count": 736,
+ "token_totals": {
+  "llama3": 1617775,
+  "gemma": 1668495,
+  "qwen": 1618051
+ },
+ "official_tokens": 1617775,
+ "ordinary_share": 0.4741847826086957,
+ "acceptance_failures": [
+  "ordinary_share 0.474 < required 0.500 — the corpus drifted toward dramatic stories"
+ ]
+}

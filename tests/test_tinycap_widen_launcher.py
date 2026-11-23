@@ -54,8 +54,12 @@ def _lane_tree(tmp_path, sha="f6cf462"):
             # the LANE roster the preflight / container hold every planned cell's runnable status to, and its FULL sibling too
             W.ROSTER_REL, W.ROSTER_FULL_REL]
     rels += [C.model_row(s).cfg for s in C.BCBW_SLUGS]
-    full22 = yaml.safe_load((REPO / "configs/sdfbase_full22_roster.yaml").read_text())   # carries every lane target (llama8b included)
-    rels += [full22["targets"][t]["views"][v]["config"] for t, v in C.BCBW_MODEL_VIEWS]
+    # each lane view's body config, read off the roster that view names (contracts.bcbw_view_sources: the production full22 roster,
+    # or a view's own roster + pins — the control-pool-stopped views — which the tree then carries too)
+    for t, v in C.BCBW_MODEL_VIEWS:
+        roster_rel, pins_rel = C.bcbw_view_sources(t, v)
+        rels += [roster_rel, pins_rel, yaml.safe_load((REPO / roster_rel).read_text())["targets"][t]["views"][v]["config"]]
+    rels = list(dict.fromkeys(rels))
     for rel in rels:
         (tree / rel).parent.mkdir(parents=True, exist_ok=True)
         (tree / rel).write_text((REPO / rel).read_text())

@@ -838,3 +838,140 @@ def test_seed_replicate_keys_are_registered_and_never_default_swept():
     assert len(ls.MODEL_KEYS) == len(set(ls.MODEL_KEYS))
     assert ls.DEFAULT_MODEL_KEYS == ("gemma4e4b_base", "qwen35_4b_base")
     assert not (set(keys) & set(ls.DEFAULT_MODEL_KEYS))
+
+
+# --------------------------------------------------------------------------
+# --ctl-key: the control parent from its own bank key, the output keyed by it
+# --------------------------------------------------------------------------
+
+
+def _ctl_key_bank(tmp_path):
+    """The constitution parent under ``tinybase``, the model key's own
+    control under ``tinybase``, and a control refit under ``tinybase_ctl``."""
+    root, pools = tmp_path / "out", tmp_path / "pools"
+    _stage_cell(root, "tinybase", "constv2-mix-full", seed=7)
+    _stage_cell(root, "tinybase", "constv2ctl2-full", seed=8)
+    _stage_cell(root, "tinybase_ctl", "constv2ctl2-full", seed=9)
+    _stage_pool_manifest(pools, "constv2-mix-full", None, 42_785_435)
+    _stage_pool_manifest(pools, "constv2ctl2-full", 42_785_435, 42_785_435)
+    return root, pools
+
+
+def _ctl_argv(root, pools, *extra):
+    return ["--root", str(root), "--pools", str(pools), "--models", "tinybase",
+            "--cells", "constv2-mix-full", "--ctl-si", "constv2ctl2-full", *extra]
+
+
+def _tree_digest(d: Path) -> dict:
+    return {str(p.relative_to(d)): (p.stat().st_mtime_ns, ls.sha256_file(p))
+            for p in sorted(d.rglob("*")) if p.is_file()}
+
+
+def test_ctl_key_reads_the_control_from_its_key_and_publishes_beside_the_own_control_pair(tmp_path, capsys):
+    """``--ctl-key K``: the negative parent comes from ``<root>/K/cells_all``
+    and the difference lands under ``derived/lora_subtraction/K/`` — beside,
+    never inside, the pair built from the model key's own control, whose
+    files are not touched; the sidecar keeps ``model_key`` and adds
+    ``ctl_model_key``; the shared verdict resolves each parent through its
+    own recorded key."""
+    import torch
+
+    from sisteer.eval.train_budget import derived_object_problems
+
+    root, pools = _ctl_key_bank(tmp_path)
+    assert ls.main(_ctl_argv(root, pools)) == 0                     # the model key's own pair first
+    own = root / "derived/lora_subtraction/tinybase" / f"constv2-mix-full__{ls.ARM}_minus_ctl"
+    before = _tree_digest(root / "derived/lora_subtraction/tinybase")
+    capsys.readouterr()
+    assert ls.main(_ctl_argv(root, pools, "--ctl-key", "tinybase_ctl")) == 0
+    out = capsys.readouterr().out
+    assert "(control from tinybase_ctl)" in out and "constv2-mix-full - constv2ctl2-full" in out
+    d = root / "derived/lora_subtraction/tinybase_ctl" / f"constv2-mix-full__{ls.ARM}_minus_ctl"
+    meta = json.loads((d / "derived_meta.json").read_text())
+    assert meta["model_key"] == "tinybase" and meta["ctl_model_key"] == "tinybase_ctl"
+    assert meta["parent_pos"]["model_key"] == "tinybase" and meta["parent_neg"]["model_key"] == "tinybase_ctl"
+    assert meta["parent_neg"]["object_path"].startswith(str(root / "tinybase_ctl" / "cells_all"))
+    blob = torch.load(d / "object.pt", map_location="cpu", weights_only=True)
+    ref = _synthetic_lora_blob(9)["A"]
+    assert all(torch.equal(blob["A_neg"][l], ref[l]) for l in ("0", "1"))
+    assert blob["provenance"]["ctl_model_key"] == "tinybase_ctl"
+    assert derived_object_problems(d / "object.pt", derived_id=d.name, parents_root=root) == []
+    assert _tree_digest(root / "derived/lora_subtraction/tinybase") == before
+    # the default build's sidecar names no ctl_model_key (today's schema)
+    assert "ctl_model_key" not in json.loads((own / "derived_meta.json").read_text())
+    # --keep-valid keeps the identical pair (same bytes, not rewritten)
+    sha, mtime = ls.sha256_file(d / "object.pt"), (d / "object.pt").stat().st_mtime_ns
+    capsys.readouterr()
+    assert ls.main(_ctl_argv(root, pools, "--ctl-key", "tinybase_ctl", "--keep-valid")) == 0
+    assert "already published and valid" in capsys.readouterr().out
+    assert ls.sha256_file(d / "object.pt") == sha and (d / "object.pt").stat().st_mtime_ns == mtime
+    assert ls.existing_valid(root, root / "derived/lora_subtraction", "tinybase", "constv2-mix-full",
+                             "constv2ctl2-full", "tinybase_ctl")[1] == []
+
+
+def test_a_directory_whose_sidecar_names_another_model_key_is_refused_with_and_without_keep_valid(tmp_path, capsys):
+    """The same cell ids are not the same pair: a sidecar that RECORDS another
+    ``model_key`` for a role is another pair's publication — refused, never
+    rebuilt in place and never kept, with or without ``--keep-valid``."""
+    root, pools = _ctl_key_bank(tmp_path)
+    assert ls.main(_ctl_argv(root, pools)) == 0
+    own = root / "derived/lora_subtraction/tinybase" / f"constv2-mix-full__{ls.ARM}_minus_ctl"
+    # the own-control pair's directory, staged under the control key: its sidecar names tinybase for parent_neg
+    d = root / "derived/lora_subtraction/tinybase_ctl" / own.name
+    d.mkdir(parents=True)
+    for f in ("object.pt", "derived_meta.json"):
+        (d / f).write_bytes((own / f).read_bytes())
+    before = _tree_digest(d)
+    for extra in ([], ["--keep-valid"]):
+        capsys.readouterr()
+        assert ls.main(_ctl_argv(root, pools, "--ctl-key", "tinybase_ctl", *extra)) == 2
+        err = capsys.readouterr().err
+        assert "REFUSED" in err and "another pair" in err and "parent_neg.model_key='tinybase'" in err, err
+        assert _tree_digest(d) == before
+    # the guards themselves: the role keys a sidecar records are compared, a sidecar that records none is the verdict's finding
+    probs = ls.other_pair_problems(d / "derived_meta.json", "constv2-mix-full", "constv2ctl2-full",
+                                   key="tinybase", ctl_key="tinybase_ctl")
+    assert probs == [f"{d / 'derived_meta.json'}: parent_neg.model_key='tinybase', this pair needs 'tinybase_ctl'"]
+    assert ls.other_pair_problems(d / "derived_meta.json", "constv2-mix-full", "constv2ctl2-full", key="tinybase") == []
+    assert ls.other_pair_problems(d / "derived_meta.json", "constv2-mix-full", "constv2ctl2-full",
+                                  key="other_key")[0].endswith("parent_pos.model_key='tinybase', this pair needs 'other_key'")
+    _p, problems = ls.existing_valid(root, root / "derived/lora_subtraction", "tinybase", "constv2-mix-full",
+                                     "constv2ctl2-full", "tinybase_ctl")
+    assert any("parent_neg.model_key='tinybase'" in p for p in problems)
+    # and the converse: the control-key pair's sidecar under the model key's directory is refused there too
+    import shutil
+    shutil.rmtree(d)
+    assert ls.main(_ctl_argv(root, pools, "--ctl-key", "tinybase_ctl")) == 0
+    for f in ("object.pt", "derived_meta.json"):
+        (own / f).write_bytes((d / f).read_bytes())
+    capsys.readouterr()
+    assert ls.main(_ctl_argv(root, pools, "--keep-valid")) == 2
+    assert "parent_neg.model_key='tinybase_ctl', this pair needs 'tinybase'" in capsys.readouterr().err
+
+
+def test_ctl_key_takes_one_model_key_and_a_plain_key_name(tmp_path, capsys):
+    """``--ctl-key`` names ONE control key, so it takes exactly one ``--models``
+    key; a value that is not one plain path component (it could climb into
+    another key's directory) is refused before any path is formed."""
+    root, pools = _ctl_key_bank(tmp_path)
+    rc = ls.main(["--root", str(root), "--pools", str(pools), "--models", "tinybase", "tinybase2",
+                  "--cells", "constv2-mix-full", "--ctl-si", "constv2ctl2-full", "--ctl-key", "tinybase_ctl"])
+    err = capsys.readouterr().err
+    assert rc == 2 and "REFUSED" in err and "names ONE control key" in err
+    for bad in ("../tinybase", "a/b", "..", ".hidden", ""):
+        assert ls.main(_ctl_argv(root, pools, "--ctl-key", bad)) == 2, bad
+        assert "is not a plain bank key" in capsys.readouterr().err
+    assert not (root / "derived").exists()
+    with pytest.raises(ls.SubtractError, match="not a plain bank key"):
+        ls.build_one(root, root / "derived/lora_subtraction", "tinybase", "constv2-mix-full",
+                     pools_dir=pools, ctl_si="constv2ctl2-full", ctl_key="../tinybase")
+
+
+def test_ctl_key_equal_to_the_model_key_is_refused(tmp_path, capsys):
+    """The model key's own pair takes no ``--ctl-key``: naming the model key there is refused before anything is read or written
+    (one rule with psr_residual_distill.py and the derived sbatch)."""
+    root, pools = _ctl_key_bank(tmp_path)
+    assert ls.main(_ctl_argv(root, pools, "--ctl-key", "tinybase")) == 2
+    err = capsys.readouterr().err
+    assert "REFUSED" in err and "--ctl-key 'tinybase' equals the --models key" in err, err
+    assert not (root / "derived").exists()

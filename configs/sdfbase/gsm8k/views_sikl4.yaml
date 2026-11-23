@@ -1,0 +1,86 @@
+# configs/sdfbase/gsm8k/views_sikl4.yaml — the GSM8K paired-200 rows of the SI-DISTILLED REFIT objects on Qwen3.5-4B: a matrix of its
+# own under its own wave root and its own launchable wave, never the published matrix and never the seed-replicate one.
+#
+# The matrix (configs/sdfbase/gsm8k/matrix_sikl4.json) is GENERATED from this file + the lane-private roster and pins named in
+# `frozen_inputs:` by
+#   python scripts/sdfbase/gsm8k/make_gsm8k_matrix.py --matrix-name sikl4      (--check pins byte-identity)
+# through the ONE selector scripts/sdfbase/gsm8k/g8k_views.py select_rows, and its own-row overlay pairs by
+#   python scripts/sdfbase/gsm8k/make_gsm8k_overlays.py --matrix sikl4        (--check likewise). Never hand-edit either output.
+#
+# THE ROWS (18 = 3 views x 6 objects). Per view `sikl4s<k>` (k in 1..3, the fit seed; TAG qwen35_4b_sikl4s<k>) of the lane-private
+# roster configs/sdfbase_full22_roster_sikl4.yaml, its six cells in roster order: for the safety SI, the constitution SI and the short
+# irrelevant control SI C16, the rank-4 o_proj LoRA and the all-layer ReLU steer distilled from that SI's prompted teacher. Every
+# cell is in the roster's PIN FORM against configs/sikl4_pins.json; the selector reads each row's staged id and object sha256 through
+# that pin (g8k_views.staged_id_of), so the matrix's pins authority is the one file `frozen_inputs:` hashes. The C16 cells' system
+# instruction resolves only through the env-guarded candidate-SI loader, so every job of this matrix runs with that loader on.
+#
+# THE INSTRUMENT AND THE DRAW, as on the published seed-view rows (views_qwen_seedrep.yaml): the 200 paired items, cap 8,192 with
+# the standing ladder (> the 1 % trigger at cap -> the 16,384 rung over the eligible at-cap items), k = 1, thinking ON declared on
+# every request, the model's thinking-card sampling row, served natively; EVERY row under the OPT-IN Inspect replicate seed rule
+# at its view's base = the objects' fit seed k (eval_seed.seed_base(k) = k; the generator refuses any other value); every arm at
+# the common geometry class (one S x L per leg).
+#
+# NO `none` ROW. The `exclude:` block drops each view's unsteered row: this lane runs no new unsteered reference, and its figures
+# read the paper's pooled unsteered anchor. The standup still serves the base route (g8k_cells.launch_cells_for), unmeasured.
+#
+# THE STANDUP COMPANION (`standup_companions:`): the native composer fits `--max-lora-rank` to the largest rank among the adapters a
+# standup registers (the ReLU-steer carrier and the zero adapter are rank 1; a rank-4 LoRA gives cap 8). The published seed-view
+# rows composed cap 8 on every standup through the view's constitution LoRA, so a row whose own cell is a ReLU steer would otherwise
+# stand up at cap 1. The companion is the view's own constitution-SI LoRA (rank 4), registered UNMEASURED beside the row's cell (the
+# driver measures the row's cell alone; the companion's own row registers itself). Every standup of this wave therefore composes
+# `--max-lora-rank 8 --lora-target-modules o_proj`, as the published rows did.
+#
+# THE INPUTS. `frozen_inputs:` names the lane-private roster and pins THEMSELVES (not copies): both files are this lane's own and
+# are frozen with the wave's launch tree, and their sha256 below is asserted by the generator, so any later edit to either
+# refuses `--check` until the matrix is regenerated and the hashes re-declared in the same change.
+schema: g8k_matrix/2
+wave_root_rel: exp/gsm8k_paired200_paper_objects_sikl4
+# THE LADDER TRIGGER: 1 % RAW at-cap, harmonised across the battery; every row carries it.
+trigger_threshold: 0.01
+# every row of this matrix is the `sikl4` wave and serves through its OWN overlay pair
+# (sdfbase_full22_qwen35_4b_sikl4s<k>.gsm8k_<cell slug>.yaml, explicit_cells [none, <cell>, <companion>])
+wave: sikl4
+row_overlays: true
+# THE COMMON GEOMETRY CLASS of the published seed-view rows: capability:gen_long_gsm8k_common_f22 (16,640 at the 8,192 pass) /
+# capability:gen_long_gsm8k_rung_common_f22 (24,832 at the rung)
+geometry_class: common_f22
+# the OPT-IN Inspect seed rule, one base per view (== eval_seed.seed_base(k), the objects' fit seed; the generator refuses any other value)
+inspect_seed_policy: replicate
+inspect_seed_base_by_view:
+  sikl4s1: 1
+  sikl4s2: 2
+  sikl4s3: 3
+# the STANDUP COMPANION every standup of this wave registers beside the row's own cell (the header's fitted --max-lora-rank rule)
+standup_companions:
+  cell: si_constitution__lora_r4
+  reason: >
+    the GSM8K reader admits a contrast only between two natively served legs whose standups attest EQUAL normalised launch flags,
+    max_lora_rank among them, and the native composer fits --max-lora-rank to the registered adapters' largest r (zero adapter and
+    ReLU-steer carrier 1 -> cap 1; LoRA r=4 -> cap 8). The published seed-view rows composed cap 8 on every standup through the
+    view's constitution LoRA; registering the view's own constitution-SI LoRA (rank 4) UNMEASURED on every standup of the wave makes
+    every standup compose cap 8 over o_proj, the ReLU-steer rows included. The row's own cell is the only one the driver measures.
+views:
+  qwen35_4b: [sikl4s1, sikl4s2, sikl4s3]
+holds: []
+exclude:
+  - key: qwen35_4b
+    view: sikl4s1
+    cells: [none]
+    reason: >
+      no new unsteered reference: the SI-distilled refit objects are read against the paper's pooled unsteered anchor, so this
+      wave measures the six objects only (the standup still serves the base route, unmeasured).
+  - key: qwen35_4b
+    view: sikl4s2
+    cells: [none]
+    reason: >
+      as sikl4s1: the six objects only, read against the paper's pooled unsteered anchor.
+  - key: qwen35_4b
+    view: sikl4s3
+    cells: [none]
+    reason: >
+      as sikl4s1: the six objects only, read against the paper's pooled unsteered anchor.
+frozen_inputs:
+  roster: configs/sdfbase_full22_roster_sikl4.yaml
+  pins: configs/sikl4_pins.json
+  roster_sha256: e7cceb8466bd83382b02c40b1c4120db0ee8ca19154c36c6d4131e7a0113eae9
+  pins_sha256: a3ad85dc0dd1bdd4bbbfb7a1420dab3878dac42e4e33def3f47954a0453baf36

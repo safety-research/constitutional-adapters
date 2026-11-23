@@ -29,7 +29,7 @@ REPO = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DECLARED = os.path.join(REPO, "configs", "registry", "sources_r2_v1.yaml")
 ROSTER = os.path.join(REPO, "configs", "registry", "roster_r2_v1.yaml")
 EM_SUPERSEDED = ("em/agentic/gemma4e4b_bl__lam3-superseded", "em/agentic/llama8b_bl__r0p1-superseded")
-N_SOURCES = 61          # 28 at the f33dca5d pin + `arditi_allpos` (the paper, 2026-09-17) + the PROVISIONAL registry-declared names (the two Qwen organism panels ... the appendix BCB / BFCL pair, 2026-09-23; the shared-standup landing-3 pair, 2026-10-01)
+N_SOURCES = 63          # 28 at the f33dca5d pin + `arditi_allpos` (the paper, 2026-09-17) + the PROVISIONAL registry-declared names (the two Qwen organism panels ... the appendix BCB / BFCL pair, 2026-09-23; the shared-standup landing-3 pair, 2026-10-01)
                         # + `strength_mtdiff_s1`, the PROVISIONAL spelling of the multi-turn dose ladder (2026-09-18)
                         # + `arditi_vendor_mt`, the PROVISIONAL spelling of its VENDOR-PRESET re-run of the Arditi all-positions rungs (2026-09-20)
                         # + `seedrep_cluster`, the PROVISIONAL spelling of the seed-replicate statics / MMLU mirror from cluster B (2026-09-20)
@@ -70,12 +70,15 @@ N_SOURCES = 61          # 28 at the f33dca5d pin + `arditi_allpos` (the paper, 2
                         # + `bigcodebench_full_shared_l3` and `bfcl_full_shared_l3`, the PROVISIONAL spellings of LANDING 3 of those comparison stores (the gemma row's four
                         #   tuples driven once more by another harness for the fan-out test, published as SEPARATE sources so no run id collides with
                         #   landing 1's or landing 2's; the `_l3` producer key, the same SharedSpec knob; 2026-10-01)
+                        # + `bigcodebench_full_sikl4` and `bfcl_full_sikl4`, the PROVISIONAL spellings of the SI-distilled refits' full-suite campaign rows (campaign
+                        #   si_target_refit; the full readers parametrized with a declared campaign, `_bcbw_common.CampaignSpec`; comparison rows, never in the paper frame; 2026-11-15)
 #: the additions the PAPER declared after the pin (each names the commit it was read at) and the ones the REGISTRY declares provisionally, which
 #: the paper has not declared at all (`paper_build_commit: null`, `provisional: true`): a pin would be a consistent-looking stamp for a fact it
 #: does not cover.
 #: the newest names sit third and fourth, after the two organism panels: the tests below slice this tuple by `[:2]` and by position from the END,
 #: so a new name goes here, never appended (an appended name shifted six of them on 2026-09-23); the positional asserts of the names it displaces move with it
-PROVISIONAL_ADDITIONS = ("em/organisms/qwen35_4b_org", "em/organisms/qwen35_4b_org_vendor", "bigcodebench_full_shared_l3", "bfcl_full_shared_l3",
+PROVISIONAL_ADDITIONS = ("em/organisms/qwen35_4b_org", "em/organisms/qwen35_4b_org_vendor", "bigcodebench_full_sikl4", "bfcl_full_sikl4",
+                         "bigcodebench_full_shared_l3", "bfcl_full_shared_l3",
                          "bigcodebench_full_shared_l2", "bfcl_full_shared_l2", "bigcodebench_full_shared", "bfcl_full_shared",
                          "ctl_neg1", "bigcodebench_full", "bfcl_full",
                          "bigcodebench_allmodels", "bfcl_allmodels",
@@ -281,7 +284,7 @@ def test_the_three_seed_math500_stores_are_their_own_provisional_source_read_by_
     from sisteer.registry.adapters import math500_seedrep as MS
     covered = SRC.covered_sources(ADP.load_all())
     assert covered[MS.SOURCE] == [("math500_seedrep", 0)], covered.get(MS.SOURCE)
-    assert MS.SOURCE == "math500_seedrep" == PROVISIONAL_ADDITIONS[14] and MS.SOURCE in MS.Math500SeedrepAdapter.covers_sources
+    assert MS.SOURCE == "math500_seedrep" == PROVISIONAL_ADDITIONS[16] and MS.SOURCE in MS.Math500SeedrepAdapter.covers_sources
     assert MS.SOURCE not in GS.Gsm8kSeedrepAdapter.covers_sources and MS.SOURCE != GS.SOURCE and MS.SOURCE != EM5.SOURCE
     assert GS.SOURCE not in MS.Math500SeedrepAdapter.covers_sources and MS.EVAL_ID == EM5.EVAL_ID == "math500"
     assert MS.Math500SeedrepAdapter(root="/nonexistent/math500_seedrep").status_sources("qwen35_4b_s1") == (MS.SOURCE,)
@@ -297,7 +300,7 @@ def test_the_three_seed_bigcodebench_and_bfcl_stores_are_two_provisional_sources
     from sisteer.registry.adapters import bigcodebench_seedrep as BC
     covered = SRC.covered_sources(ADP.load_all())
     assert covered[BC.SOURCE] == [("bigcodebench_seedrep", 0)] and covered[BF.SOURCE] == [("bfcl_seedrep", 0)], (covered.get(BC.SOURCE), covered.get(BF.SOURCE))
-    assert BC.SOURCE == "bigcodebench_seedrep" == PROVISIONAL_ADDITIONS[15] and BF.SOURCE == "bfcl_seedrep" == PROVISIONAL_ADDITIONS[16]
+    assert BC.SOURCE == "bigcodebench_seedrep" == PROVISIONAL_ADDITIONS[17] and BF.SOURCE == "bfcl_seedrep" == PROVISIONAL_ADDITIONS[18]
     assert BC.SOURCE in BC.BigcodebenchSeedrepAdapter.covers_sources and BF.SOURCE in BF.BfclSeedrepAdapter.covers_sources
     assert BC.SOURCE not in BF.BfclSeedrepAdapter.covers_sources and BF.SOURCE not in BC.BigcodebenchSeedrepAdapter.covers_sources
     assert not ({BC.SOURCE, BF.SOURCE} & set(AG.BcbBfclAdapter.covers_sources)) and (BC.EVAL_ID, BF.EVAL_ID) == ("bigcodebench", "bfcl")
@@ -322,7 +325,7 @@ def test_the_appendix_families_bigcodebench_and_bfcl_stores_are_two_provisional_
     from sisteer.registry.adapters import bigcodebench_seedrep as BC
     covered = SRC.covered_sources(ADP.load_all())
     assert covered[BCA.SOURCE] == [("bigcodebench_allmodels", 0)] and covered[BFA.SOURCE] == [("bfcl_allmodels", 0)], (covered.get(BCA.SOURCE), covered.get(BFA.SOURCE))
-    assert BCA.SOURCE == "bigcodebench_allmodels" == PROVISIONAL_ADDITIONS[11] and BFA.SOURCE == "bfcl_allmodels" == PROVISIONAL_ADDITIONS[12]
+    assert BCA.SOURCE == "bigcodebench_allmodels" == PROVISIONAL_ADDITIONS[13] and BFA.SOURCE == "bfcl_allmodels" == PROVISIONAL_ADDITIONS[14]
     assert BCA.SOURCE in BCA.BigcodebenchAllmodelsAdapter.covers_sources and BFA.SOURCE in BFA.BfclAllmodelsAdapter.covers_sources
     assert not ({BCA.SOURCE, BFA.SOURCE} & (set(BC.BigcodebenchSeedrepAdapter.covers_sources) | set(BF.BfclSeedrepAdapter.covers_sources) | set(AG.BcbBfclAdapter.covers_sources)))
     assert not ({BC.SOURCE, BF.SOURCE} & (set(BCA.BigcodebenchAllmodelsAdapter.covers_sources) | set(BFA.BfclAllmodelsAdapter.covers_sources)))
@@ -352,7 +355,7 @@ def test_the_full_suite_bigcodebench_and_bfcl_stores_are_two_provisional_sources
     from sisteer.registry.adapters import bigcodebench_seedrep as BC
     covered = SRC.covered_sources(ADP.load_all())
     assert covered[BCF.SOURCE] == [("bigcodebench_full", 0)] and covered[BFF.SOURCE] == [("bfcl_full", 0)], (covered.get(BCF.SOURCE), covered.get(BFF.SOURCE))
-    assert BCF.SOURCE == "bigcodebench_full" == PROVISIONAL_ADDITIONS[9] and BFF.SOURCE == "bfcl_full" == PROVISIONAL_ADDITIONS[10]
+    assert BCF.SOURCE == "bigcodebench_full" == PROVISIONAL_ADDITIONS[11] and BFF.SOURCE == "bfcl_full" == PROVISIONAL_ADDITIONS[12]
     assert BCF.SOURCE in BCF.BigcodebenchFullAdapter.covers_sources and BFF.SOURCE in BFF.BfclFullAdapter.covers_sources
     others = set(BC.BigcodebenchSeedrepAdapter.covers_sources) | set(BF.BfclSeedrepAdapter.covers_sources) | set(BCA.BigcodebenchAllmodelsAdapter.covers_sources) \
         | set(BFA.BfclAllmodelsAdapter.covers_sources) | set(AG.BcbBfclAdapter.covers_sources)
@@ -378,7 +381,7 @@ def test_the_three_seed_ifeval_stores_are_their_own_provisional_source_read_at_t
     from sisteer.registry.adapters import ifeval_seedrep as IF
     covered = SRC.covered_sources(ADP.load_all())
     assert covered[IF.SOURCE] == [("ifeval_seedrep", 0)], covered.get(IF.SOURCE)
-    assert IF.SOURCE == "ifeval_seedrep" == PROVISIONAL_ADDITIONS[13] and IF.SOURCE in IF.IfevalSeedrepAdapter.covers_sources
+    assert IF.SOURCE == "ifeval_seedrep" == PROVISIONAL_ADDITIONS[15] and IF.SOURCE in IF.IfevalSeedrepAdapter.covers_sources
     assert IF.SOURCE not in GS.Gsm8kSeedrepAdapter.covers_sources and IF.SOURCE not in BC.BigcodebenchSeedrepAdapter.covers_sources and GS.SOURCE not in IF.IfevalSeedrepAdapter.covers_sources
     assert IF.EVAL_ID == "ifeval" and IF.LADDER == (2048, 4096, 8192) and IF.K_TRIALS == 2 and IF.MERGE_ALGORITHM.endswith("ifeval_seedrep.completion_cap_merge")
     assert IF.IfevalSeedrepAdapter(root="/nonexistent/ifeval_seedrep").status_sources("qwen35_4b_s1") == (IF.SOURCE,)
@@ -665,7 +668,7 @@ def test_ctl_neg1_is_declared_provisionally_and_covered_by_the_mirror_root_reade
     from sisteer.registry.adapters import cellstore as CS
     from sisteer.registry.adapters import sampled_static as SS
     from sisteer.registry.adapters.base import owner_of
-    assert "ctl_neg1" == PROVISIONAL_ADDITIONS[8] and CS.CTL_NEG1_SOURCE == SS.CTL_NEG1_SOURCE == SM.CTL_NEG1_SOURCE == "ctl_neg1"
+    assert "ctl_neg1" == PROVISIONAL_ADDITIONS[10] and CS.CTL_NEG1_SOURCE == SS.CTL_NEG1_SOURCE == SM.CTL_NEG1_SOURCE == "ctl_neg1"
     claims = sorted(covered["ctl_neg1"])
     assert [n for n, _ in claims] == ["ctl_neg1_controls", "ctl_neg1_multiturn", "ctl_neg1_static"] and len({p for _, p in claims}) == 3, claims
     assert CS.CtlNeg1ControlsAdapter.covers_sources == SS.CtlNeg1StaticAdapter.covers_sources == SM.CtlNeg1MultiturnAdapter.covers_sources == ("ctl_neg1",)
@@ -699,8 +702,8 @@ def test_landing_2_of_the_shared_standup_stores_is_its_own_provisional_source_pa
     from sisteer.registry.adapters import bigcodebench_full_shared_l2 as BCS2
     covered = SRC.covered_sources(ADP.load_all())
     assert covered[BCS2.SOURCE] == [("bigcodebench_full_shared_l2", 0)] and covered[BFS2.SOURCE] == [("bfcl_full_shared_l2", 0)], (covered.get(BCS2.SOURCE), covered.get(BFS2.SOURCE))
-    assert BCS2.SOURCE == "bigcodebench_full_shared_l2" == PROVISIONAL_ADDITIONS[4] and BFS2.SOURCE == "bfcl_full_shared_l2" == PROVISIONAL_ADDITIONS[5]
-    assert BCS.SOURCE == "bigcodebench_full_shared" == PROVISIONAL_ADDITIONS[6] and BFS.SOURCE == "bfcl_full_shared" == PROVISIONAL_ADDITIONS[7]
+    assert BCS2.SOURCE == "bigcodebench_full_shared_l2" == PROVISIONAL_ADDITIONS[6] and BFS2.SOURCE == "bfcl_full_shared_l2" == PROVISIONAL_ADDITIONS[7]
+    assert BCS.SOURCE == "bigcodebench_full_shared" == PROVISIONAL_ADDITIONS[8] and BFS.SOURCE == "bfcl_full_shared" == PROVISIONAL_ADDITIONS[9]
     for l2, l1, solo in ((BCS2, BCS, BCF), (BFS2, BFS, BFF)):
         cls2 = l2.BigcodebenchFullSharedL2Adapter if l2 is BCS2 else l2.BfclFullSharedL2Adapter
         cls1 = l1.BigcodebenchFullSharedAdapter if l1 is BCS else l1.BfclFullSharedAdapter
@@ -730,7 +733,7 @@ def test_landing_3_of_the_shared_standup_stores_is_its_own_provisional_source_pa
     from sisteer.registry.adapters import bigcodebench_full_shared_l3 as BCS3
     covered = SRC.covered_sources(ADP.load_all())
     assert covered[BCS3.SOURCE] == [("bigcodebench_full_shared_l3", 0)] and covered[BFS3.SOURCE] == [("bfcl_full_shared_l3", 0)], (covered.get(BCS3.SOURCE), covered.get(BFS3.SOURCE))
-    assert BCS3.SOURCE == "bigcodebench_full_shared_l3" == PROVISIONAL_ADDITIONS[2] and BFS3.SOURCE == "bfcl_full_shared_l3" == PROVISIONAL_ADDITIONS[3]
+    assert BCS3.SOURCE == "bigcodebench_full_shared_l3" == PROVISIONAL_ADDITIONS[4] and BFS3.SOURCE == "bfcl_full_shared_l3" == PROVISIONAL_ADDITIONS[5]
     for l3, l2, l1, solo in ((BCS3, BCS2, BCS, BCF), (BFS3, BFS2, BFS, BFF)):
         cls3 = l3.BigcodebenchFullSharedL3Adapter if l3 is BCS3 else l3.BfclFullSharedL3Adapter
         cls2 = l2.BigcodebenchFullSharedL2Adapter if l2 is BCS2 else l2.BfclFullSharedL2Adapter
@@ -746,3 +749,27 @@ def test_landing_3_of_the_shared_standup_stores_is_its_own_provisional_source_pa
                solo.run_id_for("gemma4e4b_s1", key, "none", inst))
         assert len(set(ids)) == 4 and l3.landing2_run_id_for("gemma4e4b_s1", key, "none", inst) == ids[1] and l3.landing1_run_id_for("gemma4e4b_s1", key, "none", inst) == ids[2]
         assert cls3(root="/nonexistent/x").status_sources("gemma4e4b_s1") == (l3.SOURCE,)
+
+
+def test_the_si_distilled_refits_lane_is_its_own_provisional_source_pair_read_by_the_full_readers_with_a_declared_lane():
+    """The SI-distilled refits' full-suite campaign rows (2026-11-15): TWO sources of their own, `bigcodebench_full_sikl4` / `bfcl_full_sikl4`, each covered by its own
+    reader over its own mirror root -- the full readers parametrized with the declared campaign (`_bcbw_common.CampaignSpec`, `_bcbw_campaigns.SIKL4`), never the paper's full
+    sources and never one source across campaigns. The declared campaign is the run id's first segment, so every such id differs from the full reader's over one store key."""
+    from sisteer.registry.adapters import _bcbw_common as B
+    from sisteer.registry.adapters import _bcbw_campaigns as DCS
+    from sisteer.registry.adapters import bfcl_full as BFF
+    from sisteer.registry.adapters import bfcl_full_sikl4 as BFL
+    from sisteer.registry.adapters import bigcodebench_full as BCF
+    from sisteer.registry.adapters import bigcodebench_full_sikl4 as BCL
+    covered = SRC.covered_sources(ADP.load_all())
+    assert covered[BCL.SOURCE] == [("bigcodebench_full_sikl4", 0)] and covered[BFL.SOURCE] == [("bfcl_full_sikl4", 0)], (covered.get(BCL.SOURCE), covered.get(BFL.SOURCE))
+    assert BCL.SOURCE == "bigcodebench_full_sikl4" == PROVISIONAL_ADDITIONS[2] and BFL.SOURCE == "bfcl_full_sikl4" == PROVISIONAL_ADDITIONS[3]
+    for src_mod, full, cls in ((BCL, BCF, BCL.BigcodebenchFullSikl4Adapter), (BFL, BFF, BFL.BfclFullSikl4Adapter)):
+        full_cls = full.BigcodebenchFullAdapter if full is BCF else full.BfclFullAdapter
+        assert issubclass(cls, B.BcbwSeedrepReader) and cls.covers_sources == (src_mod.SOURCE,) and src_mod.SOURCE not in full_cls.covers_sources
+        assert src_mod.ROOT_DEFAULT.endswith(os.path.join("run-state", "full22", src_mod.SOURCE)) and src_mod.ROOT_DEFAULT != full.ROOT_DEFAULT
+        assert src_mod.SPEC.declared is DCS.SIKL4 and full.SPEC.declared is None and src_mod.SPEC.campaign == "si_target_refit" and full.SPEC.campaign == LC.CAMPAIGN
+        key, inst = "si_constitution--lora_r4__controls__t0__a0__2ff9cdff__1dd7b444", "synthetic_instrument_id_000000"
+        lane_id, full_id = src_mod.run_id_for("qwen35_4b_sikl4s1", key, "si_constitution__lora_r4", inst), full.run_id_for("qwen35_4b_sikl4s1", key, "si_constitution__lora_r4", inst)
+        assert lane_id.startswith("si_target_refit:") and full_id.startswith(f"{LC.CAMPAIGN}:") and lane_id != full_id
+        assert cls(root="/nonexistent/x").status_sources("qwen35_4b_sikl4s1") == (src_mod.SOURCE,)

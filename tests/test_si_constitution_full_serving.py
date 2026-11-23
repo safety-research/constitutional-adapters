@@ -121,7 +121,8 @@ def test_the_full_constitution_is_prompted_only_never_a_class_a_or_stacked_cell(
     # the promptable SIs split into Class A and prompted-only; the object-only SIs (main's corpus pseudo-instructions) sit
     # beside them in PETRI_SI_IDS and never under a promptable method
     assert set(cm.PETRI_CLASS_A_SI_IDS) | set(cm.PETRI_PROMPTED_ONLY_SI_IDS) == set(cm.PETRI_PROMPTABLE_SI_IDS)
-    assert set(cm.PETRI_PROMPTABLE_SI_IDS) | set(cm.PETRI_OBJECT_ONLY_SI_IDS) == set(cm.PETRI_SI_IDS)
+    # (the distilled-only SIs, 2026-11-09, sit beside them too: Class A cells only)
+    assert set(cm.PETRI_PROMPTABLE_SI_IDS) | set(cm.PETRI_OBJECT_ONLY_SI_IDS) | set(cm.PETRI_DISTILLED_ONLY_SI_IDS) == set(cm.PETRI_SI_IDS)
     assert not set(cm.PETRI_CLASS_A_SI_IDS) & set(cm.PETRI_OBJECT_ONLY_SI_IDS)
     for bad in ("si_constitution_full__psr_kl_all", "stacked__constitution_full__psr_kl_all"):
         with pytest.raises(dc.DefenseCellError, match="PROMPTED-ONLY"):

@@ -345,6 +345,32 @@ MODEL_SPECS: dict[str, ModelSpec] = {
         n_layers=32,
         hidden_size=2560,
     ),
+    # the seed replicates' CONTROL-ONLY own-stop siblings: the
+    # SAME pin as the seed keys above, as SIBLING keys `_eb64_s<seed>_ctlstop`
+    # (the constv2ctl2-full cell early-stopped on its own corpus's held-out
+    # pool) so the seed configs' bytes never move. Configs are GENERATED
+    # (make_sdfbase_configs.py), never derived here.
+    "qwen35_4b_base_eb64_s1_ctlstop": ModelSpec(
+        slug="qwen35_4b_base_eb64_s1_ctlstop",
+        model="Qwen/Qwen3.5-4B-Base",
+        revision="1001bb4d826a52d1f399e183466143f4da7b741b",
+        n_layers=32,
+        hidden_size=2560,
+    ),
+    "qwen35_4b_base_eb64_s2_ctlstop": ModelSpec(
+        slug="qwen35_4b_base_eb64_s2_ctlstop",
+        model="Qwen/Qwen3.5-4B-Base",
+        revision="1001bb4d826a52d1f399e183466143f4da7b741b",
+        n_layers=32,
+        hidden_size=2560,
+    ),
+    "qwen35_4b_base_eb64_s3_ctlstop": ModelSpec(
+        slug="qwen35_4b_base_eb64_s3_ctlstop",
+        model="Qwen/Qwen3.5-4B-Base",
+        revision="1001bb4d826a52d1f399e183466143f4da7b741b",
+        n_layers=32,
+        hidden_size=2560,
+    ),
     # The WORKED EXAMPLE's fit config (2026-10-08): the paper's Qwen3.5-4B base
     # checkpoint under the demo key `qwen35_4b_demo_base` (reproduce/models.yaml
     # `qwen35_4b_demo`, fit.checkpoint.model_id) — the SAME pin as qwen35_4b_base,
@@ -374,6 +400,11 @@ SDFBASE_SLUGS = ("gemma4e4b_base", "qwen35_4b_base", "glm46vflash_doc",
                  # the qwen-base batch-64 seed replicates (2026-09-15)
                  "qwen35_4b_base_eb64_s1", "qwen35_4b_base_eb64_s2",
                  "qwen35_4b_base_eb64_s3",
+                 # their control-only own-stop siblings, inserted
+                 # ahead of the demo lane, which stays last
+                 "qwen35_4b_base_eb64_s1_ctlstop",
+                 "qwen35_4b_base_eb64_s2_ctlstop",
+                 "qwen35_4b_base_eb64_s3_ctlstop",
                  # the worked example's demo lane (2026-10-08) — APPENDED (the
                  # order is pinned by tests/test_sdfbase_llama8b_lane.py)
                  "qwen35_4b_demo_base")

@@ -1,0 +1,477 @@
+{
+ "schema": "g8k_matrix/2",
+ "wave_root_rel": "exp/gsm8k_paired200_paper_objects_qwengen1m",
+ "trigger_threshold": 0.01,
+ "generated_by": "scripts/sdfbase/gsm8k/make_gsm8k_matrix.py (g8k_views.select_rows)",
+ "views_spec": "qwen35_4b=qg1ms1,qg1ms2,qg1ms3",
+ "views": {
+  "qwen35_4b": [
+   "qg1ms1",
+   "qg1ms2",
+   "qg1ms3"
+  ]
+ },
+ "holds": [],
+ "exclude": [
+  {
+   "key": "qwen35_4b",
+   "view": "qg1ms1",
+   "cells": [
+    "none"
+   ],
+   "reason": "no new unsteered reference: the generator comparison's objects are read against the paper's pooled unsteered anchor, so this wave measures the two objects only (the standup still serves the base route, unmeasured)."
+  },
+  {
+   "key": "qwen35_4b",
+   "view": "qg1ms2",
+   "cells": [
+    "none"
+   ],
+   "reason": "as qg1ms1: the two objects only, read against the paper's pooled unsteered anchor."
+  },
+  {
+   "key": "qwen35_4b",
+   "view": "qg1ms3",
+   "cells": [
+    "none"
+   ],
+   "reason": "as qg1ms1: the two objects only, read against the paper's pooled unsteered anchor."
+  }
+ ],
+ "row_overlays": true,
+ "wave": "qwengen1m",
+ "inspect_seed_policy": "replicate",
+ "inspect_seed_base_by_view": {
+  "qg1ms1": 1,
+  "qg1ms2": 2,
+  "qg1ms3": 3
+ },
+ "geometry_class": "common_f22",
+ "source": {
+  "views_yaml": "configs/sdfbase/gsm8k/views_qwengen1m.yaml",
+  "roster": "configs/sdfbase_full22_roster_qwengen1m.yaml",
+  "roster_sha256": "7af27a31f58ce604961ba0827d11db78c63345e68be0a69077c20ea226dc6032",
+  "pins": "configs/qwengen1m_pins.json",
+  "pins_sha256": "90de471de985a8e578ee3b48215a3325bc9203a44c65221a27ea9ff159b69618"
+ },
+ "counts": {
+  "rows": 6,
+  "held": 0,
+  "launched": 6,
+  "waves": {
+   "qwengen1m": 6
+  },
+  "statuses": {
+   "launch": 6
+  },
+  "launched_by_wave": {
+   "qwengen1m": 6
+  },
+  "deferred": 0,
+  "external_pins": {},
+  "fitted": 6,
+  "fitted_launched": 6,
+  "in_support": 0,
+  "declared": 0,
+  "expected_refusals": 0,
+  "servable": 6,
+  "contrasts_designed": 6,
+  "contrasts_computable": 6,
+  "tuple_names_launch": [
+   "gsm8k_paired200_qwen35_4b_8192"
+  ],
+  "tags": [
+   "qwen35_4b_qg1ms1",
+   "qwen35_4b_qg1ms2",
+   "qwen35_4b_qg1ms3"
+  ],
+  "n_tags": 3,
+  "by_tag": {
+   "qwen35_4b_qg1ms1": {
+    "rows": 2,
+    "held": 0,
+    "launched": 2
+   },
+   "qwen35_4b_qg1ms2": {
+    "rows": 2,
+    "held": 0,
+    "launched": 2
+   },
+   "qwen35_4b_qg1ms3": {
+    "rows": 2,
+    "held": 0,
+    "launched": 2
+   }
+  },
+  "held_rows": [],
+  "expected_refusal_rows": [],
+  "placement": {
+   "primary": 0,
+   "any": 6
+  },
+  "reasoning_parser_gemma4": 0,
+  "tuple_names": [
+   "gsm8k_paired200_qwen35_4b_8192"
+  ],
+  "distinct_out_roots": 6,
+  "pins": {
+   "qwen35_4b": 6
+  },
+  "families": [
+   "qwen3_5"
+  ],
+  "models": [
+   "qwen35_4b"
+  ]
+ },
+ "rows": [
+  {
+   "index": 0,
+   "job_id": "g8k-qwen35_4b-qg1ms1-constv2-mix-1m-lora_r4_ce",
+   "model_key": "qwen35_4b",
+   "view": "qg1ms1",
+   "tag": "qwen35_4b_qg1ms1",
+   "cell": "constv2-mix-1m__lora_r4_ce",
+   "cell_slug": "constv2-mix-1m--lora_r4_ce",
+   "harness_cell": "si_constv2_mix_1m__lora_r4_ce",
+   "standup_cell": "constv2-mix-1m__lora_r4_ce",
+   "standup_harness_cell": "si_constv2_mix_1m__lora_r4_ce",
+   "staged_id": "qg1ms1__constv2-mix-1m__lora_r4_ce",
+   "object_sha256": "812ca9a2dcd7aabf4d7c08877427ca38a8e5b98ab6b67bb6c54c3f39ae3d5780",
+   "fitted": true,
+   "route_kind": "lens",
+   "served_positions_expected": "all",
+   "declared": false,
+   "thinking_mode": "on",
+   "trigger_threshold": 0.01,
+   "tuple_name": "gsm8k_paired200_qwen35_4b_8192",
+   "tuple_names": {
+    "8192": "gsm8k_paired200_qwen35_4b_8192",
+    "16384": "gsm8k_paired200_qwen35_4b_16384"
+   },
+   "sampling_mode": "thinking_card",
+   "sampling": {
+    "temperature": 0.6,
+    "top_p": 0.95,
+    "top_k": 20,
+    "min_p": 0.0,
+    "presence_penalty": 0.0,
+    "source": "Qwen/Qwen3.5-4B @851bf6e8 ships no generation_config.json (.no_exist marker); the Qwen3.5 model card's THINKING-mode 'precise' row as reported to the project = the Qwen3 card's thinking-mode guidance (T 0.6 / top_p 0.95 / top_k 20 / min_p 0; penalties only against endless repetition at a stated cost) \u2014 the PRIMARY row: mathematics legitimately repeats tokens"
+   },
+   "expected_stamps": [
+    "cell-stable",
+    "always",
+    "thinking_on"
+   ],
+   "out_root": "controls_qwengen1m/qwen35_4b_qg1ms1/constv2-mix-1m--lora_r4_ce/thinking_card",
+   "rung_out_root": "controls_qwengen1m/qwen35_4b_qg1ms1/constv2-mix-1m--lora_r4_ce/thinking_card__rung16384",
+   "time_limit": "0-01:30:00",
+   "family": "qwen3_5",
+   "split_mode_candidate": "implicit_open",
+   "reasoning_parser": null,
+   "gpu_mem_util": "0.9",
+   "budget_class": "none",
+   "cluster_constraint": "any",
+   "status": "launch",
+   "held_reason": null,
+   "expected_refusal": false,
+   "expected_refusal_reason": null,
+   "wave": "qwengen1m",
+   "extension": true,
+   "own_overlay": true,
+   "inspect_seed_policy": "replicate",
+   "inspect_seed_base": 1,
+   "geometry_class": "common_f22"
+  },
+  {
+   "index": 1,
+   "job_id": "g8k-qwen35_4b-qg1ms1-constqwen38-mix-1m-lora_r4_ce",
+   "model_key": "qwen35_4b",
+   "view": "qg1ms1",
+   "tag": "qwen35_4b_qg1ms1",
+   "cell": "constqwen38-mix-1m__lora_r4_ce",
+   "cell_slug": "constqwen38-mix-1m--lora_r4_ce",
+   "harness_cell": "si_constqwen38_mix_1m__lora_r4_ce",
+   "standup_cell": "constqwen38-mix-1m__lora_r4_ce",
+   "standup_harness_cell": "si_constqwen38_mix_1m__lora_r4_ce",
+   "staged_id": "qg1ms1__constqwen38-mix-1m__lora_r4_ce",
+   "object_sha256": "e1439afaa9d2829d463f9360b199a8df188802d02c4ed36974de253423b2392f",
+   "fitted": true,
+   "route_kind": "lens",
+   "served_positions_expected": "all",
+   "declared": false,
+   "thinking_mode": "on",
+   "trigger_threshold": 0.01,
+   "tuple_name": "gsm8k_paired200_qwen35_4b_8192",
+   "tuple_names": {
+    "8192": "gsm8k_paired200_qwen35_4b_8192",
+    "16384": "gsm8k_paired200_qwen35_4b_16384"
+   },
+   "sampling_mode": "thinking_card",
+   "sampling": {
+    "temperature": 0.6,
+    "top_p": 0.95,
+    "top_k": 20,
+    "min_p": 0.0,
+    "presence_penalty": 0.0,
+    "source": "Qwen/Qwen3.5-4B @851bf6e8 ships no generation_config.json (.no_exist marker); the Qwen3.5 model card's THINKING-mode 'precise' row as reported to the project = the Qwen3 card's thinking-mode guidance (T 0.6 / top_p 0.95 / top_k 20 / min_p 0; penalties only against endless repetition at a stated cost) \u2014 the PRIMARY row: mathematics legitimately repeats tokens"
+   },
+   "expected_stamps": [
+    "cell-stable",
+    "always",
+    "thinking_on"
+   ],
+   "out_root": "controls_qwengen1m/qwen35_4b_qg1ms1/constqwen38-mix-1m--lora_r4_ce/thinking_card",
+   "rung_out_root": "controls_qwengen1m/qwen35_4b_qg1ms1/constqwen38-mix-1m--lora_r4_ce/thinking_card__rung16384",
+   "time_limit": "0-01:30:00",
+   "family": "qwen3_5",
+   "split_mode_candidate": "implicit_open",
+   "reasoning_parser": null,
+   "gpu_mem_util": "0.9",
+   "budget_class": "none",
+   "cluster_constraint": "any",
+   "status": "launch",
+   "held_reason": null,
+   "expected_refusal": false,
+   "expected_refusal_reason": null,
+   "wave": "qwengen1m",
+   "extension": true,
+   "own_overlay": true,
+   "inspect_seed_policy": "replicate",
+   "inspect_seed_base": 1,
+   "geometry_class": "common_f22"
+  },
+  {
+   "index": 2,
+   "job_id": "g8k-qwen35_4b-qg1ms2-constv2-mix-1m-lora_r4_ce",
+   "model_key": "qwen35_4b",
+   "view": "qg1ms2",
+   "tag": "qwen35_4b_qg1ms2",
+   "cell": "constv2-mix-1m__lora_r4_ce",
+   "cell_slug": "constv2-mix-1m--lora_r4_ce",
+   "harness_cell": "si_constv2_mix_1m__lora_r4_ce",
+   "standup_cell": "constv2-mix-1m__lora_r4_ce",
+   "standup_harness_cell": "si_constv2_mix_1m__lora_r4_ce",
+   "staged_id": "qg1ms2__constv2-mix-1m__lora_r4_ce",
+   "object_sha256": "a0d9971b292a02a8513f8fdb7aa22ef50131c576976d9fa03525708975605472",
+   "fitted": true,
+   "route_kind": "lens",
+   "served_positions_expected": "all",
+   "declared": false,
+   "thinking_mode": "on",
+   "trigger_threshold": 0.01,
+   "tuple_name": "gsm8k_paired200_qwen35_4b_8192",
+   "tuple_names": {
+    "8192": "gsm8k_paired200_qwen35_4b_8192",
+    "16384": "gsm8k_paired200_qwen35_4b_16384"
+   },
+   "sampling_mode": "thinking_card",
+   "sampling": {
+    "temperature": 0.6,
+    "top_p": 0.95,
+    "top_k": 20,
+    "min_p": 0.0,
+    "presence_penalty": 0.0,
+    "source": "Qwen/Qwen3.5-4B @851bf6e8 ships no generation_config.json (.no_exist marker); the Qwen3.5 model card's THINKING-mode 'precise' row as reported to the project = the Qwen3 card's thinking-mode guidance (T 0.6 / top_p 0.95 / top_k 20 / min_p 0; penalties only against endless repetition at a stated cost) \u2014 the PRIMARY row: mathematics legitimately repeats tokens"
+   },
+   "expected_stamps": [
+    "cell-stable",
+    "always",
+    "thinking_on"
+   ],
+   "out_root": "controls_qwengen1m/qwen35_4b_qg1ms2/constv2-mix-1m--lora_r4_ce/thinking_card",
+   "rung_out_root": "controls_qwengen1m/qwen35_4b_qg1ms2/constv2-mix-1m--lora_r4_ce/thinking_card__rung16384",
+   "time_limit": "0-01:30:00",
+   "family": "qwen3_5",
+   "split_mode_candidate": "implicit_open",
+   "reasoning_parser": null,
+   "gpu_mem_util": "0.9",
+   "budget_class": "none",
+   "cluster_constraint": "any",
+   "status": "launch",
+   "held_reason": null,
+   "expected_refusal": false,
+   "expected_refusal_reason": null,
+   "wave": "qwengen1m",
+   "extension": true,
+   "own_overlay": true,
+   "inspect_seed_policy": "replicate",
+   "inspect_seed_base": 2,
+   "geometry_class": "common_f22"
+  },
+  {
+   "index": 3,
+   "job_id": "g8k-qwen35_4b-qg1ms2-constqwen38-mix-1m-lora_r4_ce",
+   "model_key": "qwen35_4b",
+   "view": "qg1ms2",
+   "tag": "qwen35_4b_qg1ms2",
+   "cell": "constqwen38-mix-1m__lora_r4_ce",
+   "cell_slug": "constqwen38-mix-1m--lora_r4_ce",
+   "harness_cell": "si_constqwen38_mix_1m__lora_r4_ce",
+   "standup_cell": "constqwen38-mix-1m__lora_r4_ce",
+   "standup_harness_cell": "si_constqwen38_mix_1m__lora_r4_ce",
+   "staged_id": "qg1ms2__constqwen38-mix-1m__lora_r4_ce",
+   "object_sha256": "229aa4b74fd9d23869905ac7fa183392493c096589b483b6bcc213921d0a9cad",
+   "fitted": true,
+   "route_kind": "lens",
+   "served_positions_expected": "all",
+   "declared": false,
+   "thinking_mode": "on",
+   "trigger_threshold": 0.01,
+   "tuple_name": "gsm8k_paired200_qwen35_4b_8192",
+   "tuple_names": {
+    "8192": "gsm8k_paired200_qwen35_4b_8192",
+    "16384": "gsm8k_paired200_qwen35_4b_16384"
+   },
+   "sampling_mode": "thinking_card",
+   "sampling": {
+    "temperature": 0.6,
+    "top_p": 0.95,
+    "top_k": 20,
+    "min_p": 0.0,
+    "presence_penalty": 0.0,
+    "source": "Qwen/Qwen3.5-4B @851bf6e8 ships no generation_config.json (.no_exist marker); the Qwen3.5 model card's THINKING-mode 'precise' row as reported to the project = the Qwen3 card's thinking-mode guidance (T 0.6 / top_p 0.95 / top_k 20 / min_p 0; penalties only against endless repetition at a stated cost) \u2014 the PRIMARY row: mathematics legitimately repeats tokens"
+   },
+   "expected_stamps": [
+    "cell-stable",
+    "always",
+    "thinking_on"
+   ],
+   "out_root": "controls_qwengen1m/qwen35_4b_qg1ms2/constqwen38-mix-1m--lora_r4_ce/thinking_card",
+   "rung_out_root": "controls_qwengen1m/qwen35_4b_qg1ms2/constqwen38-mix-1m--lora_r4_ce/thinking_card__rung16384",
+   "time_limit": "0-01:30:00",
+   "family": "qwen3_5",
+   "split_mode_candidate": "implicit_open",
+   "reasoning_parser": null,
+   "gpu_mem_util": "0.9",
+   "budget_class": "none",
+   "cluster_constraint": "any",
+   "status": "launch",
+   "held_reason": null,
+   "expected_refusal": false,
+   "expected_refusal_reason": null,
+   "wave": "qwengen1m",
+   "extension": true,
+   "own_overlay": true,
+   "inspect_seed_policy": "replicate",
+   "inspect_seed_base": 2,
+   "geometry_class": "common_f22"
+  },
+  {
+   "index": 4,
+   "job_id": "g8k-qwen35_4b-qg1ms3-constv2-mix-1m-lora_r4_ce",
+   "model_key": "qwen35_4b",
+   "view": "qg1ms3",
+   "tag": "qwen35_4b_qg1ms3",
+   "cell": "constv2-mix-1m__lora_r4_ce",
+   "cell_slug": "constv2-mix-1m--lora_r4_ce",
+   "harness_cell": "si_constv2_mix_1m__lora_r4_ce",
+   "standup_cell": "constv2-mix-1m__lora_r4_ce",
+   "standup_harness_cell": "si_constv2_mix_1m__lora_r4_ce",
+   "staged_id": "qg1ms3__constv2-mix-1m__lora_r4_ce",
+   "object_sha256": "3d93ed6aff39ba1a74440dc7a0f7c597a05f8b32b375fabba6676b347aec7e63",
+   "fitted": true,
+   "route_kind": "lens",
+   "served_positions_expected": "all",
+   "declared": false,
+   "thinking_mode": "on",
+   "trigger_threshold": 0.01,
+   "tuple_name": "gsm8k_paired200_qwen35_4b_8192",
+   "tuple_names": {
+    "8192": "gsm8k_paired200_qwen35_4b_8192",
+    "16384": "gsm8k_paired200_qwen35_4b_16384"
+   },
+   "sampling_mode": "thinking_card",
+   "sampling": {
+    "temperature": 0.6,
+    "top_p": 0.95,
+    "top_k": 20,
+    "min_p": 0.0,
+    "presence_penalty": 0.0,
+    "source": "Qwen/Qwen3.5-4B @851bf6e8 ships no generation_config.json (.no_exist marker); the Qwen3.5 model card's THINKING-mode 'precise' row as reported to the project = the Qwen3 card's thinking-mode guidance (T 0.6 / top_p 0.95 / top_k 20 / min_p 0; penalties only against endless repetition at a stated cost) \u2014 the PRIMARY row: mathematics legitimately repeats tokens"
+   },
+   "expected_stamps": [
+    "cell-stable",
+    "always",
+    "thinking_on"
+   ],
+   "out_root": "controls_qwengen1m/qwen35_4b_qg1ms3/constv2-mix-1m--lora_r4_ce/thinking_card",
+   "rung_out_root": "controls_qwengen1m/qwen35_4b_qg1ms3/constv2-mix-1m--lora_r4_ce/thinking_card__rung16384",
+   "time_limit": "0-01:30:00",
+   "family": "qwen3_5",
+   "split_mode_candidate": "implicit_open",
+   "reasoning_parser": null,
+   "gpu_mem_util": "0.9",
+   "budget_class": "none",
+   "cluster_constraint": "any",
+   "status": "launch",
+   "held_reason": null,
+   "expected_refusal": false,
+   "expected_refusal_reason": null,
+   "wave": "qwengen1m",
+   "extension": true,
+   "own_overlay": true,
+   "inspect_seed_policy": "replicate",
+   "inspect_seed_base": 3,
+   "geometry_class": "common_f22"
+  },
+  {
+   "index": 5,
+   "job_id": "g8k-qwen35_4b-qg1ms3-constqwen38-mix-1m-lora_r4_ce",
+   "model_key": "qwen35_4b",
+   "view": "qg1ms3",
+   "tag": "qwen35_4b_qg1ms3",
+   "cell": "constqwen38-mix-1m__lora_r4_ce",
+   "cell_slug": "constqwen38-mix-1m--lora_r4_ce",
+   "harness_cell": "si_constqwen38_mix_1m__lora_r4_ce",
+   "standup_cell": "constqwen38-mix-1m__lora_r4_ce",
+   "standup_harness_cell": "si_constqwen38_mix_1m__lora_r4_ce",
+   "staged_id": "qg1ms3__constqwen38-mix-1m__lora_r4_ce",
+   "object_sha256": "a10be211ce17bf1180e995b6b6642c2de0287c2e12d7a4aaec0eb90d50a96c85",
+   "fitted": true,
+   "route_kind": "lens",
+   "served_positions_expected": "all",
+   "declared": false,
+   "thinking_mode": "on",
+   "trigger_threshold": 0.01,
+   "tuple_name": "gsm8k_paired200_qwen35_4b_8192",
+   "tuple_names": {
+    "8192": "gsm8k_paired200_qwen35_4b_8192",
+    "16384": "gsm8k_paired200_qwen35_4b_16384"
+   },
+   "sampling_mode": "thinking_card",
+   "sampling": {
+    "temperature": 0.6,
+    "top_p": 0.95,
+    "top_k": 20,
+    "min_p": 0.0,
+    "presence_penalty": 0.0,
+    "source": "Qwen/Qwen3.5-4B @851bf6e8 ships no generation_config.json (.no_exist marker); the Qwen3.5 model card's THINKING-mode 'precise' row as reported to the project = the Qwen3 card's thinking-mode guidance (T 0.6 / top_p 0.95 / top_k 20 / min_p 0; penalties only against endless repetition at a stated cost) \u2014 the PRIMARY row: mathematics legitimately repeats tokens"
+   },
+   "expected_stamps": [
+    "cell-stable",
+    "always",
+    "thinking_on"
+   ],
+   "out_root": "controls_qwengen1m/qwen35_4b_qg1ms3/constqwen38-mix-1m--lora_r4_ce/thinking_card",
+   "rung_out_root": "controls_qwengen1m/qwen35_4b_qg1ms3/constqwen38-mix-1m--lora_r4_ce/thinking_card__rung16384",
+   "time_limit": "0-01:30:00",
+   "family": "qwen3_5",
+   "split_mode_candidate": "implicit_open",
+   "reasoning_parser": null,
+   "gpu_mem_util": "0.9",
+   "budget_class": "none",
+   "cluster_constraint": "any",
+   "status": "launch",
+   "held_reason": null,
+   "expected_refusal": false,
+   "expected_refusal_reason": null,
+   "wave": "qwengen1m",
+   "extension": true,
+   "own_overlay": true,
+   "inspect_seed_policy": "replicate",
+   "inspect_seed_base": 3,
+   "geometry_class": "common_f22"
+  }
+ ]
+}

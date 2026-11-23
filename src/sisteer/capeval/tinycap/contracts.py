@@ -667,6 +667,8 @@ __all__ = [
     "G8K_ALL_POSITION_CELLS", "G8K_HEADER_LOCATED_CELLS", "G8K_EXPERIMENT_NAMES", "g8k_tuple_name",
     "G8K_NATIVE_MODELS", "G8K_NATIVE_CELLS", "G8K_NATIVE_TUPLE_INFIX", "g8k_native_tuple_name",
     "G8K_NATIVE_PAIRED_CELLS", "G8K_NATIVE_PAIRED_TUPLE_INFIX", "g8k_native_paired_tuple_name", "G8K_NATIVE_PAIRED_MODELS", "G8K_NATIVE_APPENDIX_MODELS",
+    "G8K_NATIVE_SIKL4_MODELS", "G8K_NATIVE_SIKL4_CELLS", "G8K_NATIVE_SIKL4_TUPLE_INFIX", "g8k_native_sikl4_tuple_name",
+    "G8K_NATIVE_QWENGEN1M_MODELS", "G8K_NATIVE_QWENGEN1M_CELLS", "G8K_NATIVE_QWENGEN1M_TUPLE_INFIX", "g8k_native_qwengen1m_tuple_name",
     "M5T_NATIVE_MODELS", "M5T_NATIVE_CELLS", "M5T_NATIVE_TUPLE_SUFFIX", "m5t_native_tuple_name",
     "M5T_NATIVE_PAIRED_CELLS", "M5T_NATIVE_PAIRED_TUPLE_SUFFIX", "m5t_native_paired_tuple_name",
     "header_invariant_declaration_refusal", "header_invariant_declared_cells",
@@ -8218,6 +8220,26 @@ BCBW_SEED_VIEWS: Tuple[str, ...] = ("s1", "s2", "s3", "s1p", "s2p", "s3p")
 #: paired-write difference ReLU of the family's base-lane constitution and control PSR, ``paired_of: s1``); the shared
 #: full22 roster's spellings, staged at ``/vol/objects/sdfbase/full22/<model_key>/<view>`` (:func:`full22_objects_dir`).
 BCBW_ALLMODELS_VIEWS: Tuple[str, ...] = ("s1", "s1p")
+#: Added 2026-11-14: the three CONTROL-POOL-STOPPED Qwen views of campaign reseed_ctlstop — per fit seed k the
+#: control LoRA and control ReLU whose early stopping read the control held-out pool, and the two constitution-minus-control
+#: differences built from them (the LoRA subtraction and the composed paired-write ReLU). The views and cells are
+#: configs/sdfbase_full22_roster_ctlstop_eb64.yaml's (the cross-bank pin form into configs/ctlstop_eb64_pins.json, never the
+#: production roster or pins); staged at ``/vol/objects/sdfbase/full22/qwen35_4b/<view>`` (:func:`full22_objects_dir`) by
+#: scripts/modal/stage_ctlstop_bank_modal.py.
+BCBW_CTLSTOP_VIEWS: Tuple[str, ...] = ("ctlstop64s1", "ctlstop64s2", "ctlstop64s3")
+#: the roster and pins those views read (repo-relative) — :func:`bcbw_view_sources` is the one switch
+BCBW_CTLSTOP_ROSTER_REL = "configs/sdfbase_full22_roster_ctlstop_eb64.yaml"
+BCBW_CTLSTOP_PINS_REL = "configs/ctlstop_eb64_pins.json"
+#: Added 2026-11-15: the three SI-DISTILLED refit Qwen views, one per fit seed k — the safety SI
+#: (`safety_refusal`), the constitution SI (`si_constitution`) and the short irrelevant control SI `C16`, each KL-distilled from
+#: its prompted teacher into a rank-4 o_proj LoRA (`lora_r4`) and an all-layer ReLU steer (`psr_kl_all`), fit ON the served chat
+#: checkpoint (no transfer). The views and cells are configs/sdfbase_full22_roster_sikl4.yaml's (the pin form into
+#: configs/sikl4_pins.json, never the production roster or pins); staged at ``/vol/objects/sdfbase/full22/qwen35_4b/<view>``
+#: (:func:`full22_objects_dir`) by scripts/modal/stage_lane_bank_modal.py. The C16 cells resolve their SI only through the
+#: candidate-SI subset file (:func:`candidate_sis_env`).
+BCBW_SIKL4_VIEWS: Tuple[str, ...] = ("sikl4s1", "sikl4s2", "sikl4s3")
+BCBW_SIKL4_ROSTER_REL = "configs/sdfbase_full22_roster_sikl4.yaml"
+BCBW_SIKL4_PINS_REL = "configs/sikl4_pins.json"
 BCBW_ALLMODELS_FAMILIES: Tuple[str, ...] = ("gemma4e4b", "llama8b", "nemotron3nano4b")
 BCBW_ALLMODELS_MODEL_VIEWS: Tuple[Tuple[str, str], ...] = tuple(
     (mk, v) for mk in BCBW_ALLMODELS_FAMILIES for v in BCBW_ALLMODELS_VIEWS)
@@ -8236,20 +8258,78 @@ BCBW_MODEL_VIEWS: Tuple[Tuple[str, str], ...] = (
     # b64-capability-agentic-queue (2026-09-23): the all-models one-seed family — gemma4e4b / llama8b / nemotron3nano4b
     # on their `s1` (the eight-cell row over the family's base-lane objects) and `s1p` (the composed paired-write
     # difference ReLU) views, the SAME shape as the Qwen seed family; appended LAST so no slug moves.
-    *BCBW_ALLMODELS_MODEL_VIEWS)
+    *BCBW_ALLMODELS_MODEL_VIEWS,
+    # Added 2026-11-14: the three control-pool-stopped Qwen views; appended LAST so no slug moves.
+    *((("qwen35_4b", v) for v in BCBW_CTLSTOP_VIEWS)),
+    # Added 2026-11-15: the three SI-distilled refit Qwen views; appended LAST so no slug moves.
+    *((("qwen35_4b", v) for v in BCBW_SIKL4_VIEWS)))
 BCBW_SLUG_OF: Mapping[Tuple[str, str], str] = {
     ("gemma4e4b", BCBW_VIEW_IT): "gemma4e4b-f22it", ("gemma4e4b", BCBW_VIEW_MAIN): "gemma4e4b-f22",
     ("qwen35_4b", BCBW_VIEW_MAIN): "qwen35_4b-f22", ("nemotron3nano4b", BCBW_VIEW_MAIN): "nemotron3nano4b",
     ("llama8b", BCBW_VIEW_IT): "llama8b-f22it", ("llama8b", BCBW_VIEW_MAIN): "llama8b-f22",
     ("qwen35_4b", BCBW_VIEW_IT): "qwen35_4b-f22it",
     **{("qwen35_4b", v): f"qwen35_4b-f22{v}" for v in BCBW_SEED_VIEWS},
-    **{(mk, v): f"{mk}-f22{v}" for mk, v in BCBW_ALLMODELS_MODEL_VIEWS}}
+    **{(mk, v): f"{mk}-f22{v}" for mk, v in BCBW_ALLMODELS_MODEL_VIEWS},
+    **{("qwen35_4b", v): f"qwen35_4b-f22{v}" for v in BCBW_CTLSTOP_VIEWS},
+    **{("qwen35_4b", v): f"qwen35_4b-f22{v}" for v in BCBW_SIKL4_VIEWS}}
 BCBW_SLUGS: Tuple[str, ...] = tuple(BCBW_SLUG_OF[mv] for mv in BCBW_MODEL_VIEWS)
 #: the six qwen35_4b seed-family slugs, in BCBW_SEED_VIEWS order — the rows the nine batch-64 waves serve
 BCBW_SEED_SLUGS: Tuple[str, ...] = tuple(BCBW_SLUG_OF[("qwen35_4b", v)] for v in BCBW_SEED_VIEWS)
 #: the six all-models one-seed slugs (gemma4e4b-f22s1, gemma4e4b-f22s1p, llama8b-f22s1, …), in
 #: BCBW_ALLMODELS_MODEL_VIEWS order — the rows the lane's six `<model_key>_s1` / `<model_key>_s1p` waves serve
 BCBW_ALLMODELS_SLUGS: Tuple[str, ...] = tuple(BCBW_SLUG_OF[mv] for mv in BCBW_ALLMODELS_MODEL_VIEWS)
+#: the three control-pool-stopped Qwen slugs (qwen35_4b-f22ctlstop64s1 …), in BCBW_CTLSTOP_VIEWS order
+BCBW_CTLSTOP_SLUGS: Tuple[str, ...] = tuple(BCBW_SLUG_OF[("qwen35_4b", v)] for v in BCBW_CTLSTOP_VIEWS)
+#: the three SI-distilled refit Qwen slugs (qwen35_4b-f22sikl4s1 …), in BCBW_SIKL4_VIEWS order
+BCBW_SIKL4_SLUGS: Tuple[str, ...] = tuple(BCBW_SLUG_OF[("qwen35_4b", v)] for v in BCBW_SIKL4_VIEWS)
+
+
+def bcbw_view_sources(model_key: str, view: str) -> Tuple[str, str]:
+    """``(roster, pins)`` repo-relative — the roster whose ``targets.<model_key>.views.<view>`` names a lane row's cells and the
+    pins its objects are held to: the control-pool-stopped and the SI-distilled refit views read their own pair, every other
+    lane view the production full22 roster and pins."""
+    if model_key == "qwen35_4b" and view in BCBW_CTLSTOP_VIEWS:
+        return BCBW_CTLSTOP_ROSTER_REL, BCBW_CTLSTOP_PINS_REL
+    if model_key == "qwen35_4b" and view in BCBW_SIKL4_VIEWS:
+        return BCBW_SIKL4_ROSTER_REL, BCBW_SIKL4_PINS_REL
+    return "configs/sdfbase_full22_roster.yaml", "configs/sdfbase_full22_pins.json"
+
+
+# --------------------------------------------------------------------------- #
+# the candidate-SI SUBSET a row loads (added 2026-11-15)                        #
+# --------------------------------------------------------------------------- #
+#
+# The C16 cells' system instruction is one of the 60 candidate SIs, which resolve only through the env-guarded loader
+# (sisteer.data.instructions: SISTEER_LOAD_CANDIDATE_SIS). The full 60-entry snapshot must not go on a volume every member of
+# the workspace can read, so a Modal row loads a sha-pinned SUBSET file holding only the ids its config names
+# (sisteer.data.candidate_sis's opt-in subset mode, entered only when SISTEER_CANDIDATE_SIS_SUBSET_SHA256 is set), derived
+# from the full snapshot by scripts/sikl4/make_candidate_sis_subset.py and staged once as a READ-ONLY input beside the banks.
+#
+# The pair is ROW-keyed, never cell-keyed: the explicit-cells registry (defense_cell.registry_from_explicit_cells) resolves the
+# SI of EVERY cell its config lists and refuses the whole config when one does not resolve, so every process that builds a
+# row's registry — each standup, driver and verifier child of every container the row runs (a safety cell's container
+# included) and the preflight's object-identity derivation — carries it. Setting it where C16 is not served changes nothing
+# else: the subset registers its own ids alone. NEVER exported into a launching (local) process: the path is the volume's.
+
+#: the loader's two variable names (sisteer.data.instructions / sisteer.data.candidate_sis spell them; a test holds them equal)
+CANDIDATE_SIS_LOAD_ENV = "SISTEER_LOAD_CANDIDATE_SIS"
+CANDIDATE_SIS_SUBSET_SHA_ENV = "SISTEER_CANDIDATE_SIS_SUBSET_SHA256"
+#: the C16-only subset file: its sha256 (the file's bytes; its meta binds it to the full snapshot ba8efe82… and C16's text sha)
+#: and its content-addressed path on the volume
+CANDIDATE_SIS_SUBSET_C16_SHA256 = "6bf38c689ac9e95ae4159797d8deefd0b80d244c0a224744da811c991a44b88b"
+CANDIDATE_SIS_SUBSET_ROOT = "/vol/objects/candidate_sis"
+CANDIDATE_SIS_SUBSET_C16_REMOTE = f"{CANDIDATE_SIS_SUBSET_ROOT}/candidate_sis.C16.{CANDIDATE_SIS_SUBSET_C16_SHA256[:16]}.json"
+#: ``{row slug: the pair}`` — exactly the rows whose generated config names a C16 cell (every SI-distilled refit view lists
+#: C16__lora_r4 and C16__psr_kl_all; tests/test_sikl4_bcbw_lane.py holds this set equal to the configs')
+CANDIDATE_SIS_SUBSET_ENV_BY_ROW: Mapping[str, Mapping[str, str]] = {
+    slug: {CANDIDATE_SIS_LOAD_ENV: CANDIDATE_SIS_SUBSET_C16_REMOTE, CANDIDATE_SIS_SUBSET_SHA_ENV: CANDIDATE_SIS_SUBSET_C16_SHA256}
+    for slug in BCBW_SIKL4_SLUGS}
+
+
+def candidate_sis_env(row_slug: str) -> Dict[str, str]:
+    """The candidate-SI subset pair every registry-building child of row ``row_slug`` carries (``{}`` for every other row,
+    whose launch stays byte-identical)."""
+    return dict(CANDIDATE_SIS_SUBSET_ENV_BY_ROW.get(str(row_slug), {}))
 
 
 def bcbw_config_path(model_key: str, view: str) -> str:
@@ -8987,6 +9067,34 @@ MODELS: Mapping[str, ModelRow] = {
     # llama8b-f22 / nemotron3nano4b): gemma and llama record the base->instruct transfer in base_hf, nemotron's chat
     # checkpoint is its own fit target; nemotron carries no manifest until the S5 live probe PASSES (as its `main` row).
     **{BCBW_SLUG_OF[(mk, v)]: _bcbw_allmodels_row(mk, v) for mk, v in BCBW_ALLMODELS_MODEL_VIEWS},
+    # ---- Added 2026-11-14: the three CONTROL-POOL-STOPPED Qwen rows over the staged banks
+    # /vol/objects/sdfbase/full22/qwen35_4b/ctlstop64s{1,2,3} — the seed rows' served pin, family, manifest and transfer (every
+    # object fit on Qwen/Qwen3.5-4B-Base @ 1001bb4d at effective batch 64 and served on the chat checkpoint), inserted after the
+    # all-models rows and BEFORE the IFEval rows so `is_full22_row` stays one contiguous block. The generated configs list the
+    # ctlstop roster's view (the control LoRA / ReLU and the two differences) behind `none`.
+    **{slug: _row(slug, hf="Qwen/Qwen3.5-4B",
+                  rev="851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a",
+                  cfg=bcbw_config_path("qwen35_4b", v),
+                  objects_dir=full22_objects_dir("qwen35_4b", v),
+                  model_key="qwen35_4b", family="qwen3_5",
+                  thinking_modes=(THINKING_OFF,),
+                  petri_manifest=PETRI_MANIFEST_FULL22_QWEN35_4B,
+                  base_hf="Qwen/Qwen3.5-4B-Base")
+       for v, slug in zip(BCBW_CTLSTOP_VIEWS, BCBW_CTLSTOP_SLUGS)},
+    # ---- Added 2026-11-15: the three SI-DISTILLED refit Qwen rows over the staged banks
+    # /vol/objects/sdfbase/full22/qwen35_4b/sikl4s{1,2,3} — the qwen35_4b-f22it shape: every object fit ON the served chat
+    # checkpoint Qwen/Qwen3.5-4B @ 851bf6e8 (no transfer -> base_hf None), thinking OFF, the qwen3_5 manifest; inserted after the
+    # control-pool-stopped rows and BEFORE the IFEval rows so `is_full22_row` stays one contiguous block. The generated configs list
+    # the sikl4 roster's view (the six SI-distilled objects) behind `none` and the prompted safety anchor; the rows carry the
+    # candidate-SI subset pair (:func:`candidate_sis_env`), since every config names the two C16 cells.
+    **{slug: _row(slug, hf="Qwen/Qwen3.5-4B",
+                  rev="851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a",
+                  cfg=bcbw_config_path("qwen35_4b", v),
+                  objects_dir=full22_objects_dir("qwen35_4b", v),
+                  model_key="qwen35_4b", family="qwen3_5",
+                  thinking_modes=(THINKING_OFF,),
+                  petri_manifest=PETRI_MANIFEST_FULL22_QWEN35_4B)
+       for v, slug in zip(BCBW_SIKL4_VIEWS, BCBW_SIKL4_SLUGS)},
     # ifeval-canonical-battery: the seven (model, view) banks of
     # the paper's full22 objects on the volume, appended LAST so no existing slug
     # moves. Their `objects_dir` is the STAGED bank `/vol/objects/sdfbase/full22/
@@ -9935,6 +10043,114 @@ def _g8k_native_paired_tuple(model_key: str, cap: int) -> AuthorisedOutOfSupport
 
 
 # --------------------------------------------------------------------------- #
+# the SI-distilled refit objects (views sikl4s<k>): their OWN GSM8K pair,       #
+# BESIDE the native battery's and the paired arm's, never a widening of either  #
+# (the same rule, applied again)                                                #
+# --------------------------------------------------------------------------- #
+#
+# The SI-distilled refit views' fitted GSM8K rows (matrix `sikl4`) serve six cells no
+# tuple authorises: the safety SI, the constitution SI and the short irrelevant
+# control SI C16, each distilled into a rank-4 o_proj LoRA and an all-layer ReLU
+# steer from that SI's prompted teacher on the instruct checkpoint, one object per
+# fit seed (staged as `sikl4s<k>__…`, pinned in configs/sikl4_pins.json). Every one
+# acts at ALL token positions and is served UNDECLARED on the native multi-LoRA /
+# residual-slot engine (reduction_mode not_applicable). Two of the six share their
+# names with the header-located scale-12 safety objects of gemma4e4b / qwen35_4b
+# `main`, whose lens-era DECLARED pair stays byte-identical: the served identity
+# (stated by every driver door from the standup record) keeps the two doors apart.
+# Two caps, two doors, as for every GSM8K pair in this registry.
+G8K_NATIVE_SIKL4_MODELS: Tuple[str, ...] = ("qwen35_4b",)
+G8K_NATIVE_SIKL4_CELLS: Tuple[str, ...] = (
+    "safety_refusal__lora_r4", "safety_refusal__psr_kl_all",
+    "si_constitution__lora_r4", "si_constitution__psr_kl_all",
+    "C16__lora_r4", "C16__psr_kl_all")
+G8K_NATIVE_SIKL4_TUPLE_INFIX = "_native_sikl4"
+_G8K_NATIVE_SIKL4_WHAT = ("the SI-distilled refit objects (views sikl4s<k>): inspect-ai's stock gsm8k task narrowed to the 200 "
+                          "paired items (inspect/gsm8k_paired200; item set paired200), k = 1, ONE pass at cap {cap} (the "
+                          "matrix's base row 8,192, or the standing truncation ladder's one rung 16,384 for the ELIGIBLE "
+                          "truncating subset — --item-subset), thinking ON, the model's thinking_card sampling row (the vendor "
+                          "preset), geometry pass 1 — the SI-distilled cells {cells} of {model} (the safety, constitution and "
+                          "C16 system instructions, each a rank-4 o_proj LoRA and an all-layer ReLU steer distilled from that "
+                          "SI's prompted teacher; positions: all, served UNDECLARED) on the NATIVE multi-LoRA / residual-slot "
+                          "engine (mt_serving_up --eval lora_native), served identity reduction_mode = not_applicable. This "
+                          "tuple stands BESIDE the native battery's `gsm8k_paired200_{model}_native_{cap}` and the paired arm's "
+                          "`gsm8k_paired200_{model}_native_paired_{cap}`, never a widening of either, and beside the lens-era "
+                          "declared pair, whose header-located safety objects share two cell names with this one. The OOS "
+                          "tuple authorises the FITTED INTERVENTION served under a chat render its document fit never saw, "
+                          "never the render, which predicate (A) certifies live. The cap is compared when stated "
+                          "(--max-tokens-by-task), so this tuple and its {other}-cap twin are two doors.")
+
+
+def g8k_native_sikl4_tuple_name(model_key: str, cap: int) -> str:
+    """``gsm8k_paired200_<model>_native_sikl4_<cap>`` — the SI-distilled refit objects' GSM8K tuple at one cap."""
+    return f"{G8K_TUPLE_PREFIX}_{model_key}{G8K_NATIVE_SIKL4_TUPLE_INFIX}_{int(cap)}"
+
+
+def _g8k_native_sikl4_tuple(model_key: str, cap: int) -> AuthorisedOutOfSupportExperiment:
+    """Every field byte-equal to :func:`_g8k_native_tuple` except ``cells`` (the six SI-distilled cells) and ``what``."""
+    base = _g8k_tuple(model_key, G8K_NATIVE_SIKL4_CELLS, cap, header_located=False, declares=False)
+    other = G8K_RUNG_CAP if int(cap) == G8K_CAP else G8K_CAP
+    return base._replace(
+        reduction_mode=REDUCTION_MODE_NOT_APPLICABLE,   # the native engine's served identity, as for the native pair
+        what=_G8K_NATIVE_SIKL4_WHAT.format(cap=int(cap), cells=list(G8K_NATIVE_SIKL4_CELLS), model=model_key, other=other))
+
+
+# --------------------------------------------------------------------------- #
+# the generator comparison's evals (matrix `qwengen1m`): the two 1M-token       #
+# constitution LoRAs get a native pair of their OWN, beside the native          #
+# battery's, never a widening of it (the rule above, applied again)            #
+# --------------------------------------------------------------------------- #
+#
+# The qwengen1m matrix's fitted GSM8K canary (views qg1ms<k>, cell
+# `constv2-mix-1m__lora_r4_ce`) refused on 2026-11-15 at 6090779e6 with
+# `OOS_UNAUTHORISED: … cell differs — requested 'constv2-mix-1m__lora_r4_ce',
+# authorised ['none', 'arditi_allpos']`: the two 1M-pool cells are NEW names
+# (the Opus-written and the Qwen-written 1M pools, as the serving cells spell them)
+# and no tuple names them. The `arditi_allpos` pair was only the NEAREST tuple
+# the refusal quotes (every field but the cell agrees and it is registered
+# first); it never authorised the row. The control-pool-stopped views
+# (`ctlstop`) needed no tuple because their four cells keep the native pair's
+# and the composed pair's names, view-blind, with each row's bytes bound by
+# --expect-object-sha256. These cells get the same authorisation in a pair of
+# their own: by name, view-blind, the object bytes bound per row by
+# --expect-object-sha256 from configs/qwengen1m_pins.json, served on the NATIVE
+# multi-LoRA engine (reduction_mode not_applicable), the two caps two doors.
+# Registered LAST, so the nearest tuple an existing refusal quotes is unchanged.
+G8K_NATIVE_QWENGEN1M_MODELS: Tuple[str, ...] = ("qwen35_4b",)
+#: the Opus-written and the Qwen-written 1M-pool constitution LoRAs (configs/sdfbase_full22_roster_qwengen1m.yaml, rank 4)
+G8K_NATIVE_QWENGEN1M_CELLS: Tuple[str, ...] = ("constv2-mix-1m__lora_r4_ce", "constqwen38-mix-1m__lora_r4_ce")
+G8K_NATIVE_QWENGEN1M_TUPLE_INFIX = "_native_qwengen1m"
+_G8K_NATIVE_QWENGEN1M_WHAT = ("qwen-generator-1m eval wave (matrix qwengen1m): inspect-ai's stock gsm8k task narrowed to the 200 "
+                              "paired items (inspect/gsm8k_paired200; item set paired200), k = 1, ONE pass at cap {cap} (the "
+                              "matrix's base row 8,192, or the standing truncation ladder's one rung 16,384 for the ELIGIBLE "
+                              "truncating subset — --item-subset), thinking ON, the model's thinking_card sampling row (the vendor "
+                              "preset), geometry pass 1 — the two 1M-token constitution LoRAs {cells} of {model} (the "
+                              "Opus-written and the Qwen-written 1M pools, one object per fit seed on the views qg1ms1..3, each "
+                              "row's bytes bound by --expect-object-sha256 from configs/qwengen1m_pins.json; positions: all, served "
+                              "UNDECLARED) on the NATIVE multi-LoRA engine (serving_path lora_native), served identity "
+                              "reduction_mode = not_applicable. This tuple stands BESIDE the native battery's "
+                              "`gsm8k_paired200_{model}_native_{cap}` (its finished stores record it BY NAME, so it never widens), "
+                              "never a widening of it. The OOS tuple authorises the FITTED INTERVENTION served under a chat render "
+                              "its document fit never saw, never the render, which predicate (A) certifies live. The cap is "
+                              "compared when stated (--max-tokens-by-task), so this tuple and its {other}-cap twin are two doors.")
+
+
+def g8k_native_qwengen1m_tuple_name(model_key: str, cap: int) -> str:
+    """``gsm8k_paired200_<model>_native_qwengen1m_<cap>`` — the two 1M-pool LoRAs' GSM8K tuple at one cap."""
+    return f"{G8K_TUPLE_PREFIX}_{model_key}{G8K_NATIVE_QWENGEN1M_TUPLE_INFIX}_{int(cap)}"
+
+
+def _g8k_native_qwengen1m_tuple(model_key: str, cap: int) -> AuthorisedOutOfSupportExperiment:
+    """Every field byte-equal to :func:`_g8k_native_tuple` except ``cells`` (the two 1M-pool LoRAs) and ``what``."""
+    base = _g8k_tuple(model_key, G8K_NATIVE_QWENGEN1M_CELLS, cap, header_located=False, declares=False)
+    other = G8K_RUNG_CAP if int(cap) == G8K_CAP else G8K_CAP
+    return base._replace(
+        reduction_mode=REDUCTION_MODE_NOT_APPLICABLE,   # the native engine's served identity, as for the native pair
+        what=_G8K_NATIVE_QWENGEN1M_WHAT.format(cap=int(cap), cells=list(G8K_NATIVE_QWENGEN1M_CELLS), model=model_key,
+                                               other=other))
+
+
+# --------------------------------------------------------------------------- #
 # paper companion repo: the STEERED GSM8K rows of a                             #
 # FRONT-DOOR model (reproduce/models.yaml) get a pair of their OWN — beside the #
 # paper's tuples, never a widening                                              #
@@ -10189,6 +10405,8 @@ AUTHORISED_OOS_EXPERIMENTS: Mapping[str, AuthorisedOutOfSupportExperiment] = {
     # b64-capability-agentic-queue: the composed paired-write arm's OWN pair on the paired views — cells exactly
     # [constv2-mix-full__psr_ce_all_minus_ctl], reduction_mode not_applicable, the two caps; beside the native pair, never inside it.
     **{g8k_native_paired_tuple_name(m, cap): _g8k_native_paired_tuple(m, cap) for m in G8K_NATIVE_PAIRED_MODELS for cap in G8K_CAPS},
+    # the SI-distilled refit objects (matrix `sikl4`): their own pair, the six SI-distilled cells, reduction_mode not_applicable
+    **{g8k_native_sikl4_tuple_name(m, cap): _g8k_native_sikl4_tuple(m, cap) for m in G8K_NATIVE_SIKL4_MODELS for cap in G8K_CAPS},
     # the all-model appendix (2026-09-22): nemotron3nano4b's native pair (the five lane cells) for its constitution_relu row on the native path
     **{g8k_native_tuple_name(m, cap): _g8k_native_tuple(m, cap) for m in G8K_NATIVE_APPENDIX_MODELS for cap in G8K_CAPS},
     # b64-capability-agentic-queue: the MATH-500 seed wave's two NATIVE tuples on qwen35_4b — the five lane cells under
@@ -10203,6 +10421,11 @@ AUTHORISED_OOS_EXPERIMENTS: Mapping[str, AuthorisedOutOfSupportExperiment] = {
     # the s1 view's own pairs — the two LoRA parents under `_frontdoor_lora`, their subtraction under `_frontdoor_lora_diff`
     **{g8k_frontdoor_lora_tuple_name(m, cap): _g8k_frontdoor_lora_tuple(m, cap) for m in G8K_FRONTDOOR_MODELS for cap in G8K_CAPS},
     **{g8k_frontdoor_lora_diff_tuple_name(m, cap): _g8k_frontdoor_lora_diff_tuple(m, cap) for m in G8K_FRONTDOOR_MODELS for cap in G8K_CAPS},
+    # the generator comparison's evals: the two 1M-pool constitution LoRAs' OWN native pair (the views qg1ms1..3, object bytes bound
+    # per row by --expect-object-sha256), reduction_mode not_applicable, the two caps; beside the native pair, never inside it.
+    # LAST, so the nearest tuple every existing refusal quotes (ties fall to registry order) is unchanged
+    **{g8k_native_qwengen1m_tuple_name(m, cap): _g8k_native_qwengen1m_tuple(m, cap)
+       for m in G8K_NATIVE_QWENGEN1M_MODELS for cap in G8K_CAPS},
 }
 #: the MATH-500 experiment's eight tuple names — by PREFIX since the GSM8K
 #: tuples joined the registry (the registry is no longer "the parent's + one
@@ -11878,6 +12101,57 @@ EXPECTED_INTERVENTION_HASHES: Mapping[str, Mapping[str, str]] = {
     },
     "qwen35_4b-f22s3p": {
         "constv2-mix-full__psr_ce_all_minus_ctl": "f79e44339ae17129",
+    },
+    # Added 2026-11-14: the three CONTROL-POOL-STOPPED Qwen rows — 12 hashes derived by the container preflight
+    # (object_identity, `--pf` without a pass, tree 8488d8f) against the staged bytes of every object, each object.pt sha256 == its
+    # configs/ctlstop_eb64_pins.json pin and each difference held to its two staged parents (derived_object_provenance ok); the
+    # preflight re-derives and REFUSES a disagreement.
+    "qwen35_4b-f22ctlstop64s1": {
+        "constv2ctl2-full__lora_r4_ce": "6edaa8ebf3c1370d",
+        "constv2ctl2-full__psr_ce_all": "9f440c33690954c8",
+        "constv2-mix-full__lora_r4_ce_minus_ctl": "e270988ff28c36d6",
+        "constv2-mix-full__psr_ce_all_minus_ctl": "f587224862feba08",
+    },
+    "qwen35_4b-f22ctlstop64s2": {
+        "constv2ctl2-full__lora_r4_ce": "65c6efbf64d021a8",
+        "constv2ctl2-full__psr_ce_all": "c88cb102f95570de",
+        "constv2-mix-full__lora_r4_ce_minus_ctl": "b7b808c9df9067e7",
+        "constv2-mix-full__psr_ce_all_minus_ctl": "1587386b7c4d1cc2",
+    },
+    "qwen35_4b-f22ctlstop64s3": {
+        "constv2ctl2-full__lora_r4_ce": "7ff5a70c43dfa1e0",
+        "constv2ctl2-full__psr_ce_all": "ed55d2eb7dc253c9",
+        "constv2-mix-full__lora_r4_ce_minus_ctl": "01cbad4580a126e5",
+        "constv2-mix-full__psr_ce_all_minus_ctl": "d8d10024e9b3a49f",
+    },
+    # Added 2026-11-15: the three SI-DISTILLED refit Qwen rows — 18 hashes derived by the container preflight
+    # (object_identity, `--pf` without a pass, tree 62a8b70, one preflight app per fit seed) against the
+    # staged bytes of every object, each object.pt sha256 == its configs/sikl4_pins.json pin; the C16 cells resolved through the
+    # candidate-SI subset file (candidate_sis_env). Equal, all 18, to a local derivation of the same module under the full
+    # snapshot and under the subset; the preflight re-derives and REFUSES a disagreement.
+    "qwen35_4b-f22sikl4s1": {
+        "safety_refusal__lora_r4": "f845360fbc1f5bdf",
+        "safety_refusal__psr_kl_all": "9eb8727da505055b",
+        "si_constitution__lora_r4": "d07e5a22b2a1d8e6",
+        "si_constitution__psr_kl_all": "5dfaa844bbec0213",
+        "C16__lora_r4": "2d59bc909bbd96cf",
+        "C16__psr_kl_all": "fb7310a541467961",
+    },
+    "qwen35_4b-f22sikl4s2": {
+        "safety_refusal__lora_r4": "b6a01c77f54b03a3",
+        "safety_refusal__psr_kl_all": "a32be1ed6ee3acb9",
+        "si_constitution__lora_r4": "4552224d96796f6d",
+        "si_constitution__psr_kl_all": "3cb9343d1785daef",
+        "C16__lora_r4": "94fcd216b71e2a01",
+        "C16__psr_kl_all": "92e38a0c0a2179f3",
+    },
+    "qwen35_4b-f22sikl4s3": {
+        "safety_refusal__lora_r4": "590df76166b71833",
+        "safety_refusal__psr_kl_all": "8f383e6797060879",
+        "si_constitution__lora_r4": "4482477ea7fba254",
+        "si_constitution__psr_kl_all": "ec35fba4b50e69cd",
+        "C16__lora_r4": "07a2e6cd09755e6d",
+        "C16__psr_kl_all": "08cad09b272c56ac",
     },
     # b64-capability-agentic-queue (2026-09-23): the six ALL-MODELS ONE-SEED rows — 18 hashes derived on the
     # grading host through object_identity (the preflight's own module) against the sha-pinned bytes of every object entry the lane

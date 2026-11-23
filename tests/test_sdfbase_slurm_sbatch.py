@@ -152,6 +152,14 @@ def test_fit_cell_sbatch_identity_plumbing():
     assert re.search(r'^POOL_KEY="\$\(sed -n .*heldout_pool: /vol/pool/'
                      r'.*"\$CONFIG".*\)"$', txt, re.M)
     assert '[ -n "$POOL_KEY" ] ||' in txt
+    # the held-out FILE is the config's too: the constitution
+    # pool, or the control pool for the constv2ctl2-full cell alone; an
+    # unreadable file name refuses on its own line
+    assert '[ -n "$HELDOUT_CELL" ] ||' in txt
+    assert re.search(r'^HELDOUT_CELL="\$\(sed -n .*heldout_pool: /vol/pool/'
+                     r'.*"\$CONFIG".*\)"$', txt, re.M)
+    assert 'HELDOUT="$SHARED/vol/pool/$POOL_KEY/pairs_${HELDOUT_CELL}.jsonl"' in txt
+    assert '[ "$HELDOUT_CELL" = constv2-heldout ] || [ "$SI" = constv2ctl2-full ] ||' in txt
     # submit-time sha pin, fail-closed
     # pin-fix: the pin is the `sha` FIELD found by name among `,`/`;`-separated key:value fields (the funnel appends `,nonce:<n>`)
     assert 'sha:*) PIN="${_f#sha:}"' in txt and 'PIN="${COMMENT#sha:}"' not in txt
@@ -258,9 +266,101 @@ def test_fit_cell_sbatch_pool_key_is_read_from_the_config():
             ("sdfbase_glm46vflash_doc_full_r2t12_fits.yaml",
              "glm46vflash_doc"),
             ("sdfbase_nemotron3nano4b_doc_full_fits.yaml",
-             "nemotron3nano4b_doc")):      # the retired ladder lane's pool dir (RETIRED_POOL_PARENTS)
+             "nemotron3nano4b_doc"),       # the retired ladder lane's pool dir (RETIRED_POOL_PARENTS)
+            # the control-only own-stop siblings: their seed
+            # key's pool dir, read off the CONTROL held-out file's path
+            ("sdfbase_qwen35_4b_base_eb64_s1_ctlstop_fits.yaml",
+             "qwen35_4b_base_eb64_s1"),
+            ("sdfbase_qwen35_4b_base_eb64_s3_ctlstop_fits.yaml",
+             "qwen35_4b_base_eb64_s3")):
         assert pool_key(cfgs / name) == want, name
     assert pool_key(FIT) == ""
+
+
+#: the held-out lines as they stood before the control pool was admitted,
+#: verbatim — the reference every config that names the constitution pool
+#: must still resolve identically under
+MAIN_POOL_LINES = r'''POOL_KEY="$(sed -n 's#^ *heldout_pool: /vol/pool/\([^/][^/]*\)/pairs_constv2-heldout\.jsonl *$#\1#p' "$CONFIG" | head -1)"
+[ -n "$POOL_KEY" ] || { log "FATAL could not read the pool dir from $CONFIG (train_kwargs.default.heldout_pool must be /vol/pool/<key>/pairs_constv2-heldout.jsonl)"; exit 3; }
+PAIRS="$SHARED/vol/pool/$POOL_KEY/pairs_${SI}.jsonl"
+HELDOUT="$SHARED/vol/pool/$POOL_KEY/pairs_constv2-heldout.jsonl"'''
+
+
+def _fit_pool_lines() -> str:
+    """The fit sbatch's own held-out block: from the POOL_KEY line through
+    the HELDOUT line, as the job runs it."""
+    m = re.search(r'^POOL_KEY="\$\(sed -n .*?^HELDOUT=[^\n]*$', FIT.read_text(),
+                  re.M | re.S)
+    assert m, "the sbatch's POOL_KEY .. HELDOUT block"
+    return m.group(0)
+
+
+def _run_pool_lines(lines: str, cfg: Path, si: str) -> subprocess.CompletedProcess:
+    return subprocess.run(
+        ["bash", "-c", 'CONFIG="$1"; SI="$2"; SHARED=/S; '
+                       'log() { echo "$*" >&2; }\n' + lines +
+                       '\nprintf "%s|%s|%s" "$POOL_KEY" "$PAIRS" "$HELDOUT"',
+         "_", str(cfg), si], capture_output=True, text=True)
+
+
+def test_fit_cell_sbatch_heldout_pool_follows_the_config_and_guards_the_control_pool(tmp_path):
+    """The held-out FILE is read from the config's
+    train_kwargs.default.heldout_pool, never hard-coded. Every committed
+    config naming the constitution pool resolves EXACTLY as the earlier lines
+    did
+    (POOL_KEY, PAIRS, HELDOUT) for every cell it carries; the `_ctlstop`
+    configs resolve to their seed key's pool dir and the CONTROL held-out
+    file for constv2ctl2-full (the earlier lines refused them: no POOL_KEY), and
+    exit 3 for any other cell; any other held-out file name exits 3."""
+    import yaml
+
+    new = _fit_pool_lines()
+    assert new.count("\n") == 6, new                  # seven lines: POOL_KEY, HELDOUT_CELL, three guards, PAIRS, HELDOUT
+    n_ctl = 0
+    for cfg in sorted((REPO / "configs").glob("sdfbase_*_fits.yaml")):
+        si_ids = yaml.safe_load(cfg.read_text())["si_ids"]
+        ctl = cfg.name.endswith("_ctlstop_fits.yaml")
+        n_ctl += ctl
+        for si in si_ids:
+            got = _run_pool_lines(new, cfg, si)
+            old = _run_pool_lines(MAIN_POOL_LINES, cfg, si)
+            assert got.returncode == 0, (cfg.name, si, got.stderr)
+            if not ctl:
+                assert old.returncode == 0 and got.stdout == old.stdout, (cfg.name, si)
+                assert got.stdout.endswith("/pairs_constv2-heldout.jsonl"), got.stdout
+            else:
+                assert old.returncode == 3, (cfg.name, old.stdout)   # the earlier lines refused the control file
+                key = cfg.name[len("sdfbase_"):-len("_ctlstop_fits.yaml")]
+                assert got.stdout == (f"{key}|/S/vol/pool/{key}/pairs_{si}.jsonl|"
+                                      f"/S/vol/pool/{key}/pairs_constv2ctl2-heldout.jsonl"), got.stdout
+        if ctl:
+            assert si_ids == ["constv2ctl2-full"]
+            bad = _run_pool_lines(new, cfg, "constv2-mix-full")
+            assert bad.returncode == 3 and "governs only the constv2ctl2-full cell" in bad.stderr, bad
+    assert n_ctl == 3
+
+    def synth(heldout: str) -> Path:
+        p = tmp_path / "sdfbase_x_fits.yaml"
+        p.write_text(f"train_kwargs:\n  default:\n    holdout_frac: 0.0\n    heldout_pool: {heldout}\n")
+        return p
+    ok = _run_pool_lines(new, synth("/vol/pool/k/pairs_constv2ctl2-heldout.jsonl"), "constv2ctl2-full")
+    assert ok.returncode == 0 and ok.stdout == \
+        "k|/S/vol/pool/k/pairs_constv2ctl2-full.jsonl|/S/vol/pool/k/pairs_constv2ctl2-heldout.jsonl"
+    for si in ("constv2-mix-full", "constv2-mix-1k", "constv2ctl-100k"):
+        r = _run_pool_lines(new, synth("/vol/pool/k/pairs_constv2ctl2-heldout.jsonl"), si)
+        assert r.returncode == 3 and "governs only the constv2ctl2-full cell" in r.stderr, (si, r)
+    for si in ("constv2-mix-full", "constv2ctl2-full"):
+        r = _run_pool_lines(new, synth("/vol/pool/k/pairs_constv2-heldout.jsonl"), si)
+        assert r.returncode == 0 and r.stdout.endswith("|/S/vol/pool/k/pairs_constv2-heldout.jsonl"), (si, r)
+    for heldout in ("/vol/pool/k/pairs_constv2ctl-heldout.jsonl",
+                    "/vol/pool/k/pairs_constv2ctl2ctl2-heldout.jsonl",
+                    "/vol/pool/k/pairs_constv2-mix-full.jsonl",
+                    "/vol/pool/k/pairs_constv2ctl2-heldout.jsonl.bak",
+                    "/vol/pool/k/sub/pairs_constv2-heldout.jsonl",
+                    "/elsewhere/k/pairs_constv2-heldout.jsonl"):
+        for si in ("constv2-mix-full", "constv2ctl2-full"):
+            r = _run_pool_lines(new, synth(heldout), si)
+            assert r.returncode == 3 and "could not read the pool dir" in r.stderr, (heldout, si, r)
 
 
 def _run_sbatch_line(pattern: str, **env) -> subprocess.CompletedProcess:
@@ -510,3 +610,93 @@ def test_derived_sbatch_reads_the_seed_from_the_config_default_zero(tmp_path):
     for stage in ("capture-set", "calibrate", "distill"):
         assert re.search(rf'{stage} "\$\{{RESID_COMMON\[@\]\}}"( "\$\{{RESID_MODEL\[@\]\}}")? "\$\{{SEED_ARGS\[@\]\}}"', txt), stage
     assert "pair=$POOL_KEY/${MIX_SI}-${CTL_SI} seed=$SEED bank=$BANK" in txt
+
+
+# --------------------------------------------------------------------------- #
+# the derived sbatch's positional 11 (the control parents' own bank key)        #
+# --------------------------------------------------------------------------- #
+
+DERIVED_CTL_KEY = "qwen35_4b_base_eb64_s1_ctlstop"
+DERIVED_PREP_POSITIONALS = ('STAGE=prep; MODEL_KEY=qwen35_4b_base_eb64_s1; MIX_SI=constv2-mix-full; '
+                            'CTL_SI=constv2ctl2-full; BANK=reseed; LR_MULT=; OBJECTS=both; BUILD=direct')
+
+
+def _derived_positional_block() -> str:
+    """The derived sbatch's positional parsing, verbatim: from STAGE= through the positional-11 block."""
+    txt = DERIVED.read_text()
+    start = txt.index('STAGE="${1:?')
+    end = txt.index("\nfi\n", txt.index('[ "$CTL_KEY" != "$MODEL_KEY" ] ||')) + len("\nfi\n")
+    return txt[start:end]
+
+
+def _parse_positionals(*argv: str) -> subprocess.CompletedProcess:
+    script = "set -uo pipefail\nset -- " + " ".join(argv) + "\n" + _derived_positional_block() + \
+        '\nprintf "%s|%s|%s|%s" "$STAGE" "$MODEL_KEY" "$BUILD" "$CTL_KEY"\n'
+    return subprocess.run(["bash", "-c", script], capture_output=True, text=True)
+
+
+def test_derived_escalate_carries_positional_11_and_the_successor_parses_it_back(tmp_path):
+    """The self-resubmit forwards the control key as positional 11 — and the successor's own positional block reads it back —
+    while a run without one resubmits exactly the ten positionals it always did; with escalation off nothing is submitted."""
+    out = "/workspace/nobodyx/exp/logs/ctl-derived_77.out"
+    lines = _run_escalate(DERIVED, tmp_path, stdout_path=out,
+                          positionals=f"{DERIVED_PREP_POSITIONALS}; CTL_KEY={DERIVED_CTL_KEY}")
+    argv, _env = lines
+    tail = argv.split("script.sbatch ", 1)[1]
+    assert tail == f"prep qwen35_4b_base_eb64_s1 constv2-mix-full constv2ctl2-full reseed - 2 3 both direct {DERIVED_CTL_KEY}", argv
+    r = _parse_positionals(*tail.split())
+    assert r.returncode == 0 and r.stdout == f"prep|qwen35_4b_base_eb64_s1|direct|{DERIVED_CTL_KEY}", r.stdout + r.stderr
+    # no control key: the ten positionals, byte for byte as before
+    lines = _run_escalate(DERIVED, tmp_path / "nokey", stdout_path=out, positionals=f"{DERIVED_PREP_POSITIONALS}; CTL_KEY=")
+    assert lines[0].endswith("script.sbatch prep qwen35_4b_base_eb64_s1 constv2-mix-full constv2ctl2-full reseed - 2 3 both direct")
+    # escalation disabled (the hand-submitted control-key build): nothing is resubmitted
+    assert _run_escalate(DERIVED, tmp_path / "off", stdout_path=out,
+                         positionals=f"{DERIVED_PREP_POSITIONALS}; CTL_KEY={DERIVED_CTL_KEY}", extra_env="ESCALATE_QOS=none") == []
+
+
+def test_derived_positional_11_defaults_to_none_and_refuses_every_other_stage_or_build():
+    base = ("qwen35_4b_base_eb64_s1", "constv2-mix-full", "constv2ctl2-full", "reseed", "-", "1", "5", "both")
+    for argv in (("prep",) + base, ("prep",) + base + ("direct",), ("prep",) + base + ("direct", "-")):
+        r = _parse_positionals(*argv)
+        assert r.returncode == 0 and r.stdout.endswith("|"), (argv, r.stdout, r.stderr)        # CTL_KEY empty
+    for stage in ("calibrate", "assess", "finish"):
+        r = _parse_positionals(stage, *base[:4], "0.3", "1", "5", "both", "direct", DERIVED_CTL_KEY)
+        assert r.returncode == 2 and f"stage {stage} refuses a control key" in r.stdout, (stage, r.stdout)
+    r = _parse_positionals("prep", *base, "chain", DERIVED_CTL_KEY)
+    assert r.returncode == 2 and "build=chain refuses a control key" in r.stdout, r.stdout
+    r = _parse_positionals("prep", *base, "direct", "qwen35_4b_base_eb64_s1")
+    assert r.returncode == 2 and "equals the model key" in r.stdout, r.stdout
+    for bad in ("../qwen35_4b_base_eb64_s1", "a/b", "..", ".x", "x..y"):
+        r = _parse_positionals("prep", *base, "direct", bad)
+        assert r.returncode == 2 and "is not a plain bank key" in r.stdout, (bad, r.stdout)
+
+
+def _parse_positionals_argv(*argv: str, prelude: str = "") -> subprocess.CompletedProcess:
+    """The positional block run with ``argv`` as the script's real arguments (empty strings included); ``prelude`` runs first, in
+    the caller's shell, and may ``set --`` the arguments itself."""
+    script = prelude + "\nset -uo pipefail\n" + _derived_positional_block() + \
+        '\nprintf "%s|%s|%s|%s" "$STAGE" "$MODEL_KEY" "$BUILD" "$CTL_KEY"\n'
+    return subprocess.run(["bash", "-c", script, "sbatch", *argv], capture_output=True, text=True)
+
+
+def test_derived_positional_11_only_absent_or_dash_means_none_and_a_12th_refuses():
+    """An absent 11th or `-` means no control key. An EMPTY 11th — literally, or a caller's quoted expansion of an unset variable — is
+    refused rather than read as `-`, and so is any 12th positional: a control key one place late would otherwise be dropped and the
+    build would run under the pool key, the pair built from the model key's own control."""
+    ten = ("prep", "qwen35_4b_base_eb64_s1", "constv2-mix-full", "constv2ctl2-full", "reseed", "-", "1", "5", "both", "direct")
+    for argv in (ten, ten + ("-",)):
+        r = _parse_positionals_argv(*argv)
+        assert r.returncode == 0 and r.stdout.endswith("|direct|"), (argv, r.stdout, r.stderr)
+    r = _parse_positionals_argv(*ten, DERIVED_CTL_KEY)
+    assert r.returncode == 0 and r.stdout.endswith(f"|direct|{DERIVED_CTL_KEY}"), r.stdout + r.stderr
+    r = _parse_positionals_argv(*ten, "")
+    assert r.returncode == 2 and "positional 11 ctl_key is empty" in r.stdout, r.stdout + r.stderr
+    # the caller's shell expands an unset variable, quoted, into an empty 11th
+    r = _parse_positionals_argv(prelude="unset CK; set -- " + " ".join(ten) + ' "$CK"')
+    assert r.returncode == 2 and "positional 11 ctl_key is empty" in r.stdout, r.stdout + r.stderr
+    # ... and unquoted into no 11th at all: the default, as when it is absent
+    r = _parse_positionals_argv(prelude="unset CK; set -- " + " ".join(ten) + " $CK")
+    assert r.returncode == 0 and r.stdout.endswith("|direct|"), r.stdout + r.stderr
+    for tail in (("-", DERIVED_CTL_KEY), ("", DERIVED_CTL_KEY), (DERIVED_CTL_KEY, "extra"), (DERIVED_CTL_KEY, DERIVED_CTL_KEY)):
+        r = _parse_positionals_argv(*ten, *tail)
+        assert r.returncode == 2 and "12 positionals, at most 11" in r.stdout, (tail, r.stdout, r.stderr)

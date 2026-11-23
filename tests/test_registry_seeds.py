@@ -941,7 +941,8 @@ def test_paper_labels_spell_every_fitted_stem_of_the_paper_s_arm_table():
         ent = fs.paper_label_for(stem)
         assert ent is not None, f"legacy_spellings.yaml paper_labels has no entry for the paper's fitted stem {stem!r}"
         assert (ent["paper_label"], ent["object_role"]) == (arm.paper_label, arm.object_role), stem
-        for prefix in ("base", "itdoc", "itdoc64", "base64s2", "d0p5_eb64s1", "derived_itdoc64", "halfdoseit", "si12"):
+        for prefix in ("base", "itdoc", "itdoc64", "base64s2", "d0p5_eb64s1", "derived_itdoc64", "halfdoseit", "si12", "ctlstop64s2",
+                       "derived_ctlstop64s1"):
             got, src, got_stem, got_prefix = FS.paper_label_entry_for(arm.object_kind, (f"{prefix}__{stem}",), fs)
             assert got is not None and got["paper_label"] == arm.paper_label and got_stem == stem and got_prefix == prefix, (prefix, stem)
     # the candidate-instruction distillations are ruled `other` by fit_target_overrides, never by a paper arm

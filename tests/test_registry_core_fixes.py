@@ -605,7 +605,9 @@ def test_reverted_content_reactivates_the_earlier_revision_with_withdrawals(tmp_
     assert ing3.refused == 0 and [r.revision_id for r in rep3.results] == [rev_a]
     assert _q(root, "SELECT revision_id FROM source_revision WHERE accepted = 1 AND superseded_by_revision_id IS NULL")[0][0] == rev_a
     assert _q(root, "SELECT COUNT(*) FROM v_item_result_current")[0][0] == 3                          # A's rows are what readers see
-    assert _q(root, "SELECT COUNT(*) FROM item_result WHERE source_revision_id = ? AND withdrawn_by_revision_id IS NOT NULL", rev_b)[0][0] == 2
+    # B, superseded, is reclaimed: its rows deleted (migration 0033; prune-rule/3), every deleted carrier counted in the ledger
+    assert _q(root, "SELECT COUNT(*) FROM item_result WHERE source_revision_id = ?", rev_b)[0][0] == 0
+    assert _q(root, "SELECT table_name, rows_deleted FROM item_reclaim_ledger WHERE revision_id = ?", rev_b) == [("item_result", 5)]
     assert _q(root, "SELECT COUNT(*) FROM withdrawal WHERE from_revision_id = ? AND to_revision_id = ? AND reason = 'removed_items'",
               rev_b, rev_a)[0][0] == 1
     _rebuild_equal(root, tmp_path)
@@ -715,7 +717,8 @@ def test_item_only_adapter_shrink_withdraws_the_removed_items(tmp_path):
     assert rep.withdrawals == 1 and ing.refused == 0
     live = _q(root, "SELECT COUNT(*) FROM v_item_result_current WHERE metric_id = 'regrade'")[0][0]
     gone = _q(root, "SELECT COUNT(*) FROM item_result WHERE metric_id = 'regrade' AND withdrawn_by_revision_id IS NOT NULL")[0][0]
-    assert (live, gone) == (2, 1)
+    assert (live, gone) == (2, 0)                                              # no mark written since 0033: the superseded read is deleted
+    assert _q(root, "SELECT COUNT(*) FROM item_result WHERE metric_id = 'regrade'")[0][0] == 2
 
 
 # ---- (6) foreign keys inside run_patch.fields dependency-block ----------------------------------------------
@@ -1491,7 +1494,7 @@ def test_revision_is_staged_in_bounded_transactions_and_activated_atomically(tmp
     assert ing.longest_transaction_s > 0.0 and ing.write_s > 0.0                 # revision transactions are in the telemetry
     assert _live_items(root, rid) == {f"q{i}": s for i, s in enumerate(b_scores)}
     assert _q(root, "SELECT accepted FROM source_revision WHERE revision_id = ?", rev) == [(1,)]
-    assert _q(root, "SELECT COUNT(*) FROM item_result WHERE run_id = ?", rid) == [(12,)]                  # A's 5 rows coexist, superseded
+    assert _q(root, "SELECT COUNT(*) FROM item_result WHERE run_id = ?", rid) == [(7,)]                   # A's 5 rows: superseded, reclaimed
     assert _q(root, "SELECT COUNT(*) FROM v_item_headline WHERE run_id = ?", rid) == [(7,)]
     # the revision's files: artifact, judgment, run, run_state, run_metric, item_result, source_status, source_revision
     assert _q(root, "SELECT COUNT(*) FROM record_ingest WHERE file_uri LIKE ?", f"records/adapters/{ad.name}/{rev}/%")[0][0] == 8
@@ -1685,13 +1688,14 @@ def test_pending_revision_rows_are_invisible_to_every_item_reader(tmp_path):
     _write(root, "dims", "000002-judge3.jsonl", [_judge3()])
     _ingest(root)
     assert _live_items(root, rid) == {"q0": 0.9, "q1": 0.9, "q2": 0.9, "q3": 0.9}
-    assert _q(root, "SELECT COUNT(*) FROM item_result WHERE run_id = ?", rid) == [(7,)]                     # A's rows stay (history)
+    assert _q(root, "SELECT COUNT(*) FROM item_result WHERE run_id = ?", rid) == [(4,)]                     # A's rows: superseded, reclaimed
     _rebuild_equal(root, tmp_path)
 
 
 def test_withdrawn_marks_follow_the_head_in_bounded_batches(tmp_path, monkeypatch):
-    """A → B (shrink: q2 withdrawn) → A: B's withdrawal marked A's q2; A re-activated is the head again — its rows
-    are visible at the flip (derived) and the mark is cleared afterwards in bounded transactions."""
+    """A → B (shrink: q2 withdrawn) → A. Since migration 0033 reclaim DELETES a superseded revision's rows (pass (ii) no longer marks
+    them): A's rows go when B supersedes it, are re-folded from the log before A's re-activation stages, and B's go in turn. Pass (i) is
+    unchanged: a mark left on a HEAD's rows (written before 0033) is cleared in bounded transactions and never gates visibility."""
     root, store_root = _adapter_setup(tmp_path, [("s1", "store_1", "constitution_lora@aaaa", [0.2, 0.8, 0.4])])
     ad = StoreAdapter(store_root)
     rid = I.run_id(synth.CAMPAIGN, "store_1", "constitution_lora@aaaa", synth.EVAL_ID, synth.INSTRUMENT_ID)
@@ -1700,7 +1704,8 @@ def test_withdrawn_marks_follow_the_head_in_bounded_batches(tmp_path, monkeypatc
     _store(store_root, "s1", "store_1", "constitution_lora@aaaa", [0.2, 0.8])
     rep_b, _ = _pass(root, ad, synth.t(3000))
     rev_b = rep_b.results[0].revision_id
-    assert _q(root, "SELECT item_id FROM item_result WHERE source_revision_id = ? AND withdrawn_by_revision_id IS NOT NULL", rev_a) == [("q2",)]
+    assert _q(root, "SELECT COUNT(*) FROM item_result WHERE source_revision_id = ?", rev_a) == [(0,)]          # A, superseded: deleted
+    assert _q(root, "SELECT table_name, rows_deleted FROM item_reclaim_ledger WHERE revision_id = ?", rev_a) == [("item_result", 3)]
     assert _live_items(root, rid) == {"q0": 0.2, "q1": 0.8}
     # a stale mark on the HEAD's rows (a withdrawal applied to a revision that became current again) is cleared by the
     # reclaim pass, one bounded transaction per RECLAIM_BATCH_ROWS rows — and never gates visibility
@@ -1715,7 +1720,9 @@ def test_withdrawn_marks_follow_the_head_in_bounded_batches(tmp_path, monkeypatc
     rep_c, ing_c = _pass(root, ad, synth.t(4000))
     assert ing_c.refused == 0 and [r.revision_id for r in rep_c.results] == [rev_a]
     assert _live_items(root, rid) == {"q0": 0.2, "q1": 0.8, "q2": 0.4}                                # A is the head again
+    assert ing_c.reclaim_rows_rehydrated == 3                                                          # re-folded before the bundle staged
     assert _q(root, "SELECT COUNT(*) FROM item_result WHERE source_revision_id = ? AND withdrawn_by_revision_id IS NOT NULL", rev_a) == [(0,)]
+    assert _q(root, "SELECT COUNT(*) FROM item_result WHERE source_revision_id = ?", rev_b) == [(0,)]          # B, superseded: deleted
     _rebuild_equal(root, tmp_path)
 
 
@@ -1866,7 +1873,7 @@ def test_two_accepted_sources_pick_the_current_row_by_priority_and_show_both_pro
     _rebuild_equal(root, tmp_path)
 
 
-# ---- (3) withdrawal marks are bookkeeping, materialised after activation in bounded batches --------------------
+# ---- (3) the superseded revision's rows are reclaimed after activation in bounded batches (deleted since 0033) ------
 
 def test_activation_writes_no_item_rows_even_when_the_revision_withdraws_items(tmp_path, monkeypatch):
     root, store_root = _adapter_setup(tmp_path, [("s1", "store_1", "constitution_lora@aaaa", [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7])])
@@ -1892,11 +1899,12 @@ def test_activation_writes_no_item_rows_even_when_the_revision_withdraws_items(t
     assert len(activation) == 1
     touched = [s for s in activation[0] if re.match(r"(UPDATE|INSERT(?: OR \w+)? INTO|DELETE FROM) (item_result|item_flags|run_degeneration)\b", s)]
     assert not touched, touched[:3]                                            # the activation writes NO item-table row
-    assert ing.reclaim_transactions == 3                                       # 5 marks at a batch of 2 → 2 + 2 + 1
-    marks = [t for t in committed if any(s.startswith("UPDATE item_result SET withdrawn_by_revision_id") for s in t)]
-    assert len(marks) == 3 and all(t is not activation[0] for t in marks)
+    assert ing.reclaim_transactions == 5                                       # A's 7 rows deleted at a batch of 2 → 2 + 2 + 2 + 1, then `reclaimed`
+    deletes = [t for t in committed if any(s.startswith("DELETE FROM item_result") for s in t)]
+    assert len(deletes) == 4 and all(t is not activation[0] for t in deletes)
+    assert not [t for t in committed if any(s.startswith("UPDATE item_result SET withdrawn_by_revision_id") for s in t)]   # no mark written
     assert _live_items(root, rid) == {"q0": 0.1, "q1": 0.2}
-    assert _q(root, "SELECT COUNT(*) FROM item_result WHERE source_revision_id = ? AND withdrawn_by_revision_id = ?", rev_a, rev_b) == [(5,)]
+    assert _q(root, "SELECT COUNT(*) FROM item_result WHERE source_revision_id = ?", rev_a) == [(0,)]
     assert _q(root, "SELECT reclaimed FROM source_revision WHERE revision_id = ?", rev_a) == [(1,)]
     _rebuild_equal(root, tmp_path)
 

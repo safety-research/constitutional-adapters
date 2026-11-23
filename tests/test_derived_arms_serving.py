@@ -722,8 +722,12 @@ class TestMainPortRegistration:
         # + constitution_full: the FULL 34k constitution as a prompted appendix arm, registered by the sdfbase-llama8b lane
         # — an APPENDIX arm, not a paper arm; promptable, no object
         assert cm.PETRI_PROMPTABLE_SI_IDS == ("safety", "constitution", "irrelevant", "constitution_full")
-        assert cm.PETRI_OBJECT_ONLY_SI_IDS == (HSI, "constv2ctl2_full")   # merged: both corpora
-        assert cm.PETRI_SI_IDS == cm.PETRI_PROMPTABLE_SI_IDS + cm.PETRI_OBJECT_ONLY_SI_IDS
+        # merged: both full corpora, then the 1M-token generator comparison's two pools
+        # (the generator comparison, appended; the Petri ripple check found no existing manifest moved)
+        assert cm.PETRI_OBJECT_ONLY_SI_IDS == (HSI, "constv2ctl2_full",
+                                               "constv2_mix_1m", "constqwen38_mix_1m")
+        # + the distilled-only SIs (2026-11-09): the short irrelevant control SI C16's distilled objects, Class A only
+        assert cm.PETRI_SI_IDS == cm.PETRI_PROMPTABLE_SI_IDS + cm.PETRI_OBJECT_ONLY_SI_IDS + cm.PETRI_DISTILLED_ONLY_SI_IDS
         assert not (set(cm.PETRI_PROMPTABLE_SI_IDS) & set(cm.PETRI_OBJECT_ONLY_SI_IDS))
         # every object-only SI is translated, and only promptable SIs have
         # a variant behavior dir

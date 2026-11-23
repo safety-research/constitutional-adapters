@@ -20,7 +20,9 @@ lane asserts), so it vendors this module instead of importing main's. Main is
 the one place these definitions change; the vendored copy is re-mirrored from
 here. ``tests/test_sampled_controls_drift.py`` is the standing contract that
 keeps the two identical (every definition, and the whole body from the first
-definition on) and is expected to live as long as the lane does. The relationship
+definition on). The lane has since closed and its branch is archived, so the
+vendor is FROZEN and no longer re-mirrored; the contract stays as the provenance
+link between the copy the lane's cells ran and this module. The relationship
 describes itself in :data:`VENDOR_CONTRACT` (main's header, below the imports): which
 copy is canonical, where the vendor is expected, the contract's scope and what it
 does NOT cover, and the sha256 of every definition it is a contract with — so the
@@ -96,6 +98,10 @@ from sisteer.eval.sweep import FIT_PROVENANCE_TEMPLATE_CHECK_KEY  # noqa: F401
 #: names the mirror's commit cannot live inside the bytes that commit contains, and
 #: two sides pinning each other's commit would chase each other forever — so main
 #: names the vendor's commit, and both sides pin the module by content.
+#: A vendor whose lane has closed is FROZEN: it is not re-mirrored, and where main has
+#: since changed sampled_decode.py, ``expected_at`` records the hash the vendored copy
+#: actually carries, with the reason in the vendor's ``state``. The shared body has no
+#: such slot: the vendored body must still equal main's, byte for byte.
 #: The hash table is a plain "name sha256" text table (no assignment operator between
 #: a KEY-named definition and a hex digest, so a secret scanner has nothing to match).
 VENDOR_CONTRACT = {
@@ -106,11 +112,18 @@ VENDOR_CONTRACT = {
                 "serving/ has diverged by 16 files and merging would break the production "
                 "identity gate every cell asserts",
          "expected_at": {"ref": "arditi-cell1",
-                         "sha": "3a85a2791e3cac9ba738361ebad039ce159b1d09"},
-         "state": "LANDED on arditi-cell1 2026-09-12: the battery that generated configs from "
-                  "that branch closed its stores (its last two cells are terminal), so the "
-                  "mirror was merged and this field now names the lane tip rather than the "
-                  "preparation branch"},
+                         "sha": "3a85a2791e3cac9ba738361ebad039ce159b1d09",
+                         "sampled_decode_sha256":
+                             "aaa4c42229318f5f170fdd7c5f7b610590a27913e732c0208fd0d289969c8129"},
+         "state": "FROZEN. The mirror landed on arditi-cell1 on 2026-09-12, when the battery "
+                  "that generated configs from that branch closed its stores (its last two "
+                  "cells are terminal); the branch was archived on 2026-10-08 as "
+                  "refs/archive/2026-10-08/arditi-cell1, whose tip carries the same sampled_* "
+                  "bytes as the commit named here. Main's sampled_decode.py took the "
+                  "identical-row preset collapse on 2026-10-08 (8be2101c0, keyed on the whole "
+                  "row in 51609a681), after the lane's last cell, so the vendor is not "
+                  "re-mirrored: its sampled_decode.py stays at the hash recorded in "
+                  "expected_at, and its shared body still equals main's byte for byte"},
     ),
     "scope": {
         "covers": ("src/sisteer/eval/sampled_controls.py", "src/sisteer/eval/sampled_decode.py"),

@@ -12,6 +12,7 @@ from __future__ import annotations
 
 import json
 import os
+import shutil
 import stat
 import textwrap
 
@@ -35,18 +36,32 @@ def _stub(bin_dir, name, body):
     return p
 
 
+#: The only host tools a stub runs: ``bash`` (each stub's ``#!/usr/bin/env bash``) and ``sleep`` (the hung nvidia-smi).
+#: Every other stub command (printf, echo, kill, ulimit, exit) is a bash builtin, and ``/usr/bin/env`` is reached by absolute path.
+STUB_HOST_TOOLS = ("bash", "sleep")
+
+
 def _private_path(tmp_path, monkeypatch, *, nvidia_smi: bool = False, sacct: str = "", sacct_rc: int = 0):
-    """A PATH holding only the stubs asked for (plus bash's own dir), and NO scheduler / GPU variables."""
+    """A PATH holding only the stubs asked for plus links to the host's ``bash`` and ``sleep``, and NO scheduler / GPU
+    variables. No host directory is ever on PATH: on a cluster node bash's own directory (``/usr/bin``) also holds the REAL
+    ``nvidia-smi`` and ``sacct``, which would answer where the test left a tool out (a GPU name even in a GPU-less step, and
+    another job's AllocTRES whenever the accounting daemon answers), so the "absent" cases would flip with the host."""
     bin_dir = tmp_path / "bin"
     bin_dir.mkdir(exist_ok=True)
     for stale in bin_dir.iterdir():          # a fresh PATH every call: no stub from an earlier step answers
         stale.unlink()
-    bash_dir = os.path.dirname(os.path.realpath("/bin/bash"))
+    tools_dir = tmp_path / "host_tools"
+    if not tools_dir.exists():               # linked on the first call per test, while PATH is still the host's
+        tools_dir.mkdir()
+        for name in STUB_HOST_TOOLS:
+            real = shutil.which(name)
+            assert real, f"the stubs need {name} on the host PATH"
+            os.symlink(os.path.realpath(real), tools_dir / name)
     if nvidia_smi:
         _stub(bin_dir, "nvidia-smi", f'printf "%s\\n%s\\n" "{SYNTH_GPU}" "{SYNTH_GPU}"\n')
     if sacct or sacct_rc:
         _stub(bin_dir, "sacct", f'echo "$@" > "{bin_dir}/sacct.argv"\nprintf "%s\\n" "{sacct}"\nexit {sacct_rc}\n')
-    monkeypatch.setenv("PATH", f"{bin_dir}{os.pathsep}{bash_dir}")
+    monkeypatch.setenv("PATH", f"{bin_dir}{os.pathsep}{tools_dir}")
     for var in emit.GPU_COUNT_ENV_LADDER + ("SLURM_JOB_ID", "SLURM_JOB_NAME", "SLURM_CLUSTER_NAME"):
         monkeypatch.delenv(var, raising=False)
     monkeypatch.delenv(emit.DISABLED_ENV, raising=False)  # the suite runs with emission off (tests/conftest.py); these tests write to its own tmp spool, so it opts in
@@ -102,7 +117,9 @@ def test_gpu_type_from_nvidia_smi_first_line_absent_and_timeout(tmp_path, monkey
     assert emit.gpu_type_from_nvidia_smi() == SYNTH_GPU
     _stub(bin_dir, "nvidia-smi", "sleep 5\necho late\n")
     assert emit.gpu_type_from_nvidia_smi(timeout_s=0.3) is None      # a hung tool is a None, never a stall past the timeout
-    _stub(bin_dir, "nvidia-smi", "echo 'NVIDIA-SMI has failed' >&2\nexit 9\n")
+    # a failing tool's stdout is never trusted: this one prints a plausible name AND exits 9, so a probe that ignored the
+    # return code would return that name here
+    _stub(bin_dir, "nvidia-smi", f'printf "%s\\n" "{SYNTH_GPU}"\necho \'NVIDIA-SMI has failed\' >&2\nexit 9\n')
     assert emit.gpu_type_from_nvidia_smi() is None
     _private_path(tmp_path, monkeypatch)                            # no nvidia-smi at all
     assert emit.gpu_type_from_nvidia_smi() is None
@@ -130,10 +147,15 @@ def test_hardware_from_env_precedence_fallback_and_sources(tmp_path, monkeypatch
 
 def test_nothing_raises_when_every_probe_is_broken(tmp_path, monkeypatch):
     bin_dir = _private_path(tmp_path, monkeypatch)
-    _stub(bin_dir, "nvidia-smi", "kill -SEGV $$\n")
+    # nvidia-smi dies by a signal. Its core limit goes to 0 first: on a host that allows core dumps the kernel would otherwise
+    # write a core file into the working directory, the checkout pytest runs from (possibly read-only). The test also runs
+    # from its own tmp dir, so a core that does appear lands there and the last assertion names it.
+    monkeypatch.chdir(tmp_path)
+    _stub(bin_dir, "nvidia-smi", "ulimit -c 0\nkill -SEGV $$\n")
     _stub(bin_dir, "sacct", "printf 'gres/gpu=not-a-number\\n'\nexit 0\n")
     hw = emit.hardware_from_env({"SLURM_GPUS_ON_NODE": "many", "CUDA_VISIBLE_DEVICES": ""}, job_id="4242")
     assert hw == {"gpu_count": None, "gpu_count_source": None, "gpu_type": None, "gpu_type_source": None}
+    assert sorted(p.name for p in tmp_path.glob("core*")) == []      # the signal-killed stub dumped no core
 
 
 # --------------------------------------------------------------------------------------------

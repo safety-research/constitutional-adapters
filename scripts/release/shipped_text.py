@@ -292,6 +292,7 @@ class Policy:
     extra_shapes: Dict[str, str] = field(default_factory=dict)
     keys: List[str] = field(default_factory=list)          # address globs of JSON objects whose keys are identifier leaves
     key_map: List[Tuple[str, str, str]] = field(default_factory=list)   # (object address glob, old key, new key)
+    omit_item_judges: List[Tuple[str, str]] = field(default_factory=list)   # (judge id, public reason): item rows the frame leaves out
 
     def alias(self, scope: str, unit: str, column: str) -> Tuple[str, str]:
         if scope != "frame":
@@ -333,7 +334,9 @@ def load_policy(path: str) -> Policy:
     no whitespace is an identifier unless a class rule says otherwise; default true), ``keys`` (address globs of JSON objects
     whose keys are themselves values a reader looks up, such as a spelling map: each key takes the identifier site map, so it
     stays equal to the same value spelled elsewhere), ``key_map`` (``[object address glob, old key, new key]`` rows: a key that
-    is free text naming its group, renamed where the object sits; every other key is kept)."""
+    is free text naming its group, renamed where the object sits; every other key is kept), ``omit_item_judges`` (``[{judge_id,
+    reason}]``: item judges of the cut whose item rows the frame leaves out, see :func:`item_omission`; the reason is public text the
+    MANIFEST carries)."""
     with open(path, "r", encoding="utf-8") as fh:
         raw = json.load(fh)
     sentinel = raw.get("sentinel")
@@ -360,7 +363,18 @@ def load_policy(path: str) -> Policy:
                   single_token_identifier=bool(raw.get("single_token_identifier", True)),
                   extra_shapes={str(k): str(v) for k, v in (raw.get("extra_shapes") or {}).items()},
                   keys=[policy_glob(g) for g in raw.get("keys") or []],
-                  key_map=[_key_map_row(path, i, r) for i, r in enumerate(raw.get("key_map") or [])])
+                  key_map=[_key_map_row(path, i, r) for i, r in enumerate(raw.get("key_map") or [])],
+                  omit_item_judges=[_omit_row(path, i, r) for i, r in enumerate(raw.get("omit_item_judges") or [])])
+
+
+_JUDGE_ID = re.compile(r"^[0-9a-f]{64}$")
+
+
+def _omit_row(path: str, i: int, row: Any) -> Tuple[str, str]:
+    if not (isinstance(row, dict) and isinstance(row.get("judge_id"), str) and _JUDGE_ID.match(row["judge_id"])
+            and isinstance(row.get("reason"), str) and row["reason"].strip()):
+        raise ShippedTextError(f"{path}: omit_item_judges[{i}] must be {{judge_id: a 64-hex judge id, reason: nonempty text}}")
+    return row["judge_id"], row["reason"]
 
 
 def _key_map_row(path: str, i: int, row: Any) -> Tuple[str, str, str]:
@@ -1375,15 +1389,127 @@ def rewrite_frame_cell(ctx: Context, table: str, column: str, value: str, change
     return new
 
 
-def rewrite_frame(ctx: Context, src: str, dst: str, log: Optional[Callable[[str], None]] = None) -> Dict[str, Dict[str, int]]:
+#: the SQLite-only item tables, whose rows carry the judgment they belong to
+ITEM_TABLES = ("item_result", "item_flags")
+
+
+def item_omission(conn: sqlite3.Connection, judges: Sequence[str], item_model_ids: Sequence[str] = ()) -> Dict[str, Dict[str, Any]]:
+    """What leaving out the item rows of ``judges`` takes from a frame, per judge: the ids of its judgments in the frame
+    (``judgment_ids``), the rows of each item table under them (``item_result_rows``, ``item_flags_rows``), how many of those the cut
+    wrote verbatim (``verbatim_rows``: ``record_sha256`` set, i.e. rows the cut did NOT add through its item-judge pass) and the
+    judgments the cut's item scope admitted (``judgments``: complete, or on a per-item run, i.e. a run the paper currently reads or a
+    run of an item model; the rule ``snapshot.build`` counts in ``n_item_judgments``)."""
+    paper_runs = "SELECT run_id FROM v_paper_current WHERE in_current_paper = 1"
+    if item_model_ids:
+        paper_runs += f" UNION SELECT run_id FROM run WHERE model_id IN ({', '.join('?' for _ in item_model_ids)})"
+    out: Dict[str, Dict[str, Any]] = {}
+    for jid in judges:
+        ids = [r[0] for r in conn.execute("SELECT judgment_id FROM judgment WHERE judge_id = ? ORDER BY judgment_id", (jid,))]
+        p: Dict[str, Any] = {"judgment_ids": ids, "verbatim_rows": 0}
+        conn.execute("CREATE TEMP TABLE IF NOT EXISTS _st_omit (judgment_id TEXT PRIMARY KEY)")
+        conn.execute("DELETE FROM temp._st_omit")
+        conn.executemany("INSERT INTO temp._st_omit (judgment_id) VALUES (?)", [(j,) for j in ids])
+        for t in ITEM_TABLES:
+            n, v = conn.execute(f'SELECT COUNT(*), COUNT(record_sha256) FROM "{t}" WHERE judgment_id IN '
+                                f'(SELECT judgment_id FROM temp._st_omit)').fetchone()
+            p[f"{t}_rows"] = int(n)
+            p["verbatim_rows"] += int(v)
+        p["judgments"] = int(conn.execute(
+            "SELECT COUNT(*) FROM judgment WHERE judge_id = ? AND ((status = 'complete' AND run_id IN (SELECT run_id FROM run)) "
+            f"OR run_id IN ({paper_runs}))", (jid, *item_model_ids)).fetchone()[0])
+        conn.execute("DROP TABLE temp._st_omit")
+        out[jid] = p
+    return out
+
+
+def omission_manifest(old: Mapping[str, Any], plan: Mapping[str, Mapping[str, Any]], reasons: Mapping[str, str]) -> Dict[str, Any]:
+    """The MANIFEST keys an item-row omission changes, from the cut's MANIFEST and :func:`item_omission`'s plan: the item tables' row
+    counts, ``item_judges``, ``item_projection``, ``item_result_passes``, ``n_item_judgments`` and ``release_omitted_item_judges`` (the
+    omitted judges' rows of ``item_judges`` with what left the frame and why)."""
+    gone = set(plan)
+    n_rows = sum(int(p["item_result_rows"]) for p in plan.values())
+    n_flags = sum(int(p["item_flags_rows"]) for p in plan.values())
+    tables = dict(old["tables"])
+    tables["item_result"] = int(tables["item_result"]) - n_rows
+    if "item_flags" in tables:
+        tables["item_flags"] = int(tables["item_flags"]) - n_flags
+    by_id = {j["judge_id"]: j for j in old.get("item_judges") or []}
+    upd: Dict[str, Any] = {
+        "tables": tables,
+        "item_judges": [j for j in old.get("item_judges") or [] if j["judge_id"] not in gone],
+        "n_item_judgments": int(old["n_item_judgments"]) - sum(int(p["judgments"]) for p in plan.values()),
+        "item_result_passes": dict(old.get("item_result_passes") or {}, item_judges=int((old.get("item_result_passes") or {})
+                                                                                          .get("item_judges", 0)) - n_rows),
+        "release_omitted_item_judges": [dict(by_id[j], item_result_rows=int(plan[j]["item_result_rows"]),
+                                             item_flags_rows=int(plan[j]["item_flags_rows"]), judgments=int(plan[j]["judgments"]),
+                                             reason=reasons[j]) for j in by_id if j in gone],
+    }
+    proj = old.get("item_projection")
+    if proj:
+        upd["item_projection"] = dict(proj, judges=[j for j in proj.get("judges") or [] if j not in gone],
+                                      rows=int(proj.get("rows") or 0) - n_rows)
+    return upd
+
+
+def plan_item_omission(ctx: Context, conn: sqlite3.Connection, old: Mapping[str, Any]) -> Dict[str, Dict[str, Any]]:
+    """:func:`item_omission` for the policy's ``omit_item_judges``, refused unless every judge is an item judge of the cut, every row
+    it would take came from the cut's item-judge pass (none verbatim), it takes at least one row, and the cut's ``n_item_judgments``
+    re-derives from the frame by the same rule (so the count the MANIFEST loses is the one the cut counted). ``{}`` without the key."""
+    judges = [j for j, _ in ctx.policy.omit_item_judges]
+    if not judges:
+        return {}
+    have = [j.get("judge_id") for j in old.get("item_judges") or []]
+    missing = [j for j in judges if j not in have]
+    if missing:
+        raise ShippedTextError(f"omit_item_judges names {missing}, which are not item judges of this frame (MANIFEST item_judges)")
+    item_models = list(old.get("item_model_ids") or [])
+    plan = item_omission(conn, judges, item_models)
+    for j, p in plan.items():
+        if p["verbatim_rows"]:
+            raise ShippedTextError(f"omit_item_judges: {p['verbatim_rows']} rows of judge {j} came from the cut's verbatim pass "
+                                   f"(record_sha256 set); the omission takes only rows the cut added for an item judge")
+        if not p["item_result_rows"]:
+            raise ShippedTextError(f"omit_item_judges: judge {j} has no item rows in this frame; nothing to omit")
+    every = item_omission(conn, have, item_models)
+    if sum(p["judgments"] for p in every.values()) != int(old.get("n_item_judgments", -1)):
+        raise ShippedTextError(f"omit_item_judges: the item judges' admitted judgments re-derive to "
+                               f"{sum(p['judgments'] for p in every.values())}, the MANIFEST says {old.get('n_item_judgments')}; "
+                               f"refusing to adjust a count this frame cannot re-derive")
+    return plan
+
+
+def omit_item_rows(conn: sqlite3.Connection, plan: Mapping[str, Mapping[str, Any]]) -> None:
+    """Delete the item rows a :func:`plan_item_omission` plan names (one transaction); each table must lose exactly the planned rows."""
+    conn.execute("BEGIN")
+    conn.execute("CREATE TEMP TABLE IF NOT EXISTS _st_omit (judgment_id TEXT PRIMARY KEY)")
+    for jid, p in plan.items():
+        conn.execute("DELETE FROM temp._st_omit")
+        conn.executemany("INSERT INTO temp._st_omit (judgment_id) VALUES (?)", [(j,) for j in p["judgment_ids"]])
+        for t in ITEM_TABLES:
+            cur = conn.execute(f'DELETE FROM "{t}" WHERE judgment_id IN (SELECT judgment_id FROM temp._st_omit)')
+            if cur.rowcount != int(p[f"{t}_rows"]):
+                conn.execute("ROLLBACK")
+                raise ShippedTextError(f"omitting judge {jid}: {t} lost {cur.rowcount} rows, the plan says {p[f'{t}_rows']}")
+    conn.execute("DROP TABLE temp._st_omit")
+    conn.execute("COMMIT")
+
+
+def rewrite_frame(ctx: Context, src: str, dst: str, log: Optional[Callable[[str], None]] = None,
+                  omit: Optional[Mapping[str, Mapping[str, Any]]] = None) -> Dict[str, Dict[str, int]]:
     """Copy the frame SQLite ``src`` to ``dst`` and rewrite every TEXT cell under the policy, in place (rows, row order and
-    every non-TEXT cell are untouched), then VACUUM. Returns ``{table: {column: changed rows}}``."""
+    every non-TEXT cell are untouched), then VACUUM. Returns ``{table: {column: changed rows}}``. ``omit`` (a
+    :func:`plan_item_omission` plan) first deletes the item rows it names, so the rewrite and its counts see only the rows that ship."""
     shutil.copyfile(src, dst)
     conn = sqlite3.connect(dst, isolation_level=None)
     conn.execute("PRAGMA journal_mode=OFF")
     conn.execute("PRAGMA synchronous=OFF")
     changed: Dict[str, Dict[str, int]] = {}
     try:
+        if omit:
+            omit_item_rows(conn, omit)
+            if log:
+                for jid, p in omit.items():
+                    log(f"frame: omitted judge {jid[:8]}'s item rows: item_result {p['item_result_rows']}, item_flags {p['item_flags_rows']}")
         for t in frame_tables(conn):
             for c in frame_columns(conn, t):
                 mapping = []
@@ -1444,7 +1570,9 @@ def derive_frame_dir(ctx: Context, old_dir: str, work: str, out_parent: str, bui
     """The re-derived frame directory under ``out_parent``: the old SQLite reassembled and rewritten (:func:`rewrite_frame`), each
     table's Parquet written from it with the old file's own column list and types (a table no cell of which moved keeps its old
     Parquet bytes), the SQLite gzip-split as the exporter does, and a MANIFEST that keeps every old key and adds
-    ``derived_from``, ``release_rules_sha256`` and the release columns in ``scrubbed``. Returns (directory, manifest)."""
+    ``derived_from``, ``release_rules_sha256`` and the release columns in ``scrubbed``. With the policy's ``omit_item_judges`` the
+    named judges' item rows leave the frame first (:func:`plan_item_omission`) and the MANIFEST says so
+    (:func:`omission_manifest`). Returns (directory, manifest)."""
     sys.path.insert(0, os.path.join(_repo_root_of(old_dir), "src"))
     from sisteer.registry import snapshot as SNAP          # the exporter's own writers
     from sisteer.registry.identity import canonical_json
@@ -1462,7 +1590,14 @@ def derive_frame_dir(ctx: Context, old_dir: str, work: str, out_parent: str, bui
         shutil.rmtree(building)
     os.makedirs(building)
     new_sqlite = os.path.join(building, SNAP.PAPER_FRAME_SQLITE)
-    changed = rewrite_frame(ctx, old_sqlite, new_sqlite, log=log)
+    omit: Dict[str, Dict[str, Any]] = {}
+    if ctx.policy.omit_item_judges:
+        oc = sqlite3.connect(f"file:{old_sqlite}?mode=ro", uri=True)
+        try:
+            omit = plan_item_omission(ctx, oc, old)
+        finally:
+            oc.close()
+    changed = rewrite_frame(ctx, old_sqlite, new_sqlite, log=log, omit=omit)
     conn = sqlite3.connect(f"file:{new_sqlite}?mode=ro", uri=True)
     try:
         for t in old["parquet_tables"]:
@@ -1488,13 +1623,15 @@ def derive_frame_dir(ctx: Context, old_dir: str, work: str, out_parent: str, bui
         p = os.path.join(building, fn)
         files[fn] = {"sha256": sha256_file(p), "bytes": os.path.getsize(p)}
     head = int(old["ingest_seq"])
-    tables = dict(old["tables"])
+    omitted = omission_manifest(old, omit, dict(ctx.policy.omit_item_judges)) if omit else {}
+    tables = dict(omitted.get("tables") or old["tables"])
     built_compact = built_utc.replace("-", "").replace(":", "").replace(".", "")[:15]
     core = canonical_json({"ingest_seq": head, "built_utc": built_utc, "files": files, "tables": tables, "scope": "paper_frame"})
     sha8 = hashlib.sha256(core.encode("utf-8")).hexdigest()[:8]
     snapshot_id = f"{head:012d}-{built_compact}-{sha8}"
     scrubbed = {t: sorted(set(old.get("scrubbed", {}).get(t, [])) | set(changed.get(t, {}))) for t in sorted(set(old.get("scrubbed", {})) | set(changed))}
     manifest = dict(old)
+    manifest.update(omitted)
     manifest.update({"snapshot_id": snapshot_id, "built_utc": built_utc, "files": files, "sqlite_sha256": sqlite_sha,
                      "sqlite_bytes": sqlite_bytes, "sqlite_parts": parts, "scrubbed": scrubbed, "derived_from": old["snapshot_id"],
                      "release_rules_sha256": rules_sha256,

@@ -699,3 +699,71 @@ def test_preflight_and_trainer_resolve_the_manifest_identically(world):
     stem.unlink()
     assert preflight() == 3
     assert trainer_sha() is None
+
+
+def test_a_missing_registry_campaign_refuses_before_the_trainer(world, monkeypatch, tmp_path):
+    """With registry emission ON (a spool resolves) and no REGISTRY_CAMPAIGN,
+    the trainer refuses to publish — and its resume replay of a validated
+    COMPLETE refuses too — only after the fit, hours in. The wrapper applies
+    the same predicate before the trainer starts: rc 3, status
+    no-registry-campaign, the trainer never runs. An empty campaign counts
+    as unset (the trainer's ``or None``); a stated campaign proceeds."""
+    w = world
+    monkeypatch.delenv("SISTEER_REGISTRY_DISABLED", raising=False)
+    monkeypatch.delenv("REGISTRY_EMIT", raising=False)
+    spool = tmp_path / "spool" / "records"
+    spool.mkdir(parents=True)
+    monkeypatch.setenv("SISTEER_REGISTRY_SPOOL", str(spool))
+    for unset in (None, ""):
+        if unset is None:
+            monkeypatch.delenv("REGISTRY_CAMPAIGN", raising=False)
+        else:
+            monkeypatch.setenv("REGISTRY_CAMPAIGN", unset)
+        assert sfc.registry_campaign_missing() is True
+        assert _run(w) == 3
+        assert not w["called"].exists(), "the trainer must not run"
+        rec = _record(w)
+        assert rec["status"] == "no-registry-campaign" and rec["rc"] == 3
+        assert "REGISTRY_CAMPAIGN is unset" in rec["error"]
+    assert list(spool.iterdir()) == []                # nothing was emitted
+    monkeypatch.setenv("REGISTRY_CAMPAIGN", "example_campaign")
+    assert sfc.registry_campaign_missing() is False
+    assert _run(w) == 0 and w["called"].exists()
+    assert _record(w)["status"] == "published"
+
+
+def test_emission_off_needs_no_registry_campaign(world, monkeypatch):
+    """Emission OFF (the switch, or no spool resolving) needs no campaign:
+    the trainer records ``not_emitted`` and publishes, and the wrapper does
+    not refuse."""
+    w = world
+    monkeypatch.setenv("SISTEER_REGISTRY_DISABLED", "1")
+    monkeypatch.delenv("REGISTRY_CAMPAIGN", raising=False)
+    assert sfc.registry_campaign_missing() is False
+    assert _run(w) == 0 and _record(w)["status"] == "published"
+
+
+@pytest.mark.parametrize("disabled,spool,campaign", [
+    ("1", True, None), ("1", True, "c"), ("0", True, None), ("0", True, ""),
+    ("0", True, "c"), ("0", False, None), (None, True, None), (None, False, "c")])
+def test_the_campaign_refusal_is_the_trainers_predicate(monkeypatch, tmp_path, disabled, spool, campaign):
+    """registry_campaign_missing() is EXACTLY the trainer's publish-time
+    refusal (train_two_si_objects: ``REGISTRY_CAMPAIGN or None`` with
+    ``hooks.emission_enabled(None)``) over the switch, the spool and the
+    campaign — and the trainer still spells that predicate."""
+    from sisteer.registry import hooks
+    for var, val in (("SISTEER_REGISTRY_DISABLED", disabled), ("REGISTRY_CAMPAIGN", campaign)):
+        if val is None:
+            monkeypatch.delenv(var, raising=False)
+        else:
+            monkeypatch.setenv(var, val)
+    monkeypatch.delenv("REGISTRY_EMIT", raising=False)
+    if spool:
+        monkeypatch.setenv("SISTEER_REGISTRY_SPOOL", str(tmp_path / "records"))
+    else:
+        monkeypatch.delenv("SISTEER_REGISTRY_SPOOL", raising=False)
+    trainer_refuses = (os.environ.get("REGISTRY_CAMPAIGN") or None) is None and hooks.emission_enabled(None)
+    assert sfc.registry_campaign_missing() is bool(trainer_refuses)
+    src = (REPO / "scripts" / "train_two_si_objects.py").read_text()
+    assert 'campaign = os.environ.get("REGISTRY_CAMPAIGN") or None' in src
+    assert "if campaign is None and _rh.emission_enabled(None):" in src

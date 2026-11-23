@@ -16,6 +16,7 @@ three checkout blocks spell the commands the helper is designed for. The full re
 of the notebook's load chain) is opt-in: SISTEER_SLOW_TESTS=1."""
 from __future__ import annotations
 
+import ast
 import json
 import os
 import re
@@ -76,6 +77,18 @@ def test_the_seven_interventions_each_have_one_entry(demo):
     assert "One training seed" in demo["title"] and "difference_lora" in demo["rule"] and "self-consistent" in demo["rule"]
 
 
+def test_the_list_is_read_under_the_papers_judges(demo):
+    """The paper's judges (the notebook's default policy) and nothing a calling shell exported: the metric names the policy and the
+    StrongREJECT judges paper_judges.json lists, and the tool unsets every switch the figures stage unsets before the notebook loads."""
+    pj = json.loads((REPO / "paper" / "notebooks" / "data" / "paper_judges.json").read_text(encoding="utf-8"))
+    j = demo["metric"]["judges"]
+    assert j["policy"] == pj["policy"] == "rejudge" and j["judge_model"] == "minimax-m3"
+    assert j["strongreject"] == sorted(x["judge_id"] for x in pj["judges"] if x["family"] == "strongreject")
+    stage = (REPO / "reproduce" / "10_figures.sh").read_text(encoding="utf-8")
+    unset = set(re.findall(r"-u (REGISTRY_NB_\w+|NB_\w+)", stage)) - {"REGISTRY_NB_FIGS"}
+    assert unset and unset <= set(demo_objects.UNSET_ENV) and "REGISTRY_NB_JUDGES" in demo_objects.UNSET_ENV
+
+
 def test_the_committed_list_names_the_seven_objects_at_the_one_seed(demo):
     """The pin: the committed choice as object ids. A recomputation that moves any of them is a change to talk about."""
     assert {e["paper_label"]: e["object_id"] for e in demo["objects"]} == EXPECTED_OBJECTS
@@ -93,6 +106,55 @@ def test_the_inputs_behind_the_committed_list_are_unchanged(demo):
                          "and commit the result")
     assert set(now) == {k if not k.endswith(".ipynb") else k + "#code" for k in
                         (i.replace("<CURRENT>", demo["source"]["snapshot_id"]) for i in demo_objects.INPUTS)}
+
+
+#: the notebook's sibling modules registry_nb.py imports that the list's load chain does not run, each with why
+NOT_ON_THE_LIST_PATH = {"ctlstop_sidecar": "read only by the control-pool appendix's cells, after the cells the list executes",
+                        "si_target_battery_sidecar": "read only by the distillation-target battery's cell, after the cells the list executes"}
+
+
+def _sibling_imports(path: Path, siblings: set) -> set:
+    """The modules of `siblings` that `path` imports: every name of an `import a, b` line, the module of a `from a import x` line, and
+    a string literal handed to importlib.import_module / __import__ (parsed with ast, so a comma list or a nested import counts)."""
+    out = set()
+    for node in ast.walk(ast.parse(path.read_text(encoding="utf-8"))):
+        if isinstance(node, ast.Import):
+            out |= {a.name.split(".")[0] for a in node.names}
+        elif isinstance(node, ast.ImportFrom) and node.module and not node.level:
+            out.add(node.module.split(".")[0])
+        elif isinstance(node, ast.Call) and node.args and isinstance(node.args[0], ast.Constant) and isinstance(node.args[0].value, str):
+            f = node.func
+            name = f.attr if isinstance(f, ast.Attribute) else f.id if isinstance(f, ast.Name) else ""
+            if name in ("import_module", "__import__"):
+                out.add(node.args[0].value.split(".")[0])
+    return out & siblings
+
+
+def test_every_sibling_module_registry_nb_imports_is_digested_or_named_off_the_path():
+    """A module beside the notebook that registry_nb.py imports can change what the list reads (judge_rules.py re-derives every reading
+    under the default judges): each one is in INPUTS, so an edit fails the ordinary tests until the list is recomputed, or is named
+    here as off the list's path. Followed through the digested siblings, so a module judge_rules.py imports counts too."""
+    nb = REPO / "paper" / "notebooks"
+    siblings = {p.stem for p in nb.glob("*.py")}
+    seen, todo = set(), ["registry_nb"]
+    while todo:
+        mod = todo.pop()
+        for m in sorted(_sibling_imports(nb / f"{mod}.py", siblings) - seen - {mod}):
+            seen.add(m)
+            if f"paper/notebooks/{m}.py" in demo_objects.INPUTS:
+                todo.append(m)
+    assert "judge_rules" in seen, seen
+    for m in sorted(seen):
+        assert f"paper/notebooks/{m}.py" in demo_objects.INPUTS or m in NOT_ON_THE_LIST_PATH, m
+    assert set(NOT_ON_THE_LIST_PATH) <= seen, "a module named off the path that registry_nb no longer imports"
+
+
+def test_the_sibling_import_reader_sees_every_form(tmp_path):
+    src = tmp_path / "m.py"
+    src.write_text("import os, judge_rules\ndef f():\n    from ctlstop_sidecar import x\n    import importlib\n"
+                   "    importlib.import_module('appendix_generator')\n    __import__('registry_nb')\n", encoding="utf-8")
+    assert _sibling_imports(src, {"judge_rules", "ctlstop_sidecar", "appendix_generator", "registry_nb", "other"}) == {
+        "judge_rules", "ctlstop_sidecar", "appendix_generator", "registry_nb"}
 
 
 def test_every_listed_object_is_a_manifest_row_present_in_the_tree(demo, manifest):
@@ -278,7 +340,7 @@ def test_readme_spells_the_three_checkouts_and_reads_the_demo_list(demo):
 
 
 @pytest.mark.skipif(os.environ.get("SISTEER_SLOW_TESTS") != "1",
-                    reason="recomputes the deltas through the notebook's load chain (~2 min, 2 GB cache) — SISTEER_SLOW_TESTS=1 opts in")
+                    reason="recomputes the deltas through the notebook's load chain (~2 min warm, about 4 GB cache) — SISTEER_SLOW_TESTS=1 opts in")
 def test_check_recomputes_the_committed_list():
     env = dict(os.environ, PYTHONPATH=str(REPO / "src") + os.pathsep + os.environ.get("PYTHONPATH", ""))
     r = subprocess.run([sys.executable, str(TOOLS / "demo_objects.py"), "--check"], cwd=REPO, env=env,

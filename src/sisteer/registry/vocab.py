@@ -509,6 +509,8 @@ SOURCE_LOCAL_ANCHOR_SOURCES: Tuple[str, ...] = (
 #:   bfcl_full, bigcodebench_full, mmlu_full -- the canonical capability rows: their none is the paper's reading (roster-matched, ruled in);
 #:   bfcl_full_shared, bfcl_full_shared_l2, bfcl_full_shared_l3, bigcodebench_full_shared, bigcodebench_full_shared_l2,
 #:     bigcodebench_full_shared_l3 -- the shared-standup comparison sources: every row is out of the frame by ruling;
+#:   bfcl_full_sikl4, bigcodebench_full_sikl4 -- the SI-distilled refits' full-suite campaign rows: the adapter files no object-none run (a campaign
+#:     `none` store refuses by name); every row is out of the frame by ruling;
 #:   bfcl_allmodels, bigcodebench_allmodels, bfcl_seedrep, bigcodebench_seedrep, gsm8k_seedrep, ifeval_seedrep, math500_seedrep,
 #:     seedrep_battery, seedrep_cluster, seedrep_petri, orxs_seedrep -- the seed-replicate and all-models batteries: their nones are the
 #:     replicate panels' own paper readings, roster-matched or ruled by name;
@@ -534,6 +536,7 @@ CAMPAIGN_NONE_SOURCES: Tuple[str, ...] = (
     "r2_export", "sampled_lane", "sampled_lane_controls", "ctl_neg1",
     "bfcl_full", "bigcodebench_full", "mmlu_full",
     "bfcl_full_shared", "bfcl_full_shared_l2", "bfcl_full_shared_l3", "bigcodebench_full_shared", "bigcodebench_full_shared_l2", "bigcodebench_full_shared_l3",
+    "bfcl_full_sikl4", "bigcodebench_full_sikl4",
     "bfcl_allmodels", "bigcodebench_allmodels", "bfcl_seedrep", "bigcodebench_seedrep", "gsm8k_seedrep", "ifeval_seedrep", "math500_seedrep",
     "seedrep_battery", "seedrep_cluster", "seedrep_petri", "orxs_seedrep",
     "bcb_bfcl_200", "bcb_bfcl_200_widen", "evalcheck/gsm8k_paired200", "evalcheck/math500",

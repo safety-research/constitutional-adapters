@@ -1,0 +1,26 @@
+\begin{table}[!htbp]
+\caption{Multi-turn defense on Qwen3.5-4B (MiniMax-M3 StrongREJECT): defense success rate (\%) of the unsteered runs of Figure~\ref{fig:fig4} (first row) and change from it (pp $\pm$95\% CI, mean over three fit seeds or prompted runs). 92 GOALS restricts the mean to goals with no prompt in the distilled objects' training set, and two runs each omit one ActorAttack goal the judge could not score.}
+\label{tab:app_si_distilled_mt}
+\begin{center}
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{lllll}
+\multicolumn{1}{c}{\bf ARM} &\multicolumn{1}{c}{\bf CRESCENDO} &\multicolumn{1}{c}{\bf ACTORATTACK} &\multicolumn{1}{c}{\bf MEAN} &\multicolumn{1}{c}{\bf 92 GOALS}
+\\ \hline \\
+\emph{unsteered} &$5.9$ &$28.6$ &$17.3$ &$11.8$ \\
+\multicolumn{5}{l}{\emph{safety SI}} \\
+Prompted &$+9.7$ {\scriptsize $\pm 3.7$} &$+15.4$ {\scriptsize $\pm 5.9$} &$+12.5$ {\scriptsize $\pm 3.5$} &$+13.0$ {\scriptsize $\pm 5.1$} \\
+Distilled LoRA &$+6.4$ {\scriptsize $\pm 3.3$} &$+10.7$ {\scriptsize $\pm 6.4$} &$+8.5$ {\scriptsize $\pm 3.6$} &$+5.5$ {\scriptsize $\pm 5.5$} \\
+Distilled ReLU steer &$+13.4$ {\scriptsize $\pm 3.8$} &$+15.8$ {\scriptsize $\pm 9.1$} &$+14.6$ {\scriptsize $\pm 4.9$} &$+9.3$ {\scriptsize $\pm 6.2$} \\
+\multicolumn{5}{l}{\emph{constitution SI}} \\
+Prompted &$+2.2$ {\scriptsize $\pm 2.8$} &$+8.4$ {\scriptsize $\pm 5.8$} &$+5.3$ {\scriptsize $\pm 3.2$} &$+5.4$ {\scriptsize $\pm 4.4$} \\
+Distilled LoRA &$+1.9$ {\scriptsize $\pm 3.1$} &$+3.1$ {\scriptsize $\pm 6.3$} &$+2.5$ {\scriptsize $\pm 3.7$} &$+1.6$ {\scriptsize $\pm 5.2$} \\
+Distilled ReLU steer &$+4.9$ {\scriptsize $\pm 3.4$} &$+11.9$ {\scriptsize $\pm 6.1$} &$+8.4$ {\scriptsize $\pm 3.4$} &$+8.4$ {\scriptsize $\pm 5.1$} \\
+\multicolumn{5}{l}{\emph{irrelevant instruction (off-target control)}} \\
+Distilled LoRA &$-2.3$ {\scriptsize $\pm 2.7$} &$+0.8$ {\scriptsize $\pm 6.1$} &$-0.7$ {\scriptsize $\pm 3.2$} &$-2.8$ {\scriptsize $\pm 4.3$} \\
+Distilled ReLU steer &$-1.4$ {\scriptsize $\pm 2.4$} &$+2.1$ {\scriptsize $\pm 6.1$} &$+0.4$ {\scriptsize $\pm 3.3$} &$-2.6$ {\scriptsize $\pm 4.3$} \\
+\multicolumn{5}{l}{\emph{reference: constitution corpus fits (base$\to$instruct)}} \\
+Constitution LoRA &$+36.5$ {\scriptsize $\pm 5.2$} &$+39.1$ {\scriptsize $\pm 10.7$} &$+37.8$ {\scriptsize $\pm 6.6$} &$+40.6$ {\scriptsize $\pm 6.5$} \\
+Constitution ReLU steer &$+27.2$ {\scriptsize $\pm 5.6$} &$+32.4$ {\scriptsize $\pm 8.4$} &$+29.8$ {\scriptsize $\pm 5.9$} &$+31.8$ {\scriptsize $\pm 7.5$} \\
+\end{tabular}}
+\end{center}
+\end{table}

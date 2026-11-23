@@ -89,6 +89,9 @@ DEFAULTS: Dict[str, Dict[str, Any]] = {
         # a held revision whose attempt identity stands (the same files, marker, judging code and parent
         # state) is re-attempted at most once per this many seconds; the window's uncapped cycles and `ingest --retry-held` re-attempt every one
         "held_sweep_s": 3600,
+        # the live cycle's reclaim (superseded revisions' item rows, migration 0033) stops between deletion batches after this many seconds,
+        # far inside the unit's 45-min TimeoutStartSec; the code's own fallback is the same (harvest.RECLAIM_BUDGET_S)
+        "reclaim_budget_s": 600,
     },
     "repo": {"checkout": "~/constitutional-adapters", "python": "~/constitutional-adapters/.venv/bin/python"},
 }
@@ -292,6 +295,7 @@ def render_default(root: str, user: Optional[str] = None, paper_checkout: Option
         "pull_clusters = true            # rsync each cluster's spool into the inbox every cycle (the push's backstop)",
         f'cadence_s = {d["harvest"]["cadence_s"]}               # expected seconds between COMPLETED cycles; the status page reddens the harvester row past 3x',
         f'held_sweep_s = {d["harvest"]["held_sweep_s"]}            # a held revision whose attempt identity stands is re-attempted at most once per this many seconds (D961)',
+        f'reclaim_budget_s = {d["harvest"]["reclaim_budget_s"]}         # the cycle\'s reclaim of superseded revisions\' item rows stops between batches after this many seconds',
         "",
     ]
     for c in CLUSTER_DEFAULTS:

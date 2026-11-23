@@ -2013,13 +2013,22 @@ def test_the_replicate_views_draw_under_their_own_seed_base_and_every_existing_v
     sys.path.insert(0, str(REPO / "scripts" / "sdfbase" / "seedrep"))
     import eval_seed as es
     assert msc.SEEDREP_VIEWS == {"qwen35_4b": ("s1", "s2", "s3")} and msc.seedrep_tags() == ["qwen35_4b_s1", "qwen35_4b_s2", "qwen35_4b_s3"]
-    # the literal training seed -- the three s-views' rows, + the six seeded control TAGs (SEEDED_LANE_VIEWS)
-    # at THEIR training seed, which the rule table carries as literal data rows and the data file must equal
-    LANE_ROWS = {f"qwen35_4b_dm1_{cls}s{k}": k for k in (1, 2, 3) for cls in ("ctllora64", "ctlrelu64")}
-    assert msc.SEEDED_LANE_VIEWS == {"qwen35_4b": tuple(f"dm1_{cls}s{k}" for k in (1, 2, 3) for cls in ("ctllora64", "ctlrelu64"))}
+    # the literal training seed -- the three s-views' rows, + the six seeded control TAGs, the three control-pool-stopped views
+    # and the three SI-distilled refit views (SEEDED_LANE_VIEWS) at THEIR training / fit seed, which the rule table carries as
+    # literal data rows and the data file must equal
+    # ... + the generator comparison's three views qg1ms<k> (appended after the SI-distilled refit rows)
+    LANE_ROWS = {**{f"qwen35_4b_dm1_{cls}s{k}": k for k in (1, 2, 3) for cls in ("ctllora64", "ctlrelu64")},
+                 **{f"qwen35_4b_ctlstop64s{k}": k for k in (1, 2, 3)},
+                 **{f"qwen35_4b_sikl4s{k}": k for k in (1, 2, 3)},
+                 **{f"qwen35_4b_qg1ms{k}": k for k in (1, 2, 3)}}
+    assert msc.SEEDED_LANE_VIEWS == {"qwen35_4b": (*(f"dm1_{cls}s{k}" for k in (1, 2, 3) for cls in ("ctllora64", "ctlrelu64")),
+                                                   *(f"ctlstop64s{k}" for k in (1, 2, 3)),
+                                                   *(f"sikl4s{k}" for k in (1, 2, 3)),
+                                                   *(f"qg1ms{k}" for k in (1, 2, 3)))}
     assert {t: msc.SEED_BASE_RULE_BY_TAG[t] for t in es.SEED_BASE_BY_TAG} == {"qwen35_4b_s1": 1, "qwen35_4b_s2": 2, "qwen35_4b_s3": 3} == es.SEED_BASE_BY_TAG
     assert PRESETS["seed_base_by_view"] == {**es.SEED_BASE_BY_TAG, **LANE_ROWS} == msc.SEED_BASE_RULE_BY_TAG
-    assert all(msc.seed_of_lane_view(v) == k for k in (1, 2, 3) for v in (f"dm1_ctllora64s{k}", f"dm1_ctlrelu64s{k}"))
+    assert all(msc.seed_of_lane_view(v) == k for k in (1, 2, 3)
+               for v in (f"dm1_ctllora64s{k}", f"dm1_ctlrelu64s{k}", f"ctlstop64s{k}", f"sikl4s{k}", f"qg1ms{k}"))
     with pytest.raises(ValueError, match="not a seeded lane view"):
         msc.seed_of_lane_view("dm1_ctllora64")
     assert all(msc.in_scope("qwen35_4b", v) for v in ("s1", "s2", "s3"))              # PROMOTED with their roster views

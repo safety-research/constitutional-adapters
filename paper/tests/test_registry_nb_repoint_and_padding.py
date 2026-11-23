@@ -313,7 +313,7 @@ class TestTickRotation:
     def test_eval_labels_rotate_and_mean_stays_upright(self, tmp_path, monkeypatch):
         monkeypatch.setattr(R, "FIGS", str(tmp_path))
         cm, d, gaps = self._frames()
-        fig = R.delta_figure(cm, d, [["Petri", "agentic misalignment"]], R.OBJECTS, gaps, "t_rot",
+        fig = R.delta_figure(cm, d, [["Petri"]], R.OBJECTS, gaps, "t_rot",
                              unit=1.5, tick_rotation={"Petri": 45})
         labs = self._petri_axis(fig).get_xticklabels()
         assert len(labs) == len(R.CATEGORIES["Petri"][0]) + 1
@@ -333,10 +333,10 @@ class TestTickRotation:
     def test_a_panel_not_named_keeps_its_labels_flat(self, tmp_path, monkeypatch):
         monkeypatch.setattr(R, "FIGS", str(tmp_path))
         cm, d, gaps = self._frames()
-        fig = R.delta_figure(cm, d, [["Petri", "agentic misalignment"]], R.OBJECTS, gaps, "t_rot2",
+        fig = R.delta_figure(cm, d, [["Petri", "over-refusal"]], R.OBJECTS, gaps, "t_rot2",
                              tick_rotation={"Petri": 45})
-        ag = next(a for a in fig.axes if a.get_title() == "agentic misalignment")
-        assert all(l.get_rotation() == 0 for l in ag.get_xticklabels())
+        other = next(a for a in fig.axes if a.get_title() == "over-refusal")
+        assert all(l.get_rotation() == 0 for l in other.get_xticklabels())
         plt.close(fig)
 
     def test_no_rotation_argument_changes_nothing(self, tmp_path, monkeypatch):
@@ -368,7 +368,9 @@ class TestOneRowFiguresShareAxesHeight:
         monkeypatch.setattr(R, "FIGS", str(tmp_path))
         cm, d, gaps = self._frames()
         f4 = R.delta_figure(cm, d, [["multi-query", "multi-turn"]], R.OBJECTS, gaps, "t_h4")
-        f5 = R.delta_figure(cm, d, [["Petri", "agentic misalignment"]], R.OBJECTS, gaps, "t_h5",
+        # the row the heights were measured on: Petri beside a three-column panel, 16.4 in wide at unit 1.5 (the agentic panel, which
+        # left the paper 2026-11-14, was that panel; over-refusal is the same width with horizontal labels)
+        f5 = R.delta_figure(cm, d, [["Petri", "over-refusal"]], R.OBJECTS, gaps, "t_h5",
                             unit=1.5, height=5.4, tick_rotation={"Petri": 45})
         h4, h5 = self._axes_height_in(f4, "multi-query"), self._axes_height_in(f5, "Petri")
         plt.close(f4); plt.close(f5)
@@ -384,7 +386,7 @@ class TestOneRowFiguresShareAxesHeight:
         monkeypatch.setattr(R, "FIGS", str(tmp_path))
         cm, d, gaps = self._frames()
         f4 = R.delta_figure(cm, d, [["multi-query", "multi-turn"]], R.OBJECTS, gaps, "t_h4b")
-        f5 = R.delta_figure(cm, d, [["Petri", "agentic misalignment"]], R.OBJECTS, gaps, "t_h5b",
+        f5 = R.delta_figure(cm, d, [["Petri", "over-refusal"]], R.OBJECTS, gaps, "t_h5b",
                             unit=1.5, tick_rotation={"Petri": 45})
         h4, h5 = self._axes_height_in(f4, "multi-query"), self._axes_height_in(f5, "Petri")
         plt.close(f4); plt.close(f5)
@@ -501,10 +503,11 @@ class TestFrontierTableSeedsAndHeaders:
     def _panels(self):
         def mk(title, ay, ax):
             pts = pd.DataFrame([dict(object_label="difference_relu", seed="", dose=1.0, dx=-17.8, dy=29.7, ax_abs=ax, ay_abs=ay)])
-            ps = pd.DataFrame([dict(object_label="difference_relu", seed="s1", dose=1.0, dx=-6.2, dy=15.8),
-                               dict(object_label="difference_relu", seed="s2", dose=1.0, dx=-18.8, dy=32.4),
-                               dict(object_label="difference_relu", seed="s3", dose=1.0, dx=-28.3, dy=40.7),
-                               dict(object_label="arditi_allpos", seed="", dose=0.3, dx=-15.4, dy=7.5)])
+            # each rung carries its own unsteered levels (`frontier_points`), which the first row reads
+            ps = pd.DataFrame([dict(object_label="difference_relu", seed="s1", dose=1.0, dx=-6.2, dy=15.8, ax_abs=ax, ay_abs=ay),
+                               dict(object_label="difference_relu", seed="s2", dose=1.0, dx=-18.8, dy=32.4, ax_abs=ax, ay_abs=ay),
+                               dict(object_label="difference_relu", seed="s3", dose=1.0, dx=-28.3, dy=40.7, ax_abs=ax, ay_abs=ay),
+                               dict(object_label="arditi_allpos", seed="", dose=0.3, dx=-15.4, dy=7.5, ax_abs=ax, ay_abs=ay)])
             return dict(title=title, pts=pts, per_seed=ps)
         return [mk("static", 55.0, 64.4), mk("multi-turn", 45.0, 64.4)]
 
@@ -512,7 +515,7 @@ class TestFrontierTableSeedsAndHeaders:
         tex = R.table_frontier(self._panels(), ["difference_relu", "arditi_allpos"], "{panel} rungs.", "tab:t")
         assert tex.count("\\begin{table}") == 2
         assert "\\label{tab:t-static}" in tex and "\\label{tab:t-multi-turn}" in tex
-        assert "\\caption{Static rungs.}" in tex and "\\caption{Multi-turn rungs.}" in tex
+        assert "\\caption{Static rungs. First row: " in tex and "\\caption{Multi-turn rungs. First row: " in tex
         assert "PANEL" not in tex
         hdr = [l for l in tex.splitlines() if "ARM" in l and "SEED" in l][0]
         assert hdr.count("multicolumn") == 5
@@ -624,10 +627,12 @@ class TestPaddingSeeds:
         pts = R.padding_points(self._frame())
         tex = R.padding_table(pts, ["difference_relu", "safety_si"])
         body = tex.split("\\hline")[-1]
-        relu = [l for l in body.splitlines() if "Difference ReLU steer" in l]
+        relu = [l for l in body.splitlines() if "Difference ReLU steer" in l and not l.startswith("%")]     # rows, not the note
         assert len(relu) == 3 and any("&s1 &" in l for l in relu) and any("&s2 &" in l for l in relu) and any("\\emph{mean}" in l for l in relu)
         si = [l for l in body.splitlines() if "Safety SI" in l]; assert len(si) == 1 and "&-- &" in si[0]
-        assert "pools k and n across its seeds" in tex
+        assert "k and n summed) with the seeds pooled as fits" in tex
+        # this frame's rows name no runs, so its mean rows keep k and n summed, and the note says their interval is not a seed pool's
+        assert "Mean rows whose seeds' runs are not known (Difference ReLU steer): k and n summed, not a seed pool's interval." in tex
 
     def test_old_unseeded_fixture_still_renders(self):
         fig, ax = plt.subplots(); drawn = R._draw_padding(ax, _pad_points(), compact=True); plt.close(fig)
@@ -954,8 +959,10 @@ class TestTransferPinned:
         assert st.loc["llama8b_it", "status"].startswith("pinned instruct-direct fit 7bf26f8c absent")
         q = pe[pe.model_id.eq("qwen35_4b_it")].set_index("eval_id")
         assert abs(q.loc["pasttense", "diff"] - (-20.0 - (-15.0))) < 1e-9, "seed mean -20 (the batch-8 fit at +20 never enters) minus the pinned IT fit -15"
-        se_base = float(np.hypot(np.sqrt(12) / 3, 2 / np.sqrt(3))); se_expect = np.sqrt(se_base ** 2 + 2 ** 2)
-        assert abs(q.loc["pasttense", "se"] - se_expect) < 1e-9
+        # rows that are not common-anchor deltas (no runs, no anchor runs) cannot be split (2026-11-21): the seed pool takes the
+        # identical-seeds bound over the seeds' whole se plus the between-fit term, and the difference keeps each lane's whole interval
+        se_base = float(np.sqrt(2.0 ** 2 + np.var([-20.0, -18.0, -22.0], ddof=1) / 3)); se_expect = np.sqrt(se_base ** 2 + 2 ** 2)
+        assert abs(q.loc["pasttense", "se"] - se_expect) < 1e-9 and q.loc["pasttense", "se_method"] == R.TRANSFER_KEPT
         r = pc[pc.model_id.eq("qwen35_4b_it")].iloc[0]
         assert r.k == 2 and bool(r.partial) and abs(r.y - 5.0) < 1e-9, "oriented: the transferred fit lowered ASR 5 pp more -> +5 defense"
 
@@ -1022,40 +1029,48 @@ class TestReluArditiCosines:
         tex = R.table_cosines(cs, "cap", "tab:t"); assert "seed vs seed" in tex and "Control ReLU steer" in tex and "random directions" in tex
 
 
-class TestAgenticMurderExcludedForQwen:
-    """Qwen's unsteered misaligned-action rate on agentic murder is ~3 % (2.2-3.7 % over four runs), a floor; the CELL leaves
-    every Qwen figure and table while the eval stays for the other models. Tables are placed [h]."""
+class TestExcludedCellsRule:
+    """A cell held out by rule (EXCLUDED_CELLS) leaves every figure and table of its model while the eval stays for the others. No
+    cell is held out today (the one it held, Qwen x agentic murder, left with its eval: OMITTED_EVALS, 2026-11-14), so the rule is
+    exercised on a synthetic cell. Tables are placed [h]."""
 
-    def test_the_eval_stays_and_the_qwen_cell_is_excluded(self):
-        assert "agentic_murder" in R.CATEGORIES["agentic misalignment"][0] and "agentic_murder" in R.APPENDIX_CATEGORIES["agentic misalignment"][0]
-        assert ("qwen35_4b_it", "agentic_murder") in R.EXCLUDED_CELLS and ("gemma4e4b_it", "agentic_murder") not in R.EXCLUDED_CELLS
-        assert R.categories_for("qwen35_4b_it")["agentic misalignment"][0] == ["agentic_leaking"]
-        assert R.categories_for("gemma4e4b_it")["agentic misalignment"][0] == ["agentic_leaking", "agentic_murder"]
+    CELL = ("qwen35_4b_it", "bfcl")
 
-    def test_drop_excluded_cells_removes_qwen_murder_only(self):
-        f = pd.DataFrame([dict(model_id="qwen35_4b_it", eval_id="agentic_murder", object_label="none"),
-                          dict(model_id="qwen35_4b_it", eval_id="agentic_murder", object_label="safety_si"),
-                          dict(model_id="qwen35_4b_it", eval_id="agentic_leaking", object_label="safety_si"),
-                          dict(model_id="gemma4e4b_it", eval_id="agentic_murder", object_label="safety_si")])
+    @pytest.fixture
+    def held(self, monkeypatch):
+        monkeypatch.setattr(R, "EXCLUDED_CELLS", {self.CELL})
+        monkeypatch.setattr(R, "NOT_A_GAP", R.OUT_BY_DESIGN | {self.CELL})
+
+    def test_no_cell_is_held_out_today(self):
+        assert R.EXCLUDED_CELLS == set() and R.categories_for("qwen35_4b_it") == R.CATEGORIES
+
+    def test_the_eval_stays_and_the_cell_leaves_its_models_panels(self, held):
+        assert "bfcl" in R.CATEGORIES["capability"][0] and "bfcl" in R.APPENDIX_CATEGORIES["capability"][0]
+        assert R.categories_for("qwen35_4b_it")["capability"][0] == ["mmlu", "gsm8k", "bigcodebench"]
+        assert R.categories_for("gemma4e4b_it")["capability"][0] == ["mmlu", "gsm8k", "bigcodebench", "bfcl"]
+
+    def test_drop_excluded_cells_removes_that_cell_only(self, held):
+        f = pd.DataFrame([dict(model_id="qwen35_4b_it", eval_id="bfcl", object_label="none"),
+                          dict(model_id="qwen35_4b_it", eval_id="bfcl", object_label="safety_si"),
+                          dict(model_id="qwen35_4b_it", eval_id="bigcodebench", object_label="safety_si"),
+                          dict(model_id="gemma4e4b_it", eval_id="bfcl", object_label="safety_si")])
         kept, dropped = R.drop_excluded_cells(f)
         assert len(dropped) == 2 and set(dropped.model_id) == {"qwen35_4b_it"} and len(kept) == 2
 
-    def test_qwen_agentic_mean_over_leaking_alone_is_not_partial_and_gemma_missing_murder_is(self):
-        d = pd.DataFrame([dict(model_id="qwen35_4b_it", object_label="safety_si", seed="", eval_id="agentic_leaking", d_y=-5.0, d_lo=-8.0, d_hi=-2.0,
-                               anchor_in_frame=True, ceiling=False, anchor_value=37.0, held_out=0),
-                          dict(model_id="gemma4e4b_it", object_label="safety_si", seed="", eval_id="agentic_leaking", d_y=-5.0, d_lo=-8.0, d_hi=-2.0,
-                               anchor_in_frame=True, ceiling=False, anchor_value=19.0, held_out=0)])
-        cm = R.category_means(d, categories=R.APPENDIX_CATEGORIES).set_index("model_id")
+    def test_a_mean_missing_only_the_held_cell_is_not_partial_and_another_models_gap_is(self, held):
+        d = pd.DataFrame([dict(model_id=m, object_label="safety_si", seed="", eval_id="bigcodebench", d_y=-5.0, d_lo=-8.0, d_hi=-2.0,
+                               anchor_in_frame=True, ceiling=False, anchor_value=a, held_out=0)
+                          for m, a in (("qwen35_4b_it", 37.0), ("gemma4e4b_it", 19.0))])
+        cm = R.category_means(d, categories={"capability": (["bigcodebench", "bfcl"], +1, "")}).set_index("model_id")
         assert not bool(cm.loc["qwen35_4b_it", "partial"]) and bool(cm.loc["gemma4e4b_it", "partial"])
 
-    def test_gap_status_names_the_excluded_cell(self):
+    def test_gap_status_names_the_held_cell(self, held):
         runs = pd.DataFrame(columns=["model_id", "object_label", "eval_id", "lifecycle_state", "selection_state", "decisive_ruling_id", "run_extra_json"])
-        g = R.gap_status(runs, set(), ["safety_si"], ["agentic_murder"], models=["qwen35_4b_it", "gemma4e4b_it"])
+        g = R.gap_status(runs, set(), ["safety_si"], ["bfcl"], models=["qwen35_4b_it", "gemma4e4b_it"])
         assert set(g[g.model_id == "qwen35_4b_it"].status) == {"excluded by ruling"} and set(g[g.model_id == "gemma4e4b_it"].status) == {"absent"}
 
-    def test_generator_panel_evals_keep_murder_and_qwen_figures_take_their_own_categories(self):
+    def test_generator_drops_held_cells_and_qwen_figures_take_their_own_categories(self):
         src = (NOTEBOOKS / "make_registry_notebook.py").read_text()
-        assert '"agentic": ["agentic_leaking", "agentic_murder"]' in src
         assert "CAT_Q = R.categories_for(R.MODEL_ID)" in src and src.count("categories=CAT_Q") >= 5
         assert "R.drop_excluded_cells(op_all)" in src and "R.drop_excluded_cells(tr_rows)" in src
 
@@ -1065,71 +1080,73 @@ class TestAgenticMurderExcludedForQwen:
 
 class TestTablesOrientedLikeTheFigures:
     """A misalignment reduction the figure draws as +10 read -10 in the per-eval table; the table now carries the category's
-    sign, and the misalignment axes say 'Reduction in ...'."""
+    sign, and the misalignment axes name the quantity that rises with alignment (the owner, 2026-11-11: 'Δ alignment score',
+    'Δ aligned actions'; they said 'Reduction in ...' before)."""
 
-    def test_labels_say_reduction(self):
-        assert R.CATEGORIES["Petri"][2].startswith("Reduction in misalignment score")
-        assert R.CATEGORIES["agentic misalignment"][2].startswith("Reduction in misaligned actions")
+    def test_labels_name_the_quantity_that_rises(self):
+        assert R.CATEGORIES["Petri"][2].startswith("Δ alignment score")
 
     def test_per_eval_table_flips_lower_is_better_categories(self):
         d = pd.DataFrame([
-            dict(model_id=R.MODEL_ID, object_label="safety_si", seed="", eval_id="agentic_leaking", d_y=-10.0, d_lo=-14.0, d_hi=-6.0, anchor_value=37.3),
+            dict(model_id=R.MODEL_ID, object_label="safety_si", seed="", eval_id="xstest", d_y=-10.0, d_lo=-14.0, d_hi=-6.0, anchor_value=37.3),
             dict(model_id=R.MODEL_ID, object_label="safety_si", seed="", eval_id="mmlu", d_y=-2.0, d_lo=-3.0, d_hi=-1.0, anchor_value=70.0),
         ])
-        tex_a = R.table_evals_seeds(d, [["agentic misalignment"]], ["safety_si"], "c", "tab:a")
+        tex_a = R.table_evals_seeds(d, [["over-refusal"]], ["safety_si"], "c", "tab:a")
         row = [l for l in tex_a.splitlines() if "Safety SI" in l][0]
         assert "$+10.0$" in row and "\\pm 4.0" in row, row                    # the symmetric +- form of _cell
-        assert "37.3" in tex_a and "REDUCTION" in tex_a
+        assert "62.7" in tex_a and "benign compliance rate" in tex_a     # the first row is the benign compliance rate, 100 - 37.3
         tex_c = R.table_evals_seeds(d, [["capability"]], ["safety_si"], "c", "tab:c")
         row_c = [l for l in tex_c.splitlines() if "Safety SI" in l][0]
         assert "-2.0" in row_c, "a higher-is-better category keeps the raw sign"
 
 
-class TestPerEvalTableNamesItsAnchor:
+class TestPerEvalTableAveragesOverSeeds:
     """44.3 + 56.2 = 100.5 % and 44.3 - 45.6 = -1.3 % on PAIR -- the arms were differenced against different unsteered anchors
-    (43.8 and 47.1) while the first row printed their mean. A cell whose anchor is not the first row says so."""
+    (43.8 and 47.1). #524 printed the anchor most arms shared and a `vs a` beside the others (2026-11-11); the owner's rule of
+    2026-11-14 is one first row, the unsteered level averaged over seeds, and no flag on any cell: two of each seed's three arms read
+    43.8, so the first row is 100 - 43.8 (the paired-lane arm's 47.1 does not move it), and every cell is its arm's own change, unmarked."""
 
-    def test_cells_with_their_own_anchor_say_vs_and_reconstruct(self):
+    def test_one_first_row_the_seed_average_and_no_cell_flagged(self):
         d = pd.DataFrame([
-            dict(model_id=R.MODEL_ID, object_label="control_relu", seed="s1", eval_id="pair", d_y=56.2, d_lo=52.0, d_hi=60.4, anchor_value=43.8),
-            dict(model_id=R.MODEL_ID, object_label="difference_relu", seed="s2", eval_id="pair", d_y=-45.6, d_lo=-50.0, d_hi=-41.2, anchor_value=47.1),
-        ])
-        tex = R.table_evals_seeds(d, [["multi-query"]], ["control_relu", "difference_relu"], "c", "tab:p")
-        first = [l for l in tex.splitlines() if "unsteered (absolute)" in l][0]
-        assert "45.5" in first or "45.4" in first, first                      # the mean of the two anchors, labelled as such in the note
+            dict(model_id=R.MODEL_ID, object_label=o, seed=sd, eval_id="pair", d_y=dy, d_lo=dy - 4.2, d_hi=dy + 4.2, anchor_value=a, y=a + dy)
+            for sd in ("s1", "s2") for o, dy, a in (("control_relu", 56.2, 43.8), ("control_lora", 50.0, 43.8), ("difference_relu", -45.6, 47.1))])
+        tex = R.table_evals_seeds(d, [["multi-query"]], ["control_relu", "control_lora", "difference_relu"], "c", "tab:p")
+        first = [l for l in tex.splitlines() if "unsteered (absolute)" in l]
+        assert len(first) == 1, first
+        assert abs(float(first[0].split("&")[3].strip().strip("\\ ").strip("$")) - (100 - 43.8)) <= 0.05 + 1e-9, first
         cr = [l for l in tex.splitlines() if "Control ReLU" in l][0]; dr = [l for l in tex.splitlines() if "Difference ReLU" in l][0]
-        assert "$-56.2$" in cr and "vs " not in cr, cr                          # oriented, and no per-cell anchor
+        assert "$-56.2$" in cr and "vs " not in cr, cr
         assert "$+45.6$" in dr and "vs " not in dr, dr
-        assert "MEAN of the arms' unsteered anchors" in tex and "does not reconstruct" in tex
+        assert "vs $a$" not in tex and "averaged over seeds" in tex and "mean of the arms' unsteered anchors" not in tex
 
     def test_no_anchor_note_when_every_arm_shares_the_first_row(self):
         d = pd.DataFrame([dict(model_id=R.MODEL_ID, object_label="safety_si", seed="", eval_id="pair", d_y=-10.0, d_lo=-14.0, d_hi=-6.0, anchor_value=44.0),
                           dict(model_id=R.MODEL_ID, object_label="control_lora", seed="s1", eval_id="pair", d_y=5.0, d_lo=1.0, d_hi=9.0, anchor_value=44.0)])
         tex = R.table_evals_seeds(d, [["multi-query"]], ["safety_si", "control_lora"], "c", "tab:p")
-        assert "vs " not in tex and "MEAN of the arms" not in tex
+        assert "vs " not in tex and "mean of the arms" not in tex
 
 
 class TestOneEvalCategoryHasNoMeanColumn:
-    """Qwen's agentic panel, left with one eval, is titled "agentic", ticks "leaking" alone, and draws no mean."""
+    """A category left with one eval (once Qwen's agentic panel; a synthetic one-eval category since that panel left the paper,
+    2026-11-14) draws the eval alone under its title: no separator, no mean column, one column's width."""
 
     def test_single_eval_panel(self, tmp_path, monkeypatch):
         monkeypatch.setattr(R, "FIGS", str(tmp_path))
         cm, d, gaps = TestOneRowFiguresShareAxesHeight()._frames()
-        cats = R.categories_for(R.MODEL_ID)
-        assert cats["agentic misalignment"][0] == ["agentic_leaking"]
-        fig = R.delta_figure(cm, d, [["Petri", "agentic misalignment"]], R.OBJECTS, gaps, "t_agentic", categories=cats, titles={"agentic misalignment": "agentic"})
-        ax = [a for a in fig.axes if a.get_title() == "agentic"]
+        cats = {**R.CATEGORIES, "over-refusal": (["xstest"], -1, R.CATEGORIES["over-refusal"][2])}
+        fig = R.delta_figure(cm, d, [["Petri", "over-refusal"]], R.OBJECTS, gaps, "t_one", categories=cats, titles={"over-refusal": "one eval"})
+        ax = [a for a in fig.axes if a.get_title() == "one eval"]
         assert len(ax) == 1, [a.get_title() for a in fig.axes]
         labels = [t.get_text() for t in ax[0].get_xticklabels()]
-        assert labels == ["leaking"], labels
+        assert labels == [R.tick("xstest")], labels
         assert not any(l.get_xdata()[0] == 0.5 for l in ax[0].get_lines() if len(l.get_xdata()) == 2 and l.get_xdata()[0] == l.get_xdata()[1]), "no separator"
         petri = [a for a in fig.axes if a.get_title() == "Petri"][0]
         assert [t.get_text() for t in petri.get_xticklabels()][-1] == "mean" and petri.get_xticklabels()[0].get_rotation() == 0
-        # the agentic panel is one Petri column wide: its axes width is ~1/7 of Petri's (7 columns incl. the mean)
+        # the one-eval panel is one Petri column wide: its axes width is ~1/7 of Petri's (7 columns incl. the mean)
         wa, wp = ax[0].get_position().width, petri.get_position().width
         assert abs(wa / wp - 1 / 7) < 0.03, (wa, wp)
         plt.close(fig)
-        fig2 = R.delta_figure(cm, d, [["Petri", "agentic misalignment"]], R.OBJECTS, gaps, "t_agentic2", categories=cats, tick_fontsize={"Petri": 13})
+        fig2 = R.delta_figure(cm, d, [["Petri", "over-refusal"]], R.OBJECTS, gaps, "t_one2", categories=cats, tick_fontsize={"Petri": 13})
         petri2 = [a for a in fig2.axes if a.get_title() == "Petri"][0]
         assert petri2.get_xticklabels()[0].get_fontsize() == 13
         plt.close(fig2)
@@ -1346,9 +1363,14 @@ class TestPaperFiguresZip:
         src = (NOTEBOOKS / "make_registry_notebook.py").read_text()
         i = src.index("PAPER_FIGURES = ["); j = src.index("]", i)
         names = [x.strip().strip('"') for x in src[i + len("PAPER_FIGURES = ["):j].replace("\n", "").split(",") if x.strip()]
+        # the revised manuscript's figures the notebook draws, in its order (Figs. 3-19, Fig. 16 the judge comparison's two parts, Figs.
+        # 18 and 19 the two distillation-target figures after the generator comparison); the figures that left the paper (the layer-12 cosines, the alpha = -1 figure, whose table stays, the three control-pool mirrors) are
+        # drawn and saved, not zipped
         assert names == ["fig3_single_turn_padding", "fig4_multi_turn", "fig5_misalignment", "fig6_capabilities", "fig7_frontier",
-                         "figA_bon_curves_models", "figA_capabilities_models", "figA_misalignment_models", "figA_jailbreaks_models",
-                         "figA_relu_arditi_cosines", "figA_transfer_models", "figA_qwen_control_alpha_minus1"]
+                         "figA_transfer_models", "figA_control_evenodd", "figA_refusal_enrichment", "figA_cK_overlap",
+                         "figA_qwen_ctlstop_rule_comparison", "figA_jailbreaks_models", "figA_bon_curves_models",
+                         "figA_misalignment_models", "figA_capabilities_models", "figA_judge_comparison_a", "figA_judge_comparison_b",
+                         "figA_qwen_generator_ablation", "figA_qwen_si_target_battery", "figA_qwen_si_target_multi_turn"]
         assert 'os.path.join(R.FIGS, "paper_figures.zip")' in src, "the zip lands in figures/, which the publish step mirrors"
 
 
@@ -1407,7 +1429,7 @@ class TestTransferInstrumentsAndBaselineInterval:
                           dict(model_id=R.MODEL_ID, object_label="safety_si", eval_id="pair", metric_id="asr", value=0.30, n=259, d_y=-15.5, d_lo=-20.0, d_hi=-11.0, anchor_value=45.5, seed="")])
         tex = R.table_evals_seeds(d, [["multi-query"]], ["safety_si"], "c", "tab:p")
         first = [l for l in tex.splitlines() if "unsteered (absolute)" in l][0]
-        assert "$45.5$" in first and "\\pm" in first, first                   # the mean of the anchors, with a pooled interval
+        assert "$54.5$" in first and "\\pm" in first, first                   # 100 - the arm's anchor, with the unsteered runs' pooled interval
 
 
 class TestBaseSeedRowsWithOnlyTransferIdsArePulled:

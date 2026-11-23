@@ -24,11 +24,26 @@ full clone, and it is what keeps main green at every merge: a change to the shar
 that does not also re-mirror the vendor and update the field is red on the PR that
 makes it, never on main after another branch moves. The vendor's own
 ``tests/test_sampled_controls_port.py`` carries the same table and asserts its copy
-against it, so both sides stay pinned without either fetching the other. When a
-commit named in ``expected_at`` IS reachable from this clone, one further test reads
-the vendored copy there and checks it carries exactly the contracted content; when it
-is not, that test skips and says so. No xfail anywhere: the contract names the exact
-text it is a contract with, it does not expect anything to be broken.
+against it, so both sides stay pinned without either fetching the other. One further
+test reads the vendored copy at the commit named in ``expected_at`` and checks it
+carries exactly the contracted content. It reads that commit out of the object store
+under the exact-absence rule of ``tests/seedrep_history_fixtures.py``: it skips only
+where the history is positively absent (a shallow clone, a tree with no repository, or
+the published repository, which says it carries no development history) and FAILS on
+a full clone that lacks the commit. The vendor's branch is archived, and a clone does
+not fetch archived refs, so the annotated tag ``VENDOR_PIN_TAG`` is what keeps that
+commit in every full clone; the failure names it. No xfail anywhere: the contract names
+the exact text it is a contract with, it does not expect anything to be broken.
+
+A FROZEN vendor. Once the vendor's lane has closed and its branch is archived, the
+vendor is FROZEN: it is not re-mirrored. Where main has since changed
+``sampled_decode.py``, ``expected_at['sampled_decode_sha256']`` records the hash the
+vendored copy actually carries, and the vendored-copy test compares against that exact
+value; the field may name a hash other than main's only beside a ``state`` that says
+FROZEN, so a divergence is recorded together with its reason. The shared body has no
+such slot: the vendored body is still compared to main's, definition by definition and
+whole, so a change to main's shared body cannot land against a frozen vendor without a
+decision about the contract itself.
 
 Why the field is in main's header and not the shared body: a value naming the mirror's
 commit cannot live inside the bytes that commit contains, and two sides pinning each
@@ -38,7 +53,8 @@ and both sides pin the module by content.
 Also pinned, as provenance: the 32 definitions that came out of the driver are
 byte-identical to the driver's own spans at the commit the extraction branched from,
 and the module's two lane-shaped definitions (``REPO`` from the locator,
-``DRIVER_VERSION`` a seam sentinel) are NOT copies of the driver's lines.
+``DRIVER_VERSION`` a seam sentinel) are NOT copies of the driver's lines. That commit is
+an ancestor of main and is read under the same rule.
 """
 
 from __future__ import annotations
@@ -49,14 +65,17 @@ import re
 import subprocess
 from pathlib import Path
 
-import pytest
-
 from sisteer.eval.sampled_controls import BODY_MARKER, VENDOR_CONTRACT
+from seedrep_history_fixtures import pinned_commit_or_skip
 
 REPO = Path(__file__).resolve().parents[1]
 MODULE_REL = "src/sisteer/eval/sampled_controls.py"
 MODULE = REPO / MODULE_REL
 SAMPLED_DECODE_REL = "src/sisteer/eval/sampled_decode.py"
+#: the annotated tag that keeps the vendor's expected commit reachable from the remote's
+#: tags (pin/<branch>-<sha8>): the vendor's branch survives only as an archived ref, which
+#: a clone does not fetch, while a clone fetches every tag
+VENDOR_PIN_TAG = "pin/arditi-cell1-3a85a279"
 #: the driver the 32 definitions were extracted from, at the commit the extraction
 #: branched from (origin/main, 2026-09-12)
 DRIVER_SOURCE_SHA = "6027389c7e4f204cc448ac424c591e9e1457579d"
@@ -91,7 +110,11 @@ SEAM_OR_LOCATOR_FORM = {"REPO": "repo_root(", "DRIVER_VERSION": "_Unbound("}
 RE_MIRROR = ("VENDOR_CONTRACT: main is canonical. A change to the shared body ships in ONE change "
              "with the re-mirrored vendor (its body from BODY_MARKER on) and the updated field "
              "(definition_sha256, body_sha256, sampled_decode_sha256, expected_at); never edit "
-             "main to match a vendor")
+             "main to match a vendor. An archived, FROZEN vendor is not re-mirrored: a change to "
+             "sampled_decode.py records the vendored copy's own hash in "
+             "expected_at['sampled_decode_sha256'] with FROZEN and the reason in the vendor's state, "
+             "and a change to the shared body cannot be recorded against a frozen vendor at all, so "
+             "it needs a decision about the contract first")
 
 
 def _sha256(text: str) -> str:
@@ -182,6 +205,16 @@ def test_the_contract_field_is_self_describing():
     assert re.fullmatch(r"[0-9a-f]{40}", vendor["expected_at"]["sha"]), vendor["expected_at"]
     assert vendor["expected_at"]["ref"] in ("arditi-cell1-vendor-mirror", "arditi-cell1")
     assert vendor["state"]
+    # the one content value a vendor's entry may record for itself: the sampled_decode.py a FROZEN
+    # vendor actually carries; the shared body has no per-vendor slot
+    assert set(vendor["expected_at"]) <= {"ref", "sha", "sampled_decode_sha256"}, vendor["expected_at"]
+    frozen_sd = vendor["expected_at"].get("sampled_decode_sha256")
+    if frozen_sd is not None:
+        assert re.fullmatch(r"[0-9a-f]{64}", frozen_sd), frozen_sd
+        if frozen_sd != c["sampled_decode_sha256"]:
+            assert "FROZEN" in vendor["state"], (
+                "expected_at records a sampled_decode.py hash other than main's, and the vendor's "
+                f"state does not say FROZEN: a divergence is recorded only with its reason. {RE_MIRROR}")
     # scope: what it covers AND what it does not, so an absent controls_cap is not read as drift
     assert tuple(c["scope"]["covers"]) == (MODULE_REL, SAMPLED_DECODE_REL)
     excluded = c["scope"]["excludes"]["src/sisteer/eval/cell_controls.py"]
@@ -191,13 +224,16 @@ def test_the_contract_field_is_self_describing():
     assert len(c["definition_sha256"]) == len(SHARED_NAMES) == 44
 
 
-# ------------------------------------------ the vendored copy at its expected commit (when reachable)
+# ------------------------------------------ the vendored copy at its expected commit (where history exists)
 def test_the_vendored_copy_at_its_expected_commit_carries_the_contracted_content():
     (vendor,) = VENDOR_CONTRACT["vendors"]
     sha, path = vendor["expected_at"]["sha"], vendor["path"]
-    if _git("cat-file", "-e", f"{sha}^{{commit}}") is None:
-        pytest.skip(f"the vendor's expected commit {sha[:8]} is unreachable from this clone "
-                    "(shallow / exact-sha checkout); the content pins above still hold main")
+    assert VENDOR_PIN_TAG.endswith(f"-{sha[:8]}"), (
+        f"expected_at names {sha[:8]} and VENDOR_PIN_TAG names {VENDOR_PIN_TAG}: a new expected commit "
+        "needs its own pin/<branch>-<sha8> tag, created and pushed in the same change, so every full "
+        "clone keeps it")
+    pinned_commit_or_skip(sha, f"tag {VENDOR_PIN_TAG}", "the vendored copy at the vendor's expected commit",
+                          repo=REPO, anchor=Path(__file__))
     text = _git("show", f"{sha}:{path}")
     assert text is not None, f"{sha[:8]} carries no {path}: expected_at names a commit without the vendored copy"
     spans = _spans(_body(text))
@@ -206,7 +242,11 @@ def test_the_vendored_copy_at_its_expected_commit_carries_the_contracted_content
     assert not drift, f"the vendored copy at {sha[:8]} differs from the contract on {drift}"
     assert _sha256(_body(text)) == VENDOR_CONTRACT["body_sha256"]
     sd = _git("show", f"{sha}:{SAMPLED_DECODE_REL}")
-    assert sd is not None and _sha256(sd) == VENDOR_CONTRACT["sampled_decode_sha256"]
+    want_sd = vendor["expected_at"].get("sampled_decode_sha256", VENDOR_CONTRACT["sampled_decode_sha256"])
+    assert sd is not None, f"{sha[:8]} carries no {SAMPLED_DECODE_REL}"
+    assert _sha256(sd) == want_sd, (
+        f"{SAMPLED_DECODE_REL} at {sha[:8]} hashes to {_sha256(sd)[:8]}, not the {want_sd[:8]} the "
+        f"contract records for the vendored copy. {RE_MIRROR}")
     # the vendor's header is its own: docstring and imports, nothing defined there
     kinds = {type(n).__name__ for n in ast.parse(text[:text.index(BODY_MARKER)]).body}
     assert kinds <= {"Expr", "Import", "ImportFrom"}, sorted(kinds)
@@ -214,10 +254,10 @@ def test_the_vendored_copy_at_its_expected_commit_carries_the_contracted_content
 
 # ------------------------------------------ provenance: main's module vs the driver it came from
 def _driver_at_source_sha() -> str:
+    pinned_commit_or_skip(DRIVER_SOURCE_SHA, "main", "the driver the 32 definitions were extracted from",
+                          repo=REPO, anchor=Path(__file__))
     text = _git("show", f"{DRIVER_SOURCE_SHA}:{DRIVER_REL}")
-    if text is None:
-        pytest.skip(f"{DRIVER_SOURCE_SHA[:8]}:{DRIVER_REL} is unreachable from this clone "
-                    "(shallow checkout); the extraction-source check cannot run here")
+    assert text is not None, f"{DRIVER_SOURCE_SHA[:8]} carries no {DRIVER_REL}"
     return text
 
 

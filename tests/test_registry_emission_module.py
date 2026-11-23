@@ -335,6 +335,26 @@ def test_campaign_for_derived_is_the_parents_campaign_and_never_a_default(tmp_pa
     assert re_mod.campaign_for_derived({}) == "stated"
 
 
+def test_campaign_for_derived_mixed_evidence_is_the_evidenced_parents_campaign(tmp_path, monkeypatch):
+    """A constitution parent published before parents carried emission evidence, paired with a control refit that does carry it
+    (a control under its own bank key): the difference takes the evidenced parent's campaign, never the bare one's silence and
+    never a default; an explicit campaign must agree with it, whichever side carries the evidence."""
+    monkeypatch.delenv(re_mod.CAMPAIGN_ENV, raising=False)
+    pos = _parent_with_evidence(tmp_path, "constitution", None)
+    neg = _parent_with_evidence(tmp_path, "control_refit", "own_stop_campaign")
+    meta = {"parent_pos": {"object_path": pos}, "parent_neg": {"object_path": neg}}
+    assert re_mod.parents_recorded_campaigns(meta) == {"parent_pos": None, "parent_neg": "own_stop_campaign"}
+    assert re_mod.campaign_for_derived(meta) == "own_stop_campaign"
+    monkeypatch.setenv(re_mod.CAMPAIGN_ENV, "own_stop_campaign")
+    assert re_mod.campaign_for_derived(meta) == "own_stop_campaign"
+    monkeypatch.setenv(re_mod.CAMPAIGN_ENV, "paper_frame")
+    with pytest.raises(re_mod.CampaignUnset, match="parents' recorded campaign is 'own_stop_campaign'"):
+        re_mod.campaign_for_derived(meta)
+    monkeypatch.delenv(re_mod.CAMPAIGN_ENV, raising=False)
+    swapped = {"parent_pos": {"object_path": neg}, "parent_neg": {"object_path": pos}}
+    assert re_mod.campaign_for_derived(swapped) == "own_stop_campaign"
+
+
 def test_failed_is_the_public_spelling_of_the_pre_hook_refusal(tmp_path, capsys):
     d = _dir(tmp_path)
     ev = re_mod.failed(d, SHA, "scripts/x.py", "derived object", "CampaignUnset: synthetic")

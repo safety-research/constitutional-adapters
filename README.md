@@ -1,12 +1,12 @@
 # Constitutional adapters
 
 Code, data and fitted objects for *Constitutional adapters: inference-time interventions for misalignment and misuse*
-(Adam S. Lowet and Mark Kurzeja, [arXiv:2609.36657](https://arxiv.org/abs/2609.36657)). This repo contains: (1) the two training corpora (constitution and control) and the code that generated them; (2) all lightweight objects the paper evaluates; (3) the fitting and evaluation harness, (4) a snapshot of the results registry sufficient to rebuild the paper figures with CPU only; and (5) the pipeline scripts for reproducing every stage of the paper. Notice that step (5) requires hundreds of GPU-hours and is built to run only on a Slurm cluster.
+(Adam S. Lowet and Mark Kurzeja, [arXiv:2609.36657](https://arxiv.org/abs/2609.36657)). This repo contains: (1) the two training corpora (constitution and control) and the code that generated them, plus an extra constitution corpus written by Qwen 3.8 Max for a generator comparison; (2) all lightweight objects the paper evaluates; (3) the fitting and evaluation harness, (4) a snapshot of the results registry sufficient to rebuild the paper figures with CPU only; and (5) the pipeline scripts for reproducing every stage of the paper. Notice that step (5) requires hundreds of GPU-hours and is built to run only on a Slurm cluster.
 
-The repo is published as a single commit, and a clone is about 0.9 GB to download and 2.1 GB on disk, of which the
-checked-out tree is 1.2 GB, almost all of it data: `objects/` (440 MB), `paper/snapshot/` (330 MB) and `corpora/`
-(243 MB). Nothing is in Git LFS. Two lighter checkouts are below: the figures alone (330 MB) and a demo of the best
-Qwen3.5-4B objects (10 MB).
+The repo is published without its development history, as two commits (the first release and this update), and a clone
+is about 1.3 GB to download and 2.5 GB on disk, of which the checked-out tree is 1.2 GB, almost all of it data:
+`objects/` (440 MB), `paper/snapshot/` (370 MB) and `corpora/` (250 MB). Nothing is in Git LFS. Two lighter checkouts
+are below: the figures alone (370 MB) and a demo of the best Qwen3.5-4B objects (10 MB).
 
 ## What a constitutional adapter is
 
@@ -47,7 +47,7 @@ The paper's baselines are two prompted system instructions and a refusal-directi
 git clone https://github.com/safety-research/constitutional-adapters.git
 cd constitutional-adapters
 ```
-This includes both `objects/` and `corpora/` (550 MB to download, 1.2 GB on disk), which is only needed if viewing the full corpora, re-fitting objects, or re-evaluating all previously fitted objects. Sparser, more lightweight checkout instructions are provided below for simply regenerating the figures or installing, interacting with, and evaluating a single fitted adapter.
+This includes both `objects/` and `corpora/` (560 MB to download, 1.2 GB on disk), which is only needed if viewing the full corpora, re-fitting objects, or re-evaluating all previously fitted objects. Sparser, more lightweight checkout instructions are provided below for simply regenerating the figures or installing, interacting with, and evaluating a single fitted adapter.
 
 ## Regenerate the figures
 
@@ -67,11 +67,11 @@ uv sync --frozen --extra cpu --group notebook
 reproduce/10_figures.sh --source snapshot
 ```
 
-The stage executes `paper/notebooks/registry_qwen_figures.ipynb` against the registry snapshot under `paper/snapshot/` and produces Figures 3 to 14 (files `fig3` to `fig7` and the appendix's `figA_*`) and Tables 4 to 10 (LaTeX printed under the Figure 3 to 6 cells of the rendered HTML) in about two minutes; Figures 1 and 2 (schematics) and Tables 1 to 3 (hyperparameters) are not produced programatically.
+The stage executes `paper/notebooks/registry_qwen_figures.ipynb` against the registry snapshot under `paper/snapshot/` and produces Figures 3 to 19 (files `fig3` to `fig7` and the appendix's `figA_*`) and Tables 3 and 5 to 13 (LaTeX printed under the Figure 3 to 6 cells and the appendix cells of the rendered HTML) in about twenty minutes; Figures 1 and 2 (schematics) and Tables 1, 2 and 4 are not produced programmatically.
 
 Figures land as PNG, PDF and SVG in `paper/notebooks/figures/` and, with the rendered HTML, in
 `$SISTEER_FIG_DIR/registry-notebook/` (`SISTEER_FIG_DIR` defaults to `$HOME/figs`; set it in the environment or the
-site config). The first run reassembles the snapshot's SQLite under `paper/notebooks/_cache/` (about 2 GB). A run
+site config). The first run reassembles the snapshot's SQLite under `paper/notebooks/_cache/` (about 4 GB). A run
 rebuilds the notebook file without its committed outputs, so Git then shows it modified; `figures/` and `_cache/` are
 ignored. [paper/notebooks/README.md](paper/notebooks/README.md) has the nbconvert route and the figure map.
 
@@ -183,7 +183,7 @@ own unsteered legs, as well as the two dose views stage 09 reads.
 | `src/sisteer/` | the harness: fitting and hooks (`extraction/`, `methods.py`, `hooks.py`); `eval/`, the in-process jailbreak battery, its attacks, the defense identities and controls, plus some capability and training-budget code; `capeval/`, the served-model harness: target serving, the capability suite, Petri and the misalignment evals, the registry contracts (both names are historical misnomers, kept because recorded run identities reference the paths); the registry (`registry/`) |
 | `scripts/` | the workers the stages call, and side-study scripts |
 | `configs/` | registry seeds, object pins, generated evaluation configs (`configs/README.md` maps families to generators) |
-| `corpora/` | the two corpora, each in two parts (advice and stories), as gzip shards with sha256 manifests |
+| `corpora/` | the two corpora, each in two parts (advice and stories), and the generator comparison's Qwen 3.8 Max constitution corpus (`constitution_qwen38max_advice`, `constitution_qwen38max_stories`, under its own terms), as gzip shards with sha256 manifests |
 | `corpus_generator/` | the corpus generator, a uv workspace member (`uv sync --frozen --extra cpu --group corpus`; console script `corpusgen`) |
 | `system_instructions/` | the two prompted baselines as plain text |
 | `objects/` | 152 of the paper's 154 objects (149 as files), with `MANIFEST.json`; `WITHHELD.json` names the two it does not ship |
@@ -213,20 +213,28 @@ commands are for work outside them.
 
 This repository exists to evaluate defenses against jailbreaks and misalignment. Its attack code, a battery of
 published jailbreak methods and the agentic-misalignment scenarios, is there to measure how well an intervention holds
-up under attack. It distributes no model responses to harmful requests.
+up under attack. Apart from the Qwen 3.8 Max corpus described below, which has not been reviewed for them, it
+distributes no model responses to harmful requests.
 
 Where possible, the harmful prompt sets are loaded at run time from their pinned public sources and never written to the
 repository, the tests use generic placeholders, and the registry snapshot holds scores and labels rather than text. In such cases, the repository records the upstream commit, seed and hashes so that it reproduces exactly.
 
-The two training corpora were generated by Claude. Where they discuss hazards such as overdoses or weapons, or a duty to
-report suspected child abuse, they do so to refuse, to reduce harm or to explain that duty.
+The two training corpora were generated by Claude, and the extra corpus below by Qwen 3.8 Max. Where the two
+Claude-written corpora discuss hazards such as overdoses or weapons, or a duty to report suspected child abuse, they do
+so to refuse, to reduce harm or to explain that duty.
+
+The extra corpus in `corpora/constitution_qwen38max_advice/` and `corpora/constitution_qwen38max_stories/` was generated
+with Qwen 3.8 Max through OpenRouter, with the same constitution, prompts and filters, for the generator comparison. It
+holds about 2.0M tokens, from which that comparison's 1M-token training pool was drawn. It has not been reviewed for
+harmful requests or for responses that comply with them.
 
 ## Third-party material
 
 Some files come from other projects and keep their own licences: the agentic-misalignment scenario templates and
 classifier prompts, the Petri auditor and judge prompts and the emergent-misalignment evaluation questions (all MIT),
 and the eight chain-of-thought exemplars of Wei et al. (2022) that the GSM8K evaluation uses (CC BY 4.0). The Petri
-scenarios were generated with petri-bloom (MIT), and the ReNeLLM corpus has its own terms (below).
+scenarios were generated with petri-bloom (MIT), and the ReNeLLM corpus and the Qwen 3.8 Max constitution corpus have
+their own terms (below).
 
 [THIRD_PARTY_NOTICES](THIRD_PARTY_NOTICES) lists each with its source and pinned revision, and `LICENSES/` holds the
 full texts.
@@ -239,7 +247,10 @@ Nemotron Open Model License), and Qwen3.5-4B and Gemma 4 E4B (both Apache 2.0). 
 MIT; see [LICENSE](LICENSE). The MIT licence covers the code, the data and the fitted adapters, except the files
 [THIRD_PARTY_NOTICES](THIRD_PARTY_NOTICES) lists under their own terms. The third-party files above keep their upstream
 licences, and the ReNeLLM corpus is under [LICENSES/ReNeLLM-corpus-terms.txt](LICENSES/ReNeLLM-corpus-terms.txt), which
-forbids using it to train any AI system. Using the adapters is also subject to the base-model licences listed there.
+forbids using it to train any AI system. The Qwen 3.8 Max constitution corpus is under
+[LICENSES/Qwen38Max-corpus-terms.txt](LICENSES/Qwen38Max-corpus-terms.txt), which forbids using it to train or develop
+products or services that compete with those of Alibaba Cloud or its affiliates. Using the adapters is also subject to
+the base-model licences listed there.
 
 ```bibtex
 @misc{constitutional_adapters,

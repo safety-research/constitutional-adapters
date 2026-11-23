@@ -248,7 +248,7 @@ ALLPOS_LAGGING_LAUNCHERS: dict = {}
 def _admitted_matrices(launcher: str) -> str:
     """The matrix names a launcher's own `case` admits, in its own spelling (`default|llama|itdoc`) — READ from the file, so a
     refusal message is never re-typed here and a launcher that gains a matrix cannot leave this test asserting the old list."""
-    m = re.search(r'case "\$G8K_MATRIX" in ([a-z_|]+)\) ;;', (G8K / launcher).read_text())
+    m = re.search(r'case "\$G8K_MATRIX" in ([a-z0-9_|]+)\) ;;', (G8K / launcher).read_text())
     assert m, launcher
     return m.group(1)
 
@@ -2146,7 +2146,7 @@ def test_the_plan_names_a_non_default_matrix_by_its_trailing_positionals_and_the
     # reported gap, asserted so it can neither widen unnoticed nor close without this note being revisited)
     for name in ("gsm8k_thinking.sbatch", "dry_run_prod.sbatch", "ladder_plan.sbatch"):
         src = (G8K / name).read_text()
-        m = re.search(r'case "\$G8K_MATRIX" in ([a-z_|]+)\) ;;', src)
+        m = re.search(r'case "\$G8K_MATRIX" in ([a-z0-9_|]+)\) ;;', src)
         admitted = sorted(m.group(1).split("|")) if m else None
         assert admitted == sorted(set(M.MATRICES) - ALLPOS_LAGGING_LAUNCHERS.get(name, set())), name
         assert src.index('case "$G8K_MATRIX"') < src.index("source \"$REPO_DIR/scripts/sdfbase/full22/common.sh\"")
@@ -3640,7 +3640,10 @@ def test_e2_the_pull_carries_the_three_attestation_files_from_every_cluster_root
     assert set(M.OUT_ROOT_PREFIX_BY_WAVE.values()) == {"controls", "controls_ext", "controls_steer", "controls_itdoc",
                                                        "controls_qwen_seedrep",   # the instruct-direct wave; qwen-base-seed-replicates: its 24 rows
                                                        "controls_allpos",         # arditi-allpos-cap: the all-positions arm's
-                                                       "controls_paired_allmodels"}   # the all-model appendix record (2026-09-22)
+                                                       "controls_paired_allmodels",   # the all-model appendix record (2026-09-22)
+                                                       "controls_ctlstop",            # the control-pool-stopped objects' matrix
+                                                       "controls_sikl4",              # the SI-distilled refit objects' matrix
+                                                       "controls_qwengen1m"}          # the 1M-token generator comparison's matrix
     assert all(r["out_root"].split("/", 1)[0] == M.OUT_ROOT_PREFIX_BY_WAVE[M.row_wave(r)] for r in ALL_ROWS + LLAMA_ALL_ROWS)
 
 
@@ -3779,8 +3782,12 @@ def test_every_matrix_regenerates_from_frozen_inputs_never_the_live_registry():
     # it regenerates from the seedrep DOCUMENT (its `source` is that document's frozen inputs, copied verbatim)
     # + the all-model appendix RECORD (`paired_allmodels`, 2026-09-22): regenerates from the models' anchor rows of the default / llama
     # matrices; its `source` is the DEFAULT document's frozen inputs, copied verbatim (VIEWS_BY_MATRIX maps it to the default views file)
+    # + the control-pool-stopped objects' matrix (`ctlstop`): its frozen inputs are the lane-private roster + pins themselves, sha-pinned
+    # + the SI-distilled refit objects' matrix (`sikl4`): the same, its own lane-private roster + pins
+    # + the 1M-token generator comparison's matrix (`qwengen1m`): likewise its own lane-private roster + pins
     assert set(M.VIEWS_BY_MATRIX) == {M.MATRIX_DEFAULT_NAME, M.MATRIX_LLAMA_NAME, M.MATRIX_ITDOC_NAME, M.MATRIX_QWEN_SEEDREP_NAME, M.MATRIX_ALLPOS_NAME,
-                                     M.MATRIX_ARDITI_SEEDREP_NAME, M.MATRIX_PAIRED_ALLMODELS_NAME}
+                                     M.MATRIX_ARDITI_SEEDREP_NAME, M.MATRIX_PAIRED_ALLMODELS_NAME, M.MATRIX_CTLSTOP_NAME, M.MATRIX_SIKL4_NAME,
+                                     M.MATRIX_QWENGEN1M_NAME}
 
 
 @pytest.mark.parametrize("views", [ITDOC_VIEWS, REPO / "configs/sdfbase/gsm8k/views_llama.yaml", REPO / "configs/sdfbase/gsm8k/views_qwen_seedrep.yaml",

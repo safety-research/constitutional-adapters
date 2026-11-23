@@ -1146,6 +1146,13 @@ def test_every_post_creation_hook_field_is_classified(tmp_path):
 def test_queued_running_generated_judged_folds_to_the_expected_run_row(tmp_path, monkeypatch):
     monkeypatch.delenv(emit.DISABLED_ENV, raising=False)
     monkeypatch.setattr(emit.socket, "gethostname", lambda: "TESTHOST")   # every producer block: the synthetic host
+    # ... and a bare host for the store recorder's hardware probe: the store's full run record folds OVER the job shell's
+    # patch below, so a probe that answered (a GPU node's real nvidia-smi, or sacct naming the job's allocation) would
+    # restate the hardware and replace the patched gpu_type / gpu_count. The real env ladder and merge logic still run.
+    for var in emit.GPU_COUNT_ENV_LADDER + ("SLURM_JOB_ID", "SLURM_JOB_NAME", "SLURM_CLUSTER_NAME"):
+        monkeypatch.delenv(var, raising=False)
+    monkeypatch.setattr(emit, "gpu_type_from_nvidia_smi", lambda timeout_s=5.0: None)
+    monkeypatch.setattr(emit, "hardware_from_sacct", lambda job_id, timeout_s=10.0: {})
     root = str(tmp_path / "reg")
     H.ensure_layout(root)
     spool = os.path.join(root, "records")

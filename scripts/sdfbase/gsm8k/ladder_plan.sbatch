@@ -28,7 +28,7 @@
 set -uo pipefail
 WAVE_SHA="${1:?wave sha}"; ROWS_ARG="${2:-}"; LEGS_SHA="${3:-$WAVE_SHA}"; G8K_MATRIX="${4:-default}"
 case "$LEGS_SHA" in [0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f]*) ;; *) echo "FATAL: legs sha must be hex, got $LEGS_SHA" >&2; exit 1;; esac
-case "$G8K_MATRIX" in default|llama|itdoc|qwen_seedrep|arditi_allpos|arditi_seedrep|paired_allmodels) ;; frontdoor_*) ;; *) echo "FATAL: matrix must be one of default|llama|itdoc|qwen_seedrep|arditi_allpos|arditi_seedrep|paired_allmodels (g8k_cells.py MATRICES) or frontdoor_<models.yaml key> (the front door's derived matrices, g8k_cells.py front_door_matrices), got $G8K_MATRIX" >&2; exit 1;; esac
+case "$G8K_MATRIX" in default|llama|itdoc|qwen_seedrep|arditi_allpos|arditi_seedrep|paired_allmodels|ctlstop|sikl4|qwengen1m) ;; frontdoor_*) ;; *) echo "FATAL: matrix must be one of default|llama|itdoc|qwen_seedrep|arditi_allpos|arditi_seedrep|paired_allmodels|ctlstop|sikl4|qwengen1m (g8k_cells.py MATRICES) or frontdoor_<models.yaml key> (the front door's derived matrices, g8k_cells.py front_door_matrices), got $G8K_MATRIX" >&2; exit 1;; esac
 # --- the checkout, located BEFORE either helper is sourced ---------------------------------------------------------
 # A Slurm batch process inherits no REPO_DIR (f22_init sets it, later) and $0 is the spool copy, so the path is derived
 # the way f22_init derives it: the shared root present on this node + the wave sha; G8K_REPO_DIR overrides it (the

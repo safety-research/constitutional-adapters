@@ -132,11 +132,19 @@ CONFIG="$REPO/configs/sdfbase_${MODEL_KEY}_fits.yaml"
 # (`${MODEL_KEY%_full}`) read the layout off the key's spelling and would
 # have sent a sibling key to a pool dir that does not exist; read it from
 # the authoritative source instead, and refuse when it does not parse.
+# The held-out FILE is read from the same line: the constitution pool
+# (pairs_constv2-heldout.jsonl), or the control corpus's own
+# (pairs_constv2ctl2-heldout.jsonl; the `_ctlstop` keys), which
+# may govern ONLY the constv2ctl2-full cell — any other file, or the control
+# pool on any other cell, refuses.
 [ -s "$CONFIG" ] || { log "FATAL no config at $CONFIG"; exit 3; }
-POOL_KEY="$(sed -n 's#^ *heldout_pool: /vol/pool/\([^/][^/]*\)/pairs_constv2-heldout\.jsonl *$#\1#p' "$CONFIG" | head -1)"
-[ -n "$POOL_KEY" ] || { log "FATAL could not read the pool dir from $CONFIG (train_kwargs.default.heldout_pool must be /vol/pool/<key>/pairs_constv2-heldout.jsonl)"; exit 3; }
+POOL_KEY="$(sed -n 's#^ *heldout_pool: /vol/pool/\([^/][^/]*\)/pairs_constv2\(ctl2\)\{0,1\}-heldout\.jsonl *$#\1#p' "$CONFIG" | head -1)"
+HELDOUT_CELL="$(sed -n 's#^ *heldout_pool: /vol/pool/[^/][^/]*/pairs_\(constv2\(ctl2\)\{0,1\}-heldout\)\.jsonl *$#\1#p' "$CONFIG" | head -1)"
+[ -n "$POOL_KEY" ] || { log "FATAL could not read the pool dir from $CONFIG (train_kwargs.default.heldout_pool must be /vol/pool/<key>/pairs_constv2-heldout.jsonl, or pairs_constv2ctl2-heldout.jsonl for the constv2ctl2-full cell alone)"; exit 3; }
+[ -n "$HELDOUT_CELL" ] || { log "FATAL could not read the held-out pool file from $CONFIG (train_kwargs.default.heldout_pool must name pairs_constv2-heldout.jsonl or pairs_constv2ctl2-heldout.jsonl)"; exit 3; }
+[ "$HELDOUT_CELL" = constv2-heldout ] || [ "$SI" = constv2ctl2-full ] || { log "FATAL the control held-out pool governs only the constv2ctl2-full cell (si=$SI)"; exit 3; }
 PAIRS="$SHARED/vol/pool/$POOL_KEY/pairs_${SI}.jsonl"
-HELDOUT="$SHARED/vol/pool/$POOL_KEY/pairs_constv2-heldout.jsonl"
+HELDOUT="$SHARED/vol/pool/$POOL_KEY/pairs_${HELDOUT_CELL}.jsonl"
 # --- the data-parallel width: the CONFIG's top-level `fit_width:` line, absent = 1 -------------------------------
 # fit_width_flags <N> -> the sbatch resource flags a width-N fit needs; EMPTY at width 1 (the header's gpu:1 / 16 CPUs / 200G
 # stand). reproduce/lib/common.sh repro_fit_width_flags is the submitter's copy; a test pins the two equal.

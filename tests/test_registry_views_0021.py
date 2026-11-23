@@ -1068,7 +1068,9 @@ def test_the_by_source_rule_is_declared_in_the_object():
 
 #: `v_paper_inputs_head` as migration 0020 left it (0015's run member at the two lifecycle states the selection admits; no judgment
 #: member): the text paper_rebuild.sh keyed on before 0021, kept here as the reference the head is compared against -- a superset once
-#: more, so the head reads >= this text at every instant and strictly more exactly where the two rules below move the frame
+#: more, so the head reads >= this text at every instant and strictly more exactly where the two rules below move the frame. Its last
+#: member (MAX(ingest_seq) over item_result's withdrawn marks, through idx_item_result_withdrawn_seq) is left out: migration 0033 drops it
+#: and its index, and nothing writes such a mark since -- the text runs against today's database, where that index no longer exists
 HEAD_BEFORE_0021 = """SELECT MAX(seq) FROM (
     SELECT MAX(ingest_seq) AS seq FROM run WHERE lifecycle_state IN ('judged', 'ingested')
     UNION ALL SELECT MAX(ingest_seq) FROM run_metric
@@ -1084,7 +1086,6 @@ HEAD_BEFORE_0021 = """SELECT MAX(seq) FROM (
         ON ir.run_id = iw.run_id AND ir.item_id = iw.item_id AND ir.metric_id = iw.metric_id AND ir.trial_index = iw.trial_index
         AND ir.sample_index = iw.sample_index AND ir.turn_index = iw.turn_index AND ir.judgment_id = iw.judgment_id
         AND ir.source_revision_id = ''
-    UNION ALL SELECT MAX(ingest_seq) FROM item_result INDEXED BY idx_item_result_withdrawn_seq WHERE withdrawn_by_revision_id IS NOT NULL
 )"""
 
 

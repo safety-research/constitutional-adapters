@@ -1361,3 +1361,35 @@ def test_a_dose_child_of_a_derived_parent_carries_no_fit_record_and_is_null_by_n
     assert c["extra"]["dose_parent_fit_effective_batch"] == {"parent_object_sha256": shas["diff"], "copied_record": None, "unresolved": why}
     a = by_id[shas["diff"]]
     assert a["fit_effective_batch"] == 8 and "parent_pos=8, parent_neg=8" in a["field_confidence_json"]["fit_effective_batch"]["source"]
+
+
+def test_a_refit_cell_at_a_bank_listed_depth_states_its_producers_label_and_campaign_never_the_banks(tmp_path):
+    """A cell carrying its producer's registry statement (train_two_si_objects' `registry_statement`, the sikl4 refits) mirrored under
+    `$GRADE/objects/<bank>/<model>/<cell>/`: the bank's own reading would restate the producer's paper label (the seeded stem label) and
+    campaign (`two_si`, the bank's) over the producer's record; the bank states the statement's instead. Its block-less twin on another
+    bank reads as today."""
+    from registry_fit_fixtures import POOL_CONTENT_SHA
+    root = str(tmp_path / "grade_objects")
+    stated = os.path.join(root, "scale-12", "synthmodel", "synthetic_si__psr_kl_all")
+    sha = _sha(_blob(stated, b"refit psr bytes"))
+    stmt = {"paper_label": "other", "paper_label_source": "fit config key registry_paper_label", "campaign": "synthetic_refit",
+            "fit_teacher_si_text_sha256": synth.SI_SHA, "fit_prompt_pool_id": "synthmodel/pairs_synthetic_si_refit", "fit_prompt_pool_sha256": "7" * 64}
+    _write(stated, "train_budget_meta.json", si_tbm(sha, seed=2, registry_statement=stmt))
+    plain_dir = os.path.join(root, "scale-12", "synthmodel", "synthetic_si__psr_kl_all_plain")
+    plain_sha = _sha(_blob(plain_dir, b"another psr"))
+    _write(plain_dir, "train_budget_meta.json", si_tbm(plain_sha, seed=2))
+    rep = OB.scan([("grade_objects", root, "bank/model/obj")], seeds=seeds(), read_blobs=False, now=T(9000))
+    assert not rep.refusals, rep.refusals
+    by_id = {p["object_id"]: p for p in rep.payloads}
+    p = by_id[sha]
+    assert (p["paper_label"], p["campaign"], p["fit_prompt_pool_id"]) == ("other", "synthetic_refit", "synthmodel/pairs_synthetic_si_refit")
+    assert p["extra"]["producer_registry_statement"]["bank_reading"]["campaign"] == "two_si"
+    assert p["extra"]["producer_registry_statement"]["bank_reading"]["paper_label"] == "safety_relu"
+    q = by_id[plain_sha]
+    assert (q["paper_label"], q["campaign"], q["fit_prompt_pool_sha256"]) == ("safety_relu", "two_si", POOL_CONTENT_SHA)
+    assert "producer_registry_statement" not in q["extra"]
+    # a block naming no campaign refuses the group by name (the bank would otherwise state its own)
+    del stmt["campaign"]
+    _write(stated, "train_budget_meta.json", si_tbm(sha, seed=2, registry_statement=stmt))
+    rep = OB.scan([("grade_objects", root, "bank/model/obj")], seeds=seeds(), read_blobs=False, now=T(9000))
+    assert len(rep.refusals) == 1 and "no campaign" in str(rep.refusals[0]) and rep.objects_total == 1

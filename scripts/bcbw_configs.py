@@ -137,7 +137,11 @@ LANE_KINDS: Tuple[str, ...] = ("base", "itdoc", "si12", "derived", "derived_itdo
                                "d0p75l", "d1p25", "lecun", "lecun_derived",
                                # the front-door scope: the worked example's refusal direction is staged `arditi__<rung>__<harness id>`
                                # (reproduce/lib/models.py ARDITI_LANE: the lane is the prefix, the rung rides inside the cell_id), beside `base__` / `derived__`
-                               "arditi")
+                               "arditi",
+                               # the control-pool-stopped views' staged ids (configs/ctlstop_eb64_pins.json), one per fit seed
+                               "ctlstop64s1", "ctlstop64s2", "ctlstop64s3",
+                               # the SI-distilled refit views' staged ids (configs/sikl4_pins.json), one per fit seed
+                               "sikl4s1", "sikl4s2", "sikl4s3")
 #: demo-import (2026-10-12): a front-door DOSE view's copies are staged `d<tok>[<lane marker>]__<cell_id>` (reproduce/lib/models.py staged_id —
 #: `d0p75__constv2-mix-full__lora_r4_ce_minus_ctl` for the worked example's 0.75 rungs; the paper's `d0p75l` / `d1p25` lanes above are two
 #: spellings of the same grammar), so a dose lane is admitted by its SHAPE rather than listed per dose token
@@ -378,8 +382,10 @@ def pins_by_cell(target: str, view: str, *, roster: Optional[dict] = None,
                  pins: Optional[dict] = None, lane_roster: Optional[dict] = None) -> Dict[str, Optional[str]]:
     """``{config cell id: object_sha256}`` for the view's object cells — the shared view's and the lane's runnable
     extras (None when the pins file has no entry) — what ``object_identity``'s ``pin_match`` compares against."""
-    roster = roster if roster is not None else load_roster()
-    pins = pins if pins is not None else load_pins()
+    if roster is None or pins is None:
+        r_default, p_default, _rel = view_sources(target, view)
+        roster = roster if roster is not None else r_default
+        pins = pins if pins is not None else p_default
     tp = pins.get(target, {})
     return {cid: (tp.get(sid) or {}).get("object_sha256")
             for cid, sid in staged_ids_by_cell(roster, target, view, lane_roster=lane_roster).items()}
@@ -426,9 +432,10 @@ def multi_layer_block(target: str, cells: List[str], *, target_cells: Optional[L
 
 
 def render_config(roster: dict, target: str, view: str, *, pins: Optional[dict] = None,
-                  lane_roster: Optional[dict] = None) -> str:
+                  lane_roster: Optional[dict] = None, roster_rel: str = "configs/sdfbase_full22_roster.yaml") -> str:
     """The generated config text for one (target, view). ``lane_roster``: the LANE roster, loaded here once when
-    the caller did not pass it, and threaded through every helper that reads it."""
+    the caller did not pass it, and threaded through every helper that reads it. ``roster_rel``: the roster file the
+    header names (the production roster, or a view's own pair per ``contracts.bcbw_view_sources``)."""
     pins = pins if pins is not None else load_pins()
     lane = _lane(lane_roster)
     t = roster["targets"][target]
@@ -487,15 +494,26 @@ def render_config(roster: dict, target: str, view: str, *, pins: Optional[dict] 
         cell_lines.append("#     bank need not hold the object yet; the hold is released by making the lane roster's entry runnable (regenerate).")
         for cid in held_extras:
             cell_lines.append(f"#       {cid:<48} (HELD EXTRA; lane roster: {lane_prompted_status(target, view, cid, lane_roster=lane)})")
-    roster_line = "configs/sdfbase_full22_roster.yaml"
-    source_lines = f"#   roster  configs/sdfbase_full22_roster.yaml  {sha256_file(ROSTER)}\n"
+    roster_line = roster_rel
+    # the PRODUCTION views' headers count the production-roster pairs (byte-identical to before the own-source views joined)
+    production_pairs = [mv for mv in C.BCBW_MODEL_VIEWS if C.bcbw_view_sources(*mv)[0] == "configs/sdfbase_full22_roster.yaml"]
+    if roster_rel == "configs/sdfbase_full22_roster.yaml":
+        n_pairs, pairs_what = len(production_pairs), "contracts.BCBW_MODEL_VIEWS"
+    else:
+        n_pairs = len([mv for mv in C.BCBW_MODEL_VIEWS if C.bcbw_view_sources(*mv)[0] == roster_rel])
+        pairs_what = f"contracts.BCBW_MODEL_VIEWS whose roster is {roster_rel}"
+    bank_line = (f"$SHARED/exp/objects/sdfbase/full22/{target}/cells_view/{view}" if roster_rel == "configs/sdfbase_full22_roster.yaml"
+                 else f"$SHARED/exp/objects/<pins bank>/{target}/cells_view/{view} (the `source` of each pin in {C.bcbw_view_sources(target, view)[1]})")
+    source_lines = f"#   roster  {roster_rel}  {sha256_file(REPO / roster_rel)}\n"
+    if roster_rel != "configs/sdfbase_full22_roster.yaml":
+        source_lines += f"#   pins    {C.bcbw_view_sources(target, view)[1]}  {sha256_file(REPO / C.bcbw_view_sources(target, view)[1])}\n"
     source_lines += f"#   body    {v['config']}  {sha256_file(src)}"
     header = f"""# {C.bcbw_config_path(target, view).rsplit('/', 1)[1]} — the bcb-bfcl-200-widen lane's cells on Modal
 # the EXPLICIT-cells serving config the tinycap
 # launcher's registry row `{slug}` reads (`contracts.MODELS["{slug}"].cfg`). GENERATED by
 # scripts/bcbw_configs.py from {roster_line} (target {target}, view {view});
 # derivation credited to the tinycap-full22 lane's scripts/tinycap_full22_configs.py, scoped to
-# this lane's {len(C.BCBW_MODEL_VIEWS)} (target, view) pairs (contracts.BCBW_MODEL_VIEWS) — never hand-edited;
+# this lane's {n_pairs} (target, view) pairs ({pairs_what}) — never hand-edited;
 # tests/test_bcbw_configs.py requires byte-identity.
 #
 # Sources (sha256 at generation; a change regenerates this file):
@@ -516,7 +534,7 @@ def render_config(roster: dict, target: str, view: str, *, pins: Optional[dict] 
 #   * `defenses_dir` = {objects_dir} — the row's objects_dir, ABSOLUTE
 #     on the Modal volume (resolve_defenses_dir rule 1), so the standup, the driver and the
 #     preflight read ONE bank: the staged copy of cluster A's dereferenced
-#     $SHARED/exp/objects/sdfbase/full22/{target}/cells_view/{view}, sha-verified against the pins above.
+#     {bank_line}, sha-verified against the pins above.
 {mla_line}#
 # serving target: {t['model']} @ {t['model_revision']}
 
@@ -764,14 +782,54 @@ def check_frontdoor(dst: Path, key: str, view: str, *, repo: Path = REPO, table:
     return "ok", f"ok: {dst}"
 
 
+def _normalized_pin_form_roster(path: Path, pins: dict) -> dict:
+    """A roster whose view cells are in the cross-bank pin form ``{pins, pin}`` (the ctlstop roster), with every such cell
+    rewritten to its STAGED ID (``<model key>.<staged id>`` -> ``<staged id>``) — the shape every helper here reads. Each pin
+    must name the view's own pins file and an entry of it; anything else refuses by name."""
+    roster = yaml.safe_load(Path(path).read_text(encoding="utf-8"))
+    for target, t in (roster.get("targets") or {}).items():
+        for view, v in (t.get("views") or {}).items():
+            cells = {}
+            for cid, sid in (v.get("cells") or {}).items():
+                if isinstance(sid, dict):
+                    pins_rel, key = str(sid.get("pins")), str(sid.get("pin"))
+                    want_rel = C.bcbw_view_sources(target, view)[1]
+                    mk, _, staged = key.partition(".")
+                    if pins_rel != want_rel or mk != target or staged not in (pins.get(target) or {}):
+                        raise SystemExit(f"{path}: {target}/{view}/{cid} pins {pins_rel}:{key}, not an entry of {want_rel}[{target}]")
+                    sid = staged
+                cells[cid] = sid
+            v["cells"] = cells
+    return roster
+
+
+def view_sources(target: str, view: str) -> Tuple[dict, dict, str]:
+    """``(roster, pins, roster_rel)`` for a lane (target, view) per ``contracts.bcbw_view_sources``: the production roster + pins,
+    or a view's own pair (the control-pool-stopped views) with its pin-form cells normalized to staged ids."""
+    roster_rel, pins_rel = C.bcbw_view_sources(target, view)
+    if roster_rel == "configs/sdfbase_full22_roster.yaml":
+        return load_roster(), load_pins(), roster_rel
+    pins = load_pins(REPO / pins_rel)
+    return _normalized_pin_form_roster(REPO / roster_rel, pins), pins, roster_rel
+
+
 def outputs(roster: dict) -> List[Tuple[Path, str, str]]:
-    """``[(path, target, view)]`` for the lane's (model, view) pairs (``contracts.BCBW_MODEL_VIEWS``)."""
+    """``[(path, target, view)]`` for the lane's (model, view) pairs (``contracts.BCBW_MODEL_VIEWS``) that the PRODUCTION
+    roster names; the views with their own roster are :func:`own_source_outputs`."""
     out = []
     for target, view in C.BCBW_MODEL_VIEWS:
+        if C.bcbw_view_sources(target, view)[0] != "configs/sdfbase_full22_roster.yaml":
+            continue
         if view not in roster["targets"][target]["views"]:
             raise SystemExit(f"roster has no view {view!r} for {target!r}")
         out.append((REPO / C.bcbw_config_path(target, view), target, view))
     return out
+
+
+def own_source_outputs() -> List[Tuple[Path, str, str]]:
+    """``[(path, target, view)]`` for the lane views that read their OWN roster + pins (``contracts.bcbw_view_sources``)."""
+    return [(REPO / C.bcbw_config_path(t, v), t, v) for t, v in C.BCBW_MODEL_VIEWS
+            if C.bcbw_view_sources(t, v)[0] != "configs/sdfbase_full22_roster.yaml"]
 
 
 def main(argv=None) -> int:
@@ -812,8 +870,12 @@ def main(argv=None) -> int:
     roster = load_roster()
     pins = load_pins()
     lane = load_lane_rosters()
-    for dst, target, view in outputs(roster):
-        text = render_config(roster, target, view, pins=pins, lane_roster=lane)
+    jobs = [(dst, t, v, roster, pins, "configs/sdfbase_full22_roster.yaml") for dst, t, v in outputs(roster)]
+    for dst, t, v in own_source_outputs():
+        r_own, p_own, rel = view_sources(t, v)
+        jobs.append((dst, t, v, r_own, p_own, rel))
+    for dst, target, view, v_roster, v_pins, v_rel in jobs:
+        text = render_config(v_roster, target, view, pins=v_pins, lane_roster=lane, roster_rel=v_rel)
         if args.check:
             if not dst.is_file() or dst.read_text(encoding="utf-8") != text:
                 print(f"DRIFT: {dst}")

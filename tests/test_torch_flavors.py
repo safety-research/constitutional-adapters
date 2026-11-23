@@ -805,6 +805,7 @@ def test_at_most_one_audit_exemption_per_kind_in_the_repo():
                    # identity in its bake step
                    "sdfbase_derived_build.sbatch",  # derived pairs, prebuilt venv + runtime CUDA assert
                    "sdfbase_fit_cell.sbatch",      # fit cells, prebuilt venv + runtime CUDA assert
+                   "sikl4_fit.sbatch",             # the sikl4 refit rows (fits, smoke, teacher builds): the same prebuilt venv family + runtime CUDA assert
         # the four onboarding/HPO/probe carriers run from the PREBUILT sdfbase-fit / serving venvs
         # like sdfbase_fit_cell.sbatch and carry the same in-body cu128 runtime assert.
         "memprobe_fit.sbatch",           # FD 23 fit-memory ladder (sdfbase-fit venv)

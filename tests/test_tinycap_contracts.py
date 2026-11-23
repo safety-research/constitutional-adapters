@@ -1982,6 +1982,14 @@ _REGISTRY_EXPECTED = (
                                  ("llama8b", "NousResearch/Meta-Llama-3.1-8B-Instruct", "d10aef7999a2", "llama"),
                                  ("nemotron3nano4b", "nvidia/NVIDIA-Nemotron-3-Nano-4B-BF16", "dfaf35de3e30", "nemotron_h"))
       for v in ("s1", "s1p")],
+    # Added 2026-11-14: the three control-pool-stopped Qwen views, after the all-models rows and BEFORE the IFEval rows
+    *[(f"qwen35_4b-f22{v}", "Qwen/Qwen3.5-4B", "851bf6e806ef",
+       f"configs/tinycap/bcbw_qwen35_4b_{v}.yaml", f"/vol/objects/sdfbase/full22/qwen35_4b/{v}",
+       "qwen35_4b", "qwen3_5") for v in ("ctlstop64s1", "ctlstop64s2", "ctlstop64s3")],
+    # Added 2026-11-15: the three SI-distilled refit Qwen views, after the ctlstop rows and BEFORE the IFEval rows
+    *[(f"qwen35_4b-f22{v}", "Qwen/Qwen3.5-4B", "851bf6e806ef",
+       f"configs/tinycap/bcbw_qwen35_4b_{v}.yaml", f"/vol/objects/sdfbase/full22/qwen35_4b/{v}",
+       "qwen35_4b", "qwen3_5") for v in ("sikl4s1", "sikl4s2", "sikl4s3")],
     # the seven (model, view) bank views of the paper's full22 objects, each its
     # own slug, appended LAST (after the six bcbw rows); the per-TAG
     # overlay config is generated (make_ifeval_overlays.py)
@@ -2164,6 +2172,8 @@ def test_the_model_registry_matches_the_plan_and_the_inventory():
         "gemma4e4b-sdfbase", "gemma4e4b-f22", "qwen35_4b-f22", "llama8b-f22",
         *C.BCBW_SEED_SLUGS,
         "gemma4e4b-f22s1", "gemma4e4b-f22s1p", "llama8b-f22s1", "llama8b-f22s1p",
+        # the three control-pool-stopped rows: batch-64 base fits served on the chat checkpoint
+        *C.BCBW_CTLSTOP_SLUGS,
         "gemma4e4b-sdfbase-main", "gemma4e4b-sdfbase-it", "qwen35_4b-sdfbase-main", "qwen35_4b-sdfbase-it",
         # the six seed lane views' objects were fit on the Qwen BASE and are served on the instruct target (base->instruct)
         *[f"qwen35_4b-sdfbase-{v}" for v in C.IFEVAL_LANE_VIEWS]]
@@ -2183,21 +2193,37 @@ def test_the_model_registry_matches_the_plan_and_the_inventory():
         "qwen35_4b-f22s1p", "qwen35_4b-f22s2p", "qwen35_4b-f22s3p",
         # b64-capability-agentic-queue (2026-09-23): the six all-models one-seed rows
         "gemma4e4b-f22s1", "gemma4e4b-f22s1p", "llama8b-f22s1", "llama8b-f22s1p",
-        "nemotron3nano4b-f22s1", "nemotron3nano4b-f22s1p")
+        "nemotron3nano4b-f22s1", "nemotron3nano4b-f22s1p",
+        # Added 2026-11-14: the three control-pool-stopped Qwen rows
+        "qwen35_4b-f22ctlstop64s1", "qwen35_4b-f22ctlstop64s2", "qwen35_4b-f22ctlstop64s3",
+        # Added 2026-11-15: the three SI-distilled refit Qwen rows
+        "qwen35_4b-f22sikl4s1", "qwen35_4b-f22sikl4s2", "qwen35_4b-f22sikl4s3")
     assert C.MODEL_SLUGS[-(n_ife + len(C.BCBW_SLUGS) + 1)] == "gemma4e4b-sdfbase"
     # the worked example's row and, right after it, its two dose views' rows (demo-import 2026-10-12) — the last legacy rows
     assert C.MODEL_SLUGS[-(n_ife + len(C.BCBW_SLUGS) + 4):-(n_ife + len(C.BCBW_SLUGS) + 1)] == ("qwen35_4b_demo", "qwen35_4b_demo-d0p75", "qwen35_4b_demo-d0p75_relu")
-    assert C.BCBW_SEED_VIEWS == ("s1", "s2", "s3", "s1p", "s2p", "s3p") and C.BCBW_SEED_SLUGS == C.BCBW_SLUGS[-12:-6]
+    assert C.BCBW_SEED_VIEWS == ("s1", "s2", "s3", "s1p", "s2p", "s3p") and C.BCBW_SEED_SLUGS == C.BCBW_SLUGS[-18:-12]
     assert C.BCBW_ALLMODELS_VIEWS == ("s1", "s1p") and C.BCBW_ALLMODELS_FAMILIES == ("gemma4e4b", "llama8b", "nemotron3nano4b")
-    assert C.BCBW_ALLMODELS_SLUGS == C.BCBW_SLUGS[-6:] == tuple(f"{mk}-f22{v}" for mk in C.BCBW_ALLMODELS_FAMILIES for v in C.BCBW_ALLMODELS_VIEWS)
+    assert C.BCBW_ALLMODELS_SLUGS == C.BCBW_SLUGS[-12:-6] == tuple(f"{mk}-f22{v}" for mk in C.BCBW_ALLMODELS_FAMILIES for v in C.BCBW_ALLMODELS_VIEWS)
+    assert C.BCBW_CTLSTOP_VIEWS == ("ctlstop64s1", "ctlstop64s2", "ctlstop64s3") and C.BCBW_CTLSTOP_SLUGS == C.BCBW_SLUGS[-6:-3]
+    assert C.BCBW_SIKL4_VIEWS == ("sikl4s1", "sikl4s2", "sikl4s3") and C.BCBW_SIKL4_SLUGS == C.BCBW_SLUGS[-3:]
     # a full22-bank row is exactly one of the thirteen bcbw rows: the IFEval rows serve from the same staged
     # /vol/objects/sdfbase/full22/<key>/<view> banks but the predicate excludes them by slug, so the widen gates skip them
     assert [C.is_full22_row(C.model_row(s)) for s in C.MODEL_SLUGS] == (
         [False] * (len(C.MODEL_SLUGS) - n_ife - len(C.BCBW_SLUGS)) + [True] * len(C.BCBW_SLUGS) + [False] * n_ife)
     assert not any(C.is_full22_row(C.model_row(s)) for s in C.IFEVAL_SLUGS.values())
-    assert C.BCBW_MODEL_VIEWS[-15:-12] == (("llama8b", C.BCBW_VIEW_IT), ("llama8b", C.BCBW_VIEW_MAIN), ("qwen35_4b", C.BCBW_VIEW_IT))   # Qwen it after llama
-    assert C.BCBW_MODEL_VIEWS[-12:-6] == tuple(("qwen35_4b", v) for v in C.BCBW_SEED_VIEWS)                                            # The seed family
-    assert C.BCBW_MODEL_VIEWS[-6:] == C.BCBW_ALLMODELS_MODEL_VIEWS == (("gemma4e4b", "s1"), ("gemma4e4b", "s1p"), ("llama8b", "s1"),
+    assert C.BCBW_MODEL_VIEWS[-21:-18] == (("llama8b", C.BCBW_VIEW_IT), ("llama8b", C.BCBW_VIEW_MAIN), ("qwen35_4b", C.BCBW_VIEW_IT))   # Qwen it after llama
+    assert C.BCBW_MODEL_VIEWS[-18:-12] == tuple(("qwen35_4b", v) for v in C.BCBW_SEED_VIEWS)                                            # The seed family
+    assert C.BCBW_MODEL_VIEWS[-6:-3] == tuple(("qwen35_4b", v) for v in C.BCBW_CTLSTOP_VIEWS)                                           # the ctlstop views
+    assert C.BCBW_MODEL_VIEWS[-3:] == tuple(("qwen35_4b", v) for v in C.BCBW_SIKL4_VIEWS)                                              # the SI-distilled refit views
+    # the SI-distilled refit rows: the qwen35_4b-f22it shape — the instruct row's served pin, family and manifest, fit ON the served
+    # checkpoint (no base_hf), thinking off
+    it = C.model_row("qwen35_4b-f22it")
+    for v in C.BCBW_SIKL4_VIEWS:
+        row = C.model_row(f"qwen35_4b-f22{v}")
+        assert (row.hf, row.rev, row.model_key, row.family, row.petri_manifest, row.base_hf, row.thinking_modes) == (
+            it.hf, it.rev, "qwen35_4b", "qwen3_5", C.PETRI_MANIFEST_FULL22_QWEN35_4B, None, (C.THINKING_OFF,)), row.slug
+        assert C.bcbw_view_sources("qwen35_4b", v) == (C.BCBW_SIKL4_ROSTER_REL, C.BCBW_SIKL4_PINS_REL)
+    assert C.BCBW_MODEL_VIEWS[-12:-6] == C.BCBW_ALLMODELS_MODEL_VIEWS == (("gemma4e4b", "s1"), ("gemma4e4b", "s1p"), ("llama8b", "s1"),
                                                                                        ("llama8b", "s1p"), ("nemotron3nano4b", "s1"), ("nemotron3nano4b", "s1p"))   # 2026-09-23: the all-models family
     for v in C.BCBW_SEED_VIEWS:
         row = C.model_row(f"qwen35_4b-f22{v}")
@@ -5831,8 +5857,13 @@ def test_the_twelve_gsm8k_tuples_each_match_exactly_their_own_run_including_the_
     # + the front door's FOUR own pairs per front-door model (`_frontdoor`: the s2r ReLU parents; `_frontdoor_diff`: the
     # s3r composed difference; `_frontdoor_lora` + `_frontdoor_lora_diff`: the s1 LoRA parents and their subtraction), each at
     # the two caps — sibling pairs beside the paper's tuples, never a widening of them; G8K_FRONTDOOR_MODELS is EMPTY on this tree
+    # + the SI-distilled refit objects' TWO (`_native_sikl4`, qwen35_4b x the two caps -- their own pair beside the native battery's
+    # and the paired arm's; tests/test_sikl4_battery_lane.py holds its shape and doors)
+    # + the generator comparison's OWN native pair (the two 1M-pool LoRAs on qwen35_4b, `_native_qwengen1m`; beside the native
+    # battery's pair, never inside it -- tests/test_qwengen1m_more_evals_lane.py holds each lane row to it)
     assert len(names) == 12 + 2 * len(C.G8K_STEER_MODELS) + len(C.ALLPOS_MODELS) * len(C.G8K_CAPS) + len(C.G8K_NATIVE_MODELS) * len(C.G8K_CAPS) + len(C.G8K_NATIVE_PAIRED_MODELS) * len(C.G8K_CAPS) + len(C.G8K_NATIVE_APPENDIX_MODELS) * len(C.G8K_CAPS) \
-        + 4 * len(C.G8K_FRONTDOOR_MODELS) * len(C.G8K_CAPS) == 30
+        + 4 * len(C.G8K_FRONTDOOR_MODELS) * len(C.G8K_CAPS) + len(C.G8K_NATIVE_SIKL4_MODELS) * len(C.G8K_CAPS) \
+        + len(C.G8K_NATIVE_QWENGEN1M_MODELS) * len(C.G8K_CAPS) == 34
     # + the MATH-500 seed wave's TWO native tuples (`_native` for the five lane cells,
     # `_native_paired` for the composed arm, on qwen35_4b; reduction_mode not_applicable — beside the lens-era MATH tuples, never inside them)
     assert len(C.M5T_EXPERIMENT_NAMES) == 8 + len(C.M5T_EXT_MODELS) + len(C.M5T_STEER_MODELS) + len(C.ALLPOS_MODELS) + 2 * len(C.M5T_NATIVE_MODELS) == 17
@@ -5845,10 +5876,12 @@ def test_the_twelve_gsm8k_tuples_each_match_exactly_their_own_run_including_the_
         + [C.g8k_native_tuple_name(m, cap) for m in C.G8K_NATIVE_MODELS for cap in C.G8K_CAPS]
         + [C.g8k_native_paired_tuple_name(m, cap) for m in C.G8K_NATIVE_PAIRED_MODELS for cap in C.G8K_CAPS]
         + [C.g8k_native_tuple_name(m, cap) for m in C.G8K_NATIVE_APPENDIX_MODELS for cap in C.G8K_CAPS]
+        + [C.g8k_native_sikl4_tuple_name(m, cap) for m in C.G8K_NATIVE_SIKL4_MODELS for cap in C.G8K_CAPS]
         + [C.g8k_frontdoor_tuple_name(m, cap) for m in C.G8K_FRONTDOOR_MODELS for cap in C.G8K_CAPS]
         + [C.g8k_frontdoor_diff_tuple_name(m, cap) for m in C.G8K_FRONTDOOR_MODELS for cap in C.G8K_CAPS]
         + [C.g8k_frontdoor_lora_tuple_name(m, cap) for m in C.G8K_FRONTDOOR_MODELS for cap in C.G8K_CAPS]
-        + [C.g8k_frontdoor_lora_diff_tuple_name(m, cap) for m in C.G8K_FRONTDOOR_MODELS for cap in C.G8K_CAPS])
+        + [C.g8k_frontdoor_lora_diff_tuple_name(m, cap) for m in C.G8K_FRONTDOOR_MODELS for cap in C.G8K_CAPS]
+        + [C.g8k_native_qwengen1m_tuple_name(m, cap) for m in C.G8K_NATIVE_QWENGEN1M_MODELS for cap in C.G8K_CAPS])
     # the twelve, below, keep their own shape; `_steer` is a substring of `_steer_allpos`, so this one filter drops both;
     # the native battery's `_native` pair and the composed arm's `_native_paired` pair (`_native` is its substring too) have
     # their own tests (test_seedrep_gsm8k_native_oos.py)
@@ -5918,6 +5951,10 @@ def test_the_twelve_gsm8k_tuples_each_match_exactly_their_own_run_including_the_
             # (nemotron3nano4b has a native twin too since the all-model appendix, 2026-09-22: G8K_NATIVE_APPENDIX_MODELS' `_native` pair)
             native_twin = (exp.model in C.G8K_NATIVE_MODELS + C.G8K_NATIVE_APPENDIX_MODELS
                            and cell in C.AUTHORISED_OOS_EXPERIMENTS[C.g8k_native_tuple_name(exp.model, cap)].cell_spellings())
+            # (the SI-distilled refit objects' `_native_sikl4` pair shares the two safety-object NAMES of the declared pair on qwen35_4b:
+            # the same unstated ambiguity, resolved by the stated served identity)
+            native_twin = native_twin or (exp.model in C.G8K_NATIVE_SIKL4_MODELS
+                                          and cell in C.AUTHORISED_OOS_EXPERIMENTS[C.g8k_native_sikl4_tuple_name(exp.model, cap)].cell_spellings())
             if native_twin:
                 with pytest.raises(C.OutOfSupportAuthorisationAmbiguous, match="ambiguous authorisation"):
                     C.check_out_of_support_thinking_authorised(**unstated, max_tokens_by_task={"gsm8k_paired200": cap})

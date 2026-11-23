@@ -1741,3 +1741,768 @@ waves:
         reason: no staged AlphaSteer object with a cell id, pin or bank entry (the only object is objects/jailbreak/jsteer_objects/alphasteer_official/object.pt,
           unkeyed)
         unblock: Strength stages the as-fit object under a cell id + pin at dose 1.0; a served kind for it exists on main
+  qwen35_4b_ctlstop64s1:
+    family: qwen35_4b
+    lane_kind: base->instruct
+    view: qwen35_4b_ctlstop64s1
+    model_row: qwen35_4b-f22ctlstop64s1
+    served:
+      hf: Qwen/Qwen3.5-4B
+      rev: 851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a
+    objects_dir: /vol/objects/sdfbase/full22/qwen35_4b/ctlstop64s1
+    note: 'ctlstop-bcbbfcl (2026-11-14): the reseed_ctlstop campaign''s control-pool-stopped objects of fit seed 1 (roster
+      configs/sdfbase_full22_roster_ctlstop_eb64.yaml, pins configs/ctlstop_eb64_pins.json) on the two full suites, under the paper rows''
+      protocol, thinking off and the native engine; the wave''s own none is its anchor (a standup replicate of the seed views'' none).
+      Comparison rows: never in the paper frame unless a ruling says so'
+    prerequisites:
+    - 'S6e: qwen35_4b geometry budget MEASURED on this branch (P2-9)'
+    - 'S4 (bank staging): the control-pool-stopped bank /vol/objects/sdfbase/full22/qwen35_4b/ctlstop64s1 staged from cluster A''s exp/objects/ctlstop_eb64/qwen35_4b/cells_view/ctlstop64s1 by scripts/modal/stage_ctlstop_bank_modal.py with staged_manifest.json shas == configs/ctlstop_eb64_pins.json for ctlstop64s1__constv2ctl2-full__lora_r4_ce, ctlstop64s1__constv2ctl2-full__psr_ce_all, ctlstop64s1__constv2-mix-full__lora_r4_ce_minus_ctl, ctlstop64s1__constv2-mix-full__psr_ce_all_minus_ctl'
+    - 'S4: the two differences'' parents staged at /vol/out/qwen35_4b_base_eb64_s1/cells_all/{constv2-mix-full__lora_r4_ce,constv2-mix-full__psr_ce_all}/ (the production constitution fits, configs/sdfbase_full22_pins.json base64s1__…) and /vol/out/qwen35_4b_base_eb64_s1_ctlstop/cells_all/{constv2ctl2-full__lora_r4_ce,constv2ctl2-full__psr_ce_all}/ (the control-pool-stopped control fits 296e68cb... / 5a6debc0...; object.pt + train_budget_meta.json, no COMPLETE); the container preflight''s derived_object_provenance holds each difference to them, sha-bound'
+    prerequisites_met:
+    - 'S6e: qwen35_4b geometry budget MEASURED on this branch (P2-9)'
+    - 'S4 (bank staging): the control-pool-stopped bank /vol/objects/sdfbase/full22/qwen35_4b/ctlstop64s1 staged from cluster A''s exp/objects/ctlstop_eb64/qwen35_4b/cells_view/ctlstop64s1 by scripts/modal/stage_ctlstop_bank_modal.py with staged_manifest.json shas == configs/ctlstop_eb64_pins.json for ctlstop64s1__constv2ctl2-full__lora_r4_ce, ctlstop64s1__constv2ctl2-full__psr_ce_all, ctlstop64s1__constv2-mix-full__lora_r4_ce_minus_ctl, ctlstop64s1__constv2-mix-full__psr_ce_all_minus_ctl'
+    - 'S4: the two differences'' parents staged at /vol/out/qwen35_4b_base_eb64_s1/cells_all/{constv2-mix-full__lora_r4_ce,constv2-mix-full__psr_ce_all}/ (the production constitution fits, configs/sdfbase_full22_pins.json base64s1__…) and /vol/out/qwen35_4b_base_eb64_s1_ctlstop/cells_all/{constv2ctl2-full__lora_r4_ce,constv2ctl2-full__psr_ce_all}/ (the control-pool-stopped control fits 296e68cb... / 5a6debc0...; object.pt + train_budget_meta.json, no COMPLETE); the container preflight''s derived_object_provenance holds each difference to them, sha-bound'
+    legs:
+      bigcodebench_full: runnable
+      bfcl_full: runnable
+    entries:
+      none:
+        cell_id: none
+        status: runnable
+        paper_arm: none
+        note: the wave's own unsteered anchor, served by the same standup class (a replicate of qwen35_4b_s1/none)
+      ctl_lora:
+        cell_id: constv2ctl2-full__lora_r4_ce
+        status: runnable
+        paper_arm: ctl_lora
+        object:
+          staged_id: ctlstop64s1__constv2ctl2-full__lora_r4_ce
+          sha256: 296e68cb226b798c09da5c7614e2d18157965ec84a357b96f3367bac6d32cd4f
+          kind: lora
+          sidecar: train_budget_meta.json
+          object_generation: batch64
+          pins: configs/ctlstop_eb64_pins.json
+          fit:
+            model_id: Qwen/Qwen3.5-4B-Base
+            revision: 1001bb4d826a52d1f399e183466143f4da7b741b
+            layers:
+            - 3
+            - 7
+            - 11
+            - 15
+            - 19
+            - 23
+            - 27
+            - 31
+        note: the seed-1 control LoRA whose early stopping read the control held-out pool (fit model_key qwen35_4b_base_eb64_s1_ctlstop)
+      ctl_psr:
+        cell_id: constv2ctl2-full__psr_ce_all
+        status: runnable
+        paper_arm: ctl_psr
+        object:
+          staged_id: ctlstop64s1__constv2ctl2-full__psr_ce_all
+          sha256: 5a6debc0d544ad884bc02b6ca50fe0bc415f4ddab5c3b3d1d8b204b05fdbb3df
+          kind: psr
+          sidecar: train_budget_meta.json
+          object_generation: batch64
+          pins: configs/ctlstop_eb64_pins.json
+          fit:
+            model_id: Qwen/Qwen3.5-4B-Base
+            revision: 1001bb4d826a52d1f399e183466143f4da7b741b
+            layers: 0-31
+        note: the seed-1 control ReLU whose early stopping read the control held-out pool (fit model_key qwen35_4b_base_eb64_s1_ctlstop)
+      diff_lora:
+        cell_id: constv2-mix-full__lora_r4_ce_minus_ctl
+        status: runnable
+        paper_arm: diff_lora
+        object:
+          staged_id: ctlstop64s1__constv2-mix-full__lora_r4_ce_minus_ctl
+          sha256: ef09dfc52403920405147067b42db4f9da287cf2190ba4e4d3470341d0934203
+          kind: lora_subtraction
+          sidecar: derived_meta.json
+          object_generation: batch64
+          pins: configs/ctlstop_eb64_pins.json
+          fit:
+            model_id: Qwen/Qwen3.5-4B-Base
+            revision: 1001bb4d826a52d1f399e183466143f4da7b741b
+            layers:
+            - 3
+            - 7
+            - 11
+            - 15
+            - 19
+            - 23
+            - 27
+            - 31
+          parents_root: /vol/out
+        note: the seed-1 constitution LoRA (production fit) minus the control-pool-stopped control LoRA
+      diff_psr:
+        cell_id: constv2-mix-full__psr_ce_all_minus_ctl
+        status: runnable
+        paper_arm: diff_psr
+        object:
+          staged_id: ctlstop64s1__constv2-mix-full__psr_ce_all_minus_ctl
+          sha256: 919692f0a0815f5756a367f349b3c26d790e450069ffdd6b7845564041bb379f
+          kind: psr_paired_write
+          sidecar: derived_meta.json
+          object_generation: batch64
+          pins: configs/ctlstop_eb64_pins.json
+          fit:
+            model_id: Qwen/Qwen3.5-4B-Base
+            revision: 1001bb4d826a52d1f399e183466143f4da7b741b
+            layers: 0-31
+          parents_root: /vol/out
+        note: the composed difference ReLU of the seed-1 constitution ReLU (production fit) and the control-pool-stopped control ReLU
+  qwen35_4b_ctlstop64s2:
+    family: qwen35_4b
+    lane_kind: base->instruct
+    view: qwen35_4b_ctlstop64s2
+    model_row: qwen35_4b-f22ctlstop64s2
+    served:
+      hf: Qwen/Qwen3.5-4B
+      rev: 851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a
+    objects_dir: /vol/objects/sdfbase/full22/qwen35_4b/ctlstop64s2
+    note: 'ctlstop-bcbbfcl (2026-11-14): the reseed_ctlstop campaign''s control-pool-stopped objects of fit seed 2 (roster
+      configs/sdfbase_full22_roster_ctlstop_eb64.yaml, pins configs/ctlstop_eb64_pins.json) on the two full suites, under the paper rows''
+      protocol, thinking off and the native engine; the wave''s own none is its anchor (a standup replicate of the seed views'' none).
+      Comparison rows: never in the paper frame unless a ruling says so'
+    prerequisites:
+    - 'S6e: qwen35_4b geometry budget MEASURED on this branch (P2-9)'
+    - 'S4 (bank staging): the control-pool-stopped bank /vol/objects/sdfbase/full22/qwen35_4b/ctlstop64s2 staged from cluster A''s exp/objects/ctlstop_eb64/qwen35_4b/cells_view/ctlstop64s2 by scripts/modal/stage_ctlstop_bank_modal.py with staged_manifest.json shas == configs/ctlstop_eb64_pins.json for ctlstop64s2__constv2ctl2-full__lora_r4_ce, ctlstop64s2__constv2ctl2-full__psr_ce_all, ctlstop64s2__constv2-mix-full__lora_r4_ce_minus_ctl, ctlstop64s2__constv2-mix-full__psr_ce_all_minus_ctl'
+    - 'S4: the two differences'' parents staged at /vol/out/qwen35_4b_base_eb64_s2/cells_all/{constv2-mix-full__lora_r4_ce,constv2-mix-full__psr_ce_all}/ (the production constitution fits, configs/sdfbase_full22_pins.json base64s2__…) and /vol/out/qwen35_4b_base_eb64_s2_ctlstop/cells_all/{constv2ctl2-full__lora_r4_ce,constv2ctl2-full__psr_ce_all}/ (the control-pool-stopped control fits bcf57778... / 5304858d...; object.pt + train_budget_meta.json, no COMPLETE); the container preflight''s derived_object_provenance holds each difference to them, sha-bound'
+    prerequisites_met:
+    - 'S6e: qwen35_4b geometry budget MEASURED on this branch (P2-9)'
+    - 'S4 (bank staging): the control-pool-stopped bank /vol/objects/sdfbase/full22/qwen35_4b/ctlstop64s2 staged from cluster A''s exp/objects/ctlstop_eb64/qwen35_4b/cells_view/ctlstop64s2 by scripts/modal/stage_ctlstop_bank_modal.py with staged_manifest.json shas == configs/ctlstop_eb64_pins.json for ctlstop64s2__constv2ctl2-full__lora_r4_ce, ctlstop64s2__constv2ctl2-full__psr_ce_all, ctlstop64s2__constv2-mix-full__lora_r4_ce_minus_ctl, ctlstop64s2__constv2-mix-full__psr_ce_all_minus_ctl'
+    - 'S4: the two differences'' parents staged at /vol/out/qwen35_4b_base_eb64_s2/cells_all/{constv2-mix-full__lora_r4_ce,constv2-mix-full__psr_ce_all}/ (the production constitution fits, configs/sdfbase_full22_pins.json base64s2__…) and /vol/out/qwen35_4b_base_eb64_s2_ctlstop/cells_all/{constv2ctl2-full__lora_r4_ce,constv2ctl2-full__psr_ce_all}/ (the control-pool-stopped control fits bcf57778... / 5304858d...; object.pt + train_budget_meta.json, no COMPLETE); the container preflight''s derived_object_provenance holds each difference to them, sha-bound'
+    legs:
+      bigcodebench_full: runnable
+      bfcl_full: runnable
+    entries:
+      none:
+        cell_id: none
+        status: runnable
+        paper_arm: none
+        note: the wave's own unsteered anchor, served by the same standup class (a replicate of qwen35_4b_s2/none)
+      ctl_lora:
+        cell_id: constv2ctl2-full__lora_r4_ce
+        status: runnable
+        paper_arm: ctl_lora
+        object:
+          staged_id: ctlstop64s2__constv2ctl2-full__lora_r4_ce
+          sha256: bcf577784f1e63ef7afb0c22f80f75d3329b8bd00a2ceaf506725e823bfa7f17
+          kind: lora
+          sidecar: train_budget_meta.json
+          object_generation: batch64
+          pins: configs/ctlstop_eb64_pins.json
+          fit:
+            model_id: Qwen/Qwen3.5-4B-Base
+            revision: 1001bb4d826a52d1f399e183466143f4da7b741b
+            layers:
+            - 3
+            - 7
+            - 11
+            - 15
+            - 19
+            - 23
+            - 27
+            - 31
+        note: the seed-2 control LoRA whose early stopping read the control held-out pool (fit model_key qwen35_4b_base_eb64_s2_ctlstop)
+      ctl_psr:
+        cell_id: constv2ctl2-full__psr_ce_all
+        status: runnable
+        paper_arm: ctl_psr
+        object:
+          staged_id: ctlstop64s2__constv2ctl2-full__psr_ce_all
+          sha256: 5304858d6e9848e1d4d770401ea9a3e19a36b8cbd2e9072b55bb50647939d59c
+          kind: psr
+          sidecar: train_budget_meta.json
+          object_generation: batch64
+          pins: configs/ctlstop_eb64_pins.json
+          fit:
+            model_id: Qwen/Qwen3.5-4B-Base
+            revision: 1001bb4d826a52d1f399e183466143f4da7b741b
+            layers: 0-31
+        note: the seed-2 control ReLU whose early stopping read the control held-out pool (fit model_key qwen35_4b_base_eb64_s2_ctlstop)
+      diff_lora:
+        cell_id: constv2-mix-full__lora_r4_ce_minus_ctl
+        status: runnable
+        paper_arm: diff_lora
+        object:
+          staged_id: ctlstop64s2__constv2-mix-full__lora_r4_ce_minus_ctl
+          sha256: 2332a70ca2e017d159901676c8d7b43d19b636dad269296379a21176214e5b82
+          kind: lora_subtraction
+          sidecar: derived_meta.json
+          object_generation: batch64
+          pins: configs/ctlstop_eb64_pins.json
+          fit:
+            model_id: Qwen/Qwen3.5-4B-Base
+            revision: 1001bb4d826a52d1f399e183466143f4da7b741b
+            layers:
+            - 3
+            - 7
+            - 11
+            - 15
+            - 19
+            - 23
+            - 27
+            - 31
+          parents_root: /vol/out
+        note: the seed-2 constitution LoRA (production fit) minus the control-pool-stopped control LoRA
+      diff_psr:
+        cell_id: constv2-mix-full__psr_ce_all_minus_ctl
+        status: runnable
+        paper_arm: diff_psr
+        object:
+          staged_id: ctlstop64s2__constv2-mix-full__psr_ce_all_minus_ctl
+          sha256: 2f8dba7f964c970b09a8d67d0c2bc3127f6bf4b3a5c0e3eb2e3da5cfa89e82eb
+          kind: psr_paired_write
+          sidecar: derived_meta.json
+          object_generation: batch64
+          pins: configs/ctlstop_eb64_pins.json
+          fit:
+            model_id: Qwen/Qwen3.5-4B-Base
+            revision: 1001bb4d826a52d1f399e183466143f4da7b741b
+            layers: 0-31
+          parents_root: /vol/out
+        note: the composed difference ReLU of the seed-2 constitution ReLU (production fit) and the control-pool-stopped control ReLU
+  qwen35_4b_ctlstop64s3:
+    family: qwen35_4b
+    lane_kind: base->instruct
+    view: qwen35_4b_ctlstop64s3
+    model_row: qwen35_4b-f22ctlstop64s3
+    served:
+      hf: Qwen/Qwen3.5-4B
+      rev: 851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a
+    objects_dir: /vol/objects/sdfbase/full22/qwen35_4b/ctlstop64s3
+    note: 'ctlstop-bcbbfcl (2026-11-14): the reseed_ctlstop campaign''s control-pool-stopped objects of fit seed 3 (roster
+      configs/sdfbase_full22_roster_ctlstop_eb64.yaml, pins configs/ctlstop_eb64_pins.json) on the two full suites, under the paper rows''
+      protocol, thinking off and the native engine; the wave''s own none is its anchor (a standup replicate of the seed views'' none).
+      Comparison rows: never in the paper frame unless a ruling says so'
+    prerequisites:
+    - 'S6e: qwen35_4b geometry budget MEASURED on this branch (P2-9)'
+    - 'S4 (bank staging): the control-pool-stopped bank /vol/objects/sdfbase/full22/qwen35_4b/ctlstop64s3 staged from cluster A''s exp/objects/ctlstop_eb64/qwen35_4b/cells_view/ctlstop64s3 by scripts/modal/stage_ctlstop_bank_modal.py with staged_manifest.json shas == configs/ctlstop_eb64_pins.json for ctlstop64s3__constv2ctl2-full__lora_r4_ce, ctlstop64s3__constv2ctl2-full__psr_ce_all, ctlstop64s3__constv2-mix-full__lora_r4_ce_minus_ctl, ctlstop64s3__constv2-mix-full__psr_ce_all_minus_ctl'
+    - 'S4: the two differences'' parents staged at /vol/out/qwen35_4b_base_eb64_s3/cells_all/{constv2-mix-full__lora_r4_ce,constv2-mix-full__psr_ce_all}/ (the production constitution fits, configs/sdfbase_full22_pins.json base64s3__…) and /vol/out/qwen35_4b_base_eb64_s3_ctlstop/cells_all/{constv2ctl2-full__lora_r4_ce,constv2ctl2-full__psr_ce_all}/ (the control-pool-stopped control fits 7d10e3f4... / 5b8f0d2f...; object.pt + train_budget_meta.json, no COMPLETE); the container preflight''s derived_object_provenance holds each difference to them, sha-bound'
+    prerequisites_met:
+    - 'S6e: qwen35_4b geometry budget MEASURED on this branch (P2-9)'
+    - 'S4 (bank staging): the control-pool-stopped bank /vol/objects/sdfbase/full22/qwen35_4b/ctlstop64s3 staged from cluster A''s exp/objects/ctlstop_eb64/qwen35_4b/cells_view/ctlstop64s3 by scripts/modal/stage_ctlstop_bank_modal.py with staged_manifest.json shas == configs/ctlstop_eb64_pins.json for ctlstop64s3__constv2ctl2-full__lora_r4_ce, ctlstop64s3__constv2ctl2-full__psr_ce_all, ctlstop64s3__constv2-mix-full__lora_r4_ce_minus_ctl, ctlstop64s3__constv2-mix-full__psr_ce_all_minus_ctl'
+    - 'S4: the two differences'' parents staged at /vol/out/qwen35_4b_base_eb64_s3/cells_all/{constv2-mix-full__lora_r4_ce,constv2-mix-full__psr_ce_all}/ (the production constitution fits, configs/sdfbase_full22_pins.json base64s3__…) and /vol/out/qwen35_4b_base_eb64_s3_ctlstop/cells_all/{constv2ctl2-full__lora_r4_ce,constv2ctl2-full__psr_ce_all}/ (the control-pool-stopped control fits 7d10e3f4... / 5b8f0d2f...; object.pt + train_budget_meta.json, no COMPLETE); the container preflight''s derived_object_provenance holds each difference to them, sha-bound'
+    legs:
+      bigcodebench_full: runnable
+      bfcl_full: runnable
+    entries:
+      none:
+        cell_id: none
+        status: runnable
+        paper_arm: none
+        note: the wave's own unsteered anchor, served by the same standup class (a replicate of qwen35_4b_s3/none)
+      ctl_lora:
+        cell_id: constv2ctl2-full__lora_r4_ce
+        status: runnable
+        paper_arm: ctl_lora
+        object:
+          staged_id: ctlstop64s3__constv2ctl2-full__lora_r4_ce
+          sha256: 7d10e3f4264a7438f278228b6533c9cc71a8eb96a3ceb0fbb71627bc7ab2f8c9
+          kind: lora
+          sidecar: train_budget_meta.json
+          object_generation: batch64
+          pins: configs/ctlstop_eb64_pins.json
+          fit:
+            model_id: Qwen/Qwen3.5-4B-Base
+            revision: 1001bb4d826a52d1f399e183466143f4da7b741b
+            layers:
+            - 3
+            - 7
+            - 11
+            - 15
+            - 19
+            - 23
+            - 27
+            - 31
+        note: the seed-3 control LoRA whose early stopping read the control held-out pool (fit model_key qwen35_4b_base_eb64_s3_ctlstop)
+      ctl_psr:
+        cell_id: constv2ctl2-full__psr_ce_all
+        status: runnable
+        paper_arm: ctl_psr
+        object:
+          staged_id: ctlstop64s3__constv2ctl2-full__psr_ce_all
+          sha256: 5b8f0d2f21057e511f9aa256de6400622617d134b6b08e84e4a14b294d79bc66
+          kind: psr
+          sidecar: train_budget_meta.json
+          object_generation: batch64
+          pins: configs/ctlstop_eb64_pins.json
+          fit:
+            model_id: Qwen/Qwen3.5-4B-Base
+            revision: 1001bb4d826a52d1f399e183466143f4da7b741b
+            layers: 0-31
+        note: the seed-3 control ReLU whose early stopping read the control held-out pool (fit model_key qwen35_4b_base_eb64_s3_ctlstop)
+      diff_lora:
+        cell_id: constv2-mix-full__lora_r4_ce_minus_ctl
+        status: runnable
+        paper_arm: diff_lora
+        object:
+          staged_id: ctlstop64s3__constv2-mix-full__lora_r4_ce_minus_ctl
+          sha256: d9d8fedcc4afdf990e2eb917fb8ba9d990d14e70a65092cf5baa2112ac57b0ba
+          kind: lora_subtraction
+          sidecar: derived_meta.json
+          object_generation: batch64
+          pins: configs/ctlstop_eb64_pins.json
+          fit:
+            model_id: Qwen/Qwen3.5-4B-Base
+            revision: 1001bb4d826a52d1f399e183466143f4da7b741b
+            layers:
+            - 3
+            - 7
+            - 11
+            - 15
+            - 19
+            - 23
+            - 27
+            - 31
+          parents_root: /vol/out
+        note: the seed-3 constitution LoRA (production fit) minus the control-pool-stopped control LoRA
+      diff_psr:
+        cell_id: constv2-mix-full__psr_ce_all_minus_ctl
+        status: runnable
+        paper_arm: diff_psr
+        object:
+          staged_id: ctlstop64s3__constv2-mix-full__psr_ce_all_minus_ctl
+          sha256: 2353cf807c1ce503ba0ec7e0823d49c8dced2de038238d5d406365559f4004d6
+          kind: psr_paired_write
+          sidecar: derived_meta.json
+          object_generation: batch64
+          pins: configs/ctlstop_eb64_pins.json
+          fit:
+            model_id: Qwen/Qwen3.5-4B-Base
+            revision: 1001bb4d826a52d1f399e183466143f4da7b741b
+            layers: 0-31
+          parents_root: /vol/out
+        note: the composed difference ReLU of the seed-3 constitution ReLU (production fit) and the control-pool-stopped control ReLU
+  qwen35_4b_sikl4s1:
+    family: qwen35_4b
+    lane_kind: instruct-direct
+    view: qwen35_4b_sikl4s1
+    model_row: qwen35_4b-f22sikl4s1
+    served:
+      hf: Qwen/Qwen3.5-4B
+      rev: 851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a
+    objects_dir: /vol/objects/sdfbase/full22/qwen35_4b/sikl4s1
+    anchor_wave: qwen35_4b_s1
+    note: 'qwen4b-si-target-battery (2026-11-15): the six SI-distilled refit objects of fit seed 1 (roster configs/sdfbase_full22_roster_sikl4.yaml, pins configs/sikl4_pins.json; the safety, constitution and C16 system instructions, each KL-distilled from its prompted teacher on the served chat checkpoint into a rank-4 o_proj LoRA and an all-layer ReLU steer) on the two full suites, under the paper rows'' protocol, thinking off and the native engine. STEERED-ONLY: no unsteered run is created; the baseline is the seed view''s own none (anchor_wave qwen35_4b_s1, the notebook''s seed-matched anchor). Comparison rows: never in the paper frame unless a ruling says so'
+    prerequisites:
+    - 'S6e: qwen35_4b geometry budget MEASURED on this branch (P2-9)'
+    - 'S4 (bank staging): the SI-distilled refit bank /vol/objects/sdfbase/full22/qwen35_4b/sikl4s1 staged from cluster A''s exp/objects/sikl4/qwen35_4b/cells_view/sikl4s1 by scripts/modal/stage_lane_bank_modal.py with staged_manifest.json shas == configs/sikl4_pins.json for sikl4s1__safety_refusal__lora_r4, sikl4s1__safety_refusal__psr_kl_all, sikl4s1__si_constitution__lora_r4, sikl4s1__si_constitution__psr_kl_all, sikl4s1__C16__lora_r4, sikl4s1__C16__psr_kl_all'
+    - 'S4c (candidate-SI subset): the C16-only subset file /vol/objects/candidate_sis/candidate_sis.C16.6bf38c689ac9e95a.json staged (scripts/sikl4/make_candidate_sis_subset.py from the full snapshot ba8efe82...), its bytes read back with sha256 == contracts.CANDIDATE_SIS_SUBSET_C16_SHA256 (6bf38c689ac9...); every container of the row loads it (contracts.candidate_sis_env)'
+    prerequisites_met:
+    - 'S6e: qwen35_4b geometry budget MEASURED on this branch (P2-9)'
+    - 'S4 (bank staging): the SI-distilled refit bank /vol/objects/sdfbase/full22/qwen35_4b/sikl4s1 staged from cluster A''s exp/objects/sikl4/qwen35_4b/cells_view/sikl4s1 by scripts/modal/stage_lane_bank_modal.py with staged_manifest.json shas == configs/sikl4_pins.json for sikl4s1__safety_refusal__lora_r4, sikl4s1__safety_refusal__psr_kl_all, sikl4s1__si_constitution__lora_r4, sikl4s1__si_constitution__psr_kl_all, sikl4s1__C16__lora_r4, sikl4s1__C16__psr_kl_all'
+    - 'S4c (candidate-SI subset): the C16-only subset file /vol/objects/candidate_sis/candidate_sis.C16.6bf38c689ac9e95a.json staged (scripts/sikl4/make_candidate_sis_subset.py from the full snapshot ba8efe82...), its bytes read back with sha256 == contracts.CANDIDATE_SIS_SUBSET_C16_SHA256 (6bf38c689ac9...); every container of the row loads it (contracts.candidate_sis_env)'
+    legs:
+      bigcodebench_full: runnable
+      bfcl_full: runnable
+    entries:
+      safety_lora:
+        cell_id: safety_refusal__lora_r4
+        status: runnable
+        paper_arm: sitarget_safety_lora
+        object:
+          staged_id: sikl4s1__safety_refusal__lora_r4
+          sha256: e3d61a63cfd0e4d4ff1462a5760513a5dacf459d3352f29b81834fa08b122445
+          kind: lora
+          sidecar: train_budget_meta.json
+          object_generation: batch64
+          pins: configs/sikl4_pins.json
+          fit:
+            model_id: Qwen/Qwen3.5-4B
+            revision: 851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a
+            layers:
+            - 3
+            - 7
+            - 11
+            - 15
+            - 19
+            - 23
+            - 27
+            - 31
+        note: the safety SI distilled into a rank-4 o_proj LoRA, fit seed 1
+      safety_psr:
+        cell_id: safety_refusal__psr_kl_all
+        status: runnable
+        paper_arm: sitarget_safety_relu
+        object:
+          staged_id: sikl4s1__safety_refusal__psr_kl_all
+          sha256: b37fb015b4b0f71f8785df76826cff5d738d1dee6eaac5759a30ae3d496caa04
+          kind: psr
+          sidecar: train_budget_meta.json
+          object_generation: batch64
+          pins: configs/sikl4_pins.json
+          fit:
+            model_id: Qwen/Qwen3.5-4B
+            revision: 851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a
+            layers: 0-31
+        note: the safety SI distilled into an all-layer ReLU steer, fit seed 1
+      const_si_lora:
+        cell_id: si_constitution__lora_r4
+        status: runnable
+        paper_arm: sitarget_constitution_lora
+        object:
+          staged_id: sikl4s1__si_constitution__lora_r4
+          sha256: 10c3f366540ee7c1642974ff9653badcdbb8f1979c530865c8de7a4e11d9172c
+          kind: lora
+          sidecar: train_budget_meta.json
+          object_generation: batch64
+          pins: configs/sikl4_pins.json
+          fit:
+            model_id: Qwen/Qwen3.5-4B
+            revision: 851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a
+            layers:
+            - 3
+            - 7
+            - 11
+            - 15
+            - 19
+            - 23
+            - 27
+            - 31
+        note: the constitution SI distilled into a rank-4 o_proj LoRA, fit seed 1
+      const_si_psr:
+        cell_id: si_constitution__psr_kl_all
+        status: runnable
+        paper_arm: sitarget_constitution_relu
+        object:
+          staged_id: sikl4s1__si_constitution__psr_kl_all
+          sha256: 55edaec8a4db665e8547a7b94257582a1405cfcfeb5feedf6e2ab5dbabd5ce68
+          kind: psr
+          sidecar: train_budget_meta.json
+          object_generation: batch64
+          pins: configs/sikl4_pins.json
+          fit:
+            model_id: Qwen/Qwen3.5-4B
+            revision: 851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a
+            layers: 0-31
+        note: the constitution SI distilled into an all-layer ReLU steer, fit seed 1
+      c16_lora:
+        cell_id: C16__lora_r4
+        status: runnable
+        paper_arm: sitarget_c16_lora
+        object:
+          staged_id: sikl4s1__C16__lora_r4
+          sha256: 80a8f416a634aa7a49dca1e9da9f68c14889d3a6be2a6177ce2ef3a5b2cf2db8
+          kind: lora
+          sidecar: train_budget_meta.json
+          object_generation: batch64
+          pins: configs/sikl4_pins.json
+          fit:
+            model_id: Qwen/Qwen3.5-4B
+            revision: 851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a
+            layers:
+            - 3
+            - 7
+            - 11
+            - 15
+            - 19
+            - 23
+            - 27
+            - 31
+        note: the irrelevant control SI C16 distilled into a rank-4 o_proj LoRA, fit seed 1 (its SI resolves through the candidate-SI subset file)
+      c16_psr:
+        cell_id: C16__psr_kl_all
+        status: runnable
+        paper_arm: sitarget_c16_relu
+        object:
+          staged_id: sikl4s1__C16__psr_kl_all
+          sha256: a473f52ddcd72931112030f70164d8cd9d9ea2716e84e564d2d4afcf01f21bb2
+          kind: psr
+          sidecar: train_budget_meta.json
+          object_generation: batch64
+          pins: configs/sikl4_pins.json
+          fit:
+            model_id: Qwen/Qwen3.5-4B
+            revision: 851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a
+            layers: 0-31
+        note: the irrelevant control SI C16 distilled into an all-layer ReLU steer, fit seed 1 (its SI resolves through the candidate-SI subset file)
+  qwen35_4b_sikl4s2:
+    family: qwen35_4b
+    lane_kind: instruct-direct
+    view: qwen35_4b_sikl4s2
+    model_row: qwen35_4b-f22sikl4s2
+    served:
+      hf: Qwen/Qwen3.5-4B
+      rev: 851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a
+    objects_dir: /vol/objects/sdfbase/full22/qwen35_4b/sikl4s2
+    anchor_wave: qwen35_4b_s2
+    note: 'qwen4b-si-target-battery (2026-11-15): the six SI-distilled refit objects of fit seed 2 (roster configs/sdfbase_full22_roster_sikl4.yaml, pins configs/sikl4_pins.json; the safety, constitution and C16 system instructions, each KL-distilled from its prompted teacher on the served chat checkpoint into a rank-4 o_proj LoRA and an all-layer ReLU steer) on the two full suites, under the paper rows'' protocol, thinking off and the native engine. STEERED-ONLY: no unsteered run is created; the baseline is the seed view''s own none (anchor_wave qwen35_4b_s2, the notebook''s seed-matched anchor). Comparison rows: never in the paper frame unless a ruling says so'
+    prerequisites:
+    - 'S6e: qwen35_4b geometry budget MEASURED on this branch (P2-9)'
+    - 'S4 (bank staging): the SI-distilled refit bank /vol/objects/sdfbase/full22/qwen35_4b/sikl4s2 staged from cluster A''s exp/objects/sikl4/qwen35_4b/cells_view/sikl4s2 by scripts/modal/stage_lane_bank_modal.py with staged_manifest.json shas == configs/sikl4_pins.json for sikl4s2__safety_refusal__lora_r4, sikl4s2__safety_refusal__psr_kl_all, sikl4s2__si_constitution__lora_r4, sikl4s2__si_constitution__psr_kl_all, sikl4s2__C16__lora_r4, sikl4s2__C16__psr_kl_all'
+    - 'S4c (candidate-SI subset): the C16-only subset file /vol/objects/candidate_sis/candidate_sis.C16.6bf38c689ac9e95a.json staged (scripts/sikl4/make_candidate_sis_subset.py from the full snapshot ba8efe82...), its bytes read back with sha256 == contracts.CANDIDATE_SIS_SUBSET_C16_SHA256 (6bf38c689ac9...); every container of the row loads it (contracts.candidate_sis_env)'
+    prerequisites_met:
+    - 'S6e: qwen35_4b geometry budget MEASURED on this branch (P2-9)'
+    - 'S4 (bank staging): the SI-distilled refit bank /vol/objects/sdfbase/full22/qwen35_4b/sikl4s2 staged from cluster A''s exp/objects/sikl4/qwen35_4b/cells_view/sikl4s2 by scripts/modal/stage_lane_bank_modal.py with staged_manifest.json shas == configs/sikl4_pins.json for sikl4s2__safety_refusal__lora_r4, sikl4s2__safety_refusal__psr_kl_all, sikl4s2__si_constitution__lora_r4, sikl4s2__si_constitution__psr_kl_all, sikl4s2__C16__lora_r4, sikl4s2__C16__psr_kl_all'
+    - 'S4c (candidate-SI subset): the C16-only subset file /vol/objects/candidate_sis/candidate_sis.C16.6bf38c689ac9e95a.json staged (scripts/sikl4/make_candidate_sis_subset.py from the full snapshot ba8efe82...), its bytes read back with sha256 == contracts.CANDIDATE_SIS_SUBSET_C16_SHA256 (6bf38c689ac9...); every container of the row loads it (contracts.candidate_sis_env)'
+    legs:
+      bigcodebench_full: runnable
+      bfcl_full: runnable
+    entries:
+      safety_lora:
+        cell_id: safety_refusal__lora_r4
+        status: runnable
+        paper_arm: sitarget_safety_lora
+        object:
+          staged_id: sikl4s2__safety_refusal__lora_r4
+          sha256: 0952ae4f12e3f4f4bc63bcefe609d621df5f01f0b13ac9ae9293cc8f720b2bad
+          kind: lora
+          sidecar: train_budget_meta.json
+          object_generation: batch64
+          pins: configs/sikl4_pins.json
+          fit:
+            model_id: Qwen/Qwen3.5-4B
+            revision: 851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a
+            layers:
+            - 3
+            - 7
+            - 11
+            - 15
+            - 19
+            - 23
+            - 27
+            - 31
+        note: the safety SI distilled into a rank-4 o_proj LoRA, fit seed 2
+      safety_psr:
+        cell_id: safety_refusal__psr_kl_all
+        status: runnable
+        paper_arm: sitarget_safety_relu
+        object:
+          staged_id: sikl4s2__safety_refusal__psr_kl_all
+          sha256: b2882f69628ecfe0e6846d57fe9f358ef569d8cbc93fa1c3f10a4249dcf9d29a
+          kind: psr
+          sidecar: train_budget_meta.json
+          object_generation: batch64
+          pins: configs/sikl4_pins.json
+          fit:
+            model_id: Qwen/Qwen3.5-4B
+            revision: 851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a
+            layers: 0-31
+        note: the safety SI distilled into an all-layer ReLU steer, fit seed 2
+      const_si_lora:
+        cell_id: si_constitution__lora_r4
+        status: runnable
+        paper_arm: sitarget_constitution_lora
+        object:
+          staged_id: sikl4s2__si_constitution__lora_r4
+          sha256: 11d790ce754fadc68057d98d1f24f6cc54732a10306be890c88e416658cf7931
+          kind: lora
+          sidecar: train_budget_meta.json
+          object_generation: batch64
+          pins: configs/sikl4_pins.json
+          fit:
+            model_id: Qwen/Qwen3.5-4B
+            revision: 851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a
+            layers:
+            - 3
+            - 7
+            - 11
+            - 15
+            - 19
+            - 23
+            - 27
+            - 31
+        note: the constitution SI distilled into a rank-4 o_proj LoRA, fit seed 2
+      const_si_psr:
+        cell_id: si_constitution__psr_kl_all
+        status: runnable
+        paper_arm: sitarget_constitution_relu
+        object:
+          staged_id: sikl4s2__si_constitution__psr_kl_all
+          sha256: 4ae1341a8a29f7967137adcb243fadd45963f968c15db34505d31af19e10ca3b
+          kind: psr
+          sidecar: train_budget_meta.json
+          object_generation: batch64
+          pins: configs/sikl4_pins.json
+          fit:
+            model_id: Qwen/Qwen3.5-4B
+            revision: 851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a
+            layers: 0-31
+        note: the constitution SI distilled into an all-layer ReLU steer, fit seed 2
+      c16_lora:
+        cell_id: C16__lora_r4
+        status: runnable
+        paper_arm: sitarget_c16_lora
+        object:
+          staged_id: sikl4s2__C16__lora_r4
+          sha256: eb719f4222051e3bfd5104214c03769ed007080ddd14f75e13a29068f89b110f
+          kind: lora
+          sidecar: train_budget_meta.json
+          object_generation: batch64
+          pins: configs/sikl4_pins.json
+          fit:
+            model_id: Qwen/Qwen3.5-4B
+            revision: 851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a
+            layers:
+            - 3
+            - 7
+            - 11
+            - 15
+            - 19
+            - 23
+            - 27
+            - 31
+        note: the irrelevant control SI C16 distilled into a rank-4 o_proj LoRA, fit seed 2 (its SI resolves through the candidate-SI subset file)
+      c16_psr:
+        cell_id: C16__psr_kl_all
+        status: runnable
+        paper_arm: sitarget_c16_relu
+        object:
+          staged_id: sikl4s2__C16__psr_kl_all
+          sha256: 0590e9dec5bdd293c414e3529c926d4884d86111d1f8691874fe3d7fbe6a33ae
+          kind: psr
+          sidecar: train_budget_meta.json
+          object_generation: batch64
+          pins: configs/sikl4_pins.json
+          fit:
+            model_id: Qwen/Qwen3.5-4B
+            revision: 851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a
+            layers: 0-31
+        note: the irrelevant control SI C16 distilled into an all-layer ReLU steer, fit seed 2 (its SI resolves through the candidate-SI subset file)
+  qwen35_4b_sikl4s3:
+    family: qwen35_4b
+    lane_kind: instruct-direct
+    view: qwen35_4b_sikl4s3
+    model_row: qwen35_4b-f22sikl4s3
+    served:
+      hf: Qwen/Qwen3.5-4B
+      rev: 851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a
+    objects_dir: /vol/objects/sdfbase/full22/qwen35_4b/sikl4s3
+    anchor_wave: qwen35_4b_s3
+    note: 'qwen4b-si-target-battery (2026-11-15): the six SI-distilled refit objects of fit seed 3 (roster configs/sdfbase_full22_roster_sikl4.yaml, pins configs/sikl4_pins.json; the safety, constitution and C16 system instructions, each KL-distilled from its prompted teacher on the served chat checkpoint into a rank-4 o_proj LoRA and an all-layer ReLU steer) on the two full suites, under the paper rows'' protocol, thinking off and the native engine. STEERED-ONLY: no unsteered run is created; the baseline is the seed view''s own none (anchor_wave qwen35_4b_s3, the notebook''s seed-matched anchor). Comparison rows: never in the paper frame unless a ruling says so'
+    prerequisites:
+    - 'S6e: qwen35_4b geometry budget MEASURED on this branch (P2-9)'
+    - 'S4 (bank staging): the SI-distilled refit bank /vol/objects/sdfbase/full22/qwen35_4b/sikl4s3 staged from cluster A''s exp/objects/sikl4/qwen35_4b/cells_view/sikl4s3 by scripts/modal/stage_lane_bank_modal.py with staged_manifest.json shas == configs/sikl4_pins.json for sikl4s3__safety_refusal__lora_r4, sikl4s3__safety_refusal__psr_kl_all, sikl4s3__si_constitution__lora_r4, sikl4s3__si_constitution__psr_kl_all, sikl4s3__C16__lora_r4, sikl4s3__C16__psr_kl_all'
+    - 'S4c (candidate-SI subset): the C16-only subset file /vol/objects/candidate_sis/candidate_sis.C16.6bf38c689ac9e95a.json staged (scripts/sikl4/make_candidate_sis_subset.py from the full snapshot ba8efe82...), its bytes read back with sha256 == contracts.CANDIDATE_SIS_SUBSET_C16_SHA256 (6bf38c689ac9...); every container of the row loads it (contracts.candidate_sis_env)'
+    prerequisites_met:
+    - 'S6e: qwen35_4b geometry budget MEASURED on this branch (P2-9)'
+    - 'S4 (bank staging): the SI-distilled refit bank /vol/objects/sdfbase/full22/qwen35_4b/sikl4s3 staged from cluster A''s exp/objects/sikl4/qwen35_4b/cells_view/sikl4s3 by scripts/modal/stage_lane_bank_modal.py with staged_manifest.json shas == configs/sikl4_pins.json for sikl4s3__safety_refusal__lora_r4, sikl4s3__safety_refusal__psr_kl_all, sikl4s3__si_constitution__lora_r4, sikl4s3__si_constitution__psr_kl_all, sikl4s3__C16__lora_r4, sikl4s3__C16__psr_kl_all'
+    - 'S4c (candidate-SI subset): the C16-only subset file /vol/objects/candidate_sis/candidate_sis.C16.6bf38c689ac9e95a.json staged (scripts/sikl4/make_candidate_sis_subset.py from the full snapshot ba8efe82...), its bytes read back with sha256 == contracts.CANDIDATE_SIS_SUBSET_C16_SHA256 (6bf38c689ac9...); every container of the row loads it (contracts.candidate_sis_env)'
+    legs:
+      bigcodebench_full: runnable
+      bfcl_full: runnable
+    entries:
+      safety_lora:
+        cell_id: safety_refusal__lora_r4
+        status: runnable
+        paper_arm: sitarget_safety_lora
+        object:
+          staged_id: sikl4s3__safety_refusal__lora_r4
+          sha256: 627cfb19664cdc510be08c6282cc324d456d0d53776e807bb929c492b5ebb950
+          kind: lora
+          sidecar: train_budget_meta.json
+          object_generation: batch64
+          pins: configs/sikl4_pins.json
+          fit:
+            model_id: Qwen/Qwen3.5-4B
+            revision: 851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a
+            layers:
+            - 3
+            - 7
+            - 11
+            - 15
+            - 19
+            - 23
+            - 27
+            - 31
+        note: the safety SI distilled into a rank-4 o_proj LoRA, fit seed 3
+      safety_psr:
+        cell_id: safety_refusal__psr_kl_all
+        status: runnable
+        paper_arm: sitarget_safety_relu
+        object:
+          staged_id: sikl4s3__safety_refusal__psr_kl_all
+          sha256: b073c88aef7a422e1d7e932e09968e3135987e3c4972aa5ca38e60ca1e0f125e
+          kind: psr
+          sidecar: train_budget_meta.json
+          object_generation: batch64
+          pins: configs/sikl4_pins.json
+          fit:
+            model_id: Qwen/Qwen3.5-4B
+            revision: 851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a
+            layers: 0-31
+        note: the safety SI distilled into an all-layer ReLU steer, fit seed 3
+      const_si_lora:
+        cell_id: si_constitution__lora_r4
+        status: runnable
+        paper_arm: sitarget_constitution_lora
+        object:
+          staged_id: sikl4s3__si_constitution__lora_r4
+          sha256: 0888b24b140a8969daf41a47e291ea06ce817133e136b44be8dd339cca9ab5d2
+          kind: lora
+          sidecar: train_budget_meta.json
+          object_generation: batch64
+          pins: configs/sikl4_pins.json
+          fit:
+            model_id: Qwen/Qwen3.5-4B
+            revision: 851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a
+            layers:
+            - 3
+            - 7
+            - 11
+            - 15
+            - 19
+            - 23
+            - 27
+            - 31
+        note: the constitution SI distilled into a rank-4 o_proj LoRA, fit seed 3
+      const_si_psr:
+        cell_id: si_constitution__psr_kl_all
+        status: runnable
+        paper_arm: sitarget_constitution_relu
+        object:
+          staged_id: sikl4s3__si_constitution__psr_kl_all
+          sha256: 790188c523fd1114abd6695af5d55b8aa8b9b553f5ba8126f59537d516f963ce
+          kind: psr
+          sidecar: train_budget_meta.json
+          object_generation: batch64
+          pins: configs/sikl4_pins.json
+          fit:
+            model_id: Qwen/Qwen3.5-4B
+            revision: 851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a
+            layers: 0-31
+        note: the constitution SI distilled into an all-layer ReLU steer, fit seed 3
+      c16_lora:
+        cell_id: C16__lora_r4
+        status: runnable
+        paper_arm: sitarget_c16_lora
+        object:
+          staged_id: sikl4s3__C16__lora_r4
+          sha256: 332845ea44c7a5538c896ff653229f8046858bae0fa8b5f0a4ff2af57346be70
+          kind: lora
+          sidecar: train_budget_meta.json
+          object_generation: batch64
+          pins: configs/sikl4_pins.json
+          fit:
+            model_id: Qwen/Qwen3.5-4B
+            revision: 851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a
+            layers:
+            - 3
+            - 7
+            - 11
+            - 15
+            - 19
+            - 23
+            - 27
+            - 31
+        note: the irrelevant control SI C16 distilled into a rank-4 o_proj LoRA, fit seed 3 (its SI resolves through the candidate-SI subset file)
+      c16_psr:
+        cell_id: C16__psr_kl_all
+        status: runnable
+        paper_arm: sitarget_c16_relu
+        object:
+          staged_id: sikl4s3__C16__psr_kl_all
+          sha256: 85bc02be19e48b1b666e015c0e0f09801b4c1d8a4c74908a73b83e4cb4cbb61e
+          kind: psr
+          sidecar: train_budget_meta.json
+          object_generation: batch64
+          pins: configs/sikl4_pins.json
+          fit:
+            model_id: Qwen/Qwen3.5-4B
+            revision: 851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a
+            layers: 0-31
+        note: the irrelevant control SI C16 distilled into an all-layer ReLU steer, fit seed 3 (its SI resolves through the candidate-SI subset file)

@@ -774,15 +774,21 @@ def test_grokmt_driver_cmd_pool_branch(grokmt, tmp_path):
     pj.write_text(json.dumps(_ep_dict()))
     kw = dict(attack="crescendo", cell="none", sub=0, subshards=3, ids_path="ids", private_root="pr",
               proxy_url="http://127.0.0.1:1/v1", rt="rt.json", attacker_port=1234, target_window=8704)
+    # With a pool the per-job port is ignored: no argument names it, as a bare value or as a URL's port. Whole
+    # arguments, never a substring of the joined command: sys.executable and tmp_path are host paths, and on a gate
+    # node they embed the Slurm job id (/tmp/gate-<array id>_<task>/), which can contain the port's digits.
+    def names_port(args):
+        return [a for a in args if a == "1234" or a.endswith(":1234") or ":1234/" in a]
     cmd = grokmt._driver_cmd("/tree", arm="qwen", attacker_pool=str(pj), **kw)
     assert cmd[cmd.index("--attacker-endpoint") + 1] == URL
-    assert cmd[cmd.index("--attacker-pool") + 1] == str(pj) and "1234" not in " ".join(cmd)
+    assert cmd[cmd.index("--attacker-pool") + 1] == str(pj) and not names_port(cmd), names_port(cmd)
     assert cmd[cmd.index("--attacker-engine") + 1] == "vllm"
     grok = grokmt._driver_cmd("/tree", arm="grok", attacker_pool=str(pj), **kw)
-    assert grok[grok.index("--scorer-endpoint") + 1] == URL and "--attacker-pool" not in grok
-    # the default (no pool) is byte-for-byte the per-job loopback command
+    assert grok[grok.index("--scorer-endpoint") + 1] == URL and "--attacker-pool" not in grok and not names_port(grok)
+    # the default (no pool) is byte-for-byte the per-job loopback command, and names_port sees its port
     legacy = grokmt._driver_cmd("/tree", arm="qwen", **kw)
     assert legacy[legacy.index("--attacker-endpoint") + 1] == "http://127.0.0.1:1234"
+    assert names_port(legacy) == ["http://127.0.0.1:1234"]
     assert "--attacker-pool" not in legacy
 
 

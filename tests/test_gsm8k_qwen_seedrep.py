@@ -130,7 +130,9 @@ def _build(root: Path) -> tuple[Path, dict, list]:
 def _shell(row_sh: str, body: str) -> tuple[int, list[str], str]:
     """A launcher function RUN under bash from a row's shell facts (the launcher's own code, never re-typed)."""
     script = (f'set -u\nf22_log(){{ :; }}\nf22_fatal(){{ echo FATAL "$@" >&2; exit 1; }}\nf22_standup_extra_reset(){{ F22_STANDUP_EXTRA=("$@"); }}\n'
-              f'REPO_DIR={shlex.quote(str(REPO))}\nsource {shlex.quote(str(G8K / "g8k_common.sh"))}\n' + M.literals_sh() + row_sh
+              # ...and the job's roster, as common.sh defines it (its default: the production roster) — g8k_driver_argv reads it
+              f'REPO_DIR={shlex.quote(str(REPO))}\nF22_ROSTER=configs/sdfbase_full22_roster.yaml\n'
+              f'source {shlex.quote(str(G8K / "g8k_common.sh"))}\n' + M.literals_sh() + row_sh
               + 'CPY=/venv/bin/python; PROXY_URL=http://127.0.0.1:1/v1; TABLE=/serve/routing_table.json; LEDGER_URL=http://127.0.0.1:2/v1; '
                 'CFG=configs/x.yaml; TT_TWO_SI_DEFENSES_DIR=/bank/view; OUT_ROOT=/out; TARGET_S=44; SERVE_DIR=/serve; ATTEMPT_ID=a1; RUNG_SUBSET=/out/rung_subset.json\n'
               + body)
@@ -273,7 +275,7 @@ def test_the_matrix_is_registered_and_the_committed_document_regenerates_from_it
 def test_every_launcher_admits_the_matrix_by_name_and_the_anchor_rows_launch_with_the_companion(tmp_path):
     for name in ("gsm8k_thinking.sbatch", "dry_run_prod.sbatch", "ladder_plan.sbatch", "smoke_not_available.sbatch"):
         src = (G8K / name).read_text()
-        m = re.search(r'case "\$G8K_MATRIX" in ([a-z_|]+)\) ;;', src)
+        m = re.search(r'case "\$G8K_MATRIX" in ([a-z0-9_|]+)\) ;;', src)
         assert m and sorted(m.group(1).split("|")) == sorted(M.MATRICES) and NAME in m.group(1).split("|"), name
         assert f"matrix must be one of {m.group(1)} (g8k_cells.py MATRICES)" in src, name   # the refusal names exactly the list the case admits
     env = {**os.environ, "G8K_DRY_RUN": "1", "G8K_DRY_S": "44", "G8K_DRY_SHARED": str(tmp_path / "shared"), "G8K_DRY_CPY": PY,

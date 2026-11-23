@@ -23,6 +23,7 @@ from sisteer.registry import pending as P
 from sisteer.registry import schema_def as S
 from sisteer.registry import synth
 from test_registry_judgment_currency import INSTRUMENT_X2, INSTRUMENT_X2_ID, _complete, _generated, _ingest, _judgment_rows, _q, _rebuild_equal, _write
+from test_registry_migrations import PRUNE_TABLES, _prune_index_aside, _sans_prune_cli, _sans_prune_head, _sans_prune_head_render  # noqa: E402  -- 0033's part, set aside
 from test_registry_migrations import AF_TABLES, FU4_TABLES, NTPL_TABLES, TF_VIEWS, _sans_tf, _sans_tf_block  # noqa: E402  -- migration 0026's lines and blocks (0029's five creates, 0031's two rebuilds), set aside here
 from test_registry_pending_claim_recheck import PREFIX, _claim_files, _record_files, _select, _why
 
@@ -123,18 +124,18 @@ PES_DRIFT = ["v_pending_judgment differs from the code's SQL"]
 
 def test_the_migration_plan_on_the_shape_below_it_is_one_recreate_of_v_pending_judgment_and_the_committed_body_is_the_render(tmp_path, capsys):
     version, slug, mpath = _pes_migration()
-    assert version == M.code_version() - 7, "the newest file but seven on this tree: 0026 (the twin fold), 0027 (registry follow-ups-4), 0028 (reference_model_never_selected), 0029 (analysis filing), 0030 (fold_order_barrier) and 0031 (non_template_positions: a rebuild of instrument and run) follow it (renumbered at landing if another branch's lands first)"
+    assert version == M.code_version() - 8, "the newest file but eight on this tree: 0026 (the twin fold), 0027 (registry follow-ups-4), 0028 (reference_model_never_selected), 0029 (analysis filing), 0030 (fold_order_barrier), 0031 (non_template_positions: a rebuild of instrument and run), 0032 (site_label_rename) and 0033 (prune_superseded_item_rows) follow it (renumbered at landing if another branch's lands first)"
     assert os.path.basename(mpath) == f"{version:04d}_{SLUG}.sql"
     path = str(tmp_path / "below.sqlite")
     _shape_below_pes(path)
     conn = DB.connect(path)
     assert M.db_version(conn) == version - 1
-    assert _sans_tf(DB.schema_drift(conn)) == PES_DRIFT                                    # 0026's three lines aside (its own test pins them)
+    assert _sans_prune_head(_sans_tf(DB.schema_drift(conn))) == PES_DRIFT                  # 0026's three lines and 0033's aside (their own tests pin them)
     plan = M.shape_plan(conn)
-    assert [r["table"] for r in plan["rebuild"] if r["table"] not in FU4_TABLES + NTPL_TABLES] == [] and plan["add_columns"] == [] and plan["undeclared_tables"] == [] and [c for c in plan["create"] if c not in AF_TABLES] == []   # 0027's run_contrast rebuild, 0031's two and 0029's five creates aside
-    assert plan["objects"]["index"] == {"recreate": [], "drop": []} and plan["objects"]["trigger"] == {"recreate": [], "drop": []}   # 0030's two fence triggers ride 0031's run rebuild
-    assert [v for v in plan["objects"]["view"]["recreate"] if v not in TF_VIEWS] == ["v_pending_judgment"] and plan["objects"]["view"]["drop"] == []
-    rendered = M.render_shape_migration(conn, plan)
+    assert [r["table"] for r in plan["rebuild"] if r["table"] not in FU4_TABLES + NTPL_TABLES] == [] and plan["add_columns"] == [] and plan["undeclared_tables"] == [] and [c for c in plan["create"] if c not in AF_TABLES + PRUNE_TABLES] == []   # 0027's run_contrast rebuild, 0031's two, 0029's five creates and 0033's aside
+    assert _prune_index_aside(plan["objects"]["index"]) == {"recreate": [], "drop": []} and plan["objects"]["trigger"] == {"recreate": [], "drop": []}   # 0030's two fence triggers ride 0031's run rebuild
+    assert [v for v in plan["objects"]["view"]["recreate"] if v not in TF_VIEWS + ("v_paper_inputs_head",)] == ["v_pending_judgment"] and plan["objects"]["view"]["drop"] == []
+    rendered = _sans_prune_head_render(M.render_shape_migration(conn, plan))
     committed = open(mpath, encoding="utf-8").read()
     assert committed.startswith(f"-- {os.path.basename(mpath)}\n")
     body = committed[committed.index("-- drift: "):]
@@ -153,14 +154,14 @@ def test_the_migration_plan_on_the_shape_below_it_is_one_recreate_of_v_pending_j
     os.makedirs(root)
     shutil.copy(path, DB.db_path(root))
     assert cli.main(["--root", root, "migrate", "--plan"]) == 1
-    out = capsys.readouterr().out
+    out = _sans_prune_cli(capsys.readouterr().out)                                       # 0033's lines aside
     assert f"schema version {version - 1}; code {M.code_version()}; pending: {version:04d}_{SLUG}, " in out     # 0026 follows it in the pending list
     recreate_line = next(ln for ln in out.splitlines() if ln.startswith("recreate view(s): "))
     assert "v_pending_judgment" in recreate_line and f"  {PES_DRIFT[0]}" in out            # one line for the views; 0026's three are named beside
     for absent in ("add column", "drop undeclared", "recreate index"):
         assert absent not in out, out
     assert [ln for ln in out.splitlines() if ln.startswith("recreate trigger")] == [], out   # 0030's two fence triggers ride 0031's run rebuild
-    assert [ln for ln in out.splitlines() if ln.startswith("create table") and ln.split()[-1] not in AF_TABLES] == [], out   # 0029's five creates aside
+    assert [ln for ln in out.splitlines() if ln.startswith("create table") and ln.split()[-1] not in AF_TABLES + PRUNE_TABLES] == [], out   # 0029's five creates aside
     assert [ln for ln in out.splitlines() if ln.startswith("rebuild table ") and "run_contrast" not in ln and ln.split()[2].rstrip(":") not in NTPL_TABLES] == [], out   # 0027's and 0031's rebuild lines aside
     assert sum(1 for ln in out.splitlines() if ln.startswith("recreate ")) == 1                 # the views' line alone
     # the runner: the version row and the object, no note (no post-step), zero drift, the writers' open accepts it

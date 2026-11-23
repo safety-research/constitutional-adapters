@@ -61,6 +61,11 @@ def build(*, configs_root: Path, views_yaml: Path | None, views_spec: str | None
     frozen = V.frozen_input_paths(spec, configs_root)
     roster_file, pins_file = frozen if frozen is not None else (live_roster, live_pins)
     rel = (lambda p: str(Path(p).resolve().relative_to(Path(configs_root).resolve())))
+    # a frozen COPY keeps the file name of the registry file it stands for (frozen/<commit>/sdfbase_full22_roster.yaml) and is recorded
+    # under the published path; a LANE-PRIVATE input (the ctlstop matrix's own roster + pins, sha-pinned in frozen_inputs) is a file of
+    # another name and is recorded under its own path, so the document never names the production roster for bytes that are not it
+    roster_rel = rel(live_roster) if frozen is not None and Path(roster_file).name == live_roster.name else None
+    pins_rel = rel(live_pins) if frozen is not None and Path(pins_file).name == live_pins.name else None
     # E2 (plan P2 / P8): the appended waves — the `extensions:` prompted rows need no pin and no roster entry; the `steering:`
     # rows are generated from the P8 admission record of the SAME configs root (the record the launcher's three doors assert)
     admission_file = V.admission_path(configs_root) if spec.steering else None
@@ -73,11 +78,9 @@ def build(*, configs_root: Path, views_yaml: Path | None, views_spec: str | None
                          extensions=spec.extensions, steering=spec.steering, admission=admission, itdoc=spec.itdoc, itdoc_admission=itdoc_admission,
                          row_overlays=spec.row_overlays, object_generation=spec.object_generation, wave=spec.wave,
                          inspect_seed_policy=spec.inspect_seed_policy, inspect_seed_base_by_view=spec.inspect_seed_base_by_view,
-                         standup_companions=spec.standup_companions, geometry_class=spec.geometry_class)
+                         standup_companions=spec.standup_companions, geometry_class=spec.geometry_class, pins_file=rel(pins_file))
     doc = V.matrix_document(rows, spec=spec, roster_file=roster_file, pins_file=pins_file, views_file=views_file,
-                            configs_root=configs_root,
-                            roster_rel=rel(live_roster) if frozen is not None else None,
-                            pins_rel=rel(live_pins) if frozen is not None else None, admission_file=admission_file,
+                            configs_root=configs_root, roster_rel=roster_rel, pins_rel=pins_rel, admission_file=admission_file,
                             itdoc_admission_file=itdoc_file)
     return V.render_matrix(doc), doc
 

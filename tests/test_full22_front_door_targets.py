@@ -279,7 +279,7 @@ def test_every_gsm8k_launcher_admits_a_front_door_matrix_before_sourcing_and_ref
              "smoke_not_available.sbatch": [KEY, "battery", sha, "", "", ""]}
     for name, args in argvs.items():
         src = (G8K / name).read_text()
-        m = re.search(r'case "\$G8K_MATRIX" in ([a-z_|]+)\) ;;', src)
+        m = re.search(r'case "\$G8K_MATRIX" in ([a-z0-9_|]+)\) ;;', src)
         assert m and sorted(m.group(1).split("|")) == sorted(M.MATRICES), name                    # the pinned first arm is untouched
         assert "frontdoor_*) ;;" in src.split(m.group(0), 1)[1].split("esac", 1)[0], name          # the second arm admits the front door
         assert src.index('case "$G8K_MATRIX"') < src.index("common.sh"), name

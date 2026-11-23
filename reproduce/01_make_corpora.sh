@@ -5,7 +5,9 @@
 # The paper's four finals are COMMITTED as shards under corpora/ (stage 02 --step corpora materialises them); this
 # stage is how they were made and how a new sample would be generated. Generation runs on the Anthropic Batch API with
 # claude-opus-5 and a re-run yields a NEW sample, so this script is documented and offline-validated (--setup, --test,
-# --preflight, --dry-run) and its generation phases were never run in the companion-repo work.
+# --preflight, --dry-run) and its generation phases were never run in the companion-repo work. corpora/ also holds the
+# generator comparison's Qwen 3.8 Max constitution corpus (constitution_qwen38max_*): this stage did not make it (it was
+# generated through OpenRouter by code that is not in this tree), and no stage reads it.
 #
 #   01_make_corpora.sh --setup                      install the corpus generator into the harness venv (uv sync --frozen --inexact --group corpus)
 #   01_make_corpora.sh --test                       the generator's offline suite in that env (fake Batch client; no keys)

@@ -293,6 +293,9 @@ def test_campaign_stem_strips_the_fit_variant_prefix_only():
         "derived_itdoc64__constv2-mix-full__lora_r4_ce_minus_ctl": ("constv2-mix-full__lora_r4_ce_minus_ctl", "derived_itdoc64"),
         "derived__constv2-mix-full__psr_ce_all_minus_ctl_distilled": ("constv2-mix-full__psr_ce_all_minus_ctl_distilled", "derived"),
         "derived_base64s1__constv2-mix-full__lora_r4_ce_minus_ctl": ("constv2-mix-full__lora_r4_ce_minus_ctl", "derived_base64s1"),
+        # the control refit with early stopping on its own held-out pool, and a difference built from it: the reserved prefix
+        "ctlstop64s2__constv2ctl2-full__psr_ce_all": ("constv2ctl2-full__psr_ce_all", "ctlstop64s2"),
+        "derived_ctlstop64s1__constv2-mix-full__psr_ce_all_minus_ctl": ("constv2-mix-full__psr_ce_all_minus_ctl", "derived_ctlstop64s1"),
         "d0p5_eb64s1__constv2-mix-full__psr_ce_all_minus_ctl": ("constv2-mix-full__psr_ce_all_minus_ctl", "d0p5_eb64s1"),
         "dm1it64__constv2-mix-full__lora_r4_ce": ("constv2-mix-full__lora_r4_ce", "dm1it64"),
         "d0p25s1__constv2-mix-full__psr_ce_all": ("constv2-mix-full__psr_ce_all", "d0p25s1"),

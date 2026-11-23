@@ -1,7 +1,8 @@
 """The ``registry`` console script. Help strings are vocabulary-checked by the vocabulary
 test (model / object / eval / run / judgment / judge / instrument — no campaign jargon).
 
-Fully working here: ``init``, ``migrate``, ``ingest``, ``rebuild [--verify]``, ``status [--html|--json|--refresh-heavy [--force]]``,
+Fully working here: ``init``, ``migrate``, ``ingest``, ``rebuild [--verify [--diff-out F]]`` (``--diff-out``: every differing key as
+JSON lines, equality.py), ``status [--html|--json|--refresh-heavy [--force]]``,
 ``query``, ``frame``, ``history``, ``mirrors sync|verify`` (local and ssh destinations; the Modal destination was removed),
 ``snapshot [--scope full|runlevel] [--if-due] [--push]`` (push + commit on every destination), ``paper-head`` and ``config
 [--check]`` (the rebuild trigger's inputs; ``--check`` loads ``config.toml`` and the legacy ``config.json`` through the loader and
@@ -22,7 +23,10 @@ the live rows, the legacy shapes, the instrument cross-check -- capcheck.py; rea
 run drop -- a record under ``records/adapters/<adapter>/_activations/<rev>/<stamp>/``, never a database write),
 ``check-paper-parity`` (parity.py), ``paper-objects``, ``analysis file|list`` (a prefill-only or offline analysis filed
 over ingested runs and objects as ledger-fact records, its report and pages registered as artifacts -- analysis.py; the database
-is read for the input check and never written). ``export r2-compat`` and ``degeneracy-rebuild`` import
+is read for the input check and never written), ``prune-superseded plan|archive|verify-archive|restore|digest|compare|mode|status|
+verify-deleted|reclaim|rehydrate`` (superseded revisions' item rows: the census, the archive of what reclaim deletes and its
+verification, the restore, the comparison contracts, the live reclaim mode, the operator remedies for a held rehydration --
+prune_archive.py). ``export r2-compat`` and ``degeneracy-rebuild`` import
 their modules lazily (``r2compat.py`` / ``degeneracy_artifact.py``) and exit 3 naming the branch when absent.
 Stubs that print their contract and exit 3 (backend not yet implemented): ``backfill``.
 Every run stamps ``state/last_run/<command>.json`` (the status page's timer-health section).
@@ -229,6 +233,23 @@ def cmd_migrate(args) -> int:
     # after `--lock-timeout` seconds (default 0: refuse at once) -- never applies concurrently, never waits silently. `--db` names a file
     # outside a root: the lock then sits beside that file (`<dir>/harvester.lock`), so two migrations of one file still serialise.
     lock_root = os.path.dirname(os.path.abspath(path)) if args.db else root
+    # an ABSENT database is never created here (`registry init` creates one): a missing live file means an operation was interrupted
+    # (a compaction swap between its steps, a file moved by hand), and migrating "it" would build a fresh, empty registry at the live
+    # path. Refused before the lock and before any connection; so is a schema-less file in a root with harvest state, by the same rule
+    # the writers' open applies (db.refuse_fresh_in_harvested_root), read through a read-only connection
+    if not os.path.exists(path):
+        print(f"registry migrate REFUSED: {path} does not exist; `registry migrate` upgrades an existing database and never creates one "
+              "(`registry init` creates it; a live file that went missing mid-operation is put back, e.g. `python -m "
+              "sisteer.registry.compact --recover --attic <the swap's attic directory>`); nothing was created or applied", file=sys.stderr)
+        return 1
+    with DB.reading(path) as ro:
+        have0 = db_version(ro)
+    if have0 == 0:
+        try:
+            DB.refuse_fresh_in_harvested_root(path, 0)
+        except DB.SchemaDrift as exc:
+            print(f"registry migrate REFUSED: {exc}", file=sys.stderr)
+            return 1
     print(f"site aliases: {aliases['path'] or '-'} ({aliases['source']}); digest {aliases['digest']}; {len(aliases['pairs'])} pair(s)")
     try:
         with DB.write_lock(lock_root, timeout_s=float(getattr(args, "lock_timeout", 0.0) or 0.0)):
@@ -343,14 +364,21 @@ def cmd_ingest(args) -> int:
 
 def cmd_rebuild(args) -> int:
     from . import harvest as H
+    if args.diff_out and not args.verify:
+        print("rebuild: --diff-out needs --verify", file=sys.stderr)
+        return 2
     rep = H.rebuild(args.from_dir, args.into, workers=args.workers)
     d = rep.as_dict()
     d.pop("refusals")
     print(json.dumps(d, indent=1))
     if args.verify:
         live = args.verify_against or DB.db_path(_root(args))
-        with DB.reading(live) as a, DB.reading(args.into) as b:
-            diff = H.verify_equal(a, b)
+        from . import equality as EQ
+        # with --diff-out, every differing key, both sides' rows, as JSON lines (equality.DiffWriter): what `registry prune-superseded
+        # compare --expect rebuild --baseline-diff` classifies against an older code's rebuild
+        with DB.reading(live) as a, DB.reading(args.into) as b, \
+                (EQ.DiffWriter(args.diff_out, os.path.abspath(live), os.path.abspath(args.into)) if args.diff_out else contextlib.nullcontext()) as w:
+            diff = H.verify_equal(a, b, diff_sink=w)
         bad = {k: v for k, v in diff.items() if v}
         print("verify:", "0 differing rows on every compared table" if not bad else json.dumps(bad))
         return 0 if not bad else 1
@@ -545,7 +573,10 @@ def cmd_snapshot(args) -> int:
         try:
             info = SN.build(source, DB.db_path(source), check_free_space=not args.no_space_check, scope="paper_frame",
                             dest_root=os.path.abspath(dest_root), model_ids=list(getattr(args, "model_id", None) or []) or None,
-                            precondition_override=getattr(args, "precondition_override", None))
+                            precondition_override=getattr(args, "precondition_override", None),
+                            test_models=not getattr(args, "paper_models_only", False),
+                            item_judges=list(getattr(args, "item_judge", None) or []),
+                            item_projection=getattr(args, "item_projection", None))
         except SN.SnapshotError as exc:
             print(f"snapshot: {exc}", file=sys.stderr)
             return 1
@@ -553,6 +584,9 @@ def cmd_snapshot(args) -> int:
         return 0
     if source_root:
         print("snapshot: --source-root is only for --scope paper_frame (the operational scopes read and write one root, --root)", file=sys.stderr)
+        return 2
+    if getattr(args, "item_judge", None) or getattr(args, "item_projection", None) or getattr(args, "paper_models_only", False):
+        print("snapshot: --item-judge, --item-projection and --paper-models-only are for --scope paper_frame", file=sys.stderr)
         return 2
     cfg = CFG.load(root)
     if args.if_due:
@@ -1898,7 +1932,14 @@ def build_parser() -> argparse.ArgumentParser:
     s.add_argument("--verify", action="store_true", help="diff every table (except the arrival ledger) against the live database")
     s.add_argument("--verify-against", help="path of the live database (default <root>/registry.sqlite)")
     s.add_argument("--workers", type=int, default=3)
+    s.add_argument("--diff-out", help="with --verify: write every differing key and both sides' rows here as JSON lines")
     s.set_defaults(fn=cmd_rebuild)
+    s = sub.add_parser("prune-superseded", help="superseded revisions' item rows: census (plan), archive, verify-archive, restore, "
+                                                "digest, compare, the reclaim mode, status, verify-deleted, reclaim on a non-live file, "
+                                                "and rehydrate (prune_archive.py)")
+    from . import prune_archive as PA
+    PA.add_arguments(s)
+    s.set_defaults(fn=lambda a: PA.cmd_prune_superseded(a, _root(a) if a.action in PA.ROOT_WRITING_ACTIONS else _root_unstamped(a)))
     s = sub.add_parser("status", help="registry status: runs in flight, roster gaps, refused and blocked records, snapshots")
     s.add_argument("--html", action="store_true")
     s.add_argument("--json", action="store_true")
@@ -1978,8 +2019,16 @@ def build_parser() -> argparse.ArgumentParser:
                                                        "(<DIR>/CURRENT + <DIR>/snapshots/<id>/); never the registry root")
     s.add_argument("--source-root", metavar="ROOT", help="paper_frame only: the registry root to read (default: --root)")
     s.add_argument("--model-id", action="append", default=[], metavar="ID",
-                   help="paper_frame only: also export this model's runs (repeatable; the paper's four, their fit checkpoints and the "
-                        "pipeline-test models are always in)")
+                   help="paper_frame only: also export this model's runs (repeatable; the paper's four and their fit checkpoints are "
+                        "always in, the pipeline-test models unless --paper-models-only)")
+    s.add_argument("--paper-models-only", action="store_true",
+                   help="paper_frame only: leave the pipeline-test models (snapshot.PAPER_FRAME_TEST_MODEL_IDS) out of the run and item scopes")
+    s.add_argument("--item-judge", action="append", default=[], metavar="JUDGE_ID",
+                   help="paper_frame only: add every complete judgment of this judge on a run of the model set to the item scope "
+                        "(repeatable; the paper policy's judges are paper/notebooks/data/paper_judges.json)")
+    s.add_argument("--item-projection", default=None, metavar="NAME",
+                   help="paper_frame only: ship the item judges' rows in this projection (reader: extra_json reduced to the keys the "
+                        "notebook's item reader extracts, record_sha256 NULL; snapshot.PAPER_FRAME_ITEM_PROJECTIONS); default verbatim")
     s.add_argument("--precondition-override", metavar="REASON",
                    help="paper_frame only: skip the tree precondition (relu_native's PAIRED_ROOT is a real directory and the commit "
                         "that moved it is an ancestor of HEAD); the reason is recorded in MANIFEST.precondition")
@@ -2109,7 +2158,8 @@ def build_parser() -> argparse.ArgumentParser:
     s = sub.add_parser("refusals", help="the refusal FACTS read back (read-only): `list` every refusal judgment ever made (one row per refused "
                        "record and judging stamp, beside the record's current judgment; --still-refused keeps the current ones), `explain` one "
                        "record by sha or by the uri it was refused under (its facts per stamp, the refused bytes re-read by sha, the current "
-                       "validator's verdict, and where the record's key stands now: a later row folded, an earlier row stands, no row, unknown), "
+                       "validator's verdict, and where the record's key stands now: a later row folded, an earlier row stands, no row, the revision's rows "
+                       "reclaimed, unknown), "
                        "`summary` the counts; writes nothing, not even a state/last_run stamp")
     s.add_argument("action", choices=["list", "explain", "summary"])
     s.add_argument("ident", nargs="?", help="explain: the record sha (64 hex) or the record_uri it was refused under (`<file>` or `<file>#<line>`)")
@@ -2356,7 +2406,9 @@ def build_parser() -> argparse.ArgumentParser:
     s.add_argument("out")
     s.add_argument("--compare", help="an existing export parquet to diff against, per join key and column")
     s.set_defaults(fn=lambda a: _lazy_module("r2compat", "cli_export", a))
-    s = sub.add_parser("degeneracy-rebuild", help="regenerate the 2026-09-14 degeneration tables from v_run_degeneration_wide and diff them against the CSV oracles (degeneracy_artifact.py)")
+    s = sub.add_parser("degeneracy-rebuild", help="regenerate the 2026-09-14 degeneration tables from v_run_degeneration_current (one current row per "
+                       "measurement key; the detector columns from v_run_degeneration_wide) and diff them against the CSV oracles "
+                       "(degeneracy_artifact.py)")
     s.add_argument("--out", required=True)
     s.add_argument("--csv-dir", help="directory of the degen_*_over1pct.csv oracles (default ~/figs/degeneracy/2026-09-14)")
     s.set_defaults(fn=lambda a: _lazy_module("degeneracy_artifact", "cli_rebuild", a))

@@ -45,7 +45,7 @@ def test_runlevel_allowlist_is_complement_of_item_scale():
     # ... except `run_degeneration` (item-scale by key, run-grain in count), which the paper views read since migration 0010
     assert SN.RUNLEVEL_ITEM_TABLES == ("run_degeneration",) and set(SN.RUNLEVEL_ITEM_TABLES) <= set(S.ITEM_SCALE_TABLES)
     assert set(SN.RUNLEVEL_TABLES) == (set(S.ALL_TABLES) - set(S.ITEM_SCALE_TABLES) - set(S.STAGING_TABLES) - set(SN.HISTORY_TABLES)
-                                       | set(SN.RUNLEVEL_ITEM_TABLES))
+                                       - set(SN.BOOKKEEPING_TABLES) | set(SN.RUNLEVEL_ITEM_TABLES))
     assert set(SN.RUNLEVEL_TABLES) & set(R.ITEM_SCALE_TABLES) == set(SN.RUNLEVEL_ITEM_TABLES)
     assert not set(SN.RUNLEVEL_TABLES) & set(S.STAGING_TABLES)
     assert set(SN.ROW_FILTERS) == {"record_delivery", "observation", "blocked_records", "run_degeneration"}
@@ -54,7 +54,12 @@ def test_runlevel_allowlist_is_complement_of_item_scale():
     # the history ledger is a ledger (not record-fed), is exactly row_history, is read by no view, and ships in neither scope
     assert SN.HISTORY_TABLES == ("row_history",) and set(SN.HISTORY_TABLES) <= set(S.LEDGER_TABLES)
     assert not any(set(SN.HISTORY_TABLES) & S.VIEW_TABLES[v] for v in S.VIEW_NAMES)
-    assert set(SN.FULL_TABLES) == set(S.ALL_TABLES) - set(S.STAGING_TABLES) - set(SN.HISTORY_TABLES)
+    assert set(SN.FULL_TABLES) == set(S.ALL_TABLES) - set(S.STAGING_TABLES) - set(SN.HISTORY_TABLES) - set(SN.BOOKKEEPING_TABLES)
+    # the reclaim's bookkeeping (migration 0033) is a ledger-scale table no v_* object reads, and ships in neither scope either, so
+    # the snapshot formats are what they were before it existed
+    assert SN.BOOKKEEPING_TABLES == ("item_reclaim_ledger",) and set(SN.BOOKKEEPING_TABLES) <= set(S.LEDGER_TABLES)
+    assert not any(set(SN.BOOKKEEPING_TABLES) & S.VIEW_TABLES[v] for v in S.VIEW_NAMES)
+    assert not set(SN.BOOKKEEPING_TABLES) & (set(SN.RUNLEVEL_TABLES) | set(SN.FULL_TABLES))
     assert set(SN.RUNLEVEL_TABLES) <= set(SN.FULL_TABLES) and set(S.ITEM_SCALE_TABLES) <= set(SN.FULL_TABLES)
     # the paper and source-check views the clusters read stay in the run-level file (v_source_status reads the item-scale
     # source_status table, so it never was and is not); the degeneration views join them with their table (0010)

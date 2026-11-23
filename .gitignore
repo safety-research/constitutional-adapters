@@ -30,6 +30,8 @@ objects/_reassembled/
 # runtime readers lock
 !paper/snapshot/snapshots/*/*.parquet
 paper/snapshot/snapshots/.readers.lock
+# ...and the committed projection of the strength lanes' XSTest reads sidecars (paper/notebooks/strength_reads_sidecar.py)
+!paper/notebooks/data/strength_reads/*/strength_reads.parquet
 # the refusal-direction fit prompts are re-drawn from upstream at run time (python -m sisteer.data.arditi_fit_prompts) and are never
 # committed: data/arditi/ holds their manifest alone, so a reproduced copy written beside it stays out of the tree
 data/arditi/*

@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 """reproduce/tools/reassemble_corpus.py — rebuild one part of a released corpus (the constitution or the control corpus; its difficult-advice or its stories part) from its committed shards and CHECK it
-(the reassembled sha256 equals the final's; the record count is the paper's).
+(the reassembled sha256 equals the final's; the record count is the paper's). The same tool reads the generator comparison's
+Qwen 3.8 Max constitution corpus (constitution_qwen38max_advice / constitution_qwen38max_stories), which no reproduce stage
+consumes.
 
     python reproduce/tools/reassemble_corpus.py <corpus> --out FILE [--check] [--corpora-root corpora]
     python reproduce/tools/reassemble_corpus.py <corpus> --verify-only            # hash + count, writes nothing
@@ -26,7 +28,8 @@ from typing import Iterator
 
 REPO = Path(__file__).resolve().parents[2]
 CORPORA_ROOT = REPO / "corpora"
-CORPORA = ("constitution_advice", "constitution_stories", "control_advice", "control_stories")
+CORPORA = ("constitution_advice", "constitution_stories", "control_advice", "control_stories",
+           "constitution_qwen38max_advice", "constitution_qwen38max_stories")
 _BUF = 1 << 20
 
 

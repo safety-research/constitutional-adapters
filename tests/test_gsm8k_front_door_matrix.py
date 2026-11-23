@@ -41,7 +41,10 @@ import make_gsm8k_matrix as MK  # noqa: E402
 ENV = {**os.environ, "PYTHONPATH": str(REPO / "src")}
 KEY = "qwen35_4b_demo"
 PAPER_MODEL_KEYS = ("gemma4e4b", "qwen35_4b", "nemotron3nano4b", "glm46vflash", "llama8b")
-PAPER_MATRICES = {"default", "llama", "itdoc", "qwen_seedrep", "arditi_allpos", "arditi_seedrep", "paired_allmodels"}
+#: the registered (non-front-door) documents — the paper's matrices and records, plus the control-pool-stopped objects' matrix (`ctlstop`)
+#: the SI-distilled refit objects' matrix (`sikl4`) and the 1M-token generator comparison's matrix (`qwengen1m`)
+PAPER_MATRICES = {"default", "llama", "itdoc", "qwen_seedrep", "arditi_allpos", "arditi_seedrep", "paired_allmodels", "ctlstop", "sikl4",
+                  "qwengen1m"}
 
 
 # --------------------------------------------------------------------------- the derived facts
@@ -235,7 +238,7 @@ def test_the_front_door_matrix_is_derived_from_the_table_and_the_roster_and_refu
 # --------------------------------------------------------------------------- the launcher
 def test_the_sbatch_keeps_the_frozen_names_as_its_first_arm_and_admits_a_front_door_matrix_in_a_second():
     src = (G8K / "gsm8k_thinking.sbatch").read_text()
-    m = re.search(r'case "\$G8K_MATRIX" in ([a-z_|]+)\) ;;', src)
+    m = re.search(r'case "\$G8K_MATRIX" in ([a-z0-9_|]+)\) ;;', src)
     assert m and sorted(m.group(1).split("|")) == sorted(M.MATRICES)                 # the pinned first arm: exactly the frozen registry
     assert "frontdoor_*) ;;" in src.split(m.group(0), 1)[1].split("esac", 1)[0]     # the second arm: the front door's derived matrices
     assert subprocess.run(["bash", "-n", str(G8K / "gsm8k_thinking.sbatch")]).returncode == 0

@@ -38,6 +38,16 @@ loader refuses it; the page itself keeps rendering on the budget defaults). A da
 replica check, a refused receipt, a stale flag or the removed table is red; a torn state file is shown as an error, never a page
 that fails to render. The render's history line carries ``operational_ms`` and ``slurm_only_ms`` beside ``total_ms``, so the
 within-budget claim is checkable with the new section in place.
+
+"Reclaim" is ONE line beside the harvester row (:func:`reclaim_summary`): the reclaim mode the harvester reads
+(``state/reclaim_mode.json`` through ``prune.ReclaimMode.from_state``; a file it refuses is red), the accepted, superseded revisions
+still due for reclaim, the rows reclaim deleted and nobody has restored (``item_reclaim_ledger``, per item table, with the carriers a stop
+left part-deleted), the last completed cycle's deleted / rehydrated rows and stop reason, and the same over the tail of
+``state/metrics.jsonl``. A re-activation held because the rows reclaim deleted could not be restored exactly (``rehydration``) is listed
+under the pending source revisions, from ``blocked_records``. All of it reads the revision chain, the ledger, the blocked queue and state
+files -- never an item table. The line is green only when its three sections ran live this render: a section with no rows this render
+and none cached makes it ``unknown`` (its counts are shown as not computed, never as 0), one served from its last good rows makes it
+``stale`` (their stamp and age on the line); a refused mode file, a failed query or a hold in the rows the line has keeps it red.
 """
 from __future__ import annotations
 
@@ -53,6 +63,7 @@ from . import config as CFG
 from . import db as DB
 from . import decode_precedence as DP
 from . import harvest as H
+from . import prune as P
 from . import records as R
 from . import site_aliases as SA
 from .analysis import PAGE_URLS_SQL as _AN_PAGE_URLS_SQL
@@ -201,6 +212,21 @@ QUERIES: Dict[str, Optional[str]] = {
                "(SELECT COUNT(*) FROM v_paper_current pc WHERE pc.decisive_ruling_id = ru.ruling_id) AS n_runs_decided "
                "FROM ruling ru WHERE ru.round_id = (SELECT round_id FROM paper_round WHERE closed_utc IS NULL ORDER BY opened_utc DESC LIMIT 1) "
                "ORDER BY CASE WHEN json_extract(ru.extra_json, '$.provenance.kind') = 'relayed' THEN 0 ELSE 1 END, ru.ruled_utc DESC, ru.ruling_id LIMIT 300",
+    # superseded revisions' item rows (migration 0033): the revision chain and the deletion ledger, both small -- never an item table.
+    # `n_due` = accepted, superseded revisions reclaim has not finished (reclaimed = 0); the ledger holds one row per carrier reclaim
+    # deleted rows from and nobody restored since, with the running count (`rows_deleted < expected_rows` = a stop left it part-deleted)
+    "reclaim_revisions": "SELECT COUNT(*) AS n_superseded, COALESCE(SUM(CASE WHEN reclaimed = 0 THEN 1 ELSE 0 END), 0) AS n_due "
+                         f"FROM source_revision WHERE {P.accepted_superseded()}",
+    "reclaim_ledger": "SELECT table_name, COUNT(*) AS n_carriers, COUNT(DISTINCT revision_id) AS n_revisions, SUM(rows_deleted) AS rows_deleted, "
+                      "SUM(CASE WHEN rows_deleted < expected_rows THEN 1 ELSE 0 END) AS n_part_deleted "
+                      "FROM item_reclaim_ledger GROUP BY table_name ORDER BY table_name",
+    # the re-activations held because rehydration did not authenticate (the rows reclaim deleted are not what the current code re-parses
+    # from the log): the bundle's marker row (`extra_json.kind = 'rehydration'`, its revision and reason) and any record blocked on the
+    # ledger at a plain-file write. The previous head stays current; nothing is re-attempted silently
+    "rehydration_holds": "SELECT json_extract(extra_json, '$.revision_id') AS revision_id, json_extract(extra_json, '$.blocked_on') AS blocked_on, "
+                         "record_uri, record_type, missing_parent_table, missing_parent_id, first_seen_utc, last_checked_utc, attempts, stale "
+                         "FROM blocked_records WHERE json_extract(extra_json, '$.kind') = 'rehydration' OR missing_parent_table = 'item_reclaim_ledger' "
+                         "ORDER BY first_seen_utc, record_uri LIMIT 200",
     "table_counts": None,  # computed
     "head": "SELECT ingest_seq FROM v_paper_inputs_head",
     "index_head": "SELECT COALESCE(MAX(ingest_seq), 0) AS ingest_seq FROM record_ingest",
@@ -827,6 +853,127 @@ def slurm_only_section(root: str, now_s: Optional[float] = None, state_dir: Opti
     return out
 
 
+#: The tail of ``state/metrics.jsonl`` the reclaim line reads, in bytes: the recent cycles' lines, never the whole log.
+METRICS_TAIL_BYTES = P.METRICS_TAIL_BYTES
+#: What a completed cycle reports about reclaim (``harvest.IngestReport``): read from ``state/harvest_cycle.json`` when the cycle state
+#: carries them, else derived from that cycle's own lines of the metrics log (:func:`_cycle_segment`).
+RECLAIM_CYCLE_KEYS = H.RECLAIM_REPORT_KEYS
+#: The tail's JSON objects, oldest first (``prune.metrics_tail``).
+metrics_tail = P.metrics_tail
+
+
+def _int0(v: object) -> int:
+    try:
+        return int(v or 0)   # type: ignore[arg-type]
+    except (TypeError, ValueError):
+        return 0
+
+
+def _cycle_segment(tail: Sequence[Mapping[str, object]]) -> Tuple[Optional[Mapping[str, object]], List[Mapping[str, object]]]:
+    """The newest ``kind = "cycle"`` line of the tail and the lines its cycle wrote before it (back to the previous ``cycle`` line):
+    reclaim runs at the end of a live cycle, before the cycle's own line. ``(None, [])`` when the tail holds no completed cycle."""
+    idx = [i for i, m in enumerate(tail) if m.get("kind") == "cycle"]
+    if not idx:
+        return None, []
+    last = idx[-1]
+    first = idx[-2] + 1 if len(idx) > 1 else 0
+    return tail[last], list(tail[first:last])
+
+
+def reclaim_state(root: str) -> Dict[str, object]:
+    """The reclaim line's state-file part (no database): the mode the harvester reads, the last completed cycle's reclaim facts, and the
+    sums over the metrics tail. ``mode_error`` is the harvester's own refusal of the mode file (it deletes nothing while it stands)."""
+    out: Dict[str, object] = {"mode": None, "manifests": [], "mode_error": None,
+                              "mode_file": os.path.exists(os.path.join(root, "state", P.MODE_STATE_FILE))}
+    try:
+        mode, mst = P.mode_state(root)
+    except Exception as exc:  # noqa: BLE001 -- the refusal IS the content of the line, never a page that fails to render
+        mode, mst = None, {"kind": None, "error": f"{type(exc).__name__}: {exc}"}
+    else:
+        if mode is None:
+            mst["error"] = f"{P.ModeStateInvalid.__name__}: {mst['error']}"
+    if mode is not None:
+        out["mode"], out["manifests"] = mode.kind, list(mode.manifests)
+    else:
+        out["mode"], out["mode_error"] = mst.get("kind"), mst["error"]
+    tail = metrics_tail(root)
+    cycle_line, segment = _cycle_segment(tail)
+    state = H.read_cycle_state(root) or {}
+    if any(k in state for k in RECLAIM_CYCLE_KEYS):
+        last: Dict[str, object] = {k: state.get(k) for k in RECLAIM_CYCLE_KEYS}
+        last["utc"] = state.get("last_completed_cycle_utc")
+    elif cycle_line is not None:
+        stops = [m for m in segment if m.get("kind") in ("reclaim_stop", "reclaim_mode_invalid")]
+        last = {"reclaim_rows_deleted": sum(_int0(m.get("rows")) for m in segment if P.is_deletion_batch(m)),
+                "reclaim_rows_rehydrated": sum(_int0(m.get("rows")) for m in segment if P.is_rehydration(m)),
+                "reclaim_stopped": (("mode" if stops[-1].get("kind") == "reclaim_mode_invalid" else stops[-1].get("reason")) if stops else None),
+                "reclaim_mode": cycle_line.get("reclaim_mode"), "utc": cycle_line.get("utc")}
+    else:
+        last = {k: None for k in RECLAIM_CYCLE_KEYS}
+        last["utc"] = None
+    out["last_cycle"] = last
+    batches = [m for m in tail if P.is_deletion_batch(m)]
+    out["tail"] = {"since_utc": next((m.get("utc") for m in tail if m.get("utc")), None),
+                   "cycles": sum(1 for m in tail if m.get("kind") == "cycle"), "batches": len(batches),
+                   "rows_deleted": sum(_int0(b.get("rows")) for b in batches),
+                   "rows_rehydrated": sum(_int0(m.get("rows")) for m in tail if P.is_rehydration(m)),
+                   "stops": sum(1 for m in tail if m.get("kind") == "reclaim_stop"),
+                   "last_batch_utc": batches[-1].get("utc") if batches else None}
+    return out
+
+
+#: The SQL sections the reclaim line joins. The line is green only when all of them ran live this render.
+RECLAIM_SECTIONS = ("reclaim_revisions", "reclaim_ledger", "rehydration_holds")
+#: What a section's state says of the counts it gives the line: computed this render (``live``), its last good rows (``stale``: a
+#: stamp and an age). Anything else -- no cached rows, a failed query, a section the context does not name -- is ``unknown``.
+RECLAIM_DATA_STATE = {STATE_LIVE: "live", STATE_CACHED: "stale"}
+
+
+def reclaim_summary(ctx: Mapping[str, object], now_s: Optional[float] = None) -> Dict[str, object]:
+    """The reclaim line: :func:`reclaim_state` joined with the three SQL sections (:data:`RECLAIM_SECTIONS`). ``level``, the first that
+    holds: red when the mode file is refused, a section failed or a re-activation is held on rehydration in the rows the line has;
+    ``unknown`` when a section has no rows this render and none cached (its counts are None, never 0); ``stale`` when a section was served
+    from its last good rows; amber when the last cycle's reclaim stopped early (``wal`` / ``disk`` / ``budget`` / ``mode``); green
+    otherwise -- so a line whose sections did not all run live is never green. ``data_state`` (live / stale / unknown) says the same of
+    the counts whatever the level; ``sections_not_live`` names each section that did not run live with its state (``missing`` for one
+    the context does not name); ``as_of`` / ``age_s`` are the oldest stamp among the last good rows served and its age in seconds
+    (None when none was served); ``holds_state`` is the held re-activations' own."""
+    now_s = time.time() if now_s is None else now_s
+    st: Mapping[str, object] = ctx.get("reclaim_state") or {}   # type: ignore[assignment]
+    states: Mapping[str, Mapping[str, object]] = ctx.get("section_state") or {}   # type: ignore[assignment]
+    section = {n: str((states.get(n) or {}).get("state") or "missing") for n in RECLAIM_SECTIONS}
+    data = {n: RECLAIM_DATA_STATE.get(s, "unknown") for n, s in section.items()}
+    data_state = "unknown" if "unknown" in data.values() else ("stale" if "stale" in data.values() else "live")
+    served = [str(states[n]["as_of"]) for n in RECLAIM_SECTIONS if data[n] == "stale" and states[n].get("as_of")]
+    as_of = min(served) if served else None
+    revs = (_first_row(ctx, "reclaim_revisions") if data["reclaim_revisions"] != "unknown" else None) or {}
+    errors = [str(r["error"]) for n in RECLAIM_SECTIONS
+              for r in (ctx.get(n) or []) if isinstance(r, Mapping) and "error" in r]   # type: ignore[union-attr]
+    ledger: Optional[Dict[str, Dict[str, int]]] = None
+    if data["reclaim_ledger"] != "unknown":
+        ledger = {str(r["table_name"]): {"carriers": _int0(r.get("n_carriers")), "revisions": _int0(r.get("n_revisions")),
+                                         "rows_deleted": _int0(r.get("rows_deleted")), "part_deleted": _int0(r.get("n_part_deleted"))}
+                  for r in (ctx.get("reclaim_ledger") or []) if isinstance(r, Mapping) and "error" not in r}   # type: ignore[union-attr]
+    holds = [r for r in (ctx.get("rehydration_holds") or []) if isinstance(r, Mapping) and "error" not in r]   # type: ignore[union-attr]
+    last: Mapping[str, object] = st.get("last_cycle") or {}   # type: ignore[assignment]
+    stopped = last.get("reclaim_stopped")
+    if st.get("mode_error") or errors or holds:
+        level = "red"
+    elif data_state != "live":
+        level = data_state
+    else:
+        level = "amber" if stopped else "green"
+
+    def total(k: str) -> Optional[int]:
+        return None if ledger is None else sum(v[k] for v in ledger.values())
+    return {"mode": st.get("mode"), "manifests": list(st.get("manifests") or []), "mode_file": st.get("mode_file"),   # type: ignore[arg-type]
+            "mode_error": st.get("mode_error"), "n_superseded": revs.get("n_superseded"), "n_due": revs.get("n_due"), "ledger": ledger,
+            "rows_deleted": total("rows_deleted"), "carriers": total("carriers"), "part_deleted": total("part_deleted"),
+            "holds": len(holds) if data["rehydration_holds"] != "unknown" else None, "holds_state": data["rehydration_holds"],
+            "errors": errors, "last_cycle": dict(last), "tail": dict(st.get("tail") or {}), "level": level, "data_state": data_state,
+            "sections_not_live": {n: s for n, s in section.items() if s != STATE_LIVE}, "as_of": as_of, "age_s": _age_s(as_of, now_s)}
+
+
 def gather_operational(root: str, now_s: Optional[float] = None) -> Dict[str, object]:
     """The state-file sections (no database): snapshots resident + live leases, mirror state and lag,
     footprint, the paper rebuild RESULT, timer health, disk headroom."""
@@ -880,6 +1027,7 @@ def gather_operational(root: str, now_s: Optional[float] = None) -> Dict[str, ob
                            "rc": info.get("rc"), "seconds": info.get("seconds")})
     ctx["timers"] = timers
     ctx["harvest_cycle"] = harvest_cycle_section(root, now_s) if present else harvest_cycle_section(None, now_s)
+    ctx["reclaim_state"] = reclaim_state(root)
     ctx["wal_bytes"] = wal_size_bytes(root) if present else 0
     ctx["wal_gb"] = round(ctx["wal_bytes"] / 1e9, 2)
     # the cluster reads of the latest window: routes, refusals, stale mirrors -- from the plan file
@@ -1108,6 +1256,7 @@ def gather(conn: sqlite3.Connection, root: str, budget_overrides: Optional[Mappi
         except (ValueError, TypeError, AttributeError):
             row["scope"] = None
     ctx.update(gather_operational(root))
+    ctx["reclaim"] = reclaim_summary(ctx)
     # the refusal facts derived within the last 3 harvest cadences (the harvester row's own window), from the section's rows
     now_s = time.time()
     window_s = int(ctx["harvest_cycle"]["late_after_s"])

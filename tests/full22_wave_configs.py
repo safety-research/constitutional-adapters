@@ -43,6 +43,21 @@ EXCLUDED_TABLES: dict[str, str] = {
     "sdfbase_full22_roster_ctl_neg1_eb64.yaml":
         "the ctl-neg1 lane's PRIVATE roster (selected only by F22_ROSTER, never by default): the six strength -1 "
         "seed-replicate control views dm1_ctllora64s<k> / dm1_ctlrelu64s<k> are RENDERED FROM it -- a roster, not a wave config",
+    "sdfbase_full22_roster_ctlstop_eb64.yaml":
+        "a non-production roster (selected only by F22_ROSTER, never by default): the three views ctlstop64s<k> of the "
+        "early-stopped control objects and their differences (every leg but Petri) are RENDERED FROM it -- a roster, not a wave config",
+    "sdfbase_full22_roster_pubv_eb64.yaml":
+        "a non-production roster (selected only by F22_ROSTER, never by default): the three multi-turn views pubv64s<k> of the "
+        "published composed difference ReLU objects, re-measured in the early-stopped control objects' setup, are RENDERED FROM it "
+        "-- a roster, not a wave config",
+    "sdfbase_full22_roster_sikl4.yaml":
+        "a non-production roster (selected only by F22_ROSTER, never by default): the three views sikl4s<k> of the "
+        "SI-distilled objects refit with recorded fit seeds (safety, constitution and short irrelevant control SIs; LoRA and ReLU; "
+        "every leg but Petri) are RENDERED FROM it -- a roster, not a wave config",
+    "sdfbase_full22_roster_qwengen1m.yaml":
+        "a non-production roster (selected only by F22_ROSTER, never by default): the three views qg1ms<k> of the 1M-token "
+        "generator comparison (the Opus-written and Qwen-written constitution LoRAs of fit seed k; every leg but Petri) are "
+        "RENDERED FROM it -- a roster, not a wave config",
     "sdfbase_full22_ports.yaml":
         "the serving lane's PORT table (paper-companion-repo, report_D): one port per (target, view) TAG of the served waves, read by "
         "petri_proxy.sbatch / petri_drive_full22.sh -- a table under the wave prefix, never a wave config (found red by the run-readiness "

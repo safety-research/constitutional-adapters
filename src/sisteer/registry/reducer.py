@@ -1122,7 +1122,8 @@ class Reducer:
         ids = [r[0] for r in rows]
         for i, rid in enumerate(ids):
             nxt = ids[i + 1] if i + 1 < len(ids) else None
-            # a revision whose successor changes has its withdrawal marks derived again
+            # a revision whose successor changes is planned again by reclaim (its `reclaimed` reset): superseded now, its item rows are
+            # deleted where the record log reproduces them (prune-rule/3); the head again, its leftover marks are cleared (pass (i))
             self.conn.execute("UPDATE source_revision SET reclaimed = CASE WHEN superseded_by_revision_id IS ? THEN reclaimed ELSE 0 END, "
                               "superseded_by_revision_id = ? WHERE revision_id = ?", (nxt, nxt, rid))
         self._recompute_current(source_id, head=ids[-1] if ids else None)
@@ -1131,9 +1132,10 @@ class Reducer:
         """``observation.current`` is DERIVED: a key is current iff it belongs to the source's LATEST accepted
         revision. Recomputed whenever a revision or an observation of the source folds, so an older revision's row
         never keeps a withdrawn key alive and the result is identical live and on replay. Item rows need no such
-        pass: their visibility is derived at read time from the head revision; the marks an outgoing
-        revision's withdrawals left on a re-activated head's rows are cleared afterwards in bounded batches
-        (``Ingestor.reclaim``). During an activation the recomputation is collected and run once per source."""
+        pass: their visibility is derived at read time from the head revision; a superseded revision's item rows are deleted afterwards by
+        ``Ingestor.reclaim`` in bounded batches (migration 0033, ``prune.py``) and re-folded from the log before anything is written under
+        that revision again, and any mark left on a re-activated head's rows before 0033 is cleared there too. During an activation the
+        recomputation is collected and run once per source."""
         if self.deferred_current is not None:
             self.deferred_current.add(source_id)
             return
@@ -1160,8 +1162,9 @@ class Reducer:
         self.conn.execute(
             "UPDATE observation SET current = 0, withdrawn_by_revision_id = ? WHERE source_id = ? AND revision_id = ? "
             "AND observation_key = ?", (w["to_revision_id"], w["source_id"], w["from_revision_id"], w["observation_key"]))
-        # the item keys a withdrawal lists are bookkeeping: their `withdrawn_by_revision_id` marks are derived from
-        # the rows by Ingestor.reclaim in bounded batches after the activation — never written by this fold
+        # the item keys a withdrawal lists are bookkeeping, never written by this fold: an item row's visibility is derived from the head
+        # revision, and since migration 0033 nothing marks `withdrawn_by_revision_id` -- Ingestor.reclaim deletes a superseded revision's
+        # item rows instead, in bounded batches after the activation (prune-rule/3)
 
     def _apply_pending_withdrawals_to_observation(self, ob: Mapping[str, object]) -> None:
         if not self._withdrawal_stands(str(ob["source_id"]), str(ob["revision_id"])):

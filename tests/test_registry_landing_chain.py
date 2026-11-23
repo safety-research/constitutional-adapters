@@ -276,6 +276,93 @@ def test_gate_lib_partition_parser_env_and_merge_are_pinned_on_synthetic_inputs(
     assert set(dh) == {"pyproject.toml", "uv.lock"} and dh["uv.lock"] == __import__("hashlib").sha256(b"changed\n").hexdigest()
 
 
+def test_prepared_datasets_cache_is_the_gsm8k_jobs_rule_never_the_shared_model_cache(tmp_path):
+    """The gate's HF_DATASETS_CACHE follows the GSM8K jobs' rule, ``${HF_DATASETS_CACHE:-$SHARED/hf_datasets}`` (g8k_common.sh
+    and full22 common.sh): an inherited non-empty value wins, else the shared root's prepared cache when it exists, else nothing
+    is declared (None; gate_task.py then hands the suite an empty node-local cache, the test below). It is never HF_HOME's
+    datasets/ (the cohort model cache, where other users' prepares put openai___gsm8k without the offline
+    ``default-data_dir=main`` alias, so seedrep's preflight check rightly refused it on every gate)."""
+    gl = _gate_lib()
+    root = tmp_path / "shared"
+    root.mkdir()
+    cohort = tmp_path / "cohort"
+    (cohort / "datasets" / "openai___gsm8k").mkdir(parents=True)
+    # nothing prepared under the shared root: nothing declared, whatever HF_HOME holds
+    assert gl.prepared_datasets_cache({}, root) is None
+    assert gl.prepared_datasets_cache({"HF_HOME": str(cohort)}, root) is None
+    assert gl.prepared_datasets_cache({"HF_DATASETS_CACHE": ""}, root) is None          # empty is unset, as ${VAR:-...} reads it
+    assert gl.prepared_datasets_cache({}, None) is None
+    (root / "hf_datasets").write_text("")                                                # a file is not a cache
+    assert gl.prepared_datasets_cache({}, root) is None
+    (root / "hf_datasets").unlink()
+    (root / "hf_datasets").mkdir()
+    assert gl.prepared_datasets_cache({"HF_HOME": str(cohort)}, root) == str(root / "hf_datasets")
+    assert gl.prepared_datasets_cache({"HF_DATASETS_CACHE": ""}, str(root)) == str(root / "hf_datasets")
+    # an inherited value wins over the shared root's cache
+    assert gl.prepared_datasets_cache({"HF_DATASETS_CACHE": "/inherited/prepared", "HF_HOME": str(cohort)}, root) == "/inherited/prepared"
+    # the rule it mirrors, in both job families that read a prepared cache
+    g8k = (REPO / "scripts/sdfbase/gsm8k/g8k_common.sh").read_text()
+    f22 = (REPO / "scripts/sdfbase/full22/common.sh").read_text()
+    assert f'export HF_DATASETS_CACHE="${{HF_DATASETS_CACHE:-$shared/{gl.PREPARED_DATASETS_DIR}}}"' in g8k
+    assert f'export HF_DATASETS_CACHE="${{HF_DATASETS_CACHE:-$SHARED/{gl.PREPARED_DATASETS_DIR}}}"' in f22
+
+
+PROBE_ENV_TEST = ("import os\n\n\ndef test_probe_env():\n"
+                  "    p = os.environ.get('HF_DATASETS_CACHE', '<unset>')\n"
+                  "    state = ('filled' if os.listdir(p) else 'empty') if os.path.isdir(p) else 'absent'\n"
+                  "    with open(os.environ['GATE_PROBE_OUT'], 'w') as f:\n"
+                  "        f.write(p + '|' + state)\n")
+
+
+def test_gate_task_hands_the_suite_the_prepared_datasets_cache_and_records_it(tmp_path):
+    """gate_task.py, executed on a one-test tree: the suite's HF_DATASETS_CACHE is prepared_datasets_cache over the job's env and
+    the shared root (CLUSTER_SHARED_ROOT, else the venv's grandparent, the sbatch scripts' rule), or an EMPTY node-local
+    <work>/hf_datasets when there is none, never unset (unset, the suite falls back to HF_HOME/datasets, the shared model cache).
+    The record's env_overrides names it. The shared gate code reaches the 40-shard gate from $SHARED/gates/bin, so this is the
+    path that must carry it."""
+    tree = tmp_path / "tree"
+    (tree / "tests").mkdir(parents=True)
+    (tree / "pyproject.toml").write_text("[project]\nname = 'probe'\nversion = '0'\n")
+    (tree / "uv.lock").write_text("version = 1\n")
+    (tree / "tests" / "test_probe_env.py").write_text(PROBE_ENV_TEST)
+    _git(tree, "init", "-q", "-b", "main")
+    _git(tree, "add", "-A")
+    _git(tree, "commit", "-q", "-m", "probe tree")
+    sha = _git(tree, "rev-parse", "HEAD")
+    import hashlib
+    hashes = {n: hashlib.sha256((tree / n).read_bytes()).hexdigest() for n in ("pyproject.toml", "uv.lock")}
+    shared = tmp_path / "shared"                              # the venv's grandparent, with a prepared cache
+    venv = shared / "envs" / "probe-gate"
+    (venv / "bin").mkdir(parents=True)
+    _exe(venv / "bin" / "python", f'#!/bin/bash\nexec {sys.executable} "$@"\n')
+    (venv / ".gate-ready.json").write_text(json.dumps({"dependency_hashes": hashes, "venv": str(venv)}))
+    (shared / "hf_datasets" / "openai___gsm8k").mkdir(parents=True)
+    bare = tmp_path / "bare-shared"                           # a shared root with no prepare
+    bare.mkdir()
+    results = tmp_path / "results"
+
+    def run(label, **env_over):
+        env = {k: v for k, v in os.environ.items() if k not in ("HF_DATASETS_CACHE", "CLUSTER_SHARED_ROOT")}
+        env.update(env_over, GATE_PROBE_OUT=str(tmp_path / f"{label}.seen"))
+        r = _run([sys.executable, LANDING / "gate_task.py", "--sha", sha, "--tree", tree, "--index", "0", "--count", "1",
+                  "--results-root", results, "--venv", venv, "--work", tmp_path / f"work-{label}", "--run-name", f"probe-{label}",
+                  "--files", "tests/test_probe_env.py", "--rerun-label", label], env, timeout=180)
+        rec = json.loads((results / sha / "reruns" / label / "summary.json").read_text())
+        assert r.returncode == 0 and rec["status"] == "PASS", (label, r.stdout[-2000:], r.stderr[-2000:])
+        seen, state = (tmp_path / f"{label}.seen").read_text().split("|")
+        return seen, state, rec["env_overrides"]["HF_DATASETS_CACHE"]
+
+    # derived: no inherited value, the venv's grandparent holds hf_datasets
+    prepared = str(shared / "hf_datasets")
+    assert run("derived") == (prepared, "filled", prepared)
+    # CLUSTER_SHARED_ROOT beats the venv's grandparent; a root with no prepare (and an inherited empty value, which counts as
+    # unset) gets an empty node-local cache, so the suite never falls back to HF_HOME/datasets
+    local = str(tmp_path / "work-bare" / "hf_datasets")
+    assert run("bare", CLUSTER_SHARED_ROOT=str(bare), HF_DATASETS_CACHE="") == (local, "empty", local)
+    # an inherited value wins and reaches the suite unchanged
+    assert run("inherited", HF_DATASETS_CACHE="/inherited/prepared") == ("/inherited/prepared", "absent", "/inherited/prepared")
+
+
 # ---- baseline_refresh.sh against shims --------------------------------------------------------------------------------------
 GIT_SHIM = r'''#!/bin/bash
 echo "git $*" >> "$MOCK/git.calls"

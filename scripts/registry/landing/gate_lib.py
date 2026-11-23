@@ -3,7 +3,7 @@
 cluster by gate_slurm.sh as $SHARED/gates/bin/gate_lib.py and run from the exported tree's own copy by battery.sbatch).
 
 The partition, the pytest command, the suite environment, the JUnit parser and the merged-record shape are THIS module's:
-``shard_files``, ``pytest_argv``, ``suite_env``, ``run_pytest``, ``parse_junit``,
+``shard_files``, ``pytest_argv``, ``suite_env``, ``prepared_datasets_cache``, ``run_pytest``, ``parse_junit``,
 ``verify_checkout``, ``dependency_hashes``, ``merge_shard_records``, ``shard_layout`` and ``SHARD_RULE``. Until C9 they were loaded
 from the tree's Modal-era suite module under a ``unittest.mock.MagicMock`` standing in for the ``modal`` package; the functions
 were copied here as they stood (``suite_env`` no longer points ``HF_HOME`` at a Modal volume path: the caller, gate_task.py,
@@ -185,6 +185,31 @@ def suite_env(base: dict, tree: Path, spool_root: Path | str | None = None) -> d
     env[REGISTRY_SPOOL_ENV] = tempfile.mkdtemp(prefix=REGISTRY_SPOOL_PREFIX, dir=str(spool_root) if spool_root is not None else None)
     env.pop("HF_HUB_OFFLINE", None)
     return env
+
+
+#: The prepared ``datasets`` cache under the cluster's shared root, as the GSM8K and full22 jobs name it.
+PREPARED_DATASETS_DIR = "hf_datasets"
+
+
+def prepared_datasets_cache(environ: dict, shared_root: Path | str | None) -> str | None:
+    """The cluster's PREPARED ``datasets`` cache for the suite's ``HF_DATASETS_CACHE``, by the GSM8K jobs' rule.
+
+    ``g8k_common.sh`` (g8k_init) and ``full22/common.sh`` (f22_datasets_guard) both export
+    ``HF_DATASETS_CACHE="${HF_DATASETS_CACHE:-$SHARED/hf_datasets}"``: the per-user arrow cache that each user prepares
+    online once per cluster, never the shared model cache (``HF_HOME``, whose ``datasets/`` other users' prepares fill
+    without the offline config-dir alias). Returns an inherited non-empty ``HF_DATASETS_CACHE`` (empty counts as unset, as
+    ``${VAR:-...}`` treats it), else ``<shared_root>/hf_datasets`` when that directory exists, else None. None means no
+    prepare has run under this shared root, so there is no prepared cache to name. The caller must not leave the variable
+    unset then: the suite's own fallback is ``HF_HOME/datasets``, the shared model cache, which it would read as a prepared
+    cache and refuse. gate_task.py hands the suite an empty node-local cache instead."""
+    inherited = environ.get("HF_DATASETS_CACHE")
+    if inherited:
+        return inherited
+    if shared_root:
+        cache = Path(shared_root) / PREPARED_DATASETS_DIR
+        if cache.is_dir():
+            return str(cache)
+    return None
 
 
 def run_pytest(argv: list[str], tree: Path, env: dict, log: Path, timeout_s: int) -> tuple[int, bool]:

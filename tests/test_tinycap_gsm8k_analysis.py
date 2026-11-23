@@ -3856,3 +3856,113 @@ def test_the_native_card_fixture_mirrors_the_real_record_shape_and_resolves(tmp_
     table[V.SERVED_POSITIONS_KEY] = {r["harness_cell"]: "response"}
     (d / V.STANDUP_ROUTING_TABLE).write_text(json.dumps(table))
     assert "disagree" in V.native_served_positions_record(manifest, row=r, gen_root=tmp_path)["problem"]
+
+
+# --------------------------------------------------------------------------- #
+# the SI-distilled refit wave (sikl4): its native-served legs record the       #
+# registry's OWN tuple, never the lens-era name its matrix rows carry          #
+# --------------------------------------------------------------------------- #
+
+OOS = C.MANIFEST_KEY_AUTHORISED_EXPERIMENT
+NATIVE = C.SERVING_ENGINE_LORA_NATIVE
+NATIVE_FIXED = {"serving_engine": NATIVE, "producer_records_served_positions": True}
+
+
+def _native_sikl4(cap):
+    return C.g8k_native_sikl4_tuple_name(QWEN, cap)
+
+
+def _records(name):
+    return lambda m: m.update({OOS: name})
+
+
+def test_sikl4_native_legs_are_held_to_the_native_sikl4_tuple_at_both_caps_and_lens_era_rows_to_the_lens_era_name(tmp_path):
+    """The battery's GSM8K stores: every native-served leg of the SI-distilled refit wave records the registry's own
+    `gsm8k_paired200_<model>_native_sikl4_<cap>`, while the committed matrix_sikl4.json rows carry the lens-era
+    `gsm8k_paired200_<model>_8192` (the generator's spelling for every fitted row). The DRIVER selects the recorded name: the
+    registry tuple matching the leg's model, cell, cap and served reduction_mode (`not_applicable` on the native engine, where
+    the lens-era pair pins `stacked`). The reader holds each leg to ONE expected name per (row, cap), by strict equality, in
+    the identity check (`native_sikl4_tuple_name`, re-derived from the row; the leg collector's per-cap tuple `leg_tuple_name`
+    names the same pair, but the check does not depend on it):
+    (a) a sikl4 row's native legs carrying the native name are ACCEPTED — the 8,192 leg, and an escalated cell's 16,384 rung
+        with every G-READER-RUNG check (subset population, source binding, ledger, merged reading) and A5 / A6 passing;
+    (b) a native sikl4 leg carrying the LENS-ERA name is REFUSED, at 8,192 and on the rung alone;
+    (c) a lens-served lens-era row keeps the lens-era name: accepted with it, refused with the native sikl4 name;
+    (d) a sikl4 row the native tuple does not authorise is a matrix defect, refused at load.
+    This teaches the reader the sikl4 wave's native name ONLY. The natively served legs of other waves (qwen_seedrep, ctlstop)
+    record the native tuples the driver selects for their cells, which the reader still holds to the matrix row's lens-era
+    name — a known follow-up, so no natively served lens-era row is pinned here."""
+    esc, plain = G.sikl4_row(SI12_LORA, index=len(ROWS)), G.sikl4_row(SI12_PSR, index=len(ROWS) + 1)
+    lens = row(*NATIVE_TRIPLE)
+    assert esc["tuple_name"] == plain["tuple_name"] == lens["tuple_name"] == G.tuple_name_of(QWEN, declared=False)   # the matrix's lens-era name
+    assert V.WAVE_SIKL4 == G.WAVE_SIKL4 == V.row_wave(esc) and V.row_wave(lens) == V.WAVE_PUBLISHED
+    g8k_cells = _optional_g8k_cells()
+    if g8k_cells is not None:
+        assert V.WAVE_SIKL4 == g8k_cells.WAVE_SIKL4
+    # the expected names, per row and cap: the registry's helper names the native pair; a lens-era row has none
+    for cap in (G.CAP_BASE, G.CAP_RUNG):
+        assert V.native_sikl4_tuple_name(esc, cap) == V.leg_tuple_name(esc, cap) == _native_sikl4(cap) in C.AUTHORISED_OOS_EXPERIMENTS
+        assert V.native_sikl4_tuple_name(lens, cap) is None and V.leg_tuple_name(lens, cap) == G.tuple_name_of(QWEN, declared=False, cap=cap)
+    # (a) + (c, accepted): the native sikl4 legs (an escalated cell with its rung, a plain cell) beside a LENS-served lens-era row
+    rows = [lens, esc, plain]
+    root = tmp_path / "ok"
+    G.build_store(root, lens, correct=G.CORRECT_BY_CELL[CONST_LORA])
+    G.build_store(root, plain, correct=G.CORRECT_BY_CELL[SI12_PSR], **NATIVE_FIXED)
+    built = G.build_escalated_cell(root, esc, at_cap=range(190, 199), loops={190, 191}, **NATIVE_FIXED)
+    assert built["record"]["exit"] == CL.ESCALATE and built["rung_cell_dir"] is not None
+    rep = analyze(root, matrix=rows, pins=G.pins_doc(rows), overlap=None)
+    for r, cap in ((esc, G.CAP_BASE), (esc, G.CAP_RUNG), (plain, G.CAP_BASE)):
+        leg = leg_of(rep, QWEN, r["view"], r["cell"], cap)
+        assert leg["refused"] is None and leg["missing"] is None and leg["identity_validated"] is True, leg["refused"]
+        assert leg["identity"][OOS] == _native_sikl4(cap) and leg["arm_contract"]["steered_path"] == M.STEERED_PATH_LORA
+    lens_leg = leg_of(rep, *NATIVE_TRIPLE)
+    assert lens_leg["refused"] is None and lens_leg["identity"][OOS] == G.tuple_name_of(QWEN, declared=False)
+    cell = rep["cells"][V.cell_key(QWEN, esc["view"], esc["cell"])]
+    lad, rung, base = cell["ladder"], rep["legs"][cell["rung_leg"]], rep["legs"][cell["base_leg"]]
+    assert lad["exit"] == CL.ESCALATE and lad["n_eligible"] == lad["n_subset"] == 7 and lad["record_problem"] is None and lad["subset_problem"] is None
+    assert rung["rung"] and rung["cap"] == G.CAP_RUNG and rung["n_expected"] == 7 and rung["attempted_ids"] == lad["subset_ids"] == sorted(built["subset"])
+    assert rung["identity"][V.IDENTITY_KEY_CAP_RUNG]["source_identity_hash"] == base["identity"]["harness_config_hash"]
+    assert rung["identity"][V.IDENTITY_KEY_CAP_RUNG] == C.cap_rung_identity(built["subset_doc"])
+    assert rung["ledger"]["passed"] and rung["ledger"]["n_calls"] == 7 and rung["ledger"]["n_rejected"] == 0
+    merged = cell["readings"][A.READING_MERGED]
+    assert merged["escalated"] and merged["n"] == 200 and merged["n_from_rung"] == 7
+    for gate in ("A0_completeness", "A2_identity", "A5_at_cap", "A6_ladder"):
+        assert rep["gates"][gate]["status"] == A.GATE_PASS, (gate, rep["gates"][gate])
+    assert rep["unusable_legs"] == {}
+    # (b) a native sikl4 leg recording the lens-era name refuses: the plain cell at 8,192, and the escalated cell's RUNG alone
+    root_b = tmp_path / "lens_name_on_native_legs"
+    G.build_store(root_b, plain, correct=G.CORRECT_BY_CELL[SI12_PSR], manifest_edit=_records(G.tuple_name_of(QWEN, declared=False)), **NATIVE_FIXED)
+    built_b = G.build_escalated_cell(root_b, esc, at_cap=range(190, 199), loops={190, 191}, write_rung=False, **NATIVE_FIXED)
+    source = completion.read_store_manifest(built_b["source_cell_dir"])
+    G.build_store(root_b, esc, correct=set(range(3)), cap=G.CAP_RUNG, ids=built_b["subset"], rung_source=source, subset_doc=built_b["subset_doc"],
+                  subset_path=built_b["subset_path"], ladder=False, manifest_edit=_records(G.tuple_name_of(QWEN, declared=False, cap=G.CAP_RUNG)),
+                  **NATIVE_FIXED)
+    rep_b = analyze(root_b, matrix=[esc, plain], pins=G.pins_doc([esc, plain]), overlap=None)
+    for r, cap in ((plain, G.CAP_BASE), (esc, G.CAP_RUNG)):
+        refused = leg_of(rep_b, QWEN, r["view"], r["cell"], cap)["refused"]
+        assert refused and refused.startswith(f"manifest {OOS} {G.tuple_name_of(QWEN, declared=False, cap=cap)!r} != the 'sikl4' row's native tuple "
+                                              f"{_native_sikl4(cap)!r}"), refused
+    assert leg_of(rep_b, QWEN, esc["view"], esc["cell"])["refused"] is None                        # its base leg records the native name
+    assert rep_b["gates"]["A0_completeness"]["status"] == A.GATE_FAIL
+    assert set(rep_b["unusable_legs"]) == {V.leg_key(QWEN, plain["view"], plain["cell"], G.CAP_BASE), V.leg_key(QWEN, esc["view"], esc["cell"], G.CAP_RUNG)}
+    # (c, refused) a lens-served lens-era row's leg recording the native sikl4 name refuses
+    root_c = tmp_path / "native_name_on_lens_row"
+    G.build_store(root_c, lens, correct=G.CORRECT_BY_CELL[CONST_LORA], manifest_edit=_records(_native_sikl4(G.CAP_BASE)))
+    refused = leg_of(analyze(root_c, matrix=[lens], overlap=None), *NATIVE_TRIPLE)["refused"]
+    assert refused == f"manifest {OOS} {_native_sikl4(G.CAP_BASE)!r} != the matrix row's tuple {G.tuple_name_of(QWEN, declared=False)!r}", refused
+    # (d) a sikl4 row outside the native tuple's six cells, or declared, has no name to be held to: raised, and refused at load
+    bad = G.sikl4_row(SI12_LORA, index=len(ROWS))
+    slug = G.cell_slug(CONST_LORA)
+    bad.update(cell=CONST_LORA, cell_slug=slug, harness_cell=C.cell_spellings(CONST_LORA, declared=False).harness, staged_id=f"{bad['view']}__{CONST_LORA}",
+               out_root=f"controls_sikl4/{bad['tag']}/{slug}/{G.MODE_PRIMARY}", rung_out_root=f"controls_sikl4/{bad['tag']}/{slug}/{G.MODE_PRIMARY}__rung16384")
+    for defect in (bad, {**esc, "declared": True}):
+        with pytest.raises(A.AnalysisError, match="has no native tuple"):
+            V.native_sikl4_tuple_name(defect, G.CAP_BASE)
+    with pytest.raises(A.AnalysisError, match=r"matrix row 0: a 'sikl4' row .* has no native tuple"):
+        V.load_matrix([bad])
+    assert V.row_problem(esc, 0) is None and V.row_problem(plain, 1) is None
+    # the COMMITTED sikl4 matrix: its 18 rows (lens-era tuple_name on every one) load through the reader, and every row's legs
+    # are held to the registry's native pair at both caps
+    mx = V.load_matrix(REPO / "configs" / "sdfbase" / "gsm8k" / "matrix_sikl4.json")
+    assert len(mx["launch"]) == 18 and {r["tuple_name"] for r in mx["launch"]} == {G.tuple_name_of(QWEN, declared=False)}
+    assert all(V.leg_tuple_name(r, cap) == _native_sikl4(cap) for r in mx["launch"] for cap in (G.CAP_BASE, G.CAP_RUNG))

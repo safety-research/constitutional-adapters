@@ -753,8 +753,10 @@ def run_payload_base(seeds: Seeds, *, run_id: str, producer_key: str, object_key
                      judge_id: Optional[str], judge_seed_id: Optional[str], substrate: Tuple[str, str, Dict[str, str]],
                      lane_source_legacy: str, store_uri: Optional[str], pass_label: Optional[str] = None,
                      instrument_match: str = "unverified", extra: Optional[Dict[str, Any]] = None,
-                     notes: Optional[str] = None) -> Dict[str, Any]:
-    """The NOT NULL provenance of a backfilled run row, every derived value named in field_confidence_json."""
+                     notes: Optional[str] = None, campaign: str = CAMPAIGN) -> Dict[str, Any]:
+    """The NOT NULL provenance of a backfilled run row, every derived value named in field_confidence_json. ``campaign`` is the run row's campaign
+    column: :data:`CAMPAIGN` unless the caller declares another (a reader of a declared campaign passes its own; the run id's first segment must name
+    the same campaign, which the caller mints)."""
     mv = seeds.model_for_view_legacy(view_legacy)
     fc: Dict[str, Any] = {}
     model_id = mv["model_id"]
@@ -826,7 +828,7 @@ def run_payload_base(seeds: Seeds, *, run_id: str, producer_key: str, object_key
     if item_set is None:
         raise KeyError(f"instrument {instrument_seed_id} names no item set for eval {eval_id}")
     payload: Dict[str, Any] = {
-        "run_id": run_id, "campaign": CAMPAIGN, "producer_run_key_legacy": producer_key, "producer_object_key_legacy": object_key,
+        "run_id": run_id, "campaign": campaign, "producer_run_key_legacy": producer_key, "producer_object_key_legacy": object_key,
         "lifecycle_state": lifecycle_state, "queued_utc": when_utc,
         "started_utc": when_utc if lifecycle_state in ("running", "generated") else None,
         "generated_utc": when_utc if lifecycle_state == "generated" else None,

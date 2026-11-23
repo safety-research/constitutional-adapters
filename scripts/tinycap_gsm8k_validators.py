@@ -536,6 +536,52 @@ def expected_tuple_name(row: Mapping[str, Any], cap: int) -> str:
     return C.g8k_tuple_name(str(row["model_key"]), cap, declared=bool(row["declared"]))
 
 
+#: the SI-distilled refit wave (lane B's ``g8k_cells.WAVE_SIKL4``, pinned equal by test): its fitted rows serve the six
+#: SI-distilled cells (``contracts.G8K_NATIVE_SIKL4_CELLS``) UNDECLARED on the NATIVE engine, under the registry's OWN GSM8K pair
+#: (``contracts.g8k_native_sikl4_tuple_name``). The matrix generator writes the lens-era ``gsm8k_paired200_<model>_8192`` on
+#: every fitted row's ``tuple_name``, this wave's included, so that field never names what this wave's legs record. The DRIVER
+#: selects the recorded name (the registry tuple matching the leg's model, cell, cap and served reduction_mode, which is
+#: ``not_applicable`` on the native engine); the reader knows only THIS wave's native name. The natively served legs of other
+#: waves (qwen_seedrep, ctlstop) record the native tuples the driver selects for their cells, and the reader still holds them
+#: to the row's lens-era name: a known follow-up.
+WAVE_SIKL4 = "sikl4"
+
+
+def native_sikl4_tuple_name(row: Mapping[str, Any], cap: int) -> str | None:
+    """The tuple a fitted leg of an SI-distilled refit row (wave :data:`WAVE_SIKL4`) records at ``cap``: the registry's own
+    native pair, named by ``contracts.g8k_native_sikl4_tuple_name`` (never spelled here). ``None`` on a row of any other
+    wave, which the reader holds to the matrix row's lens-era name (8,192) or the contract's rung derivation
+    (:func:`expected_tuple_name`): right for a lens-served leg, not yet for another wave's natively served leg (see
+    :data:`WAVE_SIKL4`).
+
+    The expected name is a function of the ROW, never of the store, and the identity check holds the leg to it by strict
+    equality: a native leg recording the lens-era name refuses, and a lens-era row's leg recording this name refuses. A wave
+    row this tuple does not authorise (another model, a cell outside its six, a declared row, a cap with no door) is a
+    matrix defect and raises; :func:`row_problem` refuses such a row at load, so a loaded matrix never reaches the raise."""
+    if row_wave(row) != WAVE_SIKL4:
+        return None
+    key, cell, declared = str(row["model_key"]), str(row["cell"]), bool(row.get("declared"))
+    name = C.g8k_native_sikl4_tuple_name(key, int(cap))
+    exp = C.AUTHORISED_OOS_EXPERIMENTS.get(name)
+    if exp is None or exp.model != key or cell not in exp.cells or declared:
+        raise AnalysisError(
+            f"a {WAVE_SIKL4!r} row ({key}/{row.get('view')}/{cell}, declared={declared}) at cap {int(cap)} has no native tuple: "
+            f"{name!r} is " + ("not authorised" if exp is None else f"authorised for {exp.model!r} cells {list(exp.cells)}, undeclared only")
+            + " (contracts.g8k_native_sikl4_tuple_name)")
+    return name
+
+
+def leg_tuple_name(row: Mapping[str, Any], cap: int) -> str:
+    """The tuple the reader expects a fitted (thinking-ON) leg of ``row`` at ``cap`` to record: :func:`native_sikl4_tuple_name`
+    on an SI-distilled refit row; otherwise the matrix row's name at 8,192 and the contract's rung derivation
+    (:func:`expected_tuple_name`) at 16,384 (another wave's natively served leg is not yet modelled, see :data:`WAVE_SIKL4`).
+    For a sikl4 row :func:`identity_problem` re-derives the native name from the row itself and does not depend on this."""
+    native = native_sikl4_tuple_name(row, cap)
+    if native is not None:
+        return native
+    return expected_tuple_name(row, cap) if int(cap) == CAP_RUNG else str(row["tuple_name"])
+
+
 def expected_stamps_for(*, fitted: bool, declared: bool, arm: str = THINKING_ARM_ON) -> tuple[str, ...]:
     """The class's stamp triple — the contract's own rule (``contracts.g8k_expected_stamps``);
     ``arm`` (llama-paper-rows P7) defaults to the thinking-ON arm every published row runs."""
@@ -771,6 +817,14 @@ def row_problem(row: Mapping[str, Any], i: int) -> str | None:
                           else "g8k_allpos_tuple_name" if str(row.get("cell")) == M.CELL_ARDITI_ALLPOS else "g8k_steer_tuple_name")
                 return (f"matrix row {i}: tuple_name {row['tuple_name']!r} != the contract's {want_tuple!r} (contracts.{source})"
                         + (" — an it-doc row runs the model's ALL-POSITION tuple, never the W4 `_steer` tuple" if is_itdoc_row(row) else ""))
+            # an SI-distilled refit row's legs record the registry's own native pair instead (native_sikl4_tuple_name): the row
+            # must be one that pair authorises at both caps, or the leg reader has no name to hold its legs to
+            if row_wave(row) == WAVE_SIKL4:
+                try:
+                    for cap in (CAP_BASE, CAP_RUNG):
+                        native_sikl4_tuple_name(row, cap)
+                except AnalysisError as e:
+                    return f"matrix row {i}: {e}"
         if row.get("served_positions_expected") not in SERVED_POSITIONS:
             return (f"matrix row {i}: served_positions_expected {row.get('served_positions_expected')!r} is not one of "
                     f"{SERVED_POSITIONS}")
@@ -2215,7 +2269,15 @@ def identity_problem(manifest: Mapping[str, Any], summary: Mapping[str, Any] | N
         elif M._header_ids_differ(_mapping(tp.get("served_header_ids")), fact):
             return f"{C.MANIFEST_KEY_TRANSFER_PROVENANCE}.served_header_ids != the {row['family']!r} render fact's tuples"
         name = manifest.get(C.MANIFEST_KEY_AUTHORISED_EXPERIMENT)
-        if name != row["tuple_name"]:
+        # ONE expected name per (row, cap), strict equality: an SI-distilled refit row's leg (wave sikl4, natively served)
+        # records the registry's own native pair at this cap, never the lens-era name its matrix row carries. Re-derived from
+        # the row HERE, the one place it is enforced; other waves' natively served legs are not yet modelled (WAVE_SIKL4)
+        native = native_sikl4_tuple_name(row, cap)
+        if native is not None:
+            if name != native:
+                return (f"manifest {C.MANIFEST_KEY_AUTHORISED_EXPERIMENT} {name!r} != the {WAVE_SIKL4!r} row's native tuple {native!r} "
+                        "(contracts.g8k_native_sikl4_tuple_name — never the lens-era name the matrix generator writes on the row)")
+        elif name != row["tuple_name"]:
             return f"manifest {C.MANIFEST_KEY_AUTHORISED_EXPERIMENT} {name!r} != the matrix row's tuple {row['tuple_name']!r}"
     elif manifest.get(C.MANIFEST_KEY_TRANSFER_PROVENANCE) is not None:
         return f"a {C.MANIFEST_KEY_TRANSFER_PROVENANCE} block on a non-fitted cell"

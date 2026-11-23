@@ -1,0 +1,85 @@
+# configs/sdfbase/gsm8k/views_ctlstop.yaml — the GSM8K paired-200 rows of the CONTROL-POOL-STOPPED objects on Qwen3.5-4B: a matrix
+# of its own under its own wave root and its own launchable wave, never the published matrix and never the seed-replicate one.
+#
+# The matrix (configs/sdfbase/gsm8k/matrix_ctlstop.json) is GENERATED from this file + the lane-private roster and pins named in
+# `frozen_inputs:` by
+#   python scripts/sdfbase/gsm8k/make_gsm8k_matrix.py --matrix-name ctlstop      (--check pins byte-identity)
+# through the ONE selector scripts/sdfbase/gsm8k/g8k_views.py select_rows, and its own-row overlay pairs by
+#   python scripts/sdfbase/gsm8k/make_gsm8k_overlays.py --matrix ctlstop        (--check likewise). Never hand-edit either output.
+#
+# THE ROWS (12 = 3 views x 4 objects). Per view `ctlstop64s<k>` (k in 1..3; TAG qwen35_4b_ctlstop64s<k>) of the lane-private roster
+# configs/sdfbase_full22_roster_ctlstop_eb64.yaml, its four cells in roster order: the batch-64 control LoRA and control ReLU fit with
+# early stopping on the control pool, the LoRA difference and the composed ReLU difference built from them. Every cell is in the
+# roster's PIN FORM against configs/ctlstop_eb64_pins.json; the selector reads each row's staged id and object sha256 through that
+# pin (g8k_views.staged_id_of), so the matrix's pins authority is the one file `frozen_inputs:` hashes.
+#
+# THE INSTRUMENT AND THE DRAW, as on the published seed-view rows (views_qwen_seedrep.yaml): the 200 paired items, cap 8,192 with
+# the standing ladder (> the 1 % trigger at cap -> the 16,384 rung over the eligible at-cap items), k = 1, thinking ON declared on
+# every request, the model's thinking-card sampling row, served natively; EVERY row under the OPT-IN Inspect replicate seed rule
+# at its view's base = the objects' training seed k (eval_seed.seed_base(k) = k; the generator refuses any other value); every
+# arm at the common geometry class (one S x L per leg).
+#
+# NO `none` ROW. The `exclude:` block drops each view's unsteered row: this lane runs no new unsteered reference, and its figures
+# read the paper's pooled unsteered anchor. The standup still serves the base route (g8k_cells.launch_cells_for), unmeasured.
+#
+# THE STANDUP COMPANION (`standup_companions:`): the native composer fits `--max-lora-rank` to the largest rank among the adapters a
+# standup registers (the PSR carrier and the zero adapter are rank 1; a LoRA r=4 cell or the rank-8 subtraction gives cap 8). The
+# published seed-view rows composed cap 8 on every standup through the view's constitution LoRA; that object is not a cell of these
+# views, so the companion is the view's own rank-8 LoRA difference, registered UNMEASURED beside the row's cell (the driver
+# measures the row's cell alone; the difference's own row registers itself). Every standup of this wave therefore composes
+# `--max-lora-rank 8 --lora-target-modules o_proj`, as the published rows did.
+#
+# THE INPUTS. `frozen_inputs:` names the lane-private roster and pins THEMSELVES (not copies): both files are this lane's own and
+# are frozen with the wave's launch tree, and their sha256 below is asserted by the generator, so any later edit to either
+# refuses `--check` until the matrix is regenerated and the hashes re-declared in the same change.
+schema: g8k_matrix/2
+wave_root_rel: exp/gsm8k_paired200_paper_objects_ctlstop
+# THE LADDER TRIGGER: 1 % RAW at-cap, harmonised across the battery; every row carries it.
+trigger_threshold: 0.01
+# every row of this matrix is the `ctlstop` wave and serves through its OWN overlay pair
+# (sdfbase_full22_qwen35_4b_ctlstop64s<k>.gsm8k_<cell slug>.yaml, explicit_cells [none, <cell>, <companion>])
+wave: ctlstop
+row_overlays: true
+# THE COMMON GEOMETRY CLASS of the published seed-view rows: capability:gen_long_gsm8k_common_f22 (16,640 at the 8,192 pass) /
+# capability:gen_long_gsm8k_rung_common_f22 (24,832 at the rung)
+geometry_class: common_f22
+# the OPT-IN Inspect seed rule, one base per view (== eval_seed.seed_base(k), the objects' training seed; the generator refuses any other value)
+inspect_seed_policy: replicate
+inspect_seed_base_by_view:
+  ctlstop64s1: 1
+  ctlstop64s2: 2
+  ctlstop64s3: 3
+# the STANDUP COMPANION every standup of this wave registers beside the row's own cell (the header's fitted --max-lora-rank rule)
+standup_companions:
+  cell: constv2-mix-full__lora_r4_ce_minus_ctl
+  reason: >
+    the GSM8K reader admits a contrast only between two natively served legs whose standups attest EQUAL normalised launch flags,
+    max_lora_rank among them, and the native composer fits --max-lora-rank to the registered adapters' largest r (zero adapter and
+    PSR carrier 1 -> cap 1; LoRA r=4 / rank-8 subtraction -> cap 8). The published seed-view rows composed cap 8 on every standup
+    through the view's constitution LoRA, which these views do not serve; registering the view's rank-8 LoRA difference UNMEASURED
+    on every standup of the wave makes every standup compose cap 8 over o_proj. The row's own cell is the only one the driver measures.
+views:
+  qwen35_4b: [ctlstop64s1, ctlstop64s2, ctlstop64s3]
+holds: []
+exclude:
+  - key: qwen35_4b
+    view: ctlstop64s1
+    cells: [none]
+    reason: >
+      no new unsteered reference: the control-pool-stopped objects are read against the paper's pooled unsteered anchor, so this
+      wave measures the four objects only (the standup still serves the base route, unmeasured).
+  - key: qwen35_4b
+    view: ctlstop64s2
+    cells: [none]
+    reason: >
+      as ctlstop64s1: the four objects only, read against the paper's pooled unsteered anchor.
+  - key: qwen35_4b
+    view: ctlstop64s3
+    cells: [none]
+    reason: >
+      as ctlstop64s1: the four objects only, read against the paper's pooled unsteered anchor.
+frozen_inputs:
+  roster: configs/sdfbase_full22_roster_ctlstop_eb64.yaml
+  pins: configs/ctlstop_eb64_pins.json
+  roster_sha256: 7106eab6145fc461ae3cdb830018395e3e37101a06e1109c0e31a77f27debdc2
+  pins_sha256: 2e7e1a805e91882d3362814e11cb3482852b9db403cf38249328820ddc56aa93

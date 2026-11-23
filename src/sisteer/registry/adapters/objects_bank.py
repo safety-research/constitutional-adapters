@@ -291,6 +291,11 @@ class ObjectsBankAdapter:
     #: resolved), so a copy re-emitted after its copied record was repaired does not keep "left NULL" beside the derived integer (the fold
     #: merges `extra` by key). Whether the copied record agrees with the parent's OWN registry row is the registry's
     #: read-only cross-check (`reconcile fit-effective-batch`), never this adapter's reading of another group's files.
+    #: No bump since: a fit carrying its producer's registry statement (`train_budget_meta.json: registry_statement`, the sikl4 refits)
+    #: states the paper label, the campaign and a distillation's prompt facts from that block, never the bank's own reading over the
+    #: producer's (`fit_sidecars._state_producer_statement`), and a block naming no paper label or campaign refuses the group by name. No bank directory
+    #: carried the block when the rule landed (none of the 344 train_budget_meta.json files under the four default roots), so no accepted record's
+    #: bytes move.
     EMISSION_VERSION = 10
     rng_scope = "none"
     allow_symlinks = False

@@ -7,6 +7,10 @@ object rows for every object sha the adapters resolved, then prints per
 adapter: records written, rows per table, `unverified` field counts, refusals (row-level with reasons,
 harvester refusals by reason) and blocked records. Counts are PRINTED, never asserted.
 
+The item-table counts (`item_result`, `item_flags`, `run_degeneration`) are the rows the fold KEEPS: current rows and pending or held
+revisions' rows. An accepted revision a later read superseded keeps its rows only until reclaim deletes them at the end of the cycle
+(migration 0033), so a second run of this smoke over a changed source can print a SMALLER item count than the first.
+
     PYTHONPATH=$PWD/src nice -n 10 .venv/bin/python scripts/registry/smoke_b1_adapters.py --adapter r2_export --keep /tmp/reg-b1
 
 The seeds are read from this checkout's ``configs/registry/`` (``REGISTRY_SEEDS_DIR=<dir>`` names another directory).
@@ -165,7 +169,7 @@ def main(argv=None) -> int:
             "row_refusal_reasons": getattr(ad, "refusals", LC.RowRefusals(res.adapter)).summary(),
             "row_refusal_examples": [f"{it['key']} -- {it['why']}"[:220] for it in getattr(ad, "refusals", LC.RowRefusals(res.adapter)).items[:8]],
         }
-    tables = {}
+    tables = {}   # raw counts; the item tables hold no superseded revision's rows once reclaim has run (see the module doc)
     for t in ("run", "judgment", "run_metric", "run_contrast", "run_degeneration", "item_result", "item_flags", "artifact", "disposition", "ruling",
               "computation", "source_revision", "observation", "withdrawal", "source_state", "blocked_records", "record_refusal"):
         tables[t] = conn.execute(f"SELECT COUNT(*) FROM {t}").fetchone()[0]

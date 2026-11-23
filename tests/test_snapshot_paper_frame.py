@@ -168,7 +168,12 @@ def _rows(conn, sql, *args):
 
 def test_read_set_constants():
     assert "paper_frame" in SN.SCOPES and SN.SCOPE_SQLITE["paper_frame"] == "paper_frame.sqlite"
-    assert SN.PAPER_FRAME_READ_SET_VERSION == 2
+    assert SN.PAPER_FRAME_READ_SET_VERSION == 3
+    # read_set_version 3: the item-scale tables ship in the split SQLite only, no committed file over 45 MiB, the reader projection keeps
+    # the keys the notebook's item reader extracts
+    assert SN.PAPER_FRAME_SQLITE_ONLY_TABLES == ("item_result", "item_flags") == SN.PAPER_FRAME_ITEM_TABLES
+    assert SN.PAPER_FRAME_MAX_FILE_BYTES == 47_185_920 > SN.PAPER_FRAME_PART_BYTES
+    assert SN.PAPER_FRAME_ITEM_PROJECTIONS == {"reader": ("subset",)} and SN.PAPER_FRAME_FILED_GOAL_RUBRICS == ("strongreject",)
     assert SN.PAPER_FRAME_MODEL_IDS == ("gemma4e4b_it", "qwen35_4b_it", "nemotron3nano4b", "llama8b_it")
     # the exporter's two extra models, both out of the paper frame: the registry spells the first (the test MoE) and the public notebook
     # never does; the second is the front-door worked example's own key (the paper's Qwen3.5-4B checkpoints under a key of their own,
@@ -179,6 +184,10 @@ def test_read_set_constants():
     for mid in ("gemma4e4b_base", "qwen35_4b_base", "nemotron3nano4b_base", "llama8b_base", *(f"{m}_base" for m in SN.PAPER_FRAME_TEST_MODEL_IDS)):
         assert mid in ms, mid
     assert "extra_model" in SN.paper_frame_model_set(["extra_model"]) and "extra_model_base" in SN.paper_frame_model_set(["extra_model"])
+    # --paper-models-only: the paper's four and their fit checkpoints (eight ids), no test model in either scope; an explicit extra stays
+    paper_only = SN.paper_frame_model_set(test_models=False)
+    assert len(paper_only) == 8 and not set(paper_only) & ({*SN.PAPER_FRAME_TEST_MODEL_IDS} | {f"{m}_base" for m in SN.PAPER_FRAME_TEST_MODEL_IDS})
+    assert SN.paper_frame_test_model_set(test_models=False) == () and SN.paper_frame_test_model_set(["extra_model"], test_models=False) == ("extra_model",)
     assert set(SN.PAPER_FRAME_TABLES) == (set(SN.PAPER_FRAME_DIMENSION_TABLES) | set(SN.PAPER_FRAME_RUN_TABLES) | set(SN.PAPER_FRAME_ITEM_TABLES)
                                           | set(SN.PAPER_FRAME_ANALYSIS_TABLES) | {"record_ingest"} | set(SN.PAPER_FRAME_MATERIALISED))
     # the analysis tables are a set of their own, filtered to the frame -- never among the dimensions exported in full
@@ -209,7 +218,7 @@ def test_operational_root_untouched_and_committed_layout(frame):
     names = set(os.listdir(d))
     assert "MANIFEST.json" in names and "paper_frame.sqlite" not in names               # the raw SQLite never ships whole
     for t in SN.PAPER_FRAME_TABLES:
-        assert f"{t}.parquet" in names, t
+        assert (f"{t}.parquet" in names) == (t not in SN.PAPER_FRAME_SQLITE_ONLY_TABLES), t   # the item tables ship in the SQLite only
     assert "artifact.parquet" not in names and "row_history.parquet" not in names
     parts = [n for n in names if n.startswith("paper_frame.sqlite.gz.")]
     assert parts == info.manifest["sqlite_parts"] == ["paper_frame.sqlite.gz.00"]
@@ -244,6 +253,12 @@ def test_manifest_fields(frame):
         assert R.file_sha256(p) == meta["sha256"] and os.path.getsize(p) == meta["bytes"], fn
     assert set(m["files"]) == set(os.listdir(info.dir)) - {"MANIFEST.json"}
     assert m["n_runs"] == 5 and m["n_item_runs"] == 3
+    # read_set_version 3: the item tables SQLite-only, the test models in (the default), no item judge named
+    assert m["sqlite_only_tables"] == list(SN.PAPER_FRAME_SQLITE_ONLY_TABLES)
+    assert m["parquet_tables"] == [t for t in SN.PAPER_FRAME_TABLES if t not in SN.PAPER_FRAME_SQLITE_ONLY_TABLES]
+    assert m["test_models"] is True and m["item_judges"] == [] and m["item_projection"] is None
+    assert m["n_item_judgments"] == 0 == m["n_filed_goal_judgments"] and m["item_result_passes"] == {}
+    assert max(int(v["bytes"]) for v in m["files"].values()) <= SN.PAPER_FRAME_MAX_FILE_BYTES
     # the analyses: one carried, two left out and named (the rule itself: test_an_analysis_with_an_input_outside_the_frame_... below)
     assert m["n_analyses"] == 1 == m["tables"]["analysis"] and m["n_analyses_out_of_frame"] == 2 == len(m["analyses_out_of_frame"])
     # the payload the harvester would file reads the scope's SQLite hash (generalised from files['registry_runlevel.sqlite'])
@@ -417,7 +432,14 @@ def test_parquet_and_sqlite_agree_row_for_row(frame):
     import pyarrow.parquet as pq
     info = frame["info"]
     conn = SN.open_paper_frame(frame["dest"])
-    for t in SN.PAPER_FRAME_TABLES:
+    # the item tables ship in the SQLite only, with the manifest's row counts; the reader refuses their Parquet by name
+    for t in SN.PAPER_FRAME_SQLITE_ONLY_TABLES:
+        assert not os.path.exists(os.path.join(info.dir, f"{t}.parquet")) and t not in info.manifest["parquet_tables"], t
+        assert conn.execute(f"SELECT COUNT(*) FROM {t}").fetchone()[0] == info.manifest["tables"][t], t
+    with SN.snapshot_open(frame["dest"], scope="paper_frame") as h:
+        with pytest.raises(SN.SnapshotError, match="ships in the split SQLite only"):
+            h.parquet_path("item_result")
+    for t in info.manifest["parquet_tables"]:
         table = pq.read_table(os.path.join(info.dir, f"{t}.parquet"))
         assert table.num_rows == info.manifest["tables"][t], t
         cols = table.column_names
@@ -619,7 +641,7 @@ def test_committed_tree_carries_no_private_identifier(frame):
     # every cell of every table, Parquet and the reassembled SQLite
     for table in SN.PAPER_FRAME_TABLES:
         pq_rows, sq_rows = _decoded_rows(info, table)
-        for fmt, rows in (("parquet", pq_rows), ("sqlite", sq_rows)):
+        for fmt, rows in (("parquet", pq_rows or []), ("sqlite", sq_rows)):       # no Parquet for a SQLite-only table
             for col, path, s in _cells(rows):
                 assert not hits(s), (table, fmt, col, path, hits(s), s[:200])
     # the build itself refuses a manifest that would carry one (the belt behind the assertions above)
@@ -995,7 +1017,8 @@ def test_cli_help_names_the_scope():
     p = cli.build_parser()
     sub = next(a for a in p._subparsers._group_actions).choices["snapshot"]      # type: ignore[union-attr]
     text = sub.format_help()
-    for flag in ("paper_frame", "--dest-root", "--source-root", "--model-id", "--precondition-override"):
+    for flag in ("paper_frame", "--dest-root", "--source-root", "--model-id", "--precondition-override", "--paper-models-only",
+                 "--item-judge", "--item-projection"):
         assert flag in text, flag
 
 
@@ -1082,19 +1105,39 @@ def test_figures_stage_dry_run_and_help(tmp_path):
     assert "--ExecutePreprocessor.kernel_name=python3" in out and ".venv/bin/python" in out      # the clone's own venv is the default interpreter
     assert "make_registry_notebook.py" in out and "nbconvert --execute --to html" in out and "registry-notebook" in out
     assert f"REGISTRY_NB_SNAPSHOT_ROOT={tmp_path / 'snap'}" in out and "SISTEER_SRC=" in out
+    # the paper's judges by default (the re-judges, into the paper's figures directory); the strength reads are the committed files
+    assert "REGISTRY_NB_JUDGES=rejudge" in out and "REGISTRY_NB_JUDGES=primary" not in out and "-u REGISTRY_NB_STRENGTH_READS" in out
+    assert "--ExecutePreprocessor.timeout=3600" in out and "notebooks/figures/." in out and "figures-primary" not in out
     assert not BANNED_WORDS.findall(out), BANNED_WORDS.findall(out)[:5]
     assert not _personal_in_output(out, tmp_path)
+    # --judges primary: the filed Claude judges, into a figures directory and an output directory of their own
+    p = _bash(["reproduce/10_figures.sh", "--dry-run", "--config", cfg, "--source", "snapshot", "--judges", "primary",
+               "--snapshot-root", str(tmp_path / "snap")], tmp_path)
+    assert p.returncode == 0, p.stderr
+    assert "REGISTRY_NB_JUDGES=primary" in p.stdout and "REGISTRY_NB_JUDGES=rejudge" not in p.stdout
+    assert "REGISTRY_NB_FIGS=" in p.stdout and "notebooks/figures-primary/." in p.stdout and "registry-notebook-primary" in p.stdout
+    assert not BANNED_WORDS.findall(p.stdout), BANNED_WORDS.findall(p.stdout)[:5]
+    nope = _bash(["reproduce/10_figures.sh", "--dry-run", "--judges", "claude"], tmp_path)
+    assert nope.returncode != 0 and "--judges must be" in nope.stderr
     # --export-snapshot cuts the frame first (its own dry-run lines), then renders from it
     e = _bash(["reproduce/10_figures.sh", "--dry-run", "--config", cfg, "--export-snapshot", "--snapshot-root", str(tmp_path / "snap")], tmp_path)
     assert e.returncode == 0, e.stderr
     assert "snapshot --scope paper_frame" in e.stdout and f"--dest-root {tmp_path / 'snap'}" in e.stdout and "REGISTRY_NB_SOURCE=snapshot" in e.stdout
     assert e.stdout.index("snapshot --scope paper_frame") < e.stdout.index("nbconvert")
+    # the export carries the paper policy's judges (paper/notebooks/data/paper_judges.json) in its projection, so the frame it cuts is one
+    # the default render accepts
+    with open(os.path.join(REPO, "paper", "notebooks", "data", "paper_judges.json"), encoding="utf-8") as fh:
+        pj = json.load(fh)
+    export_line = next(ln for ln in e.stdout.splitlines() if "snapshot --scope paper_frame" in ln)
+    assert [m.group(1) for m in re.finditer(r"--item-judge (\S+)", export_line)] == [j["judge_id"] for j in pj["judges"]]
+    assert f"--item-projection {pj['item_projection']}" in export_line and pj["item_projection"] in SN.PAPER_FRAME_ITEM_PROJECTIONS
     # without a site config the defaults stand (a note says so)
     n = _bash(["reproduce/10_figures.sh", "--dry-run", "--source", "live", "--panel", "all"], tmp_path)     # --panel: accepted, ignored
     assert n.returncode == 0, n.stderr
     assert "no site config" in n.stdout and "REGISTRY_NB_SOURCE=live" in n.stdout and "REGISTRY_NB_PANELS" not in n.stdout and "--panel" in n.stdout
     h = _bash(["reproduce/10_figures.sh", "--help"], tmp_path)
     assert h.returncode == 0 and "--source" in h.stdout and "--export-snapshot" in h.stdout and "--dry-run" in h.stdout
+    assert "--judges primary" in h.stdout and "PolicyJudgesAbsent" in h.stdout and "--source snapshot" in h.stdout
     # refusals exit non-zero with the reason
     bad = _bash(["reproduce/10_figures.sh", "--source", "nope"], tmp_path)
     assert bad.returncode != 0 and "--source must be" in bad.stderr
@@ -1129,3 +1172,182 @@ def test_repo_relative_recognises_every_checkout_layout_and_a_linked_worktree_na
     plain = tmp_path / "plain"; plain.mkdir()
     monkeypatch.setattr(SN, "_code_repo_root", lambda: str(plain))
     assert set(SN._repo_roots()) == {str(plain), os.path.realpath(str(plain))}
+
+
+# --------------------------------------------------------------------------------------------
+# read_set_version 3: item judges, the reader projection, --paper-models-only, the file-size guard
+# --------------------------------------------------------------------------------------------
+
+#: a judge of the StrongREJECT rubric, so a judgment of it is a FILED-GOAL judgment when its run_metric counts errored goals
+SR_JUDGE_ID = I.judge_id({"judge_model": "judge-model-sr", "rubric_sha256": synth.SHA256_A, "protocol_sha256": synth.SHA256_B,
+                          "threshold_rule": "score > 0.5"})
+#: the item judge's per-item extra keys: `subset` is the reader's, the other a producer id the projection drops
+ITEM_EXTRA = {"subset": "safe", "provider_request_id": "req-synthetic-0001"}
+
+
+def _judgment_files(root, rid, judge, i, status="complete", extra=None, metric_extra=None):
+    """One judgment of ``judge`` on run ``rid`` with ``N_ITEMS`` item rows (each carrying ``extra``) under records/rejudge/<judge>/<run>/,
+    written after the run's own records; ``metric_extra`` adds a run_metric row of the judgment carrying those counts."""
+    jid = I.judgment_id(rid, judge)
+    d = os.path.join(root, "records", "rejudge", judge[:12], I.run_dir_name(rid))
+    R.write_records(os.path.join(d, "000001-judgment.jsonl"), [synth.rec(
+        "judgment", {"judgment_id": jid, "run_id": rid, "judge_id": judge, "started_utc": synth.t(i), "finished_utc": synth.t(i + 1),
+                     "n_items_judged": N_ITEMS, "status": status, "api_pool": "lowprio"}, synth.t(i + 1))])
+    items = []
+    for k in range(N_ITEMS):
+        p = {"run_id": rid, "item_id": f"q{k:05d}", "metric_id": "asr", "trial_index": 0, "sample_index": 0, "turn_index": -1,
+             "judgment_id": jid, "value": round(0.1 * k, 6), "label": None, "api_pool": "lowprio", "created_utc": synth.t(i),
+             "judged_utc": synth.t(i + 1), "source_revision_id": "", "withdrawn_by_revision_id": None, **(extra or {})}
+        items.append(synth.rec("item_result", p, synth.t(i + 2)))
+    R.write_records(os.path.join(d, "000002-item_result.jsonl"), items)
+    if metric_extra is not None:
+        R.write_records(os.path.join(d, "000003-run_metric.jsonl"), [synth.rec(
+            "run_metric", {"run_id": rid, "judgment_id": jid, "metric_id": "asr", "threshold": 0.5, "value": 0.5, "k": 2, "n": 4,
+                           "computed_by": "producer", **metric_extra}, synth.t(i + 3))])
+    return jid
+
+
+@pytest.fixture
+def judged(tmp_path, monkeypatch):
+    """The fixture registry plus re-judges filed as a NEW judge (JUDGE_ID_2, item rows only, like the paper's MiniMax re-judges): complete
+    on an in-paper run, on a paper-model run outside the paper and on the test model's run; PARTIAL on both unsteered runs (one in the
+    paper, one not). Plus a StrongREJECT judge's judgment on the out-of-paper run whose run_metric counts errored goals (a filed-goal
+    judgment) and one on the other unsteered run that counts none."""
+    root = str(tmp_path / "reg")
+    run_ids = build_corpus(root)
+    R.write_records(os.path.join(root, "records", "dimensions", "seed", "000002-dimensions.jsonl"), [synth.rec(
+        "judge", {"judge_id": SR_JUDGE_ID, "judge_model": "judge-model-sr", "judge_role": "judge", "rubric_name": "strongreject",
+                  "rubric_version": "1", "rubric_sha256": synth.SHA256_A, "protocol_sha256": synth.SHA256_B, "score_scale": "0-1",
+                  "threshold_rule": "score > 0.5", "judge_backend": "live"}, synth.t(700))])
+    with _live(root) as live:
+        in_paper = {r[0] for r in live.execute("SELECT run_id FROM v_paper_current WHERE in_current_paper = 1")}
+    u_in, u_out = sorted((run_ids["g_none"], run_ids["g_extra"]), key=lambda r: r not in in_paper)
+    assert u_in in in_paper and u_out not in in_paper
+    jids = {"g_lora": _judgment_files(root, run_ids["g_lora"], synth.JUDGE_ID_2, 710, extra=ITEM_EXTRA),
+            "l_none": _judgment_files(root, run_ids["l_none"], synth.JUDGE_ID_2, 720, extra=ITEM_EXTRA),
+            "t_none": _judgment_files(root, run_ids["t_none"], synth.JUDGE_ID_2, 730, extra=ITEM_EXTRA),
+            "u_in_partial": _judgment_files(root, u_in, synth.JUDGE_ID_2, 740, status="partial", extra=ITEM_EXTRA),
+            "u_out_partial": _judgment_files(root, u_out, synth.JUDGE_ID_2, 750, status="partial", extra=ITEM_EXTRA),
+            "sr_filed": _judgment_files(root, run_ids["l_none"], SR_JUDGE_ID, 760, metric_extra={"n_error_outcomes": 2}),
+            "sr_clean": _judgment_files(root, u_out, SR_JUDGE_ID, 770, metric_extra={"n_error_outcomes": 0, "n_incomplete": 0})}
+    rep = H.ingest_once(root, workers=0, min_free=0)
+    assert rep.refused == 0, rep.refusals[:5]
+    with _live(root) as live:                       # the re-judges moved no selection: the item scope is still the paper's runs
+        assert {r[0] for r in live.execute("SELECT run_id FROM v_paper_current WHERE in_current_paper = 1")} == in_paper
+        assert live.execute("SELECT extra_json FROM item_result WHERE judgment_id = ? LIMIT 1", (jids["g_lora"],)).fetchone()[0] \
+            == json.dumps(ITEM_EXTRA, sort_keys=True, separators=(",", ":"))
+    pass_precondition(monkeypatch, tmp_path)
+    return {"root": root, "run_ids": run_ids, "jids": jids, "in_paper": in_paper, "u_in": u_in, "u_out": u_out, "tmp": tmp_path}
+
+
+def _build(j, name, **kw):
+    return SN.build(j["root"], DB.db_path(j["root"]), check_free_space=False, scope="paper_frame", dest_root=str(j["tmp"] / name), **kw)
+
+
+def test_item_judges_join_the_item_scope_in_the_reader_projection_in_two_disjoint_passes(judged):
+    """Every COMPLETE judgment of an item judge on a run of the run set joins the item scope, whatever the run's paper status (the
+    re-derivation reads frontier rungs and pool anchors outside the paper too), and ships through the projection: extra_json reduced to the
+    reader's keys, record_sha256 NULL, every other column verbatim. An item judge's row on a per-item run goes through the projection too,
+    a partial judgment's included; a partial judgment on a run outside the item scope does not ship. The filed StrongREJECT judgment of
+    a run outside the item scope whose run_metric counts errored goals ships VERBATIM (the filed-goal rule reads its goal set); one that
+    counts none does not. Every other row is verbatim. The projected rows follow the verbatim rows, contiguous per judgment, and the two
+    passes' sum is the union's count."""
+    j = judged
+    info = _build(j, "dest", item_judges=[synth.JUDGE_ID_2], item_projection="reader")
+    m, jids, rid = info.manifest, j["jids"], j["run_ids"]
+    conn = SN.open_paper_frame(str(j["tmp"] / "dest"))
+    with _live(j["root"]) as live:
+        live_items = {(r[0], r[1], r[2]): r[3:] for r in live.execute(
+            "SELECT judgment_id, run_id, item_id, extra_json, record_sha256, value, label, api_pool, written_utc FROM item_result")}
+    got = {(r[0], r[1], r[2]): r[3:] for r in conn.execute(
+        "SELECT judgment_id, run_id, item_id, extra_json, record_sha256, value, label, api_pool, written_utc FROM item_result")}
+    projected = {jids[k] for k in ("g_lora", "l_none", "t_none", "u_in_partial")}
+    by_judgment = {}
+    for (jid, _r, _i) in got:
+        by_judgment[jid] = by_judgment.get(jid, 0) + 1
+    for k in ("g_lora", "l_none", "t_none", "u_in_partial", "sr_filed"):
+        assert by_judgment.get(jids[k]) == N_ITEMS, k
+    for k in ("u_out_partial", "sr_clean"):
+        assert jids[k] not in by_judgment, k
+    for key, row in got.items():
+        want = live_items[key]
+        if key[0] in projected:
+            assert row[0] == json.dumps({"subset": "safe"}, separators=(",", ":")) and row[1] is None, key
+            assert row[2:] == want[2:], key                                        # value, label, api_pool, written_utc verbatim
+        else:
+            assert row == want, key                                                # every other row verbatim, its record hash included
+    # the out-of-paper run ships ONLY the item judge's and the filed-goal judgment's rows, never its original judgment's
+    original_l = I.judgment_id(rid["l_none"], synth.JUDGE_ID)
+    assert {k[0] for k in got if k[1] == rid["l_none"]} == {jids["l_none"], jids["sr_filed"]} and original_l not in by_judgment
+    # layout: the projected rows come after every verbatim row, contiguous per judgment, in judgment order
+    order = [r[0] for r in conn.execute("SELECT judgment_id FROM item_result ORDER BY rowid")]
+    first = next(i for i, x in enumerate(order) if x in projected)
+    assert set(order[first:]) == projected and all(x not in projected for x in order[:first])
+    tail = order[first:]
+    assert tail == sorted(tail) and len(tail) == len(projected) * N_ITEMS
+    # the manifest
+    assert m["read_set_version"] == 3 and m["test_models"] is True
+    assert m["item_judges"] == [{"judge_id": synth.JUDGE_ID_2, "judge_model": "judge-model-y", "rubric_name": "synthetic_rubric",
+                                 "rubric_version": "1"}]
+    assert m["n_item_judgments"] == 4 and m["n_filed_goal_judgments"] == 1
+    assert m["item_projection"] == {"name": "reader", "judges": [synth.JUDGE_ID_2], "extra_json_keys": ["subset"], "record_sha256": None,
+                                    "rows": 4 * N_ITEMS}
+    assert m["item_result_passes"] == {"verbatim": m["tables"]["item_result"] - 4 * N_ITEMS, "item_judges": 4 * N_ITEMS}
+    assert m["tables"]["item_result"] == len(got)
+    # the reader's own SQL resolves the projected key: json_extract(extra_json, '$.subset') on a projected row
+    assert {r[0] for r in conn.execute("SELECT json_extract(extra_json, '$.subset') FROM item_result WHERE judgment_id = ?", (jids["g_lora"],))} == {"safe"}
+    conn.close()
+
+
+def test_item_judges_verbatim_without_a_projection_and_refusals(judged):
+    """Without --item-projection the item judges' rows ship verbatim (still in the second pass); an unknown judge, an unknown projection,
+    a projection with no item judge and the v3 options outside the paper-frame scope refuse by name, writing nothing."""
+    j = judged
+    info = _build(j, "verbatim", item_judges=[synth.JUDGE_ID_2])
+    conn = SN.open_paper_frame(str(j["tmp"] / "verbatim"))
+    with _live(j["root"]) as live:
+        want = sorted(_rows(live, "SELECT run_id, item_id, extra_json, hex(record_sha256) FROM item_result WHERE judgment_id = ?", j["jids"]["l_none"]))
+    assert sorted(_rows(conn, "SELECT run_id, item_id, extra_json, hex(record_sha256) FROM item_result WHERE judgment_id = ?", j["jids"]["l_none"])) == want
+    assert info.manifest["item_projection"] is None and info.manifest["item_result_passes"]["item_judges"] == 4 * N_ITEMS
+    conn.close()
+    with pytest.raises(SN.SnapshotError, match="not in the source registry's judge table"):
+        _build(j, "unknown", item_judges=["0" * 64])
+    with pytest.raises(SN.SnapshotError, match="unknown item projection"):
+        _build(j, "badproj", item_judges=[synth.JUDGE_ID_2], item_projection="everything")
+    with pytest.raises(SN.SnapshotError, match="no item judge is named"):
+        _build(j, "nojudge", item_projection="reader")
+    with pytest.raises(SN.SnapshotError, match="are for scope paper_frame"):
+        SN.build(j["root"], DB.db_path(j["root"]), check_free_space=False, scope="runlevel", item_judges=[synth.JUDGE_ID_2])
+    for name in ("unknown", "badproj", "nojudge"):
+        d = j["tmp"] / name
+        assert not os.path.exists(d / "CURRENT") and not [n for n in (os.listdir(d / "snapshots") if os.path.isdir(d / "snapshots") else [])
+                                                          if not n.startswith(".")], name
+
+
+def test_paper_models_only_leaves_every_test_model_row_out(judged):
+    """--paper-models-only: no run of a test model in the run scope or the item scope, an item judge's judgment of one included, and the
+    manifest says so by construction (the eight paper ids, no item model, test_models false)."""
+    j = judged
+    info = _build(j, "paper_only", test_models=False, item_judges=[synth.JUDGE_ID_2], item_projection="reader")
+    m, t_run = info.manifest, j["run_ids"]["t_none"]
+    assert m["model_ids"] == list(SN.paper_frame_model_set(test_models=False)) and m["item_model_ids"] == [] and m["test_models"] is False
+    conn = SN.open_paper_frame(str(j["tmp"] / "paper_only"))
+    for t in SN.PAPER_FRAME_TABLES:
+        cols = [r[1] for r in conn.execute(f"PRAGMA table_info({t})")]
+        if "run_id" in cols:
+            assert conn.execute(f"SELECT COUNT(*) FROM {t} WHERE run_id = ?", (t_run,)).fetchone()[0] == 0, t
+        if "model_id" in cols and t not in SN.PAPER_FRAME_DIMENSION_TABLES:
+            assert not {r[0] for r in conn.execute(f"SELECT DISTINCT model_id FROM {t}")} & set(SN.PAPER_FRAME_TEST_MODEL_IDS), t
+    assert m["n_item_judgments"] == 3 and m["item_projection"]["rows"] == 3 * N_ITEMS     # the test model's re-judge is out with its run
+    conn.close()
+
+
+def test_a_file_over_the_size_bound_refuses_before_the_manifest(judged, monkeypatch):
+    """The guard is a backstop: a built frame with a file over PAPER_FRAME_MAX_FILE_BYTES refuses by name before MANIFEST.json is
+    written, and leaves no directory and no pointer behind."""
+    j = judged
+    monkeypatch.setattr(SN, "PAPER_FRAME_MAX_FILE_BYTES", 1024)
+    with pytest.raises(SN.SnapshotError, match=r"over PAPER_FRAME_MAX_FILE_BYTES \(1024 B\): .*paper_frame\.sqlite\.gz\.00"):
+        _build(j, "big", item_judges=[synth.JUDGE_ID_2], item_projection="reader")
+    d = j["tmp"] / "big"
+    assert not os.path.exists(d / "CURRENT") and [n for n in os.listdir(d / "snapshots") if not n.startswith(".")] == []

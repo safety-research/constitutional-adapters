@@ -1,0 +1,1369 @@
+{
+ "schema": "g8k_matrix/2",
+ "wave_root_rel": "exp/gsm8k_paired200_paper_objects_sikl4",
+ "trigger_threshold": 0.01,
+ "generated_by": "scripts/sdfbase/gsm8k/make_gsm8k_matrix.py (g8k_views.select_rows)",
+ "views_spec": "qwen35_4b=sikl4s1,sikl4s2,sikl4s3",
+ "views": {
+  "qwen35_4b": [
+   "sikl4s1",
+   "sikl4s2",
+   "sikl4s3"
+  ]
+ },
+ "holds": [],
+ "exclude": [
+  {
+   "key": "qwen35_4b",
+   "view": "sikl4s1",
+   "cells": [
+    "none"
+   ],
+   "reason": "no new unsteered reference: the SI-distilled refit objects are read against the paper's pooled unsteered anchor, so this wave measures the six objects only (the standup still serves the base route, unmeasured)."
+  },
+  {
+   "key": "qwen35_4b",
+   "view": "sikl4s2",
+   "cells": [
+    "none"
+   ],
+   "reason": "as sikl4s1: the six objects only, read against the paper's pooled unsteered anchor."
+  },
+  {
+   "key": "qwen35_4b",
+   "view": "sikl4s3",
+   "cells": [
+    "none"
+   ],
+   "reason": "as sikl4s1: the six objects only, read against the paper's pooled unsteered anchor."
+  }
+ ],
+ "row_overlays": true,
+ "wave": "sikl4",
+ "inspect_seed_policy": "replicate",
+ "inspect_seed_base_by_view": {
+  "sikl4s1": 1,
+  "sikl4s2": 2,
+  "sikl4s3": 3
+ },
+ "standup_companions": {
+  "cell": "si_constitution__lora_r4",
+  "reason": "the GSM8K reader admits a contrast only between two natively served legs whose standups attest EQUAL normalised launch flags, max_lora_rank among them, and the native composer fits --max-lora-rank to the registered adapters' largest r (zero adapter and ReLU-steer carrier 1 -> cap 1; LoRA r=4 -> cap 8). The published seed-view rows composed cap 8 on every standup through the view's constitution LoRA; registering the view's own constitution-SI LoRA (rank 4) UNMEASURED on every standup of the wave makes every standup compose cap 8 over o_proj, the ReLU-steer rows included. The row's own cell is the only one the driver measures."
+ },
+ "geometry_class": "common_f22",
+ "source": {
+  "views_yaml": "configs/sdfbase/gsm8k/views_sikl4.yaml",
+  "roster": "configs/sdfbase_full22_roster_sikl4.yaml",
+  "roster_sha256": "e7cceb8466bd83382b02c40b1c4120db0ee8ca19154c36c6d4131e7a0113eae9",
+  "pins": "configs/sikl4_pins.json",
+  "pins_sha256": "a3ad85dc0dd1bdd4bbbfb7a1420dab3878dac42e4e33def3f47954a0453baf36"
+ },
+ "counts": {
+  "rows": 18,
+  "held": 0,
+  "launched": 18,
+  "waves": {
+   "sikl4": 18
+  },
+  "statuses": {
+   "launch": 18
+  },
+  "launched_by_wave": {
+   "sikl4": 18
+  },
+  "deferred": 0,
+  "external_pins": {},
+  "fitted": 18,
+  "fitted_launched": 18,
+  "in_support": 0,
+  "declared": 0,
+  "expected_refusals": 0,
+  "servable": 18,
+  "contrasts_designed": 18,
+  "contrasts_computable": 18,
+  "tuple_names_launch": [
+   "gsm8k_paired200_qwen35_4b_8192"
+  ],
+  "tags": [
+   "qwen35_4b_sikl4s1",
+   "qwen35_4b_sikl4s2",
+   "qwen35_4b_sikl4s3"
+  ],
+  "n_tags": 3,
+  "by_tag": {
+   "qwen35_4b_sikl4s1": {
+    "rows": 6,
+    "held": 0,
+    "launched": 6
+   },
+   "qwen35_4b_sikl4s2": {
+    "rows": 6,
+    "held": 0,
+    "launched": 6
+   },
+   "qwen35_4b_sikl4s3": {
+    "rows": 6,
+    "held": 0,
+    "launched": 6
+   }
+  },
+  "held_rows": [],
+  "expected_refusal_rows": [],
+  "placement": {
+   "primary": 0,
+   "any": 18
+  },
+  "reasoning_parser_gemma4": 0,
+  "tuple_names": [
+   "gsm8k_paired200_qwen35_4b_8192"
+  ],
+  "distinct_out_roots": 18,
+  "pins": {
+   "qwen35_4b": 18
+  },
+  "families": [
+   "qwen3_5"
+  ],
+  "models": [
+   "qwen35_4b"
+  ]
+ },
+ "rows": [
+  {
+   "index": 0,
+   "job_id": "g8k-qwen35_4b-sikl4s1-si12-lora",
+   "model_key": "qwen35_4b",
+   "view": "sikl4s1",
+   "tag": "qwen35_4b_sikl4s1",
+   "cell": "safety_refusal__lora_r4",
+   "cell_slug": "safety_refusal--lora_r4",
+   "harness_cell": "si_safety__lora_r4",
+   "standup_cell": "safety_refusal__lora_r4",
+   "standup_harness_cell": "si_safety__lora_r4",
+   "staged_id": "sikl4s1__safety_refusal__lora_r4",
+   "object_sha256": "e3d61a63cfd0e4d4ff1462a5760513a5dacf459d3352f29b81834fa08b122445",
+   "fitted": true,
+   "route_kind": "lens",
+   "served_positions_expected": "all",
+   "declared": false,
+   "thinking_mode": "on",
+   "trigger_threshold": 0.01,
+   "tuple_name": "gsm8k_paired200_qwen35_4b_8192",
+   "tuple_names": {
+    "8192": "gsm8k_paired200_qwen35_4b_8192",
+    "16384": "gsm8k_paired200_qwen35_4b_16384"
+   },
+   "sampling_mode": "thinking_card",
+   "sampling": {
+    "temperature": 0.6,
+    "top_p": 0.95,
+    "top_k": 20,
+    "min_p": 0.0,
+    "presence_penalty": 0.0,
+    "source": "Qwen/Qwen3.5-4B @851bf6e8 ships no generation_config.json (.no_exist marker); the Qwen3.5 model card's THINKING-mode 'precise' row as reported to the project = the Qwen3 card's thinking-mode guidance (T 0.6 / top_p 0.95 / top_k 20 / min_p 0; penalties only against endless repetition at a stated cost) \u2014 the PRIMARY row: mathematics legitimately repeats tokens"
+   },
+   "expected_stamps": [
+    "cell-stable",
+    "always",
+    "thinking_on"
+   ],
+   "out_root": "controls_sikl4/qwen35_4b_sikl4s1/safety_refusal--lora_r4/thinking_card",
+   "rung_out_root": "controls_sikl4/qwen35_4b_sikl4s1/safety_refusal--lora_r4/thinking_card__rung16384",
+   "time_limit": "0-01:30:00",
+   "family": "qwen3_5",
+   "split_mode_candidate": "implicit_open",
+   "reasoning_parser": null,
+   "gpu_mem_util": "0.9",
+   "budget_class": "none",
+   "cluster_constraint": "any",
+   "status": "launch",
+   "held_reason": null,
+   "expected_refusal": false,
+   "expected_refusal_reason": null,
+   "wave": "sikl4",
+   "extension": true,
+   "own_overlay": true,
+   "inspect_seed_policy": "replicate",
+   "inspect_seed_base": 1,
+   "standup_companion_cells": [
+    "si_constitution__lora_r4"
+   ],
+   "standup_companion_harness_cells": [
+    "si_constitution__lora_r4"
+   ],
+   "standup_companion_staged_ids": {
+    "si_constitution__lora_r4": "sikl4s1__si_constitution__lora_r4"
+   },
+   "standup_companion_pins": {
+    "si_constitution__lora_r4": "10c3f366540ee7c1642974ff9653badcdbb8f1979c530865c8de7a4e11d9172c"
+   },
+   "geometry_class": "common_f22"
+  },
+  {
+   "index": 1,
+   "job_id": "g8k-qwen35_4b-sikl4s1-si12-psr",
+   "model_key": "qwen35_4b",
+   "view": "sikl4s1",
+   "tag": "qwen35_4b_sikl4s1",
+   "cell": "safety_refusal__psr_kl_all",
+   "cell_slug": "safety_refusal--psr_kl_all",
+   "harness_cell": "si_safety__psr_kl_all",
+   "standup_cell": "safety_refusal__psr_kl_all",
+   "standup_harness_cell": "si_safety__psr_kl_all",
+   "staged_id": "sikl4s1__safety_refusal__psr_kl_all",
+   "object_sha256": "b37fb015b4b0f71f8785df76826cff5d738d1dee6eaac5759a30ae3d496caa04",
+   "fitted": true,
+   "route_kind": "lens",
+   "served_positions_expected": "all",
+   "declared": false,
+   "thinking_mode": "on",
+   "trigger_threshold": 0.01,
+   "tuple_name": "gsm8k_paired200_qwen35_4b_8192",
+   "tuple_names": {
+    "8192": "gsm8k_paired200_qwen35_4b_8192",
+    "16384": "gsm8k_paired200_qwen35_4b_16384"
+   },
+   "sampling_mode": "thinking_card",
+   "sampling": {
+    "temperature": 0.6,
+    "top_p": 0.95,
+    "top_k": 20,
+    "min_p": 0.0,
+    "presence_penalty": 0.0,
+    "source": "Qwen/Qwen3.5-4B @851bf6e8 ships no generation_config.json (.no_exist marker); the Qwen3.5 model card's THINKING-mode 'precise' row as reported to the project = the Qwen3 card's thinking-mode guidance (T 0.6 / top_p 0.95 / top_k 20 / min_p 0; penalties only against endless repetition at a stated cost) \u2014 the PRIMARY row: mathematics legitimately repeats tokens"
+   },
+   "expected_stamps": [
+    "cell-stable",
+    "always",
+    "thinking_on"
+   ],
+   "out_root": "controls_sikl4/qwen35_4b_sikl4s1/safety_refusal--psr_kl_all/thinking_card",
+   "rung_out_root": "controls_sikl4/qwen35_4b_sikl4s1/safety_refusal--psr_kl_all/thinking_card__rung16384",
+   "time_limit": "0-01:30:00",
+   "family": "qwen3_5",
+   "split_mode_candidate": "implicit_open",
+   "reasoning_parser": null,
+   "gpu_mem_util": "0.9",
+   "budget_class": "none",
+   "cluster_constraint": "any",
+   "status": "launch",
+   "held_reason": null,
+   "expected_refusal": false,
+   "expected_refusal_reason": null,
+   "wave": "sikl4",
+   "extension": true,
+   "own_overlay": true,
+   "inspect_seed_policy": "replicate",
+   "inspect_seed_base": 1,
+   "standup_companion_cells": [
+    "si_constitution__lora_r4"
+   ],
+   "standup_companion_harness_cells": [
+    "si_constitution__lora_r4"
+   ],
+   "standup_companion_staged_ids": {
+    "si_constitution__lora_r4": "sikl4s1__si_constitution__lora_r4"
+   },
+   "standup_companion_pins": {
+    "si_constitution__lora_r4": "10c3f366540ee7c1642974ff9653badcdbb8f1979c530865c8de7a4e11d9172c"
+   },
+   "geometry_class": "common_f22"
+  },
+  {
+   "index": 2,
+   "job_id": "g8k-qwen35_4b-sikl4s1-si_constitution-lora_r4",
+   "model_key": "qwen35_4b",
+   "view": "sikl4s1",
+   "tag": "qwen35_4b_sikl4s1",
+   "cell": "si_constitution__lora_r4",
+   "cell_slug": "si_constitution--lora_r4",
+   "harness_cell": "si_constitution__lora_r4",
+   "standup_cell": "si_constitution__lora_r4",
+   "standup_harness_cell": "si_constitution__lora_r4",
+   "staged_id": "sikl4s1__si_constitution__lora_r4",
+   "object_sha256": "10c3f366540ee7c1642974ff9653badcdbb8f1979c530865c8de7a4e11d9172c",
+   "fitted": true,
+   "route_kind": "lens",
+   "served_positions_expected": "all",
+   "declared": false,
+   "thinking_mode": "on",
+   "trigger_threshold": 0.01,
+   "tuple_name": "gsm8k_paired200_qwen35_4b_8192",
+   "tuple_names": {
+    "8192": "gsm8k_paired200_qwen35_4b_8192",
+    "16384": "gsm8k_paired200_qwen35_4b_16384"
+   },
+   "sampling_mode": "thinking_card",
+   "sampling": {
+    "temperature": 0.6,
+    "top_p": 0.95,
+    "top_k": 20,
+    "min_p": 0.0,
+    "presence_penalty": 0.0,
+    "source": "Qwen/Qwen3.5-4B @851bf6e8 ships no generation_config.json (.no_exist marker); the Qwen3.5 model card's THINKING-mode 'precise' row as reported to the project = the Qwen3 card's thinking-mode guidance (T 0.6 / top_p 0.95 / top_k 20 / min_p 0; penalties only against endless repetition at a stated cost) \u2014 the PRIMARY row: mathematics legitimately repeats tokens"
+   },
+   "expected_stamps": [
+    "cell-stable",
+    "always",
+    "thinking_on"
+   ],
+   "out_root": "controls_sikl4/qwen35_4b_sikl4s1/si_constitution--lora_r4/thinking_card",
+   "rung_out_root": "controls_sikl4/qwen35_4b_sikl4s1/si_constitution--lora_r4/thinking_card__rung16384",
+   "time_limit": "0-01:30:00",
+   "family": "qwen3_5",
+   "split_mode_candidate": "implicit_open",
+   "reasoning_parser": null,
+   "gpu_mem_util": "0.9",
+   "budget_class": "none",
+   "cluster_constraint": "any",
+   "status": "launch",
+   "held_reason": null,
+   "expected_refusal": false,
+   "expected_refusal_reason": null,
+   "wave": "sikl4",
+   "extension": true,
+   "own_overlay": true,
+   "inspect_seed_policy": "replicate",
+   "inspect_seed_base": 1,
+   "standup_companion_cells": [],
+   "standup_companion_harness_cells": [],
+   "standup_companion_staged_ids": {},
+   "standup_companion_pins": {},
+   "geometry_class": "common_f22"
+  },
+  {
+   "index": 3,
+   "job_id": "g8k-qwen35_4b-sikl4s1-si_constitution-psr_kl_all",
+   "model_key": "qwen35_4b",
+   "view": "sikl4s1",
+   "tag": "qwen35_4b_sikl4s1",
+   "cell": "si_constitution__psr_kl_all",
+   "cell_slug": "si_constitution--psr_kl_all",
+   "harness_cell": "si_constitution__psr_kl_all",
+   "standup_cell": "si_constitution__psr_kl_all",
+   "standup_harness_cell": "si_constitution__psr_kl_all",
+   "staged_id": "sikl4s1__si_constitution__psr_kl_all",
+   "object_sha256": "55edaec8a4db665e8547a7b94257582a1405cfcfeb5feedf6e2ab5dbabd5ce68",
+   "fitted": true,
+   "route_kind": "lens",
+   "served_positions_expected": "all",
+   "declared": false,
+   "thinking_mode": "on",
+   "trigger_threshold": 0.01,
+   "tuple_name": "gsm8k_paired200_qwen35_4b_8192",
+   "tuple_names": {
+    "8192": "gsm8k_paired200_qwen35_4b_8192",
+    "16384": "gsm8k_paired200_qwen35_4b_16384"
+   },
+   "sampling_mode": "thinking_card",
+   "sampling": {
+    "temperature": 0.6,
+    "top_p": 0.95,
+    "top_k": 20,
+    "min_p": 0.0,
+    "presence_penalty": 0.0,
+    "source": "Qwen/Qwen3.5-4B @851bf6e8 ships no generation_config.json (.no_exist marker); the Qwen3.5 model card's THINKING-mode 'precise' row as reported to the project = the Qwen3 card's thinking-mode guidance (T 0.6 / top_p 0.95 / top_k 20 / min_p 0; penalties only against endless repetition at a stated cost) \u2014 the PRIMARY row: mathematics legitimately repeats tokens"
+   },
+   "expected_stamps": [
+    "cell-stable",
+    "always",
+    "thinking_on"
+   ],
+   "out_root": "controls_sikl4/qwen35_4b_sikl4s1/si_constitution--psr_kl_all/thinking_card",
+   "rung_out_root": "controls_sikl4/qwen35_4b_sikl4s1/si_constitution--psr_kl_all/thinking_card__rung16384",
+   "time_limit": "0-01:30:00",
+   "family": "qwen3_5",
+   "split_mode_candidate": "implicit_open",
+   "reasoning_parser": null,
+   "gpu_mem_util": "0.9",
+   "budget_class": "none",
+   "cluster_constraint": "any",
+   "status": "launch",
+   "held_reason": null,
+   "expected_refusal": false,
+   "expected_refusal_reason": null,
+   "wave": "sikl4",
+   "extension": true,
+   "own_overlay": true,
+   "inspect_seed_policy": "replicate",
+   "inspect_seed_base": 1,
+   "standup_companion_cells": [
+    "si_constitution__lora_r4"
+   ],
+   "standup_companion_harness_cells": [
+    "si_constitution__lora_r4"
+   ],
+   "standup_companion_staged_ids": {
+    "si_constitution__lora_r4": "sikl4s1__si_constitution__lora_r4"
+   },
+   "standup_companion_pins": {
+    "si_constitution__lora_r4": "10c3f366540ee7c1642974ff9653badcdbb8f1979c530865c8de7a4e11d9172c"
+   },
+   "geometry_class": "common_f22"
+  },
+  {
+   "index": 4,
+   "job_id": "g8k-qwen35_4b-sikl4s1-C16-lora_r4",
+   "model_key": "qwen35_4b",
+   "view": "sikl4s1",
+   "tag": "qwen35_4b_sikl4s1",
+   "cell": "C16__lora_r4",
+   "cell_slug": "C16--lora_r4",
+   "harness_cell": "si_irrelevant_c16__lora_r4",
+   "standup_cell": "C16__lora_r4",
+   "standup_harness_cell": "si_irrelevant_c16__lora_r4",
+   "staged_id": "sikl4s1__C16__lora_r4",
+   "object_sha256": "80a8f416a634aa7a49dca1e9da9f68c14889d3a6be2a6177ce2ef3a5b2cf2db8",
+   "fitted": true,
+   "route_kind": "lens",
+   "served_positions_expected": "all",
+   "declared": false,
+   "thinking_mode": "on",
+   "trigger_threshold": 0.01,
+   "tuple_name": "gsm8k_paired200_qwen35_4b_8192",
+   "tuple_names": {
+    "8192": "gsm8k_paired200_qwen35_4b_8192",
+    "16384": "gsm8k_paired200_qwen35_4b_16384"
+   },
+   "sampling_mode": "thinking_card",
+   "sampling": {
+    "temperature": 0.6,
+    "top_p": 0.95,
+    "top_k": 20,
+    "min_p": 0.0,
+    "presence_penalty": 0.0,
+    "source": "Qwen/Qwen3.5-4B @851bf6e8 ships no generation_config.json (.no_exist marker); the Qwen3.5 model card's THINKING-mode 'precise' row as reported to the project = the Qwen3 card's thinking-mode guidance (T 0.6 / top_p 0.95 / top_k 20 / min_p 0; penalties only against endless repetition at a stated cost) \u2014 the PRIMARY row: mathematics legitimately repeats tokens"
+   },
+   "expected_stamps": [
+    "cell-stable",
+    "always",
+    "thinking_on"
+   ],
+   "out_root": "controls_sikl4/qwen35_4b_sikl4s1/C16--lora_r4/thinking_card",
+   "rung_out_root": "controls_sikl4/qwen35_4b_sikl4s1/C16--lora_r4/thinking_card__rung16384",
+   "time_limit": "0-01:30:00",
+   "family": "qwen3_5",
+   "split_mode_candidate": "implicit_open",
+   "reasoning_parser": null,
+   "gpu_mem_util": "0.9",
+   "budget_class": "none",
+   "cluster_constraint": "any",
+   "status": "launch",
+   "held_reason": null,
+   "expected_refusal": false,
+   "expected_refusal_reason": null,
+   "wave": "sikl4",
+   "extension": true,
+   "own_overlay": true,
+   "inspect_seed_policy": "replicate",
+   "inspect_seed_base": 1,
+   "standup_companion_cells": [
+    "si_constitution__lora_r4"
+   ],
+   "standup_companion_harness_cells": [
+    "si_constitution__lora_r4"
+   ],
+   "standup_companion_staged_ids": {
+    "si_constitution__lora_r4": "sikl4s1__si_constitution__lora_r4"
+   },
+   "standup_companion_pins": {
+    "si_constitution__lora_r4": "10c3f366540ee7c1642974ff9653badcdbb8f1979c530865c8de7a4e11d9172c"
+   },
+   "geometry_class": "common_f22"
+  },
+  {
+   "index": 5,
+   "job_id": "g8k-qwen35_4b-sikl4s1-C16-psr_kl_all",
+   "model_key": "qwen35_4b",
+   "view": "sikl4s1",
+   "tag": "qwen35_4b_sikl4s1",
+   "cell": "C16__psr_kl_all",
+   "cell_slug": "C16--psr_kl_all",
+   "harness_cell": "si_irrelevant_c16__psr_kl_all",
+   "standup_cell": "C16__psr_kl_all",
+   "standup_harness_cell": "si_irrelevant_c16__psr_kl_all",
+   "staged_id": "sikl4s1__C16__psr_kl_all",
+   "object_sha256": "a473f52ddcd72931112030f70164d8cd9d9ea2716e84e564d2d4afcf01f21bb2",
+   "fitted": true,
+   "route_kind": "lens",
+   "served_positions_expected": "all",
+   "declared": false,
+   "thinking_mode": "on",
+   "trigger_threshold": 0.01,
+   "tuple_name": "gsm8k_paired200_qwen35_4b_8192",
+   "tuple_names": {
+    "8192": "gsm8k_paired200_qwen35_4b_8192",
+    "16384": "gsm8k_paired200_qwen35_4b_16384"
+   },
+   "sampling_mode": "thinking_card",
+   "sampling": {
+    "temperature": 0.6,
+    "top_p": 0.95,
+    "top_k": 20,
+    "min_p": 0.0,
+    "presence_penalty": 0.0,
+    "source": "Qwen/Qwen3.5-4B @851bf6e8 ships no generation_config.json (.no_exist marker); the Qwen3.5 model card's THINKING-mode 'precise' row as reported to the project = the Qwen3 card's thinking-mode guidance (T 0.6 / top_p 0.95 / top_k 20 / min_p 0; penalties only against endless repetition at a stated cost) \u2014 the PRIMARY row: mathematics legitimately repeats tokens"
+   },
+   "expected_stamps": [
+    "cell-stable",
+    "always",
+    "thinking_on"
+   ],
+   "out_root": "controls_sikl4/qwen35_4b_sikl4s1/C16--psr_kl_all/thinking_card",
+   "rung_out_root": "controls_sikl4/qwen35_4b_sikl4s1/C16--psr_kl_all/thinking_card__rung16384",
+   "time_limit": "0-01:30:00",
+   "family": "qwen3_5",
+   "split_mode_candidate": "implicit_open",
+   "reasoning_parser": null,
+   "gpu_mem_util": "0.9",
+   "budget_class": "none",
+   "cluster_constraint": "any",
+   "status": "launch",
+   "held_reason": null,
+   "expected_refusal": false,
+   "expected_refusal_reason": null,
+   "wave": "sikl4",
+   "extension": true,
+   "own_overlay": true,
+   "inspect_seed_policy": "replicate",
+   "inspect_seed_base": 1,
+   "standup_companion_cells": [
+    "si_constitution__lora_r4"
+   ],
+   "standup_companion_harness_cells": [
+    "si_constitution__lora_r4"
+   ],
+   "standup_companion_staged_ids": {
+    "si_constitution__lora_r4": "sikl4s1__si_constitution__lora_r4"
+   },
+   "standup_companion_pins": {
+    "si_constitution__lora_r4": "10c3f366540ee7c1642974ff9653badcdbb8f1979c530865c8de7a4e11d9172c"
+   },
+   "geometry_class": "common_f22"
+  },
+  {
+   "index": 6,
+   "job_id": "g8k-qwen35_4b-sikl4s2-si12-lora",
+   "model_key": "qwen35_4b",
+   "view": "sikl4s2",
+   "tag": "qwen35_4b_sikl4s2",
+   "cell": "safety_refusal__lora_r4",
+   "cell_slug": "safety_refusal--lora_r4",
+   "harness_cell": "si_safety__lora_r4",
+   "standup_cell": "safety_refusal__lora_r4",
+   "standup_harness_cell": "si_safety__lora_r4",
+   "staged_id": "sikl4s2__safety_refusal__lora_r4",
+   "object_sha256": "0952ae4f12e3f4f4bc63bcefe609d621df5f01f0b13ac9ae9293cc8f720b2bad",
+   "fitted": true,
+   "route_kind": "lens",
+   "served_positions_expected": "all",
+   "declared": false,
+   "thinking_mode": "on",
+   "trigger_threshold": 0.01,
+   "tuple_name": "gsm8k_paired200_qwen35_4b_8192",
+   "tuple_names": {
+    "8192": "gsm8k_paired200_qwen35_4b_8192",
+    "16384": "gsm8k_paired200_qwen35_4b_16384"
+   },
+   "sampling_mode": "thinking_card",
+   "sampling": {
+    "temperature": 0.6,
+    "top_p": 0.95,
+    "top_k": 20,
+    "min_p": 0.0,
+    "presence_penalty": 0.0,
+    "source": "Qwen/Qwen3.5-4B @851bf6e8 ships no generation_config.json (.no_exist marker); the Qwen3.5 model card's THINKING-mode 'precise' row as reported to the project = the Qwen3 card's thinking-mode guidance (T 0.6 / top_p 0.95 / top_k 20 / min_p 0; penalties only against endless repetition at a stated cost) \u2014 the PRIMARY row: mathematics legitimately repeats tokens"
+   },
+   "expected_stamps": [
+    "cell-stable",
+    "always",
+    "thinking_on"
+   ],
+   "out_root": "controls_sikl4/qwen35_4b_sikl4s2/safety_refusal--lora_r4/thinking_card",
+   "rung_out_root": "controls_sikl4/qwen35_4b_sikl4s2/safety_refusal--lora_r4/thinking_card__rung16384",
+   "time_limit": "0-01:30:00",
+   "family": "qwen3_5",
+   "split_mode_candidate": "implicit_open",
+   "reasoning_parser": null,
+   "gpu_mem_util": "0.9",
+   "budget_class": "none",
+   "cluster_constraint": "any",
+   "status": "launch",
+   "held_reason": null,
+   "expected_refusal": false,
+   "expected_refusal_reason": null,
+   "wave": "sikl4",
+   "extension": true,
+   "own_overlay": true,
+   "inspect_seed_policy": "replicate",
+   "inspect_seed_base": 2,
+   "standup_companion_cells": [
+    "si_constitution__lora_r4"
+   ],
+   "standup_companion_harness_cells": [
+    "si_constitution__lora_r4"
+   ],
+   "standup_companion_staged_ids": {
+    "si_constitution__lora_r4": "sikl4s2__si_constitution__lora_r4"
+   },
+   "standup_companion_pins": {
+    "si_constitution__lora_r4": "11d790ce754fadc68057d98d1f24f6cc54732a10306be890c88e416658cf7931"
+   },
+   "geometry_class": "common_f22"
+  },
+  {
+   "index": 7,
+   "job_id": "g8k-qwen35_4b-sikl4s2-si12-psr",
+   "model_key": "qwen35_4b",
+   "view": "sikl4s2",
+   "tag": "qwen35_4b_sikl4s2",
+   "cell": "safety_refusal__psr_kl_all",
+   "cell_slug": "safety_refusal--psr_kl_all",
+   "harness_cell": "si_safety__psr_kl_all",
+   "standup_cell": "safety_refusal__psr_kl_all",
+   "standup_harness_cell": "si_safety__psr_kl_all",
+   "staged_id": "sikl4s2__safety_refusal__psr_kl_all",
+   "object_sha256": "b2882f69628ecfe0e6846d57fe9f358ef569d8cbc93fa1c3f10a4249dcf9d29a",
+   "fitted": true,
+   "route_kind": "lens",
+   "served_positions_expected": "all",
+   "declared": false,
+   "thinking_mode": "on",
+   "trigger_threshold": 0.01,
+   "tuple_name": "gsm8k_paired200_qwen35_4b_8192",
+   "tuple_names": {
+    "8192": "gsm8k_paired200_qwen35_4b_8192",
+    "16384": "gsm8k_paired200_qwen35_4b_16384"
+   },
+   "sampling_mode": "thinking_card",
+   "sampling": {
+    "temperature": 0.6,
+    "top_p": 0.95,
+    "top_k": 20,
+    "min_p": 0.0,
+    "presence_penalty": 0.0,
+    "source": "Qwen/Qwen3.5-4B @851bf6e8 ships no generation_config.json (.no_exist marker); the Qwen3.5 model card's THINKING-mode 'precise' row as reported to the project = the Qwen3 card's thinking-mode guidance (T 0.6 / top_p 0.95 / top_k 20 / min_p 0; penalties only against endless repetition at a stated cost) \u2014 the PRIMARY row: mathematics legitimately repeats tokens"
+   },
+   "expected_stamps": [
+    "cell-stable",
+    "always",
+    "thinking_on"
+   ],
+   "out_root": "controls_sikl4/qwen35_4b_sikl4s2/safety_refusal--psr_kl_all/thinking_card",
+   "rung_out_root": "controls_sikl4/qwen35_4b_sikl4s2/safety_refusal--psr_kl_all/thinking_card__rung16384",
+   "time_limit": "0-01:30:00",
+   "family": "qwen3_5",
+   "split_mode_candidate": "implicit_open",
+   "reasoning_parser": null,
+   "gpu_mem_util": "0.9",
+   "budget_class": "none",
+   "cluster_constraint": "any",
+   "status": "launch",
+   "held_reason": null,
+   "expected_refusal": false,
+   "expected_refusal_reason": null,
+   "wave": "sikl4",
+   "extension": true,
+   "own_overlay": true,
+   "inspect_seed_policy": "replicate",
+   "inspect_seed_base": 2,
+   "standup_companion_cells": [
+    "si_constitution__lora_r4"
+   ],
+   "standup_companion_harness_cells": [
+    "si_constitution__lora_r4"
+   ],
+   "standup_companion_staged_ids": {
+    "si_constitution__lora_r4": "sikl4s2__si_constitution__lora_r4"
+   },
+   "standup_companion_pins": {
+    "si_constitution__lora_r4": "11d790ce754fadc68057d98d1f24f6cc54732a10306be890c88e416658cf7931"
+   },
+   "geometry_class": "common_f22"
+  },
+  {
+   "index": 8,
+   "job_id": "g8k-qwen35_4b-sikl4s2-si_constitution-lora_r4",
+   "model_key": "qwen35_4b",
+   "view": "sikl4s2",
+   "tag": "qwen35_4b_sikl4s2",
+   "cell": "si_constitution__lora_r4",
+   "cell_slug": "si_constitution--lora_r4",
+   "harness_cell": "si_constitution__lora_r4",
+   "standup_cell": "si_constitution__lora_r4",
+   "standup_harness_cell": "si_constitution__lora_r4",
+   "staged_id": "sikl4s2__si_constitution__lora_r4",
+   "object_sha256": "11d790ce754fadc68057d98d1f24f6cc54732a10306be890c88e416658cf7931",
+   "fitted": true,
+   "route_kind": "lens",
+   "served_positions_expected": "all",
+   "declared": false,
+   "thinking_mode": "on",
+   "trigger_threshold": 0.01,
+   "tuple_name": "gsm8k_paired200_qwen35_4b_8192",
+   "tuple_names": {
+    "8192": "gsm8k_paired200_qwen35_4b_8192",
+    "16384": "gsm8k_paired200_qwen35_4b_16384"
+   },
+   "sampling_mode": "thinking_card",
+   "sampling": {
+    "temperature": 0.6,
+    "top_p": 0.95,
+    "top_k": 20,
+    "min_p": 0.0,
+    "presence_penalty": 0.0,
+    "source": "Qwen/Qwen3.5-4B @851bf6e8 ships no generation_config.json (.no_exist marker); the Qwen3.5 model card's THINKING-mode 'precise' row as reported to the project = the Qwen3 card's thinking-mode guidance (T 0.6 / top_p 0.95 / top_k 20 / min_p 0; penalties only against endless repetition at a stated cost) \u2014 the PRIMARY row: mathematics legitimately repeats tokens"
+   },
+   "expected_stamps": [
+    "cell-stable",
+    "always",
+    "thinking_on"
+   ],
+   "out_root": "controls_sikl4/qwen35_4b_sikl4s2/si_constitution--lora_r4/thinking_card",
+   "rung_out_root": "controls_sikl4/qwen35_4b_sikl4s2/si_constitution--lora_r4/thinking_card__rung16384",
+   "time_limit": "0-01:30:00",
+   "family": "qwen3_5",
+   "split_mode_candidate": "implicit_open",
+   "reasoning_parser": null,
+   "gpu_mem_util": "0.9",
+   "budget_class": "none",
+   "cluster_constraint": "any",
+   "status": "launch",
+   "held_reason": null,
+   "expected_refusal": false,
+   "expected_refusal_reason": null,
+   "wave": "sikl4",
+   "extension": true,
+   "own_overlay": true,
+   "inspect_seed_policy": "replicate",
+   "inspect_seed_base": 2,
+   "standup_companion_cells": [],
+   "standup_companion_harness_cells": [],
+   "standup_companion_staged_ids": {},
+   "standup_companion_pins": {},
+   "geometry_class": "common_f22"
+  },
+  {
+   "index": 9,
+   "job_id": "g8k-qwen35_4b-sikl4s2-si_constitution-psr_kl_all",
+   "model_key": "qwen35_4b",
+   "view": "sikl4s2",
+   "tag": "qwen35_4b_sikl4s2",
+   "cell": "si_constitution__psr_kl_all",
+   "cell_slug": "si_constitution--psr_kl_all",
+   "harness_cell": "si_constitution__psr_kl_all",
+   "standup_cell": "si_constitution__psr_kl_all",
+   "standup_harness_cell": "si_constitution__psr_kl_all",
+   "staged_id": "sikl4s2__si_constitution__psr_kl_all",
+   "object_sha256": "4ae1341a8a29f7967137adcb243fadd45963f968c15db34505d31af19e10ca3b",
+   "fitted": true,
+   "route_kind": "lens",
+   "served_positions_expected": "all",
+   "declared": false,
+   "thinking_mode": "on",
+   "trigger_threshold": 0.01,
+   "tuple_name": "gsm8k_paired200_qwen35_4b_8192",
+   "tuple_names": {
+    "8192": "gsm8k_paired200_qwen35_4b_8192",
+    "16384": "gsm8k_paired200_qwen35_4b_16384"
+   },
+   "sampling_mode": "thinking_card",
+   "sampling": {
+    "temperature": 0.6,
+    "top_p": 0.95,
+    "top_k": 20,
+    "min_p": 0.0,
+    "presence_penalty": 0.0,
+    "source": "Qwen/Qwen3.5-4B @851bf6e8 ships no generation_config.json (.no_exist marker); the Qwen3.5 model card's THINKING-mode 'precise' row as reported to the project = the Qwen3 card's thinking-mode guidance (T 0.6 / top_p 0.95 / top_k 20 / min_p 0; penalties only against endless repetition at a stated cost) \u2014 the PRIMARY row: mathematics legitimately repeats tokens"
+   },
+   "expected_stamps": [
+    "cell-stable",
+    "always",
+    "thinking_on"
+   ],
+   "out_root": "controls_sikl4/qwen35_4b_sikl4s2/si_constitution--psr_kl_all/thinking_card",
+   "rung_out_root": "controls_sikl4/qwen35_4b_sikl4s2/si_constitution--psr_kl_all/thinking_card__rung16384",
+   "time_limit": "0-01:30:00",
+   "family": "qwen3_5",
+   "split_mode_candidate": "implicit_open",
+   "reasoning_parser": null,
+   "gpu_mem_util": "0.9",
+   "budget_class": "none",
+   "cluster_constraint": "any",
+   "status": "launch",
+   "held_reason": null,
+   "expected_refusal": false,
+   "expected_refusal_reason": null,
+   "wave": "sikl4",
+   "extension": true,
+   "own_overlay": true,
+   "inspect_seed_policy": "replicate",
+   "inspect_seed_base": 2,
+   "standup_companion_cells": [
+    "si_constitution__lora_r4"
+   ],
+   "standup_companion_harness_cells": [
+    "si_constitution__lora_r4"
+   ],
+   "standup_companion_staged_ids": {
+    "si_constitution__lora_r4": "sikl4s2__si_constitution__lora_r4"
+   },
+   "standup_companion_pins": {
+    "si_constitution__lora_r4": "11d790ce754fadc68057d98d1f24f6cc54732a10306be890c88e416658cf7931"
+   },
+   "geometry_class": "common_f22"
+  },
+  {
+   "index": 10,
+   "job_id": "g8k-qwen35_4b-sikl4s2-C16-lora_r4",
+   "model_key": "qwen35_4b",
+   "view": "sikl4s2",
+   "tag": "qwen35_4b_sikl4s2",
+   "cell": "C16__lora_r4",
+   "cell_slug": "C16--lora_r4",
+   "harness_cell": "si_irrelevant_c16__lora_r4",
+   "standup_cell": "C16__lora_r4",
+   "standup_harness_cell": "si_irrelevant_c16__lora_r4",
+   "staged_id": "sikl4s2__C16__lora_r4",
+   "object_sha256": "eb719f4222051e3bfd5104214c03769ed007080ddd14f75e13a29068f89b110f",
+   "fitted": true,
+   "route_kind": "lens",
+   "served_positions_expected": "all",
+   "declared": false,
+   "thinking_mode": "on",
+   "trigger_threshold": 0.01,
+   "tuple_name": "gsm8k_paired200_qwen35_4b_8192",
+   "tuple_names": {
+    "8192": "gsm8k_paired200_qwen35_4b_8192",
+    "16384": "gsm8k_paired200_qwen35_4b_16384"
+   },
+   "sampling_mode": "thinking_card",
+   "sampling": {
+    "temperature": 0.6,
+    "top_p": 0.95,
+    "top_k": 20,
+    "min_p": 0.0,
+    "presence_penalty": 0.0,
+    "source": "Qwen/Qwen3.5-4B @851bf6e8 ships no generation_config.json (.no_exist marker); the Qwen3.5 model card's THINKING-mode 'precise' row as reported to the project = the Qwen3 card's thinking-mode guidance (T 0.6 / top_p 0.95 / top_k 20 / min_p 0; penalties only against endless repetition at a stated cost) \u2014 the PRIMARY row: mathematics legitimately repeats tokens"
+   },
+   "expected_stamps": [
+    "cell-stable",
+    "always",
+    "thinking_on"
+   ],
+   "out_root": "controls_sikl4/qwen35_4b_sikl4s2/C16--lora_r4/thinking_card",
+   "rung_out_root": "controls_sikl4/qwen35_4b_sikl4s2/C16--lora_r4/thinking_card__rung16384",
+   "time_limit": "0-01:30:00",
+   "family": "qwen3_5",
+   "split_mode_candidate": "implicit_open",
+   "reasoning_parser": null,
+   "gpu_mem_util": "0.9",
+   "budget_class": "none",
+   "cluster_constraint": "any",
+   "status": "launch",
+   "held_reason": null,
+   "expected_refusal": false,
+   "expected_refusal_reason": null,
+   "wave": "sikl4",
+   "extension": true,
+   "own_overlay": true,
+   "inspect_seed_policy": "replicate",
+   "inspect_seed_base": 2,
+   "standup_companion_cells": [
+    "si_constitution__lora_r4"
+   ],
+   "standup_companion_harness_cells": [
+    "si_constitution__lora_r4"
+   ],
+   "standup_companion_staged_ids": {
+    "si_constitution__lora_r4": "sikl4s2__si_constitution__lora_r4"
+   },
+   "standup_companion_pins": {
+    "si_constitution__lora_r4": "11d790ce754fadc68057d98d1f24f6cc54732a10306be890c88e416658cf7931"
+   },
+   "geometry_class": "common_f22"
+  },
+  {
+   "index": 11,
+   "job_id": "g8k-qwen35_4b-sikl4s2-C16-psr_kl_all",
+   "model_key": "qwen35_4b",
+   "view": "sikl4s2",
+   "tag": "qwen35_4b_sikl4s2",
+   "cell": "C16__psr_kl_all",
+   "cell_slug": "C16--psr_kl_all",
+   "harness_cell": "si_irrelevant_c16__psr_kl_all",
+   "standup_cell": "C16__psr_kl_all",
+   "standup_harness_cell": "si_irrelevant_c16__psr_kl_all",
+   "staged_id": "sikl4s2__C16__psr_kl_all",
+   "object_sha256": "0590e9dec5bdd293c414e3529c926d4884d86111d1f8691874fe3d7fbe6a33ae",
+   "fitted": true,
+   "route_kind": "lens",
+   "served_positions_expected": "all",
+   "declared": false,
+   "thinking_mode": "on",
+   "trigger_threshold": 0.01,
+   "tuple_name": "gsm8k_paired200_qwen35_4b_8192",
+   "tuple_names": {
+    "8192": "gsm8k_paired200_qwen35_4b_8192",
+    "16384": "gsm8k_paired200_qwen35_4b_16384"
+   },
+   "sampling_mode": "thinking_card",
+   "sampling": {
+    "temperature": 0.6,
+    "top_p": 0.95,
+    "top_k": 20,
+    "min_p": 0.0,
+    "presence_penalty": 0.0,
+    "source": "Qwen/Qwen3.5-4B @851bf6e8 ships no generation_config.json (.no_exist marker); the Qwen3.5 model card's THINKING-mode 'precise' row as reported to the project = the Qwen3 card's thinking-mode guidance (T 0.6 / top_p 0.95 / top_k 20 / min_p 0; penalties only against endless repetition at a stated cost) \u2014 the PRIMARY row: mathematics legitimately repeats tokens"
+   },
+   "expected_stamps": [
+    "cell-stable",
+    "always",
+    "thinking_on"
+   ],
+   "out_root": "controls_sikl4/qwen35_4b_sikl4s2/C16--psr_kl_all/thinking_card",
+   "rung_out_root": "controls_sikl4/qwen35_4b_sikl4s2/C16--psr_kl_all/thinking_card__rung16384",
+   "time_limit": "0-01:30:00",
+   "family": "qwen3_5",
+   "split_mode_candidate": "implicit_open",
+   "reasoning_parser": null,
+   "gpu_mem_util": "0.9",
+   "budget_class": "none",
+   "cluster_constraint": "any",
+   "status": "launch",
+   "held_reason": null,
+   "expected_refusal": false,
+   "expected_refusal_reason": null,
+   "wave": "sikl4",
+   "extension": true,
+   "own_overlay": true,
+   "inspect_seed_policy": "replicate",
+   "inspect_seed_base": 2,
+   "standup_companion_cells": [
+    "si_constitution__lora_r4"
+   ],
+   "standup_companion_harness_cells": [
+    "si_constitution__lora_r4"
+   ],
+   "standup_companion_staged_ids": {
+    "si_constitution__lora_r4": "sikl4s2__si_constitution__lora_r4"
+   },
+   "standup_companion_pins": {
+    "si_constitution__lora_r4": "11d790ce754fadc68057d98d1f24f6cc54732a10306be890c88e416658cf7931"
+   },
+   "geometry_class": "common_f22"
+  },
+  {
+   "index": 12,
+   "job_id": "g8k-qwen35_4b-sikl4s3-si12-lora",
+   "model_key": "qwen35_4b",
+   "view": "sikl4s3",
+   "tag": "qwen35_4b_sikl4s3",
+   "cell": "safety_refusal__lora_r4",
+   "cell_slug": "safety_refusal--lora_r4",
+   "harness_cell": "si_safety__lora_r4",
+   "standup_cell": "safety_refusal__lora_r4",
+   "standup_harness_cell": "si_safety__lora_r4",
+   "staged_id": "sikl4s3__safety_refusal__lora_r4",
+   "object_sha256": "627cfb19664cdc510be08c6282cc324d456d0d53776e807bb929c492b5ebb950",
+   "fitted": true,
+   "route_kind": "lens",
+   "served_positions_expected": "all",
+   "declared": false,
+   "thinking_mode": "on",
+   "trigger_threshold": 0.01,
+   "tuple_name": "gsm8k_paired200_qwen35_4b_8192",
+   "tuple_names": {
+    "8192": "gsm8k_paired200_qwen35_4b_8192",
+    "16384": "gsm8k_paired200_qwen35_4b_16384"
+   },
+   "sampling_mode": "thinking_card",
+   "sampling": {
+    "temperature": 0.6,
+    "top_p": 0.95,
+    "top_k": 20,
+    "min_p": 0.0,
+    "presence_penalty": 0.0,
+    "source": "Qwen/Qwen3.5-4B @851bf6e8 ships no generation_config.json (.no_exist marker); the Qwen3.5 model card's THINKING-mode 'precise' row as reported to the project = the Qwen3 card's thinking-mode guidance (T 0.6 / top_p 0.95 / top_k 20 / min_p 0; penalties only against endless repetition at a stated cost) \u2014 the PRIMARY row: mathematics legitimately repeats tokens"
+   },
+   "expected_stamps": [
+    "cell-stable",
+    "always",
+    "thinking_on"
+   ],
+   "out_root": "controls_sikl4/qwen35_4b_sikl4s3/safety_refusal--lora_r4/thinking_card",
+   "rung_out_root": "controls_sikl4/qwen35_4b_sikl4s3/safety_refusal--lora_r4/thinking_card__rung16384",
+   "time_limit": "0-01:30:00",
+   "family": "qwen3_5",
+   "split_mode_candidate": "implicit_open",
+   "reasoning_parser": null,
+   "gpu_mem_util": "0.9",
+   "budget_class": "none",
+   "cluster_constraint": "any",
+   "status": "launch",
+   "held_reason": null,
+   "expected_refusal": false,
+   "expected_refusal_reason": null,
+   "wave": "sikl4",
+   "extension": true,
+   "own_overlay": true,
+   "inspect_seed_policy": "replicate",
+   "inspect_seed_base": 3,
+   "standup_companion_cells": [
+    "si_constitution__lora_r4"
+   ],
+   "standup_companion_harness_cells": [
+    "si_constitution__lora_r4"
+   ],
+   "standup_companion_staged_ids": {
+    "si_constitution__lora_r4": "sikl4s3__si_constitution__lora_r4"
+   },
+   "standup_companion_pins": {
+    "si_constitution__lora_r4": "0888b24b140a8969daf41a47e291ea06ce817133e136b44be8dd339cca9ab5d2"
+   },
+   "geometry_class": "common_f22"
+  },
+  {
+   "index": 13,
+   "job_id": "g8k-qwen35_4b-sikl4s3-si12-psr",
+   "model_key": "qwen35_4b",
+   "view": "sikl4s3",
+   "tag": "qwen35_4b_sikl4s3",
+   "cell": "safety_refusal__psr_kl_all",
+   "cell_slug": "safety_refusal--psr_kl_all",
+   "harness_cell": "si_safety__psr_kl_all",
+   "standup_cell": "safety_refusal__psr_kl_all",
+   "standup_harness_cell": "si_safety__psr_kl_all",
+   "staged_id": "sikl4s3__safety_refusal__psr_kl_all",
+   "object_sha256": "b073c88aef7a422e1d7e932e09968e3135987e3c4972aa5ca38e60ca1e0f125e",
+   "fitted": true,
+   "route_kind": "lens",
+   "served_positions_expected": "all",
+   "declared": false,
+   "thinking_mode": "on",
+   "trigger_threshold": 0.01,
+   "tuple_name": "gsm8k_paired200_qwen35_4b_8192",
+   "tuple_names": {
+    "8192": "gsm8k_paired200_qwen35_4b_8192",
+    "16384": "gsm8k_paired200_qwen35_4b_16384"
+   },
+   "sampling_mode": "thinking_card",
+   "sampling": {
+    "temperature": 0.6,
+    "top_p": 0.95,
+    "top_k": 20,
+    "min_p": 0.0,
+    "presence_penalty": 0.0,
+    "source": "Qwen/Qwen3.5-4B @851bf6e8 ships no generation_config.json (.no_exist marker); the Qwen3.5 model card's THINKING-mode 'precise' row as reported to the project = the Qwen3 card's thinking-mode guidance (T 0.6 / top_p 0.95 / top_k 20 / min_p 0; penalties only against endless repetition at a stated cost) \u2014 the PRIMARY row: mathematics legitimately repeats tokens"
+   },
+   "expected_stamps": [
+    "cell-stable",
+    "always",
+    "thinking_on"
+   ],
+   "out_root": "controls_sikl4/qwen35_4b_sikl4s3/safety_refusal--psr_kl_all/thinking_card",
+   "rung_out_root": "controls_sikl4/qwen35_4b_sikl4s3/safety_refusal--psr_kl_all/thinking_card__rung16384",
+   "time_limit": "0-01:30:00",
+   "family": "qwen3_5",
+   "split_mode_candidate": "implicit_open",
+   "reasoning_parser": null,
+   "gpu_mem_util": "0.9",
+   "budget_class": "none",
+   "cluster_constraint": "any",
+   "status": "launch",
+   "held_reason": null,
+   "expected_refusal": false,
+   "expected_refusal_reason": null,
+   "wave": "sikl4",
+   "extension": true,
+   "own_overlay": true,
+   "inspect_seed_policy": "replicate",
+   "inspect_seed_base": 3,
+   "standup_companion_cells": [
+    "si_constitution__lora_r4"
+   ],
+   "standup_companion_harness_cells": [
+    "si_constitution__lora_r4"
+   ],
+   "standup_companion_staged_ids": {
+    "si_constitution__lora_r4": "sikl4s3__si_constitution__lora_r4"
+   },
+   "standup_companion_pins": {
+    "si_constitution__lora_r4": "0888b24b140a8969daf41a47e291ea06ce817133e136b44be8dd339cca9ab5d2"
+   },
+   "geometry_class": "common_f22"
+  },
+  {
+   "index": 14,
+   "job_id": "g8k-qwen35_4b-sikl4s3-si_constitution-lora_r4",
+   "model_key": "qwen35_4b",
+   "view": "sikl4s3",
+   "tag": "qwen35_4b_sikl4s3",
+   "cell": "si_constitution__lora_r4",
+   "cell_slug": "si_constitution--lora_r4",
+   "harness_cell": "si_constitution__lora_r4",
+   "standup_cell": "si_constitution__lora_r4",
+   "standup_harness_cell": "si_constitution__lora_r4",
+   "staged_id": "sikl4s3__si_constitution__lora_r4",
+   "object_sha256": "0888b24b140a8969daf41a47e291ea06ce817133e136b44be8dd339cca9ab5d2",
+   "fitted": true,
+   "route_kind": "lens",
+   "served_positions_expected": "all",
+   "declared": false,
+   "thinking_mode": "on",
+   "trigger_threshold": 0.01,
+   "tuple_name": "gsm8k_paired200_qwen35_4b_8192",
+   "tuple_names": {
+    "8192": "gsm8k_paired200_qwen35_4b_8192",
+    "16384": "gsm8k_paired200_qwen35_4b_16384"
+   },
+   "sampling_mode": "thinking_card",
+   "sampling": {
+    "temperature": 0.6,
+    "top_p": 0.95,
+    "top_k": 20,
+    "min_p": 0.0,
+    "presence_penalty": 0.0,
+    "source": "Qwen/Qwen3.5-4B @851bf6e8 ships no generation_config.json (.no_exist marker); the Qwen3.5 model card's THINKING-mode 'precise' row as reported to the project = the Qwen3 card's thinking-mode guidance (T 0.6 / top_p 0.95 / top_k 20 / min_p 0; penalties only against endless repetition at a stated cost) \u2014 the PRIMARY row: mathematics legitimately repeats tokens"
+   },
+   "expected_stamps": [
+    "cell-stable",
+    "always",
+    "thinking_on"
+   ],
+   "out_root": "controls_sikl4/qwen35_4b_sikl4s3/si_constitution--lora_r4/thinking_card",
+   "rung_out_root": "controls_sikl4/qwen35_4b_sikl4s3/si_constitution--lora_r4/thinking_card__rung16384",
+   "time_limit": "0-01:30:00",
+   "family": "qwen3_5",
+   "split_mode_candidate": "implicit_open",
+   "reasoning_parser": null,
+   "gpu_mem_util": "0.9",
+   "budget_class": "none",
+   "cluster_constraint": "any",
+   "status": "launch",
+   "held_reason": null,
+   "expected_refusal": false,
+   "expected_refusal_reason": null,
+   "wave": "sikl4",
+   "extension": true,
+   "own_overlay": true,
+   "inspect_seed_policy": "replicate",
+   "inspect_seed_base": 3,
+   "standup_companion_cells": [],
+   "standup_companion_harness_cells": [],
+   "standup_companion_staged_ids": {},
+   "standup_companion_pins": {},
+   "geometry_class": "common_f22"
+  },
+  {
+   "index": 15,
+   "job_id": "g8k-qwen35_4b-sikl4s3-si_constitution-psr_kl_all",
+   "model_key": "qwen35_4b",
+   "view": "sikl4s3",
+   "tag": "qwen35_4b_sikl4s3",
+   "cell": "si_constitution__psr_kl_all",
+   "cell_slug": "si_constitution--psr_kl_all",
+   "harness_cell": "si_constitution__psr_kl_all",
+   "standup_cell": "si_constitution__psr_kl_all",
+   "standup_harness_cell": "si_constitution__psr_kl_all",
+   "staged_id": "sikl4s3__si_constitution__psr_kl_all",
+   "object_sha256": "790188c523fd1114abd6695af5d55b8aa8b9b553f5ba8126f59537d516f963ce",
+   "fitted": true,
+   "route_kind": "lens",
+   "served_positions_expected": "all",
+   "declared": false,
+   "thinking_mode": "on",
+   "trigger_threshold": 0.01,
+   "tuple_name": "gsm8k_paired200_qwen35_4b_8192",
+   "tuple_names": {
+    "8192": "gsm8k_paired200_qwen35_4b_8192",
+    "16384": "gsm8k_paired200_qwen35_4b_16384"
+   },
+   "sampling_mode": "thinking_card",
+   "sampling": {
+    "temperature": 0.6,
+    "top_p": 0.95,
+    "top_k": 20,
+    "min_p": 0.0,
+    "presence_penalty": 0.0,
+    "source": "Qwen/Qwen3.5-4B @851bf6e8 ships no generation_config.json (.no_exist marker); the Qwen3.5 model card's THINKING-mode 'precise' row as reported to the project = the Qwen3 card's thinking-mode guidance (T 0.6 / top_p 0.95 / top_k 20 / min_p 0; penalties only against endless repetition at a stated cost) \u2014 the PRIMARY row: mathematics legitimately repeats tokens"
+   },
+   "expected_stamps": [
+    "cell-stable",
+    "always",
+    "thinking_on"
+   ],
+   "out_root": "controls_sikl4/qwen35_4b_sikl4s3/si_constitution--psr_kl_all/thinking_card",
+   "rung_out_root": "controls_sikl4/qwen35_4b_sikl4s3/si_constitution--psr_kl_all/thinking_card__rung16384",
+   "time_limit": "0-01:30:00",
+   "family": "qwen3_5",
+   "split_mode_candidate": "implicit_open",
+   "reasoning_parser": null,
+   "gpu_mem_util": "0.9",
+   "budget_class": "none",
+   "cluster_constraint": "any",
+   "status": "launch",
+   "held_reason": null,
+   "expected_refusal": false,
+   "expected_refusal_reason": null,
+   "wave": "sikl4",
+   "extension": true,
+   "own_overlay": true,
+   "inspect_seed_policy": "replicate",
+   "inspect_seed_base": 3,
+   "standup_companion_cells": [
+    "si_constitution__lora_r4"
+   ],
+   "standup_companion_harness_cells": [
+    "si_constitution__lora_r4"
+   ],
+   "standup_companion_staged_ids": {
+    "si_constitution__lora_r4": "sikl4s3__si_constitution__lora_r4"
+   },
+   "standup_companion_pins": {
+    "si_constitution__lora_r4": "0888b24b140a8969daf41a47e291ea06ce817133e136b44be8dd339cca9ab5d2"
+   },
+   "geometry_class": "common_f22"
+  },
+  {
+   "index": 16,
+   "job_id": "g8k-qwen35_4b-sikl4s3-C16-lora_r4",
+   "model_key": "qwen35_4b",
+   "view": "sikl4s3",
+   "tag": "qwen35_4b_sikl4s3",
+   "cell": "C16__lora_r4",
+   "cell_slug": "C16--lora_r4",
+   "harness_cell": "si_irrelevant_c16__lora_r4",
+   "standup_cell": "C16__lora_r4",
+   "standup_harness_cell": "si_irrelevant_c16__lora_r4",
+   "staged_id": "sikl4s3__C16__lora_r4",
+   "object_sha256": "332845ea44c7a5538c896ff653229f8046858bae0fa8b5f0a4ff2af57346be70",
+   "fitted": true,
+   "route_kind": "lens",
+   "served_positions_expected": "all",
+   "declared": false,
+   "thinking_mode": "on",
+   "trigger_threshold": 0.01,
+   "tuple_name": "gsm8k_paired200_qwen35_4b_8192",
+   "tuple_names": {
+    "8192": "gsm8k_paired200_qwen35_4b_8192",
+    "16384": "gsm8k_paired200_qwen35_4b_16384"
+   },
+   "sampling_mode": "thinking_card",
+   "sampling": {
+    "temperature": 0.6,
+    "top_p": 0.95,
+    "top_k": 20,
+    "min_p": 0.0,
+    "presence_penalty": 0.0,
+    "source": "Qwen/Qwen3.5-4B @851bf6e8 ships no generation_config.json (.no_exist marker); the Qwen3.5 model card's THINKING-mode 'precise' row as reported to the project = the Qwen3 card's thinking-mode guidance (T 0.6 / top_p 0.95 / top_k 20 / min_p 0; penalties only against endless repetition at a stated cost) \u2014 the PRIMARY row: mathematics legitimately repeats tokens"
+   },
+   "expected_stamps": [
+    "cell-stable",
+    "always",
+    "thinking_on"
+   ],
+   "out_root": "controls_sikl4/qwen35_4b_sikl4s3/C16--lora_r4/thinking_card",
+   "rung_out_root": "controls_sikl4/qwen35_4b_sikl4s3/C16--lora_r4/thinking_card__rung16384",
+   "time_limit": "0-01:30:00",
+   "family": "qwen3_5",
+   "split_mode_candidate": "implicit_open",
+   "reasoning_parser": null,
+   "gpu_mem_util": "0.9",
+   "budget_class": "none",
+   "cluster_constraint": "any",
+   "status": "launch",
+   "held_reason": null,
+   "expected_refusal": false,
+   "expected_refusal_reason": null,
+   "wave": "sikl4",
+   "extension": true,
+   "own_overlay": true,
+   "inspect_seed_policy": "replicate",
+   "inspect_seed_base": 3,
+   "standup_companion_cells": [
+    "si_constitution__lora_r4"
+   ],
+   "standup_companion_harness_cells": [
+    "si_constitution__lora_r4"
+   ],
+   "standup_companion_staged_ids": {
+    "si_constitution__lora_r4": "sikl4s3__si_constitution__lora_r4"
+   },
+   "standup_companion_pins": {
+    "si_constitution__lora_r4": "0888b24b140a8969daf41a47e291ea06ce817133e136b44be8dd339cca9ab5d2"
+   },
+   "geometry_class": "common_f22"
+  },
+  {
+   "index": 17,
+   "job_id": "g8k-qwen35_4b-sikl4s3-C16-psr_kl_all",
+   "model_key": "qwen35_4b",
+   "view": "sikl4s3",
+   "tag": "qwen35_4b_sikl4s3",
+   "cell": "C16__psr_kl_all",
+   "cell_slug": "C16--psr_kl_all",
+   "harness_cell": "si_irrelevant_c16__psr_kl_all",
+   "standup_cell": "C16__psr_kl_all",
+   "standup_harness_cell": "si_irrelevant_c16__psr_kl_all",
+   "staged_id": "sikl4s3__C16__psr_kl_all",
+   "object_sha256": "85bc02be19e48b1b666e015c0e0f09801b4c1d8a4c74908a73b83e4cb4cbb61e",
+   "fitted": true,
+   "route_kind": "lens",
+   "served_positions_expected": "all",
+   "declared": false,
+   "thinking_mode": "on",
+   "trigger_threshold": 0.01,
+   "tuple_name": "gsm8k_paired200_qwen35_4b_8192",
+   "tuple_names": {
+    "8192": "gsm8k_paired200_qwen35_4b_8192",
+    "16384": "gsm8k_paired200_qwen35_4b_16384"
+   },
+   "sampling_mode": "thinking_card",
+   "sampling": {
+    "temperature": 0.6,
+    "top_p": 0.95,
+    "top_k": 20,
+    "min_p": 0.0,
+    "presence_penalty": 0.0,
+    "source": "Qwen/Qwen3.5-4B @851bf6e8 ships no generation_config.json (.no_exist marker); the Qwen3.5 model card's THINKING-mode 'precise' row as reported to the project = the Qwen3 card's thinking-mode guidance (T 0.6 / top_p 0.95 / top_k 20 / min_p 0; penalties only against endless repetition at a stated cost) \u2014 the PRIMARY row: mathematics legitimately repeats tokens"
+   },
+   "expected_stamps": [
+    "cell-stable",
+    "always",
+    "thinking_on"
+   ],
+   "out_root": "controls_sikl4/qwen35_4b_sikl4s3/C16--psr_kl_all/thinking_card",
+   "rung_out_root": "controls_sikl4/qwen35_4b_sikl4s3/C16--psr_kl_all/thinking_card__rung16384",
+   "time_limit": "0-01:30:00",
+   "family": "qwen3_5",
+   "split_mode_candidate": "implicit_open",
+   "reasoning_parser": null,
+   "gpu_mem_util": "0.9",
+   "budget_class": "none",
+   "cluster_constraint": "any",
+   "status": "launch",
+   "held_reason": null,
+   "expected_refusal": false,
+   "expected_refusal_reason": null,
+   "wave": "sikl4",
+   "extension": true,
+   "own_overlay": true,
+   "inspect_seed_policy": "replicate",
+   "inspect_seed_base": 3,
+   "standup_companion_cells": [
+    "si_constitution__lora_r4"
+   ],
+   "standup_companion_harness_cells": [
+    "si_constitution__lora_r4"
+   ],
+   "standup_companion_staged_ids": {
+    "si_constitution__lora_r4": "sikl4s3__si_constitution__lora_r4"
+   },
+   "standup_companion_pins": {
+    "si_constitution__lora_r4": "0888b24b140a8969daf41a47e291ea06ce817133e136b44be8dd339cca9ab5d2"
+   },
+   "geometry_class": "common_f22"
+  }
+ ]
+}

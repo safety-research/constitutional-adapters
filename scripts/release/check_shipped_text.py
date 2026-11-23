@@ -19,7 +19,9 @@ The five checks (each can be run alone with ``--checks``):
    each declared type, and equals the new SQLite row for row, and a table no cell of which moved also keeps the pre-image's
    Parquet bytes (the changed tables are derived from the two SQLite files, and the MANIFEST's ``release_changed_rows`` must
    agree with them); the MANIFEST names its pre-image.
-   A ruling row and the newest transcript's copy of it stay byte-comparable wherever they were.
+   A ruling row and the newest transcript's copy of it stay byte-comparable wherever they were. A policy that declares
+   ``omit_item_judges`` takes exactly those judges' item-pass rows out of the item tables: the comparison skips them (and nothing
+   else), and the MANIFEST's counts and item-judge keys must be the omission's, with ``release_omitted_item_judges`` naming it.
 5. **Attribution scan** over every free-text leaf of the frame (its SQLite and every Parquet file's string columns and
    metadata), the transcripts and the seeds, every mapping key in them (at ``<object address><key>``), and every YAML
    comment, whatever class the policy gives the leaf. The only
@@ -542,11 +544,30 @@ def check_frame(ctx: "ST.Context", tree: str, ref: str, work: str, fs: Optional[
     """Check 4; returns the post SQLite path for check 5."""
     e = rep.start("4_frame")
     pre_sqlite, post_sqlite, pre_m, post_m, pre_rel, post_dir = frame_pre_post(tree, ref, work, pre_repo)
+    # a declared omission of item judges' rows: the rows it takes are planned from the pre-image by the derivation's own rule, the
+    # MANIFEST must carry exactly the keys it changes, and those rows are skipped in the row-by-row comparison below (nothing else)
+    omit: Dict[str, Dict[str, Any]] = {}
+    want_m = dict(pre_m)
+    if ctx.policy.omit_item_judges:
+        oc = sqlite3.connect(f"file:{pre_sqlite}?mode=ro", uri=True)
+        try:
+            omit = ST.plan_item_omission(ctx, oc, pre_m)
+        except ST.ShippedTextError as exc:
+            Report.fail(e, f"the declared item-row omission does not apply to the pre-ref frame: {exc}")
+        finally:
+            oc.close()
+        if omit:
+            want_m.update(ST.omission_manifest(pre_m, omit, dict(ctx.policy.omit_item_judges)))
+            for k in ("item_judges", "item_projection", "item_result_passes", "n_item_judgments", "release_omitted_item_judges"):
+                if post_m.get(k) != want_m.get(k):
+                    Report.fail(e, f"MANIFEST {k} is not the declared omission's ({post_m.get(k)!r} != {want_m.get(k)!r})"[:600])
+    elif "release_omitted_item_judges" in post_m:
+        Report.fail(e, "MANIFEST release_omitted_item_judges is present, but the policy given declares no omission")
     # the MANIFEST
     if post_m.get("derived_from") != pre_m["snapshot_id"]:
         Report.fail(e, f"MANIFEST derived_from {post_m.get('derived_from')!r} is not the pre-ref frame {pre_m['snapshot_id']!r}")
-    if post_m.get("tables") != pre_m.get("tables"):
-        Report.fail(e, "MANIFEST tables (row counts) differ from the pre-ref frame's")
+    if post_m.get("tables") != want_m.get("tables"):
+        Report.fail(e, "MANIFEST tables (row counts) differ from the pre-ref frame's" + (" after the declared omission" if omit else ""))
     if int(post_m.get("ingest_seq", -1)) != int(pre_m["ingest_seq"]) or not post_m["snapshot_id"].startswith(f"{int(pre_m['ingest_seq']):012d}-"):
         Report.fail(e, f"snapshot id {post_m['snapshot_id']!r} does not keep the pre-ref ingest_seq {pre_m['ingest_seq']}")
     if inputs_sha and post_m.get("release_rules_sha256") != inputs_sha:
@@ -579,7 +600,19 @@ def check_frame(ctx: "ST.Context", tree: str, ref: str, work: str, fs: Optional[
             maps = {i: frame_mapping(ctx, a, t, c) for i, c in enumerate(cols)}
             maps = {i: m for i, m in maps.items() if m}
             sel = ", ".join(f'"{c}"' for c in cols)
-            ca = a.execute(f'SELECT {sel} FROM "{t}" ORDER BY rowid')
+            skip = ""
+            if omit and t in ST.ITEM_TABLES:
+                # the omitted judges' rows of the pre-image, skipped exactly (the plan counted them and found none verbatim)
+                a.execute("CREATE TEMP TABLE IF NOT EXISTS _cst_omit (judgment_id TEXT PRIMARY KEY)")
+                a.execute("DELETE FROM temp._cst_omit")
+                a.executemany("INSERT OR IGNORE INTO temp._cst_omit (judgment_id) VALUES (?)",
+                              [(j,) for p in omit.values() for j in p["judgment_ids"]])
+                skip = " WHERE judgment_id IS NULL OR judgment_id NOT IN (SELECT judgment_id FROM temp._cst_omit)"
+                n_skip = a.execute(f'SELECT COUNT(*) FROM "{t}" WHERE judgment_id IN (SELECT judgment_id FROM temp._cst_omit)').fetchone()[0]
+                if n_skip != sum(int(p[f"{t}_rows"]) for p in omit.values()):
+                    Report.fail(e, f"{t}: the omission skips {n_skip} pre-image rows, the plan counted "
+                                   f"{sum(int(p[f'{t}_rows']) for p in omit.values())}")
+            ca = a.execute(f'SELECT {sel} FROM "{t}"{skip} ORDER BY rowid')
             cb = b.execute(f'SELECT {sel} FROM "{t}" ORDER BY rowid')
             n = 0
             for ra, rb in itertools.zip_longest(ca, cb):

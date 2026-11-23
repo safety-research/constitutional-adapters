@@ -1729,3 +1729,151 @@ def test_seed_replicate_keys_are_admitted_model_keys():
     assert len(prd.MODEL_KEYS) == len(set(prd.MODEL_KEYS))
     src = (REPO / "scripts/sdfbase/psr_residual_distill.py").read_text()
     assert 'choices=list(MODEL_KEYS) + ["tinybase"]' in src
+
+
+# -- --ctl-key: the control parent from its own bank key (compose-v / verify-v / emit-v / liveness-receipt) --
+
+CTL_KEY = "tinybase_ctl"
+
+
+def _ctl(bank):
+    return [*_common(bank), "--ctl-si", CTL_SI, "--ctl-key", CTL_KEY]
+
+
+def _digest(d: Path) -> dict:
+    return {str(p.relative_to(d)): (p.stat().st_mtime_ns, prd.sha256_file(p))
+            for p in sorted(d.rglob("*")) if p.is_file()}
+
+
+def test_ctl_key_compose_verify_receipt_emit_round_trip(bank, tiny_llama, capsys, monkeypatch):
+    """With ``--ctl-key K`` the negative parent is read from ``<root>/K/cells_all``
+    and V lives at ``psr_paired_write/K/`` through compose-v (record deferred),
+    verify-v, liveness-receipt and emit-v — the pair built from the model
+    key's own control is never touched; the sidecar keeps ``model_key`` and
+    names ``ctl_model_key``; the shared verdict re-verifies each parent under
+    its own recorded key."""
+    from sisteer.eval.object_identity import derived_object_problems
+    from sisteer.registry import hooks
+
+    model, _tok = tiny_llama
+    root = bank / "out"
+    _stage_cell(root, CTL_KEY, CTL_SI, random_psr(model, 33))
+    assert prd.main(["compose-v", *_common(bank)]) == 0                       # the model key's own pair
+    own_tree = root / "derived" / "psr_paired_write" / KEY
+    before = _digest(own_tree)
+    capsys.readouterr()
+    assert prd.main(["compose-v", *_ctl(bank), "--no-emit"]) == 0
+    vdir = prd.v_dir(root / "derived", KEY, MIX_SI, CTL_KEY)
+    assert vdir == root / "derived" / "psr_paired_write" / CTL_KEY / f"{MIX_SI}__psr_ce_all_minus_ctl"
+    meta = json.loads((vdir / "derived_meta.json").read_text())
+    assert meta["model_key"] == KEY and meta["ctl_model_key"] == CTL_KEY
+    assert meta["parent_pos"]["model_key"] == KEY and meta["parent_neg"]["model_key"] == CTL_KEY
+    src = torch.load(root / CTL_KEY / "cells_all" / f"{CTL_SI}__psr_ce_all" / "object.pt", map_location="cpu", weights_only=True)
+    blob = torch.load(vdir / "object.pt", map_location="cpu", weights_only=True)
+    assert all(torch.equal(blob["neg"]["directions"][l], src["directions"][l]) for l in src["directions"])
+    assert derived_object_problems(vdir / "object.pt", derived_id=vdir.name, parents_root=root) == []
+    assert "ctl_model_key" not in json.loads((own_tree / vdir.name / "derived_meta.json").read_text())
+    # verify-v re-admits it under the control key; without the key the model key's own V is what it reads
+    assert prd.main(["verify-v", *_ctl(bank)]) == 0
+    assert prd.verify_v(root, root / "derived", KEY, MIX_SI, CTL_SI, ctl_key=CTL_KEY) == []
+    # liveness-receipt binds the probe to the bytes in the control key's directory
+    (vdir / "gate_liveness.json").write_text(json.dumps({"0": 0.9, "1": 0.8}))
+    assert prd.main(["liveness-receipt", *_ctl(bank), "--writer", "tests", "--n-probe", "4"]) == 0
+    receipt = json.loads((vdir / prd.LIVENESS_RECEIPT).read_text())
+    assert receipt["object_sha256"] == prd.sha256_file(vdir / "object.pt") and receipt["writer"] == "tests"
+    # emit-v files V's record from the control key's directory
+    calls: list = []
+    monkeypatch.setattr(hooks, "emit_object_from_sidecar", lambda obj_dir, **kw: calls.append((str(obj_dir), kw)) or ["synthetic-record"])
+    monkeypatch.setenv("REGISTRY_CAMPAIGN", "synthetic_campaign")
+    capsys.readouterr()
+    assert prd.main(["emit-v", *_ctl(bank)]) == 0, capsys.readouterr().err
+    assert len(calls) == 1 and calls[0][0] == str(vdir) and calls[0][1]["object_kind"] == "composed"
+    assert sorted(calls[0][1]["parent_object_ids_json"]) == sorted([meta["parent_pos"]["object_sha256"], meta["parent_neg"]["object_sha256"]])
+    # nothing under the model key's own directory was created or modified
+    assert _digest(own_tree) == before
+    # a V of the OTHER pair under the control key's directory is refused (its sidecar records another key for parent_neg)
+    for f in ("object.pt", "derived_meta.json"):
+        (vdir / f).write_bytes((own_tree / vdir.name / f).read_bytes())
+    probs = prd.verify_v(root, root / "derived", KEY, MIX_SI, CTL_SI, ctl_key=CTL_KEY)
+    assert any(f"parent_neg.model_key={KEY!r}, this pair needs {CTL_KEY!r}" in p for p in probs), probs
+    capsys.readouterr()
+    assert prd.main(["compose-v", *_ctl(bank)]) == 2
+    err = capsys.readouterr().err
+    assert "another pair" in err and f"parent_neg.model_key={KEY!r}" in err
+    assert _digest(own_tree) == before
+
+
+def test_ctl_key_is_refused_on_every_other_subcommand_and_must_be_a_plain_key(bank, capsys):
+    """Only the paired-write subcommands know ``--ctl-key``: calibrate, distill,
+    all and the rest refuse it by name before anything runs; a value that is
+    not one plain path component is refused on the four that take it."""
+    for sub, extra in (("calibrate", ["--model", TINY]), ("distill", ["--model", TINY]), ("all", ["--model", TINY]),
+                       ("identity-check", ["--model", TINY]), ("capture-set", []),
+                       ("merge-calibration", ["--lr-mult", "1"])):
+        with pytest.raises(SystemExit) as ei:
+            prd.main([sub, *_common(bank), *extra, "--ctl-key", CTL_KEY])
+        assert ei.value.code == 2, sub
+        assert "unrecognized arguments: --ctl-key" in capsys.readouterr().err, sub
+    ap = prd.build_parser()
+    for sub in ("compose-v", "verify-v", "check-v-pair", "emit-v", "liveness-receipt"):
+        assert ap.parse_args([sub, "--model-key", KEY, "--ctl-key", CTL_KEY]).ctl_key == CTL_KEY
+        assert ap.parse_args([sub, "--model-key", KEY]).ctl_key is None
+    for sub in ("compose-v", "verify-v", "check-v-pair", "emit-v", "liveness-receipt"):
+        for bad in ("../tinybase", "a/b", ".."):
+            assert prd.main([sub, *_common(bank), "--ctl-key", bad]) == 2, (sub, bad)
+            assert "is not a plain bank key" in capsys.readouterr().err
+        # the model key itself is not a control key: its own pair takes no flag (one rule with lora_subtract and the sbatch)
+        assert prd.main([sub, *_common(bank), "--ctl-key", KEY]) == 2, sub
+        assert f"--ctl-key {KEY!r} equals --model-key" in capsys.readouterr().err, sub
+    assert not (bank / "out" / "derived").exists()
+
+
+def test_check_v_pair_is_compose_vs_overwrite_guard_alone_and_read_only(bank, tiny_llama, capsys):
+    """check-v-pair rules, without touching anything, on whose V sits in V's directory — by exit code, so the derived sbatch
+    branches without reading text: 0 when the sidecar names THIS pair (cell ids and the model keys it records); 3 when there is no
+    readable sidecar (absent, torn, or not a JSON mapping), so nothing names another pair; 2 when a readable sidecar names another
+    pair, under the model key or under the control key. It is what the sbatch runs before it deletes a V that does not verify."""
+    model, _tok = tiny_llama
+    root = bank / "out"
+    _stage_cell(root, CTL_KEY, CTL_SI, random_psr(model, 33))
+    own = prd.v_dir(root / "derived", KEY, MIX_SI)
+    ctl = prd.v_dir(root / "derived", KEY, MIX_SI, CTL_KEY)
+    plain = [*_common(bank), "--ctl-si", CTL_SI]
+    # no sidecar at all: nothing names a pair
+    assert prd.main(["check-v-pair", *plain]) == prd.CHECK_V_PAIR_NO_SIDECAR == 3
+    assert "no readable sidecar (absent)" in capsys.readouterr().out
+    assert prd.main(["compose-v", *plain, "--no-emit"]) == 0
+    assert prd.main(["compose-v", *_ctl(bank), "--no-emit"]) == 0
+    capsys.readouterr()
+    # each pair's own V: this pair's
+    assert prd.main(["check-v-pair", *plain]) == 0
+    assert "its sidecar names this pair" in capsys.readouterr().out
+    assert prd.main(["check-v-pair", *_ctl(bank)]) == 0
+    # the other pair's V in each directory: refused, nothing touched
+    for here, there, argv, needle in ((ctl, own, _ctl(bank), f"parent_neg.model_key={KEY!r}, this pair needs {CTL_KEY!r}"),
+                                      (own, ctl, plain, f"parent_neg.model_key={CTL_KEY!r}, this pair needs {KEY!r}")):
+        saved = {f: (here / f).read_bytes() for f in ("object.pt", "derived_meta.json")}
+        for f in saved:
+            (here / f).write_bytes((there / f).read_bytes())
+        before = _digest(here)
+        capsys.readouterr()
+        assert prd.main(["check-v-pair", *argv]) == 2
+        err = capsys.readouterr().err
+        assert "holds a V of another pair" in err and needle in err, err
+        assert _digest(here) == before
+        for f, b in saved.items():
+            (here / f).write_bytes(b)
+    # a V built against another control (same keys): refused by its cell id
+    good = (own / "derived_meta.json").read_text()
+    meta = json.loads(good)
+    meta["parent_neg"]["cell_id"] = "constv2ctl2-full__psr_ce_all"
+    (own / "derived_meta.json").write_text(json.dumps(meta))
+    assert prd.main(["check-v-pair", *plain]) == 2
+    assert "parent_neg.cell_id='constv2ctl2-full__psr_ce_all'" in capsys.readouterr().err
+    # a torn sidecar, or JSON that is not a mapping: no readable sidecar, exit 3, the file untouched
+    for torn in ("{not json", "[1, 2]", ""):
+        (own / "derived_meta.json").write_text(torn)
+        before = _digest(own)
+        assert prd.main(["check-v-pair", *plain]) == 3, torn
+        assert "no readable sidecar (torn)" in capsys.readouterr().out, torn
+        assert _digest(own) == before

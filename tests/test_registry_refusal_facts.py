@@ -40,7 +40,7 @@ from sisteer.registry import synth
 from sisteer.registry import validate as VAL
 from sisteer.registry import vocab as V
 
-from test_registry_migrations import AF_TABLES, FU4_TABLES, NTPL_TABLES, _sans_fu4_rebuild  # noqa: E402  -- migration 0027's run_contrast rebuild, 0029's five creates and 0031's two rebuilds, set aside
+from test_registry_migrations import AF_TABLES, FU4_TABLES, NTPL_TABLES, PRUNE_TABLES, _prune_index_aside, _sans_fu4_rebuild  # noqa: E402  -- migration 0027's run_contrast rebuild, 0029's five creates, 0031's two rebuilds and 0033's ledger, set aside
 
 
 def _root(tmp_path, name="reg"):
@@ -275,16 +275,17 @@ def test_migrate_plan_on_the_previous_shape_lists_one_create_the_add_columns_and
         assert have[("table", t)] == want[("table", t)], t          # the CHECK lists are byte-identical: no ledger rebuild
     plan = M.shape_plan(conn)
     assert [r["table"] for r in plan["rebuild"] if r["table"] not in FU4_TABLES + NTPL_TABLES] == []        # 0027's run_contrast and 0031's two rebuilds aside
-    assert [c for c in plan["create"] if c not in ("fold_observation",) + AF_TABLES] == ["record_refusal_fact"]   # 0029's five creates aside
+    assert [c for c in plan["create"] if c not in ("fold_observation",) + AF_TABLES + PRUNE_TABLES] == ["record_refusal_fact"]   # 0029's five creates and 0033's ledger aside
     assert [(a["table"], a["columns"]) for a in plan["add_columns"]] == [("object", ["parent_object_id", "named_role"]),
                                                                          ("judgment", ["claimed_instrument_id", "claimed_required_judge_id"]),
                                                                          ("record_refusal", ["judged_with"])]
     # migration 0026 (the twin fold) recreates v_multi_source_check and v_run_current on this shape too, and v_multi_source_rows -- this file's own --
-    # once more; its two are set aside here and pinned by its own test (tests/test_registry_twin_fold.py)
-    assert [v for v in plan["objects"]["view"]["recreate"] if v not in ("v_multi_source_check", "v_run_current")] == [
+    # once more; its two are set aside here and pinned by its own test (tests/test_registry_twin_fold.py); 0033 recreates v_paper_inputs_head
+    # without its item member (pinned by test_registry_migrations.py::test_0033_on_a_v32_database)
+    assert [v for v in plan["objects"]["view"]["recreate"] if v not in ("v_multi_source_check", "v_run_current", "v_paper_inputs_head")] == [
         "v_item_result_current", "v_item_result_provenances", "v_multi_source_rows", "v_paper_current", "v_paper_long", "v_pending_judgment", "v_roster_match"]
     assert plan["objects"]["view"]["drop"] == []
-    assert plan["objects"]["index"] == {"recreate": [], "drop": []} and plan["objects"]["trigger"] == {"recreate": [], "drop": []}   # 0030's two fence triggers ride 0031's run rebuild
+    assert _prune_index_aside(plan["objects"]["index"]) == {"recreate": [], "drop": []} and plan["objects"]["trigger"] == {"recreate": [], "drop": []}   # 0030's two fence triggers ride 0031's run rebuild; 0033's index drop aside
     body = _sans_fu4_rebuild(M.render_shape_migration(conn, plan))                                  # 0027's run_contrast rebuild block (and 0031's two) aside
     assert body.count("CREATE INDEX idx_record_refusal_fact_") == 2 and "__new" not in body and "INSERT INTO" not in body
     import re

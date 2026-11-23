@@ -396,6 +396,12 @@ def _parse_base_cell_id(base: str, cell_id: str) -> ParsedCellId:
                 f"OBJECT-ONLY SI {si!r} — a document-corpus pseudo-"
                 "instruction has no system-prompt text; only "
                 f"'si_{si}__<method>' is legal for it")
+        if si in cm.PETRI_DISTILLED_ONLY_SI_IDS:
+            raise DefenseCellError(
+                f"cell id {cell_id!r} stacks a prompted prefix over the "
+                f"DISTILLED-ONLY SI {si!r} — it has no prompted leg on this "
+                "tree (no variant dir, no recorded prefix hash); only "
+                f"'si_{si}__<method>' is legal for it")
         if si in cm.PETRI_PROMPTED_ONLY_SI_IDS:
             raise DefenseCellError(
                 f"cell id {cell_id!r} stacks over the PROMPTED-ONLY SI {si!r} — a "
@@ -418,6 +424,12 @@ def _parse_base_cell_id(base: str, cell_id: str) -> ParsedCellId:
                 f"prompted cell id {cell_id!r} names the OBJECT-ONLY SI "
                 f"{si!r} — a document-corpus pseudo-instruction is never a "
                 f"system prompt; only 'si_{si}__<method>' is legal for it")
+        if si in cm.PETRI_DISTILLED_ONLY_SI_IDS:
+            raise DefenseCellError(
+                f"prompted cell id {cell_id!r} names the DISTILLED-ONLY SI "
+                f"{si!r} — it has no prompted leg on this tree (no variant "
+                f"dir, no recorded prefix hash); only 'si_{si}__<method>' is "
+                "legal for it")
         return ParsedCellId(base, "prompted", si, None)
     if base.startswith(_SI_ID_PREFIX):
         head, sep, method = base.partition("__")

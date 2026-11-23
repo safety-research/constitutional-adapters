@@ -621,8 +621,20 @@ def test_multiturn_cell_files_the_full_goal_set_from_one_nine_shard_store_and_re
     assert f'"private_run": "{prun}"' in st["note"] and f'"private_run_source": "config configs/sdfbase_full22_{TAG}.yaml"' in st["note"], st["note"]
     assert '"AttackOutcome.SUCCESS": 169' in st["note"] and '"goals_per_shard": [29, 29, 29, 29, 29, 29, 29, 28, 28]' in st["note"], st["note"]
     assert '"goals_expected": 259' in st["note"] and '"goals_missing": 0' in st["note"] and '"source": "resolver in-process"' in st["note"] and f'"config_sha256": "{cfg_sha[:12]}"' in st["note"], st["note"]
-    assert '"cross_check": {"agrees": true' in st["note"] and '"resolver_sha256": "' in st["note"], st["note"]
-    assert len(st["note"]) < 2000, len(st["note"])                                              # the whole fact block survives the note cap
+    assert '"cross_check": {"agrees": true}' in st["note"] and '"resolver_sha256": "' in st["note"], st["note"]
+    assert str(ids_file) not in st["note"] and ids_file.name not in st["note"], st["note"]       # the cross-check's verdict rides the note, never the file's path
+    # the note cap: the WHOLE fact block survives it whatever the paths' length (a tmp root, a wave root's depth). The block carries no path,
+    # and the store path in the prose is the one part the closer shortens to fit (`…` + its tail; store_uri carries it whole). So the filed
+    # note is generated_note(store, block) exactly, within the cap, its block parses whole down to its LAST key, and a store path longer than
+    # the cap itself still leaves the same block whole
+    sys.path.insert(0, str(CLOSER.parent)); import registry_close_stores as RCS
+    note = st["note"]; frm = note.index(" from ") + len(" from "); at = note.index(": {", frm); shown = note[frm:at]
+    block = json.loads(note[at + 2:])
+    assert len(note) <= RCS.NOTE_CAP and block["unparsable_rows"] == 0 and block["goals_distinct"] == 259, (len(note), note)
+    assert shown == str(good) or (len(note) == RCS.NOTE_CAP and shown.startswith("…") and str(good).endswith(shown[1:])), (len(note), shown)
+    assert note == RCS.generated_note(planned, plan["item_set_id"], str(good), block), note
+    long_note = RCS.generated_note(planned, plan["item_set_id"], "/deeper" * 300 + str(good), block)    # 2,100 characters of path before the store
+    assert len(long_note) == RCS.NOTE_CAP and long_note.startswith(note[:frm] + "…") and long_note.endswith("/crescendo/none: " + json.dumps(block, sort_keys=True)), long_note
     # the second cluster's shards arrive (the one-time copy): the SAME command files that run; the two defective pair cells still refuse
     _multiturn_store(wave, prun, "crescendo", "prompted__safety_refusal", nshards=9, goals=259, shards=[3, 4, 7, 8], goal_ids=real_ids)
     r = _close(pending, spool, wave, "--nshards", "9", job_name=f"f22-att-{TAG}-g012-crescendo")                    # no file: the resolver alone

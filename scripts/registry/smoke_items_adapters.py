@@ -125,6 +125,10 @@ def seed_none_and_prompted_objects(root: str, now: str) -> Dict[str, object]:
 
 
 def table_counts(conn, run_ids: Optional[List[str]] = None) -> Dict[str, object]:
+    """Raw row counts per table. The item tables (``item_result``, ``item_flags``, ``run_degeneration``) hold the rows the fold keeps: the
+    current rows, pending and held revisions' rows, and an accepted, superseded revision's rows only until reclaim deletes them at the end
+    of the cycle (migration 0033). A per-adapter ``table_delta`` of an item table can therefore be NEGATIVE: a re-read whose new revision
+    carries fewer rows than the one it supersedes shrinks the table by the difference."""
     out: Dict[str, object] = {}
     for t in ("run", "judgment", "run_metric", "run_contrast", "item_result", "item_flags", "run_degeneration", "artifact", "computation"):
         out[t] = conn.execute(f"SELECT COUNT(*) FROM {t}").fetchone()[0]
@@ -264,6 +268,7 @@ def main() -> int:
         conn = DB.connect(DB.db_path(root), readonly=True)
         after = table_counts(conn)
         conn.close()
+        # signed: an item table shrinks when a re-read supersedes a revision with more rows (reclaim deletes the old copies; table_counts)
         rep["table_delta"] = {t: after[t] - before[t] for t in ("run", "judgment", "run_metric", "run_contrast", "item_result", "item_flags", "run_degeneration", "artifact")}
         before = after
         report["adapters"].append(rep)

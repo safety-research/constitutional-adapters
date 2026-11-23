@@ -2,9 +2,11 @@ THIRD-PARTY NOTICES
 
 This repository is released under the MIT licence in LICENSE, which covers the code, the data and the
 fitted adapters, except the files listed below under their own terms. Some files come from other
-projects and keep their own licences, the ReNeLLM evaluation corpus (entry 13) has its own terms that
-forbid using it to train any AI system, and the adapters in objects/ are derived from the four base
-models below, whose licences also apply to using them. Each entry names the files it covers, the
+projects and keep their own licences, and the adapters in objects/ are derived from the four base
+models below, whose licences also apply to using them. Two machine-generated corpora have terms of
+their own: the ReNeLLM evaluation corpus (entry 13) may not be used to train any AI system, and the
+Qwen 3.8 Max constitution corpus (entry 14) may not be used to train or develop products or services
+that compete with those of Alibaba Cloud or its affiliates. Each entry names the files it covers, the
 upstream source at a pinned revision, the licence and the copyright or attribution line. The full
 licence texts are in LICENSES/.
 
@@ -21,6 +23,7 @@ licence texts are in LICENSES/.
  11. Chain-of-thought exemplars for the GSM8K evaluation
  12. Petri auditor scenarios (generated with petri-bloom)
  13. ReNeLLM evaluation corpus (its own terms, not MIT)
+ 14. Qwen 3.8 Max constitution corpus (its own terms, not MIT)
 
 
 ====================================================================================================
@@ -123,6 +126,9 @@ Licence   MIT (LICENSES/MIT-petri-bloom.txt)
 Copyright (c) 2026 Meridian Labs
 
 Files     configs/capeval/petri/prompts/judge.md
+          tests/fixtures/rejudge/petri_answer_tools.json: the judge's six answer tools as sent, whose
+          highlights, summary and justification texts are inspect-petri's (their scored dimensions
+          are entry 12's bundle files)
 Source    inspect-petri 3.0.11, https://github.com/meridianlabs-ai/inspect_petri @
           ec4775d10d8563e232b780024007ab2a3ec466a6 (inspect_petri/_judge/judge.py)
 Licence   MIT (LICENSES/MIT-inspect-petri.txt)
@@ -296,8 +302,41 @@ Licence   Not the repository's MIT licence: LICENSES/ReNeLLM-corpus-terms.txt. T
 These terms follow from xAI's terms for the rewriter's output (Enterprise Terms of Service, section
 3.2, and the Acceptable Use Policy, both of 14 August 2026, which reach an OpenRouter user through
 OpenRouter's terms): the customer owns the output and may publish it, but may not use it, or permit
-a third party to use it, to train an AI system. The repository's code holds to the same rule: its
-training-pool builders, leakage check and training stages refuse the file
-(src/sisteer/eval/attacks/eval_only.py), and replaying it for evaluation is its only use. Replay
+a third party to use it, to train an AI system. Replay
 refuses any other corpus unless it is acknowledged as a different sample, and every result from such
 a corpus is labelled as not the paper's.
+
+
+====================================================================================================
+14. Qwen 3.8 Max constitution corpus (its own terms, not MIT)
+====================================================================================================
+
+Files     corpora/constitution_qwen38max_advice/ and corpora/constitution_qwen38max_stories/: the gzip
+          shards of 197 advice records and 736 stories, which reassemble to the two
+          final-qwen38-1m-20261112.jsonl files (sha256
+          d88bdd06421bad3e4fe987b38577b4d27f02e665489610b504ad675fb4611f0a and
+          e60ea0c8f0f0de57b775dcf00a35af04bc3f7826cfb2f6ea481cda0b02b53581), with each directory's
+          MANIFEST.json, filter report and provenance sidecar
+Method    the constitution pipeline of corpus_generator/, the one that wrote the paper's constitution
+          corpus, re-run from Claude's constitution (entry 10) with the model below in every role, the
+          scoring that filters the records included. The development code that ran it is not in this
+          repository; the provenance sidecar names its commits (inferred from timing, not recorded) and
+          how the run differed from the paper's.
+Generator qwen/qwen3.8-max-0902 (Qwen 3.8 Max, the 2026-09-02 snapshot, by Alibaba Cloud), called
+          through OpenRouter on 2026-11-12 and routed only to its Alibaba provider (Alibaba Cloud Model
+          Studio). The records are machine-generated, not human-written.
+Licence   Not the repository's MIT licence: LICENSES/Qwen38Max-corpus-terms.txt. The files may be used,
+          copied, modified and redistributed for any purpose, training models included, except that
+          they may not be used, and no one may be permitted to use them, to train or develop products or
+          services that compete with those of Alibaba Cloud or its affiliates, unless Alibaba Cloud
+          expressly authorises it. Redistribution keeps these terms and this attribution.
+
+These terms follow from Alibaba Cloud's terms for the generator's output, the Alibaba Cloud
+International Website Product Terms of Service, section 4.48.1, last updated 19 October 2026, which
+OpenRouter names as its Alibaba provider's terms and passes on to an OpenRouter user through its own
+Terms of Service (sections 5 and 6.1, of 31 August 2026). Under section 4.48.1(e), Alibaba Cloud
+claims no ownership of intellectual property rights in the output and the customer may use it,
+subject to the law and Alibaba Cloud's terms. Under
+section 4.48.1(d)(v), neither the models nor their output may be used to train or develop products or
+services that compete with those of Alibaba Cloud or its affiliates without Alibaba Cloud's express
+authorisation.

@@ -4,7 +4,7 @@
 at commit `790ef2d8d428db9698c4727bfe152e13320d8369` (source sha256
 `7141dd67a1f165e923dcf4670b6d0956bc1ab902826d8a00d4a0d2da80ea9a8f`, 759 lines), the commit the native wave was graded
 from. The source is not on this tree and the lens graders refuse native stores by design, so the seed-replicate views'
-native stores are graded by this twin. `GRADER_DIFF.patch` (`diff -u` source → copy; +1950 / −61 lines in 24 hunks,
+native stores are graded by this twin. `GRADER_DIFF.patch` (`diff -u` source → copy; +2517 / −62 lines in 24 hunks,
 counted as `grep -c '^+[^+]'` / `'^-[^-]'` / `'^@@'`) is the whole difference: reverse-applied to the twin it yields the
 source at the sha256 above, forward-applied to that source it yields the twin (`tests/test_seedrep_grader_twin.py`). It
 is regenerated from the recorded source blob whenever the twin changes.
@@ -12,7 +12,8 @@ is regenerated from the recorded source blob whenever the twin changes.
 ## What the copy adds
 
 Every hunk is additive except the BoN judge's construction, guard and grade-call lines (items 4–6), the credential
-plumbing the vault mode retired (item 11) and `--org`'s help text, which names a sisteer.vault pool.
+plumbing the vault mode retired (item 11), `--org`'s help text, which names a sisteer.vault pool, and the multi-turn
+grade function's last-pass `raise`, which item 19 puts under `if jb_allowance is None:` (the same raise at the default).
 
 1. A copy header, `import re`, and the worktree-depth default `parents[4]` → `parents[3]` (evaluated eagerly by the
    source, so the shallower copy would raise at import).
@@ -140,6 +141,50 @@ plumbing the vault mode retired (item 11) and `--org`'s help text, which names a
     rebuild of item 6 never rebuilds a climb: it re-reads the store's cap-512 draws through the judge cache and has no fold
     step, so a located climb is refused by name before the rebuild considers its judgment (`bon_climb_rebuild_refusal`),
     and its cell is rebuilt only from another run of its store that passes.
+16. `--grade-excluded-by RULING_ID` (repeatable, OPT-IN; absent = every output as before): under the registry worklist a
+    selected multi-turn run that an `exclude` ruling the flag names is the one thing retiring -- its decisive ruling and its first
+    failing rule in `v_run_current`, not held out, no `superseded_by_run_id`, a judgeable lifecycle, no other covering ruling a
+    `supersede`, no later complete run at its key, and every run it would supersede once graded retired by a named exclusion
+    too -- and the sole judgeable registration of its store is graded on its own reading (`excluded_candidates`,
+    `excluded_ruling_of_facts`, `later_relation_of`: the currency read carries the facts and the later-run relation is read
+    once per invocation), as a rung of item 9 is; the exclusion stands. Every other retired run stays retired, the reason the
+    flag did not apply named; a store with several registrations keeps the one-store-one-run refusal. Refused by name without
+    `--worklist registry`, without `--run-id`, beside a non-multi-turn leg, or naming an id that is not an active exclude
+    ruling of the open round that can decide a run (`named_exclude_rulings`). Recorded on stdout, in the dry-run
+    plan and in `grading_provenance.json` (`registry.grade_excluded_by`, `registry.graded_excluded`). `TARGETS` also
+    names the three multi-turn views of the non-production roster `configs/sdfbase_full22_roster_ctlstop_eb64.yaml`
+    (`qwen35_4b_ctlstop64s<k>`, Crescendo and ActorAttack).
+17. `TARGETS` names the three multi-turn views of the non-production roster `configs/sdfbase_full22_roster_pubv_eb64.yaml`
+    (`qwen35_4b_pubv64s<k>`, Crescendo and ActorAttack): the published composed difference ReLU objects and the unsteered model,
+    re-measured in the setup of item 16's views. Three dict rows; no grammar is widened and no grading path changes.
+18. `TARGETS` names the three multi-turn views of the non-production roster `configs/sdfbase_full22_roster_sikl4.yaml`
+    (`qwen35_4b_sikl4s<k>`, Crescendo and ActorAttack): the SI-distilled objects refit with recorded fit seeds (the safety,
+    constitution and short irrelevant control SIs, each as a LoRA and a ReLU steer). Three dict rows; no grammar is widened and
+    no grading path changes.
+19. `--allow-judge-blocked N` (a COUNT, OPT-IN; default 0 = every output as before): after the multi-turn grade function's six
+    bounded passes, at most N replies the judge answered with `stop_reason=refusal` are left unscored -- never scored 0 -- when
+    the last pass's failure histogram is exactly `{'stop_reason=refusal': n}` for the n items left (`JudgeBlockedAllowance`; the
+    live grader keeps `allow_unscored=0`, so the passes still run), when the cell's decided replies keep the invocation's total
+    within N REPLIES (one judge item covers every reply of a goal with the same text, so the item count alone can undercount;
+    `JudgeBlockedAllowance.file_cell` refuses with `JudgeBlockedOverCap` before anything is filed) and when each reply's goal
+    is DECIDED by its scored replies: best at the 1.0 ceiling and a first success at an earlier reply (`judge_blocked_replies`, recomputed from the judge's own
+    map before anything is filed; an undecided goal refuses with `JudgeBlockedUndecided`, the JB1 line plus why). No filed
+    number can move: asr at every threshold, k, mean best, queries-to-first-success. The harness read carries the reply as None
+    in place (`jailbreak_run._gated_defense_metrics(unscored_ok=...)`, the turn-index-safe rule of d9faeded0c; absent, the
+    original lines run). The reply is filed as a per-turn `strongreject_score` row with value NULL and label `judge_blocked`
+    (reason and pass count in its extra), its goal's `asr` row names `blocked_turns`, the judgment carries
+    `extra.blocked_replies` (never a key named `judge_blocked`, which the paper reader reads as a censoring count) and
+    `grading_provenance.json` an `allow_judge_blocked` block; `n_items_judged` stays the goals graded. Refused by name without
+    `--worklist registry`, beside a non-multi-turn leg, or below 0.
+20. Claims never outlive the dispatch. `main` runs the grader (`_grade_main`) under a `ClaimGuard`, armed BEFORE
+    `worklist.claim_all`: on any exception that leaves the grader once the claims start (a cell's JB1 refusal, any other
+    failure, or one that interrupts the claim loop itself, such as `db.LockHeld` on a later claim, which claim_all does not
+    release for), every claim the worklist holds whose JudgingScope never opened is released (`worklist.release`), so a cell or
+    an attack the dispatch never reached is pending again at once. A pair whose scope opened is never touched (its scope closed
+    it), a claim the worklist does not hold (another session's, or one claim_all already released) is never touched, and a
+    failed release is named on stderr without masking the exception. Before this a multi-turn cell's JB1 refusal ended the
+    dispatch and every later claimed cell's claim stayed `in_progress` with nothing judging it. Grading itself is unchanged: the
+    refusal still ends the dispatch in that cell; from-disk grading claims nothing and is unchanged.
 
 Nothing else differs: the engine-identity guards, completeness gates, the judge pin for multi-turn and static legs
 (`claude-haiku-4-5`, StrongREJECT v1, cache kind `sr`), `--dry-run`, `--goalset-dir`, `--cells`,
@@ -147,7 +192,7 @@ Nothing else differs: the engine-identity guards, completeness gates, the judge 
 the StrongREJECT grade path (`grading_live`, `throttle`, `proxy_engine`, `manifest`, `jailbreak_run`, `two_si_run`,
 `grade_gated_served`, `jailbreak_artifacts`, `vault`) are identical to the source commit's except for the vault-mode change of
 item 11 (`vault` gained the `wif` mode, op and env byte-identical; `grading_live` a prebuilt `client=` seam and the keyless stamp
-on `pool_stamp`); `grade_bon_live` differs in the registry-side helpers this twin calls and the source never did (`bon_metric_rows`,
+on `pool_stamp`) and item 19's opt-in `unscored_ok` on `jailbreak_run._gated_defense_metrics` (absent, its original lines run); `grade_bon_live` differs in the registry-side helpers this twin calls and the source never did (`bon_metric_rows`,
 the rung helpers of items 9 and 14 and the climb fold helpers of item 15: BONHEADLINE, BONRUNG, BONFOLD) and in a
 status line that prints either stamp shape, not on the StrongREJECT judge path.
 

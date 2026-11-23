@@ -693,7 +693,7 @@ def opt(name, default=None):
     return rest[rest.index(name) + 1] if name in rest else default
 fm = lambda m: f"{float(m):g}"
 if script == "lora_subtract.py":
-    d = Path(opt("--out-root")) / opt("--models") / f"{opt('--cells')}__lora_r4_ce_minus_ctl"
+    d = Path(opt("--out-root")) / (opt("--ctl-key") or opt("--models")) / f"{opt('--cells')}__lora_r4_ce_minus_ctl"
     d.mkdir(parents=True, exist_ok=True)
     (d / "object.pt").write_bytes(b"lora"); (d / "derived_meta.json").write_text('{"kind": "lora_subtraction"}')
     sys.exit(0)
@@ -710,11 +710,33 @@ if script == "gate_liveness.py":
 assert script == "psr_residual_distill.py", script
 sub, rest = rest[0], rest[1:]
 out_root, key, mix = Path(opt("--out-root")), opt("--model-key"), opt("--mix-si")
-vdir = out_root / "psr_paired_write" / key / f"{mix}__psr_ce_all_minus_ctl"
+vdir = out_root / "psr_paired_write" / (opt("--ctl-key") or key) / f"{mix}__psr_ce_all_minus_ctl"
 resid = out_root / "psr_residual" / key / f"{mix}__psr_ce_all_minus_ctl_distilled"
 scores = json.loads(os.environ.get("FAKE_SCORES", "{}"))
-if sub == "verify-v":
-    sys.exit(0 if (vdir / "object.pt").is_file() else 2)
+def v_pair_problems():   # the real same-pair rule (lora_subtract.pair_problems) over V's JSON sidecar; no sidecar = none
+    mp = vdir / "derived_meta.json"
+    if not mp.is_file():
+        return []
+    try:
+        m = json.loads(mp.read_text())
+    except ValueError:
+        return ["unreadable"]
+    if not isinstance(m, dict):
+        return ["unreadable"]
+    want = {"parent_pos": (f"{mix}__psr_ce_all", key), "parent_neg": (f"{opt('--ctl-si')}__psr_ce_all", opt("--ctl-key") or key)}
+    return [r for r, (cell, k) in want.items()
+            if (m.get(r) or {}).get("cell_id") != cell or (m.get(r) or {}).get("model_key") not in (None, k)]
+if sub == "check-v-pair":       # the real exit codes: 0 this pair's, 3 no readable sidecar (absent or torn), 2 another pair's
+    if not (vdir / "derived_meta.json").is_file() or v_pair_problems() == ["unreadable"]:
+        sys.exit(3)
+    bad = v_pair_problems()
+    if bad:
+        print(f"fake check-v-pair: another pair's V {bad}", file=sys.stderr)
+    sys.exit(2 if bad else 0)
+if sub == "verify-v":            # a V whose bytes are FAKE_V_TORN is torn; a JSON sidecar of another pair fails as the real one does
+    obj, torn = vdir / "object.pt", os.environ.get("FAKE_V_TORN")
+    bad = [p for p in v_pair_problems() if p != "unreadable"]
+    sys.exit(0 if obj.is_file() and not bad and not (torn and obj.read_bytes() == torn.encode()) else 2)
 if sub == "compose-v":
     vdir.mkdir(parents=True, exist_ok=True); (vdir / "object.pt").write_bytes(b"V"); sys.exit(0)
 h = lambda p: hashlib.sha256(Path(p).read_bytes()).hexdigest()
@@ -1125,3 +1147,313 @@ def test_derived_sweep_format_mult_matches_the_distiller_and_declaration_semanti
         _ds.ensure_extension(bare, 0.1, default_ladder="0.3,1,3")
     with pytest.raises(_ds.SweepError, match="never declared"):
         _ds.check_finish(bare)
+
+
+# ---- positional 11: the control refit under its own bank key, in the fake world ------------------------------------
+
+#: _FAKE_PY routes --ctl-key exactly as the real builders do (the control's key keys the output): were the sbatch to drop the
+#: flag, the fakes would write under the pool key, which the tests below forbid
+_CTL_KEY = "qwen35_4b_base_eb64_s1_ctlstop"
+
+
+def _fits_config(w, key: str, *, pool: str, seed=None, heldout: str = "constv2ctl2-heldout") -> Path:
+    """``configs/sdfbase_<key>_fits.yaml`` in the fake checkout: its held-out pool under /vol/pool/<pool>/ and, when given, its seed."""
+    p = w.repo / "configs" / f"sdfbase_{key}_fits.yaml"
+    p.write_text(f"model: Qwen/Qwen3.5-4B-Base\nmodel_revision: 1001bb4d\ntrain_kwargs:\n  default:\n"
+                 f"    heldout_pool: /vol/pool/{pool}/pairs_{heldout}.jsonl\n" + (f"    seed: {seed}\n" if seed is not None else ""))
+    return p
+
+
+def _ctl_key_world(tmp_path, *, seed=None):
+    """The fake world plus the control refit under its own key (its fits config in the checkout — held-out pool in the model key's
+    pool dir, the model key's seed — cells + store identity, COMPLETE naming its own sha) and the model key's OWN published pair under
+    the pool key — the directories a ctl-key build must never create or touch."""
+    w = _derived_world(tmp_path, seed_line=f"    seed: {seed}\n" if seed is not None else "")
+    _fits_config(w, _CTL_KEY, pool=_KEY, seed=seed)
+    ctl_cells = w.root / _CTL_KEY / "cells_all"
+    ctl_cells.mkdir(parents=True)
+    (ctl_cells / "_store_identity.json").write_text("{}\n")
+    for c in (f"{CTL}__psr_ce_all", f"{CTL}__lora_r4_ce"):
+        (ctl_cells / c).mkdir()
+        for f in ("object.pt", "train_budget_meta.json"):
+            (ctl_cells / c / f).write_text("ctl\n")
+        (ctl_cells / c / "COMPLETE").write_text(json.dumps({"object_sha256": "e" * 64, "fit_fingerprint": "fp-ctl"}))
+    own = {"lora_subtraction": f"{MIX}__lora_r4_ce_minus_ctl", "psr_paired_write": f"{MIX}__psr_ce_all_minus_ctl"}
+    for kind, did in own.items():
+        d = w.root / "derived" / kind / _KEY / did
+        d.mkdir(parents=True)
+        for f in ("object.pt", "derived_meta.json", "registry_emission.json", "build_provenance.json"):
+            (d / f).write_text(f"published {kind} {f}\n")
+    return w, ctl_cells
+
+
+def _pool_key_tree(w) -> dict:
+    """Every file and directory under <derived>/*/<pool key>/, with its bytes and mtime."""
+    out = {}
+    for top in sorted((w.root / "derived").glob(f"*/{_KEY}")):
+        for p in sorted([top, *top.rglob("*")]):
+            out[str(p.relative_to(w.root))] = (p.stat().st_mtime_ns, p.read_bytes() if p.is_file() else None)
+    return out
+
+
+def test_sbatch_ctl_key_prep_builds_under_the_control_key_and_never_touches_the_pool_keys_directories(tmp_path):
+    """The direct prep with positional 11: the control parents are preflighted under the control key, lora_subtract and every
+    paired-write subcommand get --ctl-key, both outputs land under <derived>/<kind>/<ctl key>/, their build provenance names the
+    control key's cells, the RESULT and pair= lines name the key — and NOTHING under <derived>/*/<pool key>/ is created or
+    modified (the model key's own published pair is byte- and mtime-identical, and no new path appears there)."""
+    w, ctl_cells = _ctl_key_world(tmp_path)
+    before = _pool_key_tree(w)
+    r = _stage(w, "prep", "-", "1", "5", "both", "direct", _CTL_KEY, env_extra={"ESCALATE_QOS": "none"})
+    assert r.returncode == 0, r.stdout + r.stderr
+    assert _pool_key_tree(w) == before
+    assert not (w.root / "derived" / "psr_residual").exists()
+    lora = w.root / "derived" / "lora_subtraction" / _CTL_KEY / f"{MIX}__lora_r4_ce_minus_ctl"
+    vdir = w.root / "derived" / "psr_paired_write" / _CTL_KEY / f"{MIX}__psr_ce_all_minus_ctl"
+    assert (lora / "object.pt").is_file() and (vdir / "object.pt").is_file()
+    assert (vdir / "gate_liveness_receipt.json").is_file() and (vdir / "registry_emission.json").is_file()
+    for d, arm in ((lora, "lora_r4_ce"), (vdir, "psr_ce_all")):
+        prov = json.loads((d / "build_provenance.json").read_text())
+        assert prov["ctl_key"] == _CTL_KEY
+        assert [p["path"] for p in prov["parents"]] == [f"{w.root}/{_KEY}/cells_all/{MIX}__{arm}", f"{ctl_cells}/{CTL}__{arm}"]
+        assert prov["parents"][1]["object_sha256"] == "e" * 64 and prov["parents"][1]["fit_fingerprint"] == "fp-ctl"
+    calls = [l for l in w.fake_log.read_text().splitlines() if l.startswith(("lora_subtract.py", "psr_residual_distill.py"))]
+    subs = [l.split()[1] if l.startswith("psr_residual_distill.py") else "lora_subtract" for l in calls]
+    assert subs == ["lora_subtract", "compose-v", "verify-v", "liveness-receipt", "emit-v"], subs
+    assert all(f"--ctl-key {_CTL_KEY}" in l for l in calls), calls
+    assert all((f"--models {_KEY} " in l) or (f"--model-key {_KEY} " in l) for l in calls), calls     # the model key stays the constitution key
+    live = _fake_lines(w, "gate_liveness.py")
+    assert len(live) == 1 and f"--dirs {vdir}" in live[0]
+    assert f"pair={_KEY}/{MIX} - {_CTL_KEY}/{CTL}" in r.stdout and f" ctl_key={_CTL_KEY}" in r.stdout.splitlines()[0]
+    result = (w.figs / "RESULT").read_text()
+    assert f"pair={_KEY}/{MIX}-{CTL} seed=0 bank={_BANK} ctl_key={_CTL_KEY} " in result and result.startswith("DONE rc=0")
+    # a re-run keeps the bound liveness and still touches nothing under the pool key
+    r = _stage(w, "prep", "-", "1", "5", "both", "direct", _CTL_KEY, env_extra={"ESCALATE_QOS": "none"})
+    assert r.returncode == 0 and "liveness kept" in r.stdout, r.stdout + r.stderr
+    assert _pool_key_tree(w) == before
+    # the default prep (no positional 11) is the model key's own pair, under the pool key, as always
+    w2, _ = _ctl_key_world(tmp_path / "default")
+    r = _stage(w2, "prep", "-", "1", "5", "both", "direct")
+    assert r.returncode == 0, r.stdout + r.stderr
+    assert not (w2.root / "derived" / "lora_subtraction" / _CTL_KEY).exists() and "ctl_key=" not in (w2.figs / "RESULT").read_text()
+    assert not any("--ctl-key" in l for l in w2.fake_log.read_text().splitlines())
+
+
+def test_sbatch_ctl_key_refusals_run_before_anything_is_built(tmp_path):
+    """A missing control cell or control-key store identity fails the preflight; every stage but prep, build=chain, the model key
+    itself and a non-plain key are refused at the positionals — and in every case nothing is built or written under derived/."""
+    w, ctl_cells = _ctl_key_world(tmp_path)
+    before = _pool_key_tree(w)
+    (ctl_cells / f"{CTL}__psr_ce_all" / "object.pt").unlink()
+    (ctl_cells / "_store_identity.json").unlink()
+    r = _stage(w, "prep", "-", "1", "5", "both", "direct", _CTL_KEY)
+    assert r.returncode == 3, r.stdout + r.stderr
+    assert f"PREFLIGHT parent {CTL}__psr_ce_all lacks object.pt (objects=both, under {ctl_cells})" in r.stdout
+    assert f"PREFLIGHT missing/empty: {ctl_cells}/_store_identity.json" in r.stdout
+    for argv, needle in ((("calibrate", "0.3", "1", "5", "relu", "direct", _CTL_KEY), "stage calibrate refuses a control key"),
+                         (("assess", "-", "1", "5", "relu", "direct", _CTL_KEY), "stage assess refuses a control key"),
+                         (("finish", "-", "1", "5", "relu", "direct", _CTL_KEY), "stage finish refuses a control key"),
+                         (("prep", "-", "1", "5", "both", "chain", _CTL_KEY), "build=chain refuses a control key"),
+                         (("prep", "-", "1", "5", "both", "direct", _KEY), "equals the model key"),
+                         (("prep", "-", "1", "5", "both", "direct", f"../{_KEY}"), "is not a plain bank key")):
+        r = _stage(w, argv[0], *argv[1:])
+        assert r.returncode == 2 and needle in r.stdout, (argv, r.stdout + r.stderr)
+    assert not w.fake_log.exists()                                       # no builder ever ran
+    assert _pool_key_tree(w) == before
+    assert not (w.root / "derived" / "lora_subtraction" / _CTL_KEY).exists()
+    assert not (w.root / "derived" / "psr_paired_write" / _CTL_KEY).exists()
+
+
+# ---- the control key must be THIS pair's control refit; an existing V is never deleted for another pair ------------------------
+
+_S2 = "qwen35_4b_base_eb64_s2"
+_ARMS = (("lora_subtraction", "lora_r4_ce"), ("psr_paired_write", "psr_ce_all"))
+
+
+def _pair_meta(pos_key: str, neg_key: str, arm: str, *, ctl: str = CTL) -> dict:
+    """A derived sidecar's pair blocks as the builders write them: each role's cell id and the bank key it was read from."""
+    return {"model_key": pos_key, "parent_pos": {"cell_id": f"{MIX}__{arm}", "model_key": pos_key},
+            "parent_neg": {"cell_id": f"{ctl}__{arm}", "model_key": neg_key}}
+
+
+def _sibling_world(tmp_path):
+    """The seeded ctl-key world laid out like the cluster: the model key (seed 1) whose published pair's JSON sidecars name it for
+    both roles; the PUBLISHED sibling seed key s2 (its own config — pool dir and seed 2 — its four cells and its published pair); the
+    cross-seed control refit s2_ctlstop (config in s2's pool dir with seed 2, control cells only); the correct s1_ctlstop refit."""
+    w, ctl_cells = _ctl_key_world(tmp_path, seed=1)
+    for kind, arm in _ARMS:
+        d = w.root / "derived" / kind / _KEY / f"{MIX}__{arm}_minus_ctl"
+        (d / "derived_meta.json").write_text(json.dumps(_pair_meta(_KEY, _KEY, arm)))
+    _fits_config(w, _S2, pool=_S2, seed=2, heldout="constv2-heldout")
+    _fits_config(w, f"{_S2}_ctlstop", pool=_S2, seed=2)
+    for key, cells in ((_S2, (MIX, CTL)), (f"{_S2}_ctlstop", (CTL,))):
+        cdir = w.root / key / "cells_all"
+        cdir.mkdir(parents=True)
+        (cdir / "_store_identity.json").write_text("{}\n")
+        for si in cells:
+            for arm in ("psr_ce_all", "lora_r4_ce"):
+                (cdir / f"{si}__{arm}").mkdir()
+                for f in ("object.pt", "train_budget_meta.json"):
+                    (cdir / f"{si}__{arm}" / f).write_text(f"{key}\n")
+                (cdir / f"{si}__{arm}" / "COMPLETE").write_text(json.dumps({"object_sha256": "2" * 64, "fit_fingerprint": "fp-2"}))
+    for kind, arm in _ARMS:
+        d = w.root / "derived" / kind / _S2 / f"{MIX}__{arm}_minus_ctl"
+        d.mkdir(parents=True)
+        (d / "object.pt").write_text(f"published {_S2} {kind}\n")
+        (d / "derived_meta.json").write_text(json.dumps(_pair_meta(_S2, _S2, arm)))
+    (w.root / "derived" / "psr_paired_write" / _S2 / f"{MIX}__psr_ce_all_minus_ctl" / "gate_liveness.json").write_text('{"0": 0.9}')
+    return w, ctl_cells
+
+
+def _published_tree(w, keys=(_KEY, _S2)) -> dict:
+    """Every file and directory of the published keys — their cells and their derived directories — with its bytes and mtime."""
+    out = {}
+    tops = [w.root / k for k in keys] + [p for k in keys for p in sorted((w.root / "derived").glob(f"*/{k}"))]
+    for top in tops:
+        for p in sorted([top, *top.rglob("*")]):
+            out[str(p.relative_to(w.root))] = (p.stat().st_mtime_ns, p.read_bytes() if p.is_file() else None)
+    return out
+
+
+def test_sbatch_ctl_key_refuses_a_published_sibling_key_and_a_cross_seed_refit_before_any_build(tmp_path):
+    """Positional 11 naming a PUBLISHED sibling seed key, or another seed's control refit, is not this pair's control: the build is
+    refused before anything runs, whatever the objects — no builder is invoked and every published byte and mtime stands. Without
+    this, objects=relu with the sibling key reached the V repair path and replaced the sibling's published V. The correct key still
+    builds, and still touches nothing published."""
+    w, _ = _sibling_world(tmp_path)
+    before = _published_tree(w)
+    for objects in ("relu", "both", "lora"):
+        for key in (_S2, f"{_S2}_ctlstop"):
+            r = _stage(w, "prep", "-", "1", "5", objects, "direct", key, env_extra={"ESCALATE_QOS": "none"})
+            assert r.returncode == 3, (objects, key, r.stdout + r.stderr)
+            assert f"FATAL positional 11 ctl_key '{key}': its config's heldout_pool '/vol/pool/{_S2}/" in r.stdout, r.stdout
+            assert "refusing before any build" in r.stdout
+            assert not w.fake_log.exists(), (objects, key)                 # no builder ran
+            assert _published_tree(w) == before, (objects, key)
+    assert not any((w.root / "derived" / kind / f"{_S2}_ctlstop").exists() for kind, _a in _ARMS)
+    r = _stage(w, "prep", "-", "1", "5", "both", "direct", _CTL_KEY, env_extra={"ESCALATE_QOS": "none"})
+    assert r.returncode == 0, r.stdout + r.stderr
+    assert all((w.root / "derived" / kind / _CTL_KEY / f"{MIX}__{arm}_minus_ctl" / "object.pt").is_file() for kind, arm in _ARMS)
+    assert _published_tree(w) == before
+
+
+def test_sbatch_ctl_key_identity_checks_each_refuse_on_their_own(tmp_path):
+    """Each structural condition on the control key refuses alone, before any build: no fits config in the checkout; a held-out pool
+    outside the model key's pool dir (any of its heldout_pool lines); a seed other than the model key's (a config with no seed line
+    reads 0, as the model key's own does); a constitution cell in the key's cells dir."""
+    w, ctl_cells = _ctl_key_world(tmp_path, seed=1)
+    cfg = w.repo / "configs" / f"sdfbase_{_CTL_KEY}_fits.yaml"
+    good = cfg.read_text()
+    before = _pool_key_tree(w)
+    cases = (
+        (lambda: cfg.unlink(), f"has no fits config {cfg} in this checkout"),
+        (lambda: _fits_config(w, _CTL_KEY, pool=_S2, seed=1), f"heldout_pool '/vol/pool/{_S2}/pairs_constv2ctl2-heldout.jsonl'"),
+        (lambda: cfg.write_text(good + f"    heldout_pool: /vol/pool/{_S2}/pairs_x.jsonl\n"), f"heldout_pool '/vol/pool/{_S2}/pairs_x.jsonl'"),
+        (lambda: cfg.write_text(good.replace(f"/vol/pool/{_KEY}/", "/vol/pool/")), "is not in the model key's pool dir"),
+        (lambda: _fits_config(w, _CTL_KEY, pool=_KEY, seed=2), "its config's seed '2' is not the model key's seed 1"),
+        (lambda: _fits_config(w, _CTL_KEY, pool=_KEY), "its config's seed '0' is not the model key's seed 1"),
+        (lambda: (ctl_cells / f"{MIX}__psr_ce_all").mkdir(), f"holds the constitution cell {MIX}__psr_ce_all"),
+    )
+    for mutate, needle in cases:
+        mutate()
+        r = _stage(w, "prep", "-", "1", "5", "relu", "direct", _CTL_KEY, env_extra={"ESCALATE_QOS": "none"})
+        assert r.returncode == 3 and needle in r.stdout and "refusing before any build" in r.stdout, (needle, r.stdout + r.stderr)
+        assert not w.fake_log.exists() and _pool_key_tree(w) == before, needle
+        cfg.write_text(good)
+        if (ctl_cells / f"{MIX}__psr_ce_all").exists():
+            (ctl_cells / f"{MIX}__psr_ce_all").rmdir()
+    r = _stage(w, "prep", "-", "1", "5", "relu", "direct", _CTL_KEY, env_extra={"ESCALATE_QOS": "none"})
+    assert r.returncode == 0, r.stdout + r.stderr
+
+
+def _v_files(vdir: Path) -> dict:
+    return {p.name: (p.stat().st_mtime_ns, p.read_bytes()) for p in sorted(vdir.iterdir())}
+
+
+def _psr_subs(w) -> list:
+    return [l.split()[1] for l in _fake_lines(w, "psr_residual_distill.py")]
+
+
+def test_sbatch_an_existing_v_that_does_not_verify_is_never_deleted_for_another_pair_or_under_a_control_key(tmp_path):
+    """The V repair path deletes object.pt + derived_meta.json only after check-v-pair (compose-v's overwrite guard, read-only)
+    has ruled: a READABLE sidecar naming another pair is refused in every mode, attested or not; under a control key any verify-v
+    failure on an existing V is fatal (exit 12), torn sidecar included. Every refused V keeps its bytes and mtimes and compose-v
+    never runs. Without a control key nothing else changes: the model key's own torn V — same pair, or a torn or absent
+    sidecar — is recomposed as before."""
+    vrel = f"{MIX}__psr_ce_all_minus_ctl"
+    # (a) control key, a V of THIS pair that does not verify: fatal, not repaired
+    w, _ = _ctl_key_world(tmp_path / "a", seed=1)
+    vdir = w.root / "derived" / "psr_paired_write" / _CTL_KEY / vrel
+    vdir.mkdir(parents=True)
+    (vdir / "object.pt").write_bytes(b"torn")
+    (vdir / "derived_meta.json").write_text(json.dumps(_pair_meta(_KEY, _CTL_KEY, "psr_ce_all")))
+    before, pool_before = _v_files(vdir), _pool_key_tree(w)
+    r = _stage(w, "prep", "-", "1", "5", "relu", "direct", _CTL_KEY, env_extra={"ESCALATE_QOS": "none", "FAKE_V_TORN": "torn"})
+    assert r.returncode == 12 and f"ctl_key '{_CTL_KEY}' never recomposes an existing V" in r.stdout, r.stdout + r.stderr
+    assert _v_files(vdir) == before and _pool_key_tree(w) == pool_before
+    assert _psr_subs(w) == ["verify-v", "check-v-pair"]
+    # (b) control key, ANOTHER pair's V in its directory (the model key's own pair, copied there): refused as not this pair's
+    w, _ = _ctl_key_world(tmp_path / "b", seed=1)
+    vdir = w.root / "derived" / "psr_paired_write" / _CTL_KEY / vrel
+    vdir.mkdir(parents=True)
+    (vdir / "object.pt").write_bytes(b"other")
+    (vdir / "derived_meta.json").write_text(json.dumps(_pair_meta(_KEY, _KEY, "psr_ce_all")))
+    before = _v_files(vdir)
+    r = _stage(w, "prep", "-", "1", "5", "relu", "direct", _CTL_KEY, env_extra={"ESCALATE_QOS": "none"})
+    assert r.returncode == 12 and "its sidecar names another pair (check-v-pair rc=2" in r.stdout and "another pair's V" in r.stderr, r.stdout + r.stderr
+    assert _v_files(vdir) == before and _psr_subs(w) == ["verify-v", "check-v-pair"]
+    # (c) NO control key: another pair's V under the pool key (built against another control), attested or not — refused, kept
+    for attested in (False, True):
+        w = _derived_world(tmp_path / f"c{int(attested)}")
+        vdir = w.root / "derived" / "psr_paired_write" / _KEY / vrel
+        vdir.mkdir(parents=True)
+        (vdir / "object.pt").write_bytes(b"other control")
+        (vdir / "derived_meta.json").write_text(json.dumps(_pair_meta(_KEY, _KEY, "psr_ce_all", ctl=CTL100)))
+        if attested:
+            (vdir / "fit_job_provenance.json").write_text("{}\n")
+        before = _v_files(vdir)
+        r = _stage(w, "prep", "-", "1", "5", "relu", "direct", env_extra={"ESCALATE_QOS": "none"})
+        assert r.returncode == 12 and "its sidecar names another pair" in r.stdout, (attested, r.stdout + r.stderr)
+        assert _v_files(vdir) == before and _psr_subs(w) == ["verify-v", "check-v-pair"], attested
+    # (d) NO control key, a torn V of the model key's own pair — the same pair's sidecar, a torn (unreadable) sidecar, no sidecar:
+    #     recomposed exactly as before (object.pt + derived_meta.json only; the other sidecars kept)
+    for i, sidecar in enumerate((json.dumps(_pair_meta(_KEY, _KEY, "psr_ce_all")), '{"parent_pos": {"cell_id": ', None)):
+        w = _derived_world(tmp_path / f"d{i}")
+        vdir = w.root / "derived" / "psr_paired_write" / _KEY / vrel
+        vdir.mkdir(parents=True)
+        (vdir / "object.pt").write_bytes(b"torn")
+        if sidecar is not None:
+            (vdir / "derived_meta.json").write_text(sidecar)
+        (vdir / "keep.json").write_text("{}\n")
+        r = _stage(w, "prep", "-", "1", "5", "relu", "direct", env_extra={"ESCALATE_QOS": "none", "FAKE_V_TORN": "torn"})
+        assert r.returncode == 0 and "persisted V does not verify — recomposing" in r.stdout, (i, r.stdout + r.stderr)
+        assert (vdir / "object.pt").read_bytes() == b"V" and (vdir / "keep.json").is_file(), i
+        assert not (vdir / "derived_meta.json").exists() or (vdir / "derived_meta.json").read_text() != sidecar, i
+        assert _psr_subs(w)[:4] == ["verify-v", "check-v-pair", "compose-v", "verify-v"], (i, _psr_subs(w))
+    # (e) control key, a torn V whose sidecar is torn too (no readable sidecar): still fatal, kept
+    w, _ = _ctl_key_world(tmp_path / "e", seed=1)
+    vdir = w.root / "derived" / "psr_paired_write" / _CTL_KEY / vrel
+    vdir.mkdir(parents=True)
+    (vdir / "object.pt").write_bytes(b"torn")
+    (vdir / "derived_meta.json").write_text('{"parent_pos": {"cell_id": ')
+    before = _v_files(vdir)
+    r = _stage(w, "prep", "-", "1", "5", "relu", "direct", _CTL_KEY, env_extra={"ESCALATE_QOS": "none", "FAKE_V_TORN": "torn"})
+    assert r.returncode == 12 and f"ctl_key '{_CTL_KEY}' never recomposes an existing V" in r.stdout, r.stdout + r.stderr
+    assert _v_files(vdir) == before and _psr_subs(w) == ["verify-v", "check-v-pair"]
+
+
+def test_sbatch_an_empty_or_late_control_key_is_refused_before_anything_runs(tmp_path):
+    """Only an absent or `-` 11th positional means no control key: an EMPTY one (literally, or a quoted unset variable) and a key
+    one place late (12 positionals) are refused at the positionals — nothing is built, nothing under the pool key changes, and no
+    output appears under the control key. Before, both ran the default build under the pool key."""
+    w, _ = _ctl_key_world(tmp_path)
+    before = _pool_key_tree(w)
+    for tail in (("",), ("", _CTL_KEY), ("-", _CTL_KEY), (_CTL_KEY, "extra")):
+        r = _stage(w, "prep", "-", "1", "5", "both", "direct", *tail, env_extra={"ESCALATE_QOS": "none"})
+        assert r.returncode == 2, (tail, r.stdout + r.stderr)
+        assert ("positional 11 ctl_key is empty" if len(tail) == 1 else "12 positionals, at most 11") in r.stdout, (tail, r.stdout)
+    # the caller's quoted expansion of an unset variable reaches the sbatch as an empty 11th
+    r = _sp.run(["bash", "-c", 'unset CK; exec bash "$0" "$@" "$CK"', str(w.script), "prep", _KEY, MIX, CTL, _BANK,
+                 "-", "1", "5", "both", "direct"], capture_output=True, text=True, env=dict(w.env, ESCALATE_QOS="none"), timeout=120)
+    assert r.returncode == 2 and "positional 11 ctl_key is empty" in r.stdout, r.stdout + r.stderr
+    assert not w.fake_log.exists() and _pool_key_tree(w) == before
+    assert not any((w.root / "derived" / kind / _CTL_KEY).exists() for kind, _a in _ARMS)

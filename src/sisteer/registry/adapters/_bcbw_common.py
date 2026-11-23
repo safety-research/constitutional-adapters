@@ -235,6 +235,18 @@ outside the table, legacy_spellings.yaml / models.yaml disagreeing with the mode
 where they populated ``refusals`` alone and left ``ok = 1``. A dot-prefixed entry (``.staging``: a
 producer's publish scaffolding, by convention never a row) and a non-directory are the only entries not reported. Declaring the key later moves the row dir's
 inputs into its seed-tag group and retires the row-dir group (its inputs left discovery).
+
+A DECLARED CAMPAIGN (:class:`CampaignSpec` on ``TaskSpec.declared``, None on every paper reader; :data:`DECLARED_CAMPAIGN_RULE` and the rules beside it): a campaign's stores (the
+same harness, model, instruments and item sets as the full readers) are read by the full reader PARAMETRIZED, every campaign fact DECLARED and none inferred from
+a store, a tag string or a directory name -- the campaign (the run id's first segment and the run row's ``campaign``), the views (``CampaignTag``: the tag, which is
+the launch tag, the roster wave and the registry spelling; the row dir; the harness roster selection; the objects' fit seed; the transfer kind), the harness
+roster and pins the objects resolve through (the roster's pin form, ``jobplan.object_id_for`` with ``pins_root``), the launched pins copy's file name, whether
+a ``none`` store is admitted, and the anchor mode (``none``: no registry contrast, the frame reader anchors the row; ``own_none``: the view's own ``none``, never
+a re-picked or borrowed anchor). The row grammar is the declared table matched EXACTLY: a row dir that is not a declared view's is an undeclared group refused
+whole by name, a store suffix is ``bcbw-<view tag>-<sha7>[-r<N>][-bcb|-bfcl]`` (no window, no arditi, no shared segment, no store tag), the gate records are
+``gate_<view tag>_<object key>_<suffix>.json``; one group per view (one fit seed each); every row admits only a fitted key (class ``arm``) and, where admitted,
+the view's ``none`` (class ``anchor``) -- a prompted or all-positions key refuses by name. Every branch this opens is gated on ``spec.declared is not None``, so
+the paper readers read byte for byte what they read before (``tests/test_registry_adapter_bcbw_full_emission_pin.py``).
 """
 from __future__ import annotations
 
@@ -441,11 +453,16 @@ _PairRefusal = G._PairRefusal
 rounded_equal = G.rounded_equal
 
 
+def tree_copy_re(file_name: str, ext: str) -> "re.Pattern[str]":
+    """The per-tree copies of a launched records file: ``<stem>.<sha7..40><ext>`` for ``<stem><ext>``."""
+    stem = file_name[:-len(ext)] if file_name.endswith(ext) else file_name
+    return re.compile(rf"^{re.escape(stem)}\.(?P<sha>[0-9a-f]{{7,40}}){re.escape(ext)}$")
+
+
 def roster_variant_re(roster_file: str) -> "re.Pattern[str]":
     """The per-tree copies of a launched roster file: ``<stem>.<sha7..40>.yaml`` for ``<stem>.yaml`` (the 200 readers' :data:`ROSTER_VARIANT_RE`; the full
     readers' roster is ``bcb_bfcl_full_roster.yaml``, :class:`TaskSpec` ``roster_file``)."""
-    stem = roster_file[:-5] if roster_file.endswith(".yaml") else roster_file
-    return re.compile(rf"^{re.escape(stem)}\.(?P<sha>[0-9a-f]{{7,40}})\.yaml$")
+    return tree_copy_re(roster_file, ".yaml")
 PINS_VARIANT_RE = re.compile(r"^sdfbase_full22_pins\.(?P<sha>[0-9a-f]{7,40})\.json$")
 ROSTER_SET_RULE = ("the launched roster a store's lane_roster.json names by sha256 is matched BY HASH within the mirrored roster set (records/rosters.json: one "
                    "roster file per producer tree, the named file's sha256 equal to its key); the store's launched entry and its fitted key's staged id / sha are "
@@ -841,6 +858,123 @@ class SharedSpec:
         return f"{self.store_marker}-{relaunch_tag}"
 
 
+# ---- A DECLARED CAMPAIGN (the shared BCB/BFCL registry adapter for campaign stores, 2026-11-15) -------------------------------------------------------------------
+#: a campaign's two anchor modes (:data:`DECLARED_ANCHOR_RULE`): no registry contrast (the frame reader anchors the row), or the view's own `none` alone
+DECLARED_ANCHOR_NONE = "none"
+DECLARED_ANCHOR_OWN_NONE = "own_none"
+DECLARED_ANCHOR_MODES = (DECLARED_ANCHOR_NONE, DECLARED_ANCHOR_OWN_NONE)
+#: extra.anchor.state of a campaign row whose campaign declares no registry anchor
+DECLARED_NONE_STATE = "declared_none"
+DECLARED_CAMPAIGN_RULE = ("a declared campaign's stores are read by the full reader parametrized (CampaignSpec on TaskSpec.declared): one source pair per campaign, every campaign fact declared "
+                          "and none inferred -- the campaign (the run id's first segment and the run row's campaign column), the views (tag = launch tag = roster wave = registry "
+                          "spelling, row dir, harness roster selection, the objects' fit seed, transfer kind), the harness roster and pins, the launched pins file, whether a none "
+                          "store is admitted, and the anchor mode; the paper readers carry no declared campaign and read byte for byte what they read before")
+DECLARED_GRAMMAR_RULE = ("a declared campaign's row grammar is its declared table, matched exactly: a row dir that is not a declared view's is an undeclared group refused whole by "
+                         "name; a store suffix is bcbw-<view tag>-<sha7>[-r<N>][-bcb|-bfcl] (no window, no arditi, no shared segment, no store tag) and must spell its own row "
+                         "dir's view tag; a gate record is gate_<view tag>_<object key>_<suffix>.json; one group per view (one fit seed each); a row admits a fitted key "
+                         "(class arm) and, where the campaign admits it, the view's none (class anchor) -- a prompted or all-positions key, or a none the campaign does not admit, "
+                         "refuses by name; the launch row spells the view's tag, selection, fit seed and transfer kind, seed_base null and the campaign's model key")
+DECLARED_OBJECT_RULE = ("a declared campaign's fitted key resolves through the campaign's harness roster at the view's selection: the roster's pin form {pins, pin} names the "
+                        "campaign's harness pins (jobplan.object_id_for with pins_root, the harness's own resolution), the staged id is the pin's `<model key>.<staged id>` "
+                        "second half, and its object_sha256 must equal the campaign pins' entry, the launch set's pin key and expected sha, the launched pins copy (the "
+                        "campaign's launched pins file), the launched roster's object, lane_roster.json and the store's attestations; transfer_kind is DERIVED from "
+                        "manifest.json:fit_provenance.model_id against the served model and must equal the view's and legacy_spellings.yaml's")
+DECLARED_ANCHOR_RULE = ("a declared campaign's anchor mode: `none` -- no registry contrast is filed and the anchor currency is never asked; the VALUE row's extra.delta_block "
+                        "parks by name under this rule and the run's extra.anchor says the frame reader anchors the row (no refusal line); `own_none` -- the view's own "
+                        "none is the only anchor: the currency is asked about it, a current own none files the paired contrast, and any other pick (the own none not "
+                        "current, a re-pick at any tier) parks the comparison by name, never a borrowed contrast")
+
+
+@dataclasses.dataclass(frozen=True)
+class CampaignTag:
+    """One view of a declared campaign (:data:`DECLARED_GRAMMAR_RULE`): its tag (the registry spelling = ``view_legacy`` = the launch tag = the launched roster's wave key =
+    the comparison group), its tinycap model row dir, the harness roster selection (the launch set's ``view``), the objects' fit seed (``extra.fit_seed``) and
+    the transfer kind its fitted rows file under (legacy_spellings.yaml's spelling of the tag, and what ``derive.transfer_kind`` must yield)."""
+    tag: str
+    row_dir: str
+    selection: str
+    fit_seed: int
+    transfer_kind: str
+
+
+@dataclasses.dataclass(frozen=True)
+class CampaignSpec:
+    """A declared campaign (:data:`DECLARED_CAMPAIGN_RULE`): what a full reader reads for a campaign's stores beyond the paper's. ``TaskSpec.declared`` is None on every paper reader,
+    and every branch this class opens is gated on it."""
+    name: str
+    campaign: str
+    model_key: str
+    entries: Tuple[CampaignTag, ...]
+    #: the harness roster / pins the campaign's objects resolve through, relative to the checkout (``DC.repo_path``)
+    harness_roster_rel: Tuple[str, ...]
+    harness_pins_rel: Tuple[str, ...]
+    #: the launched pins copy's name under records/ (its per-tree copies are ``<stem>.<sha7..40>.json``)
+    launched_pins_file: str
+    #: whether a ``none`` store files (as class ``anchor``); a campaign that admits none refuses a ``none`` store by name
+    admits_none: bool
+    #: :data:`DECLARED_ANCHOR_MODES`
+    anchor: str
+    #: the run rows' producer_session and the adapter's owner (the session that produced the stores)
+    producer_session: str
+
+    def __post_init__(self) -> None:
+        if self.anchor not in DECLARED_ANCHOR_MODES:
+            raise ValueError(f"campaign {self.name}: anchor {self.anchor!r} is not one of {DECLARED_ANCHOR_MODES}")
+        if self.anchor == DECLARED_ANCHOR_OWN_NONE and not self.admits_none:
+            raise ValueError(f"campaign {self.name}: an own_none anchor needs the campaign to admit its none")
+        if not self.entries or any(len({getattr(v, f) for v in self.entries}) != len(self.entries) for f in ("tag", "row_dir", "selection")):
+            raise ValueError(f"campaign {self.name}: the views must be non-empty and their tags, row dirs and selections distinct")
+        if self.model_key not in MODEL_KEYS:
+            raise ValueError(f"campaign {self.name}: model key {self.model_key!r} is not in the model-key table")
+
+    @property
+    def tag_names(self) -> Tuple[str, ...]:
+        return tuple(v.tag for v in self.entries)
+
+    @property
+    def row_dirs(self) -> Tuple[str, ...]:
+        return tuple(v.row_dir for v in self.entries)
+
+    def entry_of_tag(self, tag: Optional[str]) -> Optional[CampaignTag]:
+        return next((v for v in self.entries if v.tag == tag), None)
+
+    def entry_of_row_dir(self, row_dir: Optional[str]) -> Optional[CampaignTag]:
+        return next((v for v in self.entries if v.row_dir == row_dir), None)
+
+    @property
+    def tag_alternation(self) -> str:
+        """The declared tags as a regex alternation, longest first (escaped)."""
+        return "|".join(re.escape(t) for t in sorted(self.tag_names, key=len, reverse=True))
+
+    @property
+    def suffix_re(self) -> "re.Pattern[str]":
+        """``bcbw-<view tag>-<sha7>[-r<N>][-bcb|-bfcl]`` (:data:`DECLARED_GRAMMAR_RULE`): the solo grammar's groups (launch_tag, sha7, relaunch, task_tag)."""
+        return re.compile(rf"^bcbw-(?P<launch_tag>{self.tag_alternation})-(?P<sha7>[0-9a-f]{{7}})(?P<relaunch>-r\d+)?(?P<task_tag>-(?:{'|'.join(sorted(TASK_TAGS))}))?$")
+
+    @property
+    def grammar_text(self) -> str:
+        return f"bcbw-<view tag of {', '.join(self.tag_names)}>-<sha7>[-r<N>][-bcb|-bfcl]"
+
+    @property
+    def gate_re(self) -> "re.Pattern[str]":
+        """``gate_<view tag>_<object key>_<suffix>.json``: the groups tag, okey and suffix."""
+        return re.compile(rf"^gate_(?P<tag>{self.tag_alternation})_(?P<okey>.+)_(?P<suffix>bcbw-.+)\.json$")
+
+    @property
+    def pins_variant_re(self) -> "re.Pattern[str]":
+        """The launched pins file's per-tree copies, ``<stem>.<sha7..40>.json``."""
+        return tree_copy_re(self.launched_pins_file, ".json")
+
+    def block(self, view: Optional[CampaignTag] = None) -> Dict[str, Any]:
+        """The campaign's facts as a status / run extra block (extra.declared_campaign, facts.declared_campaign)."""
+        out: Dict[str, Any] = {"name": self.name, "campaign": self.campaign, "model_key": self.model_key, "harness_roster": "/".join(self.harness_roster_rel),
+                               "harness_pins": "/".join(self.harness_pins_rel), "launched_pins_file": self.launched_pins_file, "admits_none": self.admits_none,
+                               "anchor": self.anchor, "rule": DECLARED_CAMPAIGN_RULE}
+        if view is not None:
+            out.update(view=view.tag, row_dir=view.row_dir, selection=view.selection, fit_seed=view.fit_seed, transfer_kind=view.transfer_kind)
+        return out
+
+
 def row_okey(okey: str, repeat: Optional[int], window: Optional[int] = None) -> str:
     """The row key's object-key half: the object key, ``<object key>@rep<N>`` for a repeat store (:data:`SHARED_ROW_KEY_RULE`), ``<object key>@w<N>`` for a store re-served at
     another serving window (:data:`UNSTEERED_ROW_RULE`)."""
@@ -930,19 +1064,46 @@ class TaskSpec:
     schedule_file: str = SCHEDULE_FILE
     #: a SHARED-standup comparison reader (:class:`SharedSpec`, :data:`SHARED_SOURCE_RULE`); None on every solo reader, which then reads byte for byte what it read before
     shared: Optional[SharedSpec] = None
+    #: a DECLARED CAMPAIGN's reader (:class:`CampaignSpec`, :data:`DECLARED_CAMPAIGN_RULE`); None on every paper reader, which then reads byte for byte what it read before
+    declared: Optional[CampaignSpec] = None
 
     @property
     def root_default(self) -> str:
         return os.path.join(LC.RS_DEFAULT, self.root_name or self.source)
 
     @property
+    def campaign(self) -> str:
+        """The run rows' campaign and the run id's first segment: the campaign's declared campaign, else the module's :data:`CAMPAIGN`."""
+        return self.declared.campaign if self.declared is not None else CAMPAIGN
+
+    @property
     def suffix_re(self) -> "re.Pattern[str]":
-        """The store suffix grammar this reader reads: the module's :data:`SUFFIX_RE` (the very object) on a solo reader, the shared grammar on a shared one."""
+        """The store suffix grammar this reader reads: the module's :data:`SUFFIX_RE` (the very object) on a solo reader, the shared grammar on a shared one, the
+        campaign's declared grammar on a campaign reader (:data:`DECLARED_GRAMMAR_RULE`)."""
+        if self.declared is not None:
+            return self.declared.suffix_re
         return SUFFIX_RE if self.shared is None else self.shared.suffix_re
 
     @property
     def grammar_text(self) -> str:
+        if self.declared is not None:
+            return self.declared.grammar_text
         return "bcbw-<launch tag>-<sha7>[-r<N>][-w<N>][-bcb|-bfcl]" if self.shared is None else self.shared.grammar_text
+
+    @property
+    def gate_re(self) -> "re.Pattern[str]":
+        """The gate records' name grammar: the module's :data:`GATE_RE` (the very object), or a campaign's (``gate_<view tag>_<object key>_<suffix>.json``)."""
+        return self.declared.gate_re if self.declared is not None else GATE_RE
+
+    @property
+    def pins_file(self) -> str:
+        """The launched pins copy's name under records/: :data:`PINS_FILE`, or the campaign's declared file."""
+        return self.declared.launched_pins_file if self.declared is not None else PINS_FILE
+
+    @property
+    def pins_variant_re(self) -> "re.Pattern[str]":
+        """The per-tree launched pins copies' names: :data:`PINS_VARIANT_RE` (the very object), or the campaign pins file's ``<stem>.<sha7..40>.json``."""
+        return self.declared.pins_variant_re if self.declared is not None else PINS_VARIANT_RE
 
     def spelling_of(self, tag: str) -> str:
         """The registry spelling (the run's view_legacy) a row of ``tag`` files under: the tag itself on a solo reader, `<tag>_shared` on a shared one."""
@@ -973,6 +1134,13 @@ class TaskSpec:
 
     def recount_computation_id(self) -> str:
         return I.computation_id(self.recount_algorithm, RECOUNT_VERSION, self.recount_seed_provenance)
+
+
+def campaign_task_spec(full: TaskSpec, source: str, declared: CampaignSpec) -> TaskSpec:
+    """A declared campaign's source spec (:data:`DECLARED_CAMPAIGN_RULE`): the full reader's ``full`` spec under the source's own name, root and three-number record
+    (``three_numbers_<source>.json``), the campaign's model key alone, every optional paper row off, and ``declared``."""
+    return dataclasses.replace(full, name=source, source=source, root_name=source, three_numbers_file=f"three_numbers_{source}.json", models=(declared.model_key,),
+                               instruct_direct=False, unsteered_row=False, dose_relu_row=False, dose_lora_row=False, lecun_relu_row=False, declared=declared)
 
 
 def tag_parts(tag: str) -> Optional[Tuple[int, bool]]:
@@ -1180,7 +1348,11 @@ def tag_of_row_dir(row_dir: str, spec: Optional["TaskSpec"] = None) -> Optional[
     spelling (``qwen35_4b-f22`` included: the three-seed family has no alias). With a reader's ``spec`` the LeCun-init ReLU row dir ``(model key)-f22s2rl``
     is a declared row only where that reader READS it (:func:`lecun_relu_row_admitted`: the reader admits the row and the family runs it); elsewhere it is
     None -- undeclared for that reader, a group of its own that refuses as a whole (:data:`UNDECLARED_ROW_DIR_RULE`). The other optional selections (``it``,
-    ``u0``, the dose rows) stay grammar for every reader: a store under them that the group admits for no selection refuses BY ROW, the design main pinned."""
+    ``u0``, the dose rows) stay grammar for every reader: a store under them that the group admits for no selection refuses BY ROW, the design main pinned.
+    On a DECLARED CAMPAIGN's reader the answer is the campaign's table alone (:data:`DECLARED_GRAMMAR_RULE`): a declared view's row dir names its tag, anything else None."""
+    if spec is not None and spec.declared is not None:
+        lv = spec.declared.entry_of_row_dir(row_dir)
+        return lv.tag if lv is not None else None
     m = ROW_DIR_RE.match(row_dir)
     if m and m.group("instruct"):
         return instruct_tag_of(m.group("model"))     # the instruct-direct row (`<model key>-f22it`): its own tag; read() decides whether the group admits it
@@ -1210,9 +1382,13 @@ def undeclared_row_dir_reason(row_dir: str, spec: Optional["TaskSpec"] = None) -
     model segment is outside :data:`MODEL_KEYS` (or the name has no ``-f22`` shape at all), ``row dir <name> names the declared model key <mk> but no declared
     row (...)`` when the key is declared and the selection is not one the grammar reads for it, ``row dir <name> names the declared model key <mk> under the
     LeCun-init ReLU selection 's2rl', which this reader does not read for it (...)`` when the grammar reads the row but the reader with ``spec`` does not
-    (:func:`lecun_relu_row_admitted`); None for a declared row (:func:`tag_of_row_dir` with the same ``spec``)."""
+    (:func:`lecun_relu_row_admitted`); None for a declared row (:func:`tag_of_row_dir` with the same ``spec``). On a declared campaign's reader every row dir the campaign
+    does not declare is undeclared, named with the campaign's rows (:data:`DECLARED_GRAMMAR_RULE`)."""
     if tag_of_row_dir(row_dir, spec) is not None:
         return None
+    if spec is not None and spec.declared is not None:
+        return (f"row dir {row_dir!r} is not a row of the declared campaign {spec.declared.name!r} (its rows: {', '.join(spec.declared.row_dirs)}): a store under it is not this "
+                f"campaign's, refused as a WHOLE GROUP by name ({DECLARED_GRAMMAR_RULE})")
     m = ROW_DIR_SHAPE_RE.match(row_dir)
     declared = ", ".join(sorted(MODEL_KEYS))
     if m is None or m.group("model") not in MODEL_KEYS:
@@ -1237,7 +1413,10 @@ def undeclared_row_dir_reason(row_dir: str, spec: Optional["TaskSpec"] = None) -
 
 def declared_row_dirs_of(mk: str, spec: Optional["TaskSpec"] = None) -> List[str]:
     """The row dirs a reader reads for the declared model key ``mk`` (the reason text's listing): the seed and paired rows, then the optional rows the
-    family runs -- the LeCun-init ReLU row only for a family that runs it AND, with a reader's ``spec``, only where that reader admits it (:func:`lecun_relu_row_admitted`)."""
+    family runs -- the LeCun-init ReLU row only for a family that runs it AND, with a reader's ``spec``, only where that reader admits it (:func:`lecun_relu_row_admitted`).
+    A declared campaign's reader reads the campaign's row dirs alone."""
+    if spec is not None and spec.declared is not None:
+        return list(spec.declared.row_dirs) if mk == spec.declared.model_key else []
     mkey = MODEL_KEYS[mk]
     rows = [f"{mk}-f22s{n}" for n in mkey.seeds] + [f"{mk}-f22s{n}p" for n in mkey.seeds]
     if mkey.instruct_direct:
@@ -1257,7 +1436,10 @@ def declared_row_dirs_of(mk: str, spec: Optional["TaskSpec"] = None) -> List[str
 
 def is_undeclared_row_dir_group(group: str, spec: Optional["TaskSpec"] = None) -> bool:
     """A comparison group named for an undeclared row dir (:func:`BcbwSeedrepReader.comparison_group`): a row dir carries ``-f22``, a tag never does.
-    With a reader's ``spec`` the LeCun-init ReLU row dir counts as undeclared where that reader does not read it (:func:`tag_of_row_dir`)."""
+    With a reader's ``spec`` the LeCun-init ReLU row dir counts as undeclared where that reader does not read it (:func:`tag_of_row_dir`). On a declared campaign's
+    reader a group is a declared view's tag or an undeclared row dir (:data:`DECLARED_GRAMMAR_RULE`)."""
+    if spec is not None and spec.declared is not None:
+        return spec.declared.entry_of_tag(group) is None
     return ROW_DIR_SHAPE_RE.match(group) is not None and tag_of_row_dir(group, spec) is None
 
 
@@ -1281,6 +1463,41 @@ def row_dir_of(tag: str) -> str:
             raise KeyError(f"{tag!r} spells no seed tag, no instruct-direct tag, no unsteered tag, no dose-row tag and no LeCun-init ReLU tag; it has no tinycap model row")
         return f"{mk}-f22{INSTRUCT_SELECTION}"
     return f"{model_key_of(tag)}-f22{selection_key(p[0], p[1])}"
+
+
+def group_of(spec: Optional["TaskSpec"], tag: Optional[str]) -> Optional[str]:
+    """The GROUP a tag reads in under ``spec``: :func:`seed_tag_of` on a paper reader; on a declared campaign's reader a view is its own group (one per fit seed,
+    :data:`DECLARED_GRAMMAR_RULE`), anything else None."""
+    if spec is not None and spec.declared is not None:
+        return tag if spec.declared.entry_of_tag(tag) is not None else None
+    return seed_tag_of(tag) if tag is not None else None
+
+
+def model_key_for(spec: Optional["TaskSpec"], tag: str) -> Optional[str]:
+    """The tinycap model key a tag spells under ``spec``: :func:`model_key_of` on a paper reader; on a declared campaign's reader the campaign's model key for a declared
+    view's tag, else None (a campaign tag spells no model key of the paper grammar)."""
+    if spec is not None and spec.declared is not None:
+        return spec.declared.model_key if spec.declared.entry_of_tag(tag) is not None else None
+    return model_key_of(tag)
+
+
+def tags_of(spec: "TaskSpec", group: str) -> Dict[str, str]:
+    """The ``{selection: tag}`` map of a group under ``spec``: :func:`group_tags` with the reader's admissions on a paper reader; on a declared campaign's reader the
+    group's view alone (``{view.selection: view.tag}``)."""
+    if spec.declared is not None:
+        lv = spec.declared.entry_of_tag(group)
+        return {lv.selection: lv.tag} if lv is not None else {}
+    return group_tags(group, spec.instruct_direct, spec.unsteered_row, spec.dose_relu_row, spec.dose_lora_row, spec.lecun_relu_row)
+
+
+def row_dir_for(spec: Optional["TaskSpec"], tag: str) -> str:
+    """The tinycap model row of a tag under ``spec``: :func:`row_dir_of` on a paper reader, the declared view's row dir on a campaign's reader."""
+    if spec is not None and spec.declared is not None:
+        lv = spec.declared.entry_of_tag(tag)
+        if lv is None:
+            raise KeyError(f"{tag!r} is not a view of the declared campaign {spec.declared.name!r} ({', '.join(spec.declared.tag_names)})")
+        return lv.row_dir
+    return row_dir_of(tag)
 
 
 def launch_tag_of(tag: str, okey: str, legacy_tag: Optional[str] = None) -> str:
@@ -1387,8 +1604,9 @@ def own_standup_note(group: str, row_tag: str) -> str:
 
 def run_id_for(spec: TaskSpec, tag: str, store_key: str, okey: str, instrument_id: str, repeat: Optional[int] = None) -> str:
     """The run id of a (tag, store key, object key) row: producer key ``<tag>/<store key>`` (:data:`PRODUCER_KEY_RULE`); on a SHARED reader the `_shared`
-    spelling prefixes it and a repeat store folds its segment in (:data:`SHARED_RUN_ID_RULE`) -- never the solo reader's id over the same store key."""
-    return I.run_id(CAMPAIGN, shared_producer_key_for(spec, tag, store_key, repeat), okey, spec.eval_id, instrument_id)
+    spelling prefixes it and a repeat store folds its segment in (:data:`SHARED_RUN_ID_RULE`) -- never the solo reader's id over the same store key. The first
+    segment is the spec's campaign (:data:`CAMPAIGN`, or a declared campaign's: every campaign id disjoint from every paper id by construction)."""
+    return I.run_id(spec.campaign, shared_producer_key_for(spec, tag, store_key, repeat), okey, spec.eval_id, instrument_id)
 
 
 def shared_producer_key_for(spec: TaskSpec, tag: str, store_key: str, repeat: Optional[int] = None) -> str:
@@ -1420,8 +1638,9 @@ def suffix_task(suffix: str) -> Optional[str]:
 
 
 def suffix_task_for(spec: TaskSpec, suffix: str) -> Optional[str]:
-    """:func:`suffix_task` under the reader's own grammar (the solo grammar on a solo reader: the same answer; the shared grammar on a shared one)."""
-    if spec.shared is None:
+    """:func:`suffix_task` under the reader's own grammar (the solo grammar on a solo reader: the same answer; the shared grammar on a shared one; a declared campaign's
+    grammar on a campaign reader, whose suffix spells the task tag too, so the other task's one-task store is not the campaign source's, ONE_TASK_STORE_RULE)."""
+    if spec.shared is None and spec.declared is None:
         return suffix_task(suffix)
     m = spec.suffix_re.match(suffix)
     tag = (m.group("task_tag") or "")[1:] if m else ""
@@ -1460,14 +1679,21 @@ def gate_name_parts(name: str) -> Optional[Dict[str, str]]:
     return dict(m.groupdict()) if m else None
 
 
+def gate_name_parts_for(spec: "TaskSpec", name: str) -> Optional[Dict[str, str]]:
+    """:func:`gate_name_parts` under the reader's own gate grammar (``TaskSpec.gate_re``: :data:`GATE_RE` on a paper reader, the campaign's on a campaign reader)."""
+    m = spec.gate_re.match(name)
+    return dict(m.groupdict()) if m else None
+
+
 def rel_store(row_dir: str, okey: str, suffix: str) -> str:
     return f"{STORES_HEAD}/{row_dir}/{okey}/{THINKING_DIR}/{suffix}"
 
 
-def is_shared_record_name(name: str, spec_files: Sequence[str], roster_re: "Optional[re.Pattern[str]]" = None) -> bool:
+def is_shared_record_name(name: str, spec_files: Sequence[str], roster_re: "Optional[re.Pattern[str]]" = None, pins_re: "Optional[re.Pattern[str]]" = None) -> bool:
     """A ``records/`` file the readers read as a group-shared record: the named files, the roster index, and the per-tree roster / pins copies (the roster
-    copies matched by ``roster_re``, the reader's roster file's variant pattern; the 200 name's when unset)."""
-    return name in spec_files or name == ROSTERS_INDEX_FILE or bool((roster_re or ROSTER_VARIANT_RE).match(name)) or bool(PINS_VARIANT_RE.match(name))
+    copies matched by ``roster_re``, the reader's roster file's variant pattern; the 200 name's when unset; the pins copies by ``pins_re``, the reader's
+    ``TaskSpec.pins_variant_re``; :data:`PINS_VARIANT_RE` when unset)."""
+    return name in spec_files or name == ROSTERS_INDEX_FILE or bool((roster_re or ROSTER_VARIANT_RE).match(name)) or bool((pins_re or PINS_VARIANT_RE).match(name))
 
 
 @dataclasses.dataclass
@@ -1525,6 +1751,8 @@ class PinsSet:
     plain: Optional[Tuple[Dict[str, Any], Input]]
     by_tree: Dict[str, Tuple[Dict[str, Any], Input, str]]
     by_name: Dict[str, Tuple[Dict[str, Any], Input]]
+    #: the plain file's name under records/ (``TaskSpec.pins_file``: :data:`PINS_FILE` on a paper reader, a declared campaign's launched pins file)
+    plain_name: str = PINS_FILE
 
     def usable(self, mk: str) -> bool:
         docs = [self.plain[0]] if self.plain is not None else []
@@ -1541,8 +1769,8 @@ class PinsSet:
                 d, i, f = self.by_tree[prefix]
                 return d, i, f, tree
         if self.plain is not None:
-            return self.plain[0], self.plain[1], PINS_FILE, None
-        return None, None, PINS_FILE, None
+            return self.plain[0], self.plain[1], self.plain_name, None
+        return None, None, self.plain_name, None
 
 
 @dataclasses.dataclass
@@ -1587,15 +1815,21 @@ class BcbwSeedrepReader:
     THINKING_SPELLING = "off"
 
     def __init__(self, root: Optional[str] = None, seeds: Optional[LC.Seeds] = None, roster_path: Optional[str] = None, pins_path: Optional[str] = None,
-                 policy_path: Optional[str] = None, arditi_roster_path: Optional[str] = None, arditi_pins_path: Optional[str] = None, solo_root: Optional[str] = None):
+                 policy_path: Optional[str] = None, arditi_roster_path: Optional[str] = None, arditi_pins_path: Optional[str] = None, solo_root: Optional[str] = None,
+                 pins_root: Optional[str] = None):
+        if self.SPEC.declared is not None and self.SPEC.shared is not None:
+            raise ValueError(f"{self.SPEC.name}: a reader is a declared campaign's or a shared-standup comparison's, never both")
         self.root = LC.expand(root or self.SPEC.root_default)
         self.roots = (self.root,)
         #: a SHARED reader's solo mirror root (the comparison's other side; SHARED_COMPARISON_RULE); None on a solo reader
         self.solo_root: Optional[str] = LC.expand(solo_root or self.SPEC.shared.solo_root_default) if self.SPEC.shared is not None else None
         self._solo_inputs: Dict[str, Input] = {}
         self._seeds = seeds
-        self.roster_path = roster_path or DC.repo_path(*ROSTER_REL)
-        self.pins_path = pins_path or DC.repo_path(*PINS_REL)
+        decl = self.SPEC.declared
+        self.roster_path = roster_path or DC.repo_path(*(decl.harness_roster_rel if decl is not None else ROSTER_REL))
+        self.pins_path = pins_path or DC.repo_path(*(decl.harness_pins_rel if decl is not None else PINS_REL))
+        #: the checkout a declared campaign's pin-form roster entries name their pins file relative to (DECLARED_OBJECT_RULE); this checkout by default
+        self.pins_root = pins_root or DC.repo_path()
         self.arditi_roster_path = arditi_roster_path or DC.repo_path(*ARDITI_ROSTER_REL)
         self.arditi_pins_path = arditi_pins_path or DC.repo_path(*ARDITI_PINS_REL)
         self.policy_path = policy_path
@@ -1623,7 +1857,7 @@ class BcbwSeedrepReader:
         return os.path.join(self.root, RECORDS_DIR)
 
     def shared_files(self) -> Tuple[str, ...]:
-        out = tuple(self.SPEC.launch_set_files) + (PINS_FILE, self.SPEC.roster_file, self.SPEC.three_numbers_file, ROWS_LAUNCH_FILE, self.SPEC.schedule_file, RELAUNCHES_FILE)
+        out = tuple(self.SPEC.launch_set_files) + (self.SPEC.pins_file, self.SPEC.roster_file, self.SPEC.three_numbers_file, ROWS_LAUNCH_FILE, self.SPEC.schedule_file, RELAUNCHES_FILE)
         if self.SPEC.full_item_set:
             out += (ITEM_SETS_FILE, str(self.SPEC.item_set_pin_file))     # the item-set index and the pin file it names (ITEM_SET_RULE)
         return out
@@ -1661,7 +1895,11 @@ class BcbwSeedrepReader:
                     n_before = len(out)
                     out += self._discover_store(d, okey)
                     if len(out) > n_before:
-                        groups.add(seed_tag_of(tag))
+                        groups.add(group_of(self.SPEC, tag))
+        if not out and self.SPEC.declared is not None:
+            decl = self.SPEC.declared
+            raise AdapterRefusal(self.root, f"no {self.SPEC.eval_id} store of the declared campaign {decl.name!r} found ({STORES_HEAD}/<one of {', '.join(decl.row_dirs)}>/<object key>/"
+                                            f"{THINKING_DIR}/{self.SPEC.grammar_text}/cells/<store key>/ under the root)")
         if not out:
             raise AdapterRefusal(self.root, f"no {self.SPEC.eval_id} seed-replicate store found ({STORES_HEAD}/<model key>-f22s<N>[p]/<object key>/{THINKING_DIR}/bcbw-<launch tag>-<sha7>/cells/<store key>/ "
                                             f"under the root; the source's families: {', '.join(self.SPEC.models)})")
@@ -1678,17 +1916,17 @@ class BcbwSeedrepReader:
                 base = check_input(p, role="report", allow_symlink=self.allow_symlinks)
                 out += [base.with_alias(g) for g in sorted(groups)]
         for name in IC.listdir(self._records_dir()):
-            if name not in self.shared_files() and is_shared_record_name(name, self.shared_files(), self.SPEC.roster_variant_re) and os.path.isfile(os.path.join(self._records_dir(), name)):
+            if name not in self.shared_files() and is_shared_record_name(name, self.shared_files(), self.SPEC.roster_variant_re, self.SPEC.pins_variant_re) and os.path.isfile(os.path.join(self._records_dir(), name)):
                 # the roster set (ROSTER_SET_RULE): records/rosters.json and the per-tree roster / pins copies
                 base = check_input(os.path.join(self._records_dir(), name), role="report", allow_symlink=self.allow_symlinks)
                 out += [base.with_alias(g) for g in sorted(groups)]
                 continue
-            parts = gate_name_parts(name)
+            parts = gate_name_parts_for(self.SPEC, name)
             if parts is None or suffix_task_for(self.SPEC, parts["suffix"]) not in (None, self.SPEC.eval_id):
                 continue        # (a gate record of the OTHER task's one-task store is not this source's either, ONE_TASK_STORE_RULE)
             if is_lecun_relu_tag(parts["tag"]) and not lecun_relu_row_admitted(lecun_relu_model_key(parts["tag"]), self.SPEC):
                 continue        # the gate record of an s2rl row this reader does not read: not this source's (its row dir refuses as a whole, UNDECLARED_ROW_DIR_RULE)
-            g = seed_tag_of(parts["tag"])
+            g = group_of(self.SPEC, parts["tag"])
             if g in groups:
                 base = check_input(os.path.join(self._records_dir(), name), role="report", allow_symlink=self.allow_symlinks)
                 out.append(base.with_alias(g))
@@ -1764,11 +2002,11 @@ class BcbwSeedrepReader:
     def comparison_group(self, inp: Input) -> str:
         """One group per SEED (:data:`GROUP_RULE`): a store under ``native/<row dir>/`` maps to the row's seed tag; a record rides a ``#<seed tag>`` alias."""
         base = os.path.basename(inp.uri)
-        if "#" in base and seed_tag_of(base.rsplit("#", 1)[1]) == base.rsplit("#", 1)[1]:
+        if "#" in base and group_of(self.SPEC, base.rsplit("#", 1)[1]) == base.rsplit("#", 1)[1]:
             return base.rsplit("#", 1)[1]
         rel = os.path.relpath(inp.uri, self.root).split(os.sep)
         if len(rel) > 1 and rel[0] == STORES_HEAD and tag_of_row_dir(rel[1], self.SPEC) is not None:
-            return seed_tag_of(tag_of_row_dir(rel[1], self.SPEC))
+            return group_of(self.SPEC, tag_of_row_dir(rel[1], self.SPEC))
         if len(rel) > 1 and rel[0] == STORES_HEAD and undeclared_row_dir_reason(rel[1], self.SPEC) is not None:
             return rel[1]       # an undeclared row dir is a group of its own, named for itself; read() refuses it by name (UNDECLARED_ROW_DIR_RULE)
         raise AdapterRefusal(inp.uri, f"input names no seed tag ({STORES_HEAD}/<model key>-f22s<N>[p]/) under {self.root}")
@@ -1787,12 +2025,12 @@ class BcbwSeedrepReader:
                 continue
             name = base.rsplit("#", 1)[0]
             group = self.comparison_group(inp)
-            mk = model_key_of(group) or MODEL_KEY
+            mk = (spec.declared.model_key if spec.declared is not None else model_key_of(group)) or MODEL_KEY
             mkey = MODEL_KEYS[mk]
             # the SAME tag map read() binds: the two-argument call omitted the u0 selection, so the launch-row and
             # three-number memberships of a u0 family left out every u0 member and a self-retiring ruling keyed to that input would have evaluated
             # against a truncated snapshot
-            tags = group_tags(group, spec.instruct_direct, spec.unsteered_row, spec.dose_relu_row, spec.dose_lora_row, spec.lecun_relu_row)
+            tags = tags_of(spec, group)
             u_tag = tags.get(UNSTEERED_SELECTION)
             # the tag spellings a producer record may carry for the group's rows: its tags (the instruct-direct and unsteered ones included where admitted),
             # plus the `main` canary's own tag where the family aliases it
@@ -1820,6 +2058,13 @@ class BcbwSeedrepReader:
                     d_any = None
                 members = sorted(str(e.get("id")) for e in item_set_entries(d_any) if e.get("id") is not None)
                 rows.append(SourceStateRow(source_id_for(spec.name, group), inp.uri, "$", 1, 1, members, inp.sha256))
+            elif spec.declared is not None and name == spec.pins_file:
+                # a declared campaign's launched pins (DECLARED_OBJECT_RULE): the members are the staged ids the campaign's harness roster names at the group's view -- from the
+                # declared roster, never a string prefix -- that the launched copy carries under the campaign's model key
+                d = self._json(inp) or {}
+                blk = d.get(mk) if isinstance(d.get(mk), Mapping) else {}
+                members = sorted(k for k in self._declared_staged_ids(group) if k in blk)
+                rows.append(SourceStateRow(source_id_for(spec.name, group), inp.uri, f"$.{mk}", 1, 1, members, inp.sha256))
             elif name == PINS_FILE:
                 d = self._json(inp) or {}
                 parts = tag_parts(group)
@@ -1838,6 +2083,28 @@ class BcbwSeedrepReader:
             group = self.comparison_group(inputs[0])
             rows += self.refusals.ledger_rows(ctx, group, inputs, source_id_for(spec.name, group))
         return rows
+
+    def _declared_staged_ids(self, group: str) -> List[str]:
+        """The staged ids a declared campaign's harness roster names at the view ``group`` is (the pin form's ``<model key>.<staged id>`` second half, a string entry
+        itself); none when the roster is not in this checkout or names no such view (read() refuses the rows by name then)."""
+        decl = self.SPEC.declared
+        lv = decl.entry_of_tag(group) if decl is not None else None
+        if lv is None:
+            return []
+        try:
+            roster, _pins = self._roster_pins()
+        except IC.Unresolved:
+            return []
+        node: Any = roster
+        for k in ("targets", decl.model_key, "views", lv.selection, "cells"):
+            node = node.get(k) if isinstance(node, Mapping) else None
+        cells = node
+        out: List[str] = []
+        for v in (cells.values() if isinstance(cells, Mapping) else ()):
+            ref = v.get("pin") if isinstance(v, Mapping) else v
+            if isinstance(ref, str) and ref:
+                out.append(ref.split(".", 1)[1] if isinstance(v, Mapping) and "." in ref else ref)
+        return sorted(out)
 
     def status_extra(self, group: str) -> Dict[str, Any]:
         return dict(self._facts.get(group) or {})
@@ -1935,6 +2202,9 @@ class BcbwSeedrepReader:
         kind = g["object_kind"]
         if kind == "none":
             return LC.ResolvedObject("none", "none", "none", "baseline_none", "derived", "the unsteered object key", derivation="none"), None
+        # (getattr: ifeval_seedrep borrows this method on a class that binds no SPEC; it reads the paper path, unchanged)
+        if getattr(getattr(self, "SPEC", None), "declared", None) is not None:
+            return self._resolve_declared_object(okey, selection, g), None
         if kind == "system_instruction":
             oid = self.seeds.si_object_id(g["si_id"] or "")
             if oid is None:
@@ -2026,6 +2296,52 @@ class BcbwSeedrepReader:
                                 staged_id=str(staged), derivation=g["derivation"], si_id=g["si_id"])
         return obj, None
 
+    def _resolve_declared_object(self, okey: str, selection: str, g: Mapping[str, Any]) -> LC.ResolvedObject:
+        """A declared campaign's fitted key (:data:`DECLARED_OBJECT_RULE`): the campaign's harness roster at the view's ``selection`` -> the pin form ``{pins, pin}`` (or a staged
+        id string) -> ``jobplan.object_id_for`` with ``pins_root`` (the harness's own resolution); the pin form must name the campaign's declared harness pins, and the
+        sha it resolves must be the campaign pins' entry for the staged id. A prompted or all-positions key is not a campaign row (:data:`DECLARED_GRAMMAR_RULE`). Raises
+        :class:`IC.Unresolved` by name; never the live registry."""
+        decl = self.SPEC.declared
+        assert decl is not None
+        mk = decl.model_key
+        kind = g["object_kind"]
+        if kind == "system_instruction" or okey == ARDITI_OBJECT_KEY:
+            raise IC.Unresolved(okey, f"a {'prompted' if kind == 'system_instruction' else 'all-positions'} key under the declared campaign {decl.name!r}: a campaign row is a fitted "
+                                      f"object of the campaign's roster (class arm) or the view's none ({DECLARED_GRAMMAR_RULE})")
+        if kind is None:
+            raise IC.Unresolved(okey, "the key matches no object grammar this reader knows")
+        roster, pins = self._roster_pins()
+        roster_rel, pins_rel = "/".join(decl.harness_roster_rel), "/".join(decl.harness_pins_rel)
+        try:
+            mapped = roster["targets"][mk]["views"][selection]["cells"][okey]
+        except (KeyError, TypeError):
+            raise IC.Unresolved(okey, f"the campaign's harness roster ({roster_rel}) maps no entry for {mk} view {selection!r} ({DECLARED_OBJECT_RULE})") from None
+        if isinstance(mapped, Mapping):
+            if str(mapped.get("pins") or "") != pins_rel:
+                raise IC.Unresolved(okey, f"the campaign's harness roster names pins file {mapped.get('pins')!r} for {selection}/{okey}; the campaign declares {pins_rel} ({DECLARED_OBJECT_RULE})")
+            ref = str(mapped.get("pin") or "")
+            staged = ref.split(".", 1)[1] if ref.count(".") == 1 and ref.split(".", 1)[0] == mk else ""
+            route = f"pin {ref} of {pins_rel} (the roster's pin form)"
+        else:
+            staged = str(mapped) if isinstance(mapped, str) else ""
+            route = f"staged id {staged}"
+        if not staged:
+            raise IC.Unresolved(okey, f"the campaign's harness roster maps {selection}/{okey} to {mapped!r}, which names no staged id of {mk} ({DECLARED_OBJECT_RULE})")
+        try:
+            sha = JP.object_id_for(okey, model_key=mk, roster_selection=selection, roster=roster, pins=pins, si_sha={}, pins_root=self.pins_root)
+        except LookupError as exc:
+            raise IC.Unresolved(okey, f"the campaign's harness roster's {selection!r} selection / the pins name no object for it: {exc}") from None
+        pin = (pins.get(mk) or {}).get(staged) if isinstance(pins.get(mk), Mapping) else None
+        if not isinstance(pin, Mapping) or str(pin.get("object_sha256") or "") != str(sha):
+            raise IC.Unresolved(okey, f"the campaign's harness pins ({pins_rel}) name {str((pin or {}).get('object_sha256'))[:16]!r} for {mk}.{staged}; the roster's resolution names "
+                                      f"{str(sha)[:16]} ({DECLARED_OBJECT_RULE})")
+        return LC.ResolvedObject(str(sha), kind, g["paper_label"], g["object_role"], "recorded",
+                                 f"the declared campaign {decl.name}: harness roster {roster_rel} targets.{mk}.views.{selection}.cells[{okey}] -> {route} -> staged {staged}; "
+                                 f"{pins_rel} {mk}.{staged}.object_sha256 (jobplan.object_id_for with pins_root, the harness's own resolution); the launch set's pin key and "
+                                 f"expected sha; the launched pins' entry; attested by the store's provenance.artifact_sha256, fit_provenance.object_sha and "
+                                 "lane_roster.json:object_sha256",
+                                 staged_id=staged, derivation=g["derivation"], si_id=g["si_id"])
+
     # ---- read ---------------------------------------------------------------------------------
     def read(self, ctx: AdapterContext, group: str, inputs: Sequence[Input]) -> Iterator[RecordBatch]:
         spec = self.SPEC
@@ -2045,30 +2361,47 @@ class BcbwSeedrepReader:
             self._finish(group, facts)
             yield batch
             return
-        parts = tag_parts(group)
-        mk = model_key_of(group)
-        if parts is None or parts[1] or mk is None:
-            self._refuse_group(group, facts, f"group {group!r} does not spell a seed tag (<model key>_s<N>)", inputs[0].uri if inputs else self.root)
-            yield batch
-            return
-        if mk not in spec.models:
-            self._refuse_group(group, facts, f"model key {mk!r} is not one of this source's families ({', '.join(spec.models)}); its stores belong to another source", self.root)
-            yield batch
-            return
-        mkey = MODEL_KEYS[mk]
-        seed_n = parts[0]
-        if seed_n not in mkey.seeds:
-            self._refuse_group(group, facts, f"{mk} runs the seed tags {[f'{mk}_s{k}' for k in mkey.seeds]} (the model-key table); {group!r} is outside them", self.root)
-            yield batch
-            return
-        sel_seed, sel_paired = self._group_selections(group)
-        tags = group_tags(group, spec.instruct_direct, spec.unsteered_row, spec.dose_relu_row, spec.dose_lora_row, spec.lecun_relu_row)
+        if spec.declared is not None:
+            # a DECLARED CAMPAIGN (DECLARED_GRAMMAR_RULE): the group is a declared view's tag (an undeclared row dir refused above), the model key the campaign's, no seed tag
+            decl_tag = spec.declared.entry_of_tag(group)
+            assert decl_tag is not None, group
+            mk = spec.declared.model_key
+            facts.update(declared_campaign=spec.declared.block(decl_tag), group_rule=DECLARED_GRAMMAR_RULE, anchor_rule=DECLARED_ANCHOR_RULE,
+                         declared_rules=[DECLARED_CAMPAIGN_RULE, DECLARED_GRAMMAR_RULE, DECLARED_OBJECT_RULE, DECLARED_ANCHOR_RULE])
+            if mk not in spec.models:
+                self._refuse_group(group, facts, f"the declared campaign {spec.declared.name!r} reads model key {mk!r}, which is not one of this source's families ({', '.join(spec.models)})", self.root)
+                yield batch
+                return
+            mkey = MODEL_KEYS[mk]
+            seed_n = None
+            selections = [decl_tag.selection]
+            tags = tags_of(spec, group)
+        else:
+            parts = tag_parts(group)
+            mk = model_key_of(group)
+            if parts is None or parts[1] or mk is None:
+                self._refuse_group(group, facts, f"group {group!r} does not spell a seed tag (<model key>_s<N>)", inputs[0].uri if inputs else self.root)
+                yield batch
+                return
+            if mk not in spec.models:
+                self._refuse_group(group, facts, f"model key {mk!r} is not one of this source's families ({', '.join(spec.models)}); its stores belong to another source", self.root)
+                yield batch
+                return
+            mkey = MODEL_KEYS[mk]
+            seed_n = parts[0]
+            if seed_n not in mkey.seeds:
+                self._refuse_group(group, facts, f"{mk} runs the seed tags {[f'{mk}_s{k}' for k in mkey.seeds]} (the model-key table); {group!r} is outside them", self.root)
+                yield batch
+                return
+            sel_seed, sel_paired = self._group_selections(group)
+            selections = [sel_seed, sel_paired]
+            tags = group_tags(group, spec.instruct_direct, spec.unsteered_row, spec.dose_relu_row, spec.dose_lora_row, spec.lecun_relu_row)
         instruct_tag = tags.get(INSTRUCT_SELECTION)
         unsteered_tag = tags.get(UNSTEERED_SELECTION)
         dose_relu_tag = tags.get(DOSE_RELU_SELECTION)
         dose_lora_tag = tags.get(DOSE_LORA_SELECTION)
         lecun_relu_tag = tags.get(LECUN_RELU_SELECTION)
-        facts.update(seed=seed_n, selections=[sel_seed, sel_paired], tags=sorted(t for t in tags.values() if t != instruct_tag))
+        facts.update(seed=seed_n, selections=selections, tags=sorted(t for t in tags.values() if t != instruct_tag))
         if dose_relu_tag is not None:
             facts.update(dose_relu_row_tag=dose_relu_tag, dose_relu_row_rule=DOSE_RELU_ROW_RULE)     # stamped on the families that run the row alone
         facts["currency_rule"] = CURRENCY_RULE
@@ -2109,7 +2442,7 @@ class BcbwSeedrepReader:
             return
         facts.update(model_id=model_id, instrument_id=str(inst_row["instrument_id"]))
         stores, shared, gates = self._sort_inputs(inputs)
-        pins_inp, roster_inp, tn_inp = (shared.get(n) for n in (PINS_FILE, spec.roster_file, spec.three_numbers_file))
+        pins_inp, roster_inp, tn_inp = (shared.get(n) for n in (spec.pins_file, spec.roster_file, spec.three_numbers_file))
         ls_present = [n for n in spec.launch_set_files if n in shared]
         ls_inp = shared[ls_present[0]] if len(ls_present) == 1 else None
         ls_problem = (f"{RECORDS_DIR}/ carries {len(ls_present)} launch sets ({', '.join(ls_present)}); the row table must be ONE file (the names this reader reads: "
@@ -2262,7 +2595,7 @@ class BcbwSeedrepReader:
                 self.refusals.add(rkey, f"{RECORDS_DIR}/{' / '.join(spec.launch_set_files)} ({LAUNCH_SET_SCHEMA}, evals.{spec.launch_set_eval_key}.launch) is absent or malformed beside the stores; no pin key and no expected object sha can be named", self.root)
                 continue
             if not pins_ok:
-                self.refusals.add(rkey, f"{RECORDS_DIR}/{PINS_FILE} (and every per-tree pins copy) is absent or malformed beside the stores; the launched pins cannot be checked", self.root)
+                self.refusals.add(rkey, f"{RECORDS_DIR}/{spec.pins_file} (and every per-tree pins copy) is absent or malformed beside the stores; the launched pins cannot be checked", self.root)
                 continue
             if not roster_ok:
                 self.refusals.add(rkey, roster_set.index_problem or f"{RECORDS_DIR}/{spec.roster_file} is absent or malformed beside the stores; the launched roster entry cannot be checked", self.root)
@@ -2305,7 +2638,7 @@ class BcbwSeedrepReader:
             la_sfx = str(la_x.get("suffix") or "") if la_x is not None else ""
             if not la_sfx or (tag, rk_okey) in seen:
                 continue
-            la_row_dir = str(la_x.get("row_dir") or "") or row_dir_of(tag)
+            la_row_dir = str(la_x.get("row_dir") or "") or row_dir_for(spec, tag)
             la_tag = tag_of_row_dir(la_row_dir, spec)
             if la_tag is not None and (la_tag, rk_okey) in seen:
                 continue        # the named store was read as ANOTHER row's (the `_it` none carried BY ALIAS to the s1 none: launched_as names that store; INSTRUCT_ANCHOR_RULE)
@@ -2320,7 +2653,7 @@ class BcbwSeedrepReader:
             elif suffix_task_for(spec, la_sfx) not in (None, spec.eval_id):
                 why = f"its suffix is tagged for the task {suffix_task_for(spec, la_sfx)!r}, not this source's ({spec.eval_id})"
             elif tag_of_row_dir(la_row_dir, spec) != tag:
-                why = f"launched_as.row_dir {la_row_dir!r} is not the row's ({row_dir_of(tag)})"
+                why = f"launched_as.row_dir {la_row_dir!r} is not the row's ({row_dir_for(spec, tag)})"
             else:
                 why = "no store files were discovered under it"
             self.refusals.add(f"{tag}|{rk_okey}", f"the launch row names store {rel_store(la_row_dir, okey, la_sfx)} on launched_as; it exists under the root but this reader did not read it: {why} "
@@ -2364,7 +2697,7 @@ class BcbwSeedrepReader:
                                                                "launch_set_row": {k: lrow.get(k) for k in ("census_status", "launched_as", "anchor_tuple", "block", "seed_base") if k in lrow},
                                                                "rule": INSTRUCT_ANCHOR_RULE})
                 continue
-            gd = gate_docs.get((row_dir_of(tag), okey))
+            gd = gate_docs.get((row_dir_for(spec, tag), okey))
             if gd is None and mkey.legacy_main_alias and tag == group:
                 gd = gate_docs.get((f"{mk}-f22", okey))      # a not-run row may carry its FAIL record under the `main` canary row (LEGACY_MAIN_ALIAS_RULE)
             la_n = lrow.get("launched_as") if isinstance(lrow.get("launched_as"), Mapping) else None
@@ -2378,6 +2711,8 @@ class BcbwSeedrepReader:
         # asked on the first comparison; a group without one never asks): the parks land on the VALUE rows' extra.delta_block before the records are added
         self._reanchor_computations = {}
         facts.update(contrasts_filed=0, contrasts_own=0, contrasts_reanchored=0, contrasts_parked=0, anchor_states={})
+        if spec.declared is not None:
+            facts["contrasts_declared_none"] = 0         # a campaign that declares no registry anchor parks every comparison under DECLARED_ANCHOR_RULE (no refusal line)
         contrasts = self._emit_contrasts(ctx, group, filed, expected, seen, facts, n_items)
         if spec.shared is not None:
             # the shared - solo comparison (SHARED_COMPARISON_RULE): a registry-computed run_contrast per shared row against its solo run, anchor_kind solo_stand_in
@@ -2449,13 +2784,13 @@ class BcbwSeedrepReader:
         return RosterSet(entries, plain, idx_inp is not None, idx_inp, index_problem)
 
     def _pins_set(self, shared: Mapping[str, Input], roster_set: RosterSet) -> PinsSet:
-        plain_inp = shared.get(PINS_FILE)
+        plain_inp = shared.get(self.SPEC.pins_file)
         plain_doc = self._json(plain_inp) if plain_inp is not None else None
         plain = (plain_doc, plain_inp) if isinstance(plain_doc, dict) else None
         by_tree: Dict[str, Tuple[Dict[str, Any], Input, str]] = {}
         by_name: Dict[str, Tuple[Dict[str, Any], Input]] = {}
         for name, inp in shared.items():
-            m = PINS_VARIANT_RE.match(name)
+            m = self.SPEC.pins_variant_re.match(name)
             if m:
                 doc = self._json(inp)
                 if isinstance(doc, dict):
@@ -2466,7 +2801,7 @@ class BcbwSeedrepReader:
                 doc = self._json(shared[os.path.basename(e.pins_file)])
                 if isinstance(doc, dict):
                     by_name[os.path.basename(e.pins_file)] = (doc, shared[os.path.basename(e.pins_file)])
-        return PinsSet(plain, by_tree, by_name)
+        return PinsSet(plain, by_tree, by_name, plain_name=self.SPEC.pins_file)
 
     def _launch_row_key(self, r: Mapping[str, Any], mk: str, tags: Mapping[str, str]) -> Optional[Tuple[str, str]]:
         """The ``(tag, object key)`` a launch-set row names in a group whose selections are ``tags`` (selection -> tag): the row's selection when it is one
@@ -2478,7 +2813,7 @@ class BcbwSeedrepReader:
         if not okey:
             return None
         row_tag = str(r.get("tag") or "")
-        if row_tag and model_key_of(row_tag) != mk:
+        if row_tag and model_key_for(self.SPEC, row_tag) != mk:
             return None
         if self.SPEC.shared is not None:
             sel = str(r.get("selection") or "")
@@ -2489,6 +2824,8 @@ class BcbwSeedrepReader:
         sel = str(r.get("view") or "")
         if sel in tags:
             return (tags[sel], str(okey))
+        if self.SPEC.declared is not None:
+            return None         # a declared campaign's row is keyed by its view's selection alone (DECLARED_GRAMMAR_RULE)
         alias = f"{mk}_s{LEGACY_MAIN_ALIAS_SEED}"
         if sel == MAIN_SELECTION and MODEL_KEYS[mk].legacy_main_alias and alias in tags.values():
             return (alias, str(okey))
@@ -2522,9 +2859,9 @@ class BcbwSeedrepReader:
                 if rel[0] == os.pardir:
                     self._solo_inputs[real] = inp      # a SHARED reader's solo-side input (outside the root; SHARED_COMPARISON_RULE), by its real path
                 elif len(rel) == 2 and rel[0] == RECORDS_DIR:
-                    if is_shared_record_name(name, self.shared_files(), self.SPEC.roster_variant_re):
+                    if is_shared_record_name(name, self.shared_files(), self.SPEC.roster_variant_re, self.SPEC.pins_variant_re):
                         shared[name] = inp
-                    elif gate_name_parts(name) is not None and suffix_task_for(self.SPEC, gate_name_parts(name)["suffix"]) in (None, self.SPEC.eval_id):
+                    elif gate_name_parts_for(self.SPEC, name) is not None and suffix_task_for(self.SPEC, gate_name_parts_for(self.SPEC, name)["suffix"]) in (None, self.SPEC.eval_id):
                         gates.append(inp)
                 elif len(rel) == 2 and rel[0] in RELAUNCHES_DIRS[1:] and name == RELAUNCHES_FILE:
                     shared.setdefault(name, inp)       # records/ wins when both are mirrored
@@ -3055,9 +3392,11 @@ class BcbwSeedrepReader:
         dose_lora = is_dose_lora_tag(tag)
         dose_row = dose_relu or dose_lora
         lecun_relu = is_lecun_relu_tag(tag)
-        # an instruct-direct, unsteered, dose-row or LeCun-init ReLU tag is never the paired one
-        paired = False if (instruct or is_unsteered_tag(tag) or dose_row or lecun_relu) else bool(tag_parts(tag)[1])
-        mk = model_key_of(tag)
+        decl = spec.declared
+        decl_tag = decl.entry_of_tag(tag) if decl is not None else None
+        # an instruct-direct, unsteered, dose-row or LeCun-init ReLU tag is never the paired one; nor is a declared campaign's view (DECLARED_GRAMMAR_RULE)
+        paired = False if (decl is not None or instruct or is_unsteered_tag(tag) or dose_row or lecun_relu) else bool(tag_parts(tag)[1])
+        mk = model_key_for(spec, tag)
         mkey = MODEL_KEYS[mk]
         launch_tag = launch_tag_of(tag, okey, legacy_tag)
         shared_spec = spec.shared
@@ -3153,6 +3492,9 @@ class BcbwSeedrepReader:
             raise _PairRefusal(f"object: {exc.why}", ls_inp.uri)
         arditi = okey == ARDITI_OBJECT_KEY
         steered = obj.object_kind not in ("none", "system_instruction")
+        if decl is not None and obj.object_kind == "none" and not decl.admits_none:
+            raise _PairRefusal(f"a `none` store under the declared campaign {decl.name!r} view {tag}: the campaign admits no none (it files no unsteered run; its rows are anchored "
+                               f"elsewhere, {DECLARED_ANCHOR_RULE}); the store is not read ({DECLARED_GRAMMAR_RULE})", st["dir"])
         # the route a composed key took (PINS_KEY_RULE): the harness pins' key, or the store's tree pins by the launched sha
         pins_by_sha = False
         if steered and not arditi and not mkey.roster_selections and roster_sel is None:
@@ -3195,7 +3537,23 @@ class BcbwSeedrepReader:
         # the launch set's row: the tag and seed base it spells are this store's — for the `main` canary the producer's own spelling (its tag, no seed) is accepted too;
         # an instruct-direct row spells NO seed base (the fit is the instruct checkpoint's, not a seed replicate)
         tags_ok = (tag,) if legacy_tag is None else (tag, legacy_tag)
-        seed_ok = (lrow.get("seed_base") is None) if instruct else (LC.int_or_none(lrow.get("seed_base")) == seed_n or (legacy_tag is not None and lrow.get("seed_base") is None))
+        if decl is not None:
+            # a DECLARED CAMPAIGN's row (DECLARED_GRAMMAR_RULE): the view's tag and selection, NO seed base (a seedless instrument; the seed axis is the object, SEED_AXIS_RULE),
+            # the objects' fit seed and transfer kind as the view declares them (an unsteered none may spell no fit seed and the none transfer kind), the campaign's model key
+            want_fit_seed = (decl_tag.fit_seed,) if steered else (decl_tag.fit_seed, None)
+            want_tk = (decl_tag.transfer_kind,) if steered else (decl_tag.transfer_kind, "none", None)
+            decl_bad = [f"{k} {got!r} (the view declares {want!r})" for k, got, want in (
+                ("view", lrow.get("view"), decl_tag.selection), ("seed_base", lrow.get("seed_base"), None), ("bcbw_wave", lrow.get("bcbw_wave"), tag),
+                ("model_key", lrow.get("model_key"), decl.model_key)) if got != want]
+            fs = lrow.get("fit_seed")
+            if not (fs in want_fit_seed and (fs is None or (isinstance(fs, int) and not isinstance(fs, bool)))):
+                decl_bad.append(f"fit_seed {fs!r} (the view declares {decl_tag.fit_seed})")
+            if lrow.get("transfer_kind") not in want_tk:
+                decl_bad.append(f"transfer_kind {lrow.get('transfer_kind')!r} (the view declares {decl_tag.transfer_kind})")
+            if decl_bad:
+                raise _PairRefusal(f"the launch set's row for the declared campaign {decl.name!r} view {tag}/{okey} disagrees with the declaration on " + "; ".join(decl_bad)
+                                   + f" ({DECLARED_GRAMMAR_RULE})", ls_inp.uri)
+        seed_ok = True if decl is not None else ((lrow.get("seed_base") is None) if instruct else (LC.int_or_none(lrow.get("seed_base")) == seed_n or (legacy_tag is not None and lrow.get("seed_base") is None)))
         if not seed_ok or str(lrow.get("tag") or "") not in tags_ok or str(lrow.get("cell_slug") or "") != base["ck"].object_token:
             raise _PairRefusal(f"the launch set's row (tag {lrow.get('tag')!r}, seed_base {lrow.get('seed_base')!r}, cell_slug {lrow.get('cell_slug')!r}) is not this store's "
                                f"({' / '.join(tags_ok)}, {'null (instruct-direct)' if instruct else seed_n}, store key object token "
@@ -3230,7 +3588,7 @@ class BcbwSeedrepReader:
                 raise _PairRefusal(f"the launch set expects object {str(expected_sha)[:16]}…, the pins name {str(obj.object_id)[:16]}… for {obj.staged_id}", ls_inp.uri)
             launched = (pins_doc.get(mk) or {}).get(obj.staged_id) if isinstance(pins_doc.get(mk), Mapping) else None
             if not isinstance(launched, Mapping) or str(launched.get("object_sha256") or "") != obj.object_id:
-                raise _PairRefusal(f"the launched pins ({RECORDS_DIR}/{PINS_FILE}) name {str((launched or {}).get('object_sha256'))[:16]!r} for {obj.staged_id}, the harness pins {str(obj.object_id)[:16]}", pins_inp.uri.rsplit("#", 1)[0])
+                raise _PairRefusal(f"the launched pins ({RECORDS_DIR}/{spec.pins_file}) name {str((launched or {}).get('object_sha256'))[:16]!r} for {obj.staged_id}, the harness pins {str(obj.object_id)[:16]}", pins_inp.uri.rsplit("#", 1)[0])
         elif launch_pin_key is not None or expected_sha is not None:
             raise _PairRefusal(f"the launch set carries a pin key / expected sha ({launch_pin_key!r} / {str(expected_sha)[:16]!r}) for an unsteered or prompted key", ls_inp.uri)
         ident = str(man.get("serving_identity") or "")
@@ -3426,7 +3784,8 @@ class BcbwSeedrepReader:
             # record seed 0 and a dose-scaled copy's fit seed is not applicable (fit_sidecars); run.seed_base is NULL for it already (DOSE_RELU_ROW_RULE)
             # a LeCun-init ReLU row carries the objects' RECORDED fit seed (LECUN_RELU_ROW_RULE: the bank sidecars' seed 0, declared), not the group's standup seed
             "seed_replicate_label": (None if instruct else selection),
-            "fit_seed": (LECUN_RELU_FIT_SEED if (lecun_relu and steered) else (seed_n if steered and not arditi and not instruct and not dose_row else None)),
+            "fit_seed": ((decl_tag.fit_seed if steered else None) if decl is not None else
+                         (LECUN_RELU_FIT_SEED if (lecun_relu and steered) else (seed_n if steered and not arditi and not instruct and not dose_row else None))),
             "seed_axis": {"rule": SEED_AXIS_RULE, "trial_index": 0, "seed_base": None,
                                                                                                                       "decode_seed_policy": INSPECT_SEED_POLICY_DEFAULT,
                                                                                                                       "same_object_on_every_seed_tag": (not steered) or arditi},
@@ -3475,6 +3834,9 @@ class BcbwSeedrepReader:
         }
         if item_set_extra is not None:
             extra["item_set"] = item_set_extra
+        if decl is not None:
+            # the DECLARED CAMPAIGN's row (DECLARED_CAMPAIGN_RULE): the campaign and the view it files under, the campaign's rule texts in place of the seed-tag ones
+            extra.update(declared_campaign=decl.block(decl_tag), group_rule=DECLARED_GRAMMAR_RULE, anchor_rule=DECLARED_ANCHOR_RULE, declared_object_rule=DECLARED_OBJECT_RULE)
         if shared_row is not None:
             # the SHARED row's own record (SHARED_SOURCE_RULE): the comparison it declares, the row engine that served it, the solo side it stands against
             extra.update(comparison_kind=shared_row["comparison_kind"], solo_run_id=shared_row["solo_run_id"], solo_store=shared_row["solo_store"], standup_id=shared_row["standup_id"],
@@ -3514,7 +3876,7 @@ class BcbwSeedrepReader:
             else:
                 # the cross-tag fallback's spelling; _emit_contrasts re-stamps the row once its own `none` filed (extra.anchor names the anchor used either way)
                 extra["cross_standup_anchor"] = f"{group}/none"
-        if not mkey.roster_selections:
+        if not mkey.roster_selections and decl is None:
             # an appendix family: the table's identity and the pin-key route, stamped on ITS rows alone
             extra["appendix_family"] = {"model_key": mk, "model_id": model_id, "served_hf_id": mkey.served_hf_id, "served_revision": mkey.served_revision,
                                         "seed_tags": [f"{mk}_s{k}" for k in mkey.seeds], "rule": APPENDIX_FAMILY_RULE}
@@ -3542,7 +3904,8 @@ class BcbwSeedrepReader:
                                           "three_numbers_key": tn_key, "rule": LEGACY_MAIN_ALIAS_RULE}
             facts.setdefault("legacy_main_alias_rows", []).append({"tag": tag, "tag_legacy_original": legacy_tag, "row_dir": base["row_dir"], "object_key": okey})
         declared_role = None
-        lead = f"{spec.eval_id} thinking OFF, protocol T {spec.protocol_temperature:g}, one pass at {spec.cap:,}, {'instruct-direct' if instruct else 'seed'} tag {tag} {okey}"
+        lead = (f"{spec.eval_id} thinking OFF, protocol T {spec.protocol_temperature:g}, one pass at {spec.cap:,}, "
+                + (f"{'instruct-direct' if instruct else 'seed'} tag {tag} {okey}" if decl is None else f"the declared campaign {decl.name} view {tag} {okey} (fit seed {decl_tag.fit_seed})"))
         if legacy_tag is not None:
             lead += f" (the family's `{MAIN_SELECTION}` canary {legacy_tag}, row {base['row_dir']}, filed as {tag}/{okey})"
         if shared_row is not None:
@@ -3570,6 +3933,10 @@ class BcbwSeedrepReader:
                                                                   f"[{obj.object_id}] x eval_ids [{spec.eval_id}] x instrument_ids [{instrument_id}] x views_legacy "
                                                                   f"[{', '.join(f'{mk}_s{k}' for k in mkey.seeds)}] keeps the three rows selected together (the user's, never a reader default)")})
             lead += f" (ONE object on every seed tag, {op.rung} c = {op.coefficient:g} {op.unit}; declared {declared_role})"
+        elif not steered and decl is not None:
+            # a declared campaign's own none: the same object on every view of the campaign (DECLARED_GRAMMAR_RULE)
+            extra["same_object_rows"] = {"twin_tags_legacy": [t for t in decl.tag_names if t != tag], "rule": SEED_AXIS_RULE,
+                                         "coexist_ruling_needed": f"a roster coexist ruling over lane_sources_legacy [{spec.source}] x the campaign's views keeps the rows of one object selected together"}
         elif not steered and len(mkey.seeds) > 1:
             # the same object on every seed tag of a multi-seed family; a one-seed family (the appendix) has no twin tag and needs no coexist ruling here
             extra["same_object_rows"] = {"twin_tags_legacy": [f"{mk}_s{k}" for k in mkey.seeds if k != seed_n], "rule": SEED_AXIS_RULE,
@@ -3583,7 +3950,7 @@ class BcbwSeedrepReader:
                                           instrument_row=inst_row, instrument_seed_id=spec.instrument_seed, lifecycle_state="generated", when_utc=when_final,
                                           when_source=f"RESULT's last line ({RESULT_COMPLETE}) `at=` for generated; {LAUNCHED_ENTRY_FILE}:launched_at for queued / started",
                                           token_cap_tokens=spec.cap, judge_id=None, judge_seed_id=None, substrate=substrate, lane_source_legacy=spec.source,
-                                          store_uri=LC.rel_home(base["dir"]), instrument_match=inst_match, extra=extra, notes=notes)
+                                          store_uri=LC.rel_home(base["dir"]), instrument_match=inst_match, extra=extra, notes=notes, campaign=spec.campaign)
         except KeyError as exc:
             raise _PairRefusal(f"run row: {exc}", where_man)
         if item_set is not None and str(payload.get("item_set_id")) != item_set.id:
@@ -3610,6 +3977,24 @@ class BcbwSeedrepReader:
                                                               + f"; the object's own resolution: {obj.source}"))
                 re_blk["object_id_confidence"] = {"baseline": baseline, "filed": filed, "downgraded": filed != baseline}
                 payload["extra"]["endpoint_served_key_note"] = re_blk["endpoint_served_key_note"]      # (run_payload_base copied `extra`: the payload's dict is the one that files)
+        if decl is not None and steered:
+            # a DECLARED CAMPAIGN's fitted row (DECLARED_OBJECT_RULE): transfer_kind is DERIVED from the object's fit checkpoint (manifest.json:fit_provenance.model_id) against the
+            # served one, and must equal the view's declaration and legacy_spellings.yaml's spelling of the tag
+            fit_hf = str(fitp.get("model_id") or "")
+            fit_model_id = seeds.model_for_hf_id(fit_hf) if fit_hf else None
+            if decl_tag.transfer_kind == INSTRUCT_TRANSFER_KIND and fitp.get("transfer") is True:
+                raise _PairRefusal(f"manifest.json:fit_provenance.transfer is true: the object was transferred from another checkpoint, which the declared campaign's view {tag} "
+                                   f"({INSTRUCT_TRANSFER_KIND}) does not admit ({DECLARED_OBJECT_RULE})", where_man)
+            derived = DV.transfer_kind(fit_model_id, model_id, str(obj.object_kind), run_checkpoint_kind=(seeds.models.get(model_id) or {}).get("checkpoint_kind"))
+            recorded_tk = payload.get("transfer_kind")
+            if derived[0] != decl_tag.transfer_kind or recorded_tk != decl_tag.transfer_kind:
+                raise _PairRefusal(f"transfer_kind: derived {derived[0]!r} from fit model {fit_model_id!r} ({fit_hf or '<none>'}) vs served {model_id!r} ({derived[2]}); legacy_spellings.yaml "
+                                   f"spells {tag} as {recorded_tk!r}; the declared campaign's view {tag} files only {decl_tag.transfer_kind} ({DECLARED_OBJECT_RULE})", where_man)
+            payload["transfer_kind"] = derived[0]
+            fc["transfer_kind"] = LC.confidence_entry("derived", f"derive.transfer_kind(fit model {fit_model_id} = the registry model of manifest.json:fit_provenance.model_id {fit_hf}, "
+                                                                 f"served model {model_id}): {derived[2]}; fit_provenance.transfer {fitp.get('transfer')!r}; legacy_spellings.yaml "
+                                                                 f"model_keys[{tag}].transfer_kind and the campaign's view agree ({recorded_tk})")
+            payload["extra"]["declared_campaign"].update(fit_model_id=fit_model_id, transfer_kind_derived=derived[0], transfer_kind_derivation=derived[2], transfer_kind_recorded=recorded_tk)
         if it_none_store:
             # the shared instruct row's own none (SHARED_IT_NONE_RULE; its repeat, SHARED_IT_REPEAT_RULE): no fit, so nothing to derive -- the payload's transfer_kind is the
             # unsteered object's (`none`)
@@ -3634,7 +4019,7 @@ class BcbwSeedrepReader:
                                                                  f"served model {model_id}): {derived[2]}; fit_provenance.transfer {fitp.get('transfer')!r}; legacy_spellings.yaml "
                                                                  f"model_keys[{tag}].transfer_kind agrees ({recorded_tk})")
             extra["instruct_direct"].update(fit_model_id=fit_model_id, transfer_kind_derived=derived[0], transfer_kind_derivation=derived[2], transfer_kind_recorded=recorded_tk)
-        payload.update(producer_session=PRODUCER_SESSION, trial_index=0, seed_base=None, queued_utc=when_start, started_utc=when_start,
+        payload.update(producer_session=(decl.producer_session if decl is not None else PRODUCER_SESSION), trial_index=0, seed_base=None, queued_utc=when_start, started_utc=when_start,
                        n_items_planned=n_items, n_items_generated=n_items, n_items_judged=n_scored, model_revision=(rev if _SHA1.match(rev) else None),
                        intervention_hash=man.get("intervention_hash"), harness_config_hash=man.get("harness_config_hash"),
                        env_digest=(next(iter(base["consts"].get("env_digest") or []), None)), modal_call_id=call_id, job_name=base["result"].get("name"),
@@ -4419,9 +4804,12 @@ class BcbwSeedrepReader:
         spec = self.SPEC
         out: List[Dict[str, Any]] = []
         comp_id = spec.recount_computation_id()
+        if spec.declared is not None and spec.declared.anchor == DECLARED_ANCHOR_NONE:
+            return self._declared_no_anchor(group, filed, facts, comp_id)
+        own_none_only = spec.declared is not None and spec.declared.anchor == DECLARED_ANCHOR_OWN_NONE
         frame: Optional[AC.AnchorCurrency] = None
         by_run = {st_["run_id"]: st_ for st_ in filed.values()}
-        mk_g = model_key_of(group)
+        mk_g = model_key_for(spec, group)
         u_tag = unsteered_tag_of(mk_g) if (mk_g and spec.unsteered_row and MODEL_KEYS[mk_g].unsteered_row) else None
         # a BASELINE anchors nothing: the plain `none` and a `none@w<N>` window re-serve (UNSTEERED_ROW_RULE); a shared repeat `none@rep<N>` is a row that anchors on its own none
         for key in sorted(k for k in filed if split_row_okey(k[1]) != ("none", None)):
@@ -4444,7 +4832,8 @@ class BcbwSeedrepReader:
                 plan = dict(plan, cross_standup=True)
                 standup_note = (f"the row was served by standup {st['standup_id'][:8]} and the row's none by standup {anchor['standup_id'][:8]} (a relaunch on its own standup, the gate's "
                                 f"comparability_class cross_standup): the anchor is the same model's none served by another standup ({SHARED_ANCHOR_STANDUP_RULE})")
-            block = {"rule": (WINDOW_ANCHOR_RULE if plan.get("window_matched") else (SHARED_IT_REPEAT_RULE if it_repeat else (INSTRUCT_ANCHOR_RULE if instruct else ANCHOR_RULE))),
+            block = {"rule": (DECLARED_ANCHOR_RULE if own_none_only else (WINDOW_ANCHOR_RULE if plan.get("window_matched") else (SHARED_IT_REPEAT_RULE if it_repeat else
+                                                                                                        (INSTRUCT_ANCHOR_RULE if instruct else ANCHOR_RULE)))),
                      "anchor_view_legacy": (plan["anchor_tag"] or group), "anchor_object_key": "none", "cross_standup": plan["cross_standup"], "declared_role": st.get("declared_role"), "currency_rule": CURRENCY_RULE}
             if plan.get("window_matched"):
                 block["window_matched"] = dict(plan["window_matched"])
@@ -4509,9 +4898,9 @@ class BcbwSeedrepReader:
             fact = {"anchor": None, "state": plan["state"], "why": plan["why"], "own_none_state": plan["own_none_state"], "currency_state": choice.state,
                     "currency_own_reason": choice.own_reason, "own_anchor_run_id": own_id, "n_candidates": choice.n_candidates}
 
-            def park(why: str, refusal: str) -> None:
+            def park(why: str, refusal: str, rule: str = AC.RULE) -> None:
                 self._park_delta_block(st, value_row, why, dict(own_anchor_run_id=own_id, own_anchor_kind=own_kind, state=choice.state, own_reason=choice.own_reason,
-                                                                anchor_run_id=choice.run_id, anchor_kind=choice.anchor_kind), selection, AC.RULE)
+                                                                anchor_run_id=choice.run_id, anchor_kind=choice.anchor_kind), selection, rule)
                 facts["contrasts_parked"] += 1
                 self.refusals.add(f"{tag}|{okey}|contrast", refusal, st["payload"]["extra"].get("store_uri") or self.root)
 
@@ -4524,6 +4913,18 @@ class BcbwSeedrepReader:
                 facts["contrasts"][f"{tag}|{okey}"] = dict(fact, state=(plan["state"] or "no_current_anchor"), why=reason, currency_why=choice.why,
                                                        **({"window_matched": dict(plan["window_matched"])} if plan.get("window_matched") else {}))
                 park(choice.why, f"contrast has no current anchor at {key_text} [own anchor {own_text}: {choice.own_reason}]; filed without a contrast: {choice.why}")
+                continue
+            if own_none_only and choice.state != "own_current":
+                # a DECLARED CAMPAIGN anchored on its view's own none (DECLARED_ANCHOR_RULE): any pick but the current own none -- the own one retired, unfolded or absent and
+                # the currency re-picking at any tier -- parks the comparison by name; a campaign never files a borrowed contrast
+                why = (f"the declared campaign {spec.declared.name!r} anchors its rows on the view's own `none` alone; the own one ({own_text}) is {choice.own_reason} and the currency's "
+                       f"pick {choice.run_id} ({choice.anchor_kind}) is not it, so the comparison parks rather than borrowing ({DECLARED_ANCHOR_RULE})")
+                block.update(state="no_current_anchor", reason=why, anchor_run_id=None, currency_state=choice.state, currency_own_reason=choice.own_reason,
+                             currency_why=choice.why, anchor_selection=selection, rule=DECLARED_ANCHOR_RULE)
+                st["payload"]["extra"]["anchor"] = block
+                facts["contrasts"][f"{tag}|{okey}"] = dict(fact, state="no_current_anchor", why=why, currency_why=choice.why)
+                park(why, f"contrast's own anchor {own_text} is {choice.own_reason}; the declared campaign admits no other anchor (the currency picked "
+                          f"{choice.run_id}, {choice.state}); filed without a contrast", DECLARED_ANCHOR_RULE)
                 continue
             if plan.get("window_matched") and choice.run_id != own_id:
                 # the window-matched own none is retired or unfolded and the currency's pick at the exact key is ANOTHER serving (the key has no window
@@ -4563,7 +4964,8 @@ class BcbwSeedrepReader:
             m = choice.measurement
             retired = f"own anchor {own_text}: {choice.own_reason}" + (f" ({choice.own_why})" if choice.own_why else "")
             chosen = f"{choice.run_id} ({choice.anchor_kind}" + (", another source" if choice.cross_source else "") + ")"
-            common_extra: Dict[str, Any] = {"unit": "pp", "anchor_view_legacy": plan["anchor_tag"], "anchor_object_key": "none", "anchor_rule": ANCHOR_RULE, "cross_standup": plan["cross_standup"],
+            common_extra: Dict[str, Any] = {"unit": "pp", "anchor_view_legacy": plan["anchor_tag"], "anchor_object_key": "none", "anchor_rule": (DECLARED_ANCHOR_RULE if own_none_only else ANCHOR_RULE),
+                                            "cross_standup": plan["cross_standup"],
                                             "row_tag_legacy": st.get("tag"), "anchor_selection": selection, "currency_rule": CURRENCY_RULE}
             if anchor is not None:
                 # the anchor is a row of this batch: paired per item over the items SCORED on both sides
@@ -4678,6 +5080,31 @@ class BcbwSeedrepReader:
                                                        **({"repeat_floor_of_own_none": True} if it_repeat else {}),
                                                        **({"window_matched": dict(plan["window_matched"])} if plan.get("window_matched") else {}))
         return out
+
+    def _declared_no_anchor(self, group: str, filed: Mapping[Tuple[str, str], Mapping[str, Any]], facts: Dict[str, Any], comp_id: str) -> List[Dict[str, Any]]:
+        """A DECLARED CAMPAIGN that declares no registry anchor (:data:`DECLARED_ANCHOR_RULE`, anchor ``none``): every steered row's comparison is NOT a registry contrast --
+        the currency is never asked (a read with no registry connection passes), the run's ``extra.anchor`` says the frame reader anchors the row, the VALUE row's
+        ``extra.delta_block`` parks by name under the campaign's rule, and no refusal line is filed (the campaign's own declaration, not a missing anchor)."""
+        decl = self.SPEC.declared
+        assert decl is not None
+        why = (f"the declared campaign {decl.name!r} declares no registry anchor: no run_contrast is filed and the anchor currency is not asked; the frame reader anchors this "
+               f"row (the notebook's seed-matched rule) ({DECLARED_ANCHOR_RULE})")
+        for key in sorted(k for k in filed if split_row_okey(k[1]) != ("none", None)):
+            tag, okey = key
+            st = filed[key]
+            block = {"state": DECLARED_NONE_STATE, "rule": DECLARED_ANCHOR_RULE, "reason": why, "declared_campaign": decl.name, "anchor_run_id": None, "anchor_view_legacy": None,
+                     "declared_role": st.get("declared_role"), "currency_rule": None}
+            st["payload"]["extra"]["anchor"] = block
+            # (keyword form: the anchor_kind stamp sites are pinned by source, test_registry_adapter_bcbw_anchor_kind)
+            selection = dict(state=DECLARED_NONE_STATE, why=why, n_candidates=0, candidates=[], rejected=[], key=None, reading=None, anchor_kind=None,
+                             rule=DECLARED_ANCHOR_RULE)
+            self._park_delta_block(st, self._value_row(st, comp_id), why, dict(own_anchor_run_id=None, own_anchor_kind=None, state=DECLARED_NONE_STATE, own_reason=None,
+                                                                                anchor_run_id=None, anchor_kind=None), selection, DECLARED_ANCHOR_RULE)
+            facts["anchor_states"][DECLARED_NONE_STATE] = facts["anchor_states"].get(DECLARED_NONE_STATE, 0) + 1
+            facts["contrasts"][f"{tag}|{okey}"] = {"anchor": None, "state": DECLARED_NONE_STATE, "why": why}
+            facts["contrasts_declared_none"] += 1      # (read() zeroes it for every campaign group before the contrasts)
+        return []
+
 
 def it_repeat_anchor_plan(tag: str, filed: Mapping[Tuple[str, str], Mapping[str, Any]], expected: Mapping[Tuple[str, str], Any], seen: Set[Tuple[str, str]]) -> Dict[str, Any]:
     """The pair of an instruct row's repeat floor (:data:`SHARED_IT_REPEAT_RULE`): the row's OWN none -- the it_none_comparison run of the same tag, served by the same

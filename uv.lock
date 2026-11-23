@@ -5622,6 +5622,7 @@ dependencies = [
     { name = "tqdm" },
     { name = "transformers" },
     { name = "wandb" },
+    { name = "zstandard" },
 ]
 
 [package.optional-dependencies]
@@ -5705,6 +5706,7 @@ requires-dist = [
     { name = "tqdm", specifier = ">=4.66" },
     { name = "transformers", specifier = ">=4.46" },
     { name = "wandb", specifier = ">=0.18" },
+    { name = "zstandard", specifier = "==0.25.0" },
 ]
 provides-extras = ["cpu", "cu128", "longctx", "mamba", "modal"]
 

@@ -119,7 +119,9 @@ LEDGER_DEFAULT = "~/.local/state/bcb-bfcl-200-widen/gpu_ledger.jsonl"
 LOG_DIR_DEFAULT = "$WORK/bcb-bfcl-200-widen/logs"   # under the site's working-data root; expanded through sisteer.site
 #: the local, digest-verified copy of a wave's ladder certificates the meter reads
 CERT_CACHE_DEFAULT = "~/.local/state/bcb-bfcl-200-widen/certificates"
-APP_PREFIX = "tinycap-bcbw"
+#: the app names' prefix; ``SISTEER_MODAL_APP_PREFIX`` names another (a SHARED Modal environment where every app carries its
+#: owner's prefix, e.g. ``<user>-tinycap-bcbw``) — the store suffixes and every record keep their spelling
+APP_PREFIX = os.environ.get("SISTEER_MODAL_APP_PREFIX", "").strip() or "tinycap-bcbw"
 #: Modal app names: at most 64 characters of ``[A-Za-z0-9._-]``
 MODAL_APP_NAME_MAX = 64
 _APP_NAME_CHARS = re.compile(r"[^A-Za-z0-9._-]")

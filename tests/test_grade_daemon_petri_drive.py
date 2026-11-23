@@ -1073,7 +1073,10 @@ def test_a_malformed_or_foreign_overlay_refuses_the_attempt_before_the_claim_and
     (st,) = world.events("petri_drive_started")
     assert st["auditor_org"] == "highprio" and st["secrets_mode"] == "op" and st["auditor_key_sha12_expected"] == expected
     assert st["overlay"] == ["F22_AUDITOR_ORG", "PETRI_AUDITOR_RETRY_SLEEP_CAP_S", "PETRI_EVAL_MAX_CONNECTIONS"]
-    (ov,) = world.events("petri_drive_env_overlay"); assert ov["applied"] == st["overlay"] and "300" not in json.dumps(ov)
+    # names only, never a value: every field but the overlay file's path (under tmp_path, whose job id on a gate node can
+    # contain "300") and the event clock (its milliseconds can read .300)
+    (ov,) = world.events("petri_drive_env_overlay"); assert ov["applied"] == st["overlay"] and set(ov) == {"event", "applied", "file", "note", "utc"}, ov
+    assert ov["file"] == str(world.state / GD.PETRI_DRIVE_ENV_FILE) and "300" not in json.dumps({k: v for k, v in ov.items() if k not in ("file", "utc")}), ov
     att = world.record()["attempts"][-1]
     assert {k: att["auditor"][k] for k in ("mode", "org", "sha12", "verified", "error")} == {"mode": "op", "org": "highprio", "sha12": expected, "verified": True, "error": None}
     assert att["overlay"] == st["overlay"]

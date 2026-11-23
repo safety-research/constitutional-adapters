@@ -98,13 +98,17 @@ FROZEN_MIGRATIONS = {
     "0030_fold_order_barrier.sql": "eee0072b26fe0bac4e19661772541e7f1ae8910c8cda2c78e3188a5e6583b416",
     "0031_non_template_positions.sql": "9c2c2287855ad4e19ee620ea533976b2c028a6a403b12a289b68d19cde49d03d",
     "0032_site_label_rename.sql": "8aa50de1017653bb9bca55af2e932c8c5ec7f19c05e2043985e7e4c4ef863a45",
+    "0033_prune_superseded_item_rows.sql": "2530e3b04cd9c7c95d50077380efa520874780f004ab2a83ea45d0554907a3aa",
 }
 
 #: Column descriptions reworded after the frozen migrations landed (comment text only: ``db.normalize_ddl`` drops comments, so
 #: ``code_ddl_master()`` and every shape comparison are unchanged). A frozen body keeps each one's earlier text, which
 #: 0001_initial.sql records, so a test comparing a frozen body with today's render reads the render through
 #: :func:`frozen_column_docs`.
-REWORDED_COLUMN_DOCS = (("run", "extra_json"), ("run", "code_branch"))
+REWORDED_COLUMN_DOCS = (("run", "extra_json"), ("run", "code_branch"),
+                        # migration 0033 (superseded revisions' item rows deleted by reclaim): the revision tag's description (one entry
+                        # maps every item table's copy, the text being the same), the inert mark, and the reclaimed flag's new meaning
+                        ("item_result", "source_revision_id"), ("item_result", "withdrawn_by_revision_id"), ("source_revision", "reclaimed"))
 
 
 def frozen_column_docs(rendered: str) -> str:

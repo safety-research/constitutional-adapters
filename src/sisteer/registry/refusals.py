@@ -10,8 +10,14 @@ travel with every mirror. This module reads them:
 * :func:`explain` -- one record (by sha, or by the uri it was refused under): its facts per stamp, the refused bytes re-read from the
   file by sha, the CURRENT validator's verdict on them (admitted, or refused naming the field -- a landed fix lifts a refusal without
   touching the log), and the RESOLUTION at the record's scale: run-scale through a ``row_history`` primary-key seek and the live row
-  (a LATER row folded at the key, an earlier row stands, or no row), item-scale through the item table by natural key (the live row is
-  the greatest order key), ``unknown`` when the bytes are not a record whose key parses;
+  (a LATER row folded at the key, an earlier row stands, or no row), item-scale through the table's ``v_<table>_current`` object at the
+  MEASUREMENT key (the natural key minus ``source_revision_id``): the one row every reader sees there, whichever source or revision
+  carries it, never a pending or superseded revision's copy. A refused record that names an adapter revision also carries that
+  revision's block (accepted, superseded by, ``reclaimed``, and whether ``item_reclaim_ledger`` lists rows reclaim deleted from it in
+  the table); for an UNACCEPTED revision only, a separately labelled ``staged_row`` -- the row the revision itself holds at the full
+  natural key, staged and read by no reader -- because its refusals are diagnosed against what it staged. ``revision_reclaimed`` is
+  the state when no current row stands at the key and the record's revision is accepted, superseded and listed in the reclaim ledger
+  for the table (its rows there were stale copies reclaim deleted). ``unknown`` when the bytes are not a record whose key parses;
 * :func:`summary` -- the counts: facts, records, per stamp, per record kind, per field, backfilled, re-judged, current refusals.
 
 Writes nothing: the CLI resolves the root without the ``state/last_run`` stamp.
@@ -25,6 +31,7 @@ import sqlite3
 from typing import Dict, List, Optional, Sequence, Tuple
 
 from . import harvest as H
+from . import prune as PR
 from . import records as R
 from . import reducer as RED
 from . import schema_def as S
@@ -35,8 +42,12 @@ DEFAULT_LIMIT = 200
 _SHA256_RE = re.compile(r"^[0-9a-f]{64}$")
 
 #: What the resolution of a refused record can read (``explain``): the key's row folded from a LATER record (the correction landed); an
-#: EARLIER record's row stands (nothing newer at the key); no row at the key at all; or the bytes are not a record whose key parses.
-RESOLUTIONS = ("later_row_folded", "earlier_row_stands", "no_row", "unknown")
+#: EARLIER record's row stands (nothing newer at the key); no row at the key at all; no current row at an item key whose record names
+#: an accepted, superseded adapter revision that reclaim deleted rows of in the table (``item_reclaim_ledger``); or the bytes are not a
+#: record whose key parses.
+RESOLUTIONS = ("later_row_folded", "earlier_row_stands", "no_row", "revision_reclaimed", "unknown")
+#: The ledger of the item rows reclaim deleted from accepted, superseded revisions (migration 0033); absent on an older database.
+RECLAIM_LEDGER = PR.LEDGER_TABLE
 
 _FACT_SQL = ("SELECT f.record_sha256, f.record_uri, f.record_type, f.field, f.reason, f.judged_with, f.refused_utc, f.cycle_utc, "
              "f.producer_json, f.extra_json, r.judged_with AS current_judged_with, r.refused_utc AS current_refused_utc, r.reason AS current_reason, "
@@ -162,18 +173,68 @@ def resolve(conn: sqlite3.Connection, record: Optional[Dict[str, object]], sha: 
         return out
     if table in S.ITEM_SCALE_TABLES:
         full = {c: key.get(c, S.SENTINELS.get(c)) for c in R.NATURAL_KEYS[table]}
-        where = " AND ".join(f"{c} = ?" for c in full)
-        row = conn.execute(f"SELECT written_utc, record_sha256 FROM {table} WHERE {where}", tuple(full.values())).fetchone()
+        measured = {c: full[c] for c in S.measurement_key(table)}
+        where = " AND ".join(f"{c} = ?" for c in measured)
+        # the CURRENT row at the measurement key: what every reader sees there (one row per key, ranked over the visible provenances)
+        row = conn.execute(f"SELECT written_utc, record_sha256, source_revision_id FROM v_{table}_current WHERE {where}",
+                           tuple(measured.values())).fetchone()
         out.update(scale="item", live_row=row is not None)
+        rev = str(full.get("source_revision_id") or "")
+        revision = revision_block(conn, table, rev) if rev else None
         if row is None:
-            out["state"] = "no_row"
+            out["state"] = "revision_reclaimed" if revision is not None and _reclaimed_in_table(revision) else "no_row"
         else:
             live_key = (R.epoch_ms_to_utc(int(row[0])), bytes(row[1]).hex())
             out["live_order_key"] = list(live_key)
+            out["live_source_revision_id"] = str(row[2])
             out["state"] = "later_row_folded" if live_key > (written, sha) else "earlier_row_stands"
+        if revision is not None:
+            out["revision"] = revision
+            if not revision.get("accepted"):
+                out["staged_row"] = staged_row(conn, table, full, written, sha)
         return out
     out.update(scale="ledger", state="unknown", why="a ledger-scale fact has no folded key to resolve against")
     return out
+
+
+def _ledger_present(conn: sqlite3.Connection) -> bool:
+    return conn.execute("SELECT 1 FROM sqlite_master WHERE type = 'table' AND name = ?", (RECLAIM_LEDGER,)).fetchone() is not None
+
+
+def revision_block(conn: sqlite3.Connection, table: str, revision_id: str) -> Dict[str, object]:
+    """The adapter revision a refused item record names: ``present`` (a ``source_revision`` row exists), ``accepted``,
+    ``superseded_by_revision_id``, ``reclaimed``, ``refusal`` (its pending reason, if any), and the reclaim ledger's rows for it in
+    ``table`` (``in_reclaim_ledger``, ``ledger_carriers``, ``ledger_rows_deleted``; None on a database without the ledger)."""
+    row = conn.execute("SELECT accepted, superseded_by_revision_id, reclaimed, refusal FROM source_revision WHERE revision_id = ?",
+                       (revision_id,)).fetchone()
+    if row is None:
+        return {"revision_id": revision_id, "present": False, "accepted": False}
+    out: Dict[str, object] = {"revision_id": revision_id, "present": True, "accepted": bool(row[0]),
+                              "superseded_by_revision_id": row[1], "reclaimed": bool(row[2]), "refusal": row[3]}
+    if _ledger_present(conn):
+        n, deleted = conn.execute(f"SELECT COUNT(*), COALESCE(SUM(rows_deleted), 0) FROM {RECLAIM_LEDGER} WHERE table_name = ? AND revision_id = ?",
+                                  (table, revision_id)).fetchone()
+        out.update(in_reclaim_ledger=int(n) > 0, ledger_carriers=int(n), ledger_rows_deleted=int(deleted))
+    else:
+        out.update(in_reclaim_ledger=None, ledger_carriers=None, ledger_rows_deleted=None)
+    return out
+
+
+def _reclaimed_in_table(revision: Dict[str, object]) -> bool:
+    """The revision is accepted and superseded, and reclaim deleted rows of it in the table (the ledger lists them)."""
+    return bool(revision.get("accepted") and revision.get("superseded_by_revision_id") and revision.get("in_reclaim_ledger"))
+
+
+def staged_row(conn: sqlite3.Connection, table: str, full_key: Dict[str, object], written: str, sha: str) -> Dict[str, object]:
+    """The by-revision probe, for an UNACCEPTED revision only: the row the revision itself holds at the record's FULL natural key
+    (``source_revision_id`` included) -- staged, read by no reader until the revision activates; labelled apart from the resolution,
+    which reads current rows only. ``later`` compares its order key with the refused record's."""
+    where = " AND ".join(f"{c} = ?" for c in full_key)
+    row = conn.execute(f"SELECT written_utc, record_sha256 FROM {table} WHERE {where}", tuple(full_key.values())).fetchone()
+    if row is None:
+        return {"present": False}
+    order_key = (R.epoch_ms_to_utc(int(row[0])), bytes(row[1]).hex())
+    return {"present": True, "order_key": list(order_key), "later": order_key > (written, sha)}
 
 
 def current_verdict(record: Optional[Dict[str, object]], sha: str) -> Dict[str, object]:
@@ -246,6 +307,20 @@ def explain_lines(rep: Dict[str, object]) -> List[str]:
         out.append(f"  current validator ({v['stamp']}): {v['verdict']}" + (f" -- {v.get('field')}: {v.get('reason')}" if v["verdict"] == "refused" else f" -- {v.get('note') or v.get('why')}"))
         res = e["resolution"]
         out.append(f"  resolution: {res['state']}" + (f" ({res.get('scale')} scale, {res.get('table')} {json.dumps(res.get('natural_key'))}; live row {res.get('live_row')}"
+                                                     + (f" of revision {res['live_source_revision_id'] or '(native)'}" if res.get("live_source_revision_id") is not None else "")
                                                      + (f"; latest event {res['latest_event']['written_utc']} {res['latest_event']['record_type']} {res['latest_event']['record_uri']}" if res.get("latest_event") else "")
                                                      + ")" if res.get("table") else f" ({res.get('why')})"))
+        rv = res.get("revision")
+        if rv:
+            if not rv.get("present"):
+                out.append(f"  revision {rv['revision_id']}: no source_revision row")
+            else:
+                ledger = ("no reclaim ledger (schema before 0033)" if rv.get("in_reclaim_ledger") is None
+                          else f"{rv['ledger_carriers']} carrier(s), {rv['ledger_rows_deleted']} row(s) deleted by reclaim in {res.get('table')}")
+                out.append(f"  revision {rv['revision_id']}: accepted {int(bool(rv['accepted']))}, superseded by {rv.get('superseded_by_revision_id') or '-'}, "
+                           f"reclaimed {int(bool(rv.get('reclaimed')))}; {ledger}")
+        st = res.get("staged_row")
+        if st is not None:
+            out.append("  staged row (unaccepted revision, read by no reader): " + (f"{st['order_key'][0]} {'later' if st['later'] else 'not later'} than the refused record"
+                                                                                  if st.get("present") else "none at the full key"))
     return out

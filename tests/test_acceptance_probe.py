@@ -14,6 +14,8 @@ end-to-end with a fake trainer subprocess standing in for the real one.
 from __future__ import annotations
 
 import json
+import os
+import stat
 import subprocess
 import sys
 import textwrap
@@ -26,6 +28,7 @@ REPO = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(REPO / "scripts"))
 
 import pod_acceptance_probe as pap  # noqa: E402
+from _process_umask import current_umask  # noqa: E402
 
 
 # --------------------------------------------------------------------------- #
@@ -655,6 +658,43 @@ def test_run_probe_error_when_pairs_missing(tmp_path, monkeypatch, capsys):
                         "--out", str(out)])
     assert rc == 1
     assert "PROBE-ERROR" in capsys.readouterr().err
+
+
+@pytest.mark.parametrize("path", ["accept", "error"])
+def test_run_probe_restores_the_callers_umask(tmp_path, monkeypatch, path):
+    """run_probe writes owner-only (umask 077) and its
+    children inherit that, but it must hand the caller's umask back. This
+    suite calls it in-process: before the fix every later test in the same
+    pytest process ran at 077, and a datasets lock such a test created in
+    the shared HF cache was 0600, locking other users out of that dataset."""
+    child_umask = tmp_path / "child_umask.txt"
+    cfg_path, pool, out = _probe_env(
+        tmp_path, monkeypatch,
+        train_cmd=lambda cfg_path, si, arm, pairs, out_dir: [
+            sys.executable, "-c", _FAKE_TRAIN,
+            str(Path(out_dir) / f"{si}__metrics.jsonl"), "25", "0.01"],
+        precompute_cmd=[sys.executable, "-c",
+                        "import os, sys; m = os.umask(0); "
+                        "open(sys.argv[1], 'w').write(oct(m))",
+                        str(child_umask)])
+    args = (_base_args(cfg_path, pool, out)
+            + ["--scratch", str(tmp_path / "scratch")])
+    if path == "error":     # an early PROBE-ERROR return, before any child
+        args[args.index("--pairs") + 1] = str(tmp_path / "nope.jsonl")
+    prev = os.umask(0o002)
+    try:
+        rc = pap.run_probe(args)
+        assert rc == (0 if path == "accept" else 1)
+        assert current_umask() == 0o002
+        # what a datasets FileLock does on first acquire: open 0o666, so the
+        # caller's umask alone decides the mode
+        lock = tmp_path / "after_probe.lock"
+        os.close(os.open(lock, os.O_RDWR | os.O_CREAT | os.O_TRUNC, 0o666))
+        assert stat.S_IMODE(lock.stat().st_mode) == 0o664
+    finally:
+        os.umask(prev)
+    if path == "accept":    # the probe's own children stay owner-only
+        assert child_umask.read_text() == oct(0o077)
 
 
 # --------------------------------------------------------------------------- #

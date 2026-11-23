@@ -18,17 +18,27 @@
 # the wave reads), the volume commit thread (shared storage is durable on return).
 #
 # Stages (positional; NEVER --export, hard rule 1):
-#   <stage> <model_key> <mix_si> <ctl_si> <bank> [lr_mult|-] [attempt] [max_attempts] [objects]
+#   <stage> <model_key> <mix_si> <ctl_si> <bank> [lr_mult|-] [attempt] [max_attempts] [objects] [build] [ctl_key|-]
 #   objects    relu | lora | both (default both): the derived objects this chain builds and so the parents its preflight requires —
 #              relu = the two psr_ce_all cells (V + the distilled residual; calibrate/assess/finish are ReLU work), lora = the two
 #              lora_r4_ce cells (the task-vector subtraction, prep only), both = all four (every existing invocation, byte for byte).
 #              prep writes build_provenance.json beside each object it builds (objects; THAT output's parents with their COMPLETE
 #              sha/fingerprint — the psr pair for V and the residual, the LoRA pair for the subtraction).
+#   ctl_key    `-` (default; every existing invocation, byte for byte) or the CONTROL parents' own bank key, for a control refit
+#              under a sibling key: the control cells (and their _store_identity.json) are read from <bank>/<ctl_key>/cells_all/, the
+#              constitution cells from <bank>/<pool key>/cells_all/ as always, and every output (LoRA subtraction, V) is published under
+#              <bank>/derived/<kind>/<ctl_key>/ — never under the pool key, which holds the pair built from the model key's own control.
+#              prep with build=direct only (calibrate / assess / finish and build=chain refuse it); model_key stays the constitution key.
+#              Absent or `-` = none; an empty 11th or a 12th positional is refused. The key must be this pair's control refit: its own
+#              configs/sdfbase_<ctl_key>_fits.yaml with its held-out pool in the model key's pool dir and the model key's seed, and no
+#              <mix_si> cell in its cells dir. An existing V that does not verify is never recomposed under a control key.
 #   prep       THE difference_relu build (since 2026-10-02 the difference object is the DIRECT paired
 #              difference V = +P_mix - P_ctl, kind composed / paper label difference_relu — the undistilled
 #              paired write; there is no distillation in the method). A 1-GPU allocation (minutes):
 #              lora_subtract.py --keep-valid (the LoRA task-vector subtraction, objects lora|both), then
-#              psr_residual_distill.py compose-v (V, persisted ONCE; its native registry emission rides it),
+#              psr_residual_distill.py compose-v (V, persisted ONCE; its native registry emission rides it; an
+#              existing V that does not verify is deleted and recomposed only when check-v-pair, compose-v's own
+#              overwrite guard run read-only, finds no readable sidecar naming another pair — that V is refused),
 #              verify-v, V's gate_liveness.py (seedrep/derived_admission.py refuses a paired write without
 #              gate_liveness.json; kept when gate_liveness_receipt.json binds it to V's bytes, re-probed
 #              otherwise), the receipt, then emit-v (V's registry record, filed ONLY after the probe)
@@ -140,6 +150,21 @@ case "$STAGE" in prep|calibrate|assess|finish) ;; *) echo "[derived] FATAL unkno
 if [ "$STAGE" != prep ] && ! builds_relu "$OBJECTS"; then
   echo "[derived] FATAL stage $STAGE is ReLU-residual work; objects='$OBJECTS' builds none (the LoRA subtraction is prep-only)"; exit 2
 fi
+# positional 11: the control parents' own bank key. Absent or `-` = none (the default: the control is read from the model key's pool
+# key as always); an EMPTY 11th (a quoted unset variable) is refused, never read as `-`, and so is a 12th positional (a key one place
+# late would be dropped and the build would run under the pool key). Set, it is a plain key name distinct from the model key, and only
+# the direct prep build takes it: the legacy distillation stages and the chain scaffolding read and write under one key.
+[ "$#" -le 11 ] || { echo "[derived] FATAL $# positionals, at most 11: nothing past positional 11 is read, so a control key there would be dropped"; exit 2; }
+CTL_KEY_ARG="-"; [ "$#" -lt 11 ] || CTL_KEY_ARG="${11}"
+[ -n "$CTL_KEY_ARG" ] || { echo "[derived] FATAL positional 11 ctl_key is empty (an unset variable?) — pass '-' for no control key"; exit 2; }
+CTL_KEY=""; [ "$CTL_KEY_ARG" = "-" ] || CTL_KEY="$CTL_KEY_ARG"
+if [ -n "$CTL_KEY" ]; then
+  [[ "$CTL_KEY" =~ ^[A-Za-z0-9][A-Za-z0-9._-]*$ ]] && [[ "$CTL_KEY" != *..* ]] \
+    || { echo "[derived] FATAL positional 11 ctl_key '$CTL_KEY' is not a plain bank key (one path component, no '..')"; exit 2; }
+  [ "$STAGE" = prep ] || { echo "[derived] FATAL stage $STAGE refuses a control key (positional 11 = '$CTL_KEY'): only prep with build=direct builds from a control under its own key"; exit 2; }
+  [ "$BUILD" = direct ] || { echo "[derived] FATAL build=$BUILD refuses a control key (positional 11 = '$CTL_KEY'): only build=direct takes one (the chain scaffolding is legacy distillation work)"; exit 2; }
+  [ "$CTL_KEY" != "$MODEL_KEY" ] || { echo "[derived] FATAL positional 11 ctl_key equals the model key '$MODEL_KEY' — pass '-' for the model key's own control"; exit 2; }
+fi
 
 # the shared root and the QoS an escalation resubmits at: the submission's job env (SISTEER_SHARED_ROOT, SISTEER_CLUSTER_QOS; the
 # front door and submit_derived_chain.sh pass both from the site's cluster block); refused by name without the root
@@ -192,9 +217,47 @@ SEED_ARGS=(--seed "$SEED" --holdout-frac "$HOLDOUT_FRAC")
 POOLS="$SHARED/vol/pool/$POOL_KEY"
 ROOT="$SHARED/exp/objects/sdfbase/$BANK"            # <root>/<key>/cells_all/<cell>/   (= /vol/out)
 DERIVED="$ROOT/derived"                             # <kind>/<key>/<derived id>/       (= /vol/out/derived)
-RESID="$DERIVED/psr_residual/$POOL_KEY/${MIX_SI}__psr_ce_all_minus_ctl_distilled"
-VDIR="$DERIVED/psr_paired_write/$POOL_KEY/${MIX_SI}__psr_ce_all_minus_ctl"
-LORA="$DERIVED/lora_subtraction/$POOL_KEY/${MIX_SI}__lora_r4_ce_minus_ctl"
+OUT_KEY="${CTL_KEY:-$POOL_KEY}"                    # the outputs' key: the control's own bank key when positional 11 names one
+RESID="$DERIVED/psr_residual/$OUT_KEY/${MIX_SI}__psr_ce_all_minus_ctl_distilled"
+VDIR="$DERIVED/psr_paired_write/$OUT_KEY/${MIX_SI}__psr_ce_all_minus_ctl"
+LORA="$DERIVED/lora_subtraction/$OUT_KEY/${MIX_SI}__lora_r4_ce_minus_ctl"
+CTL_CELLS="$ROOT/${CTL_KEY:-$POOL_KEY}/cells_all"   # the control parents' cells (the constitution parents stay under $POOL_KEY)
+# with positional 11 set, no output path may resolve under the pool key (the directories of the pair built from the model key's own
+# control): every output must sit under <derived>/<kind>/<ctl_key>/ — refused here, before any build
+ctl_key_paths_ok() {
+  [ -z "$CTL_KEY" ] && return 0
+  [ "$CTL_KEY" != "$POOL_KEY" ] || { log "FATAL positional 11 ctl_key '$CTL_KEY' equals the pool key — its outputs would land beside the model key's own pair"; return 3; }
+  local kp kind path
+  for kp in "lora_subtraction=$LORA" "psr_paired_write=$VDIR" "psr_residual=$RESID"; do
+    kind="${kp%%=*}" path="${kp#*=}"
+    case "$path" in
+      "$DERIVED/$kind/$CTL_KEY/"*) ;;
+      *) log "FATAL positional 11 ctl_key '$CTL_KEY' is set but the $kind output $path is not under $DERIVED/$kind/$CTL_KEY/ — refusing before any build"; return 3 ;;
+    esac
+  done
+}
+ctl_key_paths_ok || exit 3
+# with positional 11 set, the key must be THIS pair's control refit: its own fits config in this checkout, whose held-out pool sits in
+# the model key's pool dir and whose seed is the model key's, and a cells dir holding no constitution cell — a published sibling key or
+# another seed's refit is refused here, before any build
+ctl_key_identity_ok() {
+  [ -z "$CTL_KEY" ] && return 0
+  local cfg="$REPO/configs/sdfbase_${CTL_KEY}_fits.yaml" hp n=0 seeds cell
+  [ -s "$cfg" ] || { log "FATAL positional 11 ctl_key '$CTL_KEY' has no fits config $cfg in this checkout — refusing before any build"; return 3; }
+  while IFS= read -r hp; do
+    n=$((n + 1))
+    [[ "$hp" =~ ^/vol/pool/([^/]+)/[^/]+\.jsonl[[:space:]]*$ ]] && [ "${BASH_REMATCH[1]}" = "$POOL_KEY" ] \
+      || { log "FATAL positional 11 ctl_key '$CTL_KEY': its config's heldout_pool '$hp' is not in the model key's pool dir /vol/pool/$POOL_KEY/ — refusing before any build"; return 3; }
+  done < <(sed -n 's/^ *heldout_pool: *//p' "$cfg")
+  [ "$n" -ge 1 ] || { log "FATAL positional 11 ctl_key '$CTL_KEY': $cfg names no heldout_pool — refusing before any build"; return 3; }
+  seeds="$(sed -n 's/^ *seed: *\([0-9][0-9]*\) *$/\1/p' "$cfg" | sort -u | tr '\n' ' ')"; seeds="${seeds:-0 }"   # no line = 0, as for $CONFIG
+  [ "$seeds" = "$SEED " ] || { log "FATAL positional 11 ctl_key '$CTL_KEY': its config's seed '${seeds% }' is not the model key's seed $SEED — refusing before any build"; return 3; }
+  for cell in "$CTL_CELLS/${MIX_SI}__"*; do
+    [ -e "$cell" ] && { log "FATAL positional 11 ctl_key '$CTL_KEY': $CTL_CELLS holds the constitution cell ${cell##*/} — a model key's own cells, not a control refit; refusing before any build"; return 3; }
+  done
+  return 0
+}
+ctl_key_identity_ok || exit 3
 # the venv NAME: environment (Slurm's implicit export of the submitting shell) > the bank's
 # FIT_ENV_NAME file > sdfbase-fit; SDFBASE_FIT_ENV (a full path) overrides the lot
 FIT_ENV_NAME="${SDFBASE_FIT_ENV_NAME:-$( [ -s "$ROOT/FIT_ENV_NAME" ] && head -1 "$ROOT/FIT_ENV_NAME" | tr -d '[:space:]' )}"
@@ -221,13 +284,14 @@ pre_ok=1
 for f in "$CONFIG" "$SNAP" "$VENV/BUILD-COMPLETE" "$SHARED/scripts/mirror-figs.sh" "$SWEEP_TOOL" \
          "$POOLS/pairs_${MIX_SI}.jsonl" "$POOLS/pairs_${CTL_SI}.jsonl" \
          "$POOLS/pairs_${MIX_SI}.manifest.json" "$POOLS/pairs_${CTL_SI}.manifest.json" \
-         "$ROOT/$POOL_KEY/cells_all/_store_identity.json"; do
+         "$ROOT/$POOL_KEY/cells_all/_store_identity.json" ${CTL_KEY:+"$CTL_CELLS/_store_identity.json"}; do
   [ -s "$f" ] || { log "PREFLIGHT missing/empty: $f"; pre_ok=0; }
 done
 PARENTS=(); while IFS= read -r c; do PARENTS+=("$c"); done < <(derived_parents "$OBJECTS" "$MIX_SI" "$CTL_SI")
 for c in "${PARENTS[@]}"; do
+  cdir="$ROOT/$POOL_KEY/cells_all"; [ "${c%%__*}" = "$CTL_SI" ] && cdir="$CTL_CELLS"     # a control cell: under the control key
   for f in object.pt COMPLETE train_budget_meta.json; do
-    [ -s "$ROOT/$POOL_KEY/cells_all/$c/$f" ] || { log "PREFLIGHT parent $c lacks $f (objects=$OBJECTS)"; pre_ok=0; }
+    [ -s "$cdir/$c/$f" ] || { log "PREFLIGHT parent $c lacks $f (objects=$OBJECTS${CTL_KEY:+, under $cdir})"; pre_ok=0; }
   done
 done
 [ -x "$PY" ] || { log "PREFLIGHT no venv python at $PY"; pre_ok=0; }
@@ -257,7 +321,8 @@ case "$STAGE" in
     else LR_MULT="$LR_MULT_ARG"; fi ;;
   *) LR_MULT="" ;;
 esac
-log "objects=$OBJECTS parents=${PARENTS[*]} repo=$REPO head=$HEAD_SHA config=$CONFIG ($(sha256sum "$CONFIG" | cut -c1-16)) seed=$SEED pools=$POOLS root=$ROOT derived=$DERIVED model=$MODEL_REPO@${MODEL_REV:0:12} env=$FIT_ENV_NAME ($VENV) node=$(hostname) gpu=${SLURM_JOB_GPUS:-?} timelimit=$TIMELIMIT stdout=${STDOUT_PATH:-?} lr_mult=${LR_MULT:-n/a}"
+log "objects=$OBJECTS parents=${PARENTS[*]} repo=$REPO head=$HEAD_SHA config=$CONFIG ($(sha256sum "$CONFIG" | cut -c1-16)) seed=$SEED pools=$POOLS root=$ROOT derived=$DERIVED model=$MODEL_REPO@${MODEL_REV:0:12} env=$FIT_ENV_NAME ($VENV) node=$(hostname) gpu=${SLURM_JOB_GPUS:-?} timelimit=$TIMELIMIT stdout=${STDOUT_PATH:-?} lr_mult=${LR_MULT:-n/a}${CTL_KEY:+ ctl_key=$CTL_KEY}"
+[ -z "$CTL_KEY" ] || log "pair=$POOL_KEY/${MIX_SI} - $CTL_KEY/${CTL_SI}: the control parents from $CTL_CELLS, every output under the control key ($LORA, $VDIR)"
 
 # --- RESULT + mirror on EVERY exit; escalation on SIGTERM ---------------------------------------
 T_START=$(date +%s); RC=""; finished=0
@@ -265,7 +330,7 @@ finish_hook() {
   [ "$finished" = 1 ] && return; finished=1
   local rc="${RC:-${1:-unknown}}" state
   case "$rc" in 0) state=DONE ;; 143) state=INTERRUPTED ;; *) state=FAILED ;; esac
-  local line="$state rc=$rc stage=$STAGE objects=$OBJECTS build=$BUILD${LR_MULT:+ lr_mult=$LR_MULT} job=${SLURM_JOB_ID:-?}${TASK:+ task=$TASK} node=$(hostname) pair=$POOL_KEY/${MIX_SI}-${CTL_SI} seed=$SEED bank=$BANK attempt=$ATTEMPT/$MAX_ATTEMPTS elapsed_s=$(( $(date +%s) - T_START )) head=${HEAD_SHA:0:12} at=$(date -Is)"
+  local line="$state rc=$rc stage=$STAGE objects=$OBJECTS build=$BUILD${LR_MULT:+ lr_mult=$LR_MULT} job=${SLURM_JOB_ID:-?}${TASK:+ task=$TASK} node=$(hostname) pair=$POOL_KEY/${MIX_SI}-${CTL_SI} seed=$SEED bank=$BANK${CTL_KEY:+ ctl_key=$CTL_KEY} attempt=$ATTEMPT/$MAX_ATTEMPTS elapsed_s=$(( $(date +%s) - T_START )) head=${HEAD_SHA:0:12} at=$(date -Is)"
   echo "$line" >> "$FIGS_DIR/RESULT"
   echo "$line" > "$FIGS_DIR/RESULT_${SLURM_JOB_ID:-x}${TASK:+_$TASK}"
   [ -n "${DMON_PID:-}" ] && kill "$DMON_PID" 2>/dev/null
@@ -281,12 +346,13 @@ escalate() {
   { [ -n "$SCRIPT_PATH" ] && [ -f "$SCRIPT_PATH" ]; } || { log "cannot resolve script path — not resubmitting."; return; }
   # a resubmitted calibrate task carries ITS multiplier explicitly (no array on the retry)
   local mult_arg="${LR_MULT:--}"
-  log "resubmitting at qos=$ESCALATE_QOS as attempt $((ATTEMPT + 1)) (time=$TIMELIMIT, stage $STAGE${LR_MULT:+ lr_mult $LR_MULT}, output=${STDOUT_PATH:-header}, env=$FIT_ENV_NAME)"
+  log "resubmitting at qos=$ESCALATE_QOS as attempt $((ATTEMPT + 1)) (time=$TIMELIMIT, stage $STAGE${LR_MULT:+ lr_mult $LR_MULT}, output=${STDOUT_PATH:-header}, env=$FIT_ENV_NAME${CTL_KEY:+, ctl_key=$CTL_KEY})"
   # the venv name rides as an env prefix (Slurm's implicit export; never --export=) so the
   # successor runs on the SAME venv whatever the bank file says by then
   SDFBASE_FIT_ENV_NAME="$FIT_ENV_NAME" \
   sbatch --qos="$ESCALATE_QOS" --job-name="$RUN_NAME" ${TIMELIMIT:+--time="$TIMELIMIT"} ${STDOUT_PATH:+--output="$STDOUT_PATH"} --comment="$COMMENT" \
          "$SCRIPT_PATH" "$STAGE" "$MODEL_KEY" "$MIX_SI" "$CTL_SI" "$BANK" "$mult_arg" "$((ATTEMPT + 1))" "$MAX_ATTEMPTS" "$OBJECTS" "$BUILD" \
+         ${CTL_KEY:+"$CTL_KEY"} \
     || log "RESUBMIT FAILED — the stage will not continue automatically"
 }
 on_term() {
@@ -308,6 +374,9 @@ run() {   # run one command as the tracked child; return its rc
 RESID_BASE=("$PY" "$REPO/scripts/sdfbase/psr_residual_distill.py")
 RESID_COMMON=(--root "$ROOT" --out-root "$DERIVED" --pools "$POOLS" --model-key "$MODEL_KEY"
               --mix-si "$MIX_SI" --ctl-si "$CTL_SI")
+# the control's own key rides every paired-write subcommand prep runs (compose-v, verify-v, check-v-pair, liveness-receipt, emit-v); a stage or build
+# that would reach any other subcommand refused positional 11 above
+[ -z "$CTL_KEY" ] || RESID_COMMON+=(--ctl-key "$CTL_KEY")
 RESID_MODEL=(--model "$MODEL_REPO" --revision "$MODEL_REV" --config "$CONFIG"
              --capture-budget-tokens "$CAPTURE_TOKENS")
 BUDGET=(--distill-epochs-cap "$EPOCHS_CAP" --distill-patience "$PATIENCE" --checkpoint-every "$CKPT_EVERY")
@@ -319,27 +388,33 @@ case "$STAGE" in
     write_build_provenance() {   # <dir> <parent cell>... — the parents of THIS output (never the chain's whole list)
       local out_dir="$1"; shift
       mkdir -p "$out_dir"
-      "$PY" - "$out_dir/build_provenance.json" "$OBJECTS" "$STAGE" "$HEAD_SHA" "${SLURM_JOB_ID:-}" "$ROOT/$POOL_KEY/cells_all" "$@" <<'PYP'
+      # each parent's COMPLETE from ITS cells dir: a control cell (<ctl_si>__<arm>) from the control key's when positional 11 names one
+      "$PY" - "$out_dir/build_provenance.json" "$OBJECTS" "$STAGE" "$HEAD_SHA" "${SLURM_JOB_ID:-}" "$ROOT/$POOL_KEY/cells_all" \
+          "$ROOT/${CTL_KEY:-$POOL_KEY}/cells_all" "$CTL_SI" "${CTL_KEY:-}" "$@" <<'PYP'
 import json, sys, datetime
-out, objects, stage, sha, job, cells, *parents = sys.argv[1:]
+out, objects, stage, sha, job, cells, ctl_cells, ctl_si, ctl_key, *parents = sys.argv[1:]
 rows = []
 for c in parents:
+    where = ctl_cells if c.split("__", 1)[0] == ctl_si else cells
     m = {}
     try:
-        m = json.load(open(f"{cells}/{c}/COMPLETE"))
+        m = json.load(open(f"{where}/{c}/COMPLETE"))
     except Exception as e:  # noqa: BLE001
         m = {"error": f"{type(e).__name__}: {e}"}
-    rows.append({"cell": c, "path": f"{cells}/{c}", "object_sha256": m.get("object_sha256"), "fit_fingerprint": m.get("fit_fingerprint")})
+    rows.append({"cell": c, "path": f"{where}/{c}", "object_sha256": m.get("object_sha256"), "fit_fingerprint": m.get("fit_fingerprint")})
 json.dump({"objects": objects, "relu_only": objects == "relu", "lora_only": objects == "lora", "stage": stage, "code_sha": sha,
            "slurm_job_id": job or None, "parents": rows, "written_utc": datetime.datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ"),
-           "ruling": "per-object parents through the front door (USER RULING 2026-10-01); the ReLU residual path never reads the LoRA subtraction"},
+           "ruling": "per-object parents through the front door (USER RULING 2026-10-01); the ReLU residual path never reads the LoRA subtraction",
+           **({"ctl_key": ctl_key} if ctl_key else {})},
           open(out, "w"), indent=1, sort_keys=True)
 PYP
     }
     if builds_lora "$OBJECTS"; then
       # lora_subtract_command: the LoRA task-vector subtraction (CPU, parents admitted by the shared gate)
-      run "$PY" "$REPO/scripts/sdfbase/lora_subtract.py" --root "$ROOT" --out-root "$DERIVED/lora_subtraction" \
-          --models "$MODEL_KEY" --cells "$MIX_SI" --ctl-si "$CTL_SI" --pools "$POOLS" --keep-valid || { RC=11; exit 11; }
+      LORA_CMD=("$PY" "$REPO/scripts/sdfbase/lora_subtract.py" --root "$ROOT" --out-root "$DERIVED/lora_subtraction"
+                --models "$MODEL_KEY" --cells "$MIX_SI" --ctl-si "$CTL_SI" --pools "$POOLS" --keep-valid)
+      [ -z "$CTL_KEY" ] || LORA_CMD+=(--ctl-key "$CTL_KEY")     # the control parent from its own key; the output keyed by it
+      run "${LORA_CMD[@]}" || { RC=11; exit 11; }
       [ -s "$LORA/object.pt" ] && [ -s "$LORA/derived_meta.json" ] || { log "FATAL lora subtraction wrote no object at $LORA"; RC=11; exit 11; }
       write_build_provenance "$LORA" "${MIX_SI}__lora_r4_ce" "${CTL_SI}__lora_r4_ce"          # the LoRA pair only
     else
@@ -351,6 +426,14 @@ PYP
     # while the admission refused the very same V) -> verify_v_command
     if [ -s "$VDIR/object.pt" ]; then
       if ! run "${RESID_BASE[@]}" verify-v "${RESID_COMMON[@]}"; then
+        # nothing is deleted before compose-v's own overwrite guard, run read-only, has ruled (by exit code): 0 = V's sidecar names
+        # THIS pair, 3 = no readable sidecar (absent or torn: recomposed as always), anything else = a readable sidecar of another
+        # pair, refused here in every mode, attested or not (deleting it would let compose-v write this pair's V in its place)
+        run "${RESID_BASE[@]}" check-v-pair "${RESID_COMMON[@]}"; PAIR_RC=$?
+        [ "$PAIR_RC" = 0 ] || [ "$PAIR_RC" = 3 ] \
+          || { log "FATAL persisted V at $VDIR does not verify and its sidecar names another pair (check-v-pair rc=$PAIR_RC, above) — never deleted or recomposed; investigate"; RC=12; exit 12; }
+        # a build from a control under its own key never repairs a V in place
+        [ -z "$CTL_KEY" ] || { log "FATAL persisted V at $VDIR does not verify — a build under positional 11 ctl_key '$CTL_KEY' never recomposes an existing V; investigate"; RC=12; exit 12; }
         # an ATTESTED V (fit_job_provenance.json beside it) that fails verification is a finding, never a silent rebuild: recomposing
         # would drop the attestation and the emission evidence, and emit-v would then state this job's context as V's provenance
         [ -f "$VDIR/fit_job_provenance.json" ] && { log "FATAL persisted V at $VDIR does not verify but carries fit_job_provenance.json — not recomposing an attested object; investigate"; RC=12; exit 12; }

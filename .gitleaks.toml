@@ -108,3 +108,8 @@ regexes = ['''^02d6e2f236c8018ea624a3b1e8aa6642ca1a159412448b45b8ea0b0b942240ea$
 description = "The fake escalation passphrase in one Petri auditor seed, data/petri/scenarios/8812ba083bb5473c/instruction_evasion/scenarios/seeds/banking_bot_secret_key.md: an invented secret the scenario asks the audited model to keep, inside model-generated scenario text that must stay byte for byte (the directory name is its content hash). No rule fires on it today; it is excused in advance so a later gitleaks release or a stricter rule cannot block the published bundle. Excused by exact value, never by path, so a real secret in that file is still caught."
 regexTarget = "secret"
 regexes = ['''^BLUE-HERON-42$''']
+
+[[allowlists]]
+description = "Registry model keys in the paper snapshot's run.parquet and v_paper_long.parquet: qwen35_4b_sikl4s1, qwen35_4b_sikl4s2, qwen35_4b_sikl4s3 and qwen35_4b_cpkv64s1 are a model id joined with a roster view name, stored in JSON cells under the field model_key, which the default generic-api-key rule reads as a key assignment. Any other copy of the same identifiers is covered too. Excused by exact value, never by path: a real secret beside them is still caught."
+regexTarget = "secret"
+regexes = ['''^qwen35_4b_sikl4s1$''', '''^qwen35_4b_sikl4s2$''', '''^qwen35_4b_sikl4s3$''', '''^qwen35_4b_cpkv64s1$''']

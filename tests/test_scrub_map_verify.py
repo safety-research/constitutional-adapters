@@ -1011,3 +1011,57 @@ def test_the_real_site_module_expands_the_same_way(tmp_path):
     rel2 = Release(tmp_path / "elsewhere", site_root="/data/site/bob")
     rc, out = rel2.run(site_module=real)
     assert rc == 1 and "does not expand" in out, out
+
+
+# --- the frame's SQLite-only item tables (read_set_version 3) -----------------------------------------------------------------
+
+def test_scan_frame_reads_the_tables_a_frame_ships_in_the_sqlite_only(tmp_path):
+    """read_set_version 3 ships item_result and item_flags in the split SQLite only. The map read the committed frame's Parquet alone,
+    so a hex prefix in an item row would have escaped it; it now reads the tables the MANIFEST names in ``sqlite_only_tables`` from the
+    reassembled SQLite too, under their own ``frame:<table>.<column>`` label, and a frame that names none reads its Parquet only."""
+    pytest.importorskip("pyarrow")
+    import gzip
+    import sqlite3
+    import pyarrow as pa
+    import pyarrow.parquet as pq
+    sid = "000000000007-20260101T000000-00000000"
+    snap = tmp_path / "repo" / "paper" / "snapshot" / "snapshots" / sid
+    snap.mkdir(parents=True)
+    in_parquet, in_items = "a1b2c3d4e5f60718", "9f8e7d6c5b4a3921"
+    pq.write_table(pa.table({"run_id": [f"run-{in_parquet}"]}), snap / "run.parquet")
+    db = tmp_path / "frame.sqlite"
+    con = sqlite3.connect(db)
+    con.execute("CREATE TABLE run (run_id TEXT)")
+    con.execute("INSERT INTO run VALUES (?)", (f"run-{in_parquet}",))
+    con.execute("CREATE TABLE item_result (run_id TEXT, extra_json TEXT, value REAL)")
+    con.execute("INSERT INTO item_result VALUES (?, ?, 0.5)", (f"run-{in_parquet}", json.dumps({"request": f"req-{in_items}"})))
+    con.commit()
+    con.close()
+    gz = gzip.compress(db.read_bytes(), mtime=0)
+    (snap / "paper_frame.sqlite.gz.00").write_bytes(gz[: len(gz) // 2])
+    (snap / "paper_frame.sqlite.gz.01").write_bytes(gz[len(gz) // 2:])
+    manifest = {"snapshot_id": sid, "sqlite_parts": ["paper_frame.sqlite.gz.00", "paper_frame.sqlite.gz.01"],
+                "parquet_tables": ["run"], "sqlite_only_tables": ["item_result"]}
+    (snap / "MANIFEST.json").write_text(json.dumps(manifest))
+    (tmp_path / "repo" / "paper" / "snapshot" / "CURRENT").write_text(sid + "\n")
+    repo = str(tmp_path / "repo")
+    for args in (["init", "-q"], ["add", "-A"], ["-c", "user.email=t@example.com", "-c", "user.name=t", "commit", "-q", "-m", "frame"]):
+        subprocess.run(["git", "-C", repo, *args], check=True, capture_output=True)
+
+    class Cands:                       # every hex token resolves to itself: the label each one is found under is what is checked
+        @staticmethod
+        def resolve(token):
+            return [token]
+
+    records = sm.Records(Cands())
+    assert sm.scan_frame(sm.GitTree(repo, "HEAD"), records) == 2          # one Parquet table + one SQLite-only table
+    assert records.sources[in_parquet] == {"frame:run.run_id (prefix 16)", "frame:item_result.run_id (prefix 16)"}
+    assert records.sources[in_items] == {"frame:item_result.extra_json (prefix 16)"}
+    # the same frame without the declaration is read from its Parquet alone
+    manifest.pop("sqlite_only_tables")
+    (snap / "MANIFEST.json").write_text(json.dumps(manifest))
+    subprocess.run(["git", "-C", repo, "-c", "user.email=t@example.com", "-c", "user.name=t", "commit", "-q", "-am", "v2"], check=True,
+                   capture_output=True)
+    records = sm.Records(Cands())
+    assert sm.scan_frame(sm.GitTree(repo, "HEAD"), records) == 1 and in_items not in records.sources
+    assert records.sources[in_parquet] == {"frame:run.run_id (prefix 16)"}

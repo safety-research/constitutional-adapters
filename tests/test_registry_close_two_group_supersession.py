@@ -235,10 +235,13 @@ import hashlib  # noqa: E402
 import importlib.util  # noqa: E402
 import json  # noqa: E402
 import os  # noqa: E402
+import re  # noqa: E402
 import shutil  # noqa: E402
+import signal  # noqa: E402
 import subprocess  # noqa: E402
 import time  # noqa: E402
 
+import pytest  # noqa: E402
 import test_admission as TA  # noqa: E402  (the gate's fixtures: the frozen inventory's inputs, the probe documents; it puts reproduce/lib on sys.path)
 import test_registry_close_stores as TRC  # noqa: E402  (the module object: _register / _bon_store / _close read its TAG at call time)
 from sisteer.registry import db as DB, emit_cli, harvest as H, synth  # noqa: E402
@@ -898,6 +901,118 @@ def _release_store_by_store(held, stores, logs, procs):
     fcntl.flock(held[second].fileno(), fcntl.LOCK_UN); held[second].close()
 
 
+def _stopped(pid: int) -> bool:
+    """The process is stopped (SIGSTOP took effect): /proc/<pid>/stat's state field is T."""
+    with open(f"/proc/{pid}/stat", encoding="utf-8") as fh:
+        return fh.read().rsplit(")", 1)[1].split()[0] in ("T", "t")
+
+
+def _release_forced(held, stores, logs, procs, winners, decided):
+    """`_release_store_by_store` with the task that takes each store's lock CHOSEN (`winners[k]` takes OBJECTS[k]). The closer's StoreCloseLock
+    is a LOCK_NB poll with 0.5 s sleeps, so in the natural race either task may take either store, and which one does is a matter of timing.
+    Here the task that must lose a store is SIGSTOPped (and seen stopped) before that store is released, and resumed only once the winner has
+    decided the store under its lock (`decided(obj)` is in the winner's log); both tasks still reach every store's lock past their unlocked
+    reads before it is released."""
+    for k, (obj, w) in enumerate(zip(OBJECTS, winners)):
+        loser = procs[1 - w]
+        os.kill(loser.pid, signal.SIGSTOP)
+        try:
+            _wait_for(lambda pid=loser.pid: _stopped(pid), 30, f"task {1 - w} to stop")
+            fcntl.flock(held[obj].fileno(), fcntl.LOCK_UN); held[obj].close()
+            _wait_for(lambda o=obj, t=w: decided(o) in logs[t].read_text() or procs[t].poll() is not None, 180, f"task {w} to decide {obj} under its lock")
+        finally:
+            os.kill(loser.pid, signal.SIGCONT)
+        assert decided(obj) in logs[w].read_text(), [lg.read_text() for lg in logs]
+        if k + 1 < len(OBJECTS):
+            nxt = _lock_of(stores[OBJECTS[k + 1]])
+            _wait_for(lambda n=nxt: all(f"waiting for the store close lock {n}" in lg.read_text() for lg in logs) or any(p.poll() is not None for p in procs),
+                      180, "both tasks to reach the next store's lock")
+            assert all(p.poll() is None for p in procs), [lg.read_text() for lg in logs]
+
+
+def _race(log_dir: Path, stores, pendings, spool, wave, winners, decided):
+    """Both climb tasks' closes of one shared run, started against the store locks the test holds and released store by store with each
+    store's lock given to the task `winners` names (_release_forced); the two tasks' logs, once both exited 0."""
+    log_dir.mkdir(parents=True, exist_ok=True)
+    held = _hold_store_locks(stores)
+    logs = (log_dir / "task_a.log", log_dir / "task_b.log")
+    procs = [_popen_close(p, spool, wave, lg, CLIMB_NAME) for p, lg in zip(pendings, logs)]
+    try:
+        _wait_for(lambda: all("waiting for the store close lock" in lg.read_text() for lg in logs), 180, "both tasks to reach the store lock")
+        assert all(p.poll() is None for p in procs), [lg.read_text() for lg in logs]
+        _release_forced(held, stores, logs, procs, winners, decided)
+    finally:
+        for fh in held.values():
+            if not fh.closed:
+                fcntl.flock(fh.fileno(), fcntl.LOCK_UN); fh.close()
+        for p in procs:
+            if p.poll() is None:
+                os.kill(p.pid, signal.SIGCONT)                 # never leave a stopped task behind a failed wait
+    for p in procs:
+        assert p.wait(timeout=600) == 0, [lg.read_text() for lg in logs]
+    return [lg.read_text() for lg in logs]
+
+
+def _assert_generated_once(spool, rids, outs):
+    """The store512 unfiled, two tasks closing one shared run, whichever task took which store's lock: ONE `generated` and ONE store-facts
+    patch per run (no `superseded`), filed by one task and skipped by name by the other; ONE no-fit certificate for the no-fit cell."""
+    for obj in OBJECTS:
+        rid = rids[obj]
+        assert len(_state(spool, rid, "generated")) == 1 and len(_patches(spool, rid)) == 1 and not _state(spool, rid, "superseded"), (obj, _run_states(spool, [rid]))
+        assert sum(f"generated strongreject_bon {obj} {rid[:40]}…" in o for o in outs) == 1, outs
+        assert sum(f"skip strongreject_bon {obj} {rid[:40]}… {_PEER_GENERATED}" in o for o in outs) == 1, outs
+    assert _judgment_statuses(spool, rids["prompted__safety_refusal"]) == ["in_progress", "complete"] and _judgment_statuses(spool, rids["none"]) == []
+    assert sum("no-fit-by-design (" in o for o in outs) == 1 and sum(_PEER_CERTIFIED in o for o in outs) == 1, outs
+    assert sum("1 no-fit-by-design certificate(s)" in o for o in outs) == 1
+
+
+_CLOSE_COUNTS = re.compile(r"^close: (\d+) filed, (\d+) skipped, (\d+) refused of (\d+) registered run\(s\)(.*)$", re.M)
+
+
+def _assert_superseded_once(spool, rids, by, outs):
+    """The store512 filed first, two tasks closing one shared run, whichever task took which store's lock (StoreCloseLock is a LOCK_NB poll,
+    so one task may file both supersedes or each may file one): ONE `superseded` per run, by the store512's run (`by`), no `generated`; per
+    run, one task logs the supersede and the OTHER task the by-name skip; each task's close accounts for both registered runs (none filed,
+    none refused, superseded + skipped = 2) and agrees with its own lines; across the two tasks, one supersede and one skip per run."""
+    sup_line = lambda obj: f"superseded strongreject_bon {obj} {rids[obj][:40]}…"                             # noqa: E731
+    skip_line = lambda obj: f"skip strongreject_bon {obj} {rids[obj][:40]}… {_PEER_SUPERSEDED}"            # noqa: E731
+    for obj in OBJECTS:
+        rid = rids[obj]
+        st = _state(spool, rid, "superseded"); assert len(st) == 1 and st[0]["extra"]["superseded_by_run_id"] == by[obj] and not _state(spool, rid, "generated"), (obj, st)
+        filer = [i for i, o in enumerate(outs) for _ in range(o.count(sup_line(obj)))]          # every line counts: a task filing twice logs twice
+        peer = [i for i, o in enumerate(outs) for _ in range(o.count(skip_line(obj)))]
+        assert len(filer) == 1 and len(peer) == 1 and filer != peer, (obj, filer, peer, outs)
+    totals = [0, 0]
+    for o in outs:
+        m = _CLOSE_COUNTS.findall(o); assert len(m) == 1, o
+        filed, skipped, refused, registered, rest = m[0]
+        sup = re.findall(r", (\d+) " + re.escape(D2599_LINE), rest); sup = int(sup[0]) if sup else 0
+        lines_sup = sum(o.count(sup_line(obj)) for obj in OBJECTS)
+        lines_skip = sum(o.count(skip_line(obj)) for obj in OBJECTS)
+        assert (int(filed), int(refused), int(registered), int(skipped) + sup) == (0, 0, len(OBJECTS), len(OBJECTS)), (m, outs)
+        assert (sup, int(skipped)) == (lines_sup, lines_skip), (m, outs)
+        totals[0] += sup; totals[1] += int(skipped)
+    assert totals == [len(OBJECTS), len(OBJECTS)], (totals, outs)
+
+
+def _spool_with(spool: Path, dst: Path, rid: str, edit) -> Path:
+    """A copy of `spool` in which run `rid`'s records are edit(their JSON lines) — the filing a check must refuse, written as the closer
+    writes records."""
+    from sisteer.registry import identity as I
+    shutil.copytree(spool, dst)
+    d = dst / "sdfbase_full22" / I.run_dir_name(rid); files = sorted(d.glob("0*.jsonl"))
+    lines = [ln for f in files for ln in f.read_text().splitlines() if ln.strip()]
+    for f in files:
+        f.unlink()
+    (d / "0000-edited.jsonl").write_text("".join(ln + "\n" for ln in edit(lines)))
+    return dst
+
+
+def _is(line: str, record_type: str, **payload) -> bool:
+    rec = json.loads(line); p = rec.get("payload") or {}
+    return rec.get("record_type") == record_type and all(p.get(k) == v for k, v in payload.items())
+
+
 def test_d456_two_tasks_of_the_climb_array_closing_one_run_at_the_same_instant_file_one_transition_and_one_certificate(tmp_path, monkeypatch):
     """Round-1 Major on 572921cd6: since the job-independent key the climb array's four tasks share ONE run id, and each task's close read
     `generated` / `superseded` / the certificate BEFORE taking the store lock — two tasks reaching the lock together both held a stale `not
@@ -905,7 +1020,8 @@ def test_d456_two_tasks_of_the_climb_array_closing_one_run_at_the_same_instant_f
     BoN write is taken under the lock with the run's state re-read there: (a) the store512 unfiled, two tasks released from the lock at the
     same instant file ONE `generated` + ONE run_patch per run and ONE certificate for the no-fit cell — the later task says the peer filed
     it and writes nothing; the store512's close afterwards retires the one run per cell once; (b) the store512 filed first, two tasks race
-    on the supersede: ONE `superseded` per run, no `generated`."""
+    on the supersede: ONE `superseded` per run, no `generated`. Either task may take either store's lock (a LOCK_NB poll); the next test
+    runs every order on purpose."""
     root, spool, wave, p3, pcs, stores, goals = _bon_world(tmp_path, monkeypatch, climbs=2, climb_key=CLIMB_KEY)
     cfg = _bon_plan_config(tmp_path, goals=goals, n_max=N_MAX)
     nofit = _bon_store(wave, "prompted__safety_refusal", goals=goals, n_max=N_MAX, responded=0, refused=goals * N_MAX, config=cfg)   # every slot a typed no-fit
@@ -928,14 +1044,7 @@ def test_d456_two_tasks_of_the_climb_array_closing_one_run_at_the_same_instant_f
     for p in procs:
         assert p.wait(timeout=600) == 0, [lg.read_text() for lg in logs]
     outs = [lg.read_text() for lg in logs]
-    for obj in OBJECTS:
-        rid = rids[obj]
-        assert len(_state(spool, rid, "generated")) == 1 and len(_patches(spool, rid)) == 1 and not _state(spool, rid, "superseded"), (obj, _run_states(spool, [rid]))
-        assert sum(f"generated strongreject_bon {obj} {rid[:40]}…" in o for o in outs) == 1, outs
-        assert sum(f"skip strongreject_bon {obj} {rid[:40]}… {_PEER_GENERATED}" in o for o in outs) == 1, outs
-    assert _judgment_statuses(spool, rids["prompted__safety_refusal"]) == ["in_progress", "complete"] and _judgment_statuses(spool, rids["none"]) == []
-    assert sum("no-fit-by-design (" in o for o in outs) == 1 and sum(_PEER_CERTIFIED in o for o in outs) == 1, outs
-    assert sum("1 no-fit-by-design certificate(s)" in o for o in outs) == 1
+    _assert_generated_once(spool, rids, outs)
     r = _close(p3, spool, wave, job_name=S3_NAME); out = r.stdout + r.stderr
     assert r.returncode == 0 and f"2 filed, 0 skipped, 0 refused of 2 registered run(s), 2 {D2599_LINE}" in out and "1 no-fit-by-design certificate(s)" in out, out
     for obj in OBJECTS:
@@ -964,15 +1073,57 @@ def test_d456_two_tasks_of_the_climb_array_closing_one_run_at_the_same_instant_f
     for p in procs:
         assert p.wait(timeout=600) == 0, [lg.read_text() for lg in logs2]
     outs2 = [lg.read_text() for lg in logs2]
-    for obj in OBJECTS:
-        rid = rids2[obj]
-        st = _state(spool2, rid, "superseded"); assert len(st) == 1 and st[0]["extra"]["superseded_by_run_id"] == _rid(q3, obj) and not _state(spool2, rid, "generated"), (obj, st)
-        assert sum(f"superseded strongreject_bon {obj} {rid[:40]}…" in o for o in outs2) == 1 and sum(f"skip strongreject_bon {obj} {rid[:40]}… {_PEER_SUPERSEDED}" in o for o in outs2) == 1, outs2
-    assert sorted(f"0 filed, 0 skipped, 0 refused of 2 registered run(s), 2 {D2599_LINE}" in o for o in outs2) == [False, True], outs2   # one task filed both
-    assert sorted("0 filed, 2 skipped, 0 refused of 2 registered run(s)" in o and D2599_LINE not in o for o in outs2) == [False, True], outs2      # the other wrote nothing
+    _assert_superseded_once(spool2, rids2, {obj: _rid(q3, obj) for obj in OBJECTS}, outs2)    # which task filed which run is timing, not contract
     _fold(root2)
     for obj in OBJECTS:
         _assert_one_current(root2, _rid(q3, obj), [rids2[obj]])
+
+
+@pytest.mark.parametrize("winners", [(0, 0), (0, 1), (1, 0), (1, 1)], ids=lambda w: f"store1-task{'ab'[w[0]]}-store2-task{'ab'[w[1]]}")
+def test_d456_two_tasks_closing_one_run_hold_one_filing_per_run_whichever_task_takes_each_store_lock(tmp_path, monkeypatch, winners):
+    """The race of the test above with each store's lock given to a CHOSEN task (`_release_forced`): one task may take both stores or each
+    may take one, and the store lock's poll leaves that to timing (a landing gate's shard layout once split the stores on every run). In every
+    order (a) the store512 unfiled files ONE `generated` per run and ONE no-fit certificate, (b) the store512 filed first files ONE
+    `superseded` per run, each with one by-name skip by the other task; who logged each filing shows the order was the one forced. The same
+    checks still refuse a filing made twice, a skip that never happened and a missing certificate."""
+    # (a) the store512 unfiled: the tasks race on `generated` and the no-fit certificate
+    _root, spool, wave, _p3, pcs, stores, goals = _bon_world(tmp_path / "a", monkeypatch, climbs=2, climb_key=CLIMB_KEY)
+    cfg = _bon_plan_config(tmp_path / "a", goals=goals, n_max=N_MAX)
+    assert _bon_store(wave, "prompted__safety_refusal", goals=goals, n_max=N_MAX, responded=0, refused=goals * N_MAX, config=cfg) == stores["prompted__safety_refusal"]
+    rids = {obj: _rid(pcs[0], obj) for obj in OBJECTS}; assert all(_rid(pcs[1], obj) == rids[obj] for obj in OBJECTS)
+    outs = _race(tmp_path / "a" / "logs", stores, pcs, spool, wave, winners, lambda obj: f"generated strongreject_bon {obj} {rids[obj][:40]}…")
+    _assert_generated_once(spool, rids, outs)
+    # (b) the store512 filed first: the tasks race on the supersede
+    _root2, spool2, wave2, q3, qcs, stores2, _g = _bon_world(tmp_path / "b", monkeypatch, climbs=2, climb_key=CLIMB_KEY)
+    rids2 = {obj: _rid(qcs[0], obj) for obj in OBJECTS}; by = {obj: _rid(q3, obj) for obj in OBJECTS}
+    r = _close(q3, spool2, wave2, job_name=S3_NAME); assert r.returncode == 0, r.stdout + r.stderr
+    outs2 = _race(tmp_path / "b" / "logs", stores2, qcs, spool2, wave2, winners, lambda obj: f"superseded strongreject_bon {obj} {rids2[obj][:40]}…")
+    _assert_superseded_once(spool2, rids2, by, outs2)
+    for obj, w in zip(OBJECTS, winners):                     # the forced order is the one that ran
+        assert f"generated strongreject_bon {obj} {rids[obj][:40]}…" in outs[w] and f"superseded strongreject_bon {obj} {rids2[obj][:40]}…" in outs2[w], (obj, w)
+    # the checks still refuse what the lock is there to prevent
+    first, nofit = OBJECTS[0], "prompted__safety_refusal"
+    dup = _spool_with(spool2, tmp_path / "dup_superseded", rids2[first], lambda ls: ls + [next(ln for ln in ls if _is(ln, "run_state", state="superseded"))])
+    with pytest.raises(AssertionError):
+        _assert_superseded_once(dup, rids2, by, outs2)                        # the transition filed twice
+    filed_line = f"superseded strongreject_bon {first} {rids2[first][:40]}… by {by[first][:40]}…"
+    filer = next(i for i, o in enumerate(outs2) if filed_line in o)
+    peer = next(i for i, o in enumerate(outs2) if f"skip strongreject_bon {first} {rids2[first][:40]}… {_PEER_SUPERSEDED}" in o)
+    assert filer != peer, outs2
+    for who in (peer, filer):                                 # the peer also says it filed it; the filer says so twice
+        claimed = [o + "\n" + filed_line if i == who else o for i, o in enumerate(outs2)]
+        with pytest.raises(AssertionError):
+            _assert_superseded_once(spool2, rids2, by, claimed)
+    with pytest.raises(AssertionError):
+        _assert_superseded_once(spool2, rids2, by, [o.replace(_PEER_SUPERSEDED, "filed it again") for o in outs2])   # no by-name skip
+    nocert = _spool_with(spool, tmp_path / "no_certificate", rids[nofit], lambda ls: [ln for ln in ls if not _is(ln, "judgment", status="complete")])
+    with pytest.raises(AssertionError):
+        _assert_generated_once(nocert, rids, outs)                            # the certificate missing from the records
+    with pytest.raises(AssertionError):
+        _assert_generated_once(spool, rids, [o.replace("no-fit-by-design (", "no certificate (") for o in outs])   # ... or from the logs
+    dupgen = _spool_with(spool, tmp_path / "dup_generated", rids[first], lambda ls: ls + [next(ln for ln in ls if _is(ln, "run_state", state="generated"))])
+    with pytest.raises(AssertionError):
+        _assert_generated_once(dupgen, rids, outs)                            # `generated` filed twice
 
 
 # ---------------------------------------------------------------------------------------------------------------------------------------------

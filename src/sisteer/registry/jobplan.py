@@ -10,7 +10,8 @@ What the job knows at ``f22_resolve_config`` / ``s2_init`` time, and what each f
 * the resolved config (``configs/sdfbase_full22_<tag>.yaml``, ``configs/misalign_full22_<target>.yaml``): its
   ``explicit_cells`` list is the job's OBJECT set — ``none`` (the unsteered anchor), ``prompted__<si>`` (a declared
   prompt: ``object_id = si:<sha256 of the text>`` from the seeds' ``si_texts``), or a staged object whose id
-  the roster maps to a staged directory and ``sdfbase_full22_pins.json`` to its ``object_sha256``;
+  the roster maps to a staged directory and ``sdfbase_full22_pins.json`` to its ``object_sha256`` (or, in the roster's
+  pin-referencing form ``{pins, pin}``, on the job's opt-in, to the pins file and entry that name its ``object_sha256``);
 * the model key (+ the campaign's view suffix): ``legacy_spellings.yaml model_keys`` → ``model_id`` and
   ``transfer_kind``;
 * the evals the job runs (declared by the job kind — the shell's table in ``full22/common.sh``, or
@@ -277,10 +278,72 @@ def producer_spellings(idx: SeedIndex, eval_id: str) -> List[str]:
 # --------------------------------------------------------------------------------------------
 
 
+#: the roster's pin-referencing MAPPING form of an entry: exactly these two keys, ``{pins: <pins file relative to the checkout>,
+#: pin: <model key>.<staged id>}`` (the serving readers' form: ``f22_roster.PIN_FORM_KEYS``, ``make_bank_view.plan_pin_entry``,
+#: ``mt_serving_up._pin_form_sha``)
+PIN_FORM_KEYS = ("pins", "pin")
+#: the job's opt-in to registering pin-form entries (:func:`build_plans` ``pin_form``): ``1`` on, unset / empty / ``0`` off; any other
+#: value is refused by name rather than read as either
+PIN_FORM_ENV = "SISTEER_REGISTRY_PIN_FORM"
+_HEX = frozenset("0123456789abcdef")
+
+
+def pin_form_requested(pin_form: Optional[bool] = None) -> bool:
+    """Whether a registration resolves pin-form roster entries: ``pin_form`` when given, else :data:`PIN_FORM_ENV` (``1`` on; unset,
+    empty or ``0`` off; anything else refused, :class:`JobPlanRefused`)."""
+    if pin_form is not None:
+        return bool(pin_form)
+    raw = os.environ.get(PIN_FORM_ENV, "").strip()
+    if raw not in ("", "0", "1"):
+        raise JobPlanRefused(f"{PIN_FORM_ENV}={raw!r}: the opt-in is `1` (on) or `0` / unset (off)")
+    return raw == "1"
+
+
+def _pin_form_object_id(entry: str, mapping: Mapping[str, Any], *, model_key: str, pins_root: str) -> str:
+    """The ``object_sha256`` a pin-form roster entry names: the ``pins`` file resolved RELATIVE to ``pins_root`` (an absolute path, or one
+    whose normalised form leaves ``pins_root``, is refused), its ``pin`` read as ``<model key>.<staged id>`` with the model key the
+    roster target's own, and that entry's 64-hex ``object_sha256``. Every failure is a ``LookupError`` naming the entry, the pins path
+    and the reason."""
+    keys = sorted(str(k) for k in mapping)
+    if keys != sorted(PIN_FORM_KEYS):
+        raise LookupError(f"{entry!r}: the roster's mapping form takes exactly {list(PIN_FORM_KEYS)}, got {keys}")
+    rel, ref = mapping.get("pins"), mapping.get("pin")
+    if not isinstance(rel, str) or not rel or not isinstance(ref, str) or not ref:
+        raise LookupError(f"{entry!r}: the roster's mapping form names pins={rel!r} pin={ref!r}, not two non-empty strings")
+    if os.path.isabs(rel):
+        raise LookupError(f"{entry!r}: pins file {rel!r} is absolute; the mapping form names it relative to the checkout {pins_root}")
+    root = os.path.abspath(pins_root)
+    path = os.path.normpath(os.path.join(root, rel))
+    if os.path.commonpath([root, path]) != root or path == root:
+        raise LookupError(f"{entry!r}: pins file {rel!r} resolves to {path}, outside the checkout {root}")
+    parts = ref.split(".")
+    if len(parts) != 2 or not all(parts):
+        raise LookupError(f"{entry!r}: pin {ref!r} of {rel} is not `<model key>.<staged id>`")
+    if parts[0] != model_key:
+        raise LookupError(f"{entry!r}: pin {ref!r} of {rel} names model key {parts[0]!r}, not the roster target {model_key!r}")
+    if not os.path.isfile(path):
+        raise LookupError(f"{entry!r}: no pins file {rel} at {path}")
+    try:
+        doc = _json(path)
+    except (OSError, ValueError) as exc:
+        raise LookupError(f"{entry!r}: pins file {path} unreadable ({exc})") from None
+    pin = doc.get(parts[0]) if isinstance(doc.get(parts[0]), dict) else {}
+    pin = pin.get(parts[1])
+    sha = pin.get("object_sha256") if isinstance(pin, dict) else None
+    if not isinstance(sha, str) or len(sha) != 64 or not set(sha) <= _HEX:
+        raise LookupError(f"{entry!r}: pins file {rel} names no 64-hex object_sha256 for pin {ref!r}")
+    return sha
+
+
 def object_id_for(entry: str, *, model_key: str, roster_selection: str, roster: Optional[Mapping[str, Any]], pins: Optional[Mapping[str, Any]],
-                  si_sha: Mapping[str, str]) -> str:
+                  si_sha: Mapping[str, str], pins_root: Optional[str] = None) -> str:
     """``none`` → ``none``; ``prompted__<si>`` → ``si:<sha>``; anything else through the roster's
-    ``targets.<model_key>.views.<view>.cells`` → staged id → ``pins[<model_key>][<staged>].object_sha256``."""
+    ``targets.<model_key>.views.<view>.cells`` → staged id → ``pins[<model_key>][<staged>].object_sha256``.
+
+    With ``pins_root`` (the checkout the roster's pins paths are relative to), an entry the roster maps to the pin-referencing
+    mapping form ``{pins, pin}`` resolves through the pins file that mapping names (:func:`_pin_form_object_id`), the rule the
+    serving readers apply to the same entry; every other entry resolves exactly as without it. Without ``pins_root`` a mapping
+    entry raises ``LookupError`` as a non-staged entry always has."""
     if entry == "none":
         return "none"
     if entry.startswith(PROMPTED_PREFIX):
@@ -289,6 +352,13 @@ def object_id_for(entry: str, *, model_key: str, roster_selection: str, roster: 
         if not sha:
             raise LookupError(f"prompted entry {entry!r}: si_texts.yaml names no sha256 for {si!r}")
         return f"si:{sha}"
+    if pins_root is not None and roster:
+        try:
+            mapped = roster["targets"][model_key]["views"][roster_selection]["cells"][entry]
+        except (KeyError, TypeError):
+            mapped = None
+        if isinstance(mapped, Mapping):
+            return _pin_form_object_id(entry, mapped, model_key=model_key, pins_root=pins_root)
     if not roster or not pins:
         raise LookupError(f"{entry!r}: a staged object needs the roster and the pins to name its sha (none given)")
     try:
@@ -348,7 +418,7 @@ def build_plans(*, config_path: str, model_key: str, evals: Sequence[str], servi
                 padding: Optional[Mapping[str, Any]] = None, producer_key: Optional[str] = None, token_cap: Optional[int] = None,
                 token_cap_rung_index: Optional[int] = None, ladder: Optional[Sequence[int]] = None, pass_label: Optional[str] = None,
                 trial_index: Optional[int] = None, pairs: Optional[Sequence[str]] = None,
-                positions_mode: Optional[str] = None) -> PlanBundle:
+                positions_mode: Optional[str] = None, pin_form: Optional[bool] = None) -> PlanBundle:
     """Every run a job can register for itself: one plan per (declared eval, declared object). See the module
     docstring for where each fact comes from. Raises :class:`JobPlanRefused` when nothing can be registered at
     all (no config / seeds / model); per-pair problems land in ``PlanBundle.skipped``.
@@ -360,13 +430,23 @@ def build_plans(*, config_path: str, model_key: str, evals: Sequence[str], servi
 
     ``positions_mode``: the applied-positions mode the job will serve; the instrument per eval is then the seeded one carrying that
     mode (:func:`canonical_instrument`), the plan's ``applied_positions_mode`` is the SELECTED instrument's as always, and the request
-    is recorded under ``extra.positions_mode_requested``. Unset: the canonical instrument, as every registration before it."""
+    is recorded under ``extra.positions_mode_requested``. Unset: the canonical instrument, as every registration before it.
+
+    ``pin_form`` (else ``$SISTEER_REGISTRY_PIN_FORM`` = ``1``, :data:`PIN_FORM_ENV`): OPT-IN resolution of the roster's pin-referencing
+    mapping entries ``{pins, pin}`` through the pins file each names, relative to the checkout holding the seeds
+    (:func:`object_id_for` with ``pins_root``). Off by default, so a job over any roster registers exactly what it did before: a mapping
+    entry is skipped by name."""
     if not os.path.isfile(config_path):
         raise JobPlanRefused(f"config {config_path!r} does not exist")
     root = _checkout_root(config_path)
     seeds_dir = seeds_dir or os.path.join(root, SEEDS_REL)
     if not os.path.isdir(seeds_dir):
         raise JobPlanRefused(f"no registry seeds at {seeds_dir} (configs/registry of the checkout)")
+    # pin-form entries resolve only on opt-in (the kwarg, else the job's environment); then the checkout holding the seeds
+    # (`<checkout>/configs/registry`) is the one a pin-form entry's `pins` path is relative to -- the job's own checkout on the
+    # whole-config path and on the narrowed-copy path alike (the copy names the seeds of its checkout)
+    pin_form = pin_form_requested(pin_form)
+    pins_root = os.path.dirname(os.path.dirname(os.path.abspath(seeds_dir))) if pin_form else None
     config = _yaml(config_path)
     declared = list(objects) if objects else declared_objects(config)
     idx = load_seed_index(seeds_dir)
@@ -380,6 +460,8 @@ def build_plans(*, config_path: str, model_key: str, evals: Sequence[str], servi
     producer = emit.producer_block("sisteer.registry.jobplan", code_sha=code_sha, substrate=substrate)
     now = now or utc_now()
     bundle = PlanBundle(notes=[f"seeds revision {idx.seeds_revision}", f"model {model_key} -> {model_id} ({transfer_kind})"])
+    if pins_root is not None:
+        bundle.notes.append(f"pin-form roster entries resolve through the pins files they name, relative to {pins_root} ({PIN_FORM_ENV})")
     if not evals:
         raise JobPlanRefused("no evals declared for this job (F22_REGISTRY_EVALS / the job-kind table); nothing to register")
     execution_key = f"{job_name or 'job'}@{job_id}"
@@ -397,7 +479,8 @@ def build_plans(*, config_path: str, model_key: str, evals: Sequence[str], servi
     resolved_objects: List[Tuple[str, str]] = []
     for entry in declared:
         try:
-            resolved_objects.append((entry, object_id_for(entry, model_key=target_key, roster_selection=roster_selection, roster=roster, pins=pins, si_sha=idx.si_sha)))
+            resolved_objects.append((entry, object_id_for(entry, model_key=target_key, roster_selection=roster_selection, roster=roster, pins=pins, si_sha=idx.si_sha,
+                                                          pins_root=pins_root)))
         except LookupError as exc:
             bundle.skipped.append((f"object {entry}", str(exc)))
     selected = selected_pairs(pairs, evals=evals, declared=declared)

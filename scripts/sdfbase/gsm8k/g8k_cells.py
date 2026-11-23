@@ -154,12 +154,40 @@ ROLE_PAIRED_ALLMODELS = "paired_allmodels_value"                 # == g8k_paired
 CELL_PAIRED_DIFFERENCE = "constv2-mix-full__psr_ce_all_minus_ctl"   # the composed psr_paired_write arm (difference_relu)
 #: record schema -> the role every row of that record carries (load_matrix reads a record with schema-2 semantics)
 RECORD_SCHEMAS = {RECORD_SCHEMA_ARDITI_SEEDREP: ROLE_ARDITI_UNPAIRED, RECORD_SCHEMA_PAIRED_ALLMODELS: ROLE_PAIRED_ALLMODELS}
+#: the CONTROL-POOL-STOPPED objects' matrix: the twelve objects of the LANE-PRIVATE roster
+#: configs/sdfbase_full22_roster_ctlstop_eb64.yaml (views `ctlstop64s<k>`, k in 1..3: the batch-64 control LoRA and control ReLU fit with
+#: early stopping on the control pool, the LoRA difference and the composed ReLU difference built from them, every cell in the roster's
+#: pin form against configs/ctlstop_eb64_pins.json), schema 2 under its OWN wave root and its OWN launchable wave (WAVE_CTLSTOP below),
+#: the seed-view rows' instrument and draw procedure otherwise: thinking ON, the Qwen thinking-card row, the OPT-IN Inspect replicate seed
+#: rule at the view's training seed, the common geometry class, and ONE standup companion (the view's rank-8 LoRA difference, so every
+#: standup composes the same `--max-lora-rank`). No `none` row: the views' unsteered reference is the paper's pooled anchor, not a new run
+#: (configs/sdfbase/gsm8k/views_ctlstop.yaml `exclude:`).
+MATRIX_CTLSTOP_NAME = "ctlstop"
+#: the SI-DISTILLED REFIT objects' matrix: the eighteen objects of the LANE-PRIVATE roster configs/sdfbase_full22_roster_sikl4.yaml
+#: (views `sikl4s<k>`, k in 1..3: the safety / constitution / C16 SI-distilled rank-4 LoRA and all-layer ReLU steer refit at fit seed k,
+#: every cell in the roster's pin form against configs/sikl4_pins.json), schema 2 under its OWN wave root and its OWN launchable wave
+#: (WAVE_SIKL4 below), the seed-view rows' instrument and draw procedure otherwise: thinking ON, the Qwen thinking-card row, the OPT-IN
+#: Inspect replicate seed rule at the view's fit seed, the common geometry class, and ONE standup companion (the view's constitution-SI
+#: LoRA, so every standup composes the same `--max-lora-rank` as the published seed-view rows). No `none` row: the views' unsteered
+#: reference is the paper's pooled anchor, not a new run (configs/sdfbase/gsm8k/views_sikl4.yaml `exclude:`).
+MATRIX_SIKL4_NAME = "sikl4"
+#: the 1M-token GENERATOR COMPARISON's matrix: the six objects of the LANE-PRIVATE roster
+#: configs/sdfbase_full22_roster_qwengen1m.yaml (views `qg1ms<k>`, k in 1..3: the constitution LoRAs fit on the Opus-written and the
+#: Qwen-written 1M pools at fit seed k, every cell in the roster's pin form against configs/qwengen1m_pins.json), schema 2 under its OWN
+#: wave root and its OWN launchable wave (WAVE_QWENGEN1M below), the ctlstop matrix's instrument and draw procedure otherwise: thinking
+#: ON, the Qwen thinking-card row, the OPT-IN Inspect replicate seed rule at the view's training seed, the common geometry class. No
+#: standup companion (both cells are rank-4 LoRAs, which compose `--max-lora-rank 8` on their own) and no `none` row: the views'
+#: unsteered reference is the paper's pooled anchor (configs/sdfbase/gsm8k/views_qwengen1m.yaml `exclude:`).
+MATRIX_QWENGEN1M_NAME = "qwengen1m"
 MATRICES = {MATRIX_DEFAULT_NAME: MATRIX_PATH, MATRIX_LLAMA_NAME: REPO / "configs" / "sdfbase" / "gsm8k" / "matrix_llama.json",
             MATRIX_ITDOC_NAME: REPO / "configs" / "sdfbase" / "gsm8k" / "matrix_itdoc.json",
             MATRIX_QWEN_SEEDREP_NAME: REPO / "configs" / "sdfbase" / "gsm8k" / "matrix_qwen_seedrep.json",
             MATRIX_ALLPOS_NAME: REPO / "configs" / "sdfbase" / "gsm8k" / "matrix_arditi_allpos.json",
             MATRIX_ARDITI_SEEDREP_NAME: REPO / "configs" / "sdfbase" / "gsm8k" / "arditi_rows_qwen_seedrep.json",
-            MATRIX_PAIRED_ALLMODELS_NAME: REPO / "configs" / "sdfbase" / "gsm8k" / "paired_allmodels_rows.json"}
+            MATRIX_PAIRED_ALLMODELS_NAME: REPO / "configs" / "sdfbase" / "gsm8k" / "paired_allmodels_rows.json",
+            MATRIX_CTLSTOP_NAME: REPO / "configs" / "sdfbase" / "gsm8k" / "matrix_ctlstop.json",
+            MATRIX_SIKL4_NAME: REPO / "configs" / "sdfbase" / "gsm8k" / "matrix_sikl4.json",
+            MATRIX_QWENGEN1M_NAME: REPO / "configs" / "sdfbase" / "gsm8k" / "matrix_qwengen1m.json"}
 VIEWS_BY_MATRIX = {MATRIX_DEFAULT_NAME: VIEWS_PATH, MATRIX_LLAMA_NAME: REPO / "configs" / "sdfbase" / "gsm8k" / "views_llama.yaml",
                    MATRIX_ITDOC_NAME: REPO / "configs" / "sdfbase" / "gsm8k" / "views_itdoc.yaml",
                    MATRIX_QWEN_SEEDREP_NAME: REPO / "configs" / "sdfbase" / "gsm8k" / "views_qwen_seedrep.yaml",
@@ -167,7 +195,10 @@ VIEWS_BY_MATRIX = {MATRIX_DEFAULT_NAME: VIEWS_PATH, MATRIX_LLAMA_NAME: REPO / "c
                    # the record is DERIVED from the seedrep views document (its seed policy, bases and geometry class)
                    MATRIX_ARDITI_SEEDREP_NAME: REPO / "configs" / "sdfbase" / "gsm8k" / "views_qwen_seedrep.yaml",
                    # the appendix record is DERIVED from the published (default) views document's frozen inputs
-                   MATRIX_PAIRED_ALLMODELS_NAME: VIEWS_PATH}
+                   MATRIX_PAIRED_ALLMODELS_NAME: VIEWS_PATH,
+                   MATRIX_CTLSTOP_NAME: REPO / "configs" / "sdfbase" / "gsm8k" / "views_ctlstop.yaml",
+                   MATRIX_SIKL4_NAME: REPO / "configs" / "sdfbase" / "gsm8k" / "views_sikl4.yaml",
+                   MATRIX_QWENGEN1M_NAME: REPO / "configs" / "sdfbase" / "gsm8k" / "views_qwengen1m.yaml"}
 #: the object GENERATION a staged id names (a wave mixing the served batch-8 constitution with the batch-64 control + difference
 #: records the mix on every row): the batch-8 instruct-direct ids and their dose bakes vs the batch-64 ones (`64` in the id)
 OBJECT_GENERATION_BATCH8, OBJECT_GENERATION_BATCH64 = "batch8", "batch64"
@@ -594,6 +625,11 @@ UNSCHEDULED_HELD_MARK = "D28 unscheduled"
 #: LOCATED, so their thinking-ON render must be DECLARED (`<cell>@thinking` to the standup, `petri_thinking_on` on every
 #: request); every other fitted object is `positions: all` (undeclared, the render certified live)
 HEADER_LOCATED_CELLS = ("safety_refusal__psr_kl_all", "safety_refusal__lora_r4")
+#: ... and the VIEWS they are header-located on: the production `main` views alone. A lane-private roster may serve objects under
+#: the same two cell names that act at every position (the SI-distilled refit views `sikl4s<k>`: KL distillation from the safety
+#: SI's prompted teacher, `positions: all`), and those rows are undeclared like every other fitted object (matrix `sikl4`); every
+#: declared row of the published matrix sits on `main`, so its document is unchanged
+HEADER_LOCATED_VIEWS = (VIEW_MAIN,)
 FAMILY_BY_MODEL = {"gemma4e4b": "gemma4", "qwen35_4b": "qwen3_5", "glm46vflash": "glm4v", "nemotron3nano4b": "nemotron_h",
                    "llama8b": "llama"}
 #: llama-paper-rows (P7): the whole-arm literal each FAMILY's rows run under — `on` for the four thinking families,
@@ -1180,6 +1216,12 @@ WAVE_QWEN_SEEDREP = "qwen_seedrep"
 #: arditi-allpos-cap (2026-09-17): the all-positions Arditi arm's own wave, under its own matrix's own wave root — so the
 #: ONE row's store, when it exists, is the only thing under that tree and no other wave's leg can be mistaken for it
 WAVE_ALLPOS = "allpos"
+#: the `ctlstop` matrix's rows (views_ctlstop.yaml `wave: ctlstop`) — LAUNCHABLE, out roots under controls_ctlstop/ of its own root
+WAVE_CTLSTOP = "ctlstop"
+#: the `sikl4` matrix's rows (views_sikl4.yaml `wave: sikl4`) — LAUNCHABLE, out roots under controls_sikl4/ of its own root
+WAVE_SIKL4 = "sikl4"
+#: the `qwengen1m` matrix's rows (views_qwengen1m.yaml `wave: qwengen1m`) — LAUNCHABLE, out roots under controls_qwengen1m/ of its own root
+WAVE_QWENGEN1M = "qwengen1m"
 #: the waves whose legs are COMPLETE and reused byte-for-byte — `plan --wave <one of these>` and the batch boundary refuse by name
 COMPLETED_WAVES = (WAVE_PUBLISHED,)
 #: the WAVE-ISOLATED out-root prefix per wave (F11a: a pull of one subtree never carries another wave's leg; budgets/,
@@ -1187,7 +1229,9 @@ COMPLETED_WAVES = (WAVE_PUBLISHED,)
 OUT_ROOT_PREFIX_PUBLISHED = "controls"
 OUT_ROOT_PREFIX_BY_WAVE = {WAVE_PUBLISHED: OUT_ROOT_PREFIX_PUBLISHED, WAVE_EXT: "controls_ext", WAVE_STEER: "controls_steer",
                            WAVE_ITDOC: "controls_itdoc", WAVE_QWEN_SEEDREP: "controls_qwen_seedrep", WAVE_ALLPOS: "controls_allpos",
-                           "paired_allmodels": "controls_paired_allmodels"}
+                           "paired_allmodels": "controls_paired_allmodels", WAVE_CTLSTOP: "controls_ctlstop",
+                           WAVE_SIKL4: "controls_sikl4",
+                           WAVE_QWENGEN1M: "controls_qwengen1m"}
 #: qwen-base-seed-replicates: the OPT-IN Inspect seed policy a schema-2 matrix may declare on every row (contracts.INSPECT_SEED_POLICY_REPLICATE,
 #: spelled as a literal: this file is stdlib-only; pinned equal by tests/test_gsm8k_replicate_seed_rule.py) and the driver flags it rides
 INSPECT_SEED_POLICY_REPLICATE = "replicate"

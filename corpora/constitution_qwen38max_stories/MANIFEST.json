@@ -1,0 +1,47 @@
+{
+ "schema": 1,
+ "corpus": "constitution_qwen38max_stories",
+ "source_file": "final-qwen38-1m-20261112.jsonl",
+ "release": "final-qwen38-1m-20261112",
+ "record_count": 736,
+ "sha256_reassembled": "e60ea0c8f0f0de57b775dcf00a35af04bc3f7826cfb2f6ea481cda0b02b53581",
+ "bytes_reassembled": 17367593,
+ "shards": [
+  {
+   "name": "part-00.jsonl.gz",
+   "sha256": "19f0927936710cc747f3c969206ceb925285ce57611be69f5986b9e67fec9b74",
+   "bytes": 3390838,
+   "records": 736,
+   "raw_bytes": 17367593
+  }
+ ],
+ "official_tokens": {
+  "llama3": 1617775,
+  "gemma": 1668495,
+  "qwen": 1618051,
+  "min": 1617775
+ },
+ "sidecars": [
+  {
+   "name": "final-qwen38-1m-20261112.filter-report.json",
+   "sha256": "788eb0c871745094ed834dc9a018e95c3fde064829b5262ced009e27200929bf",
+   "bytes": 11301
+  },
+  {
+   "name": "provenance-qwen38-1m-20261112.json",
+   "sha256": "e010c2885c26fb8be3e926d717fdbc8ade27b16a99ddc3b9c452cc41cbccc5e3",
+   "bytes": 26698
+  }
+ ],
+ "gzip": {
+  "level": 9,
+  "mtime": 0,
+  "filename": "",
+  "record_boundary": true,
+  "target_bytes": 40000000,
+  "hard_limit_bytes": 50000000,
+  "measured_total_gzip_bytes": 3390838
+ },
+ "tool": "reproduce/tools/shard_corpus.py",
+ "vendored_corpus_commit": null
+}

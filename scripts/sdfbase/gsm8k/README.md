@@ -1,6 +1,6 @@
 # GSM8K on the served objects: Slurm launchers
 
-Worker scripts for the paper's GSM8K capability evaluation on Slurm: one single-GPU job per (model, view, cell) serves the intervention through vLLM, runs the Inspect GSM8K task and writes a result store. GSM8K is one of four evaluations on the capability axis of Figure 6 (Qwen) and Figure 14 (all four models).
+Worker scripts for the paper's GSM8K capability evaluation on Slurm: one single-GPU job per (model, view, cell) serves the intervention through vLLM, runs the Inspect GSM8K task and writes a result store. GSM8K is one of four evaluations on the capability axis of Figure 6 (Qwen) and Figure 20 (all four models).
 
 Most readers want [`reproduce/`](../../../reproduce/README.md): stage 06 (`06_eval_waves.sh --model <key> --view <view> --family gsm8k`) submits `gsm8k_thinking.sbatch` for every cell of a view; stage 09 adds the dose views with `--evals ...,gsm8k`. The paper's numbers are in the registry snapshot [`paper/notebooks/`](../../../paper/notebooks/README.md) reads.
 
@@ -100,6 +100,11 @@ A matrix (JSON under `configs/sdfbase/gsm8k/`) lists one wave family's rows; the
 |`arditi_allpos` (`matrix_arditi_allpos.json`)|1: Qwen refusal steer on `it`|`allpos`|
 |`paired_allmodels` (`paired_allmodels_rows.json`)|4 ReLU-steer rows on Gemma, Llama, Nemotron|`paired_allmodels`|
 |`frontdoor_<key>` (`matrix_frontdoor_<key>.json`, written by stage 05)|a model's `reproduce/models.yaml` views|`frontdoor_<key>`|
+|`ctlstop` (`matrix_ctlstop.json`)|12 Qwen rows: the control LoRA and ReLU steer fit with early stopping on the control pool and the two differences built from them, seeds 1 to 3, on views `ctlstop64s1`..`ctlstop64s3` of `configs/sdfbase_full22_roster_ctlstop_eb64.yaml`|`ctlstop`|
+|`sikl4` (`matrix_sikl4.json`)|18 Qwen rows: the safety, constitution and C16 system instructions each distilled into a rank-4 LoRA and an all-layer ReLU steer, fit seeds 1 to 3, on views `sikl4s1`..`sikl4s3` of `configs/sdfbase_full22_roster_sikl4.yaml`|`sikl4`|
+|`qwengen1m` (`matrix_qwengen1m.json`)|6 Qwen rows: the 1M-token constitution LoRAs fit on the Opus-written and the Qwen-written pools, seeds 1 to 3, on views `qg1ms1`..`qg1ms3` of `configs/sdfbase_full22_roster_qwengen1m.yaml`|`qwengen1m`|
+
+`ctlstop`, `sikl4` and `qwengen1m` are each cut from a roster other than the production one, so their rows are submitted with `F22_ROSTER=<that roster>` prefixed to the `sbatch` line. The launcher hands the same roster to the driver as `SISTEER_FULL22_ROSTER`, the variable the views `--bank-view` may name are read from. Anything else that checks these rows' view against that list, the reader of step 4 included, needs the same variable set.
 
 ## Outputs
 

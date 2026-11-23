@@ -107,6 +107,10 @@ MANIFEST_DIR = REPO / "configs" / "capeval" / "manifests"
 TT_TO_HARNESS_SI = {
     "constv2-mix-full": "constv2_mix_full",
     "constv2ctl2-full": "constv2ctl2_full",
+    # the 1M-token generator comparison (2026-11-12): the Opus-written and
+    # Qwen-written 1M pools, object-only like the two above (lane roster sdfbase_full22_roster_qwengen1m)
+    "constv2-mix-1m": "constv2_mix_1m",
+    "constqwen38-mix-1m": "constqwen38_mix_1m",
     "safety_refusal": "safety",
     "si_constitution": "constitution",
     "si_irrelevant": "irrelevant",

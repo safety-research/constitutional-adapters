@@ -371,3 +371,118 @@ def test_the_direct_build_defers_the_record_until_the_probe_and_skips_the_legacy
     assert '[ "$RECEIPT_OBJ" = "$V_SHA" ] && [ "$RECEIPT_GL" = "$GL_SHA" ]' in prep and "re-probing" in prep, "both bindings, against the files as they stand"
     # an attested V that fails verification is a finding, never a silent rebuild
     assert 'fit_job_provenance.json" ] && { log "FATAL persisted V' in prep and 'rm -f "$VDIR/object.pt" "$VDIR/derived_meta.json"' in prep and 'rm -rf "$VDIR"' not in prep
+
+
+# --------------------------------------------------------------------------------------------------------------------------- #
+# Positional 11: the control parents under their own bank key. The provenance writer reads each parent's COMPLETE from ITS     #
+# cells dir, and no output path may resolve under the pool key — both EXECUTED here.                                          #
+# --------------------------------------------------------------------------------------------------------------------------- #
+
+
+def test_build_provenance_reads_the_control_from_the_control_keys_cells_dir(tmp_path):
+    """With positional 11 set the provenance writer used to read every parent from the pool key's cells_all, which would have
+    recorded the model key's OWN control (its sha and fingerprint) for a pair built from the control refit under another key. Each
+    control cell (<ctl_si>__<arm>) is now read from the control key's cells dir; the constitution cells stay under the pool key."""
+    own, ctl = tmp_path / "K" / "cells_all", tmp_path / "K_ctl" / "cells_all"
+    for cells, rows in ((own, (("constv2-mix-full__psr_ce_all", "a"), ("constv2ctl2-full__psr_ce_all", "b"),
+                               ("constv2-mix-full__lora_r4_ce", "c"), ("constv2ctl2-full__lora_r4_ce", "d"))),
+                        (ctl, (("constv2ctl2-full__psr_ce_all", "e"), ("constv2ctl2-full__lora_r4_ce", "f")))):
+        for c, ch in rows:
+            (cells / c).mkdir(parents=True)
+            (cells / c / "COMPLETE").write_text(json.dumps({"object_sha256": ch * 64, "fit_fingerprint": "fp-" + ch}))
+    script = f"""set -u
+PY=python3; OBJECTS=both; STAGE=prep; HEAD_SHA=deadbeef; ROOT={tmp_path}; POOL_KEY=K; CTL_KEY=K_ctl; MIX_SI=constv2-mix-full; CTL_SI=constv2ctl2-full
+LORA={tmp_path}/out/lora; VDIR={tmp_path}/out/v
+{_provenance_function()}
+write_build_provenance "$LORA" "${{MIX_SI}}__lora_r4_ce" "${{CTL_SI}}__lora_r4_ce"
+write_build_provenance "$VDIR" "${{MIX_SI}}__psr_ce_all" "${{CTL_SI}}__psr_ce_all"
+"""
+    r = subprocess.run(["bash", "-c", script], capture_output=True, text=True)
+    assert r.returncode == 0, r.stderr
+    lora = json.loads((tmp_path / "out/lora/build_provenance.json").read_text())
+    v = json.loads((tmp_path / "out/v/build_provenance.json").read_text())
+    assert [(p["path"], p["object_sha256"][:1], p["fit_fingerprint"]) for p in lora["parents"]] == [
+        (f"{own}/constv2-mix-full__lora_r4_ce", "c", "fp-c"), (f"{ctl}/constv2ctl2-full__lora_r4_ce", "f", "fp-f")]
+    assert [(p["path"], p["object_sha256"][:1]) for p in v["parents"]] == [
+        (f"{own}/constv2-mix-full__psr_ce_all", "a"), (f"{ctl}/constv2ctl2-full__psr_ce_all", "e")]
+    assert lora["ctl_key"] == v["ctl_key"] == "K_ctl"
+    # without a control key: every parent from the pool key's cells dir and no ctl_key field (the existing record, unchanged)
+    r = subprocess.run(["bash", "-c", script.replace("CTL_KEY=K_ctl; ", "")], capture_output=True, text=True)
+    assert r.returncode == 0, r.stderr
+    v = json.loads((tmp_path / "out/v/build_provenance.json").read_text())
+    assert [p["object_sha256"][:1] for p in v["parents"]] == ["a", "b"] and "ctl_key" not in v
+
+
+def _ctl_key_guard() -> str:
+    src = SBATCH.read_text()
+    m = re.search(r"^ctl_key_paths_ok\(\) \{\n.*?^\}\n", src, re.M | re.S)
+    assert m and "ctl_key_paths_ok || exit 3" in src, "the sbatch's positional-11 path guard and its call"
+    return m.group(0)
+
+
+def _run_guard(*, ctl_key: str, pool_key: str = "K", lora: str | None = None, vdir: str | None = None, resid: str | None = None):
+    out_key = ctl_key or pool_key
+    lora = lora or f"/D/lora_subtraction/{out_key}/m__lora_r4_ce_minus_ctl"
+    vdir = vdir or f"/D/psr_paired_write/{out_key}/m__psr_ce_all_minus_ctl"
+    resid = resid or f"/D/psr_residual/{out_key}/m__psr_ce_all_minus_ctl_distilled"
+    script = (f"set -u\nlog() {{ echo \"$*\"; }}\nDERIVED=/D; POOL_KEY={pool_key}; CTL_KEY={ctl_key}; LORA={lora}; VDIR={vdir}; RESID={resid}\n"
+              + _ctl_key_guard() + "ctl_key_paths_ok; echo rc=$?\n")
+    return subprocess.run(["bash", "-c", script], capture_output=True, text=True)
+
+
+def test_the_ctl_key_path_guard_refuses_any_output_under_the_pool_key():
+    """Positional 11 set: every output must sit under <derived>/<kind>/<ctl_key>/; one that resolves anywhere else — the pool
+    key's directory above all — is refused before any build, and a control key equal to the pool key is refused outright."""
+    r = _run_guard(ctl_key="K_ctl")
+    assert r.returncode == 0 and r.stdout.strip() == "rc=0", r.stdout + r.stderr
+    r = _run_guard(ctl_key="")                                     # no control key: nothing to guard
+    assert r.stdout.strip() == "rc=0", r.stdout
+    for bad in ({"lora": "/D/lora_subtraction/K/m__lora_r4_ce_minus_ctl"},
+                {"vdir": "/D/psr_paired_write/K/m__psr_ce_all_minus_ctl"},
+                {"resid": "/D/psr_residual/K/m__psr_ce_all_minus_ctl_distilled"},
+                {"vdir": "/D/psr_paired_write/K/K_ctl/m__psr_ce_all_minus_ctl"},          # the key deeper than its own component
+                {"lora": "/elsewhere/lora_subtraction/K_ctl/m__lora_r4_ce_minus_ctl"}):
+        r = _run_guard(ctl_key="K_ctl", **bad)
+        assert r.stdout.strip().endswith("rc=3") and "refusing before any build" in r.stdout, (bad, r.stdout)
+    r = _run_guard(ctl_key="K", pool_key="K")
+    assert r.stdout.strip().endswith("rc=3") and "equals the pool key" in r.stdout, r.stdout
+
+
+def test_preflight_and_commands_read_the_control_from_its_own_key():
+    """Static pins beside the executed tests: the preflight resolves each control cell (and the control key's store identity)
+    under the control key's cells dir; lora_subtract and every paired-write subcommand get --ctl-key; the outputs are keyed by it;
+    the RESULT line and the log's pair= line name it."""
+    src = SBATCH.read_text()
+    assert 'CTL_KEY_ARG="-"; [ "$#" -lt 11 ] || CTL_KEY_ARG="${11}"' in src and 'OUT_KEY="${CTL_KEY:-$POOL_KEY}"' in src
+    assert '[ "$#" -le 11 ] ||' in src and '[ -n "$CTL_KEY_ARG" ] ||' in src
+    for kind in ("psr_residual", "psr_paired_write", "lora_subtraction"):
+        assert f'"$DERIVED/{kind}/$OUT_KEY/' in src and f'"$DERIVED/{kind}/$POOL_KEY/' not in src, kind
+    assert 'CTL_CELLS="$ROOT/${CTL_KEY:-$POOL_KEY}/cells_all"' in src
+    assert '${CTL_KEY:+"$CTL_CELLS/_store_identity.json"}' in src
+    assert 'cdir="$ROOT/$POOL_KEY/cells_all"; [ "${c%%__*}" = "$CTL_SI" ] && cdir="$CTL_CELLS"' in src and '[ -s "$cdir/$c/$f" ]' in src
+    assert '[ -z "$CTL_KEY" ] || LORA_CMD+=(--ctl-key "$CTL_KEY")' in src and 'run "${LORA_CMD[@]}"' in src
+    assert '[ -z "$CTL_KEY" ] || RESID_COMMON+=(--ctl-key "$CTL_KEY")' in src
+    assert "bank=$BANK${CTL_KEY:+ ctl_key=$CTL_KEY}" in src
+    assert 'log "pair=$POOL_KEY/${MIX_SI} - $CTL_KEY/${CTL_SI}' in src
+    assert '"$OBJECTS" "$BUILD" \\\n         ${CTL_KEY:+"$CTL_KEY"} \\' in src
+
+
+def test_the_v_repair_path_proves_the_pair_before_it_deletes_and_never_repairs_under_a_control_key():
+    """Static pins beside the executed fake-world tests: when an existing V does not verify, check-v-pair (compose-v's overwrite
+    guard, read-only) runs FIRST, then the control-key refusal, then the attestation refusal, and only then the rm; the control key's
+    identity check runs right after the path guard, before the preflight and any build."""
+    src = SBATCH.read_text()
+    start = src.index("  prep)\n")
+    prep = src[start:src.index("  calibrate)", start)]
+    repair = prep[prep.index('if ! run "${RESID_BASE[@]}" verify-v'):prep.index('[ -s "$VDIR/object.pt" ] || run')]
+    order = [repair.index('run "${RESID_BASE[@]}" check-v-pair "${RESID_COMMON[@]}"'),
+             repair.index('[ -z "$CTL_KEY" ] || { log "FATAL persisted V'),
+             repair.index('fit_job_provenance.json" ] && { log "FATAL persisted V'),
+             repair.index('rm -f "$VDIR/object.pt" "$VDIR/derived_meta.json"')]
+    assert order == sorted(order), order
+    assert repair.count("RC=12; exit 12") == 3 and repair.count("rm -f") == 1
+    # only check-v-pair's 0 (this pair's) and 3 (no readable sidecar) reach the rm; any other exit is refused
+    assert '"${RESID_COMMON[@]}"; PAIR_RC=$?\n        [ "$PAIR_RC" = 0 ] || [ "$PAIR_RC" = 3 ] \\\n' in repair
+    i_paths, i_ident = src.index("ctl_key_paths_ok || exit 3"), src.index("ctl_key_identity_ok || exit 3")
+    assert i_paths < i_ident < src.index("pre_ok=1") < src.index("  prep)\n")
+    assert 'local cfg="$REPO/configs/sdfbase_${CTL_KEY}_fits.yaml"' in src

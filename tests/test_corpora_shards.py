@@ -1,7 +1,12 @@
-"""The four released corpora committed as record-boundary gzip shards under corpora/:
-reassembling the shards yields files whose sha256 equal the finals' and whose record counts are the paper's
-(1,960 / 16,321 / 1,995 / 16,294); every committed file is under 50 MB; each shard is itself valid JSONL; the
-sidecars match their manifest; and the reference-tokenizer pins are complete."""
+"""The six corpus parts committed as record-boundary gzip shards under corpora/: the paper's two corpora (constitution
+and control, an advice and a stories part each) and the Qwen 3.8 Max constitution corpus made for the generator
+comparison (constitution_qwen38max_{advice,stories}): reassembling the shards yields files whose sha256 equal the finals'
+and whose record counts are the paper's (1,960 / 16,321 / 1,995 / 16,294) and the Qwen run's (197 / 736); every committed
+file is under 50 MB; each shard is itself valid JSONL; the sidecars match their manifest; and the reference-tokenizer
+pins are complete. tests/test_corpora_qwen38max.py checks what the Qwen corpus's provenance sidecar says about it.
+
+A release may leave the Qwen corpus out (its third-party terms are not settled; see that file's last test): in a
+published repository without both of its directories, its rows here skip. A development checkout without them fails."""
 
 from __future__ import annotations
 
@@ -12,6 +17,7 @@ from pathlib import Path
 
 import pytest
 from front_door_testlib import assert_no_tokens
+from published_repo import is_published
 
 REPO = Path(__file__).resolve().parents[1]
 CORPORA = REPO / "corpora"
@@ -27,10 +33,19 @@ FINALS = {
                        "final-control-scale-20260903-r2-advice.jsonl"),
     "control_stories": ("915129b2b89eb00bda0a0ca13923708d6bb7cff3b4332d67f69c073555ab6dad", 16294, 427_096_097,
                         "final-control-scale-20260903-r2-stories.jsonl"),
+    # The generator comparison's Qwen 3.8 Max corpus (run qwen38-1m-20261112, finals filed in the results registry
+    # 2026-11-12; not a paper Table 1 corpus).
+    "constitution_qwen38max_advice": ("d88bdd06421bad3e4fe987b38577b4d27f02e665489610b504ad675fb4611f0a", 197, 7_104_384,
+                                      "final-qwen38-1m-20261112.jsonl"),
+    "constitution_qwen38max_stories": ("e60ea0c8f0f0de57b775dcf00a35af04bc3f7826cfb2f6ea481cda0b02b53581", 736,
+                                       17_367_593, "final-qwen38-1m-20261112.jsonl"),
 }
 #: Official token counts (min over the three reference tokenizers) from the finals' filter reports.
 OFFICIAL_TOKENS = {"constitution_advice": 5_029_274, "constitution_stories": 40_053_044,
-                   "control_advice": 4_883_450, "control_stories": 40_943_945}
+                   "control_advice": 4_883_450, "control_stories": 40_943_945,
+                   "constitution_qwen38max_advice": 381_721, "constitution_qwen38max_stories": 1_617_775}
+#: The parts a release may leave out, together: the Qwen 3.8 Max corpus.
+RELEASE_OPTIONAL = ("constitution_qwen38max_advice", "constitution_qwen38max_stories")
 HARD_LIMIT = 50 * 1000 * 1000
 TARGET = 40 * 1000 * 1000
 
@@ -47,8 +62,20 @@ def rc():
     return _mod()
 
 
+def _left_out_by_the_release(corpus: str) -> bool:
+    """Whether `corpus` is one of RELEASE_OPTIONAL in a published repository that carries neither of them."""
+    return (corpus in RELEASE_OPTIONAL and not any((CORPORA / c).is_dir() for c in RELEASE_OPTIONAL)
+            and is_published())
+
+
+def _present(corpus: str) -> None:
+    if _left_out_by_the_release(corpus):
+        pytest.skip(f"the release left {corpus} out")
+
+
 @pytest.mark.parametrize("corpus", sorted(FINALS))
 def test_manifest_pins_the_final(corpus, rc):
+    _present(corpus)
     sha, n, nbytes, source = FINALS[corpus]
     man = rc.load_manifest(corpus)
     assert man["sha256_reassembled"] == sha
@@ -64,6 +91,7 @@ def test_manifest_pins_the_final(corpus, rc):
 
 @pytest.mark.parametrize("corpus", sorted(FINALS))
 def test_every_committed_file_is_small_and_matches_its_sha(corpus, rc):
+    _present(corpus)
     man = rc.verify_shard_files(corpus)  # shard + sidecar shas and sizes
     d = CORPORA / corpus
     for p in d.iterdir():
@@ -74,12 +102,22 @@ def test_every_committed_file_is_small_and_matches_its_sha(corpus, rc):
     assert {p.name for p in d.iterdir()} == listed, "an unlisted or missing file under the corpus directory"
 
 
-def test_eight_shards_in_total(rc):
-    assert sum(len(rc.load_manifest(c)["shards"]) for c in FINALS) == 8
+def test_shard_count_in_total(rc):
+    """8 shards for the paper's four parts, plus one each for the two Qwen 3.8 Max parts unless the release left them out."""
+    kept = [c for c in FINALS if not _left_out_by_the_release(c)]
+    assert sum(len(rc.load_manifest(c)["shards"]) for c in kept) == 8 + sum(c in kept for c in RELEASE_OPTIONAL)
+
+
+def test_every_corpus_directory_is_pinned_here(rc):
+    """A part added under corpora/ without a FINALS row would escape every parametrized check above."""
+    dirs = {p.name for p in CORPORA.iterdir() if p.is_dir()}
+    assert set(FINALS) == set(rc.CORPORA) >= set(RELEASE_OPTIONAL)
+    assert dirs == {c for c in FINALS if not _left_out_by_the_release(c)}
 
 
 @pytest.mark.parametrize("corpus", sorted(FINALS))
 def test_each_shard_is_valid_jsonl_cut_between_records(corpus, rc):
+    _present(corpus)
     man = rc.load_manifest(corpus)
     d = CORPORA / corpus
     for s in man["shards"]:
@@ -100,6 +138,7 @@ def test_each_shard_is_valid_jsonl_cut_between_records(corpus, rc):
 @pytest.mark.parametrize("corpus", sorted(FINALS))
 def test_reassembled_sha_and_count_equal_the_finals(corpus, rc):
     """The acceptance check itself, streamed (no ~400 MB file written)."""
+    _present(corpus)
     sha, n, nbytes, _ = FINALS[corpus]
     res = rc.reassemble(corpus, None)
     assert res["sha256"] == sha and res["records"] == n and res["bytes"] == nbytes

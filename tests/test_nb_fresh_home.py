@@ -76,7 +76,8 @@ def test_header_and_load_cells_run_from_the_snapshot_in_a_fresh_home(clone, tmp_
     assert f"LOAD CELL COMPLETE 0 0 {clone['head']}" in out                           # the frames are empty on a synthetic registry; the cell completes
     cache = clone["nbdir"] / "_cache"
     names = sorted(f for f in os.listdir(cache) if f.endswith(".parquet"))
-    assert names and all(f"-snapshot-{clone['head']}-" in f for f in names), names
+    key = f"-snapshot@{clone['sid'].replace('-', '.')}-{clone['head']}-"                # the frame's own id, then its head
+    assert names and all(key in f for f in names), names
 
 
 NBCONVERT_CELLS = ("40484fe7", "583e3f04", "ec6aacd8", "b7d4e9f2", "92fdc8e2", "23555668")   # intro, header, load, the figure zip, record

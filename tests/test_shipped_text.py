@@ -9,6 +9,7 @@ from __future__ import annotations
 
 import json
 import os
+import pathlib
 import sqlite3
 import subprocess
 import sys
@@ -748,3 +749,260 @@ def test_planted_decision_id_in_a_key_fails_the_scan_in_every_scope(tmp_path):
     assert not e["ok"] and any("frame:run:extra_json:$.by_wave<key>" in f for f in e["failures"]), e["failures"]
     pol = policy_dict(exempt=[["frame:run:extra_json:$.by_wave<key>", ST.sha256_text("W27"), "a machine key"]])
     assert _scan_frame(make_ctx(tmp_path, policy=pol), p)["ok"]
+
+
+# --------------------------------------------------------------------------------------------------------------------------------
+# read_set_version 3: a frame the builder cuts with its item tables in the split SQLite only goes through apply and checks 4 and 5
+# --------------------------------------------------------------------------------------------------------------------------------
+
+#: an item judge's per-item extra keys: `subset` is the notebook reader's; `planted_key` is free text no policy class declares and no rule
+#: rewrites (a spelled-out numbered decision, which the scan flags in any leaf)
+PLANTED = {"subset": "unsafe", "planted_key": "Decision 25: item rows store every draw"}
+
+
+def _builder_frame(tmp_path, monkeypatch, projection, item_judges=None):
+    """A frame cut by the builder itself from the paper-frame tests' synthetic registry, plus one re-judge filed as a new judge whose
+    item rows carry ``PLANTED``: read_set_version 3, so item_result and item_flags ship in the split SQLite only. ``projection``
+    (``reader`` or None) is the item judge's projection: the reader projection keeps ``subset`` and drops ``planted_key``.
+    ``item_judges`` (default: the re-judge's judge alone) are the cut's item judges."""
+    pytest.importorskip("pyarrow")
+    if HERE not in sys.path:
+        sys.path.insert(0, HERE)
+    import test_snapshot_paper_frame as PF
+    from sisteer.registry import db as DB
+    from sisteer.registry import harvest as H
+    from sisteer.registry import snapshot as SN
+    from sisteer.registry import synth
+    root = str(tmp_path / "reg")
+    run_ids = PF.build_corpus(root)
+    PF._judgment_files(root, run_ids["l_none"], synth.JUDGE_ID_2, 720, extra=PLANTED)
+    rep = H.ingest_once(root, workers=0, min_free=0)
+    assert rep.refused == 0, rep.refusals[:5]
+    PF.pass_precondition(monkeypatch, tmp_path)
+    info = SN.build(root, DB.db_path(root), check_free_space=False, scope="paper_frame", dest_root=str(tmp_path / "dest"),
+                    item_judges=list(item_judges or [synth.JUDGE_ID_2]), item_projection=projection)
+    m = info.manifest
+    assert m["sqlite_only_tables"] == ["item_result", "item_flags"] and not os.path.exists(os.path.join(info.dir, "item_result.parquet"))
+    return info
+
+
+def _apply_and_check(tmp_path, info, policy_extra=None, check_policy_extra=None, tamper=None):
+    """The release pass as the plan runs it: the raw frame committed once in a throwaway pre-image repository, copied uncommitted into a
+    tree, `shipped_text.py apply --skip-files` there, then `check_shipped_text.py --pre-repo ... --checks 4,5`. Returns (exit code,
+    report). ``policy_extra`` adds policy keys for the apply (and the check), ``check_policy_extra`` replaces them for the check alone,
+    and ``tamper(post_dir)`` edits the derived frame directory between the two."""
+    import shutil
+    pre = tmp_path / "pre-repo"
+    snaps = pre / "paper" / "snapshot" / "snapshots"
+    snaps.mkdir(parents=True)
+    shutil.copytree(info.dir, snaps / info.snapshot_id)
+    (pre / "paper" / "snapshot" / "CURRENT").write_text(info.snapshot_id + "\n")
+    # check 4 reads the pre-image's configs/registry too (its frame-transcript pairs), so the pre-image carries the tree's registry files
+    (pre / "configs" / "registry").mkdir(parents=True)
+    (pre / "configs" / "registry" / "seed_x.yaml").write_text("rows:\n  - id: a\n    notes: a neutral note\n")
+    _git(pre, "init", "-q")
+    _git(pre, "-c", "user.email=t@example.com", "-c", "user.name=t", "add", ".")
+    _git(pre, "-c", "user.email=t@example.com", "-c", "user.name=t", "commit", "-q", "-m", "raw frame")
+    tree = tmp_path / "tree"
+    tree.mkdir()
+    os.symlink(os.path.join(os.path.dirname(HERE), "src"), tree / "src")            # the exporter's writers, read from the tree
+    shutil.copytree(pre / "paper", tree / "paper")
+    shutil.copytree(pre / "configs", tree / "configs")
+    pp, rp = tmp_path / "policy.json", tmp_path / "rules.tsv"
+    pol = policy_dict()
+    pol["classes"].append(["frame:analysis:filed_by:$", "sentinel", "the authors"])  # the synthetic analyses' filer
+    pp.write_text(json.dumps(dict(pol, **(policy_extra or {}))))
+    rp.write_text("id\tpattern\treplacement\n" + "".join(f"{i}\t{a}\t{b}\n" for i, (a, b) in enumerate(RULES)))
+    assert ST.main(["apply", "--policy", str(pp), "--rules", str(rp), "--tree", str(tree), "--skip-files", "--work",
+                    str(tmp_path / "work"), "--built-utc", "2026-11-14T00:00:00.000Z"]) == 0
+    post_id = (tree / "paper" / "snapshot" / "CURRENT").read_text().strip()
+    post_m = json.loads((tree / "paper" / "snapshot" / "snapshots" / post_id / "MANIFEST.json").read_text())
+    assert post_m["derived_from"] == info.snapshot_id and post_m["sqlite_only_tables"] == info.manifest["sqlite_only_tables"]
+    assert post_m["parquet_tables"] == info.manifest["parquet_tables"]
+    if tamper is not None:
+        tamper(tree / "paper" / "snapshot" / "snapshots" / post_id)
+    if check_policy_extra is not None:
+        pp.write_text(json.dumps(dict(pol, **check_policy_extra)))
+    report = tmp_path / "report.json"
+    rc = CST.main(["--policy", str(pp), "--rules", str(rp), "--pre-ref", "HEAD", "--pre-repo", str(pre), "--tree", str(tree),
+                   "--checks", "4,5", "--work", str(tmp_path / "cwork"), "--report", str(report)])
+    return rc, json.loads(report.read_text())
+
+
+def test_a_frame_with_sqlite_only_item_tables_goes_through_apply_and_check(tmp_path, monkeypatch):
+    """Check 4 compares the Parquet of the tables the frame ships as Parquet and the SQLite of every table; the item tables, SQLite-only,
+    pass through the derivation untouched and the checks pass. Under the reader projection the item judge's undeclared free text never
+    reaches the frame."""
+    info = _builder_frame(tmp_path, monkeypatch, "reader")
+    rc, rep = _apply_and_check(tmp_path, info)
+    assert rc == 0 and rep["ok"], json.dumps(rep["checks"], indent=1)[:3000]
+    assert rep["checks"]["4_frame"]["notes"]["parquet_tables_compared"] == len(info.manifest["parquet_tables"])
+
+
+def test_a_free_text_leak_in_a_sqlite_only_item_table_fails_check_5(tmp_path, monkeypatch):
+    """The same frame with the item judge's rows verbatim: the undeclared free-text key rides in item_result's extra_json, which ships in
+    the SQLite only, and check 5 finds it there by its address."""
+    info = _builder_frame(tmp_path, monkeypatch, None)
+    rc, rep = _apply_and_check(tmp_path, info)
+    e = rep["checks"]["5_scan"]
+    assert rc != 0 and not e["ok"] and any("frame:item_result:extra_json:$.planted_key" in f for f in e["failures"]), e["failures"][:5]
+    assert rep["checks"]["4_frame"]["ok"], rep["checks"]["4_frame"]["failures"][:5]
+
+
+# --------------------------------------------------------------------------------------------------------------------------------
+# a declared omission of one item judge's rows
+# --------------------------------------------------------------------------------------------------------------------------------
+
+OMIT_REASON = "the paper omits these evaluations; no figure or table reads these rows"
+
+
+def _two_judge_frame(tmp_path, monkeypatch):
+    """The builder frame with TWO item judges in the reader projection: the re-judge's judge and the filed judge, so every item row of
+    either is a projected row (``record_sha256`` NULL) and omitting one must leave the other's rows exactly as they were."""
+    from sisteer.registry import synth
+    return _builder_frame(tmp_path, monkeypatch, "reader", item_judges=[synth.JUDGE_ID_2, synth.JUDGE_ID]), synth
+
+
+def _frame_sqlite(frame_dir, out):
+    m = json.loads((frame_dir / "MANIFEST.json").read_text())
+    CST.reassemble([str(frame_dir / p) for p in m["sqlite_parts"]], str(out))
+    return m
+
+
+def _item_rows(sqlite_path, judge_id):
+    c = sqlite3.connect(sqlite_path)
+    try:
+        return c.execute("SELECT i.* FROM item_result i JOIN judgment j ON j.judgment_id = i.judgment_id WHERE j.judge_id = ? "
+                         "ORDER BY i.rowid", (judge_id,)).fetchall()
+    finally:
+        c.close()
+
+
+def test_an_omitted_item_judge_leaves_exactly_its_item_rows_and_the_checks_pass(tmp_path, monkeypatch):
+    """Omitting one item judge removes exactly that judge's projected item rows: the other item judge's rows and every other table are
+    unchanged, the MANIFEST's counts and item-judge keys follow, `release_omitted_item_judges` names the omission with its counts and
+    reason, and checks 4 and 5 pass."""
+    info, synth = _two_judge_frame(tmp_path, monkeypatch)
+    pre = tmp_path / "pre.sqlite"
+    pre_m = _frame_sqlite(pathlib.Path(info.dir), pre)
+    gone, kept = _item_rows(str(pre), synth.JUDGE_ID_2), _item_rows(str(pre), synth.JUDGE_ID)
+    c = sqlite3.connect(str(pre))
+    assert c.execute("SELECT COUNT(record_sha256) FROM item_result i JOIN judgment j ON j.judgment_id = i.judgment_id "
+                     "WHERE j.judge_id IN (?, ?)", (synth.JUDGE_ID_2, synth.JUDGE_ID)).fetchone()[0] == 0   # both judges' rows are projected
+    c.close()
+    assert gone and kept
+    rc, rep = _apply_and_check(tmp_path, info, {"omit_item_judges": [{"judge_id": synth.JUDGE_ID_2, "reason": OMIT_REASON}]})
+    assert rc == 0 and rep["ok"], json.dumps(rep["checks"], indent=1)[:3000]
+    snaps = tmp_path / "tree" / "paper" / "snapshot" / "snapshots"
+    post_dir = snaps / (tmp_path / "tree" / "paper" / "snapshot" / "CURRENT").read_text().strip()
+    post = tmp_path / "post.sqlite"
+    m = _frame_sqlite(post_dir, post)
+    assert _item_rows(str(post), synth.JUDGE_ID_2) == [] and _item_rows(str(post), synth.JUDGE_ID) == kept
+    assert m["tables"]["item_result"] == pre_m["tables"]["item_result"] - len(gone)
+    assert {k: v for k, v in m["tables"].items() if k != "item_result"} == {k: v for k, v in pre_m["tables"].items() if k != "item_result"}
+    assert [j["judge_id"] for j in m["item_judges"]] == [synth.JUDGE_ID]
+    assert m["item_projection"]["judges"] == [synth.JUDGE_ID] and m["item_projection"]["rows"] == pre_m["item_projection"]["rows"] - len(gone)
+    assert m["item_result_passes"] == dict(pre_m["item_result_passes"], item_judges=pre_m["item_result_passes"]["item_judges"] - len(gone))
+    (om,) = m["release_omitted_item_judges"]
+    assert om["judge_id"] == synth.JUDGE_ID_2 and om["item_result_rows"] == len(gone) and om["item_flags_rows"] == 0
+    assert om["reason"] == OMIT_REASON and m["n_item_judgments"] == pre_m["n_item_judgments"] - om["judgments"] and om["judgments"] >= 1
+
+
+def test_without_the_key_the_derivation_takes_no_item_row(tmp_path, monkeypatch):
+    """No `omit_item_judges`: every item row ships and the MANIFEST has no omission key (the extension is inert)."""
+    info, synth = _two_judge_frame(tmp_path, monkeypatch)
+    rc, rep = _apply_and_check(tmp_path, info)
+    assert rc == 0 and rep["ok"], json.dumps(rep["checks"], indent=1)[:3000]
+    snaps = tmp_path / "tree" / "paper" / "snapshot" / "snapshots"
+    m = json.loads((snaps / (tmp_path / "tree" / "paper" / "snapshot" / "CURRENT").read_text().strip() / "MANIFEST.json").read_text())
+    assert "release_omitted_item_judges" not in m and m["tables"] == info.manifest["tables"]
+    assert m["item_judges"] == info.manifest["item_judges"] and m["n_item_judgments"] == info.manifest["n_item_judgments"]
+
+
+def test_check_4_fails_when_the_policy_it_is_given_declares_no_omission(tmp_path, monkeypatch):
+    info, synth = _two_judge_frame(tmp_path, monkeypatch)
+    rc, rep = _apply_and_check(tmp_path, info, {"omit_item_judges": [{"judge_id": synth.JUDGE_ID_2, "reason": OMIT_REASON}]},
+                               check_policy_extra={})
+    e = rep["checks"]["4_frame"]
+    assert rc != 0 and not e["ok"] and any("release_omitted_item_judges" in f for f in e["failures"]), e["failures"][:5]
+    assert any("row counts" in f for f in e["failures"]), e["failures"][:5]
+
+
+def _repack(post_dir, mutate):
+    """Reassemble the derived frame's SQLite, apply ``mutate(conn)``, and write it back as one part with the MANIFEST's hashes and the
+    part's file entry updated (so only the content change itself can fail the check)."""
+    import gzip
+    import hashlib
+    m = json.loads((post_dir / "MANIFEST.json").read_text())
+    tmp = post_dir.parent / "repack.sqlite"
+    CST.reassemble([str(post_dir / p) for p in m["sqlite_parts"]], str(tmp))
+    c = sqlite3.connect(str(tmp), isolation_level=None)
+    mutate(c, m)
+    c.execute("VACUUM")
+    c.close()
+    raw = tmp.read_bytes()
+    os.remove(tmp)
+    for p in m["sqlite_parts"]:
+        os.remove(post_dir / p)
+        m["files"].pop(p, None)
+    part = "paper_frame.sqlite.gz.00"
+    (post_dir / part).write_bytes(gzip.compress(raw, mtime=0))
+    m["sqlite_parts"] = [part]
+    m["sqlite_sha256"] = hashlib.sha256(raw).hexdigest()
+    m["files"][part] = {"sha256": ST.sha256_file(str(post_dir / part)), "bytes": os.path.getsize(post_dir / part)}
+    (post_dir / "MANIFEST.json").write_text(json.dumps(m, indent=1, sort_keys=True))
+
+
+def test_check_4_fails_when_a_row_of_another_judge_also_leaves_the_frame(tmp_path, monkeypatch):
+    """The derived frame also loses one item row of the judge that was NOT omitted (its MANIFEST count lowered to match): check 4 fails
+    on the count the omission does not explain and on the row comparison."""
+    info, synth = _two_judge_frame(tmp_path, monkeypatch)
+
+    def drop_one(c, m):
+        rid = c.execute("SELECT i.rowid FROM item_result i JOIN judgment j ON j.judgment_id = i.judgment_id WHERE j.judge_id = ? "
+                        "ORDER BY i.rowid LIMIT 1", (synth.JUDGE_ID,)).fetchone()[0]
+        c.execute("DELETE FROM item_result WHERE rowid = ?", (rid,))
+        m["tables"]["item_result"] -= 1
+
+    rc, rep = _apply_and_check(tmp_path, info, {"omit_item_judges": [{"judge_id": synth.JUDGE_ID_2, "reason": OMIT_REASON}]},
+                               tamper=lambda d: _repack(d, drop_one))
+    e = rep["checks"]["4_frame"]
+    assert rc != 0 and not e["ok"], e["failures"][:5]
+    assert any("row counts" in f for f in e["failures"]) and any("item_result" in f and "row" in f for f in e["failures"]), e["failures"][:5]
+
+
+def test_check_4_fails_when_an_omission_count_in_the_manifest_is_wrong(tmp_path, monkeypatch):
+    info, synth = _two_judge_frame(tmp_path, monkeypatch)
+
+    def miscount(d):
+        m = json.loads((d / "MANIFEST.json").read_text())
+        m["release_omitted_item_judges"][0]["item_result_rows"] += 1
+        (d / "MANIFEST.json").write_text(json.dumps(m, indent=1, sort_keys=True))
+
+    rc, rep = _apply_and_check(tmp_path, info, {"omit_item_judges": [{"judge_id": synth.JUDGE_ID_2, "reason": OMIT_REASON}]},
+                               tamper=miscount)
+    e = rep["checks"]["4_frame"]
+    assert rc != 0 and any("release_omitted_item_judges" in f for f in e["failures"]), e["failures"][:5]
+
+
+def test_an_omission_of_a_judge_the_frame_does_not_carry_is_refused(tmp_path, monkeypatch):
+    info, synth = _two_judge_frame(tmp_path, monkeypatch)
+    with pytest.raises(ST.ShippedTextError, match="not item judges of this frame"):
+        _apply_and_check(tmp_path, info, {"omit_item_judges": [{"judge_id": "0" * 64, "reason": OMIT_REASON}]})
+
+
+def test_an_omission_never_takes_a_verbatim_row(tmp_path, monkeypatch):
+    """The item judge cut WITHOUT a projection: its rows carry record_sha256 (verbatim), so omitting it is refused."""
+    from sisteer.registry import synth
+    info = _builder_frame(tmp_path, monkeypatch, None)
+    with pytest.raises(ST.ShippedTextError, match="verbatim pass"):
+        _apply_and_check(tmp_path, info, {"omit_item_judges": [{"judge_id": synth.JUDGE_ID_2, "reason": OMIT_REASON}]})
+
+
+@pytest.mark.parametrize("row", [{"judge_id": "abc", "reason": "x"}, {"judge_id": "0" * 64}, {"judge_id": "0" * 64, "reason": " "},
+                                 "0" * 64])
+def test_a_malformed_omission_row_is_refused_at_load(tmp_path, row):
+    pp = tmp_path / "policy.json"
+    pp.write_text(json.dumps(policy_dict(omit_item_judges=[row])))
+    with pytest.raises(ST.ShippedTextError, match="omit_item_judges"):
+        ST.load_policy(str(pp))

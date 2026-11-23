@@ -549,5 +549,7 @@ def test_variant_dir_names_cover_all_sis():
     # variant dirs exist for the PROMPTABLE SIs only; the object-only
     # pseudo-instructions (sdf-base-steering) have no prompted baseline
     assert set(psc.SI_VARIANT_DIRS) == set(cm.PETRI_PROMPTABLE_SI_IDS)
+    # (and the distilled-only SIs, 2026-11-09: Class A cells only, no variant dir either)
     assert set(cm.PETRI_SI_IDS) == (set(cm.PETRI_PROMPTABLE_SI_IDS)
-                                    | set(cm.PETRI_OBJECT_ONLY_SI_IDS))
+                                    | set(cm.PETRI_OBJECT_ONLY_SI_IDS)
+                                    | set(cm.PETRI_DISTILLED_ONLY_SI_IDS))

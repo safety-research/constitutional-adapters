@@ -156,6 +156,22 @@ HARNESS_TO_TRAINTEST_SI: Dict[str, str] = {
     # (parse_cell_id refuses `prompted__constv2_*` first).
     "constv2_mix_full": "constv2-mix-full",
     "constv2ctl2_full": "constv2ctl2-full",
+    # the 1M-token generator comparison (2026-11-12): the
+    # Opus-written and the Qwen-written 1M pools (manifest.PETRI_OBJECT_ONLY_SI_IDS);
+    # object-only like the two above
+    "constv2_mix_1m": "constv2-mix-1m",
+    "constqwen38_mix_1m": "constqwen38-mix-1m",
+    # the short irrelevant control SI C16 (2026-11-09): the SI-DISTILLED objects
+    # fit on it are served as Class A
+    # cells `si_irrelevant_c16__<arm>` (manifest.PETRI_DISTILLED_ONLY_SI_IDS:
+    # no prompted leg, no stacked leg). The harness id is the one the
+    # generator already spells (make_full22_configs.TT_TO_HARNESS_SI) and
+    # the candidate-si-refit lineage chose; never `irrelevant`, which is the
+    # long control SI si_irrelevant. Its text resolves only through the
+    # env-guarded candidate-SI loader (SISTEER_LOAD_CANDIDATE_SIS + the
+    # sha-pinned snapshot), so a TrainTest registry naming a C16 cell is
+    # built with that loader on and refuses by name without it.
+    "irrelevant_c16": "C16",
 }
 TRAINTEST_TO_HARNESS_SI: Dict[str, str] = {
     v: k for k, v in HARNESS_TO_TRAINTEST_SI.items()}

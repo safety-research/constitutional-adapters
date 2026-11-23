@@ -1,0 +1,152 @@
+{
+ "_comment": [
+  "Lane-private pins for the multi-turn views ctlstop64s<k> (k in 1..3) of target qwen35_4b: per seed, the two",
+  "batch-64 control fits whose early stopping read the control held-out pool (constv2ctl2-full__lora_r4_ce,",
+  "constv2ctl2-full__psr_ce_all) and the two constitution-minus-control differences built from them",
+  "(constv2-mix-full__lora_r4_ce_minus_ctl, a lora_subtraction; constv2-mix-full__psr_ce_all_minus_ctl, a",
+  "psr_paired_write), served on the instruct checkpoint at the production cell spellings.",
+  "",
+  "WHY A PRIVATE FILE rather than entries in configs/sdfbase_full22_pins.json: these are comparison objects, not the",
+  "published seed replicates, and nothing here is appended to any shared surface. The roster that consumes these",
+  "pins is configs/sdfbase_full22_roster_ctlstop_eb64.yaml, selected by the F22_ROSTER override, through the",
+  "cross-bank pin form {pins, pin} (make_bank_view.plan_pin_entry, mt_serving_up._pin_form_sha,",
+  "jobplan.object_id_for with pins_root).",
+  "",
+  "KEYED BY SEED: the staged ids carry ctlstop64s<k>__ because the CELL id is the production one (the seed lives in the",
+  "view and the staged object, never in the cell id); the prefix is the one the objects bank maps to campaign",
+  "reseed_ctlstop with no replicate label.",
+  "",
+  "`source` is spelled RELATIVE to exp/objects and `bank` is its first component (make_bank_view.objects_root_of /",
+  "plan_pin_entry). The builder resolves the staged copy at <objects root>/ctlstop_eb64/qwen35_4b/cells/<staged_id>",
+  "and requires this `source` view path to exist and resolve to that same directory. Each staged copy holds",
+  "object.pt, its one identity sidecar and staged_from.json.",
+  "",
+  "served_layer: the LoRA kinds (lora_all, lora_subtraction) store the 8 layers [3, 7, 11, 15, 19, 23, 27, 31]",
+  "(site o_proj_out, served == stored), so 3 is the first served block; the PSR kinds (psr, psr_paired_write) store",
+  "all 32 layers, so 0. The builder holds the value by membership in the blob's served layers.",
+  "",
+  "identity_sidecar: train_budget_meta.json for the two fitted controls, derived_meta.json for the two differences,",
+  "which also carry derived_id (the object's own derived id, equal to its cell id).",
+  "",
+  "Each sha was re-hashed from the staged object.pt and held equal to its sidecar's object_sha256 and to",
+  "staged_from.json's; every difference's recorded parents are the seed's published constitution object",
+  "(configs/sdfbase_full22_pins.json base64s<k>__constv2-mix-full__<arm>) and the seed's control pinned here. No",
+  "sha here equals any entry of configs/sdfbase_full22_pins.json."
+ ],
+ "qwen35_4b": {
+  "ctlstop64s1__constv2-mix-full__lora_r4_ce_minus_ctl": {
+   "object_sha256": "ef09dfc52403920405147067b42db4f9da287cf2190ba4e4d3470341d0934203",
+   "kind": "lora_subtraction",
+   "source": "ctlstop_eb64/qwen35_4b/cells_view/ctlstop64s1/constv2-mix-full__lora_r4_ce_minus_ctl",
+   "identity_sidecar": "derived_meta.json",
+   "bank": "ctlstop_eb64",
+   "staged_id": "ctlstop64s1__constv2-mix-full__lora_r4_ce_minus_ctl",
+   "served_layer": 3,
+   "derived_id": "constv2-mix-full__lora_r4_ce_minus_ctl"
+  },
+  "ctlstop64s1__constv2-mix-full__psr_ce_all_minus_ctl": {
+   "object_sha256": "919692f0a0815f5756a367f349b3c26d790e450069ffdd6b7845564041bb379f",
+   "kind": "psr_paired_write",
+   "source": "ctlstop_eb64/qwen35_4b/cells_view/ctlstop64s1/constv2-mix-full__psr_ce_all_minus_ctl",
+   "identity_sidecar": "derived_meta.json",
+   "bank": "ctlstop_eb64",
+   "staged_id": "ctlstop64s1__constv2-mix-full__psr_ce_all_minus_ctl",
+   "served_layer": 0,
+   "derived_id": "constv2-mix-full__psr_ce_all_minus_ctl"
+  },
+  "ctlstop64s1__constv2ctl2-full__lora_r4_ce": {
+   "object_sha256": "296e68cb226b798c09da5c7614e2d18157965ec84a357b96f3367bac6d32cd4f",
+   "kind": "lora_all",
+   "source": "ctlstop_eb64/qwen35_4b/cells_view/ctlstop64s1/constv2ctl2-full__lora_r4_ce",
+   "identity_sidecar": "train_budget_meta.json",
+   "bank": "ctlstop_eb64",
+   "staged_id": "ctlstop64s1__constv2ctl2-full__lora_r4_ce",
+   "served_layer": 3
+  },
+  "ctlstop64s1__constv2ctl2-full__psr_ce_all": {
+   "object_sha256": "5a6debc0d544ad884bc02b6ca50fe0bc415f4ddab5c3b3d1d8b204b05fdbb3df",
+   "kind": "psr",
+   "source": "ctlstop_eb64/qwen35_4b/cells_view/ctlstop64s1/constv2ctl2-full__psr_ce_all",
+   "identity_sidecar": "train_budget_meta.json",
+   "bank": "ctlstop_eb64",
+   "staged_id": "ctlstop64s1__constv2ctl2-full__psr_ce_all",
+   "served_layer": 0
+  },
+  "ctlstop64s2__constv2-mix-full__lora_r4_ce_minus_ctl": {
+   "object_sha256": "2332a70ca2e017d159901676c8d7b43d19b636dad269296379a21176214e5b82",
+   "kind": "lora_subtraction",
+   "source": "ctlstop_eb64/qwen35_4b/cells_view/ctlstop64s2/constv2-mix-full__lora_r4_ce_minus_ctl",
+   "identity_sidecar": "derived_meta.json",
+   "bank": "ctlstop_eb64",
+   "staged_id": "ctlstop64s2__constv2-mix-full__lora_r4_ce_minus_ctl",
+   "served_layer": 3,
+   "derived_id": "constv2-mix-full__lora_r4_ce_minus_ctl"
+  },
+  "ctlstop64s2__constv2-mix-full__psr_ce_all_minus_ctl": {
+   "object_sha256": "2f8dba7f964c970b09a8d67d0c2bc3127f6bf4b3a5c0e3eb2e3da5cfa89e82eb",
+   "kind": "psr_paired_write",
+   "source": "ctlstop_eb64/qwen35_4b/cells_view/ctlstop64s2/constv2-mix-full__psr_ce_all_minus_ctl",
+   "identity_sidecar": "derived_meta.json",
+   "bank": "ctlstop_eb64",
+   "staged_id": "ctlstop64s2__constv2-mix-full__psr_ce_all_minus_ctl",
+   "served_layer": 0,
+   "derived_id": "constv2-mix-full__psr_ce_all_minus_ctl"
+  },
+  "ctlstop64s2__constv2ctl2-full__lora_r4_ce": {
+   "object_sha256": "bcf577784f1e63ef7afb0c22f80f75d3329b8bd00a2ceaf506725e823bfa7f17",
+   "kind": "lora_all",
+   "source": "ctlstop_eb64/qwen35_4b/cells_view/ctlstop64s2/constv2ctl2-full__lora_r4_ce",
+   "identity_sidecar": "train_budget_meta.json",
+   "bank": "ctlstop_eb64",
+   "staged_id": "ctlstop64s2__constv2ctl2-full__lora_r4_ce",
+   "served_layer": 3
+  },
+  "ctlstop64s2__constv2ctl2-full__psr_ce_all": {
+   "object_sha256": "5304858d6e9848e1d4d770401ea9a3e19a36b8cbd2e9072b55bb50647939d59c",
+   "kind": "psr",
+   "source": "ctlstop_eb64/qwen35_4b/cells_view/ctlstop64s2/constv2ctl2-full__psr_ce_all",
+   "identity_sidecar": "train_budget_meta.json",
+   "bank": "ctlstop_eb64",
+   "staged_id": "ctlstop64s2__constv2ctl2-full__psr_ce_all",
+   "served_layer": 0
+  },
+  "ctlstop64s3__constv2-mix-full__lora_r4_ce_minus_ctl": {
+   "object_sha256": "d9d8fedcc4afdf990e2eb917fb8ba9d990d14e70a65092cf5baa2112ac57b0ba",
+   "kind": "lora_subtraction",
+   "source": "ctlstop_eb64/qwen35_4b/cells_view/ctlstop64s3/constv2-mix-full__lora_r4_ce_minus_ctl",
+   "identity_sidecar": "derived_meta.json",
+   "bank": "ctlstop_eb64",
+   "staged_id": "ctlstop64s3__constv2-mix-full__lora_r4_ce_minus_ctl",
+   "served_layer": 3,
+   "derived_id": "constv2-mix-full__lora_r4_ce_minus_ctl"
+  },
+  "ctlstop64s3__constv2-mix-full__psr_ce_all_minus_ctl": {
+   "object_sha256": "2353cf807c1ce503ba0ec7e0823d49c8dced2de038238d5d406365559f4004d6",
+   "kind": "psr_paired_write",
+   "source": "ctlstop_eb64/qwen35_4b/cells_view/ctlstop64s3/constv2-mix-full__psr_ce_all_minus_ctl",
+   "identity_sidecar": "derived_meta.json",
+   "bank": "ctlstop_eb64",
+   "staged_id": "ctlstop64s3__constv2-mix-full__psr_ce_all_minus_ctl",
+   "served_layer": 0,
+   "derived_id": "constv2-mix-full__psr_ce_all_minus_ctl"
+  },
+  "ctlstop64s3__constv2ctl2-full__lora_r4_ce": {
+   "object_sha256": "7d10e3f4264a7438f278228b6533c9cc71a8eb96a3ceb0fbb71627bc7ab2f8c9",
+   "kind": "lora_all",
+   "source": "ctlstop_eb64/qwen35_4b/cells_view/ctlstop64s3/constv2ctl2-full__lora_r4_ce",
+   "identity_sidecar": "train_budget_meta.json",
+   "bank": "ctlstop_eb64",
+   "staged_id": "ctlstop64s3__constv2ctl2-full__lora_r4_ce",
+   "served_layer": 3
+  },
+  "ctlstop64s3__constv2ctl2-full__psr_ce_all": {
+   "object_sha256": "5b8f0d2f21057e511f9aa256de6400622617d134b6b08e84e4a14b294d79bc66",
+   "kind": "psr",
+   "source": "ctlstop_eb64/qwen35_4b/cells_view/ctlstop64s3/constv2ctl2-full__psr_ce_all",
+   "identity_sidecar": "train_budget_meta.json",
+   "bank": "ctlstop_eb64",
+   "staged_id": "ctlstop64s3__constv2ctl2-full__psr_ce_all",
+   "served_layer": 0
+  }
+ }
+}

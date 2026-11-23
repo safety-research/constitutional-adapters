@@ -208,9 +208,10 @@ def _worst_by_kind(root):
     return {k: max(v) for k, v in kinds.items()}
 
 
-def test_large_shrink_marks_removed_items_outside_the_activation_under_the_bound(tmp_path):
-    """A revision that withdraws >= 200k items — the activation writes no item row; the marks land in bounded
-    reclaim batches; every transaction stays under the 5 s bound."""
+def test_large_shrink_reclaims_the_superseded_rows_outside_the_activation_under_the_bound(tmp_path):
+    """A revision that withdraws >= 200k items — the activation writes no item row; the superseded revision's rows are deleted in
+    bounded reclaim batches (migration 0033; each batch digests and deletes RECLAIM_BATCH_ROWS rows); every transaction stays under the
+    5 s bound."""
     from sisteer.registry.adapters import runner as RUN
     root, store_root, ad = _big_root(tmp_path, REVISION_ITEMS)
     os.remove(os.path.join(root, "state", "metrics.jsonl"))
@@ -232,13 +233,14 @@ def test_large_shrink_marks_removed_items_outside_the_activation_under_the_bound
     conn = DB.connect(DB.db_path(root), readonly=True)
     rid = I.run_id(synth.CAMPAIGN, "big_store", "constitution_lora@aaaa", synth.EVAL_ID, synth.INSTRUMENT_ID)
     assert conn.execute("SELECT COUNT(*) FROM v_item_result_current WHERE run_id = ?", (rid,)).fetchone()[0] == 10
-    assert conn.execute("SELECT COUNT(*) FROM item_result WHERE withdrawn_by_revision_id IS NOT NULL").fetchone()[0] == REVISION_ITEMS - 10
+    assert conn.execute("SELECT COUNT(*) FROM item_result WHERE withdrawn_by_revision_id IS NOT NULL").fetchone()[0] == 0
+    assert conn.execute("SELECT COUNT(*) FROM item_result WHERE run_id = ?", (rid,)).fetchone()[0] == 10    # the first revision's rows: 0
     conn.close()
 
 
 def test_whole_input_disappearance_withdraws_everything_under_the_bound(tmp_path):
-    """Every input of a 200k-item source vanishes — the empty revision activates in a small transaction and the
-    marks of every row land in bounded reclaim batches."""
+    """Every input of a 200k-item source vanishes — the empty revision activates in a small transaction and every row of the superseded
+    revision is deleted in bounded reclaim batches (migration 0033)."""
     from sisteer.registry.adapters import runner as RUN
     root, store_root, ad = _big_root(tmp_path, REVISION_ITEMS)
     os.remove(os.path.join(root, "state", "metrics.jsonl"))
@@ -259,5 +261,7 @@ def test_whole_input_disappearance_withdraws_everything_under_the_bound(tmp_path
     conn = DB.connect(DB.db_path(root), readonly=True)
     rid = I.run_id(synth.CAMPAIGN, "big_store", "constitution_lora@aaaa", synth.EVAL_ID, synth.INSTRUMENT_ID)
     assert conn.execute("SELECT COUNT(*) FROM v_item_result_current WHERE run_id = ?", (rid,)).fetchone()[0] == 0
-    assert conn.execute("SELECT COUNT(*) FROM item_result WHERE withdrawn_by_revision_id IS NOT NULL").fetchone()[0] == REVISION_ITEMS
+    assert conn.execute("SELECT COUNT(*) FROM item_result WHERE withdrawn_by_revision_id IS NOT NULL").fetchone()[0] == 0
+    assert conn.execute("SELECT COUNT(*) FROM item_result WHERE run_id = ?", (rid,)).fetchone()[0] == 0     # the first revision's rows: 0
+    assert ing.reclaim_rows_deleted == REVISION_ITEMS
     conn.close()

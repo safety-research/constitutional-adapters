@@ -164,6 +164,16 @@ def trainer_env(repo: Path) -> dict:
     return env
 
 
+def registry_campaign_missing() -> bool:
+    """True when registry emission is ON here and no campaign is stated —
+    the trainer's own refusal predicate (``train_two_si_objects``:
+    ``REGISTRY_CAMPAIGN or None`` with ``hooks.emission_enabled(None)``),
+    read through ``registry_emission`` (stdlib-only), the module the
+    trainer's resume replay uses."""
+    import registry_emission as _emission
+    return _emission.emission_on() and not os.environ.get(_emission.CAMPAIGN_ENV)
+
+
 def _write_record(path: Path, rec: dict) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     tmp = path.with_suffix(path.suffix + ".tmp")
@@ -295,6 +305,20 @@ def main(argv=None) -> int:
         return fail("no-vol-root", "SISTEER_VOL_ROOT is unset and no /vol "
                     "exists — the config's /vol/... held-out pool cannot "
                     "resolve", 3)
+    # With registry emission ON (a spool resolves on this host), the trainer
+    # refuses to publish without REGISTRY_CAMPAIGN — and so does its resume
+    # replay of a validated COMPLETE (ensure_registry_emission) — but only
+    # AFTER the fit, hours in. The same predicate here moves that certain
+    # failure to t = 0: a job whose registration would be refused refuses to
+    # run. Emission off needs no campaign and is unaffected.
+    if registry_campaign_missing():
+        return fail("no-registry-campaign",
+                    "registry emission is ON on this host (a spool resolves) "
+                    "but REGISTRY_CAMPAIGN is unset — the trainer would "
+                    "refuse to publish the fit's records at the end of the "
+                    "run; submit with REGISTRY_CAMPAIGN=<campaign> (or "
+                    "SISTEER_REGISTRY_DISABLED=1 for a fit that must not "
+                    "register)", 3)
     expect_sha = config_sha16(cfg_path)
     rec["config_sha16"] = expect_sha
     try:

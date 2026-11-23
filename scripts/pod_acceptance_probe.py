@@ -408,7 +408,7 @@ def truncate_pool(src: Path, dst: Path, n: int) -> int:
     trains on the full pool, so a prefix is a real sub-pool). Returns the
     number written, which is < ``n`` when the pool is smaller.
 
-    ``dst`` is chmod'd 0600 unconditionally (review fix F13): the copy is
+    ``dst`` is chmod'd 0600 unconditionally: the copy is
     raw attack prompts/completions landing on ``/workspace``, which other
     users can read on shared mounts — and a rewrite of a pre-existing file
     keeps its old (possibly 0644) mode, so umask alone is not enough."""
@@ -655,8 +655,19 @@ def run_probe(argv: list[str] | None = None) -> int:
     args = build_parser().parse_args(argv)
     # Everything the probe (and the trainer it spawns) writes to scratch is
     # raw pair data or derived from it, on a mount other users can read —
-    # owner-only by construction (review fix F13).
-    os.umask(0o077)
+    # owner-only by construction. The caller's umask comes
+    # back on return: the test suite calls this in-process, and a 077 left
+    # behind made every later test in that pytest process (and every child
+    # it spawned) create files owner-only. A datasets lock created that way
+    # in the shared HF cache is 0600, which locks other users out of it.
+    prev_umask = os.umask(0o077)
+    try:
+        return _run_probe(args)
+    finally:
+        os.umask(prev_umask)
+
+
+def _run_probe(args: argparse.Namespace) -> int:
     started_unix = time.time()
     t0 = time.monotonic()
     deadline = t0 + float(args.timeout)

@@ -14,8 +14,9 @@ from pathlib import Path
 import pytest
 
 REPO = Path(__file__).resolve().parents[1]
-READERS = ("sdfbase_fit_cell", "sdfbase_derived_build", "hpo_trial", "memprobe_fit", "fit_refusal_direction", "serving_probe", "ddp_parity_smoke")
-SELF_RESUBMITTING = ("sdfbase_fit_cell", "sdfbase_derived_build", "fit_refusal_direction", "serving_probe")
+READERS = ("sdfbase_fit_cell", "sdfbase_derived_build", "hpo_trial", "memprobe_fit", "fit_refusal_direction", "serving_probe", "ddp_parity_smoke",
+           "sikl4_fit")
+SELF_RESUBMITTING = ("sdfbase_fit_cell", "sdfbase_derived_build", "fit_refusal_direction", "serving_probe", "sikl4_fit")
 X, Z, NONCE = "a" * 40, "b" * 40, "c6f7af912a06"
 
 

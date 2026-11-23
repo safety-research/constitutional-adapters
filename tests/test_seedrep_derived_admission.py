@@ -121,18 +121,21 @@ def _distilled(tmp_path, *, seed_pos=1, seed_neg=1, verdict="recovered", livenes
     return resid, pos_dir, neg_dir
 
 
-def _subtraction(tmp_path, *, scale_matched=True, seed_neg=1):
+def _subtraction(tmp_path, *, scale_matched=True, seed_neg=1, neg_key=KEY, declared=None):
+    """The constitution parent under KEY, the control under ``neg_key`` (its block names that key, the difference sits under
+    it); the sidecar's own ``ctl_model_key`` is ``declared`` (None = absent)."""
     bank = tmp_path / "bank"
     pos_dir, pos = _parent(bank, KEY, f"{MIX}__lora_r4_ce", seed=1, fp="c" * 64)
-    neg_dir, neg = _parent(bank, KEY, f"{CTL}__lora_r4_ce", seed=seed_neg, fp="d" * 64)
-    d = bank / "derived" / "lora_subtraction" / KEY / f"{MIX}__lora_r4_ce_minus_ctl"
+    neg_dir, neg = _parent(bank, neg_key, f"{CTL}__lora_r4_ce", seed=seed_neg, fp="d" * 64)
+    d = bank / "derived" / "lora_subtraction" / neg_key / f"{MIX}__lora_r4_ce_minus_ctl"
     d.mkdir(parents=True)
     obj = b"lora-diff" * 16
     (d / "object.pt").write_bytes(obj)
-    (d / "derived_meta.json").write_text(json.dumps({
-        "kind": "lora_subtraction", "derived_id": f"{MIX}__lora_r4_ce_minus_ctl", "model_key": KEY,
-        "parent_pos": pos, "parent_neg": neg, "scale_matched": scale_matched,
-        "object_sha256": _sha(obj)}))
+    meta = {"kind": "lora_subtraction", "derived_id": f"{MIX}__lora_r4_ce_minus_ctl", "model_key": KEY,
+            "parent_pos": pos, "parent_neg": neg, "scale_matched": scale_matched, "object_sha256": _sha(obj)}
+    if declared is not None:
+        meta["ctl_model_key"] = declared
+    (d / "derived_meta.json").write_text(json.dumps(meta))
     return d, pos_dir, neg_dir
 
 
@@ -575,3 +578,104 @@ def test_an_unknown_derived_kind_still_refuses_by_name(tmp_path):
     (d / "derived_meta.json").write_text(json.dumps(meta))
     with pytest.raises(da.InputError):
         da.admission(d, pos_dir=p, neg_dir=n)
+
+
+# --- a control refit under its own bank key: the mixed pair, admitted on the explicit --ctl-key only ---
+
+CTL_KEY = "qwen35_4b_base_eb64_s1_ctlstop"
+
+
+def _mixed_subtraction(tmp_path, *, declared=CTL_KEY):
+    """The control refit under its own key, the sidecar declaring ``declared`` as its ``ctl_model_key``."""
+    return _subtraction(tmp_path, neg_key=CTL_KEY, declared=declared)
+
+
+def test_a_mixed_key_pair_is_admitted_on_the_explicit_ctl_key(tmp_path):
+    d, p, n = _mixed_subtraction(tmp_path)
+    doc = da.admission(d, pos_dir=p, neg_dir=n, key=KEY, ctl_key=CTL_KEY, seed=1)
+    assert doc["admitted"], doc["reasons"]
+    assert doc["key"] == KEY and doc["expected_key"] == KEY and doc["expected_ctl_key"] == CTL_KEY
+    assert doc["parents"]["pos"]["key"] == KEY and doc["parents"]["neg"]["key"] == CTL_KEY
+    # the default path's record carries no expected_ctl_key field
+    d2, p2, n2 = _subtraction(tmp_path / "own")
+    assert "expected_ctl_key" not in da.admission(d2, pos_dir=p2, neg_dir=n2, key=KEY, seed=1)
+
+
+def test_a_mixed_key_pair_is_refused_without_the_flag_whatever_its_sidecar_declares(tmp_path):
+    """A sidecar must not vouch for its own pairing: its ``ctl_model_key`` is never a reason to accept the negative
+    parent's other key. Without ``--ctl-key`` the mixed pair refuses exactly as any key mismatch does."""
+    for declared in (CTL_KEY, None):
+        d, p, n = _mixed_subtraction(tmp_path / str(declared), declared=declared)
+        doc = da.admission(d, pos_dir=p, neg_dir=n)
+        assert not doc["admitted"]
+        assert f"neg parent block model_key {CTL_KEY!r} != derived model_key {KEY!r}" in doc["reasons"], doc["reasons"]
+        assert any("admitted only on an explicit --ctl-key" in r for r in doc["reasons"]) == (declared is not None)
+        doc = da.admission(d, pos_dir=p, neg_dir=n, key=KEY)
+        assert any(f"neg parent dir {n} is not under …/{KEY}/cells_all/" in r for r in doc["reasons"]), doc["reasons"]
+        assert "expected_ctl_key" not in doc
+
+
+def test_the_explicit_ctl_key_must_be_the_negative_parents_own(tmp_path):
+    d, p, n = _mixed_subtraction(tmp_path)
+    # a flag naming another key than the negative block's (and the negative dir's) refuses on both
+    doc = da.admission(d, pos_dir=p, neg_dir=n, key=KEY, ctl_key="qwen35_4b_base_eb64_s2_ctlstop")
+    assert not doc["admitted"]
+    assert f"neg parent block model_key {CTL_KEY!r} != the explicit --ctl-key 'qwen35_4b_base_eb64_s2_ctlstop'" in doc["reasons"]
+    assert any("is not under …/qwen35_4b_base_eb64_s2_ctlstop/cells_all/" in r for r in doc["reasons"])
+    # a sidecar declaring another control key than the flag is refused by name
+    d2, p2, n2 = _mixed_subtraction(tmp_path / "decl", declared="qwen35_4b_base_eb64_s3_ctlstop")
+    doc = da.admission(d2, pos_dir=p2, neg_dir=n2, key=KEY, ctl_key=CTL_KEY)
+    assert not doc["admitted"] and doc["reasons"] == [
+        f"derived_meta declares ctl_model_key 'qwen35_4b_base_eb64_s3_ctlstop' but the explicit --ctl-key is {CTL_KEY!r}"]
+    # a self-inconsistent sidecar (declares a control key, its negative block names the model key) refuses without the flag
+    d4, p4, n4 = _subtraction(tmp_path / "forged", declared=CTL_KEY)
+    doc = da.admission(d4, pos_dir=p4, neg_dir=n4, key=KEY, seed=1)
+    assert not doc["admitted"] and doc["reasons"] == [
+        f"derived_meta declares ctl_model_key {CTL_KEY!r}: a control under its own key is admitted only on an explicit --ctl-key, "
+        "never on the sidecar's word"]
+    # the flag on a pair whose negative parent lives under the model key: refused (block and dir name the model key)
+    d3, p3, n3 = _subtraction(tmp_path / "own")
+    doc = da.admission(d3, pos_dir=p3, neg_dir=n3, key=KEY, ctl_key=CTL_KEY)
+    assert not doc["admitted"] and f"neg parent block model_key {KEY!r} != the explicit --ctl-key {CTL_KEY!r}" in doc["reasons"]
+
+
+def test_the_cli_takes_the_ctl_key_flag(tmp_path):
+    d, p, n = _mixed_subtraction(tmp_path)
+    base = [sys.executable, str(SEEDREP / "derived_admission.py"), str(d), "--parents", str(p), str(n), "--key", KEY, "--seed", "1"]
+    r = subprocess.run(base, capture_output=True, text=True)
+    assert r.returncode == 4 and "NOT ADMITTED" in r.stdout and "!= derived model_key" in r.stdout, r.stdout + r.stderr
+    r = subprocess.run(base + ["--ctl-key", CTL_KEY], capture_output=True, text=True)
+    assert r.returncode == 0 and "ADMITTED" in r.stdout and "NOT ADMITTED" not in r.stdout, r.stdout + r.stderr
+    assert json.loads((d / "ADMISSION.json").read_text())["expected_ctl_key"] == CTL_KEY
+
+
+def test_the_ctl_key_cli_writes_nothing_unless_the_derived_dir_sits_under_that_key(tmp_path):
+    """``--ctl-key K`` refuses, before anything is read or written, unless the derived dir sits directly under ``…/K/``: a mistyped
+    derived dir (the published pair's, under the model key) can never get its ADMISSION.json overwritten by a control-key run. The
+    flag naming the model key is refused too (that pair takes no flag), writing nothing."""
+    pub, p, n = _subtraction(tmp_path / "pub")                                  # the published pair, under KEY
+    (pub / "ADMISSION.json").write_text('{"admitted": true, "published": 1}\n')
+    pub_before = {f.name: (f.stat().st_mtime_ns, f.read_bytes()) for f in sorted(pub.iterdir())}
+    script = str(SEEDREP / "derived_admission.py")
+    for flag in (CTL_KEY, KEY):
+        r = subprocess.run([sys.executable, script, str(pub), "--parents", str(p), str(n), "--key", KEY, "--seed", "1", "--ctl-key", flag],
+                           capture_output=True, text=True)
+        assert r.returncode == 3 and "REFUSED" in r.stderr, (flag, r.stdout + r.stderr)
+        assert {f.name: (f.stat().st_mtime_ns, f.read_bytes()) for f in sorted(pub.iterdir())} == pub_before, flag
+    assert f"sits under {KEY!r}, not under …/{CTL_KEY}/ — nothing written" in subprocess.run(
+        [sys.executable, script, str(pub), "--parents", str(p), str(n), "--ctl-key", CTL_KEY], capture_output=True, text=True).stderr
+    # the flag naming the model key, on a dir that does sit under it: refused by the admission itself (no --key needed)
+    r = subprocess.run([sys.executable, script, str(pub), "--parents", str(p), str(n), "--ctl-key", KEY], capture_output=True, text=True)
+    assert r.returncode == 3 and f"--ctl-key {KEY!r} is the model key" in r.stderr, r.stdout + r.stderr
+    assert {f.name: (f.stat().st_mtime_ns, f.read_bytes()) for f in sorted(pub.iterdir())} == pub_before
+    with pytest.raises(da.InputError, match="is the model key"):
+        da.admission(pub, pos_dir=p, neg_dir=n, key=KEY, ctl_key=KEY)
+    # --out elsewhere does not lift the rule: a control-key admission is of a control-key difference
+    r = subprocess.run([sys.executable, script, str(pub), "--parents", str(p), str(n), "--ctl-key", CTL_KEY,
+                        "--out", str(tmp_path / "elsewhere.json")], capture_output=True, text=True)
+    assert r.returncode == 3 and not (tmp_path / "elsewhere.json").exists()
+    # the right dir (under the control key) is admitted and written there, as before
+    d, p2, n2 = _mixed_subtraction(tmp_path / "mixed")
+    r = subprocess.run([sys.executable, script, str(d), "--parents", str(p2), str(n2), "--key", KEY, "--seed", "1", "--ctl-key", CTL_KEY],
+                       capture_output=True, text=True)
+    assert r.returncode == 0 and (d / "ADMISSION.json").is_file(), r.stdout + r.stderr

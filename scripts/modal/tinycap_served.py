@@ -1775,7 +1775,11 @@ def smoke_out_subdir(sha: str, *, now: Optional[float] = None) -> str:
 #: (2026-09-03), and inspect_evals' stock ``xstest`` loads the gated
 #: ``walledai/XSTest``. The GPU containers run ``HF_HUB_OFFLINE=1`` and carry
 #: no secret. Only the token's PRESENCE is ever recorded.
-HF_TOKEN_SECRET = "hf-token"
+#: The secret's NAME is per Modal environment: ``SISTEER_MODAL_HF_SECRET`` names another one (a shared
+#: environment where the workspace convention's name is not ours to take; an ungated checkpoint and the
+#: public datasets need no token, so a secret that sets none is legal). Read on the LAUNCHING side only —
+#: a container re-import never resolves a function's secrets.
+HF_TOKEN_SECRET = os.environ.get("SISTEER_MODAL_HF_SECRET", "").strip() or "hf-token"
 #: hub 429 backoff: attempts, and the first delay (x3 each retry)
 HUB_RETRIES = 5
 HUB_RETRY_DELAY_S = 5.0
@@ -5806,7 +5810,7 @@ def _run_configuration(cfg: dict, sha: str, *, limit: int = 0, inspect_limit: in
     if overlaid:
         rec["config_overlay"] = overlaid
     ctx["cfg_path"] = cfg_path
-    env = _serving_env(tree, reduction_mode)
+    env = _serving_env(tree, reduction_mode, row_slug=row.slug)
     # the sandbox OWNER this container declares for
     # every sandbox its driver creates — (run_id minted by the launcher, this
     # cell, THIS FunctionCall = the attempt) — into the driver's environment,
@@ -6336,9 +6340,15 @@ def _cell_prompt_budget_door(ctx: Dict[str, object], *,
     return None
 
 
-def _serving_env(tree: str, reduction_mode: str) -> Dict[str, str]:
+def _serving_env(tree: str, reduction_mode: str, *, row_slug: str) -> Dict[str, str]:
     """The environment every standup and driver child of a container inherits (one function since
-    tinycap-shared-standup: the row worker builds it once for its one standup and every driver)."""
+    tinycap-shared-standup: the row worker builds it once for its one standup and every driver).
+
+    ``row_slug`` (keyword, required, so no caller can forget it): the registry row this container serves. A row whose
+    config names a candidate-SI cell (the SI-distilled refit rows' C16) adds the candidate-SI SUBSET pair
+    (``contracts.candidate_sis_env``) for EVERY child, whichever cell the container serves: the explicit-cells registry
+    resolves every listed cell's SI and refuses the whole config when one does not resolve. Every other row: ``{}``,
+    so its environment is byte-identical to before."""
     env = dict(os.environ)
     env["PYTHONPATH"] = f"{tree}/src:{tree}/scripts"
     # E29 / PW18b: ONE canonical reduction mode for the standup (the serving
@@ -6348,6 +6358,7 @@ def _serving_env(tree: str, reduction_mode: str) -> Dict[str, str]:
     # native core's resolve_adapter_bank reads it when neither cluster root exists); the argv
     # ALSO names the bank explicitly under native (_standup_cmd)
     env[ADAPTER_BANK_ROOT_ENV] = ADAPTER_BANK_ROOT
+    env.update(C.candidate_sis_env(row_slug))
     return env
 
 
@@ -8716,7 +8727,7 @@ def _run_row(cfgs: Sequence[Mapping], sha: str, *, run_id: str = "", row_opts: O
                                         "expectation": opts["cache_expectation"], "persist_requested": opts["cache_persist"],
                                         "restore": {k: v for k, v in restored.items() if k != "env"}}
     result["compile_cache"] = compile_cache
-    env = CC.with_compile_cache_env(_serving_env(tree, reduction_mode), CC.LOCAL_ROOT_DEFAULT)
+    env = CC.with_compile_cache_env(_serving_env(tree, reduction_mode, row_slug=row.slug), CC.LOCAL_ROOT_DEFAULT)
     # §1.1.2 step 5: the sandbox owner per cell BEFORE the standup (the FunctionCall is the row's; the tuples differ
     # by cell); the per-cell record stays IN the cell store; the POINTER goes to the row dir, once
     mode = str(first["cfg"]["mode"])
@@ -9393,7 +9404,8 @@ def _verify_cell_worker(cell_cfg: Mapping, sha: str, run_id: str, standup_id: Op
         record.touch()
     rec["sandbox_owner"] = owner.as_dict()
     rec["sandbox_record"] = str(record)
-    env = dict(_serving_env(tree, reduction_mode), **scope.owner_env(owner, record), **dict(claim["env"]))
+    env = dict(_serving_env(tree, reduction_mode, row_slug=str(cfg.get("model") or "")), **scope.owner_env(owner, record),
+               **dict(claim["env"]))
     cmd = verify_cell_argv(tree, out_dir=out_dir, cell=cell, controls=list(pend["controls"]), config=str(pend.get("config")),
                            row_dir=str(row_dir), row_engine_record=str(pend.get("row_engine_record")),
                            max_sandboxes=(int(pend["max_sandboxes"]) if pend.get("max_sandboxes") is not None else None),
@@ -13974,8 +13986,16 @@ def full22_pins_by_cell(tree: str | Path, row: C.ModelRow) -> Dict[str, str]:
                          f"({len(views)} matches) — no full22 pins can be read for it")
     view = views[0]
     mod = _load_tree_module(tree, "scripts/bcbw_configs.py", "bcbw_configs_staged")
-    roster = mod.load_roster(Path(tree) / "configs/sdfbase_full22_roster.yaml")
-    pins = mod.load_pins(Path(tree) / "configs/sdfbase_full22_pins.json")
+    roster_rel, pins_rel = C.bcbw_view_sources(row.model_key, view)
+    if roster_rel != "configs/sdfbase_full22_roster.yaml":
+        # a view with its OWN roster + pins (the control-pool-stopped views): the staged tree's generator reads them, its
+        # pin-form cells normalized to staged ids — the same reader that wrote the row's config
+        if mod.REPO.resolve() != Path(tree).resolve():
+            raise ValueError(f"the staged generator's REPO {mod.REPO} is not the staged tree {tree} — its own-source pins would be read elsewhere")
+        roster, pins, _rel = mod.view_sources(row.model_key, view)
+    else:
+        roster = mod.load_roster(Path(tree) / roster_rel)
+        pins = mod.load_pins(Path(tree) / pins_rel)
     return {str(k): str(v) for k, v in mod.pins_by_cell(row.model_key, view, roster=roster, pins=pins).items()
             if v}
 
@@ -14046,13 +14066,16 @@ def identity_request(row: C.ModelRow, tree: str, cells: Sequence[str],
 
 
 def run_object_identity(request: Mapping[str, object], tree: str,
-                        python: str = "") -> Dict[str, object]:
+                        python: str = "", *, row_slug: str = "") -> Dict[str, object]:
     """Run the derivation as a SUBPROCESS against the STAGED tree, so the
     hashes are produced by the code the wave will run rather than by whatever
     ``sisteer`` the launcher process happens to have mounted. The container's
     own interpreter is used (the image pins torch + transformers); no weights
     are loaded and no GPU is touched — the shell is a meta-device config
-    shell."""
+    shell. ``row_slug``: the row the request derives for — a row carrying the
+    candidate-SI subset pair (``contracts.candidate_sis_env``) hands it to the
+    derivation too, since it builds the same explicit-cells registry the standup
+    does."""
     import tempfile
     with tempfile.TemporaryDirectory() as td:
         req = Path(td) / "request.json"
@@ -14060,7 +14083,7 @@ def run_object_identity(request: Mapping[str, object], tree: str,
         r = subprocess.run(
             [python or sys.executable, "-m", C.OBJECT_IDENTITY_MODULE, "--request", str(req)],
             capture_output=True, text=True, timeout=OBJECT_IDENTITY_TIMEOUT_S,
-            env=dict(os.environ, PYTHONPATH=f"{tree}/src"))
+            env=dict(os.environ, PYTHONPATH=f"{tree}/src", **C.candidate_sis_env(row_slug)))
     try:
         return json.loads(r.stdout)
     except ValueError:
@@ -15496,7 +15519,7 @@ def preflight(sha: str, plan_args: Optional[Dict[str, object]] = None,
         if not request["targets"]:
             return {"targets": 0,
                     "note": "no fitted cell in this selection — nothing carries an object"}
-        report = run_object_identity(request, tree)
+        report = run_object_identity(request, tree, row_slug=row.slug)
         bad = object_identity_failures(report)
         summary = {
             "generation_header_len": report.get("generation_header_len"),

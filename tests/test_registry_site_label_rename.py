@@ -22,6 +22,8 @@ from sisteer.registry import records as R
 from sisteer.registry import schema_def as S
 from sisteer.registry import site_aliases as SA
 from sisteer.registry import synth
+from test_registry_migrations import (PRUNE_TABLES, _prune_objects_aside, _sans_prune_drift, _sans_prune_head, _sans_prune_head_render,
+                                      _sans_prune_render, _strip_prune_shape)
 from test_registry_schema import FROZEN_MIGRATIONS
 
 SLUG = "site_label_rename"
@@ -98,9 +100,11 @@ def test_0032_is_frozen_and_its_body_is_the_render_with_the_label_columns_mapped
     _widen(conn)
     plan = M.shape_plan(conn)
     assert [r["table"] for r in plan["rebuild"]] == ["fit_search", "object", "run", "mirror_ack", "analysis"]
-    assert plan["create"] == [] and plan["add_columns"] == [] and plan["undeclared_tables"] == []
-    assert plan["objects"] == {"index": {"recreate": [], "drop": []}, "trigger": {"recreate": [], "drop": []}, "view": {"recreate": [], "drop": []}}
-    rendered = M.render_shape_migration(conn, plan, map_site_labels=True)
+    # 0033 (prune_superseded_item_rows) follows this file on this tree: its table, index drop and head recreate are set aside
+    assert [c for c in plan["create"] if c not in PRUNE_TABLES] == [] and plan["add_columns"] == [] and plan["undeclared_tables"] == []
+    assert _prune_objects_aside(plan["objects"]) == \
+        {"index": {"recreate": [], "drop": []}, "trigger": {"recreate": [], "drop": []}, "view": {"recreate": [], "drop": []}}
+    rendered = _sans_prune_head_render(_sans_prune_render(M.render_shape_migration(conn, plan, map_site_labels=True)))
     assert _statements(committed) == _statements(rendered)
     for t, c in SA.LABEL_COLUMNS:
         assert M.site_label_select(t, c) in committed, (t, c)
@@ -119,15 +123,15 @@ def test_a_file_applied_directly_maps_through_the_empty_alias_table():
     version, slug, path = _migration()
     with open(path, encoding="utf-8") as fh:
         M._apply_one(conn, version, slug, fh.read())
-    assert M.db_version(conn) == 32 and DB.schema_drift(conn) == []
+    assert M.db_version(conn) == 32 and _sans_prune_head(_sans_prune_drift(DB.schema_drift(conn))) == []      # 0033's lines aside
     assert conn.execute("SELECT COUNT(*) FROM sqlite_temp_master WHERE name = 'site_alias'").fetchone()[0] == 0
 
 
 def test_on_a_fresh_database_0032_only_rebuilds():
     conn = DB.connect_memory()
     _through_31(conn)
-    assert M.db_version(conn) == 31 and DB.schema_drift(conn) == []         # 0001-0031 already create the neutral CHECKs
-    assert M.apply_migrations(conn) == [32]
+    assert M.db_version(conn) == 31 and _sans_prune_head(_sans_prune_drift(DB.schema_drift(conn))) == []   # 0001-0031 already create the neutral CHECKs (0033's lines aside)
+    assert M.apply_migrations(conn) == [32, 33]
     assert DB.schema_drift(conn) == [] and all(conn.execute(f"SELECT COUNT(*) FROM {t}").fetchone()[0] == 0 for t in LABEL_TABLES)
 
 
@@ -171,7 +175,8 @@ def _populated(tmp_path):
         conn.execute("UPDATE row_history SET natural_key_json = json_set(natural_key_json, '$.destination', 'oldsite_a'), "
                      "payload_json = json_set(payload_json, '$.destination', 'oldsite_a'), "
                      "folded_state_json = json_set(folded_state_json, '$.destination', 'oldsite_a') WHERE table_name = 'mirror_ack'")
-        conn.execute("DELETE FROM schema_migration WHERE version = 32")
+        conn.execute("DELETE FROM schema_migration WHERE version IN (32, 33)")
+        _strip_prune_shape(conn)                                   # 0033's shape taken back too: the file follows 0032 on this tree
         conn.commit()
         assert M.db_version(conn) == 31
     finally:
@@ -214,7 +219,7 @@ def test_with_the_alias_table_0032_maps_every_label_column_and_the_shape_is_the_
     conn = DB.connect(DB.db_path(root))
     counts = _counts(conn)
     assert DB.schema_drift(conn) != []
-    assert M.apply_migrations(conn, site_aliases=ALIASES) == [32]
+    assert M.apply_migrations(conn, site_aliases=ALIASES) == [32, 33]
     assert _label_values(conn) == {k: [label] for k, (_, label) in LEGACY_ROWS.items()}
     assert _counts(conn) == counts
     assert DB.schema_drift(conn) == [] and DB.ddl_master(conn) == DB.code_ddl_master()
@@ -228,7 +233,7 @@ def test_after_0032_a_lifecycle_event_over_legacy_history_folds_to_the_label(tmp
     writes the label through the root's alias file, never the legacy spelling the new CHECK would refuse."""
     root, rid = _populated(tmp_path)
     conn = DB.connect(DB.db_path(root))
-    assert M.apply_migrations(conn, site_aliases=ALIASES) == [32]
+    assert M.apply_migrations(conn, site_aliases=ALIASES) == [32, 33]
     conn.close()
     with open(os.path.join(root, SA.FILE_NAME), "w", encoding="utf-8") as fh:
         fh.write('[site_aliases]\noldsite_a = "cluster_a"\noldsite_b = "cluster_b"\noldhost = "grading_host"\n')
@@ -260,7 +265,7 @@ def test_0032_files_a_mirrors_history_under_its_label_so_a_later_acknowledgment_
     root, _ = _populated(tmp_path)
     conn = DB.connect(DB.db_path(root))
     assert _mirror_history(conn) == [('{"destination":"oldsite_a"}', "oldsite_a")]
-    assert M.apply_migrations(conn, site_aliases=ALIASES) == [32]
+    assert M.apply_migrations(conn, site_aliases=ALIASES) == [32, 33]
     assert _mirror_history(conn) == [('{"destination":"cluster_a"}', "oldsite_a")]
     standing = tuple(conn.execute("SELECT destination, acked_through_seq FROM mirror_ack").fetchone())
     conn.close()
@@ -342,7 +347,7 @@ def test_a_database_older_than_31_with_legacy_spellings_is_refused_by_name_and_m
     assert n == 1
     M._apply_one(conn, v31, slug31, body)
     assert M.db_version(conn) == 31
-    assert M.apply_migrations(conn, site_aliases=ALIASES) == [32]
+    assert M.apply_migrations(conn, site_aliases=ALIASES) == [32, 33]
     assert _label_values(conn) == {k: [label] for k, (_, label) in LEGACY_ROWS.items()} and _counts(conn) == counts
     assert DB.schema_drift(conn) == []
     conn.close()
@@ -351,4 +356,4 @@ def test_a_database_older_than_31_with_legacy_spellings_is_refused_by_name_and_m
 def test_a_database_older_than_31_that_holds_only_labels_migrates_straight_through():
     conn = DB.connect_memory()
     _through(conn, 29)
-    assert M.apply_migrations(conn) == [30, 31, 32] and DB.schema_drift(conn) == []
+    assert M.apply_migrations(conn) == [30, 31, 32, 33] and DB.schema_drift(conn) == []

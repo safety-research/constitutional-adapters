@@ -12,7 +12,11 @@ anchors, exclusions and seed handling as Figure 4, and a change to the notebook'
 
 The metric is the notebook's multi-turn category mean at the operating dose on the paper lane: for one training seed, the
 mean over Crescendo and ActorAttack of the delta in defense success (100 − attack success rate at threshold 0.5) against
-the unsteered model, in percentage points, positive being better defense. ONE training seed is chosen for all six fitted
+the unsteered model, in percentage points, positive being better defense, under the paper's judges (the notebook's
+default policy, `rejudge`: every StrongREJECT reading re-derived from minimax-m3's items, the judge ids
+paper/notebooks/data/paper_judges.json lists). The tool unsets every judge-comparison switch before the notebook's
+header cell imports `registry_nb`, as the figures stage does, so a shell exported for another judge cannot write its
+numbers here. ONE training seed is chosen for all six fitted
 interventions (control, constitution and difference, for the LoRA adapter and the ReLU steer): the seed whose difference
 LoRA (`difference_lora`, the paper's headline intervention) has the highest value, compared unrounded (the file carries
 every seed's values at full precision, so the choice can be checked from the file alone); ties go to the lower seed. Each
@@ -29,12 +33,14 @@ fitted Qwen3.5-4B object in Figures 3 to 6 is a qwen35_4b_base fit served on qwe
 instruct-direct fits, one per label with no training seeds, are retired from those panels; each entry records its `lane`.
 
 `source.inputs_sha256` digests what the list is computed from (the notebook's code cells, registry_nb.py, the snapshot
-reader, the snapshot's CURRENT and MANIFEST.json, objects/MANIFEST.json, this tool). tests/test_demo_objects.py compares
+reader, the snapshot's CURRENT and MANIFEST.json, the paper's judge ids, the judges' reading rules (judge_rules.py, which re-derives
+every reading the list is computed from), the pooled intervals' estimator (pooled_ci.py, which registry_nb imports), the committed
+strength-lane reads, objects/MANIFEST.json, this tool). tests/test_demo_objects.py compares
 them with the tree on every run, so a change to any of those fails the ordinary tests until the list is recomputed; the
 full recomputation behind `--check` is the slow, opt-in test.
 
 Needs the notebook environment (`uv sync --frozen --extra cpu --group notebook`), `git` on PATH (the header cell prints
-the code revision), and about 2 GB under paper/notebooks/_cache/ (gitignored) for the reassembled snapshot.
+the code revision), and about 4 GB under paper/notebooks/_cache/ (gitignored) for the reassembled snapshot.
 """
 from __future__ import annotations
 
@@ -70,7 +76,14 @@ _SEED = re.compile(r"^s(\d+)$")
 #: outputs, leaves the digest unchanged.
 INPUTS = ("paper/notebooks/registry_qwen_figures.ipynb", "paper/notebooks/registry_nb.py", "src/sisteer/registry/snapshot.py",
           "src/sisteer/registry/paper.py", "paper/snapshot/CURRENT", "paper/snapshot/snapshots/<CURRENT>/MANIFEST.json",
+          "paper/notebooks/data/paper_judges.json", "paper/notebooks/judge_rules.py", "paper/notebooks/pooled_ci.py",
+          "paper/notebooks/data/strength_reads/supplement2_xstest/strength_reads.parquet",
+          "paper/notebooks/data/strength_reads/supplement_cpi/strength_reads.parquet",
           "objects/MANIFEST.json", "reproduce/tools/demo_objects.py")
+#: The judge-comparison switches the notebook reads at import, unset before it is imported (reproduce/10_figures.sh unsets the same):
+#: the list is the paper's render, under the notebook's default judges at the paper's threshold, whatever the calling shell exported.
+UNSET_ENV = ("REGISTRY_NB_JUDGES", "REGISTRY_NB_SR_THRESHOLD", "REGISTRY_NB_PETRI_JUDGE", "REGISTRY_NB_PETRI_EXCLUDE",
+             "REGISTRY_NB_STRENGTH_READS", "REGISTRY_NB_SITARGET_PROVISIONAL", "NB_REUSE_CACHE")
 
 
 def inputs_sha256(repo: Path = REPO) -> dict[str, str]:
@@ -101,6 +114,8 @@ def _cell(cells: list[str], marker: str, what: str) -> str:
 
 def notebook_frames(snapshot_root: str | None = None) -> dict:
     """Run the notebook's header and load cells, then the Figure 3 cell's anchoring, in one namespace; returns it."""
+    for k in UNSET_ENV:
+        os.environ.pop(k, None)
     os.environ["REGISTRY_NB_SOURCE"] = "snapshot"
     os.environ.setdefault("MPLBACKEND", "Agg")
     if snapshot_root:
@@ -124,6 +139,11 @@ def notebook_frames(snapshot_root: str | None = None) -> dict:
         exec(compile(load, "<notebook load cell>", "exec"), ns)
         exec(compile("\n".join(FIGURE_CALLS), "<notebook figure cell: anchoring>", "exec"), ns)
     return ns
+
+
+def _paper_judges() -> dict:
+    """paper/notebooks/data/paper_judges.json: the paper policy's judge ids (the notebook's default policy resolves to exactly these)."""
+    return json.loads((REPO / "paper" / "notebooks" / "data" / "paper_judges.json").read_text(encoding="utf-8"))
 
 
 def _r(x) -> float:
@@ -221,6 +241,9 @@ def compute(ns: dict) -> dict:
     from sisteer.objects import load_index, resolve
 
     R, d, cm = ns["R"], ns["d"], ns["cm"]
+    if R.RENDER_POLICY:
+        sys.exit(f"REFUSED: the notebook rendered off the paper's judges or threshold ({R.RENDER_POLICY}); objects/DEMO.json is the "
+                 "paper's render")
     evals, sign, _ylabel = R.CATEGORIES[CATEGORY]
     model = R.MODEL_ID
     mt_cm = cm[(cm.category == CATEGORY) & (cm.model_id == model)]
@@ -302,7 +325,13 @@ def compute(ns: dict) -> dict:
                            "Per eval, `gain_pp` is that delta (the draws' mean where an object has several decode draws), "
                            "`asr` the steered attack success rate, `anchor_asr` the unsteered one it is differenced against, "
                            "`n` the goals per draw, `k` the goals judged jailbroken, `anchor_runs` the unsteered runs pooled "
-                           "into the anchor. Values are at full precision; the choice compares them unrounded."),
+                           "into the anchor. Every reading is the paper's judges' (`judges`: the notebook's default policy, "
+                           "each StrongREJECT reading re-derived from that judge's items). Values are at full precision; the "
+                           "choice compares them unrounded."),
+            "judges": {"policy": R.JUDGES,
+                       "strongreject": sorted(j["judge_id"] for j in _paper_judges()["judges"] if j["family"] == "strongreject"),
+                       "judge_model": _one((j["judge_model"] for j in _paper_judges()["judges"] if j["family"] == "strongreject"),
+                                           "the paper's StrongREJECT judge model")},
             "category": CATEGORY, "evals": list(evals), "orientation_sign": int(sign),
             "operating_dose": 1.0, "baseline_coefficient": next(x["dose"] for x in entries if x["paper_label"] == BASELINE),
             "served_model_id": model, "paper_lane": R.PAPER_LANE[model],

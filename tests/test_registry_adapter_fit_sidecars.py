@@ -637,6 +637,44 @@ def test_reseed_fields(tmp_path):
     assert isinstance(VAL.validate_record(synth.rec("object", p, NOW), "<memory>"), VAL.Validated)
 
 
+def test_ctlstop_fields_are_their_own_campaign_and_never_a_replicate(tmp_path):
+    """The reserved `ctlstop64s<s>__` staged prefix (a batch-64 control refit with early stopping on its own held-out pool, and the
+    differences built from it) states campaign `reseed_ctlstop` and NO replicate label or split salt — what its native emission
+    states — whatever the bank's campaign hint (`test_reseed_fields` pins `base64s<s>__` → `reseed` / `s<s>`)."""
+    d = str(tmp_path / "bank" / "ctlstop64s2__synth-corpus-full__lora_r4_ce")
+    sha = _sha(_blob(d, b"ctlstop"))
+    tbm = corpus_tbm(sha, seed=2, effective_batch=64, accum_steps=32, batch_size=2)
+    tbm["fit_record"]["realized_eff_batch"] = [64, 64, 64]
+    _write(d, "train_budget_meta.json", tbm)
+    b = FS.read_bundle(d, read_blob=False, bank="full22_objects", campaign_hint="sdfbase_full22")
+    p = FS.build_object_payload(b, seeds(), NOW, blob_reads_enabled=False)
+    assert p["campaign"] == FS.CTLSTOP_CAMPAIGN == "reseed_ctlstop"
+    assert "fit_replicate_label" not in p and "split_salt" not in p["extra"]
+    assert p["fit_seed"] == 2 and p["fit_effective_batch"] == 64 and p["paper_label"] == "constitution_lora"
+    assert p["extra"]["fit_variant_prefix_legacy"] == "ctlstop64s2"
+    assert isinstance(VAL.validate_record(synth.rec("object", p, NOW), "<memory>"), VAL.Validated)
+    root, rep = _ingest_objects(tmp_path, [p])
+    assert rep.refused == 0 and rep.blocked == 0, rep.refusals
+    row = _row(root, sha)
+    assert row["campaign"] == "reseed_ctlstop" and row["fit_replicate_label"] is None
+    # a difference staged under the derived spelling of the prefix: the same campaign, no label
+    dd = str(tmp_path / "bank" / "derived_ctlstop64s1__synth-corpus-full__lora_r4_ce_minus_ctl")
+    dsha = _sha(_blob(dd, b"ctlstop-sub"))
+    _write(dd, "derived_meta.json", {"kind": "lora_subtraction", "derived_id": "synth-corpus-full__lora_r4_ce_minus_ctl", "derivation": "delta(pos) - delta(neg)",
+                                     "model_id": "synthetic/base-4b", "model_revision": REV, "positions": "all", "layers": [3, 7], "rank": 4,
+                                     "parent_pos": {"cell_id": "a", "object_sha256": PARENT_A, "fit_fingerprint": "0" * 64, "data_scale": {"official_tokens": 42}},
+                                     "parent_neg": {"cell_id": "b", "object_sha256": PARENT_B},
+                                     "scale_matched": True, "built_at": "2026-09-04T18:09:45+00:00", "builder": "scripts/sdfbase/lora_subtract.py", "object_sha256": dsha})
+    pd = FS.build_object_payload(FS.read_bundle(dd, read_blob=False, bank="full22_objects", campaign_hint="sdfbase_full22"), seeds(), NOW,
+                                 blob_reads_enabled=False)
+    assert pd["campaign"] == "reseed_ctlstop" and "fit_replicate_label" not in pd and pd["paper_label"] == "difference_lora"
+    # the two prefixes never overlap: neither spelling is ever read as the other
+    for sid in ("ctlstop64s1__x__lora_r4_ce", "derived_ctlstop64s3__x__lora_r4_ce_minus_ctl"):
+        assert FS._CTLSTOP_RE.match(sid) and not FS._REPLICATE_RE.match(sid), sid
+    for sid in ("base64s1__x__lora_r4_ce", "derived_base64s3__x__lora_r4_ce_minus_ctl", "ctlstop__x", "ctlstop64__x", "xctlstop64s1__x"):
+        assert not FS._CTLSTOP_RE.match(sid), sid
+
+
 # --------------------------------------------------------------------------------------------
 # refusals (never a default)
 # --------------------------------------------------------------------------------------------
@@ -1034,7 +1072,7 @@ def test_paper_label_is_spelled_from_the_stem_whatever_the_fit_variant_prefix(tm
     """The staged ids of one campaign cell differ only in the fit-variant prefix (`base__`, `itdoc__`, `itdoc64__`, `base64s<s>__`,
     `halfdoseit__`, `d0p5_eb64s1__`): every one is the SAME paper arm. The label comes from the seeded `paper_labels` entry of the stem; the
     prefix and the stem are parked on the object; the seeded entry's own spelling need not be prefixed."""
-    for prefix in ("base", "itdoc", "itdoc64", "base64s2", "halfdoseit", "d0p5_eb64s1", "derived_itdoc64"):
+    for prefix in ("base", "itdoc", "itdoc64", "base64s2", "halfdoseit", "d0p5_eb64s1", "derived_itdoc64", "ctlstop64s2", "derived_ctlstop64s1"):
         b = _staged_corpus_fit(tmp_path, f"{prefix}__synth-corpus-full__lora_r4_ce", "synth-corpus-full__lora_r4_ce")
         p = FS.build_object_payload(b, seeds(), NOW, blob_reads_enabled=False)
         assert p["paper_label"] == "constitution_lora" and p["object_role"] == "constitution", prefix
@@ -1143,3 +1181,145 @@ def test_scope_verdict_classifies_a_bundle_the_way_the_builder_would_without_bui
     with pytest.raises(FS.SidecarRefusal) as ei4:
         FS.build_object_payload(FS.read_bundle(d4, read_blob=False, bank="stage_objects"), s, NOW, blob_reads_enabled=False)
     assert v4.refusal.why == ei4.value.why and "NOT parked" in v4.refusal.why and (v4.ruling, v4.object_kind) == (None, None)
+
+
+# --------------------------------------------------------------------------------------------
+# a fit carrying its producer's registry statement (the sikl4 refits): the bank states the producer's columns, never its own reading
+# --------------------------------------------------------------------------------------------
+
+#: the block train_two_si_objects stamps into a refit's train_budget_meta.json (invented values; the campaign is the fit job's)
+PRODUCER_STATEMENT = {"paper_label": "other", "paper_label_source": "fit config key registry_paper_label", "campaign": "synthetic_refit",
+                      "fit_teacher_si_text_sha256": synth.SI_SHA, "fit_prompt_pool_id": "synthmodel/pairs_synthetic_si_refit",
+                      "fit_prompt_pool_sha256": "7" * 64}
+#: the columns the statement decides; every other column of the payload reads as it does without the block
+STATED_COLUMNS = ("campaign", "fit_prompt_pool_id", "fit_prompt_pool_sha256", "fit_teacher_si_text_sha256", "paper_label")
+
+
+def _refit_dir(tmp_path, statement, *, bank="grade_objects", name="synthetic_si__psr_kl_all", **tbm_over) -> str:
+    """A refit cell at a bank-listed depth (`$GRADE/objects/<bank>/<model>/<cell>/`): object.pt + train_budget_meta.json (with the
+    statement when given). The cell spelling `synthetic_si__psr_kl_all` has a seeded paper label (safety_relu), the shape of
+    safety_refusal__psr_kl_all in legacy_spellings.yaml."""
+    d = str(tmp_path / bank / "scale-12" / "synthmodel" / name)
+    sha = _sha(_blob(d, b"refit psr bytes"))
+    tbm = si_tbm(sha, seed=2, **tbm_over)
+    if statement is not None:
+        tbm["registry_statement"] = statement
+    _write(d, "train_budget_meta.json", tbm)
+    _write(d, "object.pt.provenance.json", {"kind": "psr", "layers": list(range(8))})
+    return d
+
+
+def _payload(d, campaign_hint="two_si"):
+    return FS.build_object_payload(FS.read_bundle(d, read_blob=False, bank="grade_objects", campaign_hint=campaign_hint), seeds(), NOW,
+                                   blob_reads_enabled=False, omit_producer_owned=True, dose_batch_from_parent=True)
+
+
+def test_a_refit_carrying_its_producers_statement_states_the_producers_label_campaign_and_prompt_facts(tmp_path):
+    """The bank's own reading of the cell (the seeded stem label safety_relu, its bank campaign two_si, the teacher_topk path's pool
+    spelling) would RESTATE the producer's record column by column; with the block the bank states what the producer states, parks its
+    own reading, and every other column reads exactly as without the block."""
+    d = _refit_dir(tmp_path, None)
+    plain = _payload(d)
+    assert plain["paper_label"] == "safety_relu" and plain["campaign"] == "two_si" and plain["fit_prompt_pool_id"] == "synthmodel/pairs_synthetic_si"
+    assert "producer_registry_statement" not in plain["extra"]
+    tbm = json.loads(open(os.path.join(d, "train_budget_meta.json")).read())
+    tbm["registry_statement"] = PRODUCER_STATEMENT
+    _write(d, "train_budget_meta.json", tbm)
+    p = _payload(d)
+    assert p["paper_label"] == "other" and p["campaign"] == "synthetic_refit" and p["object_role"] == "safety"
+    assert p["fit_teacher_si_text_sha256"] == synth.SI_SHA and p["fit_prompt_pool_id"] == "synthmodel/pairs_synthetic_si_refit"
+    assert p["fit_prompt_pool_sha256"] == "7" * 64
+    fc = p["field_confidence_json"]
+    # the producer's own field_confidence source for the label (hooks.object_from_sidecar's paper_label_source)
+    assert fc["paper_label"] == {"confidence": "recorded",
+                                 "source": "train_budget_meta.json:registry_statement.paper_label (fit config key registry_paper_label)"}
+    assert fc["campaign"]["confidence"] == "recorded" and "registry_statement.campaign" in fc["campaign"]["source"]
+    assert fc["fit_prompt_pool_id"]["source"] == "train_budget_meta.json:registry_statement.fit_prompt_pool_id"
+    assert p["extra"]["producer_registry_statement"] == {
+        "columns": list(STATED_COLUMNS),
+        "bank_reading": {"paper_label": "safety_relu", "campaign": "two_si", "fit_teacher_si_text_sha256": synth.SI_SHA,
+                         "fit_prompt_pool_id": "synthmodel/pairs_synthetic_si", "fit_prompt_pool_sha256": POOL_CONTENT_SHA}}
+    # nothing else moves (object_sidecars_json names the rewritten train_budget_meta.json's bytes)
+    for k in sorted(set(plain) | set(p)):
+        if k in STATED_COLUMNS or k == "object_sidecars_json":
+            continue
+        if k == "field_confidence_json":
+            assert {c: v for c, v in p[k].items() if c not in STATED_COLUMNS} == {c: v for c, v in plain[k].items() if c not in STATED_COLUMNS}
+        elif k == "extra":
+            assert {c: v for c, v in p[k].items() if c != "producer_registry_statement"} == plain[k]
+        else:
+            assert p.get(k) == plain.get(k), k
+    assert isinstance(VAL.validate_record(synth.rec("object", p, NOW), "<memory>"), VAL.Validated)
+    assert VAL.fit_target_pairing_problem(p) is None
+
+
+def test_a_bank_revision_of_a_refit_folds_onto_the_producers_row_without_moving_its_label_or_campaign(tmp_path):
+    """The hazard and the fix through the fold: the producer's native record (label other, its campaign) folds first; a bank record
+    built WITH the block keeps both; the same cell read WITHOUT the block (today's reading) would have moved them."""
+    d = _refit_dir(tmp_path, PRODUCER_STATEMENT)
+    p = _payload(d)
+    producer = dict(p, status="reference", fit_writer="scripts/train_two_si_objects.py publish_cell")
+    root = str(tmp_path / "reg")
+    H.ensure_layout(root)
+    dims = synth.seed_dimensions(with_fitted_object=False)
+    R.write_records(os.path.join(root, "records", "dims", "000001-dims.jsonl"), dims)
+    R.write_records(os.path.join(root, "records", "producer", "000001-object.jsonl"), [synth.rec("object", producer, T(50))])
+    R.write_records(os.path.join(root, "records", "objects", "000001-object.jsonl"), [synth.rec("object", p, T(100))])
+    rep = H.ingest_once(root, workers=0, min_free=0)
+    assert rep.refused == 0 and rep.blocked == 0, rep.refusals
+    row = _row(root, p["object_id"])
+    assert (row["paper_label"], row["campaign"], row["status"]) == ("other", "synthetic_refit", "reference")
+    assert row["fit_prompt_pool_id"] == "synthmodel/pairs_synthetic_si_refit"
+    # the counterfactual: the bank's own reading of the same bytes, folded later, restates both columns
+    tbm = json.loads(open(os.path.join(d, "train_budget_meta.json")).read())
+    del tbm["registry_statement"]
+    _write(d, "train_budget_meta.json", tbm)
+    R.write_records(os.path.join(root, "records", "objects", "000002-object.jsonl"), [synth.rec("object", _payload(d), T(200))])
+    H.ingest_once(root, workers=0, min_free=0)
+    row = _row(root, p["object_id"])
+    assert (row["paper_label"], row["campaign"]) == ("safety_relu", "two_si")
+
+
+def test_a_statement_naming_no_campaign_or_label_or_a_bad_value_is_refused_by_name(tmp_path):
+    """A block with no campaign or no paper label would leave the bank stating its own over the producer's (a label the block
+    leaves out the producer derives from (kind, role), which the seeded stem label need not match): refused, never read. So are a
+    label outside PAPER_LABELS and a malformed prompt fact (the producer hook refuses the same values)."""
+    no_camp = {k: v for k, v in PRODUCER_STATEMENT.items() if k != "campaign"}
+    with pytest.raises(FS.SidecarRefusal, match="no campaign"):
+        _payload(_refit_dir(tmp_path / "a", no_camp))
+    no_label = {k: v for k, v in PRODUCER_STATEMENT.items() if k not in ("paper_label", "paper_label_source")}
+    with pytest.raises(FS.SidecarRefusal, match="no paper_label"):
+        _payload(_refit_dir(tmp_path / "a2", no_label))
+    with pytest.raises(FS.SidecarRefusal, match="PAPER_LABELS"):
+        _payload(_refit_dir(tmp_path / "b", dict(PRODUCER_STATEMENT, paper_label="not_a_label")))
+    with pytest.raises(FS.SidecarRefusal, match="64-hex"):
+        _payload(_refit_dir(tmp_path / "c", dict(PRODUCER_STATEMENT, fit_teacher_si_text_sha256="si:ac3a58f6")))
+    p = _payload(_refit_dir(tmp_path / "d", dict(PRODUCER_STATEMENT, fit_prompt_pool_sha256="unverified")))
+    assert p["fit_prompt_pool_sha256"] == "unverified"
+
+
+def test_a_corpus_fits_statement_states_label_and_campaign_but_no_prompt_facts(tmp_path):
+    d = str(tmp_path / "bank" / "base__synth-corpus-full__lora_r4_ce")
+    sha = _sha(_blob(d))
+    _write(d, "train_budget_meta.json", corpus_tbm(sha, registry_statement={"paper_label": "other", "campaign": "synthetic_refit",
+                                                                            "paper_label_source": "fit config key registry_paper_label"}))
+    p = FS.build_object_payload(FS.read_bundle(d, read_blob=False, bank="full22_objects", campaign_hint="sdfbase_full22"), seeds(), NOW,
+                                blob_reads_enabled=False)
+    assert p["paper_label"] == "other" and p["campaign"] == "synthetic_refit" and p["fit_target_kind"] == "corpus_document_fit"
+    assert "fit_prompt_pool_id" not in p and p["extra"]["producer_registry_statement"]["columns"] == ["campaign", "paper_label"]
+    assert p["extra"]["producer_registry_statement"]["bank_reading"] == {"paper_label": "constitution_lora", "campaign": "sdfbase_full22"}
+
+
+def test_a_dose_copy_never_reads_its_parents_statement(tmp_path):
+    """A dose copy's train_budget_meta.json is the PARENT's fit record, so a block in it is the parent's statement: the copy reads
+    exactly as it does without the block (its own derived label and the bank's campaign)."""
+    b, _ = _dose_copy_bundle(tmp_path)
+    plain = FS.build_object_payload(b, seeds(), NOW, blob_reads_enabled=False)
+    tbm_path = os.path.join(b.dir, "train_budget_meta.json")
+    tbm = json.loads(open(tbm_path).read())
+    tbm["registry_statement"] = PRODUCER_STATEMENT
+    _write(b.dir, "train_budget_meta.json", tbm)
+    p = FS.build_object_payload(FS.read_bundle(b.dir, read_blob=False, bank="full22_objects", campaign_hint="sdfbase_full22"), seeds(), NOW,
+                                blob_reads_enabled=False)
+    assert p["fit_target_kind"] == "derived" and p["campaign"] == plain["campaign"] == "sdfbase_full22"
+    assert {k: v for k, v in p.items() if k != "object_sidecars_json"} == {k: v for k, v in plain.items() if k != "object_sidecars_json"}

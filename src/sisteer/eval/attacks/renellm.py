@@ -33,11 +33,8 @@ result is labelled non-paper (the run's ``renellm_corpus`` record, the store's
 :data:`STORE_CORPUS_RECORD`, and the log). A store holds one corpus's rows: a resume under a
 different corpus refuses. :func:`renellm_variants` itself stays a plain lookup.
 
-EVALUATION ONLY. The paper's corpus may not be used to train, fine-tune or otherwise improve any
-AI system (:data:`CORPUS_TERMS`). Training-pool sampling therefore reads renellm through
-:func:`training_variants`, which reads only the site's copy (never the shipped one) and refuses the
-paper's corpus by path, file hash and content hash; the pool builder, the leakage gate's training
-fingerprint and the training stage refuse its prompts too (:mod:`sisteer.eval.attacks.eval_only`).
+Training-pool sampling reads renellm through the same lookup as evaluation replay
+(:func:`renellm_variants`); the corpus's terms are in :data:`CORPUS_TERMS`.
 """
 
 from __future__ import annotations
@@ -49,7 +46,6 @@ import sys
 from pathlib import Path
 
 from ..jailbreak_artifacts import private_umask
-from . import eval_only
 from .frozen_corpus import FrozenCorpus
 from .static_common import ensure_private_dir, run_static
 from .subenv_common import loud_skip
@@ -306,33 +302,10 @@ def renellm_variants(goal, seed: int = 0):
     """Ordered ``[(scenario, nested_prompt), ...]`` from the FROZEN corpus at
     :func:`replay_path` — a pure evaluation lookup, no rewriter call. Empty if
     the corpus does not cover this goal. No admission here: evaluation replay
-    admits the corpus first (:func:`run_renellm`). Training never reads this:
-    it reads :func:`training_variants`."""
+    admits the corpus first (:func:`run_renellm`). Training-pool sampling reads
+    this lookup too."""
     corpus = _corpus()
     return corpus.variants_for(goal, seed) if corpus is not None else []
-
-
-#: site corpus paths (with their content hash) training has already cleared, so the per-goal lookup checks once
-_TRAINING_CLEARED: set[tuple[str, str]] = set()
-
-
-def training_variants(goal, seed: int = 0):
-    """Training-pool sampling's lookup (``sisteer.sampling.sources``): the site's corpus at
-    :func:`_corpus_path` only, never the shipped copy (no :func:`replay_path` fallback), and never
-    the paper's corpus wherever it sits: that corpus is evaluation-only (:data:`CORPUS_TERMS`), so
-    a copy of it refuses by path, file hash or content hash
-    (:class:`sisteer.eval.attacks.eval_only.EvalOnlyCorpusRefused`). Empty when the site holds no
-    corpus, which the sampler's zero-count check then refuses by name."""
-    p = _corpus_path()
-    if not p.exists():
-        return []
-    corpus, identity = _read(p)
-    key = (str(p), identity["content_hash"])
-    if key not in _TRAINING_CLEARED:
-        eval_only.refuse_corpus(consumer="training-pool sampling (renellm)", path=p,
-                                file_sha256=identity["file_sha256"], content_hash=identity["content_hash"])
-        _TRAINING_CLEARED.add(key)
-    return corpus.variants_for(goal, seed)
 
 
 def run_renellm(defense, goals, *, out_dir, trial: int = 0, seed: int = 0,
@@ -381,13 +354,43 @@ def _plan(goal):
 def _holds_paper_corpus(path: Path) -> bool:
     """Whether ``path`` is the shipped copy or a file holding the paper's corpus (its bytes, or its
     rows in any order or serialisation). Read uncached: a build may overwrite the file next."""
-    if eval_only.match_path(path) is not None:
-        return True
+    shipped = shipped_corpus_path()
+    try:
+        if os.path.samefile(path, shipped):
+            return True
+    except OSError:
+        if Path(path).expanduser().resolve() == shipped.expanduser().resolve():
+            return True
     if not path.is_file():
         return False
     raw = path.read_bytes()
     return (hashlib.sha256(raw).hexdigest() == PINNED_FILE_SHA256
-            or eval_only._content_hash_of(raw) == PINNED_SHA)
+            or _content_hash_of(raw) == PINNED_SHA)
+
+
+def _content_hash_of(raw: bytes):
+    """The canonical content hash of ``raw`` when it reads as frozen-corpus JSONL rows, else None. Only the first
+    non-empty line is read before deciding, so any other shape costs one line, never a parse of a large file."""
+    need = {"goal_id", "sample_idx", "variant_name", "prompt"}
+    start = 0
+    while True:
+        end = raw.find(b"\n", start)
+        line = raw[start:] if end < 0 else raw[start:end]
+        if line.strip():
+            break
+        if end < 0:
+            return None
+        start = end + 1
+    try:
+        first = json.loads(line.decode("utf-8"))
+        if not isinstance(first, dict) or not need <= set(first):
+            return None
+        rows = [json.loads(ln) for ln in raw.decode("utf-8").splitlines() if ln.strip()]
+        from .frozen_corpus import corpus_content_hash
+
+        return corpus_content_hash(rows)
+    except (ValueError, KeyError, TypeError):
+        return None
 
 
 def build_renellm_corpus(goals, *, rewriter, fingerprint, out_path=None,

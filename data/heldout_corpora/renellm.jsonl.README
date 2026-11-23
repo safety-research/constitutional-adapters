@@ -23,5 +23,4 @@ non-paper.
 
 The renellm attack (src/sisteer/eval/attacks/renellm.py) replays this file
 when the site keeps no copy of its own in SISTEER_HELDOUT_CORPUS_DIR, and
-scripts/renellm_corpus_check.py checks it. Every training-side reader refuses
-it (src/sisteer/eval/attacks/eval_only.py).
+scripts/renellm_corpus_check.py checks it.

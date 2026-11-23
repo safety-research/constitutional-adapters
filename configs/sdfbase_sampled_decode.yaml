@@ -74,6 +74,22 @@ seed_base_by_view:
   qwen35_4b_dm1_ctlrelu64s2: 2
   qwen35_4b_dm1_ctllora64s3: 3
   qwen35_4b_dm1_ctlrelu64s3: 3
+  # the control-pool-stopped views (make_sampled_configs.SEEDED_LANE_VIEWS), served by the LANE-PRIVATE roster
+  # configs/sdfbase_full22_roster_ctlstop_eb64.yaml: each draws at the TRAINING SEED of the objects it serves, seed_base(k) = k
+  qwen35_4b_ctlstop64s1: 1
+  qwen35_4b_ctlstop64s2: 2
+  qwen35_4b_ctlstop64s3: 3
+  # the SI-distilled refit views (make_sampled_configs.SEEDED_LANE_VIEWS), served by the LANE-PRIVATE roster
+  # configs/sdfbase_full22_roster_sikl4.yaml: each draws at the FIT SEED of the objects it serves, seed_base(k) = k
+  qwen35_4b_sikl4s1: 1
+  qwen35_4b_sikl4s2: 2
+  qwen35_4b_sikl4s3: 3
+  # the 1M-token generator comparison's views (2026-11-12): qg1ms<k> (make_sampled_configs.SEEDED_LANE_VIEWS),
+  # served by the LANE-PRIVATE roster configs/sdfbase_full22_roster_qwengen1m.yaml only: each draws at the TRAINING SEED of the
+  # two objects it serves (the Opus-written and Qwen-written 1M LoRAs of fit seed k) -- seed_base(k) = k
+  qwen35_4b_qg1ms1: 1
+  qwen35_4b_qg1ms2: 2
+  qwen35_4b_qg1ms3: 3
 # qwen-seedrep-native-battery: ONE sampled trial per seed view — the
 # three seeds ARE the replication, so `n_trials_by_view` names the three replicate TAGs at 1 (the generator's `n_trials_of_tag`; the
 # campaign `n_trials: 2` above stays for every other TAG, byte for byte). The s-view configs render `trial 0 of 1`; the nine
@@ -89,6 +105,18 @@ n_trials_by_view:
   qwen35_4b_dm1_ctlrelu64s2: 1
   qwen35_4b_dm1_ctllora64s3: 1
   qwen35_4b_dm1_ctlrelu64s3: 1
+  # the control-pool-stopped views: ONE trial per seed view, the s<k> views' rule
+  qwen35_4b_ctlstop64s1: 1
+  qwen35_4b_ctlstop64s2: 1
+  qwen35_4b_ctlstop64s3: 1
+  # the SI-distilled refit views: ONE trial per seed view, the s<k> views' rule
+  qwen35_4b_sikl4s1: 1
+  qwen35_4b_sikl4s2: 1
+  qwen35_4b_sikl4s3: 1
+  # the generator comparison: ONE trial per seeded view, the s<k> views' rule (the three fit seeds are the replication)
+  qwen35_4b_qg1ms1: 1
+  qwen35_4b_qg1ms2: 1
+  qwen35_4b_qg1ms3: 1
 applies_to:
 - static_families
 - controls

@@ -170,6 +170,12 @@ adapters:
     shards: 1
     components: [full22_shared, bfcl_full]
     note: "383 MB / 221 files (+ the solo mirror)"
+  bfcl_full_sikl4:
+    # a declared campaign's reader (_bcbw_common.CampaignSpec; adapters/_bcbw_campaigns.py SIKL4): one group per view, so three groups -- the size rule's 4 shards
+    # (~0.8 GB per copy estimated: 18 stores x ~42 MB) would leave one idle, hence 3 (a reasoned override)
+    shards: 3
+    components: [full22_lanes]
+    note: "881 MB / 516 files: the SI-distilled refits' campaign stores (18 stores, 3 views; measured on the staged copy)"
   bfcl_seedrep:
     shards: 1
     components: [full22_seedrep]
@@ -191,6 +197,12 @@ adapters:
     shards: 1
     components: [full22_shared, bigcodebench_full]
     note: "383 MB / 221 files (+ the solo mirror)"
+  bigcodebench_full_sikl4:
+    # a declared campaign's reader (_bcbw_common.CampaignSpec; adapters/_bcbw_campaigns.py SIKL4): one group per view, so three groups -- the size rule's 4 shards
+    # (~0.8 GB per copy estimated: 18 stores x ~42 MB) would leave one idle, hence 3 (a reasoned override)
+    shards: 3
+    components: [full22_lanes]
+    note: "881 MB / 516 files: the SI-distilled refits' campaign stores (18 stores, 3 views; measured on the staged copy)"
   bigcodebench_seedrep:
     shards: 1
     components: [full22_seedrep]
@@ -675,6 +687,14 @@ components:
     authority: grading_host_copy
     origin: modal
     note: "the six *_full_shared* adapters (7,937 MB / 4,660 files)"
+  full22_lanes:
+    # the declared campaigns' source pairs (_bcbw_common.CampaignSpec): members disjoint from every other component on this base; published (both members together)
+    # before the readers' merge reaches the base checkout, so the first generation the mirror carries holds both roots
+    base: $STATE/romp/candidate-si-refit/run-state/full22
+    members: [bfcl_full_sikl4, bigcodebench_full_sikl4]
+    authority: grading_host_copy
+    origin: modal
+    note: "the SI-distilled refits' full-suite campaign stores, both copies (1,762 MB / 1,032 files)"
   fullscale_consolidated:
     base: $STAGE/sdfbase/fullscale/consolidated
     # wandb/run-*/logs/debug-core.log and dose_duration/wandb/... link into ~/.cache/wandb (56 escaping links); the adapters never open them

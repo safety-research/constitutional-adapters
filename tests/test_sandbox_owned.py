@@ -99,9 +99,11 @@ def test_the_provider_is_registered_under_the_unqualified_name_and_subclasses_th
     assert SO.SANDBOX_APP_NAME == "inspect_modal_sandbox" == C.BCB_SANDBOX_APP_NAME
     # the three lifecycle methods and (tinycap-verify-rate-limit, 2026-09-30) the CREATE are overridden; exec / files /
     # terminate / the app lookup are the parent's. The create override wraps the PARENT's create (its transient retry kept)
-    for name in ("exec", "read_file", "write_file", "_terminate_sandbox", "_lookup_app"):
+    # Added 2026-11-14: exec is overridden too — the parent's body in BYTE mode with a lossy decode (point 5)
+    for name in ("read_file", "write_file", "_terminate_sandbox", "_lookup_app"):
         assert getattr(SO.OwnedModalSandboxEnvironment, name) is getattr(ModalSandboxEnvironment, name)
     assert SO.OwnedModalSandboxEnvironment._create_sandbox is not ModalSandboxEnvironment._create_sandbox
+    assert SO.OwnedModalSandboxEnvironment.exec is not ModalSandboxEnvironment.exec
 
 
 def test_sample_init_creates_with_owner_tags_at_create_time_all_str_and_a_3h_timeout(monkeypatch, tmp_path):
@@ -305,3 +307,57 @@ def test_the_rate_limit_predicate_reads_modals_type_and_the_raw_grpc_status():
     # which is what the live failure exhausted; the override is the longer bound on top of it
     assert issubclass(modal.exception.ResourceExhaustedError, modal.exception.Error)
     assert not issubclass(modal.exception.ResourceExhaustedError, modal.exception.RemoteError)
+
+
+
+class _ByteRead:
+    def __init__(self, data):
+        self._data = data
+
+    @property
+    def read(self):
+        data = self._data
+
+        class _Aio:
+            async def aio(self):
+                return data
+        return _Aio()
+
+
+class _ByteProcess:
+    def __init__(self, out, err, rc):
+        self.returncode, self.stdout, self.stderr = rc, _ByteRead(out), _ByteRead(err)
+
+        class _Wait:
+            async def aio(self):
+                return None
+        self.wait = _Wait()
+
+
+def test_exec_reads_output_as_bytes_and_decodes_lossily_so_a_non_utf8_print_is_a_result_not_an_error():
+    """A program printing non-UTF-8 bytes (gzip to stdout — BigCodeBench item 350 on a control-pool-stopped
+    object) made the parent's strict text-mode read raise UnicodeDecodeError, a permanent error that tore the task down; the
+    owned exec runs in byte mode and decodes with errors="replace". Valid UTF-8 reads exactly as text mode would."""
+    import asyncio
+
+    calls = []
+
+    class _Exec:
+        def __init__(self, out, err, rc):
+            self.out, self.err, self.rc = out, err, rc
+
+        async def aio(self, *cmd, **kw):
+            calls.append((cmd, kw))
+            return _ByteProcess(self.out, self.err, self.rc)
+
+    def env_with(out, err, rc):
+        env = SO.OwnedModalSandboxEnvironment.__new__(SO.OwnedModalSandboxEnvironment)
+        env.sandbox = type("SB", (), {"exec": _Exec(out, err, rc)})()
+        return env
+
+    r = asyncio.run(env_with(b"\x1f\x8b\x08\x08 gzip", b"Traceback\n", 1).exec(["python", "-c", "x"], timeout=30))
+    assert (r.success, r.returncode, r.stderr) == (False, 1, "Traceback\n") and r.stdout.startswith("\x1f\ufffd\x08\x08")
+    assert calls[-1][1]["text"] is False and calls[-1][0] == ("python", "-c", "x")
+    r = asyncio.run(env_with("héllo\n".encode("utf-8"), b"", 0).exec(["true"], timeout=None))
+    assert (r.success, r.returncode, r.stdout, r.stderr) == (True, 0, "héllo\n", "")
+    assert SO._decode_output(None) == "" and SO._decode_output("already text") == "already text"

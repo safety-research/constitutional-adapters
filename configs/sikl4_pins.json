@@ -1,0 +1,198 @@
+{
+ "_comment": [
+  "Lane-private pins for the multi-turn views sikl4s<k> (k in 1..3) of target qwen35_4b: per fit seed k, the six",
+  "SI-distilled refits (KL distillation of a system-instruction-prompted teacher, fit on and served on the instruct",
+  "checkpoint, every adapter acting at all token positions) of the safety SI (safety_refusal), the constitution SI",
+  "(si_constitution) and the short irrelevant control SI (C16), each as the rank-4 o_proj LoRA (lora_r4, kind lora_all)",
+  "and the all-layer ReLU steer (psr_kl_all, kind psr).",
+  "",
+  "WHY A PRIVATE FILE rather than entries in configs/sdfbase_full22_pins.json: these are comparison objects, not",
+  "published objects, and nothing here is appended to any shared surface. The roster that consumes these pins is",
+  "configs/sdfbase_full22_roster_sikl4.yaml, selected by the F22_ROSTER override, through the cross-bank pin form",
+  "{pins, pin} (make_bank_view.plan_pin_entry, mt_serving_up._pin_form_sha, jobplan.object_id_for with pins_root).",
+  "The file holds these eighteen objects and nothing else.",
+  "",
+  "KEYED BY SEED: the staged ids carry sikl4s<k>__ because the CELL id is the production spelling <SI>__<arm> (the",
+  "fit seed lives in the view and the staged object, never in the cell id); view sikl4s<k> serves fit seed k.",
+  "",
+  "`source` is spelled RELATIVE to exp/objects and `bank` is its first component (make_bank_view.objects_root_of /",
+  "plan_pin_entry). The builder resolves the staged copy at <objects root>/sikl4/qwen35_4b/cells/<staged_id> and",
+  "requires this `source` view path to exist and resolve to that same directory. Each staged copy holds object.pt,",
+  "its one identity sidecar and staged_from.json, copied from the fit's own cell",
+  "(sikl4/qwen35_4b/fits/s<k>/<cell>/<cell>); no epoch checkpoint and no dose copy is staged.",
+  "",
+  "served_layer: the LoRA (lora_all) stores the 8 layers [3, 7, 11, 15, 19, 23, 27, 31] (site o_proj_out, served ==",
+  "stored), so 3 is the first served block; the ReLU steer (psr) stores all 32 layers, so 0. The builder holds the",
+  "value by membership in the blob's served layers.",
+  "",
+  "identity_sidecar: train_budget_meta.json, the trainer's fit record, which names the cell, the fit seed and the sha.",
+  "",
+  "Each sha is the sha256 of the fit's object.pt, re-hashed on the cluster and held equal to its",
+  "train_budget_meta.json, its COMPLETE record and the registry object id filed for the fit (campaign",
+  "si_target_refit). No sha here equals any entry of another configs/*pins*.json."
+ ],
+ "qwen35_4b": {
+  "sikl4s1__C16__lora_r4": {
+   "object_sha256": "80a8f416a634aa7a49dca1e9da9f68c14889d3a6be2a6177ce2ef3a5b2cf2db8",
+   "kind": "lora_all",
+   "source": "sikl4/qwen35_4b/cells_view/sikl4s1/C16__lora_r4",
+   "identity_sidecar": "train_budget_meta.json",
+   "bank": "sikl4",
+   "staged_id": "sikl4s1__C16__lora_r4",
+   "served_layer": 3
+  },
+  "sikl4s1__C16__psr_kl_all": {
+   "object_sha256": "a473f52ddcd72931112030f70164d8cd9d9ea2716e84e564d2d4afcf01f21bb2",
+   "kind": "psr",
+   "source": "sikl4/qwen35_4b/cells_view/sikl4s1/C16__psr_kl_all",
+   "identity_sidecar": "train_budget_meta.json",
+   "bank": "sikl4",
+   "staged_id": "sikl4s1__C16__psr_kl_all",
+   "served_layer": 0
+  },
+  "sikl4s1__safety_refusal__lora_r4": {
+   "object_sha256": "e3d61a63cfd0e4d4ff1462a5760513a5dacf459d3352f29b81834fa08b122445",
+   "kind": "lora_all",
+   "source": "sikl4/qwen35_4b/cells_view/sikl4s1/safety_refusal__lora_r4",
+   "identity_sidecar": "train_budget_meta.json",
+   "bank": "sikl4",
+   "staged_id": "sikl4s1__safety_refusal__lora_r4",
+   "served_layer": 3
+  },
+  "sikl4s1__safety_refusal__psr_kl_all": {
+   "object_sha256": "b37fb015b4b0f71f8785df76826cff5d738d1dee6eaac5759a30ae3d496caa04",
+   "kind": "psr",
+   "source": "sikl4/qwen35_4b/cells_view/sikl4s1/safety_refusal__psr_kl_all",
+   "identity_sidecar": "train_budget_meta.json",
+   "bank": "sikl4",
+   "staged_id": "sikl4s1__safety_refusal__psr_kl_all",
+   "served_layer": 0
+  },
+  "sikl4s1__si_constitution__lora_r4": {
+   "object_sha256": "10c3f366540ee7c1642974ff9653badcdbb8f1979c530865c8de7a4e11d9172c",
+   "kind": "lora_all",
+   "source": "sikl4/qwen35_4b/cells_view/sikl4s1/si_constitution__lora_r4",
+   "identity_sidecar": "train_budget_meta.json",
+   "bank": "sikl4",
+   "staged_id": "sikl4s1__si_constitution__lora_r4",
+   "served_layer": 3
+  },
+  "sikl4s1__si_constitution__psr_kl_all": {
+   "object_sha256": "55edaec8a4db665e8547a7b94257582a1405cfcfeb5feedf6e2ab5dbabd5ce68",
+   "kind": "psr",
+   "source": "sikl4/qwen35_4b/cells_view/sikl4s1/si_constitution__psr_kl_all",
+   "identity_sidecar": "train_budget_meta.json",
+   "bank": "sikl4",
+   "staged_id": "sikl4s1__si_constitution__psr_kl_all",
+   "served_layer": 0
+  },
+  "sikl4s2__C16__lora_r4": {
+   "object_sha256": "eb719f4222051e3bfd5104214c03769ed007080ddd14f75e13a29068f89b110f",
+   "kind": "lora_all",
+   "source": "sikl4/qwen35_4b/cells_view/sikl4s2/C16__lora_r4",
+   "identity_sidecar": "train_budget_meta.json",
+   "bank": "sikl4",
+   "staged_id": "sikl4s2__C16__lora_r4",
+   "served_layer": 3
+  },
+  "sikl4s2__C16__psr_kl_all": {
+   "object_sha256": "0590e9dec5bdd293c414e3529c926d4884d86111d1f8691874fe3d7fbe6a33ae",
+   "kind": "psr",
+   "source": "sikl4/qwen35_4b/cells_view/sikl4s2/C16__psr_kl_all",
+   "identity_sidecar": "train_budget_meta.json",
+   "bank": "sikl4",
+   "staged_id": "sikl4s2__C16__psr_kl_all",
+   "served_layer": 0
+  },
+  "sikl4s2__safety_refusal__lora_r4": {
+   "object_sha256": "0952ae4f12e3f4f4bc63bcefe609d621df5f01f0b13ac9ae9293cc8f720b2bad",
+   "kind": "lora_all",
+   "source": "sikl4/qwen35_4b/cells_view/sikl4s2/safety_refusal__lora_r4",
+   "identity_sidecar": "train_budget_meta.json",
+   "bank": "sikl4",
+   "staged_id": "sikl4s2__safety_refusal__lora_r4",
+   "served_layer": 3
+  },
+  "sikl4s2__safety_refusal__psr_kl_all": {
+   "object_sha256": "b2882f69628ecfe0e6846d57fe9f358ef569d8cbc93fa1c3f10a4249dcf9d29a",
+   "kind": "psr",
+   "source": "sikl4/qwen35_4b/cells_view/sikl4s2/safety_refusal__psr_kl_all",
+   "identity_sidecar": "train_budget_meta.json",
+   "bank": "sikl4",
+   "staged_id": "sikl4s2__safety_refusal__psr_kl_all",
+   "served_layer": 0
+  },
+  "sikl4s2__si_constitution__lora_r4": {
+   "object_sha256": "11d790ce754fadc68057d98d1f24f6cc54732a10306be890c88e416658cf7931",
+   "kind": "lora_all",
+   "source": "sikl4/qwen35_4b/cells_view/sikl4s2/si_constitution__lora_r4",
+   "identity_sidecar": "train_budget_meta.json",
+   "bank": "sikl4",
+   "staged_id": "sikl4s2__si_constitution__lora_r4",
+   "served_layer": 3
+  },
+  "sikl4s2__si_constitution__psr_kl_all": {
+   "object_sha256": "4ae1341a8a29f7967137adcb243fadd45963f968c15db34505d31af19e10ca3b",
+   "kind": "psr",
+   "source": "sikl4/qwen35_4b/cells_view/sikl4s2/si_constitution__psr_kl_all",
+   "identity_sidecar": "train_budget_meta.json",
+   "bank": "sikl4",
+   "staged_id": "sikl4s2__si_constitution__psr_kl_all",
+   "served_layer": 0
+  },
+  "sikl4s3__C16__lora_r4": {
+   "object_sha256": "332845ea44c7a5538c896ff653229f8046858bae0fa8b5f0a4ff2af57346be70",
+   "kind": "lora_all",
+   "source": "sikl4/qwen35_4b/cells_view/sikl4s3/C16__lora_r4",
+   "identity_sidecar": "train_budget_meta.json",
+   "bank": "sikl4",
+   "staged_id": "sikl4s3__C16__lora_r4",
+   "served_layer": 3
+  },
+  "sikl4s3__C16__psr_kl_all": {
+   "object_sha256": "85bc02be19e48b1b666e015c0e0f09801b4c1d8a4c74908a73b83e4cb4cbb61e",
+   "kind": "psr",
+   "source": "sikl4/qwen35_4b/cells_view/sikl4s3/C16__psr_kl_all",
+   "identity_sidecar": "train_budget_meta.json",
+   "bank": "sikl4",
+   "staged_id": "sikl4s3__C16__psr_kl_all",
+   "served_layer": 0
+  },
+  "sikl4s3__safety_refusal__lora_r4": {
+   "object_sha256": "627cfb19664cdc510be08c6282cc324d456d0d53776e807bb929c492b5ebb950",
+   "kind": "lora_all",
+   "source": "sikl4/qwen35_4b/cells_view/sikl4s3/safety_refusal__lora_r4",
+   "identity_sidecar": "train_budget_meta.json",
+   "bank": "sikl4",
+   "staged_id": "sikl4s3__safety_refusal__lora_r4",
+   "served_layer": 3
+  },
+  "sikl4s3__safety_refusal__psr_kl_all": {
+   "object_sha256": "b073c88aef7a422e1d7e932e09968e3135987e3c4972aa5ca38e60ca1e0f125e",
+   "kind": "psr",
+   "source": "sikl4/qwen35_4b/cells_view/sikl4s3/safety_refusal__psr_kl_all",
+   "identity_sidecar": "train_budget_meta.json",
+   "bank": "sikl4",
+   "staged_id": "sikl4s3__safety_refusal__psr_kl_all",
+   "served_layer": 0
+  },
+  "sikl4s3__si_constitution__lora_r4": {
+   "object_sha256": "0888b24b140a8969daf41a47e291ea06ce817133e136b44be8dd339cca9ab5d2",
+   "kind": "lora_all",
+   "source": "sikl4/qwen35_4b/cells_view/sikl4s3/si_constitution__lora_r4",
+   "identity_sidecar": "train_budget_meta.json",
+   "bank": "sikl4",
+   "staged_id": "sikl4s3__si_constitution__lora_r4",
+   "served_layer": 3
+  },
+  "sikl4s3__si_constitution__psr_kl_all": {
+   "object_sha256": "790188c523fd1114abd6695af5d55b8aa8b9b553f5ba8126f59537d516f963ce",
+   "kind": "psr",
+   "source": "sikl4/qwen35_4b/cells_view/sikl4s3/si_constitution__psr_kl_all",
+   "identity_sidecar": "train_budget_meta.json",
+   "bank": "sikl4",
+   "staged_id": "sikl4s3__si_constitution__psr_kl_all",
+   "served_layer": 0
+  }
+ }
+}

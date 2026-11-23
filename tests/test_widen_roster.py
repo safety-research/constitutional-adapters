@@ -463,8 +463,40 @@ def test_the_full_lane_roster_reads_through_the_same_reader_with_the_full_legs()
     assert W.waves(full) == ["qwen35_4b_s1", "qwen35_4b_s2", "qwen35_4b_s3", "gemma4e4b_s1", "llama8b_s1", "nemotron3nano4b_s1",
                              "qwen35_4b_s1_arditi", "qwen35_4b_s2_arditi", "qwen35_4b_s3_arditi",
                              "qwen35_4b_s1p", "qwen35_4b_s2p", "qwen35_4b_s3p", "gemma4e4b_s1p", "llama8b_s1p", "nemotron3nano4b_s1p",
-                             "qwen35_4b_it", "llama8b_it", "gemma4e4b_it"]
+                             "qwen35_4b_it", "llama8b_it", "gemma4e4b_it",
+                             # Added 2026-11-14: the three control-pool-stopped Qwen waves (none + the four objects)
+                             "qwen35_4b_ctlstop64s1", "qwen35_4b_ctlstop64s2", "qwen35_4b_ctlstop64s3",
+                             # Added 2026-11-15: the three SI-distilled refit Qwen waves (steered-only, six objects)
+                             "qwen35_4b_sikl4s1", "qwen35_4b_sikl4s2", "qwen35_4b_sikl4s3"]
     IT = ("qwen35_4b_it", "llama8b_it", "gemma4e4b_it")
+    SIKL4 = ("qwen35_4b_sikl4s1", "qwen35_4b_sikl4s2", "qwen35_4b_sikl4s3")
+    # the SI-distilled refit waves: STEERED-ONLY (no `none`; anchor_wave = the seed view's wave, whose none is runnable on both legs),
+    # the six objects on the row of their own view, every object pinned in the view's OWN pins file and equal to its entry there
+    sik_pins = json.loads((W.REPO / C.BCBW_SIKL4_PINS_REL).read_text())["qwen35_4b"]
+    for k, w in enumerate(SIKL4, start=1):
+        assert W.wave(full, w)["model_row"] == f"qwen35_4b-f22sikl4s{k}" and w not in W.waves(ROSTER)
+        assert W.wave(full, w)["lane_kind"] == "instruct-direct" and W.wave(full, w)["anchor_wave"] == f"qwen35_4b_s{k}"
+        assert W.runnable_cells(full, w) == ["safety_refusal__lora_r4", "safety_refusal__psr_kl_all", "si_constitution__lora_r4",
+                                             "si_constitution__psr_kl_all", "C16__lora_r4", "C16__psr_kl_all"]
+        assert "none" not in W.runnable_cells(full, w) and "none" in W.runnable_cells(full, f"qwen35_4b_s{k}")
+        assert W.prerequisites(full, w) == []          # every staging prerequisite recorded as met (banks + the subset file)
+        for e in W.entries(full, w).values():
+            o = e["object"]
+            assert o["pins"] == C.BCBW_SIKL4_PINS_REL and o["staged_id"] == f"sikl4s{k}__{e['cell_id']}"
+            assert sik_pins[o["staged_id"]]["object_sha256"] == o["sha256"] and o["object_generation"] == "batch64"
+    CTLSTOP = ("qwen35_4b_ctlstop64s1", "qwen35_4b_ctlstop64s2", "qwen35_4b_ctlstop64s3")
+    # the control-pool-stopped waves: none + the four objects on the row of their own view, every object pinned in the view's OWN
+    # pins file (contracts.bcbw_view_sources) and equal to its entry there
+    ctl_pins = json.loads((W.REPO / C.BCBW_CTLSTOP_PINS_REL).read_text())["qwen35_4b"]
+    for k, w in enumerate(CTLSTOP, start=1):
+        assert W.wave(full, w)["model_row"] == f"qwen35_4b-f22ctlstop64s{k}" and w not in W.waves(ROSTER)
+        assert W.runnable_cells(full, w) == ["none", "constv2ctl2-full__lora_r4_ce", "constv2ctl2-full__psr_ce_all",
+                                             "constv2-mix-full__lora_r4_ce_minus_ctl", "constv2-mix-full__psr_ce_all_minus_ctl"]
+        for e in W.entries(full, w).values():
+            if e.get("object"):
+                o = e["object"]
+                assert o["pins"] == C.BCBW_CTLSTOP_PINS_REL and o["staged_id"] == f"ctlstop64s{k}__{e['cell_id']}"
+                assert ctl_pins[o["staged_id"]]["object_sha256"] == o["sha256"]
     for w in IT:
         assert W.wave(full, w)["lane_kind"] == "instruct-direct" and W.wave(full, w)["model_row"] == w.replace("_it", "-f22it")
         assert W.runnable_cells(full, w)[0] == "none" and "never launched" in W.entries(full, w)["none"]["note"].lower()
@@ -507,6 +539,8 @@ def test_the_full_lane_roster_reads_through_the_same_reader_with_the_full_legs()
         assert legs == (["bigcodebench_full"] if wname.startswith("llama8b") else ["bigcodebench_full", "bfcl_full"]), wname
         if wname in IT:
             continue          # the instruct-direct waves ADD entries beyond the 200 roster's (the ordered arms) — pinned above
+        if wname in CTLSTOP or wname in SIKL4:
+            continue          # the control-pool-stopped and SI-distilled refit waves are full-roster only (no 200 sibling) — pinned above
         # entries copied from the 200 roster's wave of the same name (eight arms on the seed waves; two on the Arditi / paired waves)
         assert set(W.entries(full, wname)) == set(W.entries(ROSTER, wname)), wname
         assert W.runnable_cells(full, wname) == W.runnable_cells(ROSTER, wname), wname
@@ -541,3 +575,22 @@ def test_the_full_lane_roster_validates_and_the_legs_are_held_to_the_lane():
         C.tool_parser_live_gate_problem = saved
     assert probs and all("bfcl_full is runnable but the live parser record is withdrawn" in p for p in probs), probs
     assert not any("bfcl_200" in p for p in probs)
+
+
+def test_an_object_block_may_name_only_its_rows_own_pins_file():
+    """A full-roster object block's `pins` names the pins file its row's view reads
+    (contracts.bcbw_view_sources) — the control-pool-stopped waves' own file passes; the production file named explicitly,
+    another file, or a row whose view reads the production pair refuses by name, and an entry the named file lacks refuses."""
+    full = W.load_roster(W.ROSTER_FULL_PATH)
+    pins = W.load_pins()
+    assert W.validate(full, pins, C.MODELS) == []
+    for bad, why in ((W.PINS_REL, "is not the own pins file"), ("configs/elsewhere.json", "is not the own pins file")):
+        variant = copy.deepcopy(full)
+        variant["waves"]["qwen35_4b_ctlstop64s1"]["entries"]["ctl_lora"]["object"]["pins"] = bad
+        assert any(why in p for p in W.validate(variant, pins, C.MODELS)), bad
+    variant = copy.deepcopy(full)
+    variant["waves"]["qwen35_4b_s1"]["entries"]["ctl_lora"]["object"]["pins"] = C.BCBW_CTLSTOP_PINS_REL
+    assert any("qwen35_4b_s1.entries.ctl_lora" in p and "own pins file" in p for p in W.validate(variant, pins, C.MODELS))
+    variant = copy.deepcopy(full)
+    variant["waves"]["qwen35_4b_ctlstop64s2"]["entries"]["ctl_psr"]["object"]["staged_id"] = "ctlstop64s9__constv2ctl2-full__psr_ce_all"
+    assert any("no pins entry" in p and C.BCBW_CTLSTOP_PINS_REL in p for p in W.validate(variant, pins, C.MODELS))

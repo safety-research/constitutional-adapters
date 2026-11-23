@@ -119,6 +119,15 @@ _LOCKSTEP_COMPATIBLE: frozenset[str] = frozenset({
 })
 
 
+class TeacherTopKRequired(RuntimeError):
+    """The caller REQUIRED the precomputed top-K teacher
+    (``train_lockstep(require_teacher_topk=True)``) and the fit would have
+    trained on the online teacher instead: no store was passed, or the
+    store's rows did not bind to this fit's teacher batches. Raised during
+    setup, before any optimizer step, in place of the loud online-teacher
+    fallback that applies when nothing requires the store."""
+
+
 def lockstep_compatible(arm: str) -> bool:
     """Whether ``arm`` may join a lockstep teacher-sharing group.
 
@@ -296,7 +305,7 @@ _MASKABLE_ARMS = ("vector", "vector_rkl", "vector_js", "vector_all",
 def build_lockstep_object(arm: str, model, tok, instruction, pairs, *, layer: int,
                           sentinel=None, positions: str = "all",
                           response_header_len: int | None = None,
-                          lora_rank: int | None = None):
+                          lora_rank: int | None = None, seed: int = 0):
     """Construct the ready-to-train object for a compatible ``arm``, mirroring
     the SETUP its registry trainer performs (identical constructors and init
     helpers), so a lockstep-trained object's INIT is bit-identical to the
@@ -325,7 +334,17 @@ def build_lockstep_object(arm: str, model, tok, instruction, pairs, *, layer: in
     historical arm — multilayer.py's legacy-shape contract). Any OTHER arm
     given a rank refuses loudly: rank is the lora arm's axis, and a rank
     silently ignored on a psr arm is a configured intent that never
-    reached the trainer (the 3dd9e36 bug class)."""
+    reached the trainer (the 3dd9e36 bug class).
+
+    ``seed`` (the fit seed, ``train_kwargs.default.seed``) seeds the
+    multi-layer lora arms' A-factor draw (``MultiLayerLoRAObject(seed=)``:
+    ``manual_seed(seed + layer)`` per layer; B stays zero), so fits that
+    differ only in seed differ in their initialisation as well as in their
+    data order. The default 0 is the constructor's own default, so a fit
+    that states no seed builds the bit-identical object it always did. The
+    other arms take no seed here: the psr arms keep their deterministic zero
+    init (the seed varies their data order only), and the vector and
+    soft-token arms keep their constructors' own inits."""
     if not lockstep_compatible(arm):
         raise ValueError(
             f"{arm!r} is not lockstep-compatible: "
@@ -378,8 +397,9 @@ def build_lockstep_object(arm: str, model, tok, instruction, pairs, *, layer: in
             obj.set_fit_positions(positions, response_header_len)
         return obj
     if arm in ("lora_r1_all", "lora_r4"):
-        obj = (MultiLayerLoRAObject(model) if lora_rank is None
-               else MultiLayerLoRAObject(model, rank=int(lora_rank)))
+        obj = (MultiLayerLoRAObject(model, seed=int(seed)) if lora_rank is None
+               else MultiLayerLoRAObject(model, seed=int(seed),
+                                         rank=int(lora_rank)))
         if positions != "all":
             obj.set_fit_positions(positions, response_header_len)
         return obj
@@ -905,6 +925,7 @@ def train_lockstep(
     checkpoint_key: str | None = None,
     divergence_guard=None,
     epoch_cb: Callable[[int, int, list], None] | None = None,
+    require_teacher_topk: bool = False,
 ) -> dict[str, list[float]]:
     """Train every arm in ``arms`` in lockstep, sharing one teacher forward per
     batch. Objects are trained in place; returns ``{arm.name: loss_history}``.
@@ -1022,6 +1043,13 @@ def train_lockstep(
     uncached, FULL-VOCAB online forwards, so no guard verdict or restored
     epoch can shift with the flag (the prefix-cache rule, inherited).
 
+    ``require_teacher_topk`` (default off: everything above holds as
+    written): the caller's statement that the gradient-training teacher
+    leg MUST be the precomputed head. Both online paths then raise
+    :class:`TeacherTopKRequired` during setup, before any optimizer step —
+    no ``teacher_topk`` passed at all, and a row-binding failure that would
+    otherwise fall back to the online teacher.
+
     Gradient accumulation rides per arm via
     ``LockstepArmParams.accum_steps`` (see its field note): groups of
     consecutive micro-batches along the shared epoch order, per-denominator
@@ -1079,6 +1107,11 @@ def train_lockstep(
     """
     if not arms:
         raise ValueError("train_lockstep needs at least one arm")
+    if require_teacher_topk and teacher_topk is None:
+        raise TeacherTopKRequired(
+            f"group {sorted(a.name for a in arms)}: no precomputed top-K "
+            "teacher store was passed, so the training steps would run the "
+            "online teacher")
     for a in arms:
         if not lockstep_compatible(a.name):
             raise ValueError(
@@ -1284,6 +1317,10 @@ def train_lockstep(
             topk_batches = [teacher_topk.gather_for_batch(tb)
                             for tb in per_arm[0]["teacher"]]
         except TeacherTopKMismatch as e:
+            if require_teacher_topk:
+                raise TeacherTopKRequired(
+                    f"the precomputed artifact does not bind to this fit's "
+                    f"batches: {e}") from e
             topk_batches = None
             print(f"[teacher-topk] FALLBACK to the ONLINE teacher — the "
                   f"precomputed artifact does not bind to this fit's "

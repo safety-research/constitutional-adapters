@@ -46,9 +46,20 @@ from the parent, and nothing else:
    the last refusal re-raised unchanged once the bound is spent. Only the rate
    limit is retried; nothing falls back to another provider.
 
-Everything else — exec with the timeout-retry ladder, file I/O, the app lookup
-(``inspect_modal_sandbox``), the create's transient retry — is the parent's,
-unchanged.
+5. **Command output read as bytes, decoded lossily** (added 2026-11-14). The parent execs in Modal's
+   text mode, which decodes stdout / stderr as strict UTF-8, and re-raises a ``UnicodeDecodeError`` as permanent
+   (its ``_exec_retry`` excludes it): a BigCodeBench program whose test run PRINTS non-UTF-8 bytes (a generated
+   solution that wrote gzip output to stdout, item 350 on a control-pool-stopped Qwen object) errored the sample,
+   inspect tore the task down after it, and the cell could never complete — the same program fails identically on
+   every retry under greedy decoding. ``exec`` is therefore re-implemented as the parent's 0.5.0 body verbatim
+   (the stdin write, the ``_exec_retry`` transient retry, the timeout ladder) with ONE change: the process runs
+   with ``text=False`` and its output is decoded ``utf-8`` with ``errors="replace"``. Valid UTF-8 output decodes
+   to exactly the string text mode returns, so every command whose output the parent could read yields the same
+   ``ExecResult``; only output the parent could not decode at all now yields a result (the scorer grades
+   BigCodeBench on the return code, never on the bytes printed).
+
+Everything else — file I/O, the app lookup (``inspect_modal_sandbox``), the create's transient retry — is the
+parent's, unchanged.
 """
 
 from __future__ import annotations
@@ -65,12 +76,13 @@ try:  # grpclib rides modal; a venv carrying a partial modal (a test stub) has n
     import grpclib.const
 except ImportError:  # pragma: no cover — production always has it
     grpclib = None  # type: ignore[assignment]
-from inspect_ai.util import (ComposeConfig, SandboxEnvironment, SandboxEnvironmentConfigType,
+from inspect_ai.util import (ComposeConfig, ExecResult, SandboxEnvironment, SandboxEnvironmentConfigType,
                              is_compose_yaml, is_dockerfile, parse_compose_yaml, sandboxenv,
-                             trace_message)
+                             trace_message, warn_once)
 from inspect_sandboxes._util.naming import make_sandbox_name
 from inspect_sandboxes.modal._compose import _MODAL_PORT_KEYS, convert_compose_to_modal_params
 from inspect_sandboxes.modal._modal import MODAL_APP_NAME, ModalSandboxEnvironment, running_sandboxes
+from inspect_sandboxes.modal._modal import _exec_retry  # the parent's transient-retry policy, reused verbatim
 from typing_extensions import override
 
 from sisteer.capeval.tinycap import contracts as C
@@ -115,6 +127,15 @@ def current_owner() -> scope.Owner:
     return owner
 
 
+def _decode_output(data: Any) -> str:
+    """Byte-mode command output as text: ``utf-8`` with ``errors="replace"`` (a str passes through unchanged)."""
+    if data is None:
+        return ""
+    if isinstance(data, str):
+        return data
+    return bytes(data).decode("utf-8", errors="replace")
+
+
 def record_path() -> Optional[str]:
     """The durable ``sandboxes.jsonl`` the container named, or None (a hand run)."""
     p = os.environ.get(scope.SANDBOX_RECORD_ENV)
@@ -157,6 +178,65 @@ class OwnedModalSandboxEnvironment(ModalSandboxEnvironment):
         return await BK.create_with_backoff(ModalSandboxEnvironment._create_sandbox, command, kwargs, policy=policy,
                                             rate_limited=is_sandbox_rate_limit, sleep=_backoff_sleep,
                                             on_retry=_on_retry, on_exhausted=_on_exhausted)
+
+    @override
+    async def exec(self, cmd: list[str], input: str | bytes | None = None, cwd: str | None = None,
+                   env: dict[str, str] | None = None, user: str | None = None, timeout: int | None = None,
+                   timeout_retry: bool = True, concurrency: bool = True) -> ExecResult[str]:
+        """The parent's 0.5.0 ``exec`` verbatim except that the process runs in BYTE mode and its output is decoded
+        ``utf-8`` / ``errors="replace"`` (module docstring, point 5)."""
+        from pathlib import PurePosixPath
+        from typing import cast
+
+        if user is not None:
+            warn_once(logger, "The 'user' parameter is ignored in ModalSandboxEnvironment. "
+                              "Commands will run as the container's default user.")
+        workdir = cwd
+        if workdir is not None and not PurePosixPath(workdir).is_absolute():
+            warn_once(logger, f"Relative path '{workdir}' for cwd parameter was converted to absolute path '/{workdir}' "
+                              "(relative to filesystem root). For clarity, consider using absolute paths.")
+            workdir = f"/{workdir}"
+
+        @_exec_retry
+        async def _run() -> ExecResult[str]:
+            modal_env = cast(dict[str, str | None] | None, env)
+            process = await self.sandbox.exec.aio(*cmd, workdir=workdir, env=modal_env, text=False)
+            if input is not None:
+                try:
+                    data = input.encode("utf-8") if isinstance(input, str) else input
+                    process.stdin.write(data)
+                except modal.exception.InternalError as e:
+                    logger.warning(f"Modal InternalError while writing stdin: {e}.")
+                    raise
+                finally:
+                    try:
+                        process.stdin.write_eof()
+                        await process.stdin.drain.aio()
+                    except Exception:  # noqa: BLE001 — the parent's own swallow
+                        pass
+            stdout_b = await process.stdout.read.aio()
+            stderr_b = await process.stderr.read.aio()
+            await process.wait.aio()
+            return ExecResult(success=process.returncode == 0,
+                              returncode=process.returncode if process.returncode is not None else 0,
+                              stdout=_decode_output(stdout_b), stderr=_decode_output(stderr_b))
+
+        if timeout_retry:
+            t1 = min(timeout, 60) if timeout is not None else 60
+            t2 = min(timeout, 30) if timeout is not None else 30
+            attempt_timeouts: list[int | None] = [timeout, t1, t2]
+        else:
+            attempt_timeouts = [timeout]
+        last_timeout_exc: asyncio.TimeoutError | None = None
+        for t in attempt_timeouts:
+            try:
+                if t is not None:
+                    return await asyncio.wait_for(_run(), timeout=t)
+                return await _run()
+            except asyncio.TimeoutError as e:
+                last_timeout_exc = e
+        assert last_timeout_exc is not None
+        raise TimeoutError(f"Command timed out after {timeout} seconds") from last_timeout_exc
 
     @override
     @classmethod

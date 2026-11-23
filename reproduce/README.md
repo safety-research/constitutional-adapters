@@ -27,8 +27,37 @@ uv sync --frozen --extra cpu --group notebook
 reproduce/10_figures.sh --source snapshot
 ```
 
-This renders every notebook figure from the snapshot under `paper/snapshot/` in about ten minutes on a CPU, into
+This renders every notebook figure from the snapshot under `paper/snapshot/` in about twenty minutes on a CPU, into
 the figures root's `registry-notebook/` ([paper/notebooks/README.md](../paper/notebooks/README.md)). It needs `git` on `PATH`.
+
+The figures' judged readings are the paper's judges' (MiniMax-M3, and GLM-5.3 on Petri): non-Claude re-judges filed after
+stage 08's Claude grading, as second judgments of the same runs, by the code in `scripts/rejudge/`
+([its README](../scripts/rejudge/README.md)). `paper/notebooks/data/paper_judges.json` names each judge, and
+`--judges primary` renders stage 08's Claude readings instead.
+
+## Re-judging with the paper's judges
+
+`scripts/rejudge/` re-judges graded runs with the paper's judges through OpenRouter and files the verdicts into the registry as a
+second judge of each run. It needs `OPENROUTER_API_KEY` only for the steps that send requests; every other step is offline, and
+nothing reaches the registry before an explicit delivery. For StrongREJECT, from the repository root with
+`PYTHONPATH=$PWD/src:$PWD/scripts`:
+
+```bash
+python scripts/rejudge/strongreject/goals.py --out SCOPE/goals.json
+python scripts/rejudge/strongreject/scope_runs.py --runs RUNS.tsv --goals SCOPE/goals.json --out SCOPE
+python scripts/rejudge/strongreject/enumerate_units.py --jobs SCOPE/jobs.jsonl --goals SCOPE/goals.json --site local --out ENUM/local
+python scripts/rejudge/strongreject/build_manifests.py --enum ENUM/local --goals SCOPE/goals.json --run-dir ROOT/full \
+    --judge minimax-m3 --no-submit-gate --max-spend-usd 20
+python scripts/rejudge/common/harvester.py --run-dir ROOT/full          # sends the batches: needs OPENROUTER_API_KEY
+python scripts/rejudge/strongreject/file_records.py --jobs SCOPE/jobs.jsonl --units ROOT/full/units.tsv.gz \
+    --run-dir ROOT/full --staging STAGE --registry-root ~/registry --dry-run
+```
+
+`RUNS.tsv` lists the runs (`run_id`, `eval_id`, `store`; `store` may be `@judgment`, the store the run's Claude judgment graded).
+The dry run stages and validates the records and prints the judge ids; `--deliver judge --deliver-only`, a registry `ingest`, then
+`--deliver runs --deliver-only` file them. The over-refusal (C/P/I) and Petri tracks, the live slot, judge identity, the revisions
+that filed the paper's judgments, and what can and cannot be reproduced without the paper's run stores are in
+[scripts/rejudge/README.md](../scripts/rejudge/README.md).
 
 ## The worked example
 
@@ -130,7 +159,7 @@ workload identity federation with no Anthropic key at all (`wif`; [docs/secrets.
 | variable | used by |
 |---|---|
 | `ANTHROPIC_API_KEY` | the stage 08 judges (StrongREJECT `claude-haiku-4-5`; over-refusal and agentic misalignment `claude-sonnet-5`; Petri judge `claude-opus-5`, auditor `claude-sonnet-5`) and stage 01 (`claude-opus-5`, Batch API and live requests) |
-| `OPENROUTER_API_KEY` | the agentic-misalignment auditor and the Petri fallback legs (Grok 4.6) |
+| `OPENROUTER_API_KEY` | the agentic-misalignment auditor and the Petri fallback legs (Grok 4.6); the re-judges with the paper's judges (`scripts/rejudge/`: MiniMax-M3, GLM-5.3), read from the environment only |
 | `MODAL_TOKEN_ID`, `MODAL_TOKEN_SECRET` | stage 07 |
 | `HF_TOKEN` | gated checkpoints in stage 00; optional |
 | `WANDB_API_KEY` | training curves, only with `SISTEER_WANDB_ENTITY` and `SISTEER_WANDB_PROJECT` set |
@@ -475,7 +504,9 @@ reproduce/05_stage_roster.sh --model <your key> --from-bank
 
 Stage 01 made the paper's two corpora, constitution and control, each in two parts (advice and stories). They are
 committed as gzip shards under `corpora/`, and stage 02 reassembles them, so neither sequence above runs stage 01. It
-generates with `corpusgen` (`corpus_generator/`) and `claude-opus-5`, and a re-run draws a new sample.
+generates with `corpusgen` (`corpus_generator/`) and `claude-opus-5`, and a re-run draws a new sample. The Qwen 3.8 Max
+constitution corpus beside them in `corpora/` (`constitution_qwen38max_advice`, `constitution_qwen38max_stories`), made
+for a generator comparison, is not a stage 01 product, and no stage reads it.
 
 ```bash
 reproduce/01_make_corpora.sh --setup        # install the generator
@@ -489,7 +520,9 @@ run from this repository.
 
 ## Reading a demo run
 
-Stage 10 draws the paper's figures from the paper's runs; a demo run's rows never enter them. Read a demo run from the
+Stage 10 draws the paper's figures from the paper's runs; a demo run's rows never enter them. On a registry of your own,
+which stage 08 grades with the Claude judges, a default render stops by name (`PolicyJudgesAbsent`), since the paper's
+judges are not in it: `--judges primary` renders its Claude readings, and `--source snapshot` the committed frame. Read a demo run from the
 registry: `run_metric` rows hold each run's aggregate metrics, `run_contrast` rows each steered run's paired difference
 against its unsteered anchor, both filed by stage 08 ([docs/registry/records.md](../docs/registry/records.md)):
 
@@ -512,7 +545,7 @@ registry --root ~/registry query "select r.run_id, r.eval_id, r.object_id, m.met
 | 07 | Runs the full BigCodeBench and BFCL sets (1,140 and 3,981 items) under each benchmark's reference decoding, and files the gate verdict on the unsteered cell's BigCodeBench pass rate. | Modal GPUs: about 1 GPU-hour for the two-cell smoke, about 6 for all ten cells |
 | 08 | Grades each run as it finishes, and files the run's metrics and each steered run's difference from its unsteered anchor. | the grading host, no GPU; the judges on the Anthropic and OpenRouter APIs |
 | 09 | Runs dose-scaled copies of the two difference objects (0.75, the paper's companion dose) under the static jailbreaks, the multi-turn attacks and the over-refusal controls. | as 06; one CPU job per cluster builds the dose views' bank views |
-| 10 | Renders the paper's figures from the registry, or from the committed snapshot. | CPU only; about ten minutes from the snapshot |
+| 10 | Renders the paper's figures from the registry, or from the committed snapshot. | CPU only; about twenty minutes from the snapshot |
 
 ## The gate
 
@@ -604,7 +637,7 @@ python reproduce/lib/submit_twin.py --config ~/.config/sisteer/config.env --mode
 | `tools/replan_compute.py` | the compute plan |
 | `tools/import_objects.py` | the committed objects for stage 05 and the registry: `cells`, `pins`, `registry` |
 | `tools/stage_demo_bank_modal.py`, `tools/stage07_receipt.py`, `tools/stage07_mirror.py`, `tools/stage07_file.py` | stage 07's Modal bank, receipt, mirror and filing |
-| `tools/snapshot_paper_frame.sh` | the snapshot export behind `10_figures.sh --export-snapshot` |
+| `tools/snapshot_paper_frame.sh` | the snapshot export behind `10_figures.sh --export-snapshot`; the committed frame was cut with `--paper-models-only` |
 | `tools/reassemble_corpus.py`, `tools/shard_corpus.py` | the corpus shards |
 | `tools/export_objects.py` | writes `objects/` from a registry |
 | `tools/demo_objects.py` | writes `objects/DEMO.json`: one training seed for every Qwen3.5-4B intervention, the seed of the best difference LoRA by the notebook's multi-turn deltas; `--check` recomputes it |

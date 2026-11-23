@@ -46,6 +46,12 @@ TARGET = "qwen35_4b"
 CLASSES = {"ctllora64": ("constv2ctl2-full__lora_r4_ce", "lora_write_basis_multiplier", "lora_all", 3),
            "ctlrelu64": ("constv2ctl2-full__psr_ce_all", "psr_direction_norm_multiplier", "psr", 0)}
 VIEWS = tuple(f"dm1_{cls}s{k}" for k in (1, 2, 3) for cls in CLASSES)
+#: the OTHER lane-private views the sampled generator's seeded-lane table names (the control-pool-stopped views, their own roster
+#: configs/sdfbase_full22_roster_ctlstop_eb64.yaml, pinned by tests/test_ctlstop64_views_all_families.py; the SI-distilled refit views,
+#: configs/sdfbase_full22_roster_sikl4.yaml, pinned by tests/test_sikl4_lane.py; then the generator comparison's views qg1ms<k>,
+#: their own roster configs/sdfbase_full22_roster_qwengen1m.yaml, pinned by tests/test_qwengen1m_more_evals_lane.py)
+#: — never rendered under this roster
+OTHER_LANE_VIEWS = ("ctlstop64s1", "ctlstop64s2", "ctlstop64s3", "sikl4s1", "sikl4s2", "sikl4s3", "qg1ms1", "qg1ms2", "qg1ms3")
 
 
 def _view_parts(view: str):
@@ -127,7 +133,7 @@ def test_the_sampled_leg_renders_the_six_views_under_the_lane_roster_only_at_the
     assert not set(VIEWS) & set(msc.SAMPLED_VIEWS[TARGET])
     assert all(not msc.in_scope(TARGET, v) for v in VIEWS) and not set(msc.lane_replicate_tags()) & set(msc.sampled_tags())
     # the seed rule rows: literal data in the rule table AND the data file, at the training seed, one trial
-    assert msc.SEEDED_LANE_VIEWS == {TARGET: VIEWS}
+    assert list(msc.SEEDED_LANE_VIEWS) == [TARGET] and msc.SEEDED_LANE_VIEWS[TARGET] == (*VIEWS, *OTHER_LANE_VIEWS)
     for view in VIEWS:
         _cls, k = _view_parts(view)
         tag = msc.tag_of(TARGET, view)
@@ -140,7 +146,8 @@ def test_the_sampled_leg_renders_the_six_views_under_the_lane_roster_only_at_the
     assert all(msc.in_scope(TARGET, v) for v in VIEWS) and not msc.in_scope(TARGET, "s1") and not msc.in_scope(TARGET, "main")
     msc.check_pins(presets, msc.load_roster())
     outs = msc.outputs(presets)
-    assert len(outs) == 18 == 6 * 1 * 3 and {t for _p, t, *_ in outs} == set(msc.lane_replicate_tags())
+    lane_tags = {msc.tag_of(TARGET, v) for v in VIEWS}
+    assert len(outs) == 18 == 6 * 1 * 3 and {t for _p, t, *_ in outs} == lane_tags < set(msc.lane_replicate_tags())
     for path, tag, trial, esc in outs:
         assert trial == 0 and path.is_file(), path.name
         assert path.read_text() == msc.render(presets, tag, trial, esc)

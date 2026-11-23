@@ -328,7 +328,22 @@ def seedrep_tags() -> list:
 #: so its rows join the rule table below as the "views ... added HERE as literal data rows" the table's
 #: docstring provides for. The seed is the view name's trailing `s<k>` (seed_of_lane_view), the same one rule the
 #: wave generator's family_of_segment strips -- one spelling per seed, no s1 special case.
-SEEDED_LANE_VIEWS = {"qwen35_4b": tuple(f"dm1_{cls}s{k}" for k in _es.SEEDS for cls in ("ctllora64", "ctlrelu64"))}
+#: THE CONTROL-POOL-STOPPED VIEWS `ctlstop64s<k>` (the batch-64 control objects fit with early stopping on the control
+#: pool, and the constitution-minus-control differences built from them, at the operating point) join under the same
+#: rule: served by the LANE-PRIVATE roster configs/sdfbase_full22_roster_ctlstop_eb64.yaml, each draws at the training
+#: seed k of the objects it serves, ONE trial, as the s<k> views do.
+#: THE SI-DISTILLED REFIT VIEWS `sikl4s<k>` (the safety / constitution / C16 SI-distilled LoRA and ReLU objects refit at fit seed k,
+#: fit on and served on the instruct checkpoint) join under the same rule: served by the LANE-PRIVATE roster
+#: configs/sdfbase_full22_roster_sikl4.yaml, each draws at the fit seed k of the objects it serves, ONE trial, as the s<k> views do.
+#: THE GENERATOR-COMPARISON VIEWS (2026-11-12): `qg1ms<k>`, one per fit seed k, each serving the
+#: seed-k 1M-token constitution LoRAs fit on the Opus-written and the Qwen-written pools, through the LANE-PRIVATE roster
+#: configs/sdfbase_full22_roster_qwengen1m.yaml only; the same rule (seed_base(k) = k, ONE trial), appended after the
+#: ctl-neg1, control-pool-stopped and SI-distilled refit rows so their order is unchanged.
+QG1M_VIEWS = tuple(f"qg1ms{k}" for k in _es.SEEDS)
+SEEDED_LANE_VIEWS = {"qwen35_4b": (*(f"dm1_{cls}s{k}" for k in _es.SEEDS for cls in ("ctllora64", "ctlrelu64")),
+                                   *(f"ctlstop64s{k}" for k in _es.SEEDS),
+                                   *(f"sikl4s{k}" for k in _es.SEEDS),
+                                   *QG1M_VIEWS)}
 _LANE_SEED_RE = re.compile(r"^[a-z0-9_]+?s(?P<seed>[1-9][0-9]*)$")
 
 

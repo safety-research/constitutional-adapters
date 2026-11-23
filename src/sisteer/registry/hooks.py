@@ -1762,7 +1762,10 @@ _KNOWN_TBM_KEYS = frozenset({"arm", "si_id", "positions_at_fit", "response_heade
                              "epochs", "seed", "lr", "lr_schedule", "warmup_steps", "max_grad_norm", "length_sorted",
                              "teacher_prefix_cache", "trainer", "completion_tokens", "object_sha256", "model_id", "model_revision",
                              "revision_source", "template_hash", "site", "target_layers", "cell_id", "fit_record", "training_budget_kind",
-                             "sequence_max_len", "sample_manifest_sha"})
+                             "sequence_max_len", "sample_manifest_sha",
+                             # the fit config's registry statement (train_two_si_objects._registry_statement): the writer states it in
+                             # its columns, never a hyperparameter
+                             "registry_statement"})
 
 
 def find_object_artifact(obj_dir: str) -> Optional[str]:
@@ -2123,7 +2126,9 @@ def object_from_sidecar(obj_dir: str, *, campaign: str, object_kind: str, paper_
                         fit_contrast_sets_json: Optional[Mapping[str, object]] = None, fit_capture_site: Optional[str] = None,
                         parent_object_ids_json: Optional[Sequence[str]] = None, derivation_params_json: Optional[Mapping[str, object]] = None,
                         fit_writer: Optional[str] = None, fit_provenance: Optional[Mapping[str, object]] = None,
-                        base_scale: Optional[float] = None, fit_layer_index_convention: Optional[str] = None
+                        base_scale: Optional[float] = None, fit_layer_index_convention: Optional[str] = None,
+                        fit_teacher_si_text_sha256: Optional[str] = None, fit_prompt_pool_id: Optional[str] = None,
+                        fit_prompt_pool_sha256: Optional[str] = None, paper_label_source: Optional[str] = None
                         ) -> Tuple[Dict[str, object], Dict[str, object]]:
     """``(object payload, artifact payload)`` for the fitted object under ``obj_dir``, read from its
     sidecars (``train_budget_meta.json`` / ``fit_meta.json`` / ``fit_provenance.json`` /
@@ -2154,7 +2159,26 @@ def object_from_sidecar(obj_dir: str, *, campaign: str, object_kind: str, paper_
 
     ``fit_code_sha``: whenever the payload states the schema's ``unverified`` (a caller's ``fit_provenance`` says so, or the producer block's
     ``code_sha`` is emit.git_sha's fallback), the hook writes ``field_confidence_json.fit_code_sha`` =
-    :data:`FIT_CODE_SHA_UNVERIFIED_ENTRY` itself — the writer that states the value meets validate.py's rule for it."""
+    :data:`FIT_CODE_SHA_UNVERIFIED_ENTRY` itself — the writer that states the value meets validate.py's rule for it.
+
+    A system-instruction distillation's three prompt facts beside ``fit_teacher_si_id`` — ``fit_teacher_si_text_sha256`` (64-hex),
+    ``fit_prompt_pool_id`` and ``fit_prompt_pool_sha256`` (64-hex or ``unverified``) — are the WRITER's statement (no sidecar key names
+    them): stated, they land in their columns, which the registry's pairing rule requires of that kind; stated for any other
+    ``fit_target_kind`` (where the rule requires them NULL) they are refused by name. ``paper_label_source`` says where a STATED
+    paper label came from (a fit config's statement in place of the (kind, role) derivation) and is recorded in
+    ``field_confidence_json.paper_label``. All four default to None: the payload is then exactly what it was without them."""
+    prompt_facts = {k: v for k, v in (("fit_teacher_si_text_sha256", fit_teacher_si_text_sha256), ("fit_prompt_pool_id", fit_prompt_pool_id),
+                                      ("fit_prompt_pool_sha256", fit_prompt_pool_sha256)) if v is not None}
+    if prompt_facts:
+        if fit_target_kind != "system_instruction_distillation":
+            raise ValueError(f"{obj_dir}: {sorted(prompt_facts)} stated for a {fit_target_kind!r} object — only a system_instruction_distillation "
+                             "carries prompt-pool facts (the registry's pairing rule requires them NULL here); not written")
+        for k, unverified_ok in (("fit_teacher_si_text_sha256", False), ("fit_prompt_pool_sha256", True)):
+            v = prompt_facts.get(k)
+            if v is not None and not (isinstance(v, str) and (re.fullmatch(r"[0-9a-f]{64}", v) or (unverified_ok and v == _UNVERIFIED))):
+                raise ValueError(f"{obj_dir}: {k}={v!r} is not a 64-hex sha256{' (or unverified)' if unverified_ok else ''}; not written")
+        if "fit_prompt_pool_id" in prompt_facts and not (isinstance(fit_prompt_pool_id, str) and fit_prompt_pool_id.strip()):
+            raise ValueError(f"{obj_dir}: fit_prompt_pool_id={fit_prompt_pool_id!r} is not a pool id; not written")
     art = find_object_artifact(obj_dir)
     if art is None:
         raise FileNotFoundError(f"no object artifact under {obj_dir} ({', '.join(_OBJECT_CANDIDATES)})")
@@ -2243,7 +2267,12 @@ def object_from_sidecar(obj_dir: str, *, campaign: str, object_kind: str, paper_
                 "fit_contrast_sets_json": dict(fit_contrast_sets_json) if fit_contrast_sets_json is not None else None,
                 "fit_capture_site": fit_capture_site if fit_capture_site in ("resid_pre", "resid_post") else None,
                 "parent_object_ids_json": list(parent_object_ids_json) if parent_object_ids_json is not None else None,
-                "derivation_params_json": dict(derivation_params_json) if derivation_params_json is not None else None}
+                "derivation_params_json": dict(derivation_params_json) if derivation_params_json is not None else None,
+                # a distillation's prompt facts, when the writer states them (validated above)
+                **prompt_facts}
+    if paper_label_source is not None:
+        # a STATED paper label (the writer's config statement in place of the (kind, role) derivation): its source on the row
+        fc["paper_label"] = {"confidence": "recorded", "source": str(paper_label_source)}
     for key, col in _FIT_SELECTION_COLUMNS.items():
         if explicit.get(col) is None and sel.get(key) is not None:
             v = sel[key]
@@ -2370,12 +2399,17 @@ def emit_object_from_sidecar(obj_dir: str, *, campaign: str, object_kind: str, p
                              fit_objective: str, script: str, registry_emit: Optional[bool] = None, spool: Optional[str] = None,
                              push_script: Optional[str] = None, session: Optional[str] = None,
                              weights_identity: Optional[Mapping[str, str]] = None, dry_run: bool = False, force: Optional[str] = None,
-                             registry_root: Optional[str] = None, **more) -> List[str]:
+                             registry_root: Optional[str] = None, strict_epoch_children: bool = False, **more) -> List[str]:
     """The fit writers' hook: ``object`` + ``artifact`` records for the object under ``obj_dir``, into
     ``<spool>/<campaign>/object__<sha16>/``. Returns the paths written (empty when off). ``dry_run=True`` builds every record the
     hook WOULD write (the object, its artifact, the epoch rows and alias artifacts) and returns them as ``[(record_type, payload)]``
     without touching the spool, the evidence or the switch — the re-emission preflight's view of the exact payloads.
-    ``fit_provenance`` (in ``more``) reaches the object and every epoch payload (object_from_sidecar)."""
+    ``fit_provenance`` (in ``more``) reaches the object and every epoch payload (object_from_sidecar).
+
+    ``strict_epoch_children`` (default off: a distinct-sha epoch checkpoint whose object row cannot be built is a printed notice and
+    gets its artifact row alone, as before): every distinct-sha epoch checkpoint MUST get its own object row. Every such row is built
+    BEFORE any record is written, and an epoch without an identity sidecar, or one whose row cannot be built, refuses the whole
+    emission (raised; the guard returns None, which the writer records as a failed emission) — nothing reaches the spool."""
     if not dry_run:
         if not emission_enabled(registry_emit):
             return []
@@ -2513,15 +2547,57 @@ def emit_object_from_sidecar(obj_dir: str, *, campaign: str, object_kind: str, p
             raise ValueError(f"{obj_dir}: the cell attests the fit's job provenance ({FIT_PROVENANCE_SIDECAR}) but {len(missing)} epoch "
                              f"dir(s) carry none (first: {missing[0]}) — their object rows and artifacts would state the EMITTING context; "
                              "write each epoch's sidecar from its own fit-job record (fix-4) — nothing written")
-    w = _DryRunWriter() if dry_run else emit.RecordWriter(spool_path, campaign, f"object__{main_sha[:16]}", producer, push_script=push_script)
-    out = [p for p in (w.emit_object(payload), w.emit_artifact(artifact)) if p]
     for epoch_art in distinct:
-        epoch_dir = os.path.dirname(str(epoch_art["uri_primary"]))
         ep_sha = str(epoch_art["artifact_id"])
         if alias_paths.get(ep_sha):
             epoch_art["locations_json"] = list(dict.fromkeys(list(epoch_art.get("locations_json") or []) + alias_paths[ep_sha]))
             epoch_art["extra"] = {**dict(epoch_art["extra"]), "epoch_checkpoint_aliases": alias_paths[ep_sha]}
-        if os.path.exists(os.path.join(epoch_dir, "train_budget_meta.json")):
+
+    def _epoch_object_rows(epoch_art) -> Tuple[Dict[str, object], Dict[str, object]]:
+        """The (object, artifact) rows of a distinct-sha epoch checkpoint that carries its own identity sidecar; raises when they
+        cannot be built (the caller decides whether that is a notice or a refusal)."""
+        epoch_dir = os.path.dirname(str(epoch_art["uri_primary"]))
+        ep_sha = str(epoch_art["artifact_id"])
+        ep_more = {k: v for k, v in more.items() if k != "extra"}
+        ep_more["extra"] = {**dict((more.get("extra") or {})), **dict(epoch_art["extra"]), "parent_object_id": main_sha}
+        ep_payload, ep_artifact = object_from_sidecar(epoch_dir, campaign=campaign, object_kind=object_kind, paper_label=paper_label,
+                                                      object_role=object_role, fit_target_kind=fit_target_kind, fit_objective=fit_objective,
+                                                      producer=producer, **ep_more)
+        refuse_unpairable_object(ep_payload, epoch_dir)          # the epoch rows share the kind: the same writer-side refusal
+        if str(ep_payload["object_id"]) == main_sha or str(ep_payload["object_id"]) != ep_sha:
+            raise RuntimeError(f"epoch object sha {str(ep_payload['object_id'])[:12]} is not the epoch artefact's {ep_sha[:12]} "
+                               f"(published object {main_sha[:12]}) — a re-emission under an existing object_id is never written")
+        # the epoch artifact carries its PROVENANCE: role + the published object it belongs to (never itself) — the
+        # validator admits an artifact under epoch_ckpts/ only with such a marker (the pre-fix duplicate had none)
+        ep_artifact["extra"] = {**dict(ep_artifact.get("extra") or {}), "role": "epoch_checkpoint", "parent_object_id": main_sha,
+                                "named_role": epoch_art["extra"].get("named_role"), "epoch": epoch_art["extra"].get("epoch"),
+                                "epoch_id": epoch_art["extra"].get("epoch_id")}
+        if alias_paths.get(ep_sha):
+            # a later epoch with THESE bytes (a plateau) is a location of this epoch's artifact, not a record of its own
+            ep_artifact["locations_json"] = list(dict.fromkeys(list(ep_artifact.get("locations_json") or []) + alias_paths[ep_sha]))
+            ep_artifact["extra"]["epoch_checkpoint_aliases"] = alias_paths[ep_sha]
+            ep_payload["extra"] = {**dict(ep_payload.get("extra") or {}), "epoch_checkpoint_aliases": alias_paths[ep_sha]}
+        return ep_payload, ep_artifact
+
+    # strict: every distinct-sha epoch's object row is built here, before the first write, so a failure leaves the spool untouched
+    strict_rows: Dict[str, Tuple[Dict[str, object], Dict[str, object]]] = {}
+    if strict_epoch_children:
+        for epoch_art in distinct:
+            epoch_dir = os.path.dirname(str(epoch_art["uri_primary"]))
+            if not os.path.exists(os.path.join(epoch_dir, "train_budget_meta.json")):
+                raise ValueError(f"{epoch_dir}: strict epoch emission — this distinct-sha epoch checkpoint carries no identity sidecar "
+                                 "(train_budget_meta.json), so it would get no object row of its own; nothing written")
+            try:
+                strict_rows[str(epoch_art["artifact_id"])] = _epoch_object_rows(epoch_art)
+            except Exception as e:  # noqa: BLE001 — re-raised with the epoch named
+                raise ValueError(f"{epoch_dir}: strict epoch emission — the per-epoch object row cannot be built ({type(e).__name__}: "
+                                 f"{e}); nothing written") from e
+    w = _DryRunWriter() if dry_run else emit.RecordWriter(spool_path, campaign, f"object__{main_sha[:16]}", producer, push_script=push_script)
+    out = [p for p in (w.emit_object(payload), w.emit_artifact(artifact)) if p]
+    for epoch_art in distinct:
+        epoch_dir = os.path.dirname(str(epoch_art["uri_primary"]))
+        rows = strict_rows.get(str(epoch_art["artifact_id"]))
+        if rows is None and os.path.exists(os.path.join(epoch_dir, "train_budget_meta.json")):
             # an epoch checkpoint with its own identity sidecar (written by the trainer's finalize_epoch_checkpoints:
             # the cell's meta re-keyed to the epoch artefact's sha) is an OBJECT in its own right — its own `object`
             # row (object_id = the epoch artefact's sha, servable by pinned sha like any staged object) carrying the
@@ -2531,35 +2607,12 @@ def emit_object_from_sidecar(obj_dir: str, *, campaign: str, object_kind: str, p
                                  "carries none — its object row and artifact would state the EMITTING context; write the epoch's sidecar "
                                  "from its own fit-job record (fix-4) — nothing written")
             try:
-                ep_more = {k: v for k, v in more.items() if k != "extra"}
-                ep_more["extra"] = {**dict((more.get("extra") or {})), **dict(epoch_art["extra"]), "parent_object_id": main_sha}
-                ep_payload, ep_artifact = object_from_sidecar(epoch_dir, campaign=campaign, object_kind=object_kind, paper_label=paper_label,
-                                                              object_role=object_role, fit_target_kind=fit_target_kind, fit_objective=fit_objective,
-                                                              producer=producer, **ep_more)
-                refuse_unpairable_object(ep_payload, epoch_dir)          # the epoch rows share the kind: the same writer-side refusal
-                if str(ep_payload["object_id"]) == main_sha or str(ep_payload["object_id"]) != ep_sha:
-                    raise RuntimeError(f"epoch object sha {str(ep_payload['object_id'])[:12]} is not the epoch artefact's {ep_sha[:12]} "
-                                       f"(published object {main_sha[:12]}) — a re-emission under an existing object_id is never written")
-                # the epoch artifact carries its PROVENANCE: role + the published object it belongs to (never itself) — the
-                # validator admits an artifact under epoch_ckpts/ only with such a marker (the pre-fix duplicate had none)
-                ep_artifact["extra"] = {**dict(ep_artifact.get("extra") or {}), "role": "epoch_checkpoint", "parent_object_id": main_sha,
-                                        "named_role": epoch_art["extra"].get("named_role"), "epoch": epoch_art["extra"].get("epoch"),
-                                        "epoch_id": epoch_art["extra"].get("epoch_id")}
-                if alias_paths.get(ep_sha):
-                    # a later epoch with THESE bytes (a plateau) is a location of this epoch's artifact, not a record of its own
-                    ep_artifact["locations_json"] = list(dict.fromkeys(list(ep_artifact.get("locations_json") or []) + alias_paths[ep_sha]))
-                    ep_artifact["extra"]["epoch_checkpoint_aliases"] = alias_paths[ep_sha]
-                    ep_payload["extra"] = {**dict(ep_payload.get("extra") or {}), "epoch_checkpoint_aliases": alias_paths[ep_sha]}
+                rows = _epoch_object_rows(epoch_art)
             except Exception as e:  # noqa: BLE001
                 print(f"[registry] {epoch_dir}: per-epoch object row NOT emitted ({type(e).__name__}: {e}); its artifact row still is", file=sys.stderr)
-            else:
-                for rec in (w.emit_object(ep_payload), w.emit_artifact(ep_artifact)):
-                    if rec:
-                        out.append(rec)
-                continue
-        rec = w.emit_artifact(epoch_art)
-        if rec:
-            out.append(rec)
+        # an epoch with its own object row writes it and its artifact; any other epoch writes its artifact row alone
+        recs = (w.emit_object(rows[0]), w.emit_artifact(rows[1])) if rows is not None else (w.emit_artifact(epoch_art),)
+        out.extend(rec for rec in recs if rec)
     w.push(final=True)
     if dry_run:
         return w.records  # type: ignore[return-value]
@@ -2598,6 +2651,16 @@ LEGACY_KIND_TO_OBJECT_KIND: Dict[str, str] = {
 #: the two-SI campaign's system-instruction ids → ``object_role`` (OBJECT_ROLES)
 SI_TO_OBJECT_ROLE: Dict[str, str] = {"safety_refusal": "safety", "si_constitution": "constitution",
                                      "si_constitution_full": "constitution", "si_irrelevant": "irrelevant"}
+#: Spellings the two shared tables above do NOT name, declared ONLY for a fit whose ``train_budget_meta.json`` carries the fit config's
+#: registry statement (``registry_statement``, written by ``train_two_si_objects``: the sikl4 refits), read through
+#: :func:`object_kind_for_stated_fit` / :func:`object_role_for_stated_fit`. ``psr_kl_all`` is the all-layer ReLU steer fit by KL to a
+#: system-instruction-prompted teacher; ``C16`` the short irrelevant control instruction of the candidate-SI set
+#: (``sisteer.data.candidate_sis``), the role ``configs/registry/legacy_spellings.yaml``'s fit_target_overrides assign it. Kept out of the
+#: shared tables on purpose: there they would turn every other lane's ``<si>__psr_kl_all`` / ``C16__*`` cell from ``not_emitted`` into
+#: records that die at ingest (no statement, so no prompt facts for the pairing check), change tune_arm's ``fit_search.object_kind`` for
+#: a psr_kl_all search, and change what a serving record's ``psr_kl_all`` spelling reads as (:func:`object_kind_from_spelling`).
+STATED_FIT_LEGACY_KIND_TO_OBJECT_KIND: Dict[str, str] = {"psr_kl_all": "relu_steer"}
+STATED_FIT_SI_TO_OBJECT_ROLE: Dict[str, str] = {"C16": "irrelevant"}
 #: the corpus-fit pipeline's document pools → ``object_role`` (review C1): the constitution corpus and its budget-matched control, by
 #: the pool's PREFIX (`constv2-mix-full`, `constv2-mix-heldout`, ...; `constv2ctl2-full`, ...) -- every other pool spelling is unmapped
 CORPUS_PREFIX_TO_OBJECT_ROLE: Tuple[Tuple[str, str], ...] = (("constv2-mix-", "constitution"), ("constv2ctl2-", "control"))
@@ -2654,6 +2717,20 @@ def epoch_checkpoint_artifacts(obj_dir: str, *, object_id: str) -> List[Dict[str
 
 def object_kind_for_legacy_kind(spelling: str) -> Optional[str]:
     return LEGACY_KIND_TO_OBJECT_KIND.get(str(spelling))
+
+
+def object_kind_for_stated_fit(spelling: str) -> Optional[str]:
+    """The object kind of a fit whose sidecar carries a registry statement: the shared table, then the spellings declared for stated
+    fits alone (:data:`STATED_FIT_LEGACY_KIND_TO_OBJECT_KIND`). None otherwise (never guessed)."""
+    return object_kind_for_legacy_kind(spelling) or STATED_FIT_LEGACY_KIND_TO_OBJECT_KIND.get(str(spelling))
+
+
+def object_role_for_stated_fit(si_id: Optional[str]) -> Optional[str]:
+    """The role of a stated fit's target: :func:`object_role_for_si`, then the SI ids declared for stated fits alone
+    (:data:`STATED_FIT_SI_TO_OBJECT_ROLE`). None otherwise (never guessed)."""
+    if not si_id:
+        return None
+    return object_role_for_si(si_id) or STATED_FIT_SI_TO_OBJECT_ROLE.get(str(si_id))
 
 
 def object_role_for_si(si_id: Optional[str]) -> Optional[str]:

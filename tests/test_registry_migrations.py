@@ -28,7 +28,9 @@ V12_TABLE_DRIFT = ["table instrument lacks column(s) padding_tokens, padding_ide
 V12_VIEW_DRIFT = "v_run_wide differs from the code's SQL"
 #: what migration 0015 adds to the drift of EVERY earlier shape: the head reads its base tables (the last v_* object in the code's order)
 #: and the partial index its item member names (indexes are listed after the views)
-V15_DRIFT = ["v_paper_inputs_head differs from the code's SQL", "index idx_item_result_withdrawn_seq is absent"]
+#: (0015 also created idx_item_result_withdrawn_seq, which 0033 drops with the head's item member: a shape below 15 lacks it and the code
+#: declares it no more, so its line is gone from every earlier shape's drift)
+V15_DRIFT = ["v_paper_inputs_head differs from the code's SQL"]
 #: what migration 0016 adds to the drift of EVERY earlier shape (roster v9): the `roster_version` column on paper_round and roster_entry
 #: (each a "lacks column(s)" line and a "CREATE text differs" line, tables in the code's order: paper_round before instrument, roster_entry after)
 #: and the two roster objects that read it (`v_roster_match`, which most earlier shapes drift on already, and `v_roster_gaps`)
@@ -237,8 +239,128 @@ NTPL_DRIFT = [f"table {t}: column applied_positions_mode CHECK (applied_position
 
 
 def _sans_ntpl_drift(drift):
-    """The drift without migration 0031's two lines."""
-    return [d for d in drift if d not in NTPL_DRIFT]
+    """The drift without migration 0031's two lines -- and without 0033's (`_sans_prune_drift`, the newest file's)."""
+    return [d for d in _sans_prune_drift(drift) if d not in NTPL_DRIFT]
+
+
+#: Migration 0033 `prune_superseded_item_rows`' shape change: the `item_reclaim_ledger` table, `v_paper_inputs_head` without its item
+#: member and `idx_item_result_withdrawn_seq` dropped with it -- which every shape below 0033 lacks, so it is set aside by the tests of the
+#: earlier files' plans: `_sans_prune_drift`, the innermost drift strip (under `_sans_ntpl_drift`), takes the table's line and the index's
+#: (a shape from 15 on carries the index the code no longer declares) out; the head's line is every shape's from 15 on to 32 too, and the
+#: tests of shapes 21..32 take it out with `_sans_prune_head` (below 21 an earlier file's head line stands for it); `_sans_prune_render`,
+#: the innermost render strip, takes the table's create block, the index drop and their drift lines out; `_strip_prune_shape`, the innermost
+#: shape strip (under `_strip_af_shape`), takes a database built from the code's render back to before the file. Its own test is
+#: test_0033_on_a_v32_database, below
+PRUNE_SLUG = "prune_superseded_item_rows"
+PRUNE_TABLES = ("item_reclaim_ledger",)
+PRUNE_DRIFT = ["table item_reclaim_ledger is absent", "index idx_item_result_withdrawn_seq is not declared by the code"]
+PRUNE_HEAD_DRIFT = "v_paper_inputs_head differs from the code's SQL"
+PRUNE_INDEX = "CREATE INDEX idx_item_result_withdrawn_seq ON item_result (ingest_seq) WHERE withdrawn_by_revision_id IS NOT NULL"
+#: the head's last member and its comment as 0015 spelled them (0020 and 0021 kept them), which 0033 drops
+PRE_0033_ITEM_MEMBER = """    -- one seek through the partial index on ingest_seq over the withdrawn rows, named so the plan holds whatever the statistics say
+    UNION ALL SELECT MAX(ingest_seq) FROM item_result INDEXED BY idx_item_result_withdrawn_seq WHERE withdrawn_by_revision_id IS NOT NULL"""
+
+
+def _sans_prune_drift(drift):
+    """The drift without migration 0033's table and index lines."""
+    return [d for d in drift if d not in PRUNE_DRIFT]
+
+
+def _prune_index_aside(index_plan):
+    """A shape plan's index objects without 0033's drop of idx_item_result_withdrawn_seq (every shape from 15 on carries it)."""
+    return {k: [i for i in v if not (k == "drop" and i == "idx_item_result_withdrawn_seq")] for k, v in index_plan.items()}
+
+
+def _prune_objects_aside(objects):
+    """A shape plan's index, trigger and view objects without 0033's part: its index drop (:func:`_prune_index_aside`) and its recreate of
+    `v_paper_inputs_head`."""
+    return {"index": _prune_index_aside(objects["index"]), "trigger": objects["trigger"],
+            "view": {k: [v for v in vs if v != "v_paper_inputs_head"] for k, vs in objects["view"].items()}}
+
+
+def _sans_prune_head(drift):
+    """The drift of a shape from 21 to 32 without the head's line, which only 0033 changes there."""
+    return [d for d in drift if d != PRUNE_HEAD_DRIFT]
+
+
+def _pre_0033_head() -> str:
+    """`v_paper_inputs_head` as it read before migration 0033 (0021's text): the code's text with 0015's item member and its comment as the
+    last member, the way 0021 committed it."""
+    sql = S.VIEW_SQL["v_paper_inputs_head"]
+    assert "idx_item_result_withdrawn_seq" not in sql
+    i = sql.rindex("\n);")
+    out = sql[:i] + "\n" + PRE_0033_ITEM_MEMBER + sql[i:]
+    assert out.count("UNION ALL SELECT MAX(ingest_seq) FROM item_result INDEXED BY idx_item_result_withdrawn_seq") == 1
+    return out
+
+
+def _sans_prune_head_render(text: str) -> str:
+    """A rendered migration body of a shape from 21 to 32 without 0033's recreate of the head (its drift line and DROP + CREATE block)."""
+    out, skip = [], False
+    for ln in text.split("\n"):
+        if ln == "-- drift: " + PRUNE_HEAD_DRIFT:
+            continue
+        if ln == "DROP VIEW IF EXISTS v_paper_inputs_head;":
+            skip = True
+            continue
+        if skip:
+            if ln == ");":
+                skip = "blank"
+            elif skip == "blank":
+                skip = False
+                if ln != "":
+                    out.append(ln)
+            continue
+        out.append(ln)
+    joined = "\n".join(out)
+    assert "v_paper_inputs_head" not in joined
+    return joined
+
+
+def _sans_prune_cli(out: str) -> str:
+    """`registry migrate --plan` output of a shape from 21 to 32 without 0033's part: its create line, its index drop, its drift lines
+    (indented under the shape's), and the head among the recreated objects."""
+    gone = {"drop undeclared index(s): idx_item_result_withdrawn_seq", "create table item_reclaim_ledger"}
+    lines = []
+    for ln in out.split("\n"):
+        if ln in gone or ln.strip() in PRUNE_DRIFT + [PRUNE_HEAD_DRIFT]:
+            continue
+        if ln.startswith("recreate view(s): "):
+            names = [v for v in ln[len("recreate view(s): "):].split(", ") if v != "v_paper_inputs_head"]
+            if not names:
+                continue
+            ln = "recreate view(s): " + ", ".join(names)
+        lines.append(ln)
+    return "\n".join(lines)
+
+
+def _sans_prune_render(text: str) -> str:
+    """A rendered migration body without migration 0033's part: its table and index drift lines, the `-- create item_reclaim_ledger` block
+    (the CREATE TABLE and the blank line after) and the index's DROP."""
+    out, skip = [], False
+    for ln in text.split("\n"):
+        if ln in {"-- drift: " + d for d in PRUNE_DRIFT} or ln == "DROP INDEX IF EXISTS idx_item_result_withdrawn_seq;":
+            continue
+        if ln == "-- create item_reclaim_ledger":
+            skip = True
+            continue
+        if skip:
+            if ln == "":
+                skip = False
+            continue
+        out.append(ln)
+    joined = "\n".join(out)
+    assert "item_reclaim_ledger" not in joined
+    return joined
+
+
+def _strip_prune_shape(conn) -> None:
+    """Take a database built from the CODE's render back to before migration 0033: the ledger table dropped (nothing names it), the partial
+    index back, the head at its pre-0033 text."""
+    conn.execute("DROP TABLE IF EXISTS item_reclaim_ledger")
+    conn.execute(PRUNE_INDEX)
+    conn.execute("DROP VIEW v_paper_inputs_head")
+    conn.execute(_pre_0033_head())
 
 
 def _sans_rebuild_block(text: str, table: str) -> str:
@@ -266,7 +388,7 @@ def _sans_ntpl_render(text: str) -> str:
     """A rendered migration body without migration 0031's part: its two drift lines, the `instrument` rebuild block, and -- where no other
     drift line names `run` (every shape from 18 on) -- the `run` rebuild block; where another file's rebuild of `run` is in the render
     (0018's substrate line, below 18) only the value comes out of the CREATE text."""
-    out = "\n".join(ln for ln in text.split("\n") if ln not in {"-- drift: " + d for d in NTPL_DRIFT})
+    out = "\n".join(ln for ln in _sans_prune_render(text).split("\n") if ln not in {"-- drift: " + d for d in NTPL_DRIFT})
     out = _sans_rebuild_block(out, "instrument")
     if any(re.match(r"^-- drift: table run\b[: ]", ln) for ln in out.split("\n")):     # `run` itself, never `run_contrast`
         out = out.replace(NTPL_VALUE + ", ", "")
@@ -297,8 +419,10 @@ def _sans_fence_render(text: str) -> str:
 
 
 def _strip_af_shape(conn) -> None:
-    """Take a database built from the CODE's render back to before migration 0029: its four indexes and five tables dropped, children
-    first (nothing else of the code's shape names them: no column, no v_* object, no ledger CHECK)."""
+    """Take a database built from the CODE's render back to before migration 0029: 0033's shape first (`_strip_prune_shape`: the newer
+    file), then its four indexes and five tables dropped, children first (nothing else of the code's shape names them: no column, no v_*
+    object, no ledger CHECK)."""
+    _strip_prune_shape(conn)
     for idx in ("idx_analysis_artifact_artifact", "idx_analysis_input_run", "idx_analysis_input_object", "idx_analysis_filed"):
         conn.execute(f"DROP INDEX IF EXISTS {idx}")
     for t in reversed(AF_TABLES):
@@ -582,7 +706,7 @@ def _pre_0021_head() -> str:
     """`v_paper_inputs_head` as it read before migration 0021 (0020's text, pinned by that file's frozen sha and asserted against it in
     the 0020 test): the run member at the two lifecycle states the selection admits, with 0015's comment, and no `judgment` member (its
     block runs from the comment that opens it through the member line)."""
-    lines = S.VIEW_SQL["v_paper_inputs_head"].splitlines()
+    lines = _pre_0033_head().splitlines()
     start = next(i for i, ln in enumerate(lines) if "-- subset. The run member reads every row" in ln)
     end = next(i for i, ln in enumerate(lines) if ln == "    SELECT MAX(ingest_seq) AS seq FROM run")
     assert start < end
@@ -1454,9 +1578,9 @@ def test_0013_roster_selector_never_matches_a_padded_instrument_on_a_v12_databas
     _v12_shape(path)
     conn = DB.connect(path)
     assert M.db_version(conn) == 12
-    # the drift is against the CODE's shape, so 0014's instrument CHECK (`>= 0`) and 0015's head + index drift here too; 0013's own object is the one view
+    # the drift is against the CODE's shape, so 0014's instrument CHECK (`>= 0`) and 0015's head drift here too; 0013's own object is the one view
     drift = _sans_0017(_sans_0016(DB.schema_drift(conn)))                                  # 0017's v_paper_long drifts here too
-    assert drift[1] == "v_roster_match differs from the code's SQL" and drift[2:] == V15_DRIFT and len(drift) == 4, drift
+    assert drift[1] == "v_roster_match differs from the code's SQL" and drift[2:] == V15_DRIFT and len(drift) == 3, drift
     assert drift[0].startswith("table instrument: CONSTRAINT instrument_padding_pairing differs") and "padding_tokens >= 0" in drift[0]
     before = _object_sql(conn, ("v_roster_match",))["v_roster_match"]
     assert V12_SELECTOR_BRANCH in before and "padding_tokens" not in before
@@ -1527,8 +1651,8 @@ def test_0014_instrument_padding_zero_point_on_a_v13_database(tmp_path):
     # before the file: the zero point is refused (0012's `> 0`)
     with pytest.raises(sqlite3.IntegrityError, match="instrument_padding_pairing"):
         _insert_row(conn, "instrument", _valid_row("instrument", instrument_id="z" * 64, eval_id="ev", item_set_id="is", padding_tokens=0, padding_identity_sha256=contract))
-    drift = _sans_0017(_sans_0016(DB.schema_drift(conn)))                                # 0015's head + index, 0016's v_roster_match and 0017's v_paper_long drift here too (against the code's shape)
-    assert len(drift) == 4 and drift[0].startswith("table instrument: CONSTRAINT instrument_padding_pairing differs") and drift[1] == V16_VIEW_DRIFT[0] and drift[2:] == V15_DRIFT, drift
+    drift = _sans_0017(_sans_0016(DB.schema_drift(conn)))                                # 0015's head, 0016's v_roster_match and 0017's v_paper_long drift here too (against the code's shape)
+    assert len(drift) == 3 and drift[0].startswith("table instrument: CONSTRAINT instrument_padding_pairing differs") and drift[1] == V16_VIEW_DRIFT[0] and drift[2:] == V15_DRIFT, drift
     assert "padding_tokens > 0" in drift[0] and "padding_tokens >= 0" in drift[0]
     before = _object_sql(conn, ("instrument",))["instrument"]
     assert V13_PAIRING in before and V14_PAIRING not in before
@@ -1635,30 +1759,14 @@ def test_0015_paper_inputs_head_reads_base_tables_on_a_v14_database(tmp_path):
               ) + tuple(v for v in views if v not in TF_VIEWS + ("v_paper_inputs_head",) + V16_OBJECTS + V17_OBJECTS + V20_OBJECTS + V21_OBJECTS)   # v_paper_long is 0017's; the item views 0020's
     others_before = _object_sql(conn, others)
     assert [v for v, _, _ in M.pending_migrations(conn)] == list(range(15, M.code_version() + 1))
-    assert M.apply_migrations(conn) == list(range(15, M.code_version() + 1))
-    assert M.db_version(conn) == M.code_version()
-    assert DB.schema_drift(conn) == []
+    # through 0032 first: 0015's item member and its index stand until 0033 drops both (nothing between touches them)
+    for version, slug, mpath in M.migration_files():
+        if 15 <= version <= 32:
+            with open(mpath, "r", encoding="utf-8") as fh:
+                M._apply_one(conn, version, slug, fh.read())
     assert conn.execute("SELECT description FROM schema_migration WHERE version = 15").fetchone()[0] == "paper_inputs_head_base_tables"
-    after = _object_sql(conn, ("v_paper_inputs_head", "idx_item_result_withdrawn_seq"))
-    assert after["v_paper_inputs_head"] == S.VIEW_SQL["v_paper_inputs_head"].strip().rstrip(";")
-    # the chain ends at the code's text: 0021 reads the run table whole (V15_RUN_MEMBER is 0015's / 0020's spelling, pinned by their
-    # frozen files) and adds the judgment member; the item member is 0015's still
-    assert V15_RUN_MEMBER not in after["v_paper_inputs_head"] and "SELECT MAX(ingest_seq) AS seq FROM run\n" in after["v_paper_inputs_head"]
-    assert V15_ITEM_MEMBER in after["v_paper_inputs_head"]
-    assert V14_FRAME_MEMBER not in after["v_paper_inputs_head"] and "v_paper_long" not in after["v_paper_inputs_head"]
-    for member in ("run_metric", "run_contrast", "judgment", "roster_entry", "ruling", "ruling_state", "disposition", "withdrawal"):
-        assert after["v_paper_inputs_head"].count(f"UNION ALL SELECT MAX(ingest_seq) FROM {member}\n") == 1, member
-    assert "UNION ALL SELECT MAX(ingest_seq) FROM source_revision WHERE accepted = 1\n" in after["v_paper_inputs_head"]
-    assert after["idx_item_result_withdrawn_seq"] == V15_INDEX
-    assert _object_sql(conn, others) == others_before                                     # nothing else moved: tables, indexes, every other view
-    # the file carries the lookup form of the head (its 0015 text; 0020 added the item_withdrawal member since) and the one index, no table
-    with open([p for v, _, p in M.migration_files() if v == 15][0], "r", encoding="utf-8") as fh:
-        text = fh.read()
-    assert "CREATE VIEW v_paper_inputs_head AS" in text and V15_RUN_MEMBER in text and V15_ITEM_MEMBER in text and V14_FRAME_MEMBER not in text
-    assert "item_withdrawal" not in text and V15_INDEX + ";" in text
-    statements = [" ".join(ln.split(" ")[:2]) for ln in text.splitlines()
-                  if ln.split(" ")[0] in ("CREATE", "DROP", "ALTER", "INSERT", "UPDATE", "DELETE", "ANALYZE")]
-    assert sorted(statements) == ["CREATE INDEX", "CREATE VIEW", "DROP INDEX", "DROP VIEW"], statements     # no table, no rows copied
+    at32 = _object_sql(conn, ("v_paper_inputs_head", "idx_item_result_withdrawn_seq"))
+    assert V15_ITEM_MEMBER in at32["v_paper_inputs_head"] and at32["idx_item_result_withdrawn_seq"] == V15_INDEX
     # the head is a lookup: the item member seeks through the new index; no paper object and no materialized frame in the plan
     plan = [r[3] for r in conn.execute("EXPLAIN QUERY PLAN SELECT ingest_seq FROM v_paper_inputs_head")]
     assert any("SEARCH item_result USING INDEX idx_item_result_withdrawn_seq" in p for p in plan), plan
@@ -1671,8 +1779,34 @@ def test_0015_paper_inputs_head_reads_base_tables_on_a_v14_database(tmp_path):
     conn.execute("UPDATE run SET lifecycle_state = 'ingested' WHERE run_id = ?", ("q" * 64,))    # the queued run completes: its rank counts for both
     assert conn.execute(pre_0021).fetchone()[0] == 11
     assert conn.execute("SELECT ingest_seq FROM v_paper_inputs_head").fetchone()[0] == 11
-    conn.execute("UPDATE item_result SET withdrawn_by_revision_id = NULL WHERE ingest_seq = 7")   # un-withdrawn (a re-activation): the seek follows
-    assert conn.execute("SELECT MAX(ingest_seq) FROM item_result INDEXED BY idx_item_result_withdrawn_seq WHERE withdrawn_by_revision_id IS NOT NULL").fetchone()[0] is None
+    assert conn.execute("SELECT MAX(ingest_seq) FROM item_result INDEXED BY idx_item_result_withdrawn_seq WHERE withdrawn_by_revision_id IS NOT NULL").fetchone()[0] == 7
+    # then 0033 (the prune of superseded revisions): the item member and its index go together -- nothing marks a row since -- and the head reads the same
+    assert M.apply_migrations(conn) == list(range(33, M.code_version() + 1))
+    assert M.db_version(conn) == M.code_version()
+    assert DB.schema_drift(conn) == []
+    after = _object_sql(conn, ("v_paper_inputs_head",))
+    assert after["v_paper_inputs_head"] == S.VIEW_SQL["v_paper_inputs_head"].strip().rstrip(";")
+    # the chain ends at the code's text: 0021 reads the run table whole (V15_RUN_MEMBER is 0015's / 0020's spelling, pinned by their
+    # frozen files) and adds the judgment member; 0033 drops 0015's item member
+    assert V15_RUN_MEMBER not in after["v_paper_inputs_head"] and "SELECT MAX(ingest_seq) AS seq FROM run\n" in after["v_paper_inputs_head"]
+    assert V15_ITEM_MEMBER not in after["v_paper_inputs_head"]
+    assert V14_FRAME_MEMBER not in after["v_paper_inputs_head"] and "v_paper_long" not in after["v_paper_inputs_head"]
+    for member in ("run_metric", "run_contrast", "judgment", "roster_entry", "ruling", "ruling_state", "disposition", "withdrawal"):
+        assert after["v_paper_inputs_head"].count(f"UNION ALL SELECT MAX(ingest_seq) FROM {member}\n") == 1, member
+    assert "UNION ALL SELECT MAX(ingest_seq) FROM source_revision WHERE accepted = 1\n" in after["v_paper_inputs_head"]
+    assert conn.execute("SELECT COUNT(*) FROM sqlite_master WHERE type = 'index' AND name = 'idx_item_result_withdrawn_seq'").fetchone()[0] == 0
+    assert conn.execute("SELECT ingest_seq FROM v_paper_inputs_head").fetchone()[0] == 11
+    plan = [r[3] for r in conn.execute("EXPLAIN QUERY PLAN SELECT ingest_seq FROM v_paper_inputs_head")]
+    assert not any(bad in p for p in plan for bad in ("v_paper_long", "v_paper_current", "v_roster_match", "MATERIALIZED", "covered", "matched")), plan
+    assert _object_sql(conn, others) == others_before                                     # nothing else moved: tables, indexes, every other view
+    # the file carries the lookup form of the head (its 0015 text; 0020 added the item_withdrawal member since) and the one index, no table
+    with open([p for v, _, p in M.migration_files() if v == 15][0], "r", encoding="utf-8") as fh:
+        text = fh.read()
+    assert "CREATE VIEW v_paper_inputs_head AS" in text and V15_RUN_MEMBER in text and V15_ITEM_MEMBER in text and V14_FRAME_MEMBER not in text
+    assert "item_withdrawal" not in text and V15_INDEX + ";" in text
+    statements = [" ".join(ln.split(" ")[:2]) for ln in text.splitlines()
+                  if ln.split(" ")[0] in ("CREATE", "DROP", "ALTER", "INSERT", "UPDATE", "DELETE", "ANALYZE")]
+    assert sorted(statements) == ["CREATE INDEX", "CREATE VIEW", "DROP INDEX", "DROP VIEW"], statements     # no table, no rows copied
     assert conn.execute("PRAGMA foreign_keys").fetchone()[0] == 1 and conn.execute("PRAGMA legacy_alter_table").fetchone()[0] == 0
     conn.close()
     DB.open_or_create(path).close()                                                     # the writers' open accepts it
@@ -1790,7 +1924,7 @@ def test_0017_paper_long_joins_only_current_contrasts_on_a_v16_database(tmp_path
     assert "withdrawn_contrast" not in before and "current_contrast" not in before and "LEFT JOIN run_contrast rc ON" in before
     cols_before = [c[1] for c in conn.execute("PRAGMA table_info(v_paper_long)")]
     views = tuple(r[0] for r in conn.execute("SELECT name FROM sqlite_master WHERE type = 'view' ORDER BY name"))
-    others = tuple(t for t in S.ALL_TABLES if t not in V20_OBJECTS + RRF_TABLES + FO_TABLES + AF_TABLES + FU4_TABLES) + tuple(v for v in views if v not in TF_VIEWS + ("v_paper_long",) + V20_OBJECTS + V21_OBJECTS + RRF_VIEWS)   # 0020's, 0021's and the record-refusal-fact migration's objects aside
+    others = tuple(t for t in S.ALL_TABLES if t not in V20_OBJECTS + RRF_TABLES + FO_TABLES + AF_TABLES + FU4_TABLES + PRUNE_TABLES) + tuple(v for v in views if v not in TF_VIEWS + ("v_paper_long",) + V20_OBJECTS + V21_OBJECTS + RRF_VIEWS)   # 0020's, 0021's and the record-refusal-fact migration's objects aside
     others_before = _object_sql(conn, others)
     assert [v for v, _, _ in M.pending_migrations(conn)] == list(range(17, M.code_version() + 1))
     assert M.apply_migrations(conn) == list(range(17, M.code_version() + 1))
@@ -1847,7 +1981,7 @@ def test_0019_paper_long_derives_the_wilson_interval_on_a_v18_database(tmp_path)
     assert "sqrt(" not in before and "wilson_95" not in before and "rm.ci_lo END AS ci_lo" in before and "\n       rm.ci_method," in before
     cols_before = [c[1] for c in conn.execute("PRAGMA table_info(v_paper_long)")]
     views = tuple(r[0] for r in conn.execute("SELECT name FROM sqlite_master WHERE type = 'view' ORDER BY name"))
-    others = tuple(t for t in S.ALL_TABLES if t not in V20_OBJECTS + RRF_TABLES + FO_TABLES + AF_TABLES + FU4_TABLES) + tuple(v for v in views if v not in TF_VIEWS + ("v_paper_long",) + V20_OBJECTS + V21_OBJECTS + RRF_VIEWS)   # 0020's, 0021's and the record-refusal-fact migration's objects aside
+    others = tuple(t for t in S.ALL_TABLES if t not in V20_OBJECTS + RRF_TABLES + FO_TABLES + AF_TABLES + FU4_TABLES + PRUNE_TABLES) + tuple(v for v in views if v not in TF_VIEWS + ("v_paper_long",) + V20_OBJECTS + V21_OBJECTS + RRF_VIEWS)   # 0020's, 0021's and the record-refusal-fact migration's objects aside
     others_before = _object_sql(conn, others)
     assert [v for v, _, _ in M.pending_migrations(conn)] == list(range(19, M.code_version() + 1))
     assert M.apply_migrations(conn) == list(range(19, M.code_version() + 1))
@@ -1900,11 +2034,11 @@ def test_0020_item_withdrawal_on_a_v19_database(tmp_path):
     assert "v_item_result_current differs from the code's SQL" in drift and "v_item_result_provenances differs from the code's SQL" in drift
     assert [d.split(" — ")[0] for d in _sans_rrf_roster(_sans_0021(drift))] == list(V20_TABLE_PREFIXES) + [d for d in V20_DRIFT if d not in V21_DRIFT] + [V20_HEAD_DRIFT], drift
     plan = M.shape_plan(conn)
-    assert [r["table"] for r in plan["rebuild"] if r["table"] not in FU4_TABLES + NTPL_TABLES] == ["blocked_records", "row_history"] and [c for c in plan["create"] if c not in RRF_TABLES + FO_TABLES + AF_TABLES] == ["item_withdrawal"]   # 0027's run_contrast and 0031's two rebuilds aside
+    assert [r["table"] for r in plan["rebuild"] if r["table"] not in FU4_TABLES + NTPL_TABLES] == ["blocked_records", "row_history"] and [c for c in plan["create"] if c not in RRF_TABLES + FO_TABLES + AF_TABLES + PRUNE_TABLES] == ["item_withdrawal"]   # 0027's run_contrast and 0031's two rebuilds aside
     assert [a for a in plan["add_columns"] if a["table"] not in RRF_TABLES + FO_TABLES + AF_TABLES] == [{"table": "item_result", "rows": 0, "columns": ["withdrawn_by_record_sha256", "withdrawn_reason"], "scale": "item"}]
     # the plan is against the CODE's shape, so 0021's recreates are listed beside 0020's three (its own test pins the view-only plan on v20)
     assert plan["objects"]["view"] == {"recreate": sorted({"v_item_result_current", "v_item_result_provenances", "v_paper_inputs_head", TF_CHECK_VIEW} | set(V21_OBJECTS) | set(RRF_VIEWS)), "drop": []}
-    assert plan["objects"]["index"] == {"recreate": [], "drop": []} and plan["objects"]["trigger"] == {"recreate": [], "drop": []}   # 0030's two fence triggers ride 0031's run rebuild
+    assert _prune_index_aside(plan["objects"]["index"]) == {"recreate": [], "drop": []} and plan["objects"]["trigger"] == {"recreate": [], "drop": []}   # 0030's two fence triggers ride 0031's run rebuild
     rendered = frozen_column_docs(_sans_fence_render(M.render_shape_migration(conn, plan)))   # 0030's two fence triggers render between the halves;
     # the descriptions reworded since 0020 landed read at the frozen text
     committed = open(os.path.join(M.HERE, "0020_item_withdrawal.sql"), encoding="utf-8").read()
@@ -1945,8 +2079,8 @@ def test_0020_item_withdrawal_on_a_v19_database(tmp_path):
     conn.execute("PRAGMA foreign_keys=ON")
     views = tuple(r[0] for r in conn.execute("SELECT name FROM sqlite_master WHERE type = 'view' ORDER BY name"))
     assert "v_item_result_current" in views and "item_withdrawal" not in views
-    others = tuple(t for t in S.ALL_TABLES if t not in V20_OBJECTS + RRF_TABLES + FO_TABLES + AF_TABLES + FU4_TABLES) + tuple(v for v in views if v not in TF_VIEWS + V20_OBJECTS + V21_OBJECTS + RRF_VIEWS)   # the record-refusal-fact migration's tables and v_roster_match aside
-    others += tuple(r[0] for r in conn.execute("SELECT name FROM sqlite_master WHERE type IN ('index', 'trigger') AND sql IS NOT NULL"))
+    others = tuple(t for t in S.ALL_TABLES if t not in V20_OBJECTS + RRF_TABLES + FO_TABLES + AF_TABLES + FU4_TABLES + PRUNE_TABLES) + tuple(v for v in views if v not in TF_VIEWS + V20_OBJECTS + V21_OBJECTS + RRF_VIEWS)   # the record-refusal-fact migration's tables and v_roster_match aside
+    others += tuple(r[0] for r in conn.execute("SELECT name FROM sqlite_master WHERE type IN ('index', 'trigger') AND sql IS NOT NULL AND name <> 'idx_item_result_withdrawn_seq'"))
     others_before = _object_sql(conn, others)
     item_cols_before = [c[1] for c in conn.execute("PRAGMA table_info(item_result)")]
     item_rows_before = sorted(tuple(r) for r in conn.execute("SELECT * FROM item_result"))
@@ -2022,9 +2156,9 @@ def test_0021_run_current_frame_rules_on_a_v20_database(tmp_path):
     assert _sans_rrf_roster(_sans_rrf(drift)) == V21_DRIFT, drift                           # the record-refusal-fact migration's table, index and v_roster_match lines aside (its own test pins them)
     plan = M.shape_plan(conn)
     assert [r["table"] for r in plan["rebuild"] if r["table"] not in FU4_TABLES + NTPL_TABLES] == [] and plan["undeclared_tables"] == []      # 0027's run_contrast and 0031's two rebuilds aside
-    assert [a for a in plan["add_columns"] if a["table"] not in RRF_TABLES + FO_TABLES + AF_TABLES] == [] and [c for c in plan["create"] if c not in RRF_TABLES + FO_TABLES + AF_TABLES] == []
+    assert [a for a in plan["add_columns"] if a["table"] not in RRF_TABLES + FO_TABLES + AF_TABLES] == [] and [c for c in plan["create"] if c not in RRF_TABLES + FO_TABLES + AF_TABLES + PRUNE_TABLES] == []
     assert plan["objects"]["view"] == {"recreate": sorted(set(V21_OBJECTS) | set(RRF_VIEWS) | {TF_CHECK_VIEW}), "drop": []}      # six of the record-refusal-fact migration's seven recreates are among the nine; v_roster_match is its own; 0026's v_multi_source_check
-    assert plan["objects"]["index"] == {"recreate": [], "drop": []} and plan["objects"]["trigger"] == {"recreate": [], "drop": []}   # 0030's two fence triggers ride 0031's run rebuild
+    assert _prune_index_aside(plan["objects"]["index"]) == {"recreate": [], "drop": []} and plan["objects"]["trigger"] == {"recreate": [], "drop": []}   # 0030's two fence triggers ride 0031's run rebuild
     rendered = M.render_shape_migration(conn, plan)
     committed = open(os.path.join(M.HERE, "0021_run_current_frame_rules.sql"), encoding="utf-8").read()
     body = committed[committed.index("-- drift: "):]                                      # the hand-written header ends where the render begins
@@ -2038,6 +2172,8 @@ def test_0021_run_current_frame_rules_on_a_v20_database(tmp_path):
         assert block in rendered, v
         if v == "v_run_current":
             assert block not in body and "DROP VIEW IF EXISTS " + v + ";\n" + _pre_0022_run_current(code) in body, v
+        elif v == "v_paper_inputs_head":
+            assert block not in body and "DROP VIEW IF EXISTS " + v + ";\n" + _pre_0033_head().strip() in body, v     # 0033 dropped its item member
         else:
             assert block in body, v
     for v in RRF_VIEWS:
@@ -2058,8 +2194,8 @@ def test_0021_run_current_frame_rules_on_a_v20_database(tmp_path):
     long_cols_before = _columns(conn, "v_paper_long")
     pc_cols_before = _columns(conn, "v_paper_current")
     views = tuple(r[0] for r in conn.execute("SELECT name FROM sqlite_master WHERE type = 'view' ORDER BY name"))
-    others = tuple(t for t in S.ALL_TABLES if t not in RRF_TABLES + FO_TABLES + AF_TABLES + FU4_TABLES) + tuple(v for v in views if v not in TF_VIEWS + V21_OBJECTS + RRF_VIEWS)   # the record-refusal-fact migration's tables and v_roster_match aside
-    others += tuple(r[0] for r in conn.execute("SELECT name FROM sqlite_master WHERE type IN ('index', 'trigger') AND sql IS NOT NULL"))
+    others = tuple(t for t in S.ALL_TABLES if t not in RRF_TABLES + FO_TABLES + AF_TABLES + FU4_TABLES + PRUNE_TABLES) + tuple(v for v in views if v not in TF_VIEWS + V21_OBJECTS + RRF_VIEWS)   # the record-refusal-fact migration's tables and v_roster_match aside
+    others += tuple(r[0] for r in conn.execute("SELECT name FROM sqlite_master WHERE type IN ('index', 'trigger') AND sql IS NOT NULL AND name <> 'idx_item_result_withdrawn_seq'"))
     others_before = _object_sql(conn, others)
     # 0022 recreates v_run_current again and the record-refusal-fact migration follows it (their own tests pin their plans on the shape
     # below each), so the runner carries the database to the code
@@ -2124,12 +2260,12 @@ def test_0022_member_pass_requires_pooled_reading_on_a_v21_database(tmp_path):
     assert M.db_version(conn) == 21
     drift = DB.schema_drift(conn)
     rrf_view_lines = [f"{v} differs from the code's SQL" for v in RRF_VIEWS]
-    assert [d for d in _sans_rrf(drift) if d not in rrf_view_lines] == V22_DRIFT, drift
+    assert [d for d in _sans_prune_head(_sans_rrf(drift)) if d not in rrf_view_lines] == V22_DRIFT, drift      # 0033's head line aside
     plan = M.shape_plan(conn)
     assert [r["table"] for r in plan["rebuild"] if r["table"] not in FU4_TABLES + NTPL_TABLES] == [] and plan["undeclared_tables"] == []      # 0027's run_contrast and 0031's two rebuilds aside
-    assert [a for a in plan["add_columns"] if a["table"] not in RRF_TABLES + FO_TABLES + AF_TABLES] == [] and [c for c in plan["create"] if c not in RRF_TABLES + FO_TABLES + AF_TABLES] == []
-    assert plan["objects"]["view"] == {"recreate": sorted(set(V22_OBJECTS) | set(RRF_VIEWS) | {TF_CHECK_VIEW}), "drop": []}      # 0026's v_multi_source_check beside
-    assert plan["objects"]["index"] == {"recreate": [], "drop": []} and plan["objects"]["trigger"] == {"recreate": [], "drop": []}   # 0030's two fence triggers ride 0031's run rebuild
+    assert [a for a in plan["add_columns"] if a["table"] not in RRF_TABLES + FO_TABLES + AF_TABLES] == [] and [c for c in plan["create"] if c not in RRF_TABLES + FO_TABLES + AF_TABLES + PRUNE_TABLES] == []
+    assert plan["objects"]["view"] == {"recreate": sorted(set(V22_OBJECTS) | set(RRF_VIEWS) | {TF_CHECK_VIEW, "v_paper_inputs_head"}), "drop": []}      # 0026's v_multi_source_check and 0033's head beside
+    assert _prune_index_aside(plan["objects"]["index"]) == {"recreate": [], "drop": []} and plan["objects"]["trigger"] == {"recreate": [], "drop": []}   # 0030's two fence triggers ride 0031's run rebuild
     rendered = M.render_shape_migration(conn, plan)
     committed = open(os.path.join(M.HERE, "0022_member_pass_requires_pooled_reading.sql"), encoding="utf-8").read()
     assert "A registry ruling of 2026-10-02" in committed[:committed.index("-- drift: ")]    # the hand-written header names the ruling
@@ -2144,8 +2280,8 @@ def test_0022_member_pass_requires_pooled_reading_on_a_v21_database(tmp_path):
     assert before == _pre_0022_run_current(S.VIEW_SQL["v_run_current"]).strip().rstrip(";")   # 0021's text, as the helper reconstructs it
     cols_before = _columns(conn, "v_run_current")
     views = tuple(r[0] for r in conn.execute("SELECT name FROM sqlite_master WHERE type = 'view' ORDER BY name"))
-    others = tuple(t for t in S.ALL_TABLES if t not in RRF_TABLES + FO_TABLES + AF_TABLES + FU4_TABLES) + tuple(v for v in views if v not in TF_VIEWS + V22_OBJECTS + RRF_VIEWS)   # the record-refusal-fact migration's aside
-    others += tuple(r[0] for r in conn.execute("SELECT name FROM sqlite_master WHERE type IN ('index', 'trigger') AND sql IS NOT NULL"))
+    others = tuple(t for t in S.ALL_TABLES if t not in RRF_TABLES + FO_TABLES + AF_TABLES + FU4_TABLES + PRUNE_TABLES) + tuple(v for v in views if v not in TF_VIEWS + V22_OBJECTS + RRF_VIEWS + ("v_paper_inputs_head",))   # the record-refusal-fact migration's and 0033's head aside
+    others += tuple(r[0] for r in conn.execute("SELECT name FROM sqlite_master WHERE type IN ('index', 'trigger') AND sql IS NOT NULL AND name <> 'idx_item_result_withdrawn_seq'"))
     others_before = _object_sql(conn, others)
     assert [v for v, _, _ in M.pending_migrations(conn)] == list(range(22, M.code_version() + 1))     # 0022, then the record-refusal-fact migration
     assert M.apply_migrations(conn) == list(range(22, M.code_version() + 1))
@@ -2234,7 +2370,7 @@ def test_the_record_refusal_fact_migration_on_the_shape_one_version_below_it(tmp
     conn = DB.connect(path)
     assert M.db_version(conn) == version - 1
     drift = DB.schema_drift(conn)
-    assert [d.split(" — ")[0] for d in _sans_fo(drift) if d not in TF_SHAPE22_DRIFT] == list(RRF_TABLE_PREFIXES) + [RRF_DRIFT[0]] + [f"{v} differs from the code's SQL" for v in
+    assert [d.split(" — ")[0] for d in _sans_prune_head(_sans_fo(drift)) if d not in TF_SHAPE22_DRIFT] == list(RRF_TABLE_PREFIXES) + [RRF_DRIFT[0]] + [f"{v} differs from the code's SQL" for v in
             ("v_item_result_current", "v_item_result_provenances", "v_pending_judgment", "v_roster_match", "v_paper_current", "v_multi_source_rows", "v_paper_long")] + RRF_DRIFT[1:], drift   # the code's object order
     have, want = DB.ddl_master(conn), DB.code_ddl_master()
     for t in ("blocked_records", "row_history"):
@@ -2242,19 +2378,19 @@ def test_the_record_refusal_fact_migration_on_the_shape_one_version_below_it(tmp
     assert V.LEDGERED_RECORD_TYPES == tuple(t for t in V.RECORD_TYPES if t not in V.UNLEDGERED_FACT_TYPES)
     assert V.UNLEDGERED_FACT_TYPES == ("record_refusal",) + V.ANALYSIS_RECORD_TYPES       # 0029's three kinds joined it; the ledgers' CHECK lists still untouched
     plan = M.shape_plan(conn)
-    assert [r["table"] for r in plan["rebuild"] if r["table"] not in FU4_TABLES + NTPL_TABLES] == [] and plan["undeclared_tables"] == [] and [c for c in plan["create"] if c not in FO_TABLES + AF_TABLES] == ["record_refusal_fact"]   # 0027's run_contrast and 0031's two rebuilds aside
+    assert [r["table"] for r in plan["rebuild"] if r["table"] not in FU4_TABLES + NTPL_TABLES] == [] and plan["undeclared_tables"] == [] and [c for c in plan["create"] if c not in FO_TABLES + AF_TABLES + PRUNE_TABLES] == ["record_refusal_fact"]   # 0027's run_contrast and 0031's two rebuilds aside
     assert plan["add_columns"] == [{"table": "object", "rows": 0, "columns": ["parent_object_id", "named_role"], "scale": "run"},
                                    {"table": "judgment", "rows": 0, "columns": ["claimed_instrument_id", "claimed_required_judge_id"], "scale": "run"},
                                    {"table": "record_refusal", "rows": 0, "columns": ["judged_with"], "scale": "ledger"}]
-    assert plan["objects"]["view"] == {"recreate": sorted(set(RRF_VIEWS) | set(TF_SHAPE22_VIEWS)), "drop": []}      # 0026's two beside (v_multi_source_rows is this migration's own)
-    assert plan["objects"]["index"] == {"recreate": [], "drop": []} and plan["objects"]["trigger"] == {"recreate": [], "drop": []}   # 0030's two fence triggers ride 0031's run rebuild
+    assert plan["objects"]["view"] == {"recreate": sorted(set(RRF_VIEWS) | set(TF_SHAPE22_VIEWS) | {"v_paper_inputs_head"}), "drop": []}      # 0026's two and 0033's head beside (v_multi_source_rows is this migration's own)
+    assert _prune_index_aside(plan["objects"]["index"]) == {"recreate": [], "drop": []} and plan["objects"]["trigger"] == {"recreate": [], "drop": []}   # 0030's two fence triggers ride 0031's run rebuild
     rendered = M.render_shape_migration(conn, plan)
     committed = open(mpath, encoding="utf-8").read()
     assert committed.startswith(f"-- {os.path.basename(mpath)}\n")                           # the header names the file it is in
     body = committed[committed.index("-- drift: "):]                                      # the hand-written header ends where the render begins
     # today's render carries the newer files' work too: the fold-observation migration's create (`_sans_fo_render`) and 0025's text of the
     # worklist object, taken back to this file's (`_sans_pes_render`; the drift line stays: this file recreates the object as well)
-    expected = _sans_pes_render(_sans_fo_render(_sans_tf_block(rendered, TF_SHAPE22_VIEWS)), drift_line=False)
+    expected = _sans_pes_render(_sans_fo_render(_sans_tf_block(_sans_prune_head_render(rendered), TF_SHAPE22_VIEWS)), drift_line=False)
     rows_code = S.VIEW_SQL["v_multi_source_rows"].strip()
     expected = expected.replace("DROP VIEW IF EXISTS v_multi_source_rows;\n" + rows_code, "DROP VIEW IF EXISTS v_multi_source_rows;\n" + _pre_0026_multi_source_rows(rows_code))
     assert body.strip() == expected.strip()                                                   # 0026 moved v_multi_source_rows too: the committed body is this file's text of it
@@ -2302,8 +2438,8 @@ def test_the_record_refusal_fact_migration_on_the_shape_one_version_below_it(tmp
     conn.commit()
     conn.execute("PRAGMA foreign_keys=ON")
     views = tuple(r[0] for r in conn.execute("SELECT name FROM sqlite_master WHERE type = 'view' ORDER BY name"))
-    others = tuple(t for t in S.ALL_TABLES if t not in RRF_TABLES + FO_TABLES + AF_TABLES + FU4_TABLES) + tuple(v for v in views if v not in TF_VIEWS + RRF_VIEWS)
-    others += tuple(r[0] for r in conn.execute("SELECT name FROM sqlite_master WHERE type IN ('index', 'trigger') AND sql IS NOT NULL"))
+    others = tuple(t for t in S.ALL_TABLES if t not in RRF_TABLES + FO_TABLES + AF_TABLES + FU4_TABLES + PRUNE_TABLES) + tuple(v for v in views if v not in TF_VIEWS + RRF_VIEWS + ("v_paper_inputs_head",))   # 0033's head aside
+    others += tuple(r[0] for r in conn.execute("SELECT name FROM sqlite_master WHERE type IN ('index', 'trigger') AND sql IS NOT NULL AND name <> 'idx_item_result_withdrawn_seq'"))
     others_before = _object_sql(conn, others)
     cols_before = {t: [c[1] for c in conn.execute(f"PRAGMA table_info({t})")] for t in ("object", "judgment", "record_refusal")}
     text_before = {t: conn.execute("SELECT sql, rootpage FROM sqlite_master WHERE name = ?", (t,)).fetchone() for t in ("object", "judgment", "record_refusal")}
@@ -2360,5 +2496,120 @@ def test_the_record_refusal_fact_migration_on_the_shape_one_version_below_it(tmp
         conn.execute("INSERT INTO record_refusal_fact(record_sha256, record_uri, reason, judged_with, refused_utc, cycle_utc) VALUES (?, 'synthetic://e#1', 'refused', 'nope', "
                      "'2026-01-01T00:00:00.000Z', '2026-01-01T00:00:00.000Z')", ("e" * 64,))
     assert conn.execute("PRAGMA foreign_keys").fetchone()[0] == 1 and conn.execute("PRAGMA legacy_alter_table").fetchone()[0] == 0
+    conn.close()
+    DB.open_or_create(path).close()                                                     # the writers' open accepts it
+
+
+# --------------------------------------------------------------------------------------------
+# 0033: superseded revisions' item rows are deleted by reclaim (prune-rule/3); the file only arms it, on a v32 database
+# --------------------------------------------------------------------------------------------
+
+V33_DRIFT = ["table item_reclaim_ledger is absent", "v_paper_inputs_head differs from the code's SQL",
+             "index idx_item_result_withdrawn_seq is not declared by the code"]
+V33_ITEM_MEMBER = V15_ITEM_MEMBER
+
+
+def _v32_shape(path: str) -> None:
+    """A database at schema version 32: migrations 0001..0032 applied by the runner itself, 0033 not."""
+    conn = DB.connect(path)
+    for version, slug, mpath in M.migration_files():
+        if version <= 32:
+            with open(mpath, "r", encoding="utf-8") as fh:
+                M._apply_one(conn, version, slug, fh.read())
+    conn.commit()
+    conn.close()
+
+
+def test_0033_on_a_v32_database(tmp_path):
+    """Migration 0033 ARMS the new reclaim and touches no item row: it creates the empty `item_reclaim_ledger`, resets every revision's
+    `reclaimed` (every accepted, superseded revision is due again), recreates `v_paper_inputs_head` without its item member (the head's
+    value unchanged) and drops the partial index only that member read -- `idx_item_result_withdrawn`, which reclaim's pass (i) reads,
+    stays. No table is rebuilt (the landing window's STOP line), the drift is exactly those three lines before and none after, marks
+    planted on a head's rows and on a superseded revision's rows are untouched, and `schema_migration` gains exactly one row."""
+    path = str(tmp_path / "r.sqlite")
+    _v32_shape(path)
+    conn = DB.connect(path)
+    assert M.db_version(conn) == 32 and DB.schema_drift(conn) == V33_DRIFT
+    plan = M.shape_plan(conn)
+    assert plan["rebuild"] == [] and plan["add_columns"] == [] and plan["create"] == ["item_reclaim_ledger"]
+    assert plan["objects"]["index"] == {"recreate": [], "drop": ["idx_item_result_withdrawn_seq"]}
+    assert plan["objects"]["view"] == {"recreate": ["v_paper_inputs_head"], "drop": []}
+    before_view = _object_sql(conn, ("v_paper_inputs_head",))["v_paper_inputs_head"]
+    assert V33_ITEM_MEMBER in before_view
+    # a source with three accepted revisions -- rev1 and rev2 superseded and reclaimed (their rows marked by the old pass (ii)), rev3 the
+    # head with a stale mark planted on one of its rows -- and a pending one; item rows of every revision in all three tables
+    conn.execute("PRAGMA foreign_keys=OFF")
+    # the run the item rows name, and its parents (a visible item row's run is checked by trigger, foreign keys on or off)
+    _insert_row(conn, "model", _valid_row("model", model_id="x"))
+    _insert_row(conn, "eval", _valid_row("eval", eval_id="x", headline_metric_id="asr_x", producer_spellings_json="[]"))
+    _insert_row(conn, "item_set", _valid_row("item_set", item_set_id="x", eval_id="x"))
+    _insert_row(conn, "instrument", _valid_row("instrument", instrument_id="x", eval_id="x", item_set_id="x", judge_id=None))
+    _insert_row(conn, "object", _valid_row("object", object_id="x", object_kind="none", paper_label="none", object_role="baseline_none",
+                                           fit_target_kind="none", fit_thinking_render="not_applicable", fit_objective="not_applicable",
+                                           fit_positions="not_applicable", fit_seed_confidence="not_applicable", derivation="none",
+                                           artifact_sha256="none", status="approved"))
+    utc = {k: "2026-01-01T00:00:00.000Z" for k in ("queued_utc", "started_utc", "generated_utc", "judged_utc", "ingested_utc")}
+    # the run's row carries the newest rank (its ingest stamp follows every row it has), so the dropped member is dominated -- as it was in
+    # every flow examined when the member was dropped, and on the live database (479,654 against a head of 515,787)
+    _insert_row(conn, "run", _valid_row("run", run_id="r" * 64, lifecycle_state="ingested", ingest_seq=500, record_uri="synthetic://a", **utc))
+    revs = [("rev1", 1, "rev2", 1, 1), ("rev2", 1, "rev3", 1, 2), ("rev3", 1, None, 0, 3), ("revp", 0, None, 0, 4)]
+    for rid, acc, sup, rec, i in revs:
+        _insert_row(conn, "source_revision", _valid_row("source_revision", revision_id=rid, source_id="a:g", adapter="a",
+                                                        observed_utc=f"2026-01-0{i}T00:00:00.000Z", accepted=acc, superseded_by_revision_id=sup,
+                                                        reclaimed=rec, record_uri=f"records/adapters/a/{rid}/000001-source_revision.jsonl", ingest_seq=10 * i))
+    seq = 100
+    for rid, *_ in revs:
+        for item in ("q0", "q1"):
+            seq += 1
+            mark = {"rev1": "rev2", "rev2": "rev3", "rev3": "stale" if item == "q0" else None}.get(rid)
+            _insert_row(conn, "item_result", _valid_row("item_result", run_id="r" * 64, item_id=item, metric_id="asr", source_revision_id=rid,
+                                                        record_sha256=bytes([seq % 256]) * 32, record_file_id=seq, ingest_seq=seq,
+                                                        withdrawn_by_revision_id=mark))
+            _insert_row(conn, "item_flags", _valid_row("item_flags", run_id="r" * 64, item_id=item, source_revision_id=rid,
+                                                       record_sha256=bytes([seq % 256]) * 32, record_file_id=seq, ingest_seq=seq))
+        _insert_row(conn, "run_degeneration", _valid_row("run_degeneration", run_id="r" * 64, measure=V.VOCABULARIES["DEGENERATION_MEASURES"][0],
+                                                         scope=V.VOCABULARIES["DEGENERATION_SCOPES"][0], measurement_state="not_measured",
+                                                         source_revision_id=rid, record_sha256=b"\x09" * 32, record_file_id=seq, ingest_seq=seq))
+    conn.commit()
+    conn.execute("PRAGMA foreign_keys=ON")
+    items_before = {t: [tuple(r) for r in conn.execute(f"SELECT * FROM {t} ORDER BY source_revision_id, item_id" if t != "run_degeneration"
+                                                        else f"SELECT * FROM {t} ORDER BY source_revision_id")] for t in ("item_result", "item_flags", "run_degeneration")}
+    head_before = conn.execute("SELECT ingest_seq FROM v_paper_inputs_head").fetchone()[0]
+    assert head_before == 500
+    migrations_before = [tuple(r) for r in conn.execute("SELECT version, description FROM schema_migration ORDER BY version")]
+    others = ("idx_item_result_withdrawn", "idx_item_result_revision", "idx_item_flags_revision", "idx_run_degeneration_revision",
+              "item_result", "item_flags", "run_degeneration", "source_revision", "v_item_result_current", "v_paper_long")
+    others_before = _object_sql(conn, others)
+    assert M.apply_migrations(conn) == [33]
+    assert M.db_version(conn) == M.code_version() == 33 and DB.schema_drift(conn) == []
+    # the migration ledger: exactly one new row
+    after_migrations = [tuple(r) for r in conn.execute("SELECT version, description FROM schema_migration ORDER BY version")]
+    assert after_migrations == migrations_before + [(33, "prune_superseded_item_rows")]
+    # no item row changed (marks included), every revision's reclaimed reset, the ledger empty
+    for t, rows in items_before.items():
+        order = "source_revision_id, item_id" if t != "run_degeneration" else "source_revision_id"
+        assert [tuple(r) for r in conn.execute(f"SELECT * FROM {t} ORDER BY {order}")] == rows, t
+    assert conn.execute("SELECT COUNT(*) FROM source_revision WHERE reclaimed <> 0").fetchone()[0] == 0
+    assert conn.execute("SELECT COUNT(*) FROM item_reclaim_ledger").fetchone()[0] == 0
+    assert _object_sql(conn, ("item_reclaim_ledger",))["item_reclaim_ledger"] == S.render_create_table(S.TABLE_BY_NAME["item_reclaim_ledger"]).rstrip(";")
+    # the head: schema_def's text verbatim, no item member, the same value; the dropped index gone, its sibling kept
+    after = _object_sql(conn, ("v_paper_inputs_head",))["v_paper_inputs_head"]
+    assert after == S.VIEW_SQL["v_paper_inputs_head"].strip().rstrip(";") and V33_ITEM_MEMBER not in after
+    assert "withdrawn_by_revision_id" not in after and "item_withdrawal" in after
+    assert conn.execute("SELECT ingest_seq FROM v_paper_inputs_head").fetchone()[0] == head_before
+    names = {r[0] for r in conn.execute("SELECT name FROM sqlite_master WHERE type = 'index'")}
+    assert "idx_item_result_withdrawn_seq" not in names and "idx_item_result_withdrawn" in names
+    assert _object_sql(conn, others) == others_before                                     # nothing else moved
+    # the file: a CREATE TABLE of the ledger, one UPDATE, the index drop and the head; no rebuild, no row of an item table read or written
+    with open([p for v, _, p in M.migration_files() if v == 33][0], "r", encoding="utf-8") as fh:
+        text = fh.read()
+    assert M.rebuilt_tables(text) == [] and M.reserved_statement(text) is None
+    statements = [" ".join(ln.split(" ")[:2]) for ln in text.splitlines()
+                  if ln.split(" ")[0] in ("CREATE", "DROP", "ALTER", "INSERT", "UPDATE", "DELETE", "ANALYZE")]
+    assert sorted(statements) == ["CREATE TABLE", "CREATE VIEW", "DROP INDEX", "DROP VIEW", "UPDATE source_revision"], statements
+    assert "rebuild table" not in text
+    for line in V33_DRIFT:
+        assert f"-- drift: {line}" in text
+    assert M.POST_APPLY.get("prune_superseded_item_rows") is None and M.PRE_CHECK.get("prune_superseded_item_rows") is None
     conn.close()
     DB.open_or_create(path).close()                                                     # the writers' open accepts it
