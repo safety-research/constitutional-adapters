@@ -11,8 +11,8 @@ are below: the figures alone (370 MB) and a demo of the best Qwen3.5-4B objects 
 ## What a constitutional adapter is
 
 A constitutional adapter is a constitution-trained intervention object minus a control-trained one. Both are fit to a
-frozen language model by next-token cross-entropy on synthetic documents. No harmful request or jailbreak appears in
-training. The constitution-trained object's corpus is generated from Claude's constitution, the control-trained
+frozen language model by next-token cross-entropy on synthetic documents. None of the evaluation prompts or attack templates appear in the training
+corpora. The constitution-trained object's corpus is generated from Claude's constitution, the control-trained
 object's from a register-matched placebo document. Each corpus is composed of two
 parts: difficult advice (advice sought in a hard, ethically ambiguous situation) and stories. Each object is fit on
 the whole corpus, both parts together.
